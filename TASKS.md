@@ -21,13 +21,16 @@ Tasks are high-level and will be refined as the project progresses.
 
 ## Milestone 2: Core Server & World Model
 
-- [ ] Implement server event loop (tick-based)
-- [ ] Design and implement room/world data model
+- [x] Scaffold server event loop (tick-based, 1000ms)
+- [x] Design JSON schema for room/world data model
+- [x] Create sample hand-authored room file (e.g., `arkham_001.json`)
+- [x] Scaffold Python loader to read all room files from zone directories
+- [x] Integrate room/world loader into FastAPI app and expose `/rooms/{room_id}` endpoint
 - [ ] Implement player and NPC data models
 - [ ] Set up database schema and persistence layer
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
 - [ ] Implement player authentication (invite-only)
-- [ ] Create initial hand-authored zones (Arkham, etc.)
+- [ ] Create additional hand-authored zones (Arkham, etc.)
 
 ---
 
