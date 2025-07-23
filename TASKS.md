@@ -1,6 +1,6 @@
 # 📝 MythosMUD – Task Breakdown & Milestones
 
-This document organizes development tasks into milestones for building MythosMUD.  
+This document organizes development tasks into milestones for building MythosMUD.
 Tasks are high-level and will be refined as the project progresses.
 
 ---
@@ -26,7 +26,7 @@ Tasks are high-level and will be refined as the project progresses.
 - [x] Create sample hand-authored room file (e.g., `arkham_001.json`)
 - [x] Scaffold Python loader to read all room files from zone directories
 - [x] Integrate room/world loader into FastAPI app and expose `/rooms/{room_id}` endpoint
-- [ ] Implement player and NPC data models
+- [x] Implement player and NPC data models
 - [ ] Set up database schema and persistence layer
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
 - [ ] Implement player authentication (invite-only)
@@ -88,4 +88,4 @@ Tasks are high-level and will be refined as the project progresses.
 
 ---
 
-_This list will be updated and refined as the project evolves._ 
+_This list will be updated and refined as the project evolves._
