@@ -12,7 +12,10 @@ Tasks are high-level and will be refined as the project progresses.
 - [x] Decide on core technology stack (front-end, back-end, database)
 - [x] Set up basic project structure for client and server
 - [x] Configure development environment (linters, formatters, pre-commit hooks)
-- [ ] Set up basic CI (GitHub Actions or similar) **TODO**
+- [x] Set up basic CI (GitHub Actions for backend and frontend)
+- [x] Add CodeQL analysis workflow
+- [x] Add SECURITY.md file
+- [x] Add Dependabot configuration (optional)
 
 ---
 
