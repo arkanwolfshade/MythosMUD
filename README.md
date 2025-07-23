@@ -134,4 +134,4 @@ Welcome, AI agents! To assist effectively in this repository, please follow thes
 
 ## License
 
-> _To be determined. For now, this is a private, invite-only project._ 
+[https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE](https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE)
