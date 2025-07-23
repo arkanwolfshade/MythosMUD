@@ -3,6 +3,8 @@
 A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulhu Mythos. 
 
 ---
+[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
+---
 
 ## Table of Contents
 - [Overview](#overview)
