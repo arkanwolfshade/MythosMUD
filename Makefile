@@ -24,11 +24,11 @@ format:
 	cd client && npx prettier --write .
 
 test:
-	cd server && pytest
+	PYTHONPATH=server pytest server/tests
 	# Add client tests here if/when available
 
 coverage:
-	cd server && pytest --cov=world_loader --cov-report=term-missing
+	PYTHONPATH=server pytest --cov=world_loader --cov-report=term-missing server/tests
 
 build:
-	cd client && npm run build 
+	cd client && npm run build
