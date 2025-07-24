@@ -33,18 +33,13 @@ class PlayerManager:
                 print(f"Error loading players: {e}")
                 # Backup corrupted file
                 if os.path.exists(self.players_file):
-                    backup_file = (
-                        f"{self.players_file}.backup.{datetime.now().timestamp()}"
-                    )
+                    backup_file = f"{self.players_file}.backup.{datetime.now().timestamp()}"
                     os.rename(self.players_file, backup_file)
 
     def _save_players(self) -> None:
         """Save all players to the data file."""
         try:
-            players_data = {
-                player_id: player.model_dump()
-                for player_id, player in self.players.items()
-            }
+            players_data = {player_id: player.model_dump() for player_id, player in self.players.items()}
             with open(self.players_file, "w", encoding="utf-8") as f:
                 json.dump(players_data, f, indent=2, default=str)
         except Exception as e:
@@ -102,9 +97,7 @@ class PlayerManager:
         """Get a list of all players."""
         return list(self.players.values())
 
-    def apply_sanity_loss(
-        self, player: Player, amount: int, source: str = "unknown"
-    ) -> None:
+    def apply_sanity_loss(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Apply sanity loss to a player with potential status effects."""
         old_sanity = player.stats.sanity
         player.stats.sanity = max(0, player.stats.sanity - amount)
@@ -162,9 +155,7 @@ class PlayerManager:
 
         self.update_player(player)
 
-    def apply_corruption(
-        self, player: Player, amount: int, source: str = "unknown"
-    ) -> None:
+    def apply_corruption(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Apply corruption to a player with potential status effects."""
         old_corruption = player.stats.corruption
         player.stats.corruption = min(100, player.stats.corruption + amount)
@@ -183,9 +174,7 @@ class PlayerManager:
 
         self.update_player(player)
 
-    def gain_occult_knowledge(
-        self, player: Player, amount: int, source: str = "unknown"
-    ) -> None:
+    def gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Gain occult knowledge with potential sanity loss."""
         player.stats.occult_knowledge = min(100, player.stats.occult_knowledge + amount)
 
@@ -198,14 +187,10 @@ class PlayerManager:
 
     def heal_player(self, player: Player, amount: int) -> None:
         """Heal a player's health."""
-        player.stats.current_health = min(
-            player.stats.max_health, player.stats.current_health + amount
-        )
+        player.stats.current_health = min(player.stats.max_health, player.stats.current_health + amount)
         self.update_player(player)
 
-    def damage_player(
-        self, player: Player, amount: int, damage_type: str = "physical"
-    ) -> None:
+    def damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
         """Damage a player's health."""
         player.stats.current_health = max(0, player.stats.current_health - amount)
 
@@ -234,15 +219,9 @@ class PlayerManager:
                     self.damage_player(player, effect.intensity, "poison")
                 elif effect.effect_type == StatusEffectType.TREMBLING:
                     # Trembling reduces dexterity temporarily
-                    player.stats.dexterity = max(
-                        1, player.stats.dexterity - effect.intensity
-                    )
+                    player.stats.dexterity = max(1, player.stats.dexterity - effect.intensity)
 
             # Remove expired effects
-            player.status_effects = [
-                effect
-                for effect in player.status_effects
-                if effect.is_active(current_tick)
-            ]
+            player.status_effects = [effect for effect in player.status_effects if effect.is_active(current_tick)]
 
             self.update_player(player)
