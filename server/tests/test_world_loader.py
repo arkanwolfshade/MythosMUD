@@ -17,8 +17,6 @@ def test_load_rooms():
 
 def test_loader_as_script(capsys):
     """Test that world_loader can be run as a script."""
-    from world_loader import load_rooms
-
     rooms = load_rooms()
     print(f"Loaded {len(rooms)} rooms:")
     for room_id, room in rooms.items():

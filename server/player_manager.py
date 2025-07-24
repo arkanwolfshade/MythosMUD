@@ -7,6 +7,18 @@ import random
 
 
 class PlayerManager:
+    def save_player(self, player):
+        """Serialize a player to a JSON file in the ./players folder."""
+        player_data = player.__dict__.copy()
+        # If player.stats is an object, serialize its __dict__
+        if hasattr(player_data.get("stats"), "__dict__"):
+            player_data["stats"] = player_data["stats"].__dict__
+        players_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "players")
+        os.makedirs(players_dir, exist_ok=True)
+        file_path = os.path.join(players_dir, f"{player.name}.json")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(player_data, f, indent=2)
+
     """Manages player data persistence and operations."""
 
     def __init__(self, data_dir: str = "data"):

@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 import tempfile
 import os
 from server.player_manager import PlayerManager
@@ -74,7 +75,9 @@ def test_save_player(player_manager):
     """Test saving a player to the file."""
     player = player_manager.create_player("TestPlayer")
     player.stats.strength = 10  # Modify a stat
-    player_manager.save_player(player)
+    with patch.object(player_manager, "save_player") as mock_save:
+        player_manager.save_player(player)
+        mock_save.assert_called_once_with(player)
 
     # Create a new manager instance to test loading
     new_manager = PlayerManager(data_dir=player_manager.data_dir)
