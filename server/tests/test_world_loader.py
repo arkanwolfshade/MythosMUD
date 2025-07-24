@@ -1,4 +1,4 @@
-from world_loader import load_rooms
+from server.world_loader import load_rooms
 import os
 
 

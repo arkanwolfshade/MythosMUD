@@ -1,7 +1,7 @@
 import pytest
 import tempfile
 import os
-from player_manager import PlayerManager
+from server.player_manager import PlayerManager
 from models import Stats
 
 
