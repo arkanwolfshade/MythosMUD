@@ -2,7 +2,7 @@ import json
 import os
 from typing import Dict, Optional, List
 from datetime import datetime
-from models import Player, Stats, StatusEffect, StatusEffectType
+from server.models import Player, Stats, StatusEffect, StatusEffectType
 import random
 
 
