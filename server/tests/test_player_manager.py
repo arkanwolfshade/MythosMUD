@@ -3,7 +3,7 @@ from unittest.mock import patch
 import tempfile
 import os
 from server.player_manager import PlayerManager
-from server.models import Stats
+from server.models import Stats, StatusEffect, StatusEffectType
 
 
 @pytest.fixture
@@ -100,3 +100,76 @@ def test_delete_non_existent_player(player_manager):
     player_manager.delete_player(non_existent_id)
     # No exception should be raised, and the player manager state should remain consistent
     assert len(player_manager.players) == 0
+
+
+def test_get_player_by_name_and_list_players(player_manager):
+    player = player_manager.create_player("Alice")
+    found = player_manager.get_player_by_name("Alice")
+    assert found is not None
+    assert found.name == "Alice"
+    players = player_manager.list_players()
+    assert player in players
+
+
+def test_apply_sanity_loss_and_status_effects(player_manager):
+    player = player_manager.create_player("SanityTest")
+    player.stats.sanity = 60
+    player_manager.apply_sanity_loss(player, 15)
+    assert player.stats.sanity == 45
+    player_manager.apply_sanity_loss(player, 30)
+    assert player.stats.sanity == 15
+    # Should have paranoid and hallucinating effects
+    effect_types = [e.effect_type for e in player.status_effects]
+    assert StatusEffectType.PARANOID in effect_types
+    assert StatusEffectType.HALLUCINATING in effect_types
+    player_manager.apply_sanity_loss(player, 20)
+    assert player.stats.sanity == 0
+    effect_types = [e.effect_type for e in player.status_effects]
+    assert StatusEffectType.INSANE in effect_types
+
+
+def test_apply_fear_and_corruption(player_manager):
+    player = player_manager.create_player("FearCorruptTest")
+    player.stats.fear = 70
+    player_manager.apply_fear(player, 10)
+    assert player.stats.fear == 80
+    effect_types = [e.effect_type for e in player.status_effects]
+    assert StatusEffectType.TREMBLING in effect_types
+    player.stats.corruption = 45
+    player_manager.apply_corruption(player, 10)
+    assert player.stats.corruption == 55
+    effect_types = [e.effect_type for e in player.status_effects]
+    assert StatusEffectType.CORRUPTED in effect_types
+
+
+def test_gain_occult_knowledge(player_manager):
+    player = player_manager.create_player("OccultTest")
+    player.stats.occult_knowledge = 10
+    player.stats.sanity = 50
+    player_manager.gain_occult_knowledge(player, 20, source="tome")
+    assert player.stats.occult_knowledge == 30
+    assert player.stats.sanity == 40
+
+
+def test_heal_and_damage_player(player_manager):
+    player = player_manager.create_player("HealthTest")
+    player.stats.current_health = 50
+    player_manager.heal_player(player, 30)
+    assert player.stats.current_health == min(player.stats.max_health, 80)
+    player_manager.damage_player(player, 20)
+    assert player.stats.current_health == min(player.stats.max_health, 60)
+    player_manager.damage_player(player, 10, damage_type="poison")
+    effect_types = [e.effect_type for e in player.status_effects]
+    assert StatusEffectType.POISONED in effect_types
+
+
+def test_process_status_effects(player_manager):
+    player = player_manager.create_player("EffectTest")
+    # Add poison and trembling effects
+    player.add_status_effect(StatusEffect(effect_type=StatusEffectType.POISONED, duration=2, intensity=2))
+    player.add_status_effect(StatusEffect(effect_type=StatusEffectType.TREMBLING, duration=2, intensity=2))
+    player.stats.dexterity = 10
+    player_manager.process_status_effects(current_tick=1)
+    # Poison should reduce health, trembling should reduce dexterity
+    assert player.stats.current_health < player.stats.max_health
+    assert player.stats.dexterity < 10

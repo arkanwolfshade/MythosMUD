@@ -44,3 +44,16 @@ def test_missing_rooms_dir(tmp_path):
     mock_module.load_rooms = mock_load_rooms
     rooms = mock_module.load_rooms()
     assert rooms == {}
+
+
+def test_corrupted_room_file(tmp_path):
+    # Create a zone and a corrupted room file
+    zone_dir = tmp_path / "arkham"
+    zone_dir.mkdir()
+    bad_file = zone_dir / "bad_room.json"
+    bad_file.write_text("{ not: valid json }", encoding="utf-8")
+    import server.world_loader as wl
+    wl.ROOMS_BASE_PATH = str(tmp_path)
+    # Should not raise, should print warning and skip
+    rooms = wl.load_rooms()
+    assert isinstance(rooms, dict)
