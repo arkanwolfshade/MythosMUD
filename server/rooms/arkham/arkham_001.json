@@ -1,17 +1,17 @@
 {
   "id": "arkham_001",
   "name": "Arkham Town Square",
-  "description": "You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "description": "1 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
   "zone": "arkham",
   "exits": {
     "north": "arkham_002",
-    "south": null,
-    "east": null,
-    "west": null,
-    "up": null,
-    "down": null
+    "south": "arkham_004",
+    "east": "arkham_005",
+    "west": "arkham_003",
+    "up": "arkham_006",
+    "down": "arkham_007"
   },
   "field1": null,
   "field2": null,
   "field3": null
-} 
+}
