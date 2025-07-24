@@ -6,32 +6,30 @@ from server.player_manager import PlayerManager
 from server.models import Player
 from typing import List
 from server.auth import router as auth_router
+from contextlib import asynccontextmanager
 
-app = FastAPI()
-
-app.include_router(auth_router)
 
 TICK_INTERVAL = 1.0  # seconds
 
 
-@app.on_event("startup")
-async def start_game_tick_loop():
-    # Load all rooms at startup and store in app state
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
     app.state.rooms = load_rooms()
-
-    # Initialize player manager
     app.state.player_manager = PlayerManager()
+    asyncio.create_task(game_tick_loop(app))
+    yield
+    # (Optional) Add shutdown logic here
 
-    asyncio.create_task(game_tick_loop())
+
+app = FastAPI(lifespan=lifespan)
+app.include_router(auth_router)
 
 
-async def game_tick_loop():
+async def game_tick_loop(app: FastAPI):
     tick_count = 0
     while True:
-        # Process status effects for all players
         app.state.player_manager.process_status_effects(tick_count)
-
-        # Placeholder: Insert more game logic here (combat, NPCs, etc.)
         logging.info(f"Game tick {tick_count}!")
         tick_count += 1
         await asyncio.sleep(TICK_INTERVAL)
