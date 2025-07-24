@@ -2,7 +2,7 @@ import pytest
 import tempfile
 import os
 from server.player_manager import PlayerManager
-from models import Stats
+from server.models import Stats
 
 
 @pytest.fixture
