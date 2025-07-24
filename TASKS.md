@@ -1,7 +1,10 @@
 # 📝 MythosMUD – Task Breakdown & Milestones
 
-This document organizes development tasks into milestones for building MythosMUD.
-Tasks are high-level and will be refined as the project progresses.
+> **Development Discipline Checklist:**
+> - [ ] Write/update tests before implementing features (TDD)
+> - [ ] Mark tasks as complete in TASKS.md as soon as they are done
+> - [ ] Commit to git after each feature or fix is complete
+> - [ ] Keep this file and PLANNING.md in sync with actual progress
 
 ---
 
@@ -29,7 +32,11 @@ Tasks are high-level and will be refined as the project progresses.
 - [x] Implement player and NPC data models
 - [x] Set up database schema and persistence layer (JSON-based for now)
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
-- [ ] Implement player authentication (invite-only)
+    - [x] Command endpoint and parser implemented
+    - [x] `look`, `go`, `say` logic implemented
+    - [x] Input scrubbing and edge case handling
+    - [ ] All tests passing for movement and look commands (in progress)
+- [x] Implement player authentication (invite-only)
   - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
   - [ ] Use SQLite for MVP database for players
 
@@ -39,6 +46,9 @@ Tasks are high-level and will be refined as the project progresses.
 
 - [ ] Set up web-based terminal UI (React + xterm.js or similar)
 - [ ] Implement real-time communication (WebSockets)
+  - [ ] Add WebSocket support for real-time command handling (needed for node client interface)
+- [ ] Use test-driven development (TDD) for new features: write tests first, cover edge cases, and iterate code until tests pass
+- [ ] Implement a room pathing validator utility to check for path consistency and highlight one-way or non-physical exits (with support for special cases)
 - [ ] Display text output and accept user commands
 - [ ] Add command history, scrollback, and basic styling
 - [ ] Render ASCII navigation map
