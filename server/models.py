@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, computed_field
 from typing import Dict, List, Optional, Any
 from enum import Enum
 import uuid
-from datetime import datetime
+from datetime import datetime, UTC
 
 
 class AttributeType(str, Enum):
@@ -40,7 +40,7 @@ class StatusEffect(BaseModel):
     duration: int = Field(ge=0, description="Duration in game ticks (0 = permanent)")
     intensity: int = Field(ge=1, le=10, description="Effect intensity from 1-10")
     source: Optional[str] = Field(None, description="Source of the effect (item, spell, etc.)")
-    applied_at: datetime = Field(default_factory=datetime.utcnow)
+    applied_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def is_active(self, current_tick: int) -> bool:
         """Check if the status effect is still active."""
@@ -146,8 +146,8 @@ class Player(BaseModel):
     inventory: List[InventoryItem] = Field(default_factory=list)
     status_effects: List[StatusEffect] = Field(default_factory=list)
     current_room_id: str = Field(default="arkham_001")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    last_active: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    last_active: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Game state
     experience_points: int = Field(ge=0, default=0)
@@ -197,7 +197,7 @@ class Player(BaseModel):
 
     def update_last_active(self) -> None:
         """Update the last active timestamp."""
-        self.last_active = datetime.utcnow()
+        self.last_active = datetime.now(UTC)
 
     def can_carry_weight(self, additional_weight: float) -> bool:
         """Check if the player can carry additional weight."""
