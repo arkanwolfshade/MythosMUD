@@ -27,7 +27,8 @@ Tasks are high-level and will be refined as the project progresses.
 - [x] Scaffold Python loader to read all room files from zone directories
 - [x] Integrate room/world loader into FastAPI app and expose `/rooms/{room_id}` endpoint
 - [x] Implement player and NPC data models
-- [ ] Set up database schema and persistence layer
+- [x] Set up database schema and persistence layer (JSON-based for now)
+
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
 - [ ] Implement player authentication (invite-only)
 - [ ] Create additional hand-authored zones (Arkham, etc.)

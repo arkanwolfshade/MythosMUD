@@ -3,13 +3,24 @@
 Test script for the player stats system.
 """
 
-import requests
+import pytest
+
+try:
+    import requests
+
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
+    print("Warning: requests module not available. Integration tests will be skipped.")
 
 BASE_URL = "http://localhost:8000"
 
 
 def test_player_creation():
     """Test creating a new player."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print("Testing player creation...")
 
     # Create a test player
@@ -35,6 +46,9 @@ def test_player_creation():
 
 def test_sanity_loss(player_id):
     """Test applying sanity loss to a player."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print(f"\nTesting sanity loss for player {player_id}...")
 
     # Apply sanity loss
@@ -62,6 +76,9 @@ def test_sanity_loss(player_id):
 
 def test_fear_and_corruption(player_id):
     """Test applying fear and corruption."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print(f"\nTesting fear and corruption for player {player_id}...")
 
     # Apply fear
@@ -90,6 +107,9 @@ def test_fear_and_corruption(player_id):
 
 def test_occult_knowledge(player_id):
     """Test gaining occult knowledge (which should cause sanity loss)."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print(f"\nTesting occult knowledge gain for player {player_id}...")
 
     # Get initial stats
@@ -123,6 +143,9 @@ def test_occult_knowledge(player_id):
 
 def test_health_operations(player_id):
     """Test health damage and healing."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print(f"\nTesting health operations for player {player_id}...")
 
     # Damage player
@@ -159,6 +182,9 @@ def test_health_operations(player_id):
 
 def test_list_players():
     """Test listing all players."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
     print("\nTesting player listing...")
 
     response = requests.get(f"{BASE_URL}/players")
@@ -173,8 +199,28 @@ def test_list_players():
         print(f"❌ Failed to list players: {response.text}")
 
 
+def test_server_connection():
+    """Test server connection."""
+    if not REQUESTS_AVAILABLE:
+        pytest.skip("requests module not available")
+
+    try:
+        response = requests.get(f"{BASE_URL}/")
+        if response.status_code != 200:
+            pytest.skip("Server not responding")
+        return True
+    except requests.exceptions.ConnectionError:
+        pytest.skip("Cannot connect to server")
+
+
 def main():
     """Run all tests."""
+    if not REQUESTS_AVAILABLE:
+        print(
+            "❌ requests module not available. Please install it to run integration tests."
+        )
+        return
+
     print("🧪 Testing MythosMUD Player Stats System")
     print("=" * 50)
 

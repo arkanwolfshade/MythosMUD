@@ -42,7 +42,8 @@ class PlayerManager:
         """Save all players to the data file."""
         try:
             players_data = {
-                player_id: player.dict() for player_id, player in self.players.items()
+                player_id: player.model_dump()
+                for player_id, player in self.players.items()
             }
             with open(self.players_file, "w", encoding="utf-8") as f:
                 json.dump(players_data, f, indent=2, default=str)

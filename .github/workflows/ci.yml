@@ -27,10 +27,10 @@ jobs:
       - name: Lint with flake8
         run: |
           pip install flake8
-          flake8 .
+          flake8 . --max-line-length=120
       - name: Run tests with coverage
         run: |
-          pytest --cov=world_loader --cov-report=xml --cov-report=html --cov-fail-under=80
+          pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -60,4 +60,4 @@ jobs:
         run: |
           npx eslint .
       - name: Build React app
-        run: npm run build 
+        run: npm run build

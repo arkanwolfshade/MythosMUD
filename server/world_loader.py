@@ -7,18 +7,33 @@ ROOMS_BASE_PATH = os.path.join(os.path.dirname(__file__), "rooms")
 
 def load_rooms() -> Dict[str, Any]:
     rooms = {}
-    for zone in os.listdir(ROOMS_BASE_PATH):
-        zone_path = os.path.join(ROOMS_BASE_PATH, zone)
-        if not os.path.isdir(zone_path):
-            continue
-        for filename in os.listdir(zone_path):
-            if filename.endswith(".json"):
-                file_path = os.path.join(zone_path, filename)
-                with open(file_path, "r", encoding="utf-8") as f:
-                    room = json.load(f)
-                    room_id = room.get("id")
-                    if room_id:
-                        rooms[room_id] = room
+
+    # Check if rooms directory exists
+    if not os.path.exists(ROOMS_BASE_PATH):
+        return rooms
+
+    try:
+        for zone in os.listdir(ROOMS_BASE_PATH):
+            zone_path = os.path.join(ROOMS_BASE_PATH, zone)
+            if not os.path.isdir(zone_path):
+                continue
+            for filename in os.listdir(zone_path):
+                if filename.endswith(".json"):
+                    file_path = os.path.join(zone_path, filename)
+                    try:
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            room = json.load(f)
+                            room_id = room.get("id")
+                            if room_id:
+                                rooms[room_id] = room
+                    except (json.JSONDecodeError, IOError) as e:
+                        # Log error but continue loading other files
+                        print(f"Warning: Could not load room file {file_path}: {e}")
+                        continue
+    except OSError as e:
+        # Handle permission errors or other OS issues
+        print(f"Warning: Could not access rooms directory {ROOMS_BASE_PATH}: {e}")
+
     return rooms
 
 
