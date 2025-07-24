@@ -28,10 +28,10 @@ Tasks are high-level and will be refined as the project progresses.
 - [x] Integrate room/world loader into FastAPI app and expose `/rooms/{room_id}` endpoint
 - [x] Implement player and NPC data models
 - [x] Set up database schema and persistence layer (JSON-based for now)
-
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
 - [ ] Implement player authentication (invite-only)
-- [ ] Create additional hand-authored zones (Arkham, etc.)
+  - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
+  - [ ] Use SQLite for MVP database for players
 
 ---
 
@@ -69,6 +69,7 @@ Tasks are high-level and will be refined as the project progresses.
 
 ## Milestone 6: Content & Polish
 
+- [ ] Create additional hand-authored zones (Arkham, etc.)
 - [ ] Expand world with additional zones (Innsmouth, Dunwich, Kingsport, remote areas)
 - [ ] Add more NPCs, mobs, and quests
 - [ ] Polish UI/UX (client enhancements, accessibility)

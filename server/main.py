@@ -1,12 +1,15 @@
 from fastapi import FastAPI, HTTPException
 import asyncio
 import logging
-from world_loader import load_rooms
-from player_manager import PlayerManager
-from models import Player
+from server.world_loader import load_rooms
+from server.player_manager import PlayerManager
+from server.models import Player
 from typing import List
+from server.auth import router as auth_router
 
 app = FastAPI()
+
+app.include_router(auth_router)
 
 TICK_INTERVAL = 1.0  # seconds
 
