@@ -1,4 +1,4 @@
-from models import Stats
+from .models import Stats
 
 
 def test_stats_creation():
