@@ -153,6 +153,7 @@ def test_gain_occult_knowledge(player_manager):
 
 def test_heal_and_damage_player(player_manager):
     player = player_manager.create_player("HealthTest")
+    player.stats.constitution = 10  # Set predictable max_health
     player.stats.current_health = 50
     player_manager.heal_player(player, 30)
     assert player.stats.current_health == min(player.stats.max_health, 80)
@@ -165,11 +166,31 @@ def test_heal_and_damage_player(player_manager):
 
 def test_process_status_effects(player_manager):
     player = player_manager.create_player("EffectTest")
+    player.stats.constitution = 10  # Set predictable max_health
+    player.stats.current_health = 50
+    player.stats.dexterity = 10
     # Add poison and trembling effects
     player.add_status_effect(StatusEffect(effect_type=StatusEffectType.POISONED, duration=2, intensity=2))
     player.add_status_effect(StatusEffect(effect_type=StatusEffectType.TREMBLING, duration=2, intensity=2))
-    player.stats.dexterity = 10
     player_manager.process_status_effects(current_tick=1)
     # Poison should reduce health, trembling should reduce dexterity
-    assert player.stats.current_health < player.stats.max_health
+    assert player.stats.current_health < 50
     assert player.stats.dexterity < 10
+
+
+def test_load_sample_player():
+    import json
+    from server.models import Player
+
+    sample_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "players", "sample_player.json"))
+    with open(sample_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    player = Player(**data)
+    assert player.name == "SamplePlayer"
+    assert player.stats.strength == 12
+    assert player.stats.dexterity == 14
+    assert player.stats.constitution == 13
+    assert player.stats.intelligence == 15
+    assert player.stats.sanity == 90
+    assert player.experience_points == 100
+    assert player.level == 2

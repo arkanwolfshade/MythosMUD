@@ -53,6 +53,7 @@ def test_corrupted_room_file(tmp_path):
     bad_file = zone_dir / "bad_room.json"
     bad_file.write_text("{ not: valid json }", encoding="utf-8")
     import server.world_loader as wl
+
     wl.ROOMS_BASE_PATH = str(tmp_path)
     # Should not raise, should print warning and skip
     rooms = wl.load_rooms()

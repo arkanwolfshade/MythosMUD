@@ -1,0 +1,25 @@
+{
+  "id": "test-id-123",
+  "name": "SamplePlayer",
+  "stats": {
+    "strength": 12,
+    "dexterity": 14,
+    "constitution": 13,
+    "intelligence": 15,
+    "wisdom": 10,
+    "charisma": 8,
+    "sanity": 90,
+    "occult_knowledge": 5,
+    "fear": 2,
+    "corruption": 0,
+    "cult_affiliation": 0,
+    "current_health": 130
+  },
+  "inventory": [],
+  "status_effects": [],
+  "current_room_id": "arkham_001",
+  "created_at": "2025-07-24T00:00:00Z",
+  "last_active": "2025-07-24T00:00:00Z",
+  "experience_points": 100,
+  "level": 2
+}
