@@ -2,7 +2,9 @@ import os
 import json
 from typing import Dict, Any
 
-ROOMS_BASE_PATH = os.path.join(os.path.dirname(__file__), "rooms")
+ROOMS_BASE_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "data", "rooms")
+)
 
 
 def load_rooms() -> Dict[str, Any]:

@@ -4,8 +4,8 @@
 
 ## **1. Overview**
 
-**Project Name:** *MythosMUD*  
-**Author:** Mark Henry  
+**Project Name:** *MythosMUD*
+**Author:** Mark Henry
 **Purpose:** A personal passion project for creating a text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulhu Mythos. Intended to engage the developer’s teenage son and close friends in collaborative storytelling and programming.
 
 ---

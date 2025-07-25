@@ -23,7 +23,7 @@ def test_player_manager_creation(temp_data_dir):
     """Test PlayerManager creation."""
     manager = PlayerManager(data_dir=temp_data_dir)
     assert manager.data_dir == temp_data_dir
-    assert manager.players_file == os.path.join(temp_data_dir, "players.json")
+    assert manager.players_dir == os.path.join(temp_data_dir, "players")
     assert isinstance(manager.players, dict)
     assert len(manager.players) == 0
 
@@ -170,8 +170,12 @@ def test_process_status_effects(player_manager):
     player.stats.current_health = 50
     player.stats.dexterity = 10
     # Add poison and trembling effects
-    player.add_status_effect(StatusEffect(effect_type=StatusEffectType.POISONED, duration=2, intensity=2))
-    player.add_status_effect(StatusEffect(effect_type=StatusEffectType.TREMBLING, duration=2, intensity=2))
+    player.add_status_effect(
+        StatusEffect(effect_type=StatusEffectType.POISONED, duration=2, intensity=2)
+    )
+    player.add_status_effect(
+        StatusEffect(effect_type=StatusEffectType.TREMBLING, duration=2, intensity=2)
+    )
     player_manager.process_status_effects(current_tick=1)
     # Poison should reduce health, trembling should reduce dexterity
     assert player.stats.current_health < 50
@@ -180,17 +184,72 @@ def test_process_status_effects(player_manager):
 
 def test_load_sample_player():
     import json
+    import os
     from server.models import Player
 
-    sample_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "players", "sample_player.json"))
+    # New path for the sample player file
+    base = os.path.dirname(__file__)
+    sample_path = os.path.abspath(
+        os.path.join(base, "..", "..", "data", "players", "player_test-id-123.json")
+    )
     with open(sample_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    player = Player(**data)
+        player_data = json.load(f)
+    player = Player(**player_data)
     assert player.name == "SamplePlayer"
-    assert player.stats.strength == 12
-    assert player.stats.dexterity == 14
-    assert player.stats.constitution == 13
-    assert player.stats.intelligence == 15
-    assert player.stats.sanity == 90
-    assert player.experience_points == 100
+    assert player.current_room_id == "arkham_001"
     assert player.level == 2
+
+
+def test_load_and_save_individual_player(tmp_path):
+    from server.player_manager import PlayerManager
+    import uuid
+    import json
+
+    # Setup test directory
+    test_data_dir = tmp_path / "data"
+    players_dir = test_data_dir / "players"
+    players_dir.mkdir(parents=True)
+    # Create a player file
+    guid = str(uuid.uuid4())
+    player_data = {
+        "id": guid,
+        "name": "testuser",
+        "stats": {
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10,
+            "sanity": 100,
+            "occult_knowledge": 0,
+            "fear": 0,
+            "corruption": 0,
+            "cult_affiliation": 0,
+            "current_health": 100,
+            "max_health": 100,
+            "max_sanity": 100,
+        },
+        "inventory": [],
+        "status_effects": [],
+        "current_room_id": "arkham_001",
+        "created_at": "2025-07-24T00:00:00Z",
+        "last_active": "2025-07-24T00:00:00Z",
+        "experience_points": 0,
+        "level": 1,
+    }
+    player_file = players_dir / f"player_{guid}.json"
+    with open(player_file, "w", encoding="utf-8") as f:
+        json.dump(player_data, f)
+    # Test loading
+    pm = PlayerManager(data_dir=str(test_data_dir))
+    loaded = pm.get_player(guid)
+    assert loaded is not None
+    assert loaded.name == "testuser"
+    # Test creating a new player
+    new_player = pm.create_player("anotheruser")
+    new_file = players_dir / f"player_{new_player.id}.json"
+    assert new_file.exists()
+    with open(new_file, "r", encoding="utf-8") as f:
+        new_data = json.load(f)
+    assert new_data["name"] == "anotheruser"

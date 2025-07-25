@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build
+.PHONY: help clean lint format test coverage build install run
 
 help:
 	@echo "Available targets:"
@@ -16,11 +16,11 @@ clean:
 	rm -rf client/dist client/node_modules
 
 lint:
-	cd server && flake8
+	cd server && ruff check .
 	cd client && npx eslint .
 
 format:
-	cd server && black .
+	cd server && ruff format .
 	cd client && npx prettier --write .
 
 test:
@@ -32,3 +32,14 @@ coverage:
 
 build:
 	cd client && npm run build
+
+install:
+	python -m venv server/venv
+	server/venv/Scripts/pip install --upgrade pip
+	server/venv/Scripts/pip install -r server/requirements.txt
+	cd client && nvm install && nvm use && npm install
+	pip install pre-commit
+	pre-commit install
+
+run:
+	cd server && venv/Scripts/python main.py

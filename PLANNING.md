@@ -103,4 +103,7 @@ _This document will be updated as decisions are made and the project evolves._
 - The player manager and room data are patched in tests to ensure consistent, fast, and side-effect-free testing.
 - The 'look' and 'go' commands are implemented with real logic, including movement and room description output.
 - The test suite covers all edge cases, including command injection, whitespace, case insensitivity, and movement.
-- Next steps: update tests to expect actual room names/descriptions for successful look/move, and continue fleshing out gameplay commands and features.
+- Duplicate test function for invalid direction was removed to avoid confusion.
+- The mock room graph was visualized for clarity.
+- Two movement-related tests (`test_go_valid_direction` and `test_go_blocked_exit`) are still failing due to player state not persisting as expected in the test context; this is the next debugging target.
+- Next steps: debug/fix player state persistence in tests, then continue fleshing out gameplay commands and features.

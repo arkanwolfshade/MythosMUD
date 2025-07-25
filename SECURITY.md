@@ -28,4 +28,4 @@ We will review and address all reports as quickly as possible.
 ## Additional Notes
 
 - This project is not intended for public deployment or use at this time.
-- Security policies will be updated as the project matures and/or is prepared for broader release. 
+- Security policies will be updated as the project matures and/or is prepared for broader release.

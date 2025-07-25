@@ -35,7 +35,11 @@
   - [x] Command endpoint and parser implemented
   - [x] `look`, `go`, `say` logic implemented
   - [x] Input scrubbing and edge case handling
+  - [x] Duplicate test function for invalid direction removed
+  - [x] Mock room graph visualized for clarity
+  - [x] All command handler tests use mock data for isolation
   - [ ] All tests passing for movement and look commands (in progress)
+    - [ ] Debug/fix player state persistence in tests (next step)
 - [x] Implement player authentication (invite-only)
   - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
   - [ ] Use SQLite for MVP database for players
