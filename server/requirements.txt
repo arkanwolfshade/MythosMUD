@@ -6,3 +6,7 @@ pytest==8.4.1
 pytest-cov==6.2.1
 debugpy==1.8.1
 ruff==0.4.4
+
+httpx==0.24.0
+
+flake8==7.0.0
