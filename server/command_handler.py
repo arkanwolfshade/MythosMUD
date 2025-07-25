@@ -60,9 +60,13 @@ def handle_command(
 
     app = request.app if request else None
     if cmd == "look":
-        if not app or not hasattr(app.state, "rooms"):
+        if not app or not hasattr(app.state, "rooms") or not hasattr(app.state, "player_manager"):
             return {"result": "You see nothing special."}
-        room_id = current_user.get("current_room_id", "arkham_001")
+        player_manager = app.state.player_manager
+        player = player_manager.get_player_by_name(current_user["username"])
+        if not player:
+            return {"result": "You see nothing special."}
+        room_id = player.current_room_id
         room = app.state.rooms.get(room_id)
         if not room:
             return {"result": "You see nothing special."}
@@ -95,7 +99,11 @@ def handle_command(
         if not args:
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
-        room_id = current_user.get("current_room_id", "arkham_001")
+        player_manager = app.state.player_manager
+        player = player_manager.get_player_by_name(current_user["username"])
+        if not player:
+            return {"result": "You can't go that way"}
+        room_id = player.current_room_id
         room = app.state.rooms.get(room_id)
         if not room:
             return {"result": "You can't go that way"}
@@ -107,10 +115,6 @@ def handle_command(
         if not target_room:
             return {"result": "You can't go that way"}
         # Move the player: update and persist current_room_id
-        player_manager = app.state.player_manager
-        player = player_manager.get_player_by_name(current_user["username"])
-        if not player:
-            return {"result": "You can't go that way"}
         player.current_room_id = target_room_id
         player_manager.update_player(player)
         # Update current_user for this request (not persistent for JWT, but for immediate look)

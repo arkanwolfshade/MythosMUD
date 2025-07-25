@@ -275,14 +275,19 @@ def test_go_invalid_direction(auth_token, test_client):
 
 
 def test_go_blocked_exit(auth_token, test_client):
+    pm = test_client.app.state.player_manager
     # Move north first
-    post_command(test_client, auth_token, "go north")
-    # Try to go north again, which should be blocked (but the room has a north exit, so it will succeed)
-    resp = post_command(test_client, auth_token, "go north")
-    assert resp.status_code == 200
+    resp1 = post_command(test_client, auth_token, "go north")
+    print(f"After first go north: {pm.get_player_by_name('cmduser').current_room_id}")
+    print(f"First go north result: {resp1.json()['result']}")
+    # Try to go north again
+    resp2 = post_command(test_client, auth_token, "go north")
+    print(f"After second go north: {pm.get_player_by_name('cmduser').current_room_id}")
+    print(f"Second go north result: {resp2.json()['result']}")
+    assert resp2.status_code == 200
     # The player should now be in University Quad
-    assert resp.json()["result"].startswith("University Quad")
-    assert "A broad green lawn surrounded by academic halls" in resp.json()["result"]
+    assert resp2.json()["result"].startswith("University Quad")
+    assert "A broad green lawn surrounded by academic halls" in resp2.json()["result"]
 
 
 def test_print_rooms_and_player_manager(test_client):
@@ -349,3 +354,25 @@ def test_no_file_io(monkeypatch):
     pm = MockPlayerManager()
     pm.get_player_by_name("cmduser")
     # If no AssertionError, test passes
+
+
+def test_player_room_persistence_after_go(auth_token, test_client):
+    pm = test_client.app.state.player_manager
+    player = pm.get_player_by_name("cmduser")
+    print(f"Before move: {player.current_room_id}")  # Should be arkham_001
+
+    # Move north
+    resp = post_command(test_client, auth_token, "go north")
+    assert resp.status_code == 200
+    player = pm.get_player_by_name("cmduser")
+    print(f"After go north: {player.current_room_id}")  # Should be arkham_002
+
+    # Issue look
+    resp2 = post_command(test_client, auth_token, "look")
+    assert resp2.status_code == 200
+    player = pm.get_player_by_name("cmduser")
+    print(f"After look: {player.current_room_id}")  # Should still be arkham_002
+
+    # Check the result of look
+    result2 = resp2.json()["result"]
+    print(f"Look result: {result2}")
