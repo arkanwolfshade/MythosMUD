@@ -40,10 +40,12 @@ def register_user(
     # Load invites
     try:
         # Validate the invites_file path
-        base_path = os.path.dirname(INVITES_FILE)
-        normalized_path = os.path.normpath(invites_file)
+        base_path = os.path.realpath(os.path.dirname(INVITES_FILE))
+        normalized_path = os.path.realpath(invites_file)
         if not normalized_path.startswith(base_path):
-            raise HTTPException(status_code=400, detail="Invalid file path.")
+            normalized_path = INVITES_FILE  # Fallback to default
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
 
         with open(normalized_path, "r", encoding="utf-8") as f:
             invites = json.load(f)
@@ -66,10 +68,12 @@ def register_user(
     # Load users
     try:
         # Validate the users_file path
-        base_path = os.path.dirname(USERS_FILE)
-        normalized_path = os.path.normpath(users_file)
+        base_path = os.path.realpath(os.path.dirname(USERS_FILE))
+        normalized_path = os.path.realpath(users_file)
         if not normalized_path.startswith(base_path):
-            raise HTTPException(status_code=400, detail="Invalid file path.")
+            normalized_path = USERS_FILE  # Fallback to default
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
 
         with open(normalized_path, "r", encoding="utf-8") as f:
             users = json.load(f)
