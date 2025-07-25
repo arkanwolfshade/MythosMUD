@@ -6,6 +6,7 @@ from server.player_manager import PlayerManager
 from server.models import Player
 from typing import List
 from server.auth import router as auth_router
+from server.command_handler import router as command_router
 from contextlib import asynccontextmanager
 
 
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
+app.include_router(command_router)
 
 
 async def game_tick_loop(app: FastAPI):

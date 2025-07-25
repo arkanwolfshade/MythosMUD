@@ -1,6 +1,6 @@
 # 🗺️ MythosMUD – Planning Document
 
-This document outlines the vision, high-level architecture, technology stack, and required tools for the MythosMUD project.  
+This document outlines the vision, high-level architecture, technology stack, and required tools for the MythosMUD project.
 If a decision is pending, it is marked as **TODO**.
 
 ---
@@ -93,4 +93,14 @@ If a decision is pending, it is marked as **TODO**.
 
 ---
 
-_This document will be updated as decisions are made and the project evolves._ 
+_This document will be updated as decisions are made and the project evolves._
+
+## SUMMARY (as of current session)
+
+- The authentication system is robust, JWT-based, and fully tested.
+- The /command endpoint supports 'look', 'look <direction>', 'go <direction>', and 'say', with comprehensive input validation and security.
+- Room data is loaded from static JSON files for the real app, but all command handler tests now use fully mocked room and player data for isolation and reliability.
+- The player manager and room data are patched in tests to ensure consistent, fast, and side-effect-free testing.
+- The 'look' and 'go' commands are implemented with real logic, including movement and room description output.
+- The test suite covers all edge cases, including command injection, whitespace, case insensitivity, and movement.
+- Next steps: update tests to expect actual room names/descriptions for successful look/move, and continue fleshing out gameplay commands and features.

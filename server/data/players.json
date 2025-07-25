@@ -1,0 +1,29 @@
+{
+  "5ddd3b0f-8db8-445b-9c78-8f5f5b5cdec7": {
+    "id": "5ddd3b0f-8db8-445b-9c78-8f5f5b5cdec7",
+    "name": "cmduser",
+    "stats": {
+      "strength": 18,
+      "dexterity": 12,
+      "constitution": 17,
+      "intelligence": 8,
+      "wisdom": 9,
+      "charisma": 13,
+      "sanity": 100,
+      "occult_knowledge": 0,
+      "fear": 0,
+      "corruption": 0,
+      "cult_affiliation": 0,
+      "current_health": 100,
+      "max_health": 170,
+      "max_sanity": 45
+    },
+    "inventory": [],
+    "status_effects": [],
+    "current_room_id": "arkham_001",
+    "created_at": "2025-07-24 14:43:24.542776+00:00",
+    "last_active": "2025-07-24 14:58:45.816223+00:00",
+    "experience_points": 0,
+    "level": 1
+  }
+}

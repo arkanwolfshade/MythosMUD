@@ -32,13 +32,14 @@
 - [x] Implement player and NPC data models
 - [x] Set up database schema and persistence layer (JSON-based for now)
 - [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
-    - [x] Command endpoint and parser implemented
-    - [x] `look`, `go`, `say` logic implemented
-    - [x] Input scrubbing and edge case handling
-    - [ ] All tests passing for movement and look commands (in progress)
+  - [x] Command endpoint and parser implemented
+  - [x] `look`, `go`, `say` logic implemented
+  - [x] Input scrubbing and edge case handling
+  - [ ] All tests passing for movement and look commands (in progress)
 - [x] Implement player authentication (invite-only)
   - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
   - [ ] Use SQLite for MVP database for players
+- [ ] Robust logging system with separate files for: system logs, player activity, communication channels - should be well structured for eventual ingestion into ELK stack
 
 ---
 
