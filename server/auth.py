@@ -39,7 +39,15 @@ def register_user(
 ):
     # Load invites
     try:
-        with open(invites_file, "r", encoding="utf-8") as f:
+        # Validate the invites_file path
+        base_path = os.path.realpath(os.path.dirname(INVITES_FILE))
+        normalized_path = os.path.realpath(invites_file)
+        if not normalized_path.startswith(base_path):
+            normalized_path = INVITES_FILE  # Fallback to default
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
             invites = json.load(f)
     except Exception:
         invites = []
@@ -59,7 +67,15 @@ def register_user(
 
     # Load users
     try:
-        with open(users_file, "r", encoding="utf-8") as f:
+        # Validate the users_file path
+        base_path = os.path.realpath(os.path.dirname(USERS_FILE))
+        normalized_path = os.path.realpath(users_file)
+        if not normalized_path.startswith(base_path):
+            normalized_path = USERS_FILE  # Fallback to default
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
+
+        with open(normalized_path, "r", encoding="utf-8") as f:
             users = json.load(f)
     except Exception:
         users = []
