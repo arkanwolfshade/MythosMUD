@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import json
@@ -34,9 +34,13 @@ class RegisterRequest(BaseModel):
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(
     req: RegisterRequest,
+    request: Request,
     users_file: str = Depends(get_users_file),
     invites_file: str = Depends(get_invites_file),
 ):
+    player_manager = request.app.state.player_manager
+    if player_manager.get_player_by_name(req.username):
+        raise HTTPException(status_code=409, detail="Username already exists")
     # Load invites
     try:
         # Validate the invites_file path
@@ -76,6 +80,7 @@ def register_user(
     except Exception:
         users = []
 
+    # Check for duplicate username before creating player
     if any(u["username"] == req.username for u in users):
         raise HTTPException(status_code=409, detail="Username already exists.")
 

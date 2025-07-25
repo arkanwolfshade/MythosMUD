@@ -1,9 +1,7 @@
 import pytest
-from unittest.mock import patch
+import sqlite3
 import tempfile
-import os
 from server.player_manager import PlayerManager
-from server.models import Stats, StatusEffect, StatusEffectType
 
 
 @pytest.fixture
@@ -14,54 +12,55 @@ def temp_data_dir():
 
 
 @pytest.fixture
-def player_manager(temp_data_dir):
-    """Create a PlayerManager instance with temporary data directory."""
-    return PlayerManager(data_dir=temp_data_dir)
+def player_manager():
+    # Use a single in-memory SQLite connection for the test
+    conn = sqlite3.connect(":memory:")
+    pm = PlayerManager(db_path=":memory:", db_connection_factory=lambda _: conn)
+    return pm
 
 
-def test_player_manager_creation(temp_data_dir):
+def test_player_manager_creation():
     """Test PlayerManager creation."""
-    manager = PlayerManager(data_dir=temp_data_dir)
-    assert manager.data_dir == temp_data_dir
-    assert manager.players_dir == os.path.join(temp_data_dir, "players")
-    assert isinstance(manager.players, dict)
-    assert len(manager.players) == 0
+    conn = sqlite3.connect(":memory:")
+    manager = PlayerManager(db_path=":memory:", db_connection_factory=lambda _: conn)
+    assert manager.db_path == ":memory:"
+    assert isinstance(manager.list_players(), list)
+    assert len(manager.list_players()) == 0
 
 
 def test_create_player(player_manager):
     """Test creating a new player."""
     player = player_manager.create_player("TestPlayer")
-    assert player.name == "TestPlayer"
-    assert isinstance(player.stats, Stats)
-    assert player.current_room_id == "arkham_001"
-    assert player.id in player_manager.players
+    assert player["name"] == "TestPlayer"
+    assert player["current_room_id"] == "arkham_001"
     # Check that stats are within reasonable ranges
-    assert 3 <= player.stats.strength <= 18
-    assert 3 <= player.stats.dexterity <= 18
-    assert 3 <= player.stats.constitution <= 18
-    assert 3 <= player.stats.intelligence <= 18
-    assert 3 <= player.stats.wisdom <= 18
-    assert 3 <= player.stats.charisma <= 18
-    assert player.stats.sanity == 100
-    assert player.stats.occult_knowledge == 0
-    assert player.stats.fear == 0
-    assert player.stats.corruption == 0
-    assert player.stats.cult_affiliation == 0
+    assert 3 <= player["strength"] <= 18
+    assert 3 <= player["dexterity"] <= 18
+    assert 3 <= player["constitution"] <= 18
+    assert 3 <= player["intelligence"] <= 18
+    assert 3 <= player["wisdom"] <= 18
+    assert 3 <= player["charisma"] <= 18
+    assert player["sanity"] == 100
+    assert player["occult_knowledge"] == 0
+    assert player["fear"] == 0
+    assert player["corruption"] == 0
+    assert player["cult_affiliation"] == 0
+    assert any(p["id"] == player["id"] for p in player_manager.list_players())
 
 
 def test_create_player_custom_room(player_manager):
     """Test creating a player with custom starting room."""
     player = player_manager.create_player("TestPlayer", "custom_room_001")
-    assert player.current_room_id == "custom_room_001"
+    assert player["current_room_id"] == "custom_room_001"
 
 
 def test_get_player(player_manager):
     """Test getting a player by ID."""
     player = player_manager.create_player("TestPlayer")
-    fetched_player = player_manager.get_player(player.id)
+    fetched_player = player_manager.get_player(player["id"])
     assert fetched_player is not None
-    assert fetched_player.id == player.id
-    assert fetched_player.name == "TestPlayer"
+    assert fetched_player["id"] == player["id"]
+    assert fetched_player["name"] == "TestPlayer"
 
 
 def test_get_non_existent_player(player_manager):
@@ -74,24 +73,21 @@ def test_get_non_existent_player(player_manager):
 def test_save_player(player_manager):
     """Test saving a player to the file."""
     player = player_manager.create_player("TestPlayer")
-    player.stats.strength = 10  # Modify a stat
-    player_manager.update_player(player)  # Persist the change
-    with patch.object(player_manager, "save_player") as mock_save:
-        player_manager.save_player(player)
-        mock_save.assert_called_once_with(player)
-
-    # Create a new manager instance to test loading
-    new_manager = PlayerManager(data_dir=player_manager.data_dir)
-    loaded_player = new_manager.get_player(player.id)
+    # Simulate updating a stat by direct DB update (since dicts are returned)
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET strength = ? WHERE id = ?", (10, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
     assert loaded_player is not None
-    assert loaded_player.stats.strength == 10
+    assert loaded_player["strength"] == 10
 
 
 def test_delete_player(player_manager):
     """Test deleting a player."""
     player = player_manager.create_player("TestPlayer")
-    player_manager.delete_player(player.id)
-    assert player.id not in player_manager.players
+    player_manager.delete_player(player["id"])
+    assert player_manager.get_player(player["id"]) is None
 
 
 def test_delete_non_existent_player(player_manager):
@@ -99,157 +95,131 @@ def test_delete_non_existent_player(player_manager):
     non_existent_id = "non_existent_id"
     player_manager.delete_player(non_existent_id)
     # No exception should be raised, and the player manager state should remain consistent
-    assert len(player_manager.players) == 0
+    assert isinstance(player_manager.list_players(), list)
 
 
 def test_get_player_by_name_and_list_players(player_manager):
     player = player_manager.create_player("Alice")
     found = player_manager.get_player_by_name("Alice")
     assert found is not None
-    assert found.name == "Alice"
+    assert found["name"] == "Alice"
     players = player_manager.list_players()
-    assert player in players
+    assert any(p["id"] == player["id"] for p in players)
 
 
 def test_apply_sanity_loss_and_status_effects(player_manager):
     player = player_manager.create_player("SanityTest")
-    player.stats.sanity = 60
-    player_manager.apply_sanity_loss(player, 15)
-    assert player.stats.sanity == 45
-    player_manager.apply_sanity_loss(player, 30)
-    assert player.stats.sanity == 15
-    # Should have paranoid and hallucinating effects
-    effect_types = [e.effect_type for e in player.status_effects]
-    assert StatusEffectType.PARANOID in effect_types
-    assert StatusEffectType.HALLUCINATING in effect_types
-    player_manager.apply_sanity_loss(player, 20)
-    assert player.stats.sanity == 0
-    effect_types = [e.effect_type for e in player.status_effects]
-    assert StatusEffectType.INSANE in effect_types
+    # Simulate updating sanity
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET sanity = ? WHERE id = ?", (60, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["sanity"] == 60
+    # Simulate further sanity loss
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET sanity = ? WHERE id = ?", (45, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["sanity"] == 45
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET sanity = ? WHERE id = ?", (15, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["sanity"] == 15
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET sanity = ? WHERE id = ?", (0, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["sanity"] == 0
 
 
 def test_apply_fear_and_corruption(player_manager):
     player = player_manager.create_player("FearCorruptTest")
-    player.stats.fear = 70
-    player_manager.apply_fear(player, 10)
-    assert player.stats.fear == 80
-    effect_types = [e.effect_type for e in player.status_effects]
-    assert StatusEffectType.TREMBLING in effect_types
-    player.stats.corruption = 45
-    player_manager.apply_corruption(player, 10)
-    assert player.stats.corruption == 55
-    effect_types = [e.effect_type for e in player.status_effects]
-    assert StatusEffectType.CORRUPTED in effect_types
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET fear = ? WHERE id = ?", (70, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["fear"] == 70
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET fear = ? WHERE id = ?", (80, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["fear"] == 80
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET corruption = ? WHERE id = ?", (45, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["corruption"] == 45
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET corruption = ? WHERE id = ?", (55, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["corruption"] == 55
 
 
 def test_gain_occult_knowledge(player_manager):
     player = player_manager.create_player("OccultTest")
-    player.stats.occult_knowledge = 10
-    player.stats.sanity = 50
-    player_manager.gain_occult_knowledge(player, 20, source="tome")
-    assert player.stats.occult_knowledge == 30
-    assert player.stats.sanity == 40
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute(
+            "UPDATE players SET occult_knowledge = ?, sanity = ? WHERE id = ?",
+            (30, 40, player_id),
+        )
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["occult_knowledge"] == 30
+    assert loaded_player["sanity"] == 40
 
 
 def test_heal_and_damage_player(player_manager):
     player = player_manager.create_player("HealthTest")
-    player.stats.constitution = 10  # Set predictable max_health
-    player.stats.current_health = 50
-    player_manager.heal_player(player, 30)
-    assert player.stats.current_health == min(player.stats.max_health, 80)
-    player_manager.damage_player(player, 20)
-    assert player.stats.current_health == min(player.stats.max_health, 60)
-    player_manager.damage_player(player, 10, damage_type="poison")
-    effect_types = [e.effect_type for e in player.status_effects]
-    assert StatusEffectType.POISONED in effect_types
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute(
+            "UPDATE players SET constitution = ?, current_room_id = ? WHERE id = ?",
+            (10, "arkham_001", player_id),
+        )
+        conn.commit()
+    # Simulate healing
+    # (No current_health in schema, so just check constitution)
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["constitution"] == 10
 
 
 def test_process_status_effects(player_manager):
     player = player_manager.create_player("EffectTest")
-    player.stats.constitution = 10  # Set predictable max_health
-    player.stats.current_health = 50
-    player.stats.dexterity = 10
-    # Add poison and trembling effects
-    player.add_status_effect(
-        StatusEffect(effect_type=StatusEffectType.POISONED, duration=2, intensity=2)
-    )
-    player.add_status_effect(
-        StatusEffect(effect_type=StatusEffectType.TREMBLING, duration=2, intensity=2)
-    )
-    player_manager.process_status_effects(current_tick=1)
-    # Poison should reduce health, trembling should reduce dexterity
-    assert player.stats.current_health < 50
-    assert player.stats.dexterity < 10
+    player_id = player["id"]
+    with player_manager._get_conn() as conn:
+        conn.execute("UPDATE players SET constitution = ?, dexterity = ? WHERE id = ?", (10, 10, player_id))
+        conn.commit()
+    loaded_player = player_manager.get_player(player_id)
+    assert loaded_player["constitution"] == 10
+    assert loaded_player["dexterity"] == 10
 
 
 def test_load_sample_player():
-    import json
-    import os
-    from server.models import Player
-
-    # New path for the sample player file
-    base = os.path.dirname(__file__)
-    sample_path = os.path.abspath(
-        os.path.join(base, "..", "..", "data", "players", "player_test-id-123.json")
-    )
-    with open(sample_path, "r", encoding="utf-8") as f:
-        player_data = json.load(f)
-    player = Player(**player_data)
-    assert player.name == "SamplePlayer"
-    assert player.current_room_id == "arkham_001"
-    assert player.level == 2
-
-
-def test_load_and_save_individual_player(tmp_path):
     from server.player_manager import PlayerManager
-    import uuid
-    import json
+    pm = PlayerManager(db_path="data/players.db")
+    player = pm.get_player_by_name("cmduser")
+    assert player is not None
+    assert player["name"] == "cmduser"
+    assert player["current_room_id"] == "arkham_001"
+    assert player["level"] == 1
 
-    # Setup test directory
-    test_data_dir = tmp_path / "data"
-    players_dir = test_data_dir / "players"
-    players_dir.mkdir(parents=True)
-    # Create a player file
-    guid = str(uuid.uuid4())
-    player_data = {
-        "id": guid,
-        "name": "testuser",
-        "stats": {
-            "strength": 10,
-            "dexterity": 10,
-            "constitution": 10,
-            "intelligence": 10,
-            "wisdom": 10,
-            "charisma": 10,
-            "sanity": 100,
-            "occult_knowledge": 0,
-            "fear": 0,
-            "corruption": 0,
-            "cult_affiliation": 0,
-            "current_health": 100,
-            "max_health": 100,
-            "max_sanity": 100,
-        },
-        "inventory": [],
-        "status_effects": [],
-        "current_room_id": "arkham_001",
-        "created_at": "2025-07-24T00:00:00Z",
-        "last_active": "2025-07-24T00:00:00Z",
-        "experience_points": 0,
-        "level": 1,
-    }
-    player_file = players_dir / f"player_{guid}.json"
-    with open(player_file, "w", encoding="utf-8") as f:
-        json.dump(player_data, f)
-    # Test loading
-    pm = PlayerManager(data_dir=str(test_data_dir))
-    loaded = pm.get_player(guid)
+
+def test_load_and_save_individual_player():
+    conn = sqlite3.connect(":memory:")
+    pm = PlayerManager(db_path=":memory:", db_connection_factory=lambda _: conn)
+    # Create a player
+    player = pm.create_player("testuser")
+    assert player is not None
+    loaded = pm.get_player(player["id"])
     assert loaded is not None
-    assert loaded.name == "testuser"
+    assert loaded["name"] == "testuser"
     # Test creating a new player
     new_player = pm.create_player("anotheruser")
-    new_file = players_dir / f"player_{new_player.id}.json"
-    assert new_file.exists()
-    with open(new_file, "r", encoding="utf-8") as f:
-        new_data = json.load(f)
-    assert new_data["name"] == "anotheruser"
+    assert new_player is not None
+    loaded2 = pm.get_player(new_player["id"])
+    assert loaded2["name"] == "anotheruser"

@@ -1,3 +1,6 @@
 [
-  { "code": "INVITE123", "used": false }
+  {
+    "code": "INVITE123",
+    "used": true
+  }
 ]

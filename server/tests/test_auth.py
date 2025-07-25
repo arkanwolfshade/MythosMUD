@@ -1,41 +1,30 @@
 import os
 import json
-import tempfile
 import pytest
+import sqlite3
 from fastapi.testclient import TestClient
 from server.main import app
 from server.auth import get_users_file, get_invites_file
+from server.player_manager import PlayerManager
+
+TEST_DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "test_players.db"))
 
 
-@pytest.fixture
-def temp_files():
-    users_fd, users_path = tempfile.mkstemp()
-    invites_fd, invites_path = tempfile.mkstemp()
-    os.close(users_fd)
-    os.close(invites_fd)
-    # Write initial data
-    with open(users_path, "w", encoding="utf-8") as f:
-        json.dump([], f)
-    with open(invites_path, "w", encoding="utf-8") as f:
-        json.dump(
-            [
-                {"code": "INVITE123", "used": False},
-                {"code": "USEDINVITE", "used": True},
-            ],
-            f,
-        )
-    yield users_path, invites_path
-    os.remove(users_path)
-    os.remove(invites_path)
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db():
+    # Remove the test DB if it exists
+    if os.path.exists(TEST_DB_PATH):
+        os.remove(TEST_DB_PATH)
+    yield
+    if os.path.exists(TEST_DB_PATH):
+        os.remove(TEST_DB_PATH)
 
 
 @pytest.fixture(autouse=True)
-def override_dependencies(temp_files):
-    users_path, invites_path = temp_files
-    app.dependency_overrides[get_users_file] = lambda: users_path
-    app.dependency_overrides[get_invites_file] = lambda: invites_path
+def patch_player_manager():
+    pm = PlayerManager(db_path=TEST_DB_PATH)
+    app.state.player_manager = pm
     yield
-    app.dependency_overrides = {}
 
 
 def test_successful_registration():
@@ -61,6 +50,10 @@ def test_successful_registration():
 
 
 def test_duplicate_username():
+    # Use a single in-memory SQLite connection for the test and app
+    conn = sqlite3.connect(":memory:")
+    pm = PlayerManager(db_path=":memory:", db_connection_factory=lambda _: conn)
+    app.state.player_manager = pm
     client = TestClient(app)
     # Register once
     client.post(
