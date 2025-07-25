@@ -79,7 +79,7 @@ MythosMUD/
 ## Development
 
 - **Linting and formatting:**
-  - Python: `black .` and `flake8 .` in `/server`
+  - Python: `ruff check .` and `ruff format .` in `/server`
   - JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
 - **Pre-commit hooks:**
   - Installed in `/server` to catch linting/formatting issues before commit

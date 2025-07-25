@@ -1,6 +1,7 @@
 # 📝 MythosMUD – Task Breakdown & Milestones
 
 > **Development Discipline Checklist:**
+>
 > - [ ] Write/update tests before implementing features (TDD)
 > - [ ] Mark tasks as complete in TASKS.md as soon as they are done
 > - [ ] Commit to git after each feature or fix is complete
@@ -38,12 +39,13 @@
   - [x] Duplicate test function for invalid direction removed
   - [x] Mock room graph visualized for clarity
   - [x] All command handler tests use mock data for isolation
-  - [ ] All tests passing for movement and look commands (in progress)
-    - [ ] Debug/fix player state persistence in tests (next step)
+  - [x] All tests passing for movement and look commands
+    - [x] Debug/fix player state persistence in tests
 - [x] Implement player authentication (invite-only)
   - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
   - [ ] Use SQLite for MVP database for players
 - [ ] Robust logging system with separate files for: system logs, player activity, communication channels - should be well structured for eventual ingestion into ELK stack
+- [ ] Add automated tests to verify path traversal and file access security (e.g., for invites_file and similar parameters)
 
 ---
 
