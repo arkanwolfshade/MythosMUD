@@ -60,7 +60,11 @@ def handle_command(
 
     app = request.app if request else None
     if cmd == "look":
-        if not app or not hasattr(app.state, "rooms") or not hasattr(app.state, "player_manager"):
+        if (
+            not app
+            or not hasattr(app.state, "rooms")
+            or not hasattr(app.state, "player_manager")
+        ):
             return {"result": "You see nothing special."}
         player_manager = app.state.player_manager
         player = player_manager.get_player_by_name(current_user["username"])
