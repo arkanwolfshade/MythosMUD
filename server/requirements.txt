@@ -10,3 +10,7 @@ ruff==0.4.4
 httpx==0.24.0
 
 flake8==7.0.0
+
+passlib==1.7.4
+
+python-jose==3.3.0
