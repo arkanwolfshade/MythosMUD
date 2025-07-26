@@ -1,13 +1,13 @@
 {
   "id": "arkham_005",
-  "name": "Arkham Town Square",
-  "description": "5 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "name": "East Market Bazaar",
+  "description": "Colorful tents and exotic wares fill the lively bazaar. The air is thick with the scent of spices and the sound of haggling merchants.",
   "zone": "arkham",
   "exits": {
     "north": null,
     "south": null,
     "east": null,
-    "west":"arkham_001",
+    "west": "arkham_001",
     "up": null,
     "down": null
   },

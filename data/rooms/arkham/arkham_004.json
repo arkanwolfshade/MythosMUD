@@ -1,7 +1,7 @@
 {
   "id": "arkham_004",
-  "name": "Arkham Town Square",
-  "description": "4 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "name": "South Harbor District",
+  "description": "The salty breeze from the harbor carries the sounds of ships and seagulls. Fishing boats line the docks.",
   "zone": "arkham",
   "exits": {
     "north": "arkham_001",

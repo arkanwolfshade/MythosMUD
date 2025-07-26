@@ -29,16 +29,12 @@ def create_access_token(
     algorithm: str = ALGORITHM,
 ) -> str:
     to_encode = data.copy()
-    expire = datetime.now(UTC) + (
-        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
+    expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, secret_key, algorithm=algorithm)
 
 
-def decode_access_token(
-    token: str, secret_key: str = SECRET_KEY, algorithm: str = ALGORITHM
-) -> dict:
+def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str = ALGORITHM) -> dict:
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         return payload

@@ -1,7 +1,7 @@
 {
   "id": "arkham_002",
-  "name": "Arkham Town Square",
-  "description": "2 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "name": "Miskatonic University Gates",
+  "description": "The grand wrought-iron gates of Miskatonic University loom here, their intricate designs hinting at the ancient knowledge within.",
   "zone": "arkham",
   "exits": {
     "north": null,

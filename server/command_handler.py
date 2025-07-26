@@ -49,9 +49,7 @@ def handle_command(
             detail=f"Command too long (max {MAX_COMMAND_LENGTH} characters)",
         )
     if is_suspicious_input(command_line):
-        raise HTTPException(
-            status_code=400, detail="Invalid characters or suspicious input detected"
-        )
+        raise HTTPException(status_code=400, detail="Invalid characters or suspicious input detected")
     command_line = clean_command_input(command_line)
     if not command_line:
         return {"result": ""}
@@ -86,9 +84,7 @@ def handle_command(
         name = room.get("name", "")
         exits = room.get("exits", {})
         exits_list = [d for d, v in exits.items() if v]
-        exits_str = (
-            f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        )
+        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
         return {"result": f"{name}\n{desc}\n{exits_str}"}
     elif cmd == "go":
         if not persistence:
@@ -118,9 +114,7 @@ def handle_command(
         desc = target_room.get("description", "You see nothing special.")
         exits = target_room.get("exits", {})
         exits_list = [d for d, v in exits.items() if v]
-        exits_str = (
-            f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        )
+        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
         return {"result": f"{name}\n{desc}\n{exits_str}"}
     elif cmd == "say":
         message = " ".join(args).strip()

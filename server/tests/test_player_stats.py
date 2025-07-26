@@ -27,21 +27,15 @@ class Player:
 
     def apply_sanity_loss(self, amount, source=None):
         self.stats["sanity"] = max(0, self.stats["sanity"] - amount)
-        self.status_effects.append(
-            {"effect_type": "sanity_loss", "intensity": amount, "source": source}
-        )
+        self.status_effects.append({"effect_type": "sanity_loss", "intensity": amount, "source": source})
 
     def apply_fear(self, amount, source=None):
         self.stats["fear"] = min(100, self.stats["fear"] + amount)
-        self.status_effects.append(
-            {"effect_type": "fear", "intensity": amount, "source": source}
-        )
+        self.status_effects.append({"effect_type": "fear", "intensity": amount, "source": source})
 
     def apply_corruption(self, amount, source=None):
         self.stats["corruption"] = min(100, self.stats["corruption"] + amount)
-        self.status_effects.append(
-            {"effect_type": "corruption", "intensity": amount, "source": source}
-        )
+        self.status_effects.append({"effect_type": "corruption", "intensity": amount, "source": source})
 
     def gain_occult_knowledge(self, amount, source=None):
         self.stats["occult_knowledge"] += amount
@@ -49,14 +43,10 @@ class Player:
 
     def take_damage(self, amount, damage_type=None):
         self.stats["current_health"] = max(0, self.stats["current_health"] - amount)
-        self.status_effects.append(
-            {"effect_type": "damage", "intensity": amount, "damage_type": damage_type}
-        )
+        self.status_effects.append({"effect_type": "damage", "intensity": amount, "damage_type": damage_type})
 
     def heal(self, amount):
-        self.stats["current_health"] = min(
-            self.stats["max_health"], self.stats["current_health"] + amount
-        )
+        self.stats["current_health"] = min(self.stats["max_health"], self.stats["current_health"] + amount)
         self.status_effects.append({"effect_type": "heal", "intensity": amount})
 
 

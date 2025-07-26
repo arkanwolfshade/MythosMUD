@@ -10,6 +10,7 @@
 ---
 
 ## TOP PRIORITY: Implement Unified PersistenceLayer
+
 - [x] Design PersistenceLayer API
 - [x] Implement CRUD for all game data (players, rooms, inventory, etc.)
 - [x] Support batch/atomic operations (ACID)
@@ -31,14 +32,19 @@
   - [x] Update all tests to use the test DB and the new PersistenceLayer
   - [ ] Add missing CRUD for inventory, status effects, etc. to PersistenceLayer
   - [ ] Implement missing CRUD and effect/stat logic in the PersistenceLayer
+  - [ ] Implement CRUD methods for inventory and status effects (e.g., apply_sanity_loss, apply_fear)
+  - [ ] Implement log rotation for persistence.log to prevent log file bloat
   - [x] Define a server config file (YAML or TOML) and implement a config loader
   - [ ] Fix config loader bool handling for invalid types
   - [ ] Wire game server to respect game_tick_rate from config
   - [ ] Debug /auth/login test setup and token generation issues
   - [x] Fix test_player_manager.py to use PersistenceLayer (in progress)
   - [ ] Update test_auth.py and test_command_handler.py to use PersistenceLayer
+  - [ ] Several tests in test_command_handler.py and test_auth.py are failing or incomplete (see .pytest_cache)
+  - [ ] Mock data migration from code to JSON files is done, but tests relying on this data may not be fully updated
   - [x] Add delete_player method to PersistenceLayer
   - [ ] Add status/effect methods to PersistenceLayer (apply_sanity_loss, apply_fear, etc.)
+  - [ ] Add async support for hooks in PersistenceLayer (currently synchronous, see TODO)
   - [x] Debug and fix "KeyError: 'access_token'" failures in auth tests
   - [ ] Fix command handler tests to work with new PersistenceLayer architecture
   - [x] Fix auth tests to work with new PersistenceLayer architecture
@@ -49,6 +55,7 @@
   - [ ] Implement log rotation: move existing persistence.log to timestamped name (e.g., persistence.log.2025_07_25_221030) before creating new log file
   - [x] Fix critical security vulnerabilities (hardcoded secret key, path injection)
   - [ ] Migrate user storage from JSON files to database (security improvement)
+  - [ ] Implement rate limiting for authentication endpoints to prevent brute-force attacks
 
 ---
 
@@ -89,6 +96,7 @@
   - [x] Use SQLite for MVP database for players
 - [ ] Robust logging system with separate files for: system logs, player activity, communication channels - should be well structured for eventual ingestion into ELK stack
 - [ ] Add automated tests to verify path traversal and file access security (e.g., for invites_file and similar parameters)
+- [ ] Error handling for room cache loading may not be robust enough for edge cases
 
 ---
 
@@ -114,6 +122,7 @@
 - [ ] Implement basic magic/spellcasting (with sanity costs)
 - [ ] Add quest system (linear quests, quest givers)
 - [ ] Implement party/grouping mechanics
+- [ ] Add detailed implementation plans for combat, inventory management, and quest systems
 
 ---
 
@@ -134,6 +143,7 @@
 - [ ] Add more NPCs, mobs, and quests
 - [ ] Polish UI/UX (client enhancements, accessibility)
 - [ ] Improve documentation and onboarding guides
+- [ ] Ensure TASKS.md and PLANNING.md are fully synchronized with the current state of development
 - [ ] Optimize performance and scalability
 - [ ] Prepare for limited invite-only launch
 

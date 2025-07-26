@@ -46,15 +46,11 @@ CREATE TABLE IF NOT EXISTS rooms (
 @pytest.fixture
 def temp_files():
     """Create temporary files for users and invites."""
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".json", delete=False
-    ) as users_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as users_file:
         json.dump([], users_file)
         users_path = users_file.name
 
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".json", delete=False
-    ) as invites_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as invites_file:
         json.dump(
             [
                 {"code": "INVITE123", "used": False},
@@ -228,9 +224,7 @@ def test_successful_login():
             "invite_code": "INVITE123",
         },
     )
-    response = client.post(
-        "/auth/login", json={"username": "loginuser", "password": "testpass"}
-    )
+    response = client.post("/auth/login", json={"username": "loginuser", "password": "testpass"})
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
@@ -248,18 +242,14 @@ def test_login_wrong_password():
             "invite_code": "INVITE123",
         },
     )
-    response = client.post(
-        "/auth/login", json={"username": "wrongpass", "password": "wrongpass"}
-    )
+    response = client.post("/auth/login", json={"username": "wrongpass", "password": "wrongpass"})
     assert response.status_code == 401
     assert "Invalid username or password" in response.json()["detail"]
 
 
 def test_login_nonexistent_user():
     client = TestClient(app)
-    response = client.post(
-        "/auth/login", json={"username": "ghost", "password": "doesntmatter"}
-    )
+    response = client.post("/auth/login", json={"username": "ghost", "password": "doesntmatter"})
     assert response.status_code == 401
     assert "Invalid username or password" in response.json()["detail"]
 
@@ -271,9 +261,7 @@ def test_me_valid_token():
         "/auth/register",
         json={"username": "meuser", "password": "testpass", "invite_code": "INVITE123"},
     )
-    login_resp = client.post(
-        "/auth/login", json={"username": "meuser", "password": "testpass"}
-    )
+    login_resp = client.post("/auth/login", json={"username": "meuser", "password": "testpass"})
     token = login_resp.json()["access_token"]
     resp = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200

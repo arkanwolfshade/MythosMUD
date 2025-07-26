@@ -1,8 +1,8 @@
 # MythosMUD Test Server Configuration
 
 # --- Database & Persistence ---
-db_path: ../tests/data/players/test_players.db  # Test DB
-log_path: ./persistence_test.log   # Test log file
+db_path: tests/data/players/test_players.db  # Test DB
+log_path: persistence_test.log   # Test log file
 log_level: DEBUG                  # Verbose logging for tests
 
 # --- Network ---

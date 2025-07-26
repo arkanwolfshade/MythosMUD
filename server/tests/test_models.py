@@ -80,9 +80,7 @@ def test_item_and_inventoryitem_properties():
     item.custom_properties["magic"] = True
     assert item.get_property("magic") is True
     assert item.get_property("weight") == 2.5
-    inv_item = InventoryItem(
-        item_id=item.id, quantity=2, custom_properties={"enchanted": True}
-    )
+    inv_item = InventoryItem(item_id=item.id, quantity=2, custom_properties={"enchanted": True})
     assert inv_item.get_property("enchanted") is True
     assert inv_item.get_property("nonexistent", 42) == 42
 
@@ -106,9 +104,7 @@ def test_player_inventory_and_status_effects():
     assert player.remove_status_effect(StatusEffectType.STUNNED) is True
     assert player.remove_status_effect(StatusEffectType.POISONED) is False
     # Active effects
-    player.add_status_effect(
-        StatusEffect(effect_type=StatusEffectType.POISONED, duration=0, intensity=1)
-    )
+    player.add_status_effect(StatusEffect(effect_type=StatusEffectType.POISONED, duration=0, intensity=1))
     active = player.get_active_status_effects(current_tick=1)
     assert len(active) == 1
     # Update last active

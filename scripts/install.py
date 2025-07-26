@@ -18,7 +18,7 @@ steps = [
     # Install Python dependencies using uv
     ["uv", "sync", "--project", "server"],
     # Install pre-commit hooks
-    ["uv", "run", "--project", "server", "pre-commit", "install", "-f"],
+    ["uv", "run", "--active", "pre-commit", "install", "-f"],
     # Ensure npx is available
     ["npx", "--version"],
     # Install client dependencies
@@ -43,5 +43,5 @@ for i, step in enumerate(steps):
 
 print("✅ Installation completed successfully!")
 print("\nNext steps:")
-print("1. Start the server: uv run --project server uvicorn main:app --reload")
+print("1. Start the server: uv run --active uvicorn main:app --reload")
 print("2. Start the client: cd client && npm start")

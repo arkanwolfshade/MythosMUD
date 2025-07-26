@@ -6,7 +6,7 @@ success = True
 
 # Ruff linting in server using uv
 print("Running ruff linting in server...")
-cmd = ["uv", "run", "--project", "server", "ruff", "check", "."]
+cmd = ["uv", "run", "--active", "ruff", "check", "."]
 result = subprocess.run(cmd, cwd="server")
 if result.returncode != 0:
     print(f"❌ Ruff linting failed with exit code: {result.returncode}")

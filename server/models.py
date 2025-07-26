@@ -40,9 +40,7 @@ class StatusEffect(BaseModel):
     effect_type: StatusEffectType
     duration: int = Field(ge=0, description="Duration in game ticks (0 = permanent)")
     intensity: int = Field(ge=1, le=10, description="Effect intensity from 1-10")
-    source: str | None = Field(
-        None, description="Source of the effect (item, spell, etc.)"
-    )
+    source: str | None = Field(None, description="Source of the effect (item, spell, etc.)")
     applied_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def is_active(self, current_tick: int) -> bool:
@@ -58,45 +56,23 @@ class Stats(BaseModel):
     """Core character statistics with Lovecraftian horror elements."""
 
     # Physical Attributes
-    strength: int = Field(
-        ge=1, le=20, default=10, description="Physical power and combat damage"
-    )
-    dexterity: int = Field(
-        ge=1, le=20, default=10, description="Agility, reflexes, and speed"
-    )
-    constitution: int = Field(
-        ge=1, le=20, default=10, description="Health, stamina, and resistance"
-    )
+    strength: int = Field(ge=1, le=20, default=10, description="Physical power and combat damage")
+    dexterity: int = Field(ge=1, le=20, default=10, description="Agility, reflexes, and speed")
+    constitution: int = Field(ge=1, le=20, default=10, description="Health, stamina, and resistance")
 
     # Mental Attributes
-    intelligence: int = Field(
-        ge=1, le=20, default=10, description="Problem-solving and magical aptitude"
-    )
-    wisdom: int = Field(
-        ge=1, le=20, default=10, description="Perception, common sense, and willpower"
-    )
-    charisma: int = Field(
-        ge=1, le=20, default=10, description="Social skills and influence"
-    )
+    intelligence: int = Field(ge=1, le=20, default=10, description="Problem-solving and magical aptitude")
+    wisdom: int = Field(ge=1, le=20, default=10, description="Perception, common sense, and willpower")
+    charisma: int = Field(ge=1, le=20, default=10, description="Social skills and influence")
 
     # Horror-Specific Attributes
-    sanity: int = Field(
-        ge=0, le=100, default=100, description="Mental stability (0 = complete madness)"
-    )
-    occult_knowledge: int = Field(
-        ge=0, le=100, default=0, description="Knowledge of forbidden lore"
-    )
-    fear: int = Field(
-        ge=0, le=100, default=0, description="Susceptibility to terror and panic"
-    )
+    sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
+    occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
+    fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror and panic")
 
     # Special Attributes
-    corruption: int = Field(
-        ge=0, le=100, default=0, description="Taint from dark forces"
-    )
-    cult_affiliation: int = Field(
-        ge=0, le=100, default=0, description="Ties to cults and secret societies"
-    )
+    corruption: int = Field(ge=0, le=100, default=0, description="Taint from dark forces")
+    cult_affiliation: int = Field(ge=0, le=100, default=0, description="Ties to cults and secret societies")
 
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
@@ -178,28 +154,19 @@ class Player(BaseModel):
     experience_points: int = Field(ge=0, default=0)
     level: int = Field(ge=1, default=1)
 
-    def add_item(
-        self, item_id: str, quantity: int = 1, custom_properties: dict[str, Any] = None
-    ) -> bool:
+    def add_item(self, item_id: str, quantity: int = 1, custom_properties: dict[str, Any] = None) -> bool:
         """Add an item to the player's inventory."""
         if custom_properties is None:
             custom_properties = {}
 
         # Check if item already exists with same custom properties
         for inv_item in self.inventory:
-            if (
-                inv_item.item_id == item_id
-                and inv_item.custom_properties == custom_properties
-            ):
+            if inv_item.item_id == item_id and inv_item.custom_properties == custom_properties:
                 inv_item.quantity += quantity
                 return True
 
         # Add new inventory item
-        self.inventory.append(
-            InventoryItem(
-                item_id=item_id, quantity=quantity, custom_properties=custom_properties
-            )
-        )
+        self.inventory.append(InventoryItem(item_id=item_id, quantity=quantity, custom_properties=custom_properties))
         return True
 
     def remove_item(self, item_id: str, quantity: int = 1) -> bool:
@@ -227,9 +194,7 @@ class Player(BaseModel):
 
     def get_active_status_effects(self, current_tick: int) -> list[StatusEffect]:
         """Get all currently active status effects."""
-        return [
-            effect for effect in self.status_effects if effect.is_active(current_tick)
-        ]
+        return [effect for effect in self.status_effects if effect.is_active(current_tick)]
 
     def update_last_active(self) -> None:
         """Update the last active timestamp."""
@@ -237,10 +202,7 @@ class Player(BaseModel):
 
     def can_carry_weight(self, additional_weight: float) -> bool:
         """Check if the player can carry additional weight."""
-        current_weight = sum(
-            inv_item.quantity * inv_item.get_property("weight", 0.0)
-            for inv_item in self.inventory
-        )
+        current_weight = sum(inv_item.quantity * inv_item.get_property("weight", 0.0) for inv_item in self.inventory)
         # Assume carrying capacity is based on strength
         max_capacity = self.stats.strength * 10  # 10 lbs per strength point
         return (current_weight + additional_weight) <= max_capacity

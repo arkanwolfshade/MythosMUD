@@ -54,9 +54,7 @@ class PersistenceLayer:
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
         # Default to the main production database in the project root
         self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players.db")
-        self.log_path = log_path or os.environ.get(
-            "MYTHOS_PERSIST_LOG", "server/persistence.log"
-        )
+        self.log_path = log_path or os.environ.get("MYTHOS_PERSIST_LOG", "server/persistence.log")
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
         # TODO: Load config for SQL logging verbosity
@@ -109,7 +107,17 @@ class PersistenceLayer:
                 conn.row_factory = sqlite3.Row
                 rows = conn.execute("SELECT * FROM rooms").fetchall()
                 for row in rows:
-                    self._room_cache[row["id"]] = dict(row)
+                    room_data = dict(row)
+                    # Parse the exits JSON string back to a dictionary
+                    if room_data.get("exits"):
+                        try:
+                            room_data["exits"] = json.loads(room_data["exits"])
+                        except json.JSONDecodeError:
+                            self._log(f"Failed to parse exits JSON for room {room_data['id']}: {room_data['exits']}")
+                            room_data["exits"] = {}
+                    else:
+                        room_data["exits"] = {}
+                    self._room_cache[row["id"]] = room_data
             self._log(f"Loaded {len(self._room_cache)} rooms into cache.")
         except Exception as e:
             self._log(f"Room cache load failed: {e}")
@@ -119,9 +127,7 @@ class PersistenceLayer:
         """Get a player by name."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute(
-                "SELECT * FROM players WHERE name = ?", (name,)
-            ).fetchone()
+            row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
             if row:
                 return Player(**dict(row))
             return None
@@ -130,9 +136,7 @@ class PersistenceLayer:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute(
-                "SELECT * FROM players WHERE id = ?", (player_id,)
-            ).fetchone()
+            row = conn.execute("SELECT * FROM players WHERE id = ?", (player_id,)).fetchone()
             if row:
                 return Player(**dict(row))
             return None

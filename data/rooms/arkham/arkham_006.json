@@ -1,7 +1,7 @@
 {
   "id": "arkham_006",
-  "name": "Arkham Town Square",
-  "description": "6 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "name": "Clock Tower",
+  "description": "You stand in the ancient clock tower, looking down over Arkham. The massive clock mechanism ticks steadily above you.",
   "zone": "arkham",
   "exits": {
     "north": null,

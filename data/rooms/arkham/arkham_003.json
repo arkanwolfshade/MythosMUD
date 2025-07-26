@@ -1,7 +1,7 @@
 {
   "id": "arkham_003",
-  "name": "Arkham Town Square",
-  "description": "3 - You are standing in the bustling heart of Arkham. The Miskatonic River flows nearby.",
+  "name": "West Residential District",
+  "description": "Quiet streets lined with well-maintained homes. The residents here seem to keep to themselves.",
   "zone": "arkham",
   "exits": {
     "north": null,

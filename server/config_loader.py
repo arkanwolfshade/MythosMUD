@@ -174,7 +174,5 @@ def validate_config(config: dict) -> bool:
         if typ is list:
             assert isinstance(config[k], list), f"Config key {k} should be a list"
         else:
-            assert isinstance(
-                config[k], typ
-            ), f"Config key {k} should be {typ.__name__}"
+            assert isinstance(config[k], typ), f"Config key {k} should be {typ.__name__}"
     return True

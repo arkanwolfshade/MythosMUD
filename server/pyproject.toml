@@ -12,6 +12,7 @@ dependencies = [
     "httpx==0.24.0",
     "passlib==1.7.4",
     "python-jose==3.4.0",
+    "bcrypt>=4.3.0",
 ]
 
 [project.optional-dependencies]
@@ -110,3 +111,9 @@ exclude_lines = [
 
 [tool.coverage.html]
 directory = "htmlcov"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+]

@@ -13,9 +13,7 @@ class MockPlayer:
 class MockPlayerManager:
     def __init__(self):
         self.players = {"cmduser": MockPlayer("cmduser", "arkham_001")}
-        print(
-            f"[MockPlayerManager] Initialized with cmduser in {self.players['cmduser'].current_room_id}"
-        )
+        print(f"[MockPlayerManager] Initialized with cmduser in {self.players['cmduser'].current_room_id}")
 
     def get_player_by_name(self, name):
         return self.players.get(name)
