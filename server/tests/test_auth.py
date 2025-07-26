@@ -1,31 +1,121 @@
 import os
 import json
 import pytest
+import tempfile
 import sqlite3
 from fastapi.testclient import TestClient
 from server.main import app
 from server.auth import get_users_file, get_invites_file
-from server.player_manager import PlayerManager
-
-TEST_DB_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "test_players.db")
-)
+from server.persistence import PersistenceLayer
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_db():
-    # Remove the test DB if it exists
-    if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
-    yield
-    if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
+# Database schema for tests
+TEST_SCHEMA = """
+CREATE TABLE IF NOT EXISTS players (
+    id TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    strength INTEGER,
+    dexterity INTEGER,
+    constitution INTEGER,
+    intelligence INTEGER,
+    wisdom INTEGER,
+    charisma INTEGER,
+    sanity INTEGER,
+    occult_knowledge INTEGER,
+    fear INTEGER,
+    corruption INTEGER,
+    cult_affiliation INTEGER,
+    current_room_id TEXT,
+    created_at TEXT,
+    last_active TEXT,
+    experience_points INTEGER,
+    level INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS rooms (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    description TEXT,
+    exits TEXT,
+    zone TEXT
+);
+"""
+
+
+@pytest.fixture
+def temp_files():
+    """Create temporary files for users and invites."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as users_file:
+        json.dump([], users_file)
+        users_path = users_file.name
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as invites_file:
+        json.dump([
+            {"code": "INVITE123", "used": False},
+            {"code": "USEDINVITE", "used": True},
+        ], invites_file)
+        invites_path = invites_file.name
+
+    yield users_path, invites_path
+
+    # Cleanup
+    os.remove(users_path)
+    os.remove(invites_path)
+
+
+@pytest.fixture
+def temp_log_file():
+    """Create a temporary log file for the persistence layer."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.log', delete=False) as log_file:
+        log_path = log_file.name
+
+    yield log_path
+
+    # Cleanup - don't try to remove if it's still in use
+    try:
+        if os.path.exists(log_path):
+            os.remove(log_path)
+    except PermissionError:
+        pass  # File might still be in use by logger
+
+
+@pytest.fixture
+def temp_db():
+    """Create a temporary database with schema."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.db', delete=False) as db_file:
+        db_path = db_file.name
+
+    # Initialize the database with schema
+    with sqlite3.connect(db_path) as conn:
+        conn.executescript(TEST_SCHEMA)
+        conn.commit()
+
+    yield db_path
+
+    # Cleanup
+    try:
+        if os.path.exists(db_path):
+            os.remove(db_path)
+    except PermissionError:
+        pass  # File might still be in use
 
 
 @pytest.fixture(autouse=True)
-def patch_player_manager():
-    pm = PlayerManager(db_path=TEST_DB_PATH)
-    app.state.player_manager = pm
+def override_dependencies(temp_files):
+    """Override dependencies to use temporary files."""
+    users_path, invites_path = temp_files
+    app.dependency_overrides[get_users_file] = lambda: users_path
+    app.dependency_overrides[get_invites_file] = lambda: invites_path
+    yield
+    app.dependency_overrides = {}
+
+
+@pytest.fixture(autouse=True)
+def setup_test_persistence(temp_log_file, temp_db):
+    """Set up test persistence layer."""
+    # Create a test persistence layer with temporary database and log file
+    test_persistence = PersistenceLayer(db_path=temp_db, log_path=temp_log_file)
+    app.state.persistence = test_persistence
     yield
 
 
@@ -41,21 +131,21 @@ def test_successful_registration():
     )
     assert response.status_code == 201
     assert "Registration successful" in response.json()["message"]
+
     # Check user is in users.json
-    with open(app.dependency_overrides[get_users_file](), "r", encoding="utf-8") as f:
+    users_path = app.dependency_overrides[get_users_file]()
+    with open(users_path, "r", encoding="utf-8") as f:
         users = json.load(f)
     assert any(u["username"] == "testuser" for u in users)
+
     # Check invite is marked as used
-    with open(app.dependency_overrides[get_invites_file](), "r", encoding="utf-8") as f:
+    invites_path = app.dependency_overrides[get_invites_file]()
+    with open(invites_path, "r", encoding="utf-8") as f:
         invites = json.load(f)
     assert any(i["code"] == "INVITE123" and i["used"] for i in invites)
 
 
 def test_duplicate_username():
-    # Use a single in-memory SQLite connection for the test and app
-    conn = sqlite3.connect(":memory:")
-    pm = PlayerManager(db_path=":memory:", db_connection_factory=lambda _: conn)
-    app.state.player_manager = pm
     client = TestClient(app)
     # Register once
     client.post(
@@ -66,8 +156,10 @@ def test_duplicate_username():
             "invite_code": "INVITE123",
         },
     )
+
     # Reset invite to unused for second attempt
-    with open(app.dependency_overrides[get_invites_file](), "w", encoding="utf-8") as f:
+    invites_path = app.dependency_overrides[get_invites_file]()
+    with open(invites_path, "w", encoding="utf-8") as f:
         json.dump(
             [
                 {"code": "INVITE123", "used": False},
@@ -75,6 +167,7 @@ def test_duplicate_username():
             ],
             f,
         )
+
     # Register again with same username
     response = client.post(
         "/auth/register",

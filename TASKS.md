@@ -35,10 +35,12 @@
   - [ ] Fix config loader bool handling for invalid types
   - [ ] Wire game server to respect game_tick_rate from config
   - [ ] Debug /auth/login test setup and token generation issues
-  - [ ] Fix test_player_manager.py to use PersistenceLayer (in progress)
+  - [x] Fix test_player_manager.py to use PersistenceLayer (in progress)
   - [ ] Update test_auth.py and test_command_handler.py to use PersistenceLayer
-  - [ ] Add delete_player method to PersistenceLayer
+  - [x] Add delete_player method to PersistenceLayer
   - [ ] Add status/effect methods to PersistenceLayer (apply_sanity_loss, apply_fear, etc.)
+  - [x] Debug and fix "KeyError: 'access_token'" failures in auth tests
+  - [ ] Fix command handler tests to work with new PersistenceLayer architecture
 
 ---
 

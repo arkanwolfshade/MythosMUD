@@ -62,6 +62,12 @@ class PersistenceLayer:
     def _setup_logger(self):
         logger = logging.getLogger("PersistenceLayer")
         logger.setLevel(logging.INFO)
+
+        # Create log directory if it doesn't exist
+        log_dir = os.path.dirname(self.log_path)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir, exist_ok=True)
+
         fh = logging.FileHandler(self.log_path)
         formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
         fh.setFormatter(formatter)

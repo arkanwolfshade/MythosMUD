@@ -1,15 +1,18 @@
 import pytest
-import sqlite3
+import tempfile
+import os
 from server.persistence import PersistenceLayer
 from server.models import Player, Stats
 
 
 @pytest.fixture
 def temp_db_path(tmp_path):
+    """Create a temporary database path."""
     db_path = tmp_path / "test_players.db"
-    # Create the DB file and schema
+    # Initialize the database with schema
+    import sqlite3
     conn = sqlite3.connect(str(db_path))
-    conn.execute("""
+    conn.executescript("""
         CREATE TABLE IF NOT EXISTS players (
             id TEXT PRIMARY KEY,
             name TEXT UNIQUE NOT NULL,
@@ -29,7 +32,15 @@ def temp_db_path(tmp_path):
             last_active TEXT,
             experience_points INTEGER,
             level INTEGER
-        )
+        );
+
+        CREATE TABLE IF NOT EXISTS rooms (
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            exits TEXT,
+            zone TEXT
+        );
     """)
     conn.commit()
     conn.close()
@@ -37,8 +48,24 @@ def temp_db_path(tmp_path):
 
 
 @pytest.fixture
-def persistence(temp_db_path):
-    return PersistenceLayer(db_path=temp_db_path)
+def temp_log_file():
+    """Create a temporary log file for the persistence layer."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.log', delete=False) as log_file:
+        log_path = log_file.name
+
+    yield log_path
+
+    # Cleanup - don't try to remove if it's still in use
+    try:
+        if os.path.exists(log_path):
+            os.remove(log_path)
+    except PermissionError:
+        pass  # File might still be in use by logger
+
+
+@pytest.fixture
+def persistence(temp_db_path, temp_log_file):
+    return PersistenceLayer(db_path=temp_db_path, log_path=temp_log_file)
 
 
 def test_persistence_creation(persistence):

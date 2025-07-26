@@ -6,6 +6,27 @@ from server.tests.mock_data import MOCK_ROOMS, MockPlayerManager
 from server.auth_utils import decode_access_token
 
 
+# Patch the get_persistence function to prevent PersistenceLayer creation
+@pytest.fixture(autouse=True)
+def patch_get_persistence(monkeypatch):
+    """Patch the get_persistence function to return a mock persistence layer."""
+    class MockPersistenceLayer:
+        def __init__(self):
+            pass
+
+        def get_player_by_name(self, name):
+            return None
+
+        def get_room(self, room_id):
+            return None
+
+    def mock_get_persistence():
+        return MockPersistenceLayer()
+
+    monkeypatch.setattr("server.persistence.get_persistence", mock_get_persistence)
+    yield
+
+
 # Patch get_current_user to always reflect the mock player's current room
 @pytest.fixture(autouse=True)
 def patch_get_current_user(monkeypatch):
