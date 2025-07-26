@@ -47,6 +47,8 @@
   - [x] Migrate mock room data from code to JSON files (completed - removed MOCK_ROOMS from mock_data.py)
   - [ ] Fix auth test setup and token generation issues (temporary files causing user conflicts)
   - [ ] Implement log rotation: move existing persistence.log to timestamped name (e.g., persistence.log.2025_07_25_221030) before creating new log file
+  - [x] Fix critical security vulnerabilities (hardcoded secret key, path injection)
+  - [ ] Migrate user storage from JSON files to database (security improvement)
 
 ---
 
