@@ -10,18 +10,23 @@ from server.auth_utils import (
     create_access_token,
     decode_access_token,
 )
+from server.security_utils import ensure_directory_exists
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
-INVITES_FILE = os.path.join(os.path.dirname(__file__), "invites.json")
+# Use secure path construction for auth files
+SERVER_DIR = ensure_directory_exists(os.path.dirname(__file__))
+USERS_FILE = os.path.join(SERVER_DIR, "users.json")
+INVITES_FILE = os.path.join(SERVER_DIR, "invites.json")
 
 
 def get_users_file() -> str:
+    """Get the secure path to the users file."""
     return USERS_FILE
 
 
 def get_invites_file() -> str:
+    """Get the secure path to the invites file."""
     return INVITES_FILE
 
 

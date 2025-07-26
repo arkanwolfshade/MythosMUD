@@ -1,10 +1,12 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
+import os
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "mythosmud-secret-key"  # TODO: Use env var in production
+# Use environment variable for secret key, with fallback for development
+SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY", "mythosmud-dev-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
