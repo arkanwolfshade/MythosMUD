@@ -93,6 +93,30 @@ If a decision is pending, it is marked as **TODO**.
 
 ---
 
+## TOP PRIORITY: Unified Persistence Layer Implementation Plan
+
+### Rationale
+A unified, extensible persistence layer is critical for maintainability, testability, and future-proofing. It will allow all game code and tests to interact with data storage in a consistent, safe, and easily swappable way, and will enable rapid iteration on features and data models without risking production data or test isolation.
+
+### Implementation Plan
+- Implement a `PersistenceLayer` class responsible for all game data (players, rooms, inventory, etc.).
+- Provide a high-level CRUD API (e.g., `get_player_by_name`, `save_player`, `get_room`, `save_room`, etc.).
+- Only SQLite will be supported initially, but the design will allow for future backends (e.g., Postgres, in-memory, mock).
+- The persistence layer will handle conversion between DB rows and Pydantic model objects, fully abstracting storage from game logic.
+- All transaction management will be handled internally, with batch/bulk operations being atomic (ACID-compliant).
+- Custom exceptions will be raised for errors (e.g., unique constraint violations).
+- The persistence layer will load all room data (static and dynamic) at startup for fast access.
+- Hooks/callbacks will be supported for after-save, after-delete, etc. (sync now, async in future), registered via a decorator.
+- Logging will be to a file, with verbosity (full SQL or summaries) configurable from the server config file.
+- The persistence layer will be a singleton per app/test session, but endpoints will receive it via FastAPI dependency injection (`Depends`).
+- The DB path/config will be loaded from an environment config file.
+- Schema creation/migration will be handled by external scripts/utilities, not by the persistence layer.
+- The test DB will be a persistent file in the `tests/` directory, pre-populated with mock room/player data at the start of each test session.
+- All managers (PlayerManager, etc.) will be refactored immediately to use the new persistence layer.
+- The persistence layer will be thread-safe and support context management (`with persistence as db:`).
+
+---
+
 _This document will be updated as decisions are made and the project evolves._
 
 ## SUMMARY (as of current session)

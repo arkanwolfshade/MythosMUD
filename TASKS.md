@@ -9,6 +9,25 @@
 
 ---
 
+## TOP PRIORITY: Implement Unified PersistenceLayer
+- [ ] Design PersistenceLayer API
+- [ ] Implement CRUD for all game data (players, rooms, inventory, etc.)
+- [ ] Support batch/atomic operations (ACID)
+- [ ] Handle conversion between DB rows and Pydantic models
+- [ ] Implement hooks/callbacks (sync, with async support planned)
+- [ ] Add file-based logging with configurable verbosity
+- [ ] Load all room data at startup (static and dynamic)
+- [ ] Support FastAPI dependency injection (Depends)
+- [ ] Read DB config from environment config file
+- [ ] Refactor all managers to use the new layer
+- [ ] Create and pre-populate a persistent test DB in tests/
+- [ ] Ensure thread safety and context management
+- [ ] Remove old direct DB/file access from managers
+- [ ] Update all tests to use the new persistence layer
+- [ ] Document the new architecture and usage
+
+---
+
 ## Milestone 1: Project Foundation
 
 - [x] Initialize repository and set up version control
