@@ -41,6 +41,7 @@ Supported config fields:
 """
 
 import os
+
 import yaml
 
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
@@ -133,7 +134,7 @@ def get_config(config_path: str = None):
         return _config
     path = config_path or _CONFIG_PATH
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
             if not isinstance(data, dict):
                 data = {}

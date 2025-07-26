@@ -1,9 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
-from server.main import app
-from server.auth import get_users_file, get_invites_file
-from server.tests.mock_data import MockPlayerManager
+
+from server.auth import get_invites_file, get_users_file
 from server.auth_utils import decode_access_token
+from server.main import app
+from server.tests.mock_data import MockPlayerManager
 
 
 # Patch the PersistenceLayer class to use the test database
@@ -108,9 +109,9 @@ def patch_get_current_user(monkeypatch):
 
 @pytest.fixture
 def temp_files():
-    import tempfile
-    import os
     import json
+    import os
+    import tempfile
 
     users_fd, users_path = tempfile.mkstemp()
     invites_fd, invites_path = tempfile.mkstemp()
@@ -214,8 +215,9 @@ def test_auth_required(test_client):
 def test_look_command_with_mock_auth(test_client):
     """Test look command using a valid JWT token for testing."""
     # Create a valid JWT token for testing
-    from server.auth_utils import create_access_token
     from datetime import timedelta
+
+    from server.auth_utils import create_access_token
 
     test_token = create_access_token(
         data={"sub": "cmduser"},

@@ -1,4 +1,5 @@
 import os
+
 from server import config_loader
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../server_config.yaml")

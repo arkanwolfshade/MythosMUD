@@ -1,15 +1,15 @@
-from fastapi import FastAPI, HTTPException
 import asyncio
+import datetime
 import logging
-from server.persistence import get_persistence
-from server.models import Player, Stats
-from typing import List
+import uuid
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, HTTPException
+
 from server.auth import router as auth_router
 from server.command_handler import router as command_router
-from contextlib import asynccontextmanager
-import uuid
-import datetime
-
+from server.models import Player, Stats
+from server.persistence import get_persistence
 
 TICK_INTERVAL = 1.0  # seconds
 
@@ -71,7 +71,7 @@ def create_player(name: str, starting_room_id: str = "arkham_001"):
     return player
 
 
-@app.get("/players", response_model=List[Player])
+@app.get("/players", response_model=list[Player])
 def list_players():
     """Get a list of all players."""
     return app.state.persistence.list_players()

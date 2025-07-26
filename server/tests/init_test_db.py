@@ -6,8 +6,8 @@ This script creates a SQLite database in server/tests/data/ with the same schema
 as the production database and populates it with test player data from the JSON file.
 """
 
-import sqlite3
 import json
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 
@@ -64,12 +64,12 @@ def init_test_database():
 
     # Load test player data from JSON
     if TEST_JSON_PATH.exists():
-        with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
+        with open(TEST_JSON_PATH, encoding="utf-8") as f:
             test_players = json.load(f)
 
         # Insert test players into database
         with sqlite3.connect(TEST_DB_PATH) as conn:
-            for player_id, player_data in test_players.items():
+            for _player_id, player_data in test_players.items():
                 # Extract stats from the nested structure
                 stats = player_data.get("stats", {})
 

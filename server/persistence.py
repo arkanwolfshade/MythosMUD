@@ -1,10 +1,12 @@
+import json
+import logging
 import os
 import sqlite3
 import threading
-from typing import Callable, List, Optional, Any, Dict
+from collections.abc import Callable
+from typing import Any
+
 from server.models import Player  # Assume Room model exists or will be added
-import logging
-import json
 
 
 # --- Custom Exceptions ---
@@ -47,9 +49,9 @@ class PersistenceLayer:
     Thread-safe, supports hooks, context management, and batch operations.
     """
 
-    _hooks: Dict[str, List[Callable]] = {}
+    _hooks: dict[str, list[Callable]] = {}
 
-    def __init__(self, db_path: Optional[str] = None, log_path: Optional[str] = None):
+    def __init__(self, db_path: str | None = None, log_path: str | None = None):
         # Default to the main production database in the project root
         self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players.db")
         self.log_path = log_path or os.environ.get(
@@ -113,7 +115,7 @@ class PersistenceLayer:
             self._log(f"Room cache load failed: {e}")
 
     # --- CRUD for Players ---
-    def get_player_by_name(self, name: str) -> Optional[Player]:
+    def get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -124,7 +126,7 @@ class PersistenceLayer:
                 return Player(**dict(row))
             return None
 
-    def get_player(self, player_id: str) -> Optional[Player]:
+    def get_player(self, player_id: str) -> Player | None:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -173,16 +175,16 @@ class PersistenceLayer:
                 self._run_hooks("after_save_player", player)
             except sqlite3.IntegrityError as e:
                 self._log(f"Unique constraint error saving player: {e}")
-                raise UniqueConstraintError(str(e))
+                raise UniqueConstraintError(str(e)) from e
 
-    def list_players(self) -> List[Player]:
+    def list_players(self) -> list[Player]:
         """List all players."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players").fetchall()
             return [Player(**dict(row)) for row in rows]
 
-    def save_players(self, players: List[Player]):
+    def save_players(self, players: list[Player]):
         """Batch save players atomically."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
@@ -221,14 +223,14 @@ class PersistenceLayer:
                 self._run_hooks("after_save_players", players)
             except sqlite3.IntegrityError as e:
                 self._log(f"Batch unique constraint error: {e}")
-                raise UniqueConstraintError(str(e))
+                raise UniqueConstraintError(str(e)) from e
 
     # --- CRUD for Rooms ---
-    def get_room(self, room_id: str) -> Optional[Dict[str, Any]]:
+    def get_room(self, room_id: str) -> dict[str, Any] | None:
         """Get a room by ID from the cache."""
         return self._room_cache.get(room_id)
 
-    def save_room(self, room: Dict[str, Any]):
+    def save_room(self, room: dict[str, Any]):
         """Save or update a room."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.execute(
@@ -250,11 +252,11 @@ class PersistenceLayer:
             self._log(f"Saved room {room['id']}")
             self._run_hooks("after_save_room", room)
 
-    def list_rooms(self) -> List[Dict[str, Any]]:
+    def list_rooms(self) -> list[dict[str, Any]]:
         """List all rooms from the cache."""
         return list(self._room_cache.values())
 
-    def save_rooms(self, rooms: List[Dict[str, Any]]):
+    def save_rooms(self, rooms: list[dict[str, Any]]):
         """Batch save rooms atomically."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
@@ -280,7 +282,7 @@ class PersistenceLayer:
                 self._run_hooks("after_save_rooms", rooms)
             except sqlite3.IntegrityError as e:
                 self._log(f"Batch unique constraint error (rooms): {e}")
-                raise UniqueConstraintError(str(e))
+                raise UniqueConstraintError(str(e)) from e
 
     # --- TODO: Inventory, status effects, etc. ---
     # def get_inventory(self, ...): ...

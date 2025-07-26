@@ -1,12 +1,13 @@
-from server.world_loader import load_rooms
 import os
+
+from server.world_loader import load_rooms
 
 
 def test_load_rooms():
     rooms = load_rooms()
     assert isinstance(rooms, dict)
     assert len(rooms) > 0, "No rooms loaded. Add at least one room JSON file."
-    for room_id, room in rooms.items():
+    for _room_id, room in rooms.items():
         assert "id" in room
         assert "name" in room
         assert "description" in room
@@ -19,8 +20,8 @@ def test_loader_as_script(capsys):
     """Test that world_loader can be run as a script."""
     rooms = load_rooms()
     print(f"Loaded {len(rooms)} rooms:")
-    for room_id, room in rooms.items():
-        print(f"- {room_id}: {room['name']}")
+    for _room_id, room in rooms.items():
+        print(f"- {_room_id}: {room['name']}")
     captured = capsys.readouterr()
     assert "Loaded" in captured.out
     assert len(rooms) > 0

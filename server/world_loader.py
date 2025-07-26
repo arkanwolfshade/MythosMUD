@@ -1,13 +1,13 @@
-import os
 import json
-from typing import Dict, Any
+import os
+from typing import Any
 
 ROOMS_BASE_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "data", "rooms")
 )
 
 
-def load_rooms() -> Dict[str, Any]:
+def load_rooms() -> dict[str, Any]:
     rooms = {}
 
     # Check if rooms directory exists
@@ -23,12 +23,12 @@ def load_rooms() -> Dict[str, Any]:
                 if filename.endswith(".json"):
                     file_path = os.path.join(zone_path, filename)
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             room = json.load(f)
                             room_id = room.get("id")
                             if room_id:
                                 rooms[room_id] = room
-                    except (json.JSONDecodeError, IOError) as e:
+                    except (OSError, json.JSONDecodeError) as e:
                         # Log error but continue loading other files
                         print(f"Warning: Could not load room file {file_path}: {e}")
                         continue

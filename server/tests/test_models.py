@@ -1,13 +1,14 @@
+import time
+
 from server.models import (
-    Stats,
     AttributeType,
-    Item,
     InventoryItem,
+    Item,
     Player,
+    Stats,
     StatusEffect,
     StatusEffectType,
 )
-import time
 
 
 def test_stats_creation():

@@ -1,8 +1,10 @@
-import pytest
-import tempfile
 import os
-from server.persistence import PersistenceLayer
+import tempfile
+
+import pytest
+
 from server.models import Player, Stats
+from server.persistence import PersistenceLayer
 
 
 @pytest.fixture

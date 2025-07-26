@@ -1,13 +1,14 @@
-import os
 import json
-import pytest
-import tempfile
+import os
 import sqlite3
-from fastapi.testclient import TestClient
-from server.main import app
-from server.auth import get_users_file, get_invites_file
-from server.persistence import PersistenceLayer
+import tempfile
 
+import pytest
+from fastapi.testclient import TestClient
+
+from server.auth import get_invites_file, get_users_file
+from server.main import app
+from server.persistence import PersistenceLayer
 
 # Database schema for tests
 TEST_SCHEMA = """
@@ -141,13 +142,13 @@ def test_successful_registration():
 
     # Check user is in users.json
     users_path = app.dependency_overrides[get_users_file]()
-    with open(users_path, "r", encoding="utf-8") as f:
+    with open(users_path, encoding="utf-8") as f:
         users = json.load(f)
     assert any(u["username"] == "testuser" for u in users)
 
     # Check invite is marked as used
     invites_path = app.dependency_overrides[get_invites_file]()
-    with open(invites_path, "r", encoding="utf-8") as f:
+    with open(invites_path, encoding="utf-8") as f:
         invites = json.load(f)
     assert any(i["code"] == "INVITE123" and i["used"] for i in invites)
 

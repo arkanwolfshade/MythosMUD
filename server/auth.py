@@ -1,14 +1,16 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
 import json
 import os
 from datetime import datetime, timedelta
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel
+
 from auth_utils import (
-    hash_password,
-    verify_password,
     create_access_token,
     decode_access_token,
+    hash_password,
+    verify_password,
 )
 from security_utils import ensure_directory_exists, validate_secure_path
 
@@ -49,7 +51,7 @@ def load_json_file_safely(file_path: str, default: list = None) -> list:
         validate_secure_path(SERVER_DIR, os.path.relpath(file_path, SERVER_DIR))
 
         if os.path.exists(file_path):
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 return json.load(f)
         return default
     except Exception as e:

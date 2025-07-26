@@ -3,8 +3,9 @@
 Unit tests for the player stats system using a mock Player object.
 """
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 # Mock Player class for unit testing

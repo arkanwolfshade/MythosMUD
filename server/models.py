@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field, computed_field
-from typing import Dict, List, Optional, Any
-from enum import Enum
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
+from enum import Enum
+from typing import Any
+
+from pydantic import BaseModel, Field, computed_field
 
 
 class AttributeType(str, Enum):
@@ -39,7 +40,7 @@ class StatusEffect(BaseModel):
     effect_type: StatusEffectType
     duration: int = Field(ge=0, description="Duration in game ticks (0 = permanent)")
     intensity: int = Field(ge=1, le=10, description="Effect intensity from 1-10")
-    source: Optional[str] = Field(
+    source: str | None = Field(
         None, description="Source of the effect (item, spell, etc.)"
     )
     applied_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -142,7 +143,7 @@ class Item(BaseModel):
     value: int = Field(ge=0, default=0)
 
     # Customizable properties that can override base values
-    custom_properties: Dict[str, Any] = Field(default_factory=dict)
+    custom_properties: dict[str, Any] = Field(default_factory=dict)
 
     def get_property(self, key: str, default: Any = None) -> Any:
         """Get a property value, checking custom properties first."""
@@ -154,7 +155,7 @@ class InventoryItem(BaseModel):
 
     item_id: str
     quantity: int = Field(ge=1, default=1)
-    custom_properties: Dict[str, Any] = Field(default_factory=dict)
+    custom_properties: dict[str, Any] = Field(default_factory=dict)
 
     def get_property(self, key: str, default: Any = None) -> Any:
         """Get a property value, checking custom properties first."""
@@ -167,8 +168,8 @@ class Player(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str = Field(min_length=1, max_length=50)
     stats: Stats = Field(default_factory=Stats)
-    inventory: List[InventoryItem] = Field(default_factory=list)
-    status_effects: List[StatusEffect] = Field(default_factory=list)
+    inventory: list[InventoryItem] = Field(default_factory=list)
+    status_effects: list[StatusEffect] = Field(default_factory=list)
     current_room_id: str = Field(default="arkham_001")
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     last_active: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -178,7 +179,7 @@ class Player(BaseModel):
     level: int = Field(ge=1, default=1)
 
     def add_item(
-        self, item_id: str, quantity: int = 1, custom_properties: Dict[str, Any] = None
+        self, item_id: str, quantity: int = 1, custom_properties: dict[str, Any] = None
     ) -> bool:
         """Add an item to the player's inventory."""
         if custom_properties is None:
@@ -224,7 +225,7 @@ class Player(BaseModel):
                 return True
         return False
 
-    def get_active_status_effects(self, current_tick: int) -> List[StatusEffect]:
+    def get_active_status_effects(self, current_tick: int) -> list[StatusEffect]:
         """Get all currently active status effects."""
         return [
             effect for effect in self.status_effects if effect.is_active(current_tick)
@@ -255,7 +256,7 @@ class NPC(BaseModel):
     current_room_id: str
     npc_type: str = Field(default="civilian")  # civilian, merchant, enemy, etc.
     is_hostile: bool = Field(default=False)
-    dialogue_options: Dict[str, str] = Field(default_factory=dict)
+    dialogue_options: dict[str, str] = Field(default_factory=dict)
 
     def is_alive(self) -> bool:
         """Check if the NPC is alive."""

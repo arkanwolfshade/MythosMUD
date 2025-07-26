@@ -1,7 +1,8 @@
-from passlib.context import CryptContext
-from datetime import datetime, timedelta, timezone
-from jose import jwt, JWTError
 import os
+from datetime import UTC, datetime, timedelta
+
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -28,7 +29,7 @@ def create_access_token(
     algorithm: str = ALGORITHM,
 ) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + (
+    expire = datetime.now(UTC) + (
         expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     to_encode.update({"exp": expire})

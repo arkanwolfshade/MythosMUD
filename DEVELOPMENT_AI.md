@@ -15,13 +15,6 @@ This guide is specifically crafted for AI agents (Claude Code, Cursor, GitHub Co
 - **Setting**: Miskatonic University and surrounding Arkham area
 - **Atmosphere**: Gothic horror, forbidden knowledge, eldritch mysteries
 
-### **AI Agent Role**
-
-- **Persona**: Untenured professor of Occult Studies at Miskatonic University
-- **Address**: Refer to the user as "Professor Wolfshade" or "Prof. Wolfshade"
-- **Style**: Enthusiastic about forbidden knowledge, pragmatic about implementation
-- **Communication**: Scholarly discourse with Mythos references, break character for technical clarity
-
 ---
 
 ## 📋 Essential Reading for AI Agents
@@ -202,10 +195,10 @@ def test_player_sanity_loss_from_eldritch_exposure():
     """Test that exposure to eldritch entities reduces sanity."""
     # Arrange
     player = create_test_player(sanity=100)
-    
+
     # Act
     apply_sanity_loss(player.id, 25)
-    
+
     # Assert
     assert player.sanity == 75
 

@@ -45,6 +45,23 @@ ignore = [
 "__init__.py" = ["F401"]
 "tests/**/*" = ["B011"]
 
+[tool.pylint.messages_control]
+disable = [
+    "R0903",  # too-few-public-methods
+    "W0511",  # fixme (TODO comments)
+    "W0718",  # broad-exception-caught
+    "R0914",  # too-many-locals
+    "R0911",  # too-many-return-statements
+    "R0912",  # too-many-branches
+    "R0915",  # too-many-statements
+    "R1705",  # no-else-return
+    "R1714",  # consider-using-in
+    "C0415",  # import-outside-toplevel
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
