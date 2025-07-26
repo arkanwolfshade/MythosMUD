@@ -1,7 +1,7 @@
 # MythosMUD Server Configuration
 
 # --- Database & Persistence ---
-db_path: ../data/players.db
+db_path: ./data/players/players.db
 log_path: ./persistence.log
 log_level: INFO
 

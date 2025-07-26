@@ -45,15 +45,22 @@ CREATE TABLE IF NOT EXISTS rooms (
 @pytest.fixture
 def temp_files():
     """Create temporary files for users and invites."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as users_file:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".json", delete=False
+    ) as users_file:
         json.dump([], users_file)
         users_path = users_file.name
 
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as invites_file:
-        json.dump([
-            {"code": "INVITE123", "used": False},
-            {"code": "USEDINVITE", "used": True},
-        ], invites_file)
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".json", delete=False
+    ) as invites_file:
+        json.dump(
+            [
+                {"code": "INVITE123", "used": False},
+                {"code": "USEDINVITE", "used": True},
+            ],
+            invites_file,
+        )
         invites_path = invites_file.name
 
     yield users_path, invites_path
@@ -66,7 +73,7 @@ def temp_files():
 @pytest.fixture
 def temp_log_file():
     """Create a temporary log file for the persistence layer."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.log', delete=False) as log_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as log_file:
         log_path = log_file.name
 
     yield log_path
@@ -82,7 +89,7 @@ def temp_log_file():
 @pytest.fixture
 def temp_db():
     """Create a temporary database with schema."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.db', delete=False) as db_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False) as db_file:
         db_path = db_file.name
 
     # Initialize the database with schema

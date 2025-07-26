@@ -50,7 +50,8 @@ class PersistenceLayer:
     _hooks: Dict[str, List[Callable]] = {}
 
     def __init__(self, db_path: Optional[str] = None, log_path: Optional[str] = None):
-        self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "data/players.db")
+        # Default to the main production database in the project root
+        self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players.db")
         self.log_path = log_path or os.environ.get(
             "MYTHOS_PERSIST_LOG", "server/persistence.log"
         )

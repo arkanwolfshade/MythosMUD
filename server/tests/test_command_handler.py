@@ -6,25 +6,47 @@ from server.tests.mock_data import MOCK_ROOMS, MockPlayerManager
 from server.auth_utils import decode_access_token
 
 
-# Patch the get_persistence function to prevent PersistenceLayer creation
+# Patch the PersistenceLayer class to use the test database
 @pytest.fixture(autouse=True)
-def patch_get_persistence(monkeypatch):
-    """Patch the get_persistence function to return a mock persistence layer."""
-    class MockPersistenceLayer:
-        def __init__(self):
-            pass
+def patch_persistence_layer(monkeypatch):
+    """Patch the PersistenceLayer class to use the test database."""
+    # Use the test database that was created with init_test_db.py
+    from pathlib import Path
 
-        def get_player_by_name(self, name):
-            return None
+    test_db_path = Path(__file__).parent / "data" / "test_players.db"
+    test_log_path = Path(__file__).parent / "data" / "test_persistence.log"
 
-        def get_room(self, room_id):
-            return None
+    # Ensure the test database exists
+    if not test_db_path.exists():
+        raise FileNotFoundError(
+            f"Test database not found at {test_db_path}. Run init_test_db.py first."
+        )
 
-    def mock_get_persistence():
-        return MockPersistenceLayer()
+    # Patch the PersistenceLayer constructor to use our test database
+    original_init = None
 
-    monkeypatch.setattr("server.persistence.get_persistence", mock_get_persistence)
+    def mock_init(self, db_path=None, log_path=None):
+        # Use our test database instead of the default
+        if db_path is None:
+            db_path = str(test_db_path)
+        if log_path is None:
+            log_path = str(test_log_path)
+
+        # Call the original __init__ with our modified paths
+        original_init(self, db_path, log_path)
+
+    # Store the original __init__ method
+    from server.persistence import PersistenceLayer
+
+    original_init = PersistenceLayer.__init__
+
+    # Patch the __init__ method
+    monkeypatch.setattr(PersistenceLayer, "__init__", mock_init)
+
     yield
+
+    # Restore the original __init__ method
+    monkeypatch.setattr(PersistenceLayer, "__init__", original_init)
 
 
 # Patch get_current_user to always reflect the mock player's current room

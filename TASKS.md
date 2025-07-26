@@ -41,6 +41,9 @@
   - [ ] Add status/effect methods to PersistenceLayer (apply_sanity_loss, apply_fear, etc.)
   - [x] Debug and fix "KeyError: 'access_token'" failures in auth tests
   - [ ] Fix command handler tests to work with new PersistenceLayer architecture
+  - [x] Fix auth tests to work with new PersistenceLayer architecture
+  - [x] Fix command handler tests database issues (15/23 tests now passing)
+  - [ ] Fix command handler tests room data and movement logic (remaining 8 tests need mock room data)
 
 ---
 

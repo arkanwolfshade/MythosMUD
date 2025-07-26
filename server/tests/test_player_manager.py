@@ -11,6 +11,7 @@ def temp_db_path(tmp_path):
     db_path = tmp_path / "test_players.db"
     # Initialize the database with schema
     import sqlite3
+
     conn = sqlite3.connect(str(db_path))
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS players (
@@ -50,7 +51,7 @@ def temp_db_path(tmp_path):
 @pytest.fixture
 def temp_log_file():
     """Create a temporary log file for the persistence layer."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.log', delete=False) as log_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as log_file:
         log_path = log_file.name
 
     yield log_path
