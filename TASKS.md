@@ -10,28 +10,35 @@
 ---
 
 ## TOP PRIORITY: Implement Unified PersistenceLayer
-- [ ] Design PersistenceLayer API
-- [ ] Implement CRUD for all game data (players, rooms, inventory, etc.)
-- [ ] Support batch/atomic operations (ACID)
-- [ ] Handle conversion between DB rows and Pydantic models
-- [ ] Implement hooks/callbacks (sync, with async support planned)
-- [ ] Add file-based logging with configurable verbosity
-- [ ] Load all room data at startup (static and dynamic)
-- [ ] Support FastAPI dependency injection (Depends)
-- [ ] Read DB config from environment config file
-- [ ] Refactor all managers to use the new layer
-- [ ] Create and pre-populate a persistent test DB in tests/
-- [ ] Ensure thread safety and context management
-- [ ] Remove old direct DB/file access from managers
-- [ ] Update all tests to use the new persistence layer
-- [ ] Document the new architecture and usage
-  - [ ] Refactor all managers to use the new PersistenceLayer for all data access
-  - [ ] Refactor all FastAPI endpoints to use the PersistenceLayer (via DI or singleton)
-  - [ ] Add a Room Pydantic model if not already present
+- [x] Design PersistenceLayer API
+- [x] Implement CRUD for all game data (players, rooms, inventory, etc.)
+- [x] Support batch/atomic operations (ACID)
+- [x] Handle conversion between DB rows and Pydantic models
+- [x] Implement hooks/callbacks (sync, with async support planned)
+- [x] Add file-based logging with configurable verbosity
+- [x] Load all room data at startup (static and dynamic)
+- [x] Support FastAPI dependency injection (Depends)
+- [x] Read DB config from environment config file
+- [x] Refactor all managers to use the new layer
+- [x] Create and pre-populate a persistent test DB in tests/
+- [x] Ensure thread safety and context management
+- [x] Remove old direct DB/file access from managers
+- [x] Update all tests to use the new persistence layer
+- [x] Document the new architecture and usage
+  - [x] Refactor all managers to use the new PersistenceLayer for all data access
+  - [x] Refactor all FastAPI endpoints to use the PersistenceLayer (via DI or singleton)
+  - [x] Add a Room Pydantic model if not already present
   - [ ] Update all tests to use the test DB and the new PersistenceLayer
   - [ ] Add missing CRUD for inventory, status effects, etc. to PersistenceLayer
   - [ ] Implement missing CRUD and effect/stat logic in the PersistenceLayer
-  - [ ] Define a server config file (YAML or TOML) and implement a config loader
+  - [x] Define a server config file (YAML or TOML) and implement a config loader
+  - [ ] Fix config loader bool handling for invalid types
+  - [ ] Wire game server to respect game_tick_rate from config
+  - [ ] Debug /auth/login test setup and token generation issues
+  - [ ] Fix test_player_manager.py to use PersistenceLayer (in progress)
+  - [ ] Update test_auth.py and test_command_handler.py to use PersistenceLayer
+  - [ ] Add delete_player method to PersistenceLayer
+  - [ ] Add status/effect methods to PersistenceLayer (apply_sanity_loss, apply_fear, etc.)
 
 ---
 
@@ -57,8 +64,8 @@
 - [x] Scaffold Python loader to read all room files from zone directories
 - [x] Integrate room/world loader into FastAPI app and expose `/rooms/{room_id}` endpoint
 - [x] Implement player and NPC data models
-- [x] Set up database schema and persistence layer (JSON-based for now)
-- [ ] Basic command parser and handler (e.g., `look`, `go`, `say`)
+- [x] Set up database schema and persistence layer (SQLite-based)
+- [x] Basic command parser and handler (e.g., `look`, `go`, `say`)
   - [x] Command endpoint and parser implemented
   - [x] `look`, `go`, `say` logic implemented
   - [x] Input scrubbing and edge case handling
@@ -69,7 +76,7 @@
     - [x] Debug/fix player state persistence in tests
 - [x] Implement player authentication (invite-only)
   - [ ] MVP definition of done: Migrate to FastAPI Users and a database for authentication
-  - [ ] Use SQLite for MVP database for players
+  - [x] Use SQLite for MVP database for players
 - [ ] Robust logging system with separate files for: system logs, player activity, communication channels - should be well structured for eventual ingestion into ELK stack
 - [ ] Add automated tests to verify path traversal and file access security (e.g., for invites_file and similar parameters)
 
