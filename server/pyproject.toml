@@ -9,7 +9,7 @@ dependencies = [
     "uvicorn[standard]==0.35.0",
     "pydantic==2.11.7",
     "requests==2.32.4",
-    "httpx==0.24.0",
+    "httpx==0.28.1",
     "passlib==1.7.4",
     "python-jose==3.5.0",
     "bcrypt>=4.3.0",
