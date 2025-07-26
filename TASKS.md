@@ -28,7 +28,7 @@
   - [x] Refactor all managers to use the new PersistenceLayer for all data access
   - [x] Refactor all FastAPI endpoints to use the PersistenceLayer (via DI or singleton)
   - [x] Add a Room Pydantic model if not already present
-  - [ ] Update all tests to use the test DB and the new PersistenceLayer
+  - [x] Update all tests to use the test DB and the new PersistenceLayer
   - [ ] Add missing CRUD for inventory, status effects, etc. to PersistenceLayer
   - [ ] Implement missing CRUD and effect/stat logic in the PersistenceLayer
   - [x] Define a server config file (YAML or TOML) and implement a config loader
@@ -43,7 +43,10 @@
   - [ ] Fix command handler tests to work with new PersistenceLayer architecture
   - [x] Fix auth tests to work with new PersistenceLayer architecture
   - [x] Fix command handler tests database issues (15/23 tests now passing)
-  - [ ] Fix command handler tests room data and movement logic (remaining 8 tests need mock room data)
+  - [x] Fix command handler tests room data and movement logic (remaining 8 tests need mock room data)
+  - [x] Migrate mock room data from code to JSON files (completed - removed MOCK_ROOMS from mock_data.py)
+  - [ ] Fix auth test setup and token generation issues (temporary files causing user conflicts)
+  - [ ] Implement log rotation: move existing persistence.log to timestamped name (e.g., persistence.log.2025_07_25_221030) before creating new log file
 
 ---
 

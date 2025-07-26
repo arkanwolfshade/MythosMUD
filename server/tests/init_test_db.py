@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Test database path
-TEST_DB_PATH = Path(__file__).parent / "data" / "test_players.db"
+TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 TEST_JSON_PATH = Path(__file__).parent / "data" / "players.json"
 
 # Database schema (same as production)

@@ -1,0 +1,13 @@
+{
+  "id": "arkham_002",
+  "name": "Miskatonic University Gates",
+  "description": "The grand wrought-iron gates of Miskatonic University loom here, with ivy crawling up the stone pillars.",
+  "zone": "arkham",
+  "exits": {
+    "south": "arkham_001",
+    "north": "arkham_006"
+  },
+  "field1": null,
+  "field2": null,
+  "field3": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "arkham_005",
+  "name": "West Alley Shadows",
+  "description": "A narrow, dimly-lit alley where shadows flicker and the scent of pipe smoke lingers in the air.",
+  "zone": "arkham",
+  "exits": {
+    "east": "arkham_001"
+  },
+  "field1": null,
+  "field2": null,
+  "field3": null
+}

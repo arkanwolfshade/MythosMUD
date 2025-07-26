@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from server.main import app
 from server.auth import get_users_file, get_invites_file
-from server.tests.mock_data import MOCK_ROOMS, MockPlayerManager
+from server.tests.mock_data import MockPlayerManager
 from server.auth_utils import decode_access_token
 
 
@@ -13,7 +13,7 @@ def patch_persistence_layer(monkeypatch):
     # Use the test database that was created with init_test_db.py
     from pathlib import Path
 
-    test_db_path = Path(__file__).parent / "data" / "test_players.db"
+    test_db_path = Path(__file__).parent / "data" / "players" / "test_players.db"
     test_log_path = Path(__file__).parent / "data" / "test_persistence.log"
 
     # Ensure the test database exists
@@ -53,24 +53,56 @@ def patch_persistence_layer(monkeypatch):
 @pytest.fixture(autouse=True)
 def patch_get_current_user(monkeypatch):
     def get_current_user_mock(credentials=None, users_file=None):
+        print(f"[get_current_user_mock] Called with credentials: {credentials}")
         # Extract token from credentials
         token = None
         if credentials and hasattr(credentials, "credentials"):
             token = credentials.credentials
         elif isinstance(credentials, str):
             token = credentials
-        if not token:
+
+        print(f"[get_current_user_mock] Extracted token: {token}")
+
+        # Handle mock token for testing
+        if token == "mock_token_for_cmduser":
+            print("[get_current_user_mock] Using mock token")
             return {"username": "cmduser", "current_room_id": "arkham_001"}
+
+        if not token:
+            print("[get_current_user_mock] No token, using default")
+            return {"username": "cmduser", "current_room_id": "arkham_001"}
+
+        # Try to decode real token
         payload = decode_access_token(token)
         username = payload["sub"] if payload and "sub" in payload else "cmduser"
+
+        # For testing, always return the mock user data instead of checking the users file
         player_manager = app.state.player_manager
         player = player_manager.get_player_by_name(username)
-        return {
-            "username": player.name,
-            "current_room_id": player.current_room_id,
-        }
+        if player:
+            return {
+                "username": player.name,
+                "current_room_id": player.current_room_id,
+            }
+        else:
+            # Fallback for testing
+            return {"username": "cmduser", "current_room_id": "arkham_001"}
 
+    # Mock the HTTPBearer dependency to accept our mock token
+    def mock_bearer_scheme(credentials=None):
+        if credentials and credentials.credentials == "mock_token_for_cmduser":
+            return credentials
+        # For real tokens, let the original HTTPBearer handle it
+        from fastapi.security import HTTPBearer
+        original_bearer = HTTPBearer()
+        return original_bearer(credentials)
+
+    print("[patch_get_current_user] Setting up mocks...")
     monkeypatch.setattr("server.auth.get_current_user", get_current_user_mock)
+    monkeypatch.setattr("server.auth.bearer_scheme", mock_bearer_scheme)
+    # Also mock it in the command_handler module where it's imported
+    monkeypatch.setattr("server.command_handler.get_current_user", get_current_user_mock)
+    print("[patch_get_current_user] Mocks set up successfully")
     yield
 
 
@@ -121,9 +153,8 @@ def persistent_patch_app_state(monkeypatch):
 def test_client(persistent_patch_app_state):
     with TestClient(app) as client:
         mock_player_manager = MockPlayerManager()
-        mock_rooms = MOCK_ROOMS.copy()
+        # Rooms will be loaded from JSON files by the PersistenceLayer
         client.app.state.player_manager = mock_player_manager
-        client.app.state.rooms = mock_rooms
         player = mock_player_manager.get_player_by_name("cmduser")
         if player:
             print(f"[debug] Test start: cmduser in {player.current_room_id}")
@@ -134,7 +165,8 @@ def test_client(persistent_patch_app_state):
 
 @pytest.fixture
 def auth_token(test_client):
-    test_client.post(
+    # Try to register the user, but don't fail if they already exist
+    reg_resp = test_client.post(
         "/auth/register",
         json={
             "username": "cmduser",
@@ -142,6 +174,12 @@ def auth_token(test_client):
             "invite_code": "INVITE123",
         },
     )
+    print(f"[auth_token] Registration response status: {reg_resp.status_code}")
+    print(f"[auth_token] Registration response: {reg_resp.json()}")
+
+    # Registration should succeed (201) or user already exists (409)
+    assert reg_resp.status_code in [201, 409], f"Unexpected registration status: {reg_resp.status_code}"
+
     pm = test_client.app.state.player_manager
     print(
         f"[auth_token] After registration: {pm.get_player_by_name('cmduser').current_room_id}"
@@ -149,9 +187,14 @@ def auth_token(test_client):
     resp = test_client.post(
         "/auth/login", json={"username": "cmduser", "password": "testpass"}
     )
+    print(f"[auth_token] Login response status: {resp.status_code}")
+    print(f"[auth_token] Login response: {resp.json()}")
     print(
         f"[auth_token] After login: {pm.get_player_by_name('cmduser').current_room_id}"
     )
+
+    # Login should succeed
+    assert resp.status_code == 200, f"Login failed: {resp.json()}"
     return resp.json()["access_token"]
 
 
@@ -166,6 +209,33 @@ def post_command(client, token, command):
 def test_auth_required(test_client):
     resp = test_client.post("/command/", json={"command": "look"})
     assert resp.status_code == 403
+
+
+def test_look_command_with_mock_auth(test_client):
+    """Test look command using a valid JWT token for testing."""
+    # Create a valid JWT token for testing
+    from server.auth_utils import create_access_token
+    from datetime import timedelta
+
+    test_token = create_access_token(
+        data={"sub": "cmduser"},
+        expires_delta=timedelta(minutes=60)
+    )
+
+    print("[test] About to make request with valid JWT token")
+    resp = test_client.post(
+        "/command/",
+        json={"command": "look"},
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    print(f"[test] Response status: {resp.status_code}")
+    print(f"[test] Response body: {resp.json()}")
+
+    assert resp.status_code == 200
+    result = resp.json()["result"]
+    assert result.startswith("Arkham Town Square")
+    assert "You are standing in the bustling heart of Arkham" in result
+    assert "Exits: north, south, east, west" in result
 
 
 def test_empty_command(auth_token, test_client):

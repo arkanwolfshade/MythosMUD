@@ -4,7 +4,7 @@
 import sqlite3
 from pathlib import Path
 
-TEST_DB_PATH = Path(__file__).parent / "data" / "test_players.db"
+TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 
 
 def verify_test_database():
