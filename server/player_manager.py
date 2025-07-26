@@ -7,5 +7,5 @@ class PlayerManager:
     """
 
     def __init__(self, *args, **kwargs):
-        warnings.warn("PlayerManager is deprecated. Use PersistenceLayer.")
+        warnings.warn("PlayerManager is deprecated. Use PersistenceLayer.", stacklevel=2)
         raise NotImplementedError("PlayerManager is deprecated. Use PersistenceLayer.")
