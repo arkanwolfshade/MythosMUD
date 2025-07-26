@@ -2,12 +2,11 @@ import subprocess
 import sys
 import os
 
-is_windows = sys.platform.startswith("win")
-venv_python = os.path.join("server", "venv", "Scripts" if is_windows else "bin", "python")
 main_py = os.path.join("server", "main.py")
 
-print(f"Running server: {venv_python} {main_py}")
-result = subprocess.run([venv_python, main_py])
+print(f"Running server: uv run --project server {main_py}")
+result = subprocess.run(["uv", "run", "--project", "server", main_py])
+
 if result.returncode != 0:
-    print("Server exited with error.")
+    print(f"Server exited with code: {result.returncode}")
     sys.exit(result.returncode)

@@ -1,34 +1,36 @@
 import subprocess
 import sys
-import os
 import shutil
-
-is_windows = sys.platform.startswith("win")
-venv_python = os.path.join("server", "venv", "Scripts" if is_windows else "bin", "python")
 
 success = True
 
-# Ruff formatting in server
-cmd = [venv_python, "-m", "ruff", "format", "."]
-print(f"Running {' '.join(str(c) for c in cmd)} in server...")
+# Ruff formatting in server using uv
+print("Running ruff formatting in server...")
+cmd = ["uv", "run", "--project", "server", "ruff", "format", "."]
 result = subprocess.run(cmd, cwd="server")
 if result.returncode != 0:
-    print(f"Command {' '.join(str(c) for c in cmd)} failed in server")
+    print(f"❌ Ruff formatting failed with exit code: {result.returncode}")
     success = False
+else:
+    print("✅ Ruff formatting completed!")
 
 # Detect full path to npm
 npm_path = shutil.which("npm")
 if not npm_path:
-    print("npm not found in PATH. Please install Node.js and ensure npm is available.")
+    print("❌ npm not found in PATH. Please install Node.js and ensure npm is available.")
     sys.exit(1)
 
 # Prettier formatting in client via npm script
+print("Running prettier formatting in client...")
 npm_cmd = [npm_path, "run", "format"]
-print(f"Running {' '.join(str(c) for c in npm_cmd)} in client...")
 result = subprocess.run(npm_cmd, cwd="client")
 if result.returncode != 0:
-    print(f"Command {' '.join(str(c) for c in npm_cmd)} failed in client")
+    print(f"❌ Prettier formatting failed with exit code: {result.returncode}")
     success = False
+else:
+    print("✅ Prettier formatting completed!")
 
 if not success:
     sys.exit(1)
+
+print("🎉 All formatting completed!")

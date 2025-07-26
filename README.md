@@ -45,8 +45,8 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
    ```sh
    cd server
    pyenv local 3.11.8  # or your preferred Python 3.11+ version
-   pip install -r requirements.txt
-   uvicorn main:app --reload
+   uv sync
+   uv run uvicorn main:app --reload
    ```
 3. **Set up the frontend:**
    ```sh

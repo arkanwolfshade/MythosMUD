@@ -65,12 +65,12 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 1. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
 
 2. Start the server:
    ```bash
-   uvicorn main:app --reload
+   uv run uvicorn main:app --reload
    ```
 
 3. The server will be available at `http://localhost:8000`

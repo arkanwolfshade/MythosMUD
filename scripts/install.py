@@ -1,30 +1,47 @@
 import subprocess
 import sys
-import os
 
 is_windows = sys.platform.startswith("win")
-venv_dir = os.path.join("server", "venv")
-venv_python = os.path.join(venv_dir, "Scripts" if is_windows else "bin", "python")
-venv_pip = os.path.join(venv_dir, "Scripts" if is_windows else "bin", "pip")
+
+# Check if uv is available
+try:
+    subprocess.run(["uv", "--version"], check=True, capture_output=True)
+    print("✓ uv is available")
+except (subprocess.CalledProcessError, FileNotFoundError):
+    print("❌ uv is not available. Please install uv first:")
+    print("  curl -LsSf https://astral.sh/uv/install.sh | sh")
+    print("  # or on Windows:")
+    print("  powershell -c \"irm https://astral.sh/uv/install.ps1 | iex\"")
+    sys.exit(1)
 
 steps = [
-    [sys.executable, "-m", "venv", venv_dir],
-    [venv_pip, "install", "--upgrade", "pip"],
-    [venv_pip, "install", "-r", os.path.join("server", "requirements.txt")],
-    ["npx", "--version"],  # Ensure npx is available
+    # Install Python dependencies using uv
+    ["uv", "sync", "--project", "server"],
+    # Install pre-commit hooks
+    ["uv", "run", "--project", "server", "pre-commit", "install", "-f"],
+    # Ensure npx is available
+    ["npx", "--version"],
+    # Install client dependencies
     ["npm", "install"],
-    [sys.executable, "-m", "pip", "install", "pre-commit"],
-    ["pre-commit", "install", "-f"],
 ]
 
 print("Installing server and client dependencies...")
 
 for i, step in enumerate(steps):
-    if i == 4:
-        # npm install in client
+    print(f"Running: {' '.join(step)}")
+
+    if i == 3:  # npm install in client
         result = subprocess.run(step, cwd="client")
     else:
         result = subprocess.run(step)
+
     if result.returncode != 0:
-        print(f"Step failed: {' '.join(str(s) for s in step)}")
+        print(f"❌ Step failed: {' '.join(str(s) for s in step)}")
         sys.exit(result.returncode)
+    else:
+        print(f"✓ Step completed: {' '.join(str(s) for s in step)}")
+
+print("✅ Installation completed successfully!")
+print("\nNext steps:")
+print("1. Start the server: uv run --project server uvicorn main:app --reload")
+print("2. Start the client: cd client && npm start")

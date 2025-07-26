@@ -1,14 +1,12 @@
 import subprocess
 import sys
-import os
 
-is_windows = sys.platform.startswith("win")
-venv_python = os.path.join("server", "venv", "Scripts" if is_windows else "bin", "python")
-
-cmd = [venv_python, "-m", "pytest", "server/tests"]
-
-print("Running pytest for server tests...")
+print("Running tests with uv...")
+cmd = ["uv", "run", "--project", "server", "pytest", "tests", "-v", "--tb=short"]
 result = subprocess.run(cmd)
+
 if result.returncode != 0:
-    print("Tests failed.")
+    print(f"Tests failed with exit code: {result.returncode}")
     sys.exit(result.returncode)
+else:
+    print("✅ All tests passed!")

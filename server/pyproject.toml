@@ -2,23 +2,7 @@
 name = "mythosmud-server"
 version = "0.1.0"
 description = "Python FastAPI back-end for MythosMUD - A Cthulhu Mythos-themed MUD"
-authors = [
-    {name = "Arkan Wolfshade", email = "mythosmud_github.dropout832@simplelogin.com"}
-]
-readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "MIT"}
-keywords = ["mud", "game", "cthulhu", "mythos", "fastapi", "websockets"]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Games/Entertainment :: Role-Playing",
-    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-]
 
 dependencies = [
     "fastapi==0.116.1",
@@ -38,10 +22,6 @@ dev = [
     "ruff==0.4.4",
     "flake8==7.0.0",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 [tool.ruff]
 target-version = "py311"
