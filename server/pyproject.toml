@@ -27,7 +27,7 @@ dependencies = [
     "requests==2.32.4",
     "httpx==0.24.0",
     "passlib==1.7.4",
-    "python-jose==3.4.0",
+    "python-jose==3.5.0",
 ]
 
 [project.optional-dependencies]
