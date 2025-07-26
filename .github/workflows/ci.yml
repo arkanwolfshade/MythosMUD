@@ -36,13 +36,18 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: |
+          source $HOME/.cargo/env
           uv sync --dev
       - name: Lint with ruff
         run: |
-          uv run ruff check --line-length=120 .
+          source $HOME/.cargo/env
+          source .venv/bin/activate
+          ruff check --line-length=120 .
       - name: Run tests with coverage
         run: |
-          uv run pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
+          source $HOME/.cargo/env
+          source .venv/bin/activate
+          pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
