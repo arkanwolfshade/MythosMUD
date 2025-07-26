@@ -1,0 +1,71 @@
+# MythosMUD Server Configuration
+
+# --- Database & Persistence ---
+db_path: ../data/players.db
+log_path: ./persistence.log
+log_level: INFO
+
+# --- Network ---
+host: 0.0.0.0  # Server bind address
+port: 4000     # Main game port
+max_connections: 100
+connection_timeout: 60  # seconds
+
+# --- File Paths & Directories ---
+data_dir: ./data/
+player_dir: ./data/players/
+log_dir: ./logs/
+motd_file: ./data/motd.txt
+# zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
+
+# --- World & Game Settings ---
+start_room: arkham_001
+starting_level: 1
+allow_multiplay: false
+max_players: 100
+
+# --- Modules/Systems ---
+enable_combat: true
+enable_weather: true
+enable_pvp: false
+# enable_plugins: false  # For future plugin system
+
+# --- Logging & Debug ---
+enable_stack_traces: true
+# log_npc: false
+# log_combat: false
+# log_player_input: false
+
+# --- Authentication/Accounts ---
+auth_backend: sqlite
+auth_db_file: ./data/users.db
+registration_enabled: true
+allow_guest_login: false
+
+# --- World Load/Boot Sequence ---
+areas:
+  - ./data/rooms/arkham/
+npcs:
+  - ./data/npcs/guards.json
+quests:
+  - ./data/quests/tutorial.json
+
+# --- Admin/Console/Telnet ---
+admin_password: changeme
+admin_port: 5001
+enable_remote_console: false
+
+# --- Game Balance & Mechanics ---
+xp_multiplier: 1.0
+hp_regen_rate: 5
+combat_tick_interval: 2  # seconds
+
+# --- Runtime/Scheduler ---
+game_tick_rate: 1  # seconds
+weather_update_interval: 60
+save_interval: 300
+
+# --- Future/Advanced ---
+# plugin_dir: ./plugins/
+# scripting_engine: python
+# feature_flags: []

@@ -38,22 +38,21 @@ def register_user(
     users_file: str = Depends(get_users_file),
     invites_file: str = Depends(get_invites_file),
 ):
-    player_manager = request.app.state.player_manager
-    if player_manager.get_player_by_name(req.username):
+    # Use PersistenceLayer for player lookup
+    persistence = request.app.state.persistence
+    if persistence.get_player_by_name(req.username):
         raise HTTPException(status_code=409, detail="Username already exists")
+    # TODO: Migrate invites and users to PersistenceLayer
     # Load invites
     try:
-        # Validate the invites_file path
         base_path = os.path.realpath(os.path.dirname(INVITES_FILE))
         normalized_path = os.path.realpath(invites_file)
         if not normalized_path.startswith(base_path):
-            normalized_path = INVITES_FILE  # Fallback to default
-
+            normalized_path = INVITES_FILE
         with open(normalized_path, "r", encoding="utf-8") as f:
             invites = json.load(f)
     except Exception:
         invites = []
-
     invite = next(
         (
             i
@@ -66,28 +65,19 @@ def register_user(
         raise HTTPException(
             status_code=400, detail="Invite code is invalid or already used."
         )
-
     # Load users
     try:
-        # Validate the users_file path
         base_path = os.path.realpath(os.path.dirname(USERS_FILE))
         normalized_path = os.path.realpath(users_file)
         if not normalized_path.startswith(base_path):
-            normalized_path = USERS_FILE  # Fallback to default
-
+            normalized_path = USERS_FILE
         with open(normalized_path, "r", encoding="utf-8") as f:
             users = json.load(f)
     except Exception:
         users = []
-
-    # Check for duplicate username before creating player
     if any(u["username"] == req.username for u in users):
         raise HTTPException(status_code=409, detail="Username already exists.")
-
-    # Hash password
     password_hash = hash_password(req.password)
-
-    # Create user object
     user = {
         "username": req.username,
         "password_hash": password_hash,
@@ -95,18 +85,13 @@ def register_user(
         "created_at": datetime.utcnow().isoformat() + "Z",
     }
     users.append(user)
-
-    # Save users
     with open(users_file, "w", encoding="utf-8") as f:
         json.dump(users, f, indent=2)
-
-    # Mark invite as used
     for i in invites:
         if i["code"] == req.invite_code:
             i["used"] = True
     with open(invites_file, "w", encoding="utf-8") as f:
         json.dump(invites, f, indent=2)
-
     return {"message": "Registration successful. You may now log in."}
 
 

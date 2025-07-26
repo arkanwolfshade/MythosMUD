@@ -7,7 +7,9 @@ from server.main import app
 from server.auth import get_users_file, get_invites_file
 from server.player_manager import PlayerManager
 
-TEST_DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "test_players.db"))
+TEST_DB_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "test_players.db")
+)
 
 
 @pytest.fixture(scope="session", autouse=True)

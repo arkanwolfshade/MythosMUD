@@ -59,19 +59,15 @@ def handle_command(
     args = parts[1:]
 
     app = request.app if request else None
+    persistence = app.state.persistence if app else None
     if cmd == "look":
-        if (
-            not app
-            or not hasattr(app.state, "rooms")
-            or not hasattr(app.state, "player_manager")
-        ):
+        if not persistence:
             return {"result": "You see nothing special."}
-        player_manager = app.state.player_manager
-        player = player_manager.get_player_by_name(current_user["username"])
+        player = persistence.get_player_by_name(current_user["username"])
         if not player:
             return {"result": "You see nothing special."}
         room_id = player.current_room_id
-        room = app.state.rooms.get(room_id)
+        room = persistence.get_room(room_id)
         if not room:
             return {"result": "You see nothing special."}
         if args:
@@ -79,7 +75,7 @@ def handle_command(
             exits = room.get("exits", {})
             target_room_id = exits.get(direction)
             if target_room_id:
-                target_room = app.state.rooms.get(target_room_id)
+                target_room = persistence.get_room(target_room_id)
                 if target_room:
                     name = target_room.get("name", "")
                     desc = target_room.get("description", "You see nothing special.")
@@ -94,34 +90,28 @@ def handle_command(
         )
         return {"result": f"{name}\n{desc}\n{exits_str}"}
     elif cmd == "go":
-        if (
-            not app
-            or not hasattr(app.state, "rooms")
-            or not hasattr(app.state, "player_manager")
-        ):
+        if not persistence:
             return {"result": "You can't go that way"}
         if not args:
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
-        player_manager = app.state.player_manager
-        player = player_manager.get_player_by_name(current_user["username"])
+        player = persistence.get_player_by_name(current_user["username"])
         if not player:
             return {"result": "You can't go that way"}
         room_id = player.current_room_id
-        room = app.state.rooms.get(room_id)
+        room = persistence.get_room(room_id)
         if not room:
             return {"result": "You can't go that way"}
         exits = room.get("exits", {})
         target_room_id = exits.get(direction)
         if not target_room_id:
             return {"result": "You can't go that way"}
-        target_room = app.state.rooms.get(target_room_id)
+        target_room = persistence.get_room(target_room_id)
         if not target_room:
             return {"result": "You can't go that way"}
         # Move the player: update and persist current_room_id
         player.current_room_id = target_room_id
-        player_manager.update_player(player)
-        # Update current_user for this request (not persistent for JWT, but for immediate look)
+        persistence.save_player(player)
         current_user["current_room_id"] = target_room_id
         name = target_room.get("name", "")
         desc = target_room.get("description", "You see nothing special.")

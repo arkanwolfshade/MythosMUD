@@ -192,7 +192,10 @@ def test_process_status_effects(player_manager):
     player = player_manager.create_player("EffectTest")
     player_id = player["id"]
     with player_manager._get_conn() as conn:
-        conn.execute("UPDATE players SET constitution = ?, dexterity = ? WHERE id = ?", (10, 10, player_id))
+        conn.execute(
+            "UPDATE players SET constitution = ?, dexterity = ? WHERE id = ?",
+            (10, 10, player_id),
+        )
         conn.commit()
     loaded_player = player_manager.get_player(player_id)
     assert loaded_player["constitution"] == 10
@@ -201,6 +204,7 @@ def test_process_status_effects(player_manager):
 
 def test_load_sample_player():
     from server.player_manager import PlayerManager
+
     pm = PlayerManager(db_path="data/players.db")
     player = pm.get_player_by_name("cmduser")
     assert player is not None

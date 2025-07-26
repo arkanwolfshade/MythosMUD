@@ -25,6 +25,13 @@
 - [ ] Remove old direct DB/file access from managers
 - [ ] Update all tests to use the new persistence layer
 - [ ] Document the new architecture and usage
+  - [ ] Refactor all managers to use the new PersistenceLayer for all data access
+  - [ ] Refactor all FastAPI endpoints to use the PersistenceLayer (via DI or singleton)
+  - [ ] Add a Room Pydantic model if not already present
+  - [ ] Update all tests to use the test DB and the new PersistenceLayer
+  - [ ] Add missing CRUD for inventory, status effects, etc. to PersistenceLayer
+  - [ ] Implement missing CRUD and effect/stat logic in the PersistenceLayer
+  - [ ] Define a server config file (YAML or TOML) and implement a config loader
 
 ---
 

@@ -1,0 +1,66 @@
+# MythosMUD Test Server Configuration
+
+# --- Database & Persistence ---
+db_path: ../tests/test_players.db  # Test DB
+log_path: ./persistence_test.log   # Test log file
+log_level: DEBUG                  # Verbose logging for tests
+
+# --- Network ---
+host: 127.0.0.1  # Test server bind address
+port: 4999       # Test game port
+max_connections: 10
+connection_timeout: 10  # seconds
+
+# --- File Paths & Directories ---
+data_dir: ../tests/data/
+player_dir: ../tests/data/players/
+log_dir: ../tests/logs/
+motd_file: ../tests/data/motd.txt
+
+# --- World & Game Settings ---
+start_room: test_start_room
+starting_level: 1
+allow_multiplay: true
+max_players: 10
+
+# --- Modules/Systems ---
+enable_combat: true
+enable_weather: false
+enable_pvp: false
+
+# --- Logging & Debug ---
+enable_stack_traces: true
+
+# --- Authentication/Accounts ---
+auth_backend: sqlite
+auth_db_file: ../tests/data/test_users.db
+registration_enabled: true
+allow_guest_login: true
+
+# --- World Load/Boot Sequence ---
+areas:
+  - ../tests/data/rooms/test_zone/
+npcs:
+  - ../tests/data/npcs/test_npc.json
+quests:
+  - ../tests/data/quests/test_quest.json
+
+# --- Admin/Console/Telnet ---
+admin_password: testadmin
+admin_port: 5999
+enable_remote_console: false
+
+# --- Game Balance & Mechanics ---
+xp_multiplier: 1.0
+hp_regen_rate: 10
+combat_tick_interval: 1  # seconds
+
+# --- Runtime/Scheduler ---
+game_tick_rate: 0.5  # seconds
+weather_update_interval: 5
+save_interval: 10
+
+# --- Future/Advanced ---
+# plugin_dir: ../tests/plugins/
+# scripting_engine: python
+# feature_flags: []
