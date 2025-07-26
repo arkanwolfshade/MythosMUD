@@ -42,11 +42,11 @@ jobs:
       - name: Lint with ruff
         run: |
           source $HOME/.cargo/env
-          uv run ruff check --line-length=120 .
+          .venv/bin/ruff check --line-length=120 .
       - name: Run tests with coverage
         run: |
           source $HOME/.cargo/env
-          uv run pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
+          .venv/bin/pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
