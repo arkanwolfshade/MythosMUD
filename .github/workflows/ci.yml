@@ -34,6 +34,7 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: |
           source $HOME/.cargo/env
@@ -41,13 +42,11 @@ jobs:
       - name: Lint with ruff
         run: |
           source $HOME/.cargo/env
-          source .venv/bin/activate
-          ruff check --line-length=120 .
+          uv run ruff check --line-length=120 .
       - name: Run tests with coverage
         run: |
           source $HOME/.cargo/env
-          source .venv/bin/activate
-          pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
+          uv run pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
