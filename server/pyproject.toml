@@ -1,6 +1,28 @@
-# Tool configurations for MythosMUD server
-# This file contains tool configurations only - no project definition
-# to prevent uv from creating separate environments
+[project]
+name = "mythosmud-server"
+version = "0.1.0"
+description = "Python FastAPI back-end for MythosMUD - A Cthulhu Mythos-themed MUD"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi==0.116.1",
+    "uvicorn[standard]==0.35.0",
+    "pydantic==2.11.7",
+    "requests==2.32.4",
+    "httpx==0.28.1",
+    "passlib==1.7.4",
+    "python-jose==3.5.0",
+    "bcrypt>=4.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "debugpy==1.8.15",
+    "ruff==0.12.5",
+    "flake8==7.3.0",
+]
 
 [tool.ruff]
 target-version = "py311"
