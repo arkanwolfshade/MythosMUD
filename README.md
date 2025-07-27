@@ -41,20 +41,26 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
    git clone <your-repo-url>
    cd MythosMUD
    ```
-2. **Set up the backend:**
+2. **Start the development environment:**
+   ```powershell
+   # Windows PowerShell
+   .\scripts\start_dev.ps1
+   ```
+
+   Or manually:
    ```sh
+   # Backend
    cd server
    pyenv local 3.11.8  # or your preferred Python 3.11+ version
    uv sync
    uv run uvicorn main:app --reload
-   ```
-3. **Set up the frontend:**
-   ```sh
-   cd ../client
+
+   # Frontend (in another terminal)
+   cd client
    npm install
    npm run dev
    ```
-4. **Visit:**
+3. **Visit:**
    - Backend: http://localhost:8000
    - Frontend: http://localhost:5173
 
@@ -66,6 +72,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 MythosMUD/
 ├── client/      # React + TypeScript frontend (Vite)
 ├── server/      # Python FastAPI backend
+├── scripts/     # Utility scripts (PowerShell & Python)
 ├── docs/        # Documentation (PRD, etc.)
 ├── .github/     # GitHub Actions workflows
 ├── PLANNING.md  # Vision, architecture, stack
@@ -76,6 +83,25 @@ MythosMUD/
 ---
 
 ## Development
+
+### Utility Scripts
+
+The `scripts/` directory contains PowerShell and Python utility scripts for managing the development environment:
+
+**PowerShell Scripts:**
+- `scripts/start_server.ps1` - Start the FastAPI server
+- `scripts/stop_server.ps1` - Stop server processes
+- `scripts/start_dev.ps1` - Start complete development environment
+
+**Python Scripts:**
+- `scripts/run.py` - Run the server
+- `scripts/test.py` - Run tests
+- `scripts/lint.py` - Lint code
+- `scripts/format.py` - Format code
+
+See [scripts/README.md](scripts/README.md) for detailed documentation.
+
+### Development Tools
 
 - **Linting and formatting:**
   - Python: `ruff check .` and `ruff format .` in `/server`
