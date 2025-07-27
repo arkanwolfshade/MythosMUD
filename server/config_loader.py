@@ -49,7 +49,7 @@ _config = None
 
 _DEFAULTS = {
     "db_path": "../data/players.db",
-    "log_path": "./persistence.log",
+    "log_path": "logs/persistence.log",  # Relative to server directory
     "log_level": "INFO",
     "host": "0.0.0.0",
     "port": 4000,

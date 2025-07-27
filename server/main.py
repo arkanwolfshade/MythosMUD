@@ -5,11 +5,12 @@ import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, HTTPException, WebSocket
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from auth import get_current_user
+from auth import get_current_user, get_current_user_optional
 from auth import router as auth_router
 from command_handler import router as command_router
 from models import Player, Stats
@@ -97,6 +98,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(auth_router)
 app.include_router(command_router)
 
@@ -126,7 +136,11 @@ def read_root():
 
 # Real-time communication endpoints
 @app.get("/events/{player_id}")
-async def game_events_stream(player_id: str, current_user: dict = Depends(get_current_user)):
+async def game_events_stream(
+    player_id: str,
+    request: Request,
+    current_user: dict = Depends(get_current_user_optional)
+):
     """
     Server-Sent Events stream for real-time game updates.
 

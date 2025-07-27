@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MythosMUD Client Test</title>
+    <style>
+      body {
+        font-family: "Courier New", monospace;
+        background: #0a0a0a;
+        color: #00ff00;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #00ff00;
+        border-radius: 5px;
+      }
+      .success {
+        color: #00ff00;
+      }
+      .error {
+        color: #ff4444;
+      }
+      .info {
+        color: #ffaa00;
+      }
+      button {
+        background: #00ff00;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      button:hover {
+        background: #00cc00;
+      }
+      input {
+        background: #1a1a1a;
+        color: #00ff00;
+        border: 1px solid #333;
+        padding: 8px;
+        margin: 5px;
+        font-family: inherit;
+      }
+      #output {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 10px;
+        height: 300px;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MythosMUD Client Test</h1>
+
+    <div class="test-section">
+      <h3>Server Connection Test</h3>
+      <button onclick="testServerConnection()">Test Server Connection</button>
+      <div id="server-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Registration Test</h3>
+      <input type="text" id="reg-username" placeholder="Username" value="newuser" />
+      <input type="password" id="reg-password" placeholder="Password" value="newpass" />
+      <input type="text" id="invite-code" placeholder="Invite Code" value="INVITE123" />
+      <button onclick="testRegistration()">Test Registration</button>
+      <div id="reg-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Authentication Test</h3>
+      <input type="text" id="username" placeholder="Username" value="testuser" />
+      <input type="password" id="password" placeholder="Password" value="testpass" />
+      <button onclick="testAuthentication()">Test Authentication</button>
+      <div id="auth-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>SSE Connection Test</h3>
+      <button onclick="testSSEConnection()">Test SSE Connection</button>
+      <div id="sse-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>WebSocket Connection Test</h3>
+      <button onclick="testWebSocketConnection()">Test WebSocket Connection</button>
+      <div id="ws-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Game Commands Test</h3>
+      <input type="text" id="command" placeholder="Command (e.g., look, go north)" value="look" />
+      <button onclick="testCommand()">Send Command</button>
+      <div id="command-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Output Log</h3>
+      <div id="output"></div>
+    </div>
+
+    <script>
+      const baseUrl = "/api";
+      let authToken = null;
+      let playerId = null;
+      let eventSource = null;
+      let websocket = null;
+
+      function log(message, type = "info") {
+        const output = document.getElementById("output");
+        const timestamp = new Date().toLocaleTimeString();
+        output.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+        output.scrollTop = output.scrollHeight;
+      }
+
+      async function testServerConnection() {
+        const status = document.getElementById("server-status");
+        try {
+          const response = await fetch(`${baseUrl}/`);
+          const data = await response.json();
+          status.innerHTML = `<span class="success">✓ Server connected: ${data.message}</span>`;
+          log("Server connection test: SUCCESS", "success");
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ Server connection failed: ${error.message}</span>`;
+          log(`Server connection test: FAILED - ${error.message}`, "error");
+        }
+      }
+
+      async function testRegistration() {
+        const status = document.getElementById("reg-status");
+        const username = document.getElementById("reg-username").value;
+        const password = document.getElementById("reg-password").value;
+        const inviteCode = document.getElementById("invite-code").value;
+
+        try {
+          const response = await fetch(`${baseUrl}/auth/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              password,
+              invite_code: inviteCode,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            status.innerHTML = `<span class="success">✓ Registration successful: ${data.message}</span>`;
+            log("Registration test: SUCCESS", "success");
+          } else {
+            const errorData = await response.json();
+            status.innerHTML = `<span class="error">✗ Registration failed: ${errorData.detail}</span>`;
+            log(`Registration test: FAILED - ${errorData.detail}`, "error");
+          }
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ Registration failed: ${error.message}</span>`;
+          log(`Registration test: FAILED - ${error.message}`, "error");
+        }
+      }
+
+      async function testAuthentication() {
+        const status = document.getElementById("auth-status");
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch(`${baseUrl}/auth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            authToken = data.access_token;
+            playerId = username;
+            status.innerHTML = `<span class="success">✓ Authentication successful</span>`;
+            log("Authentication test: SUCCESS", "success");
+          } else {
+            const errorData = await response.json();
+            status.innerHTML = `<span class="error">✗ Authentication failed: ${errorData.detail}</span>`;
+            log(`Authentication test: FAILED - ${errorData.detail}`, "error");
+          }
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ Authentication failed: ${error.message}</span>`;
+          log(`Authentication test: FAILED - ${error.message}`, "error");
+        }
+      }
+
+      function testSSEConnection() {
+        const status = document.getElementById("sse-status");
+
+        if (!authToken || !playerId) {
+          status.innerHTML = '<span class="error">✗ Please authenticate first</span>';
+          return;
+        }
+
+        if (eventSource) {
+          eventSource.close();
+        }
+
+        try {
+          eventSource = new EventSource(`/events/${playerId}?token=${encodeURIComponent(authToken)}`);
+
+          eventSource.onopen = () => {
+            status.innerHTML = '<span class="success">✓ SSE connection established</span>';
+            log("SSE connection: ESTABLISHED", "success");
+          };
+
+          eventSource.onmessage = (event) => {
+            try {
+              const gameEvent = JSON.parse(event.data);
+              log(`SSE Event: ${gameEvent.event_type}`, "info");
+            } catch (error) {
+              log(`SSE parse error: ${error.message}`, "error");
+            }
+          };
+
+          eventSource.onerror = (error) => {
+            status.innerHTML = '<span class="error">✗ SSE connection failed</span>';
+            log(`SSE connection: FAILED - ${error}`, "error");
+          };
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ SSE connection failed: ${error.message}</span>`;
+          log(`SSE connection: FAILED - ${error.message}`, "error");
+        }
+      }
+
+      function testWebSocketConnection() {
+        const status = document.getElementById("ws-status");
+
+        if (!playerId) {
+          status.innerHTML = '<span class="error">✗ Please authenticate first</span>';
+          return;
+        }
+
+        if (websocket) {
+          websocket.close();
+        }
+
+        try {
+          const wsUrl = `ws://${window.location.host}/ws/${playerId}`;
+          websocket = new WebSocket(wsUrl);
+
+          websocket.onopen = () => {
+            status.innerHTML = '<span class="success">✓ WebSocket connection established</span>';
+            log("WebSocket connection: ESTABLISHED", "success");
+          };
+
+          websocket.onmessage = (event) => {
+            try {
+              const gameEvent = JSON.parse(event.data);
+              log(`WebSocket Event: ${gameEvent.event_type}`, "info");
+            } catch (error) {
+              log(`WebSocket parse error: ${error.message}`, "error");
+            }
+          };
+
+          websocket.onerror = (error) => {
+            status.innerHTML = '<span class="error">✗ WebSocket connection failed</span>';
+            log(`WebSocket connection: FAILED - ${error}`, "error");
+          };
+
+          websocket.onclose = () => {
+            status.innerHTML = '<span class="info">WebSocket connection closed</span>';
+            log("WebSocket connection: CLOSED", "info");
+          };
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ WebSocket connection failed: ${error.message}</span>`;
+          log(`WebSocket connection: FAILED - ${error.message}`, "error");
+        }
+      }
+
+      async function testCommand() {
+        const status = document.getElementById("command-status");
+        const command = document.getElementById("command").value;
+
+        if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+          status.innerHTML = '<span class="error">✗ WebSocket not connected</span>';
+          return;
+        }
+
+        try {
+          const message = {
+            command: command,
+            args: [],
+            timestamp: new Date().toISOString(),
+          };
+
+          websocket.send(JSON.stringify(message));
+          status.innerHTML = '<span class="success">✓ Command sent</span>';
+          log(`Command sent: ${command}`, "success");
+        } catch (error) {
+          status.innerHTML = `<span class="error">✗ Command failed: ${error.message}</span>`;
+          log(`Command failed: ${error.message}`, "error");
+        }
+      }
+
+      // Auto-test on page load
+      window.onload = function () {
+        log("MythosMUD Client Test Page Loaded", "info");
+        testServerConnection();
+      };
+    </script>
+  </body>
+</html>

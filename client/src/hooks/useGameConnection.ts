@@ -51,7 +51,7 @@ export function useGameConnection({
   const reconnectTimeoutRef = useRef<number | null>(null);
   const reconnectAttemptsRef = useRef(0);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const baseUrl = import.meta.env.VITE_API_URL || "/api";
 
   // Connect to SSE stream for game state updates
   const connectSSE = useCallback(() => {
@@ -61,7 +61,8 @@ export function useGameConnection({
 
     setState((prev) => ({ ...prev, isConnecting: true, error: null }));
 
-    const eventSource = new EventSource(`${baseUrl}/events/${playerId}`);
+    // Use the proxy path for SSE
+    const eventSource = new EventSource(`/events/${playerId}?token=${encodeURIComponent(authToken)}`);
 
     eventSource.onopen = () => {
       setState((prev) => ({
@@ -124,7 +125,8 @@ export function useGameConnection({
       websocketRef.current.close();
     }
 
-    const wsUrl = `${baseUrl.replace("http", "ws")}/ws/${playerId}`;
+    // Use the proxy path for WebSocket
+    const wsUrl = `ws://${window.location.host}/ws/${playerId}`;
     const websocket = new WebSocket(wsUrl);
 
     websocket.onopen = () => {

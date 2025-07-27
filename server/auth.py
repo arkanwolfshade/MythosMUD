@@ -224,6 +224,42 @@ def get_current_user(
     return user_info
 
 
+def get_current_user_optional(
+    request: Request,
+    users_file: str = Depends(get_users_file),
+) -> dict:
+    """Get current user from either Authorization header or token query parameter."""
+    # Try to get token from Authorization header first
+    auth_header = request.headers.get("Authorization")
+    token = None
+
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header[7:]  # Remove "Bearer " prefix
+    else:
+        # Try to get token from query parameter
+        token = request.query_params.get("token")
+
+    if not token:
+        raise HTTPException(status_code=401, detail="No authentication token provided.")
+
+    payload = decode_access_token(token)
+    if not payload or "sub" not in payload:
+        raise HTTPException(status_code=401, detail="Invalid or expired token.")
+
+    username = payload["sub"]
+    # Load users
+    try:
+        users = load_json_file_safely(users_file)
+    except Exception:
+        users = []
+    user = next((u for u in users if u["username"] == username), None)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    # Exclude password_hash from response
+    user_info = {k: v for k, v in user.items() if k != "password_hash"}
+    return user_info
+
+
 @router.get("/me")
 def get_me(current_user: dict = Depends(get_current_user)):
     return current_user

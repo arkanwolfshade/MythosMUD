@@ -54,7 +54,17 @@ class PersistenceLayer:
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
         # Default to the main production database in the project root
         self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players.db")
-        self.log_path = log_path or os.environ.get("MYTHOS_PERSIST_LOG", "server/persistence.log")
+
+        # Use absolute path for log file to avoid working directory issues
+        if log_path:
+            self.log_path = log_path
+        elif os.environ.get("MYTHOS_PERSIST_LOG"):
+            self.log_path = os.environ.get("MYTHOS_PERSIST_LOG")
+        else:
+            # Get the directory where this module is located
+            module_dir = os.path.dirname(os.path.abspath(__file__))
+            self.log_path = os.path.join(module_dir, "logs", "persistence.log")
+
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
         # TODO: Load config for SQL logging verbosity

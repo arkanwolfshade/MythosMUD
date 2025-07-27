@@ -2,5 +2,13 @@
   {
     "code": "INVITE123",
     "used": true
+  },
+  {
+    "code": "MYTHOS2025",
+    "used": false
+  },
+  {
+    "code": "ARKHAM_ACCESS",
+    "used": false
   }
 ]
