@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Room Schema",
+  "description": "Schema for validating room definitions in the MythosMUD world",
+  "type": "object",
+  "required": ["id", "name", "description", "zone", "exits"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_]+$",
+      "description": "Unique room identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable room name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Room description shown to players"
+    },
+    "zone": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_]+$",
+      "description": "Zone identifier this room belongs to"
+    },
+    "exits": {
+      "type": "object",
+      "description": "Room exits to other locations",
+      "properties": {
+        "north": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "south": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "east": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "west": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "up": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "down": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference"]
+                  },
+                  "description": "Exit behavior flags"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "field1": {
+      "description": "Optional field for future extensibility"
+    },
+    "field2": {
+      "description": "Optional field for future extensibility"
+    },
+    "field3": {
+      "description": "Optional field for future extensibility"
+    }
+  },
+  "additionalProperties": false
+}

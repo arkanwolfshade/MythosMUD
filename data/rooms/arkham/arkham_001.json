@@ -8,7 +8,7 @@
     "south": "arkham_004",
     "east": "arkham_005",
     "west": "arkham_003",
-    "up": null,
+    "up": "arkham_006",
     "down": "arkham_007"
   },
   "field1": null,
