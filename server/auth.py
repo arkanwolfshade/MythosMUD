@@ -6,13 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
-from server.auth_utils import (
+from auth_utils import (
     create_access_token,
     decode_access_token,
     hash_password,
     verify_password,
 )
-from server.security_utils import ensure_directory_exists, validate_secure_path
+from security_utils import ensure_directory_exists, validate_secure_path
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -155,7 +155,7 @@ def register_user(
     try:
         import uuid
 
-        from server.models import Player, Stats
+        from models import Player, Stats
 
         player = Player(
             id=str(uuid.uuid4()),

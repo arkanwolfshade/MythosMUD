@@ -3,7 +3,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
-from server.auth import get_current_user
+from auth import get_current_user
 
 router = APIRouter(prefix="/command", tags=["command"])
 

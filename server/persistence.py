@@ -5,8 +5,8 @@ import threading
 from collections.abc import Callable
 from typing import Any
 
-from server.models import Player  # Assume Room model exists or will be added
-from server.world_loader import load_rooms
+from models import Player  # Assume Room model exists or will be added
+from world_loader import load_rooms
 
 
 # --- Custom Exceptions ---

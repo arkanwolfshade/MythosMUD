@@ -3,22 +3,74 @@ import datetime
 import logging
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, WebSocket
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from server.auth import router as auth_router, get_current_user
-from server.command_handler import router as command_router
-from server.models import Player, Stats
-from server.persistence import get_persistence
-from server.real_time import (
-    connection_manager, 
-    game_event_stream, 
-    websocket_endpoint,
+from auth import get_current_user
+from auth import router as auth_router
+from command_handler import router as command_router
+from models import Player, Stats
+from persistence import get_persistence
+from real_time import (
     broadcast_game_tick,
-    broadcast_room_event
+    connection_manager,
+    game_event_stream,
+    websocket_endpoint,
 )
+
+
+# Configure logging
+def setup_logging():
+    """Setup logging configuration for the server."""
+    # Create logs directory if it doesn't exist
+    logs_dir = Path("logs")
+    logs_dir.mkdir(exist_ok=True)
+
+    # Rotate existing server.log if it exists
+    server_log_path = logs_dir / "server.log"
+    if server_log_path.exists():
+        # Generate timestamp for the rotated log file
+        timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")
+        rotated_log_path = logs_dir / f"server.log.{timestamp}"
+
+        # Rename the existing log file
+        try:
+            server_log_path.rename(rotated_log_path)
+            print(f"Rotated log file: {rotated_log_path}")
+        except Exception as e:
+            print(f"Warning: Could not rotate log file: {e}")
+
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(server_log_path),
+            logging.StreamHandler()  # Also log to console
+        ]
+    )
+
+    # Also configure uvicorn logging to go to our file
+    uvicorn_logger = logging.getLogger("uvicorn")
+    uvicorn_logger.handlers = []
+    uvicorn_logger.addHandler(logging.FileHandler(server_log_path))
+    uvicorn_logger.addHandler(logging.StreamHandler())
+    uvicorn_logger.setLevel(logging.INFO)
+
+    # Configure access logger
+    access_logger = logging.getLogger("uvicorn.access")
+    access_logger.handlers = []
+    access_logger.addHandler(logging.FileHandler(server_log_path))
+    access_logger.addHandler(logging.StreamHandler())
+    access_logger.setLevel(logging.INFO)
+
+
+# Setup logging
+setup_logging()
+
 
 TICK_INTERVAL = 1.0  # seconds
 
@@ -30,6 +82,9 @@ bearer_scheme = HTTPBearer(auto_error=False)
 async def lifespan(app: FastAPI):
     # Startup logic
     app.state.persistence = get_persistence()
+    # Set persistence reference in connection manager
+    from real_time import connection_manager
+    connection_manager.persistence = app.state.persistence
     asyncio.create_task(game_tick_loop(app))
     yield
     # (Optional) Add shutdown logic here
@@ -51,7 +106,7 @@ async def game_tick_loop(app: FastAPI):
     while True:
         # TODO: Implement status/effect ticks using persistence layer
         logging.info(f"Game tick {tick_count}!")
-        
+
         # Broadcast game tick to all connected players
         tick_data = {
             "tick_number": tick_count,
@@ -59,7 +114,7 @@ async def game_tick_loop(app: FastAPI):
             "active_players": len(connection_manager.player_websockets)
         }
         await broadcast_game_tick(tick_data)
-        
+
         tick_count += 1
         await asyncio.sleep(TICK_INTERVAL)
 
@@ -74,14 +129,14 @@ def read_root():
 async def game_events_stream(player_id: str, current_user: dict = Depends(get_current_user)):
     """
     Server-Sent Events stream for real-time game updates.
-    
+
     This endpoint provides a persistent connection for receiving game state updates,
     room changes, combat events, and other real-time information.
     """
     # Verify the authenticated user matches the requested player
     if current_user["username"] != player_id:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     return StreamingResponse(
         game_event_stream(player_id),
         media_type="text/event-stream",
@@ -98,7 +153,7 @@ async def game_events_stream(player_id: str, current_user: dict = Depends(get_cu
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     """
     WebSocket endpoint for interactive commands and chat.
-    
+
     This endpoint handles bidirectional communication for:
     - Game commands (look, go, attack, etc.)
     - Chat messages

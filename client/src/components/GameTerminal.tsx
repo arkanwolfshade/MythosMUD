@@ -1,15 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useGameConnection } from '../hooks/useGameConnection';
+import React, { useEffect, useRef, useState } from "react";
+import { useGameConnection } from "../hooks/useGameConnection";
 
 interface GameTerminalProps {
   playerId: string;
   authToken: string;
 }
 
+interface Player {
+  name: string;
+  stats?: {
+    current_health: number;
+    sanity: number;
+  };
+  level?: number;
+}
+
+interface Room {
+  name: string;
+  description: string;
+}
+
+interface Entity {
+  name: string;
+}
+
+interface GameEvent {
+  event_type: string;
+  data: Record<string, unknown>;
+}
+
 interface GameState {
-  player: any;
-  room: any;
-  entities: any[];
+  player: Player | null;
+  room: Room | null;
+  entities: Entity[];
   messages: string[];
 }
 
@@ -20,90 +43,86 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     entities: [],
     messages: [],
   });
-  
-  const [commandInput, setCommandInput] = useState('');
+
+  const [commandInput, setCommandInput] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    isConnected,
-    isConnecting,
-    lastEvent,
-    error,
-    reconnectAttempts,
-    sendCommand,
-  } = useGameConnection({
+  const { isConnected, isConnecting, error, reconnectAttempts, sendCommand } = useGameConnection({
     playerId,
     authToken,
     onEvent: handleGameEvent,
-    onConnect: () => addMessage('Connected to MythosMUD...'),
-    onDisconnect: () => addMessage('Disconnected from MythosMUD'),
+    onConnect: () => addMessage("Connected to MythosMUD..."),
+    onDisconnect: () => addMessage("Disconnected from MythosMUD"),
     onError: (error) => addMessage(`Error: ${error}`),
   });
 
-  function handleGameEvent(event: any) {
-    console.log('Game event received:', event);
-    
+  function handleGameEvent(event: GameEvent) {
+    console.log("Game event received:", event);
+
     switch (event.event_type) {
-      case 'game_state':
-        setGameState(prev => ({
+      case "game_state":
+        setGameState((prev) => ({
           ...prev,
-          player: event.data.player,
-          room: event.data.room,
+          player: event.data.player as Player,
+          room: event.data.room as Room,
         }));
-        addMessage(`Welcome to ${event.data.room?.name || 'Unknown Room'}`);
+        addMessage(`Welcome to ${(event.data.room as Room)?.name || "Unknown Room"}`);
         break;
-        
-      case 'room_update':
-        setGameState(prev => ({
+
+      case "room_update":
+        setGameState((prev) => ({
           ...prev,
-          room: event.data.room,
-          entities: event.data.entities || [],
+          room: event.data.room as Room,
+          entities: (event.data.entities as Entity[]) || [],
         }));
-        addMessage(`Room updated: ${event.data.room?.name}`);
+        addMessage(`Room updated: ${(event.data.room as Room)?.name}`);
         break;
-        
-      case 'player_entered':
-        addMessage(`${event.data.player_name} enters the room.`);
+
+      case "player_entered":
+        addMessage(`${event.data.player_name as string} enters the room.`);
         break;
-        
-      case 'player_left':
-        addMessage(`${event.data.player_name} leaves the room.`);
+
+      case "player_left":
+        addMessage(`${event.data.player_name as string} leaves the room.`);
         break;
-        
-      case 'combat_event':
-        addMessage(`[COMBAT] ${event.data.message}`);
+
+      case "combat_event":
+        addMessage(`[COMBAT] ${event.data.message as string}`);
         break;
-        
-      case 'chat_message':
-        addMessage(`[${event.data.channel}] ${event.data.player_name}: ${event.data.message}`);
+
+      case "chat_message":
+        addMessage(
+          `[${event.data.channel as string}] ${event.data.player_name as string}: ${event.data.message as string}`,
+        );
         break;
-        
-      case 'game_tick':
+
+      case "game_tick":
         // Optional: Show tick updates for debugging
-        if (event.data.tick_number % 60 === 0) { // Every minute
-          addMessage(`[TICK] Game tick ${event.data.tick_number}`);
+        if ((event.data.tick_number as number) % 60 === 0) {
+          // Every minute
+          addMessage(`[TICK] Game tick ${event.data.tick_number as number}`);
         }
         break;
-        
-      case 'command_response':
-        addMessage(event.data.result);
+
+      case "command_response":
+        addMessage(event.data.result as string);
         break;
-        
-      case 'heartbeat':
+
+      case "heartbeat":
         // Silent heartbeat - just keep connection alive
         break;
-        
+
       default:
         addMessage(`[EVENT] ${event.event_type}: ${JSON.stringify(event.data)}`);
     }
   }
 
   function addMessage(message: string) {
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       messages: [...prev.messages, `[${new Date().toLocaleTimeString()}] ${message}`].slice(-100), // Keep last 100 messages
     }));
@@ -114,31 +133,31 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     if (!commandInput.trim()) return;
 
     const command = commandInput.trim();
-    
+
     // Add to history
-    setCommandHistory(prev => [...prev, command].slice(-50)); // Keep last 50 commands
+    setCommandHistory((prev) => [...prev, command].slice(-50)); // Keep last 50 commands
     setHistoryIndex(-1);
-    
+
     // Send command
     const success = sendCommand(command, []);
     if (success) {
       addMessage(`> ${command}`);
     } else {
-      addMessage('Failed to send command - not connected');
+      addMessage("Failed to send command - not connected");
     }
-    
-    setCommandInput('');
+
+    setCommandInput("");
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'ArrowUp') {
+    if (e.key === "ArrowUp") {
       e.preventDefault();
       if (historyIndex < commandHistory.length - 1) {
         const newIndex = historyIndex + 1;
         setHistoryIndex(newIndex);
         setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
       }
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
       if (historyIndex > 0) {
         const newIndex = historyIndex - 1;
@@ -146,14 +165,14 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
         setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
       } else if (historyIndex === 0) {
         setHistoryIndex(-1);
-        setCommandInput('');
+        setCommandInput("");
       }
     }
   }
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [gameState.messages]);
 
   // Focus input on mount
@@ -165,13 +184,11 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     <div className="game-terminal">
       {/* Connection Status */}
       <div className="connection-status">
-        <div className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
-          {isConnecting ? 'Connecting...' : isConnected ? 'Connected' : 'Disconnected'}
+        <div className={`status-indicator ${isConnected ? "connected" : "disconnected"}`}>
+          {isConnecting ? "Connecting..." : isConnected ? "Connected" : "Disconnected"}
         </div>
         {error && <div className="error-message">{error}</div>}
-        {reconnectAttempts > 0 && (
-          <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>
-        )}
+        {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
       </div>
 
       {/* Game State Display */}
@@ -206,12 +223,14 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
 
       {/* Message Log */}
       <div className="message-log">
-        {gameState.messages.map((message, index) => (
-          <div key={index} className="message">
-            {message}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
+        <div className="messages">
+          {gameState.messages.map((message, index) => (
+            <div key={index} className="message">
+              {message}
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Command Input */}
@@ -222,29 +241,13 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
           value={commandInput}
           onChange={(e) => setCommandInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Enter command (look, go north, say hello, etc.)"
+          placeholder="Enter command..."
           disabled={!isConnected}
         />
         <button type="submit" disabled={!isConnected || !commandInput.trim()}>
           Send
         </button>
       </form>
-
-      {/* Quick Commands */}
-      <div className="quick-commands">
-        <button onClick={() => sendCommand('look')} disabled={!isConnected}>
-          Look
-        </button>
-        <button onClick={() => sendCommand('inventory')} disabled={!isConnected}>
-          Inventory
-        </button>
-        <button onClick={() => sendCommand('stats')} disabled={!isConnected}>
-          Stats
-        </button>
-        <button onClick={() => sendCommand('help')} disabled={!isConnected}>
-          Help
-        </button>
-      </div>
     </div>
   );
-} 
+}

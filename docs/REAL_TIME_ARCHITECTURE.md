@@ -390,4 +390,4 @@ ws.onmessage = (event) => {
 
 This real-time architecture provides a robust foundation for MythosMUD's multiplayer gameplay while maintaining simplicity for development and debugging. The hybrid approach of SSE + WebSocket offers the best of both worlds: reliable state updates and responsive interactive commands.
 
-The implementation is designed to be beginner-friendly while supporting the performance and scalability requirements of a multiplayer game. Future enhancements can be added incrementally without disrupting the core architecture. 
+The implementation is designed to be beginner-friendly while supporting the performance and scalability requirements of a multiplayer game. Future enhancements can be added incrementally without disrupting the core architecture.
