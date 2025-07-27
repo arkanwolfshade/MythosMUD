@@ -17,6 +17,7 @@ class ValidationError:
     is essential for maintaining dimensional mapping integrity.
     """
 
+    # pylint: disable=too-many-arguments
     def __init__(self, rule_name: str, room_id: str, message: str,
                  suggestion: str = "", error_type: str = "error"):
         """
@@ -82,7 +83,7 @@ class ValidationRule(ABC):
         Returns:
             List of ValidationError objects
         """
-        pass
+        # Abstract method - implementation required in subclasses
 
     def _filter_rooms_by_zone(self, room_database: Dict[str, Dict],
                              zone_filter: Optional[str]) -> Dict[str, Dict]:

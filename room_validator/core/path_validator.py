@@ -104,7 +104,7 @@ class PathValidator:
         while queue:
             current_room = queue.popleft()
 
-            for direction, target in self.graph[current_room].items():
+            for target in self.graph[current_room].values():
                 if target not in visited:
                     visited.add(target)
                     queue.append(target)
@@ -247,7 +247,7 @@ class PathValidator:
             rec_stack.add(room_id)
             path.append(room_id)
 
-            for direction, target in self.graph.get(room_id, {}).items():
+            for target in self.graph.get(room_id, {}).values():
                 if target not in visited:
                     dfs(target, path.copy())
                 elif target in rec_stack:

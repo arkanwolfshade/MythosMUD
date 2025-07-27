@@ -35,10 +35,10 @@ class SchemaValidator:
         try:
             with open(self.schema_path, 'r', encoding='utf-8') as f:
                 self.schema = json.load(f)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
+        except FileNotFoundError as exc:
+            raise FileNotFoundError(f"Schema file not found: {self.schema_path}") from exc
         except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid schema file: {e}")
+            raise ValueError(f"Invalid schema file: {e}") from e
 
     def validate_room(self, room_data: Dict, file_path: str = "") -> List[str]:
         """

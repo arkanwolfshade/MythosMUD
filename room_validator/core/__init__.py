@@ -9,5 +9,6 @@ from .room_loader import RoomLoader
 from .schema_validator import SchemaValidator
 from .path_validator import PathValidator
 from .reporter import Reporter
+from .fixer import RoomFixer
 
-__all__ = ['RoomLoader', 'SchemaValidator', 'PathValidator', 'Reporter']
+__all__ = ['RoomLoader', 'SchemaValidator', 'PathValidator', 'Reporter', 'RoomFixer']

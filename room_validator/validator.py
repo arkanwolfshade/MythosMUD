@@ -16,6 +16,7 @@ from core.room_loader import RoomLoader
 from core.schema_validator import SchemaValidator
 from core.path_validator import PathValidator
 from core.reporter import Reporter
+from core.fixer import RoomFixer
 
 
 @click.command()
@@ -23,11 +24,14 @@ from core.reporter import Reporter
 @click.option('--verbose', '-v', is_flag=True, help='Detailed output')
 @click.option('--schema-only', is_flag=True, help='Only validate JSON schema')
 @click.option('--ignore', help='Comma-separated list of rule types to ignore')
-@click.option('--format', type=click.Choice(['console', 'json']), default='console')
+@click.option('--output-format', type=click.Choice(['console', 'json']), default='console')
 @click.option('--base-path', default='./data/rooms', help='Base directory for room files')
 @click.option('--no-colors', is_flag=True, help='Disable colored output')
+@click.option('--fix', is_flag=True, help='Automatically fix issues (use with caution)')
+@click.option('--backup', is_flag=True, help='Create backup files before fixing')
+# pylint: disable=too-many-arguments
 def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional[str],
-         format: str, base_path: str, no_colors: bool):
+         output_format: str, base_path: str, no_colors: bool, fix: bool, backup: bool):
     """
     Validate room connectivity and structure in the MythosMUD world.
 
@@ -40,21 +44,22 @@ def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional
         room_loader = RoomLoader(base_path)
         schema_validator = SchemaValidator()
         path_validator = PathValidator(schema_validator)
+        fixer = RoomFixer(base_path) if fix else None
 
         # Print header
         reporter.print_header()
         print(f"📁 Scanning {base_path}...")
 
-        # Discovery phase
+        # Loading phase
+        reporter.print_progress("Processing rooms...")
+        room_database = room_loader.build_room_database(show_progress=verbose)
+
+        # Discovery phase (after loading rooms)
         zones = room_loader.get_zones()
         if zones:
             reporter.print_zone_discovery(zones)
         else:
             reporter.print_warning("No zones discovered")
-
-        # Loading phase
-        reporter.print_progress("Processing rooms...")
-        room_database = room_loader.build_room_database(show_progress=verbose)
 
         if not room_database:
             reporter.print_error("No valid rooms found")
@@ -124,14 +129,8 @@ def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional
                     'suggestion': 'Add at least one exit to this room'
                 })
 
-            # Check for potential dead ends (warnings)
-            potential_dead_ends = path_validator.find_potential_dead_ends(room_database)
-            for room_id in potential_dead_ends:
-                warnings.append({
-                    'type': 'potential_dead_end',
-                    'room_id': room_id,
-                    'message': 'Only one exit'
-                })
+            # Note: Removed potential dead end warnings as they are unnecessary
+            # Rooms with only one exit are a valid design pattern
 
             # Check for self-references
             self_references = path_validator.find_self_references(room_database)
@@ -143,6 +142,35 @@ def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional
                     'suggestion': 'Add "self_reference" flag or fix exit target'
                 })
 
+        # Apply fixes if requested
+        if fix and fixer and errors:
+            reporter.print_progress("Applying automatic fixes...")
+
+            # Fix schema issues
+            if schema_errors:
+                fixer.fix_schema_issues(room_database, schema_errors, backup)
+
+            # Fix bidirectional connections
+            if missing_returns:
+                fixer.fix_bidirectional_connections(room_database, missing_returns, backup)
+
+            # Fix self-references
+            if self_references:
+                fixer.fix_self_references(room_database, self_references, backup)
+
+            # Get fix summary
+            fix_summary = fixer.get_fix_summary()
+
+            if fix_summary['fixes_applied'] > 0:
+                reporter.print_success(f"Applied {fix_summary['fixes_applied']} fixes")
+                for applied_fix in fix_summary['applied_fixes']:
+                    print(f"  ✅ {applied_fix}")
+
+            if fix_summary['fixes_failed'] > 0:
+                reporter.print_warning(f"{fix_summary['fixes_failed']} fixes failed")
+                for failed_fix in fix_summary['failed_fixes']:
+                    print(f"  ⚠️  {failed_fix}")
+
         # Generate statistics
         stats = {
             'zones': len(zones),
@@ -153,7 +181,7 @@ def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional
         }
 
         # Reporting phase
-        if format == 'json':
+        if output_format == 'json':
             json_output = reporter.generate_json_output(stats, errors, warnings)
             print(json_output)
         else:
@@ -167,10 +195,10 @@ def main(zone: Optional[str], verbose: bool, schema_only: bool, ignore: Optional
     except Exception as e:
         if verbose:
             raise
-        else:
-            print(f"❌ Error: {e}")
-            sys.exit(1)
+        print(f"❌ Error: {e}")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
-    main()
+    # Click automatically handles argument parsing and calls main() with the parsed arguments
+    main()  # pylint: disable=no-value-for-parameter

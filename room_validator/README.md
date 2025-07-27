@@ -11,6 +11,7 @@ A comprehensive validation tool for room connectivity and structure in the Mytho
 - **Zone-based Validation**: Validate specific zones or the entire world
 - **Multiple Output Formats**: Console output with colors or structured JSON
 - **Progress Indicators**: Visual feedback for large room sets
+- **Automatic Fixing**: Fix common issues automatically (with backup option)
 
 ## Installation
 
@@ -65,6 +66,18 @@ python validator.py --verbose
 python validator.py --schema-only
 ```
 
+### Automatic Fixing
+```bash
+# Automatically fix common issues (use with caution)
+python validator.py --fix
+
+# Create backups before fixing
+python validator.py --fix --backup
+
+# Fix specific zone only
+python validator.py --zone arkham --fix --backup
+```
+
 ## Exit Format Support
 
 The validator supports both legacy string format and new object format for exits:
@@ -109,7 +122,7 @@ The validator supports both legacy string format and new object format for exits
 ### Connectivity Rules
 - **Bidirectional Connections**: Ensures room A → room B implies room B → room A
 - **Unreachable Room Detection**: Finds rooms that cannot be reached from starting point
-- **Dead End Detection**: Identifies rooms with no exits
+- **Dead End Detection**: Identifies rooms with no exits (true dead ends)
 - **Self Reference Validation**: Checks for proper self-reference flags
 
 ## Sample Output
@@ -131,7 +144,7 @@ The validator supports both legacy string format and new object format for exits
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
-  ⚠️  Potential dead end: Only one exit (up)
+  ⚠️  Self-reference: Room references itself without proper flag
 
 📊 SUMMARY:
   Zones: 1
@@ -162,9 +175,9 @@ The validator supports both legacy string format and new object format for exits
   ],
   "warnings": [
     {
-      "type": "potential_dead_end",
+      "type": "self_reference",
       "room_id": "arkham_007",
-      "message": "Only one exit (up)"
+      "message": "Room references itself without proper flag"
     }
   ]
 }
@@ -178,8 +191,39 @@ The validator is organized into several modules:
 - **`core/schema_validator.py`**: Validates JSON schema compliance
 - **`core/path_validator.py`**: Analyzes room connectivity using graph algorithms
 - **`core/reporter.py`**: Formats and displays validation results
+- **`core/fixer.py`**: Automatically fixes common validation issues
 - **`rules/`**: Extensible rule system for validation logic
 - **`schemas/room_schema.json`**: JSON schema definition for rooms
+
+## Automatic Fixes
+
+The validator can automatically fix the following issues:
+
+### Schema Issues
+- **Missing Required Fields**: Add missing `exits`, `field1`, `field2`, `field3` fields
+- **Empty Exit Objects**: Initialize empty exit objects with proper structure
+
+### Connectivity Issues
+- **Missing Return Paths**: Add bidirectional connections automatically
+- **Self-Reference Flags**: Add `self_reference` flags to self-referencing exits
+
+### Safety Features
+- **Backup Creation**: Create timestamped backups before making changes
+- **Selective Fixing**: Only fix issues that can be safely resolved
+- **Error Reporting**: Report any fixes that fail to apply
+
+### Usage Examples
+```bash
+# Fix all issues with backups
+python validator.py --fix --backup
+
+# Fix only specific zone
+python validator.py --zone arkham --fix
+
+# Validate first, then fix if needed
+python validator.py --verbose
+python validator.py --fix --backup
+```
 
 ## Contributing
 
