@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 print("Running tests with pytest...")
-cmd = ["pytest", "server/tests", "-v", "--tb=short"]
+cmd = ["uv", "run", "pytest", "server/tests", "-v", "--tb=short"]
 result = subprocess.run(cmd)
 
 if result.returncode != 0:

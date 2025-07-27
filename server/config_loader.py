@@ -148,9 +148,14 @@ def get_config(config_path: str = None):
         if k in config:
             try:
                 if typ is bool:
-                    # YAML can parse 'true'/'false' as bool, but also as str
+                    # Handle various boolean representations
                     if isinstance(config[k], str):
                         config[k] = config[k].lower() == "true"
+                    elif isinstance(config[k], bool):
+                        pass  # Already correct type
+                    else:
+                        # Invalid type for boolean, will fall back to default
+                        raise ValueError(f"Invalid boolean value: {config[k]}")
                 elif typ is list:
                     if not isinstance(config[k], list):
                         config[k] = [config[k]] if config[k] is not None else []

@@ -6,8 +6,8 @@ success = True
 
 # Ruff formatting in server using uv
 print("Running ruff formatting in server...")
-cmd = ["uv", "run", "--project", "server", "ruff", "format", "."]
-result = subprocess.run(cmd, cwd="server")
+cmd = ["uv", "run", "--active", "ruff", "format", "server"]
+result = subprocess.run(cmd, cwd=".")
 if result.returncode != 0:
     print(f"❌ Ruff formatting failed with exit code: {result.returncode}")
     success = False
@@ -17,7 +17,9 @@ else:
 # Detect full path to npm
 npm_path = shutil.which("npm")
 if not npm_path:
-    print("❌ npm not found in PATH. Please install Node.js and ensure npm is available.")
+    msg = ("❌ npm not found in PATH. Please install Node.js and "
+           "ensure npm is available.")
+    print(msg)
     sys.exit(1)
 
 # Prettier formatting in client via npm script

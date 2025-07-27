@@ -227,15 +227,28 @@ def test_auth_required(test_client):
 
 def test_look_command_with_mock_auth(test_client):
     """Test look command using a valid JWT token for testing."""
-    # Create a valid JWT token for testing
-    from datetime import timedelta
+    import uuid
 
-    from server.auth_utils import create_access_token
+    # Use a unique username to avoid conflicts
+    unique_username = f"cmduser_{uuid.uuid4().hex[:8]}"
 
-    test_token = create_access_token(data={"sub": "cmduser"}, expires_delta=timedelta(minutes=60))
+    # First register and login to create the user
+    register_resp = test_client.post(
+        "/auth/register",
+        json={
+            "username": unique_username,
+            "password": "testpass",
+            "invite_code": "INVITE123",
+        },
+    )
+    print(f"Register response: {register_resp.status_code} - {register_resp.json()}")
+
+    login_resp = test_client.post("/auth/login", json={"username": unique_username, "password": "testpass"})
+    print(f"Login response: {login_resp.status_code} - {login_resp.json()}")
+    token = login_resp.json()["access_token"]
 
     print("[test] About to make request with valid JWT token")
-    resp = test_client.post("/command/", json={"command": "look"}, headers={"Authorization": f"Bearer {test_token}"})
+    resp = test_client.post("/command/", json={"command": "look"}, headers={"Authorization": f"Bearer {token}"})
     print(f"[test] Response status: {resp.status_code}")
     print(f"[test] Response body: {resp.json()}")
 
@@ -400,16 +413,15 @@ def test_go_blocked_exit(auth_token, test_client):
     player = persistence.get_player_by_name("cmduser")
     print(f"After first go north: {player.current_room_id}")
     print(f"First go north result: {resp1.json()['result']}")
-    # Try to go north again
+    # Try to go north again (should be blocked since arkham_002 has no north exit)
     resp2 = post_command(test_client, auth_token, "go north")
     # Refresh player from database to get updated room
     player = persistence.get_player_by_name("cmduser")
     print(f"After second go north: {player.current_room_id}")
     print(f"Second go north result: {resp2.json()['result']}")
     assert resp2.status_code == 200
-    # The player should now be in Miskatonic University Gates
-    assert resp2.json()["result"].startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in resp2.json()["result"]
+    # The player should be blocked from going north
+    assert "You can't go that way" in resp2.json()["result"]
 
 
 def test_print_rooms_and_player_manager(test_client):

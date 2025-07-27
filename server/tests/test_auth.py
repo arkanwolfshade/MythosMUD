@@ -115,10 +115,15 @@ def override_dependencies(temp_files):
 
 
 @pytest.fixture(autouse=True)
-def setup_test_persistence(temp_log_file, temp_db):
+def setup_test_persistence(temp_log_file, temp_db, monkeypatch):
     """Set up test persistence layer."""
     # Create a test persistence layer with temporary database and log file
     test_persistence = PersistenceLayer(db_path=temp_db, log_path=temp_log_file)
+
+    # Patch get_persistence to return our test persistence layer
+    monkeypatch.setattr("server.persistence.get_persistence", lambda: test_persistence)
+
+    # Also set it on the app state
     app.state.persistence = test_persistence
     yield
 

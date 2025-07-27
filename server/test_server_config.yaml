@@ -1,8 +1,8 @@
 # MythosMUD Test Server Configuration
 
 # --- Database & Persistence ---
-db_path: tests/data/players/test_players.db  # Test DB
-log_path: persistence_test.log   # Test log file
+db_path: server/tests/data/players/test_players.db  # Test DB
+log_path: server/tests/data/persistence_test.log   # Test log file
 log_level: DEBUG                  # Verbose logging for tests
 
 # --- Network ---
@@ -12,10 +12,10 @@ max_connections: 10
 connection_timeout: 10  # seconds
 
 # --- File Paths & Directories ---
-data_dir: ../tests/data/
-player_dir: ../tests/data/players/
-log_dir: ../tests/logs/
-motd_file: ../tests/data/motd.txt
+data_dir: server/tests/data/
+player_dir: server/tests/data/players/
+log_dir: server/tests/logs/
+motd_file: server/tests/data/motd.txt
 
 # --- World & Game Settings ---
 start_room: test_start_room
@@ -33,17 +33,17 @@ enable_stack_traces: true
 
 # --- Authentication/Accounts ---
 auth_backend: sqlite
-auth_db_file: ../tests/data/test_users.db
+auth_db_file: server/tests/data/test_users.db
 registration_enabled: true
 allow_guest_login: true
 
 # --- World Load/Boot Sequence ---
 areas:
-  - ../tests/data/rooms/arkham/
+  - server/tests/data/rooms/arkham/
 npcs:
-  - ../tests/data/npcs/test_npc.json
+  - server/tests/data/npcs/test_npc.json
 quests:
-  - ../tests/data/quests/test_quest.json
+  - server/tests/data/quests/test_quest.json
 
 # --- Admin/Console/Telnet ---
 admin_password: testadmin

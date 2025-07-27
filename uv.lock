@@ -392,7 +392,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mythosmud-server"
+name = "mythosmud"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
@@ -417,8 +417,7 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "pytest" },
-    { name = "pytest-cov" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -440,10 +439,7 @@ requires-dist = [
 provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pytest-cov", specifier = ">=6.2.1" },
-]
+dev = [{ name = "ruff", specifier = ">=0.12.5" }]
 
 [[package]]
 name = "packaging"
