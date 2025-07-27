@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sqlite3
@@ -7,6 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 from server.models import Player  # Assume Room model exists or will be added
+from server.world_loader import load_rooms
 
 
 # --- Custom Exceptions ---
@@ -101,24 +101,13 @@ class PersistenceLayer:
 
     # --- Room Cache (Loaded at Startup) ---
     def _load_room_cache(self):
+        """Load rooms from JSON files using world_loader instead of SQLite."""
         self._room_cache = {}
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM rooms").fetchall()
-                for row in rows:
-                    room_data = dict(row)
-                    # Parse the exits JSON string back to a dictionary
-                    if room_data.get("exits"):
-                        try:
-                            room_data["exits"] = json.loads(room_data["exits"])
-                        except json.JSONDecodeError:
-                            self._log(f"Failed to parse exits JSON for room {room_data['id']}: {room_data['exits']}")
-                            room_data["exits"] = {}
-                    else:
-                        room_data["exits"] = {}
-                    self._room_cache[row["id"]] = room_data
-            self._log(f"Loaded {len(self._room_cache)} rooms into cache.")
+            # Use the world_loader to load rooms from JSON files
+            rooms = load_rooms()
+            self._room_cache = rooms
+            self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
         except Exception as e:
             self._log(f"Room cache load failed: {e}")
 
@@ -235,58 +224,25 @@ class PersistenceLayer:
         return self._room_cache.get(room_id)
 
     def save_room(self, room: dict[str, Any]):
-        """Save or update a room."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO rooms (
-                    id, name, description, zone, exits
-                ) VALUES (?, ?, ?, ?, ?)
-                """,
-                (
-                    room["id"],
-                    room["name"],
-                    room["description"],
-                    room["zone"],
-                    json.dumps(room["exits"]),
-                ),
-            )
-            conn.commit()
-            self._room_cache[room["id"]] = room
-            self._log(f"Saved room {room['id']}")
-            self._run_hooks("after_save_room", room)
+        """Save or update a room. Currently read-only - rooms are stored as JSON files."""
+        # TODO: Implement JSON file saving for rooms
+        # For now, just update the cache
+        self._room_cache[room["id"]] = room
+        self._log(f"Updated room {room['id']} in cache (JSON file saving not implemented)")
+        self._run_hooks("after_save_room", room)
 
     def list_rooms(self) -> list[dict[str, Any]]:
         """List all rooms from the cache."""
         return list(self._room_cache.values())
 
     def save_rooms(self, rooms: list[dict[str, Any]]):
-        """Batch save rooms atomically."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            try:
-                for room in rooms:
-                    conn.execute(
-                        """
-                        INSERT OR REPLACE INTO rooms (
-                            id, name, description, zone, exits
-                        ) VALUES (?, ?, ?, ?, ?)
-                        """,
-                        (
-                            room["id"],
-                            room["name"],
-                            room["description"],
-                            room["zone"],
-                            json.dumps(room["exits"]),
-                        ),
-                    )
-                conn.commit()
-                for room in rooms:
-                    self._room_cache[room["id"]] = room
-                self._log(f"Batch saved {len(rooms)} rooms.")
-                self._run_hooks("after_save_rooms", rooms)
-            except sqlite3.IntegrityError as e:
-                self._log(f"Batch unique constraint error (rooms): {e}")
-                raise UniqueConstraintError(str(e)) from e
+        """Batch save rooms. Currently read-only - rooms are stored as JSON files."""
+        # TODO: Implement JSON file saving for rooms
+        # For now, just update the cache
+        for room in rooms:
+            self._room_cache[room["id"]] = room
+        self._log(f"Updated {len(rooms)} rooms in cache (JSON file saving not implemented)")
+        self._run_hooks("after_save_rooms", rooms)
 
     # --- TODO: Inventory, status effects, etc. ---
     # def get_inventory(self, ...): ...
