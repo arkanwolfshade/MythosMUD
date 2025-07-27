@@ -4,14 +4,26 @@ import logging
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
+from fastapi.responses import StreamingResponse
+from fastapi.security import HTTPBearer
 
-from server.auth import router as auth_router
+from server.auth import router as auth_router, get_current_user
 from server.command_handler import router as command_router
 from server.models import Player, Stats
 from server.persistence import get_persistence
+from server.real_time import (
+    connection_manager, 
+    game_event_stream, 
+    websocket_endpoint,
+    broadcast_game_tick,
+    broadcast_room_event
+)
 
 TICK_INTERVAL = 1.0  # seconds
+
+# Security scheme for WebSocket authentication
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 @asynccontextmanager
@@ -23,7 +35,13 @@ async def lifespan(app: FastAPI):
     # (Optional) Add shutdown logic here
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="MythosMUD API",
+    description="A Cthulhu Mythos-themed MUD game API with real-time communication",
+    version="0.1.0",
+    lifespan=lifespan
+)
+
 app.include_router(auth_router)
 app.include_router(command_router)
 
@@ -33,6 +51,15 @@ async def game_tick_loop(app: FastAPI):
     while True:
         # TODO: Implement status/effect ticks using persistence layer
         logging.info(f"Game tick {tick_count}!")
+        
+        # Broadcast game tick to all connected players
+        tick_data = {
+            "tick_number": tick_count,
+            "timestamp": datetime.datetime.utcnow().isoformat(),
+            "active_players": len(connection_manager.player_websockets)
+        }
+        await broadcast_game_tick(tick_data)
+        
         tick_count += 1
         await asyncio.sleep(TICK_INTERVAL)
 
@@ -40,6 +67,46 @@ async def game_tick_loop(app: FastAPI):
 @app.get("/")
 def read_root():
     return {"message": "Welcome to MythosMUD!"}
+
+
+# Real-time communication endpoints
+@app.get("/events/{player_id}")
+async def game_events_stream(player_id: str, current_user: dict = Depends(get_current_user)):
+    """
+    Server-Sent Events stream for real-time game updates.
+    
+    This endpoint provides a persistent connection for receiving game state updates,
+    room changes, combat events, and other real-time information.
+    """
+    # Verify the authenticated user matches the requested player
+    if current_user["username"] != player_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    return StreamingResponse(
+        game_event_stream(player_id),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Cache-Control"
+        }
+    )
+
+
+@app.websocket("/ws/{player_id}")
+async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
+    """
+    WebSocket endpoint for interactive commands and chat.
+    
+    This endpoint handles bidirectional communication for:
+    - Game commands (look, go, attack, etc.)
+    - Chat messages
+    - Real-time interactions
+    """
+    # TODO: Implement proper WebSocket authentication
+    # For now, we'll accept the connection and handle auth in the endpoint
+    await websocket_endpoint(websocket, player_id)
 
 
 @app.get("/rooms/{room_id}")
@@ -168,3 +235,23 @@ def damage_player(player_id: str, amount: int, damage_type: str = "physical"):
 
     app.state.persistence.damage_player(player, amount, damage_type)
     return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+
+
+# Real-time game state endpoints
+@app.get("/game/status")
+def get_game_status():
+    """Get current game status and connection information."""
+    return {
+        "active_connections": len(connection_manager.active_websockets),
+        "active_players": len(connection_manager.player_websockets),
+        "room_subscriptions": len(connection_manager.room_subscriptions),
+        "server_time": datetime.datetime.utcnow().isoformat()
+    }
+
+
+@app.post("/game/broadcast")
+def broadcast_message(message: str, current_user: dict = Depends(get_current_user)):
+    """Broadcast a message to all connected players (admin only)."""
+    # TODO: Add admin role checking
+    # For now, allow any authenticated user
+    return {"message": f"Broadcast message: {message}"}
