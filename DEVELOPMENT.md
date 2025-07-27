@@ -223,5 +223,5 @@ uv sync --reinstall
 ## 9. Next Steps
 
 - Read the [PLANNING.md](PLANNING.md) for project architecture
-- Check [TASKS.md](TASKS.md) for current development priorities
+- Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
 - Review [SECURITY.md](SECURITY.md) for security guidelines

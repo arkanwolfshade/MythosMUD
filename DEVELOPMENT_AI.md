@@ -22,7 +22,7 @@ This guide is specifically crafted for AI agents (Claude Code, Cursor, GitHub Co
 ### **Start Every Session With:**
 
 1. **`PLANNING.md`** - Project vision, architecture, and technical stack
-2. **`TASKS.md`** - Current tasks, priorities, and completion status
+2. **[GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)** - Current tasks, priorities, and completion status
 3. **`README.md`** - Project overview and quick start
 4. **`docs/PRD.md`** - Detailed product requirements and game design
 
@@ -304,7 +304,7 @@ async def get_player_by_name(name: str) -> Optional[Player]:
 1. **Read relevant documentation** (PRD.md, existing code)
 2. **Write tests first** (TDD approach)
 3. **Implement feature** following established patterns
-4. **Update TASKS.md** when complete
+4. **Update GitHub Issues** when complete (close issues, add comments)
 5. **Run tests** to ensure everything works
 6. **Commit changes** with descriptive messages
 
@@ -379,7 +379,7 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 - ❌ **Missing type hints** - Always include types
 - ❌ **Incomplete error handling** - Handle all error cases
 - ❌ **Breaking existing patterns** - Follow established conventions
-- ❌ **Forgetting to update TASKS.md** - Keep task list current
+- ❌ **Forgetting to update GitHub Issues** - Keep issue tracking current
 
 ### **Security Red Flags**
 
@@ -402,7 +402,7 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 ### **Documentation**
 
-- ✅ TASKS.md updated with completed work
+- ✅ GitHub Issues updated with completed work (closed, commented)
 - ✅ Code comments explain complex logic
 - ✅ Mythos theming appropriate and consistent
 - ✅ README files updated if needed
@@ -436,6 +436,43 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 - Code quality monitoring
 - Performance profiling
 - Security scanning integration
+
+---
+
+## 📋 Task Tracking with GitHub Issues
+
+### **GitHub Issues Workflow**
+
+All task tracking is now done through [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) instead of local TASKS.md files. This provides better collaboration, tracking, and integration with GitHub's project management features.
+
+#### **Starting a Development Session**
+
+1. **Review open issues** at [https://github.com/arkanwolfshade/MythosMUD/issues](https://github.com/arkanwolfshade/MythosMUD/issues)
+2. **Check issue priorities** and dependencies
+3. **Select appropriate issues** to work on
+4. **Update issue status** as work progresses
+
+#### **During Development**
+
+- **Comment on issues** with progress updates
+- **Link commits** to issues using `#issue-number` in commit messages
+- **Update issue descriptions** if requirements change
+- **Add labels** to categorize work (if available)
+
+#### **Completing Work**
+
+- **Close issues** when work is complete
+- **Add completion comments** summarizing what was done
+- **Link to relevant commits** or pull requests
+- **Update related issues** if dependencies are resolved
+
+#### **Issue Management Best Practices**
+
+- **Use descriptive issue titles** that clearly state the goal
+- **Include acceptance criteria** in issue descriptions
+- **Add appropriate labels** for categorization
+- **Link related issues** using `#issue-number` references
+- **Update issue status** regularly during development
 
 ---
 

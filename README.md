@@ -69,7 +69,6 @@ MythosMUD/
 ├── docs/        # Documentation (PRD, etc.)
 ├── .github/     # GitHub Actions workflows
 ├── PLANNING.md  # Vision, architecture, stack
-├── TASKS.md     # Milestones and tasks
 ├── DEVELOPMENT.md # Dev environment setup
 └── README.md    # This file
 ```
@@ -98,7 +97,7 @@ MythosMUD/
 
 - [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
 - [PLANNING.md](PLANNING.md) — Vision, architecture, stack
-- [TASKS.md](TASKS.md) — Milestones and tasks
+- [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
 - [DEVELOPMENT.md](DEVELOPMENT.md) — Dev environment setup
 - [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) — AI agent development guide
 

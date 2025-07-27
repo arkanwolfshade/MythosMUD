@@ -82,69 +82,14 @@ If a decision is pending, it is marked as **TODO**.
 
 ---
 
-## Open Questions / TODOs
-
-- Finalize front-end and back-end frameworks/languages.
-- Decide on database (PostgreSQL vs DynamoDB).
-- Choose terminal UI library for the web client.
-- Define CI/CD pipeline and testing frameworks.
-- Select infrastructure-as-code tool (if any).
-- Create initial architecture diagrams.
-
 ---
 
-## TOP PRIORITY: Unified Persistence Layer Implementation Plan
+## Task Tracking
 
-### Rationale
-A unified, extensible persistence layer is critical for maintainability, testability, and future-proofing. It will allow all game code and tests to interact with data storage in a consistent, safe, and easily swappable way, and will enable rapid iteration on features and data models without risking production data or test isolation.
+All development tasks and priorities are now tracked through [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues). This provides better collaboration, tracking, and integration with GitHub's project management features.
 
-### Implementation Plan
-- ✅ Implement a `PersistenceLayer` class responsible for all game data (players, rooms, inventory, etc.).
-- ✅ Provide a high-level CRUD API (e.g., `get_player_by_name`, `save_player`, `get_room`, `save_room`, etc.).
-- ✅ Only SQLite will be supported initially, but the design will allow for future backends (e.g., Postgres, in-memory, mock).
-- ✅ The persistence layer will handle conversion between DB rows and Pydantic model objects, fully abstracting storage from game logic.
-- ✅ All transaction management will be handled internally, with batch/bulk operations being atomic (ACID-compliant).
-- ✅ Custom exceptions will be raised for errors (e.g., unique constraint violations).
-- ✅ The persistence layer will load all room data (static and dynamic) at startup for fast access.
-- ✅ Hooks/callbacks will be supported for after-save, after-delete, etc. (sync now, async in future), registered via a decorator.
-- ✅ Logging will be to a file, with verbosity (full SQL or summaries) configurable from the server config file.
-- ✅ The persistence layer will be a singleton per app/test session, but endpoints will receive it via FastAPI dependency injection (`Depends`).
-- ✅ The DB path/config will be loaded from an environment config file.
-- ✅ Schema creation/migration will be handled by external scripts/utilities, not by the persistence layer.
-- ✅ The test DB will be a persistent file in the `tests/` directory, pre-populated with mock room/player data at the start of each test session.
-- ✅ All managers (PlayerManager, etc.) will be refactored immediately to use the new persistence layer.
-- ✅ The persistence layer will be thread-safe and support context management (`with persistence as db:`).
-
-### Current Status
-- ✅ PersistenceLayer class implemented with full CRUD operations
-- ✅ Server config system implemented (YAML-based with comprehensive MUD server settings)
-- ✅ All FastAPI endpoints refactored to use PersistenceLayer
-- ✅ PlayerManager deprecated and replaced
-- 🔄 Test suite refactoring in progress (test_player_manager.py partially complete)
-- 🔄 Config loader bool handling needs fixing
-- 🔄 Auth/login test setup needs debugging
-- 🔄 Missing methods: delete_player, status/effect methods
+For current development priorities and task status, please refer to the [Issues page](https://github.com/arkanwolfshade/MythosMUD/issues).
 
 ---
 
 _This document will be updated as decisions are made and the project evolves._
-
-## SUMMARY (as of current session)
-
-- ✅ The authentication system is robust, JWT-based, and fully tested.
-- ✅ The /command endpoint supports 'look', 'look <direction>', 'go <direction>', and 'say', with comprehensive input validation and security.
-- ✅ Room data is loaded from static JSON files for the real app, but all command handler tests now use fully mocked room and player data for isolation and reliability.
-- ✅ The player manager and room data are patched in tests to ensure consistent, fast, and side-effect-free testing.
-- ✅ The 'look' and 'go' commands are implemented with real logic, including movement and room description output.
-- ✅ The test suite covers all edge cases, including command injection, whitespace, case insensitivity, and movement.
-- ✅ Duplicate test function for invalid direction was removed to avoid confusion.
-- ✅ The mock room graph was visualized for clarity.
-- ✅ Unified PersistenceLayer implemented with thread-safe CRUD operations, hooks, logging, and config support
-- ✅ Server config system implemented with comprehensive MUD server settings (network, game balance, modules, etc.)
-- ✅ All FastAPI endpoints refactored to use PersistenceLayer instead of PlayerManager
-- 🔄 Test suite refactoring in progress - PlayerManager tests need updating to use PersistenceLayer
-- 🔄 Config loader needs bool handling fixes for invalid types
-- 🔄 Auth/login test setup needs debugging for token generation
-- 🔄 Game server needs to respect game_tick_rate from config
-- 🔄 Missing PersistenceLayer methods: delete_player, status/effect methods (apply_sanity_loss, apply_fear, etc.)
-- Next steps: Complete test refactoring, fix config loader, debug auth tests, wire config to game server
