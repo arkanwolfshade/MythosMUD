@@ -1,0 +1,206 @@
+"""
+Schema validator for room definition files.
+
+This module handles JSON schema validation of room definitions,
+supporting both legacy string format and new object format for exits.
+"""
+
+import json
+from pathlib import Path
+from typing import Dict, List, Optional
+from jsonschema import validate, ValidationError
+
+
+class SchemaValidator:
+    """
+    Validates room definitions against JSON schema.
+
+    Supports both legacy string format and new object format for exits,
+    as documented in the restricted archives of dimensional mapping.
+    """
+
+    def __init__(self, schema_path: str = "./schemas/room_schema.json"):
+        """
+        Initialize the schema validator.
+
+        Args:
+            schema_path: Path to the JSON schema file
+        """
+        self.schema_path = Path(schema_path)
+        self.schema = None
+        self._load_schema()
+
+    def _load_schema(self) -> None:
+        """Load and cache the JSON schema."""
+        try:
+            with open(self.schema_path, 'r', encoding='utf-8') as f:
+                self.schema = json.load(f)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid schema file: {e}")
+
+    def validate_room(self, room_data: Dict, file_path: str = "") -> List[str]:
+        """
+        Validate a single room against the schema.
+
+        Args:
+            room_data: Room data to validate
+            file_path: Optional file path for error reporting
+
+        Returns:
+            List of validation error messages
+        """
+        errors = []
+
+        try:
+            validate(instance=room_data, schema=self.schema)
+        except ValidationError as e:
+            # Format validation error for better readability
+            path = " -> ".join(str(p) for p in e.path) if e.path else "root"
+            error_msg = f"Schema validation failed at {path}: {e.message}"
+            if file_path:
+                error_msg = f"{file_path}: {error_msg}"
+            errors.append(error_msg)
+
+        return errors
+
+    def normalize_exits(self, room_data: Dict) -> Dict:
+        """
+        Convert legacy string format exits to new object format internally.
+
+        This allows the validator to work with both formats while
+        maintaining backward compatibility.
+
+        Args:
+            room_data: Room data with potentially legacy exit format
+
+        Returns:
+            Room data with normalized exit format
+        """
+        normalized = room_data.copy()
+        exits = normalized.get('exits', {})
+        normalized_exits = {}
+
+        for direction, exit_data in exits.items():
+            if exit_data is None:
+                normalized_exits[direction] = None
+            elif isinstance(exit_data, str):
+                # Legacy format: convert to new format
+                normalized_exits[direction] = {
+                    "target": exit_data,
+                    "flags": []
+                }
+            elif isinstance(exit_data, dict):
+                # New format: ensure it has required fields
+                if "target" in exit_data:
+                    normalized_exits[direction] = {
+                        "target": exit_data["target"],
+                        "flags": exit_data.get("flags", [])
+                    }
+                else:
+                    normalized_exits[direction] = exit_data
+            else:
+                # Invalid format: preserve as-is for schema validation to catch
+                normalized_exits[direction] = exit_data
+
+        normalized['exits'] = normalized_exits
+        return normalized
+
+    def validate_room_file(self, file_path: Path) -> List[str]:
+        """
+        Validate a room file against the schema.
+
+        Args:
+            file_path: Path to the room JSON file
+
+        Returns:
+            List of validation error messages
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                room_data = json.load(f)
+
+            return self.validate_room(room_data, str(file_path))
+
+        except json.JSONDecodeError as e:
+            return [f"{file_path}: Invalid JSON: {e}"]
+        except Exception as e:
+            return [f"{file_path}: Error reading file: {e}"]
+
+    def validate_room_database(self, room_database: Dict[str, Dict]) -> Dict[str, List[str]]:
+        """
+        Validate all rooms in a database against the schema.
+
+        Args:
+            room_database: Dictionary mapping room IDs to room data
+
+        Returns:
+            Dictionary mapping room IDs to lists of validation errors
+        """
+        validation_results = {}
+
+        for room_id, room_data in room_database.items():
+            errors = self.validate_room(room_data, f"Room {room_id}")
+            if errors:
+                validation_results[room_id] = errors
+
+        return validation_results
+
+    def get_exit_target(self, exit_data) -> Optional[str]:
+        """
+        Extract target room ID from exit data, handling both formats.
+
+        Args:
+            exit_data: Exit data in either string or object format
+
+        Returns:
+            Target room ID or None if invalid
+        """
+        if exit_data is None:
+            return None
+        elif isinstance(exit_data, str):
+            return exit_data
+        elif isinstance(exit_data, dict):
+            return exit_data.get("target")
+        else:
+            return None
+
+    def get_exit_flags(self, exit_data) -> List[str]:
+        """
+        Extract flags from exit data, handling both formats.
+
+        Args:
+            exit_data: Exit data in either string or object format
+
+        Returns:
+            List of exit flags
+        """
+        if isinstance(exit_data, dict):
+            return exit_data.get("flags", [])
+        else:
+            return []
+
+    def is_one_way_exit(self, exit_data) -> bool:
+        """
+        Check if an exit is marked as one-way.
+
+        Args:
+            exit_data: Exit data in either string or object format
+
+        Returns:
+            True if exit is marked as one-way
+        """
+        return "one_way" in self.get_exit_flags(exit_data)
+
+    def is_self_reference_exit(self, exit_data) -> bool:
+        """
+        Check if an exit is marked as self-reference.
+
+        Args:
+            exit_data: Exit data in either string or object format
+
+        Returns:
+            True if exit is marked as self-reference
+        """
+        return "self_reference" in self.get_exit_flags(exit_data)
