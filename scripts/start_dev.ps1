@@ -35,7 +35,7 @@ try {
 
     # Start the React client in background
     Write-Host "Starting React client on http://localhost:5173..." -ForegroundColor Yellow
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd client; npm run dev"
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd ..\client; npm run dev"
 
     # Wait a moment for client to start
     Start-Sleep -Seconds 5
