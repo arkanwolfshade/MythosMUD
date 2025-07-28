@@ -173,8 +173,13 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     setCommandHistory((prev) => [...prev, command].slice(-50)); // Keep last 50 commands
     setHistoryIndex(-1);
 
+    // Parse command into command name and arguments
+    const parts = command.split(/\s+/);
+    const commandName = parts[0];
+    const args = parts.slice(1);
+
     // Send command
-    const success = sendCommand(command, []);
+    const success = sendCommand(commandName, args);
     if (success) {
       addMessage(`> ${command}`);
     } else {

@@ -34,5 +34,11 @@
     "password_hash": "$2b$12$rQqtYwrk7K7M9D9rbGj21.YhixyI.dQ9aJ/Q6DUcY31kRHTHeyn0e",
     "invite_code": "Venerable309",
     "created_at": "2025-07-28T05:16:47.827757Z"
+  },
+  {
+    "username": "playwright_test_user",
+    "password_hash": "$2b$12$r.ES6aFMaq9BfoOs1y6Fy.sE3ctkY.ExsnbeCLXSAaVZsk5pg2Z9m",
+    "invite_code": "Prehistoric",
+    "created_at": "2025-07-28T22:17:18.161578Z"
   }
 ]

@@ -80,12 +80,8 @@ def handle_command(
                     desc = target_room.get("description", "You see nothing special.")
                     return {"result": f"{name}\n{desc}"}
             return {"result": "You see nothing special that way."}
-        desc = room.get("description", "You see nothing special.")
         name = room.get("name", "")
-        exits = room.get("exits", {})
-        exits_list = [d for d, v in exits.items() if v]
-        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        return {"result": f"{name}\n{desc}\n{exits_str}"}
+        return {"result": name}
     elif cmd == "go":
         if not persistence:
             return {"result": "You can't go that way"}
@@ -111,11 +107,7 @@ def handle_command(
         persistence.save_player(player)
         current_user["current_room_id"] = target_room_id
         name = target_room.get("name", "")
-        desc = target_room.get("description", "You see nothing special.")
-        exits = target_room.get("exits", {})
-        exits_list = [d for d, v in exits.items() if v]
-        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        return {"result": f"{name}\n{desc}\n{exits_str}"}
+        return {"result": name}
     elif cmd == "say":
         message = " ".join(args).strip()
         if not message:

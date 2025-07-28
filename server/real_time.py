@@ -433,12 +433,8 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
             else:
                 result = "You see nothing special that way."
         else:
-            desc = room.get("description", "You see nothing special.")
             name = room.get("name", "")
-            exits = room.get("exits", {})
-            exits_list = [d for d, v in exits.items() if v]
-            exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-            result = f"{name}\n{desc}\n{exits_str}"
+            result = name
 
     elif command == "go":
         if not args:
@@ -462,17 +458,30 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                         connection_manager.persistence.save_player(player)
 
                     name = target_room.get("name", "")
-                    desc = target_room.get("description", "You see nothing special.")
-                    exits = target_room.get("exits", {})
-                    exits_list = [d for d, v in exits.items() if v]
-                    exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-                    result = f"{name}\n{desc}\n{exits_str}"
+                    result = name
 
-                    # Broadcast room change to other players in the room
+                    # Send room update to the moving player
+                    room_update_event = GameEvent(
+                        event_type="room_update",
+                        sequence_number=connection_manager._get_next_sequence(),
+                        player_id=player_id,
+                        room_id=target_room_id,
+                        data={
+                            "room": {
+                                "name": target_room.get("name", ""),
+                                "description": target_room.get("description", "You see nothing special.")
+                            },
+                            "entities": []  # TODO: Add entities when implemented
+                        }
+                    )
+                    await connection_manager.send_personal_message(player_id, room_update_event)
+
+                    # Broadcast room change to other players in the room (exclude the moving player)
                     await broadcast_room_event(
                         target_room_id,
                         "player_entered",
-                        {"player_name": player.name, "player_id": player_id}
+                        {"player_name": player.name, "player_id": player_id},
+                        exclude_player=player_id
                     )
 
     elif command == "say":
