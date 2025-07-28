@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useGameConnection } from "../hooks/useGameConnection";
 import { ansiToHtmlWithBreaks } from "../utils/ansiToHtml";
+import { logger } from "../utils/logger";
 import "./GameTerminal.css";
 
 interface GameTerminalProps {
@@ -267,12 +268,18 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
                 Disconnect
               </button>
             )}
-            <button onClick={() => (window.location.href = "/logout")} className="logout-btn">
+            <button
+              onClick={() => {
+                // Proper logout - redirect to login page
+                window.location.href = "/";
+              }}
+              className="logout-btn"
+            >
               Logout
             </button>
             <button
               onClick={() => {
-                /* TODO: Implement download logs */
+                logger.downloadLogs();
               }}
               className="download-logs-btn"
             >

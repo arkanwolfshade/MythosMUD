@@ -138,14 +138,6 @@ function App() {
     return (
       <div className="app">
         <GameTerminal playerId={playerId} authToken={authToken} />
-        <div className="button-container">
-          <button onClick={handleLogout} className="logout-button">
-            Logout
-          </button>
-          <button onClick={() => logger.downloadLogs()} className="download-logs-button">
-            Download Logs
-          </button>
-        </div>
       </div>
     );
   }
