@@ -4,5 +4,35 @@
     "password_hash": "$2b$12$LI1LZhAEsPtVmTA2OKWw.O8XnfhhFuoVAWRYdtoJXqk1Qc5CyfIDC",
     "invite_code": "INVITE123",
     "created_at": "2025-07-25T23:42:04.373301Z"
+  },
+  {
+    "username": "testuser_d1136348",
+    "password_hash": "$2b$12$dVvGoRxtFmYcl8.Mu9AUtu3WLxXCOnwGuM9mQZv5rl12eskZA52Ia",
+    "invite_code": "MYTHOS2025",
+    "created_at": "2025-07-27T21:56:07.476711Z"
+  },
+  {
+    "username": "testuser_682b49cf",
+    "password_hash": "$2b$12$f5nO5lVFGfBN3cCOuNge2e9/l3NcIOTx9dL7HRgw5EINJBjHCFb0O",
+    "invite_code": "ARKHAM_ACCESS",
+    "created_at": "2025-07-27T21:56:36.833085Z"
+  },
+  {
+    "username": "testuser_88f882a9",
+    "password_hash": "$2b$12$/MAXBNHV7MWVSIL9Pueb7e7WW35mMe6KyGajthzBjXGWItoUptTgW",
+    "invite_code": "Dream800",
+    "created_at": "2025-07-27T21:57:45.323044Z"
+  },
+  {
+    "username": "ArkanWolfshade",
+    "password_hash": "$2b$12$2DiC6H5Ax7Mzgm4jOZa4N.8OykZ9B70Rkhg/DaNObGeeNtyJoiVZu",
+    "invite_code": "MYTHOS2025",
+    "created_at": "2025-07-28T00:16:21.114976Z"
+  },
+  {
+    "username": "debuguser",
+    "password_hash": "$2b$12$rQqtYwrk7K7M9D9rbGj21.YhixyI.dQ9aJ/Q6DUcY31kRHTHeyn0e",
+    "invite_code": "Venerable309",
+    "created_at": "2025-07-28T05:16:47.827757Z"
   }
 ]

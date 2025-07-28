@@ -6,7 +6,7 @@
 
 .DESCRIPTION
     This script provides robust server shutdown functionality for MythosMUD by:
-    - Terminating processes using port 8000
+    - Terminating processes using port 54731
     - Killing processes by name patterns (uvicorn, python)
     - Terminating processes by command line patterns
     - Force killing all Python processes if Force flag is set
@@ -178,7 +178,7 @@ try {
     Write-Host "Starting robust server shutdown process..." -ForegroundColor Green
 
     # Method 1: Kill processes by port
-    Stop-ProcessesByPort -Port 8000
+    Stop-ProcessesByPort -Port 54731
 
     # Method 2: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
@@ -209,16 +209,16 @@ try {
     Start-Sleep -Seconds 3
 
     # Verify port is free
-    $portFree = Wait-ForPortFree -Port 8000 -MaxWaitSeconds 10
+    $portFree = Wait-ForPortFree -Port 54731 -MaxWaitSeconds 10
 
     if ($portFree) {
         Write-Host "`n🎉 MythosMUD Server shutdown complete!" -ForegroundColor Green
     }
     else {
-        Write-Host "`n⚠️  Server shutdown may be incomplete. Port 8000 is still in use." -ForegroundColor Yellow
+        Write-Host "`n⚠️  Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
         if ($Verbose) {
-            Write-Host "Remaining connections on port 8000:" -ForegroundColor Yellow
-            Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "Remaining connections on port 54731:" -ForegroundColor Yellow
+            Get-NetTCPConnection -LocalPort 54731 -ErrorAction SilentlyContinue | ForEach-Object {
                 Write-Host "  $($_.LocalAddress):$($_.LocalPort) -> $($_.RemoteAddress):$($_.RemotePort) (PID: $($_.OwningProcess))" -ForegroundColor Gray
             }
         }

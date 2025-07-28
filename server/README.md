@@ -73,7 +73,7 @@ The game features a comprehensive stats system with Lovecraftian horror elements
    uv run uvicorn main:app --reload
    ```
 
-3. The server will be available at `http://localhost:8000`
+3. The server will be available at `http://localhost:54731`
 
 ## Testing
 

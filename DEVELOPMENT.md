@@ -11,6 +11,7 @@ This guide will help you bootstrap your workspace for developing MythosMUD.
 - **Node.js 18+** and **npm** (for client)
 - **[uv](https://github.com/astral-sh/uv)** (for Python dependency management - **required**)
 - **VSCode** or Cursor.ai (recommended editor)
+- **React Developer Tools** (Firefox/Chrome extension for debugging React components)
 
 ---
 
@@ -73,7 +74,7 @@ uv run pre-commit install -f
 uv run uvicorn main:app --reload
 ```
 
-The server should now be running at [http://localhost:8000](http://localhost:8000)
+The server should now be running at [http://localhost:54731](http://localhost:54731)
 
 ---
 
@@ -217,6 +218,28 @@ pyenv local 3.11.8
 cd server
 uv sync --reinstall
 ```
+
+### **Client-Server Connection Issues:**
+
+```sh
+# Check if server is running on correct port
+curl http://localhost:54731/game/status
+
+# Verify Vite proxy configuration in client/vite.config.ts
+# Ensure target ports match server configuration
+
+# Use React Developer Tools to debug component state
+# - Install React Developer Tools extension in Firefox/Chrome
+# - Check component props, state, and network requests
+# - Monitor authentication state and API calls
+```
+
+### **React Component Debugging:**
+
+- **React Developer Tools**: Use the Firefox/Chrome extension to inspect component state
+- **Network Tab**: Check API requests and responses in browser dev tools
+- **Console**: Monitor authentication flow and error messages
+- **Component State**: Verify `isAuthenticated`, `playerId`, and `authToken` values
 
 ---
 

@@ -5,12 +5,20 @@ import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+# Fix bcrypt warning by monkey patching before importing passlib
+try:
+    import bcrypt
+    if not hasattr(bcrypt, '__about__'):
+        bcrypt.__about__ = type('About', (), {'__version__': '4.3.0'})()
+except ImportError:
+    pass
+
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from auth import get_current_user, get_current_user_optional
+from auth import get_current_user, validate_sse_token, get_sse_auth_headers, get_users_file
 from auth import router as auth_router
 from command_handler import router as command_router
 from models import Player, Stats
@@ -139,17 +147,60 @@ def read_root():
 async def game_events_stream(
     player_id: str,
     request: Request,
-    current_user: dict = Depends(get_current_user_optional)
+    users_file: str = Depends(get_users_file)
 ):
     """
     Server-Sent Events stream for real-time game updates.
 
     This endpoint provides a persistent connection for receiving game state updates,
     room changes, combat events, and other real-time information.
+
+    Authentication is handled via JWT token in query parameter or Authorization header.
     """
-    # Verify the authenticated user matches the requested player
-    if current_user["username"] != player_id:
-        raise HTTPException(status_code=403, detail="Access denied")
+    # Extract token from query parameter or Authorization header
+    token = request.query_params.get("token")
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:]  # Remove "Bearer " prefix
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication token required"
+        )
+
+        # Validate the token and get user information
+    try:
+        user_info = validate_sse_token(token, users_file)
+        authenticated_username = user_info["username"]
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication token"
+        )
+
+        # Verify the authenticated user matches the requested player
+    # Get the player from persistence to check if the player_id matches
+    persistence = request.app.state.persistence
+    player = persistence.get_player_by_name(authenticated_username)
+    if not player:
+        raise HTTPException(
+            status_code=404,
+            detail="Player not found in database"
+        )
+
+    # Compare the actual player ID (UUID) with the requested player_id
+    if player.id != player_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied: token does not match player ID"
+        )
+
+    # Get security headers for SSE
+    security_headers = get_sse_auth_headers()
 
     return StreamingResponse(
         game_event_stream(player_id),
@@ -158,7 +209,8 @@ async def game_events_stream(
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Cache-Control"
+            "Access-Control-Allow-Headers": "Cache-Control",
+            **security_headers
         }
     )
 
@@ -172,9 +224,29 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     - Game commands (look, go, attack, etc.)
     - Chat messages
     - Real-time interactions
+
+    Authentication is handled via JWT token in query parameter.
     """
-    # TODO: Implement proper WebSocket authentication
-    # For now, we'll accept the connection and handle auth in the endpoint
+    # Extract token from query parameter
+    token = websocket.query_params.get("token")
+    if not token:
+        await websocket.close(code=4001, reason="Authentication token required")
+        return
+
+    # Validate the token
+    try:
+        user_info = validate_sse_token(token)
+        authenticated_username = user_info["username"]
+    except Exception:
+        await websocket.close(code=4001, reason="Invalid authentication token")
+        return
+
+    # Verify the authenticated user matches the requested player
+    if authenticated_username != player_id:
+        await websocket.close(code=4003, reason="Access denied: token does not match player ID")
+        return
+
+    # Proceed with the WebSocket connection
     await websocket_endpoint(websocket, player_id)
 
 
@@ -311,7 +383,7 @@ def damage_player(player_id: str, amount: int, damage_type: str = "physical"):
 def get_game_status():
     """Get current game status and connection information."""
     return {
-        "active_connections": len(connection_manager.active_websockets),
+        "active_connections": connection_manager.get_active_connection_count(),
         "active_players": len(connection_manager.player_websockets),
         "room_subscriptions": len(connection_manager.room_subscriptions),
         "server_time": datetime.datetime.utcnow().isoformat()

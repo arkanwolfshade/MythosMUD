@@ -1,6 +1,5 @@
 import json
 import os
-import sqlite3
 import tempfile
 
 import pytest
@@ -8,7 +7,6 @@ from fastapi.testclient import TestClient
 
 from server.auth import get_invites_file, get_users_file
 from server.main import app
-from server.persistence import PersistenceLayer
 
 # Database schema for tests
 TEST_SCHEMA = """
@@ -53,7 +51,7 @@ def temp_files():
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as invites_file:
         json.dump(
             [
-                {"code": "INVITE123", "used": False},
+                {"code": "ARKHAM_ACCESS", "used": False},
                 {"code": "USEDINVITE", "used": True},
             ],
             invites_file,
@@ -67,77 +65,95 @@ def temp_files():
     os.remove(invites_path)
 
 
-@pytest.fixture
-def temp_log_file():
-    """Create a temporary log file for the persistence layer."""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as log_file:
-        log_path = log_file.name
-
-    yield log_path
-
-    # Cleanup - don't try to remove if it's still in use
-    try:
-        if os.path.exists(log_path):
-            os.remove(log_path)
-    except PermissionError:
-        pass  # File might still be in use by logger
-
-
-@pytest.fixture
-def temp_db():
-    """Create a temporary database with schema."""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".db", delete=False) as db_file:
-        db_path = db_file.name
-
-    # Initialize the database with schema
-    with sqlite3.connect(db_path) as conn:
-        conn.executescript(TEST_SCHEMA)
-        conn.commit()
-
-    yield db_path
-
-    # Cleanup
-    try:
-        if os.path.exists(db_path):
-            os.remove(db_path)
-    except PermissionError:
-        pass  # File might still be in use
-
-
 @pytest.fixture(autouse=True)
 def override_dependencies(temp_files):
     """Override dependencies to use temporary files."""
     users_path, invites_path = temp_files
+    print(f"Setting up dependency overrides:")
+    print(f"  users_file: {users_path}")
+    print(f"  invites_file: {invites_path}")
     app.dependency_overrides[get_users_file] = lambda: users_path
     app.dependency_overrides[get_invites_file] = lambda: invites_path
+
+    # Debug: Check what's in the invites file
+    with open(invites_path, 'r') as f:
+        invites_content = f.read()
+        print(f"Invites file content: {invites_content}")
+
     yield
     app.dependency_overrides = {}
 
 
 @pytest.fixture(autouse=True)
-def setup_test_persistence(temp_log_file, temp_db, monkeypatch):
-    """Set up test persistence layer."""
-    # Create a test persistence layer with temporary database and log file
-    test_persistence = PersistenceLayer(db_path=temp_db, log_path=temp_log_file)
+def patch_persistence_layer(monkeypatch):
+    """Patch the PersistenceLayer class to use the test database."""
+    # Use the test configuration to get the test database path
+    from pathlib import Path
+    from server.config_loader import get_config
 
-    # Patch get_persistence to return our test persistence layer
-    monkeypatch.setattr("server.persistence.get_persistence", lambda: test_persistence)
+    # Load test configuration
+    test_config_path = Path(__file__).parent.parent / "test_server_config.yaml"
+    config = get_config(str(test_config_path))
 
-    # Also set it on the app state
-    app.state.persistence = test_persistence
+    # Resolve paths relative to the project root (server directory)
+    project_root = Path(__file__).parent.parent
+    # Remove the "server/" prefix from the config paths since we're already in the server directory
+    db_path = config["db_path"].replace("server/", "")
+    log_path = config["log_path"].replace("server/", "")
+    test_db_path = project_root / db_path
+    test_log_path = project_root / log_path
+
+    # Ensure the test database exists
+    if not test_db_path.exists():
+        raise FileNotFoundError(f"Test database not found at {test_db_path}. Run init_test_db.py first.")
+
+    # Patch the PersistenceLayer constructor to use our test database
+    original_init = None
+
+    def mock_init(self, db_path=None, log_path=None):
+        # Use our test database instead of the default
+        if db_path is None:
+            db_path = str(test_db_path)
+        if log_path is None:
+            log_path = str(test_log_path)
+
+        # Call the original __init__ with our modified paths
+        original_init(self, db_path, log_path)
+
+    # Store the original __init__ method
+    from server.persistence import PersistenceLayer
+    original_init = PersistenceLayer.__init__
+
+    # Patch the __init__ method
+    monkeypatch.setattr(PersistenceLayer, "__init__", mock_init)
+
     yield
 
+    # Restore the original __init__ method
+    monkeypatch.setattr(PersistenceLayer, "__init__", original_init)
 
-def test_successful_registration():
-    client = TestClient(app)
-    response = client.post(
+
+@pytest.fixture
+def test_client():
+    """Create a test client with proper app state setup."""
+    with TestClient(app) as client:
+        # Set up the persistence layer in app state
+        from server.persistence import get_persistence
+        client.app.state.persistence = get_persistence()
+        yield client
+
+
+def test_successful_registration(test_client):
+    response = test_client.post(
         "/auth/register",
         json={
             "username": "testuser",
             "password": "testpass",
-            "invite_code": "INVITE123",
+            "invite_code": "ARKHAM_ACCESS",
         },
     )
+    print(f"Response status: {response.status_code}")
+    print(f"Response content: {response.json()}")
     assert response.status_code == 201
     assert "Registration successful" in response.json()["message"]
 

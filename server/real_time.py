@@ -1,12 +1,15 @@
 """
 Real-time communication module for MythosMUD.
 
-Handles Server-Sent Events (SSE) for game state updates and WebSockets for interactive commands.
+Handles Server-Sent Events (SSE) for game state updates and WebSockets for
+interactive commands.
 """
 
 import asyncio
 import json
 import logging
+import os
+import time
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -14,9 +17,40 @@ from typing import Any
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
+from config_loader import get_config
 from models import Player
 
 logger = logging.getLogger(__name__)
+
+
+def load_motd() -> str:
+    """
+    Load the Message of the Day from the configured file.
+
+    Returns:
+        str: The MOTD content, or a default message if file cannot be loaded
+    """
+    try:
+        config = get_config()
+        motd_file = config.get("motd_file", "./data/motd.txt")
+
+        # Resolve relative path from server directory to project root
+        server_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(server_dir)
+        motd_path = os.path.join(project_root, motd_file.replace("./", ""))
+
+        if os.path.exists(motd_path):
+            with open(motd_path, encoding='utf-8') as f:
+                return f.read().strip()
+        else:
+            logger.warning(f"MOTD file not found: {motd_path}")
+            return ("Welcome to MythosMUD - Enter the realm of "
+                    "forbidden knowledge...")
+
+    except Exception as e:
+        logger.error(f"Error loading MOTD: {e}")
+        return ("Welcome to MythosMUD - Enter the realm of "
+                "forbidden knowledge...")
 
 
 class GameEvent(BaseModel):
@@ -43,6 +77,8 @@ class ConnectionManager:
         self.active_websockets: dict[str, WebSocket] = {}
         # Player ID to WebSocket mapping
         self.player_websockets: dict[str, str] = {}
+        # Active SSE connections (player_id -> connection_id)
+        self.active_sse_connections: dict[str, str] = {}
         # Room subscriptions (room_id -> set of player_ids)
         self.room_subscriptions: dict[str, set[str]] = {}
         # Global event sequence counter
@@ -51,6 +87,11 @@ class ConnectionManager:
         self.pending_messages: dict[str, list[GameEvent]] = {}
         # Reference to persistence layer (set during app startup)
         self.persistence = None
+
+        # Rate limiting for connections
+        self.connection_attempts: dict[str, list[float]] = {}
+        self.max_connection_attempts = 5  # Max attempts per minute
+        self.connection_window = 60  # Time window in seconds
 
     async def connect_websocket(self, websocket: WebSocket, player_id: str) -> bool:
         """Connect a WebSocket for a player."""
@@ -86,6 +127,93 @@ class ConnectionManager:
                     del self.room_subscriptions[room_id]
 
             logger.info(f"WebSocket disconnected for player {player_id}")
+
+    def connect_sse(self, player_id: str) -> str:
+        """Connect an SSE stream for a player."""
+        # Disconnect any existing SSE connection for this player
+        self.disconnect_sse(player_id)
+
+        connection_id = str(uuid.uuid4())
+        self.active_sse_connections[player_id] = connection_id
+
+        logger.info(f"SSE connected for player {player_id}")
+        return connection_id
+
+    def disconnect_sse(self, player_id: str):
+        """Disconnect an SSE stream for a player."""
+        if player_id in self.active_sse_connections:
+            self.active_sse_connections.pop(player_id)
+            logger.info(f"SSE disconnected for player {player_id}")
+
+    def get_active_connection_count(self) -> int:
+        """Get the total number of active connections."""
+        return len(self.active_websockets) + len(self.active_sse_connections)
+
+    def check_rate_limit(self, player_id: str) -> bool:
+        """
+        Check if a player is within rate limits for connections.
+
+        Args:
+            player_id: The player ID to check
+
+        Returns:
+            bool: True if within rate limits, False if rate limited
+        """
+        current_time = time.time()
+
+        # Initialize connection attempts for this player if not exists
+        if player_id not in self.connection_attempts:
+            self.connection_attempts[player_id] = []
+
+        # Remove old attempts outside the time window
+        self.connection_attempts[player_id] = [
+            attempt_time for attempt_time in self.connection_attempts[player_id]
+            if current_time - attempt_time < self.connection_window
+        ]
+
+        # Check if player has exceeded the rate limit
+        if len(self.connection_attempts[player_id]) >= self.max_connection_attempts:
+            return False
+
+        # Add current attempt
+        self.connection_attempts[player_id].append(current_time)
+        return True
+
+    def get_rate_limit_info(self, player_id: str) -> dict:
+        """
+        Get rate limit information for a player.
+
+        Args:
+            player_id: The player ID to check
+
+        Returns:
+            dict: Rate limit information
+        """
+        current_time = time.time()
+
+        if player_id not in self.connection_attempts:
+            return {
+                "attempts": 0,
+                "max_attempts": self.max_connection_attempts,
+                "window_seconds": self.connection_window,
+                "reset_time": current_time + self.connection_window
+            }
+
+        # Remove old attempts outside the time window
+        self.connection_attempts[player_id] = [
+            attempt_time for attempt_time in self.connection_attempts[player_id]
+            if current_time - attempt_time < self.connection_window
+        ]
+
+        attempts_remaining = max(0, self.max_connection_attempts - len(self.connection_attempts[player_id]))
+
+        return {
+            "attempts": len(self.connection_attempts[player_id]),
+            "max_attempts": self.max_connection_attempts,
+            "window_seconds": self.connection_window,
+            "attempts_remaining": attempts_remaining,
+            "reset_time": current_time + self.connection_window
+        }
 
     async def subscribe_to_room(self, player_id: str, room_id: str):
         """Subscribe a player to room updates."""
@@ -148,9 +276,14 @@ class ConnectionManager:
         return self.pending_messages.pop(player_id, [])
 
     def _get_player(self, player_id: str) -> Player | None:
-        """Get player from persistence layer."""
+        """Get player from persistence layer by ID or name."""
         if self.persistence:
-            return self.persistence.get_player(player_id)
+            # First try to get by ID (UUID)
+            player = self.persistence.get_player(player_id)
+            if player:
+                return player
+            # If not found by ID, try by name (for backward compatibility)
+            return self.persistence.get_player_by_name(player_id)
         return None
 
 
@@ -160,6 +293,25 @@ connection_manager = ConnectionManager()
 
 async def game_event_stream(player_id: str):
     """Generate Server-Sent Events stream for a player."""
+    # Check rate limiting before allowing connection
+    if not connection_manager.check_rate_limit(player_id):
+        rate_limit_info = connection_manager.get_rate_limit_info(player_id)
+        error_event = GameEvent(
+            event_type="error",
+            sequence_number=connection_manager._get_next_sequence(),
+            player_id=player_id,
+            data={
+                "error": "rate_limited",
+                "message": "Too many connection attempts",
+                "rate_limit_info": rate_limit_info
+            }
+        )
+        yield f"data: {error_event.json()}\n\n"
+        return
+
+    # Register this SSE connection
+    connection_manager.connect_sse(player_id)
+
     try:
         # Send initial game state
         player = connection_manager._get_player(player_id)
@@ -181,6 +333,16 @@ async def game_event_stream(player_id: str):
         for event in pending:
             yield f"data: {event.json()}\n\n"
 
+        # Send MOTD
+        motd_content = load_motd()
+        motd_event = GameEvent(
+            event_type="motd",
+            sequence_number=connection_manager._get_next_sequence(),
+            player_id=player_id,
+            data={"message": motd_content}
+        )
+        yield f"data: {motd_event.json()}\n\n"
+
         # Keep connection alive with heartbeat
         while True:
             await asyncio.sleep(30)  # Heartbeat every 30 seconds
@@ -195,6 +357,9 @@ async def game_event_stream(player_id: str):
         logger.info(f"SSE stream cancelled for player {player_id}")
     except Exception as e:
         logger.error(f"Error in SSE stream for player {player_id}: {e}")
+    finally:
+        # Always clean up the connection
+        connection_manager.disconnect_sse(player_id)
 
 
 def get_room_data(room_id: str) -> dict[str, Any]:

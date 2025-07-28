@@ -51,7 +51,7 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { isConnected, isConnecting, error, reconnectAttempts, sendCommand } = useGameConnection({
+  const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
     playerId,
     authToken,
     onEvent: handleGameEvent,
@@ -71,6 +71,11 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
           room: event.data.room as Room,
         }));
         addMessage(`Welcome to ${(event.data.room as Room)?.name || "Unknown Room"}`);
+        break;
+
+      case "motd":
+        // Display the Message of the Day
+        addMessage(event.data.message as string);
         break;
 
       case "room_update":
@@ -170,6 +175,16 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     }
   }
 
+  function handleConnect() {
+    addMessage("Attempting to connect...");
+    connect();
+  }
+
+  function handleDisconnect() {
+    addMessage("Disconnecting...");
+    disconnect();
+  }
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -178,7 +193,17 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
   // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
+    // Show manual connection message
+    addMessage("Welcome to MythosMUD! Click 'Connect' to join the game.");
   }, []);
+
+  // Remove auto-connect to prevent infinite loop
+  // useEffect(() => {
+  //   if (playerId && authToken) {
+  //     addMessage("Auto-connecting to MythosMUD...");
+  //     connect();
+  //   }
+  // }, [playerId, authToken, connect]);
 
   return (
     <div className="game-terminal">
@@ -189,6 +214,20 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
         </div>
         {error && <div className="error-message">{error}</div>}
         {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
+
+        {/* Connection Controls */}
+        <div className="connection-controls">
+          {!isConnected && !isConnecting && (
+            <button onClick={handleConnect} className="connect-btn">
+              Connect
+            </button>
+          )}
+          {isConnected && (
+            <button onClick={handleDisconnect} className="disconnect-btn">
+              Disconnect
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Game State Display */}

@@ -7,7 +7,7 @@ log_level: INFO
 
 # --- Network ---
 host: 0.0.0.0  # Server bind address
-port: 4000     # Main game port
+port: 54731     # Main game port
 max_connections: 100
 connection_timeout: 60  # seconds
 

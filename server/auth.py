@@ -183,6 +183,7 @@ class LoginRequest(BaseModel):
 @router.post("/login")
 def login_user(
     req: LoginRequest,
+    request: Request,
     users_file: str = Depends(get_users_file),
 ):
     # Load users
@@ -195,8 +196,24 @@ def login_user(
     if not user or not verify_password(req.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid username or password.")
 
-    access_token = create_access_token(data={"sub": user["username"]}, expires_delta=timedelta(minutes=60))
-    return {"access_token": access_token, "token_type": "bearer"}
+        # Get the player from persistence to return the correct player ID
+    persistence = request.app.state.persistence
+    player = persistence.get_player_by_name(req.username)
+    if not player:
+        raise HTTPException(
+            status_code=500,
+            detail="Player data not found in database."
+        )
+
+    access_token = create_access_token(
+        data={"sub": user["username"]},
+        expires_delta=timedelta(minutes=60)
+    )
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "player_id": player.id  # Return the actual UUID for the client to use
+    }
 
 
 bearer_scheme = HTTPBearer()
@@ -263,3 +280,86 @@ def get_current_user_optional(
 @router.get("/me")
 def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
+
+
+def validate_sse_token(token: str, users_file: str = None) -> dict:
+    """
+    Validate JWT token for SSE and WebSocket connections.
+
+    This function provides robust token validation with proper error handling
+    and security checks for real-time connections.
+
+    Args:
+        token: The JWT token to validate
+        users_file: Optional path to users file for additional validation
+
+    Returns:
+        dict: User information if token is valid
+
+    Raises:
+        HTTPException: If token is invalid, expired, or user not found
+    """
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="No authentication token provided"
+        )
+
+    # Decode and validate the token
+    payload = decode_access_token(token)
+    if not payload or "sub" not in payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
+
+    username = payload["sub"]
+
+    # Additional validation: check if user exists in our system
+    if users_file:
+        try:
+            users = load_json_file_safely(users_file)
+            user = next(
+                (u for u in users if u["username"] == username),
+                None
+            )
+            if not user:
+                raise HTTPException(
+                    status_code=404,
+                    detail="User not found"
+                )
+            # Exclude password_hash from response
+            user_info = {
+                k: v for k, v in user.items()
+                if k != "password_hash"
+            }
+            return user_info
+        except Exception as e:
+            # Log the error but don't expose it to users
+            print(f"Warning: Could not validate user in SSE auth: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail="Authentication service unavailable"
+            )
+
+    # Return basic user info if no users file provided
+    return {"username": username}
+
+
+def get_sse_auth_headers() -> dict:
+    """
+    Get security headers for SSE connections.
+
+    Returns:
+        dict: Security headers for SSE responses
+    """
+    return {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'",
+    }

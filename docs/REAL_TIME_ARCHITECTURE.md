@@ -181,7 +181,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
 
 **Client Connection**:
 ```typescript
-const websocket = new WebSocket(`ws://localhost:8000/ws/${playerId}`);
+const websocket = new WebSocket(`ws://localhost:54731/ws/${playerId}`);
 
 websocket.onmessage = (event) => {
   const response = JSON.parse(event.data);
@@ -333,7 +333,7 @@ function handleGameEvent(event: GameEvent) {
    ```
 
 3. **Test connections**:
-   - Visit `http://localhost:8000/docs` for API documentation
+   - Visit `http://localhost:54731/docs` for API documentation
    - Use browser dev tools to monitor WebSocket connections
    - Check server logs for connection events
 
@@ -347,7 +347,7 @@ eventSource.onmessage = (event) => {
 };
 
 // Test WebSocket connection
-const ws = new WebSocket('ws://localhost:8000/ws/test-player');
+const ws = new WebSocket('ws://localhost:54731/ws/test-player');
 ws.onmessage = (event) => {
   console.log('WS message:', JSON.parse(event.data));
 };

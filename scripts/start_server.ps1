@@ -15,14 +15,14 @@
     The host address to bind the server to. Default is "127.0.0.1".
 
 .PARAMETER Port
-    The port number to bind the server to. Default is 8000.
+    The port number to bind the server to. Default is 54731.
 
 .PARAMETER Reload
     When specified, enables auto-reload for development. Default is true.
 
 .EXAMPLE
     .\start_server.ps1
-    Starts the server with default settings (127.0.0.1:8000 with reload).
+    Starts the server with default settings (127.0.0.1:54731 with reload).
 
 .EXAMPLE
     .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload:$false
@@ -38,15 +38,69 @@
 param(
     [Parameter(HelpMessage = "Host address to bind server to")]
     [ValidateNotNullOrEmpty()]
-    [string]$ServerHost = "127.0.0.1",
+    [string]$ServerHost = "",
 
     [Parameter(HelpMessage = "Port number to bind server to")]
     [ValidateRange(1, 65535)]
-    [int]$Port = 8000,
+    [int]$Port = 0,
 
     [Parameter(HelpMessage = "Enable auto-reload for development")]
-    [switch]$Reload = $true
+    [switch]$Reload = $true,
+
+    [Parameter(HelpMessage = "Show help information")]
+    [switch]$Help
 )
+
+# Function to read server configuration
+function Get-ServerConfig {
+    [CmdletBinding()]
+    param()
+
+    $configPath = "server\server_config.yaml"
+    $defaultHost = "127.0.0.1"
+    $defaultPort = 54731
+
+    if (Test-Path $configPath) {
+        try {
+            # Simple YAML parsing for host and port
+            $configContent = Get-Content $configPath -Raw
+            if ($configContent -match "host:\s*([^\s#]+)") {
+                $defaultHost = $matches[1].Trim()
+            }
+            if ($configContent -match "port:\s*(\d+)") {
+                $defaultPort = [int]$matches[1]
+            }
+            Write-Host "Loaded config from $configPath" -ForegroundColor Gray
+        }
+        catch {
+            Write-Host "Warning: Could not parse config file, using defaults" -ForegroundColor Yellow
+        }
+    }
+    else {
+        Write-Host "Warning: Config file not found at $configPath, using defaults" -ForegroundColor Yellow
+    }
+
+    Write-Host "Config loaded - Host: $defaultHost, Port: $defaultPort" -ForegroundColor Cyan
+    return @{
+        Host = $defaultHost
+        Port = $defaultPort
+    }
+}
+
+# Show help if requested
+if ($Help) {
+    Get-Help $MyInvocation.MyCommand.Path -Full
+    exit 0
+}
+
+# Load configuration and set defaults
+$config = Get-ServerConfig
+if ([string]::IsNullOrEmpty($ServerHost)) {
+    $ServerHost = $config.Host
+}
+if ($Port -eq 0) {
+    $Port = $config.Port
+}
 
 # Function to terminate server processes
 function Stop-ServerProcesses {
@@ -97,7 +151,7 @@ function Test-PortInUse {
         return $false
     }
     catch {
-        Write-Host "Error checking port $Port: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "Error checking port ${Port}: $($_.Exception.Message)" -ForegroundColor Yellow
         return $false
     }
 }
@@ -118,6 +172,8 @@ function Start-MythosMUDServer {
         [bool]$Reload
     )
 
+    # Use 127.0.0.1 for health check even if server binds to 0.0.0.0
+    $healthCheckUrl = "http://127.0.0.1:" + $Port
     $serverUrl = "http://" + $ServerHost + ":" + $Port
     Write-Host "Starting server on $serverUrl..." -ForegroundColor Cyan
 
@@ -142,7 +198,7 @@ function Start-MythosMUDServer {
 
         while ($attempt -lt $maxAttempts) {
             try {
-                $response = Invoke-WebRequest -Uri $serverUrl -UseBasicParsing -TimeoutSec 5
+                $response = Invoke-WebRequest -Uri $healthCheckUrl -UseBasicParsing -TimeoutSec 5
                 if ($response.StatusCode -eq 200) {
                     Write-Host "Server is running successfully on $serverUrl" -ForegroundColor Green
                     Write-Host "API Documentation: $serverUrl/docs" -ForegroundColor Cyan

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { logger } from "../utils/logger";
 
 interface GameEvent {
   event_type: string;
@@ -24,8 +25,6 @@ interface UseGameConnectionOptions {
   onConnect?: () => void;
   onDisconnect?: () => void;
   onError?: (error: string) => void;
-  autoReconnect?: boolean;
-  maxReconnectAttempts?: number;
 }
 
 export function useGameConnection({
@@ -33,10 +32,8 @@ export function useGameConnection({
   authToken,
   onEvent,
   onConnect,
-  onDisconnect,
   onError,
-  autoReconnect = true,
-  maxReconnectAttempts = 5,
+  onDisconnect,
 }: UseGameConnectionOptions) {
   const [state, setState] = useState<GameConnectionState>({
     isConnected: false,
@@ -48,143 +45,84 @@ export function useGameConnection({
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const websocketRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<number | null>(null);
-  const reconnectAttemptsRef = useRef(0);
+  const isConnectingRef = useRef(false);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "/api";
-
-  // Connect to SSE stream for game state updates
-  const connectSSE = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
+  const connect = useCallback(async () => {
+    if (isConnectingRef.current || state.isConnected) {
+      logger.info("GameConnection", "Already connecting or connected");
+      return;
     }
 
+    isConnectingRef.current = true;
     setState((prev) => ({ ...prev, isConnecting: true, error: null }));
 
-    // Use the proxy path for SSE
-    const eventSource = new EventSource(`/events/${playerId}?token=${encodeURIComponent(authToken)}`);
+    try {
+      logger.info("GameConnection", "Connecting to game server");
 
-    eventSource.onopen = () => {
-      setState((prev) => ({
-        ...prev,
-        isConnected: true,
-        isConnecting: false,
-        reconnectAttempts: 0,
-      }));
-      reconnectAttemptsRef.current = 0;
-      onConnect?.();
-    };
+      // Close any existing connection
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
 
-    eventSource.onmessage = (event) => {
-      try {
-        const gameEvent: GameEvent = JSON.parse(event.data);
-        setState((prev) => ({ ...prev, lastEvent: gameEvent }));
-        onEvent?.(gameEvent);
-      } catch (error) {
-        console.error("Failed to parse SSE event:", error);
+      // Create new EventSource with authentication token as query parameter
+      const eventSource = new EventSource(`/api/events/${playerId}?token=${encodeURIComponent(authToken)}`);
+
+      eventSourceRef.current = eventSource;
+
+      eventSource.onopen = () => {
+        logger.info("GameConnection", "SSE connection established");
+        isConnectingRef.current = false;
         setState((prev) => ({
           ...prev,
-          error: "Failed to parse game event",
+          isConnected: true,
+          isConnecting: false,
+          error: null,
         }));
-        onError?.("Failed to parse game event");
-      }
-    };
+        onConnect?.();
 
-    eventSource.onerror = (error) => {
-      console.error("SSE connection error:", error);
+        // Connect WebSocket for commands
+        connectWebSocket();
+      };
+
+      eventSource.onmessage = (event) => {
+        try {
+          const gameEvent: GameEvent = JSON.parse(event.data);
+          logger.info("GameConnection", "Received event", { event_type: gameEvent.event_type });
+          setState((prev) => ({ ...prev, lastEvent: gameEvent }));
+          onEvent?.(gameEvent);
+        } catch (error) {
+          logger.error("GameConnection", "Failed to parse event", { error: String(error) });
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        logger.error("GameConnection", "Connection error", { error: String(error) });
+        isConnectingRef.current = false;
+        setState((prev) => ({
+          ...prev,
+          isConnected: false,
+          isConnecting: false,
+          error: "Connection failed",
+        }));
+        onError?.("Connection failed");
+      };
+    } catch (error) {
+      logger.error("GameConnection", "Failed to connect", { error: String(error) });
+      isConnectingRef.current = false;
       setState((prev) => ({
         ...prev,
         isConnected: false,
         isConnecting: false,
-        error: "SSE connection failed",
+        error: "Failed to connect",
       }));
-      onError?.("SSE connection failed");
-
-      if (autoReconnect && reconnectAttemptsRef.current < maxReconnectAttempts) {
-        reconnectAttemptsRef.current++;
-        setState((prev) => ({
-          ...prev,
-          reconnectAttempts: reconnectAttemptsRef.current,
-        }));
-
-        reconnectTimeoutRef.current = setTimeout(
-          () => {
-            connectSSE();
-          },
-          Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000),
-        );
-      }
-    };
-
-    eventSourceRef.current = eventSource;
-  }, [playerId, baseUrl, onEvent, onConnect, onError, autoReconnect, maxReconnectAttempts]);
-
-  // Connect to WebSocket for interactive commands
-  const connectWebSocket = useCallback(() => {
-    if (websocketRef.current) {
-      websocketRef.current.close();
+      onError?.("Failed to connect");
     }
+  }, [playerId, authToken, onConnect, onEvent, onError, state.isConnected]);
 
-    // Use the proxy path for WebSocket
-    const wsUrl = `ws://${window.location.host}/ws/${playerId}`;
-    const websocket = new WebSocket(wsUrl);
-
-    websocket.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    websocket.onmessage = (event) => {
-      try {
-        const gameEvent: GameEvent = JSON.parse(event.data);
-        setState((prev) => ({ ...prev, lastEvent: gameEvent }));
-        onEvent?.(gameEvent);
-      } catch (error) {
-        console.error("Failed to parse WebSocket message:", error);
-      }
-    };
-
-    websocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setState((prev) => ({
-        ...prev,
-        error: "WebSocket connection failed",
-      }));
-    };
-
-    websocket.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
-
-    websocketRef.current = websocket;
-  }, [playerId, baseUrl, onEvent]);
-
-  // Send command via WebSocket
-  const sendCommand = useCallback((command: string, args: string[] = []) => {
-    if (websocketRef.current?.readyState === WebSocket.OPEN) {
-      const message = {
-        command,
-        args,
-        timestamp: new Date().toISOString(),
-      };
-      websocketRef.current.send(JSON.stringify(message));
-      return true;
-    } else {
-      setState((prev) => ({
-        ...prev,
-        error: "WebSocket not connected",
-      }));
-      return false;
-    }
-  }, []);
-
-  // Connect to both SSE and WebSocket
-  const connect = useCallback(() => {
-    connectSSE();
-    connectWebSocket();
-  }, [connectSSE, connectWebSocket]);
-
-  // Disconnect from both connections
   const disconnect = useCallback(() => {
+    logger.info("GameConnection", "Disconnecting");
+
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
@@ -195,38 +133,77 @@ export function useGameConnection({
       websocketRef.current = null;
     }
 
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-
+    isConnectingRef.current = false;
     setState((prev) => ({
       ...prev,
       isConnected: false,
       isConnecting: false,
-      reconnectAttempts: 0,
     }));
-    reconnectAttemptsRef.current = 0;
+
     onDisconnect?.();
   }, [onDisconnect]);
 
-  // Auto-connect on mount
-  useEffect(() => {
-    if (playerId && authToken) {
-      connect();
+  const sendCommand = useCallback((command: string, args: string[] = []) => {
+    if (!websocketRef.current || websocketRef.current.readyState !== WebSocket.OPEN) {
+      logger.error("GameConnection", "WebSocket not connected");
+      return false;
     }
 
-    return () => {
-      disconnect();
-    };
-  }, [playerId, authToken, connect, disconnect]);
+    try {
+      const commandData = {
+        command,
+        args,
+      };
+      websocketRef.current.send(JSON.stringify(commandData));
+      logger.info("GameConnection", "Command sent", { command, args });
+      return true;
+    } catch (error) {
+      logger.error("GameConnection", "Failed to send command", { error: String(error) });
+      return false;
+    }
+  }, []);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, [disconnect]);
+  // Connect WebSocket for commands after SSE connection is established
+  const connectWebSocket = useCallback(() => {
+    if (!authToken || !playerId) {
+      logger.error("GameConnection", "Missing auth token or player ID for WebSocket");
+      return;
+    }
+
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || "/api";
+      const wsUrl = baseUrl.replace(/^http/, "ws");
+      const websocket = new WebSocket(`${wsUrl}/ws/${playerId}?token=${encodeURIComponent(authToken)}`);
+
+      websocketRef.current = websocket;
+
+      websocket.onopen = () => {
+        logger.info("GameConnection", "WebSocket connected");
+      };
+
+      websocket.onmessage = (event) => {
+        try {
+          const gameEvent: GameEvent = JSON.parse(event.data);
+          logger.info("GameConnection", "WebSocket event received", { event_type: gameEvent.event_type });
+          setState((prev) => ({ ...prev, lastEvent: gameEvent }));
+          onEvent?.(gameEvent);
+        } catch (error) {
+          logger.error("GameConnection", "Failed to parse WebSocket event", { error: String(error) });
+        }
+      };
+
+      websocket.onerror = (error) => {
+        logger.error("GameConnection", "WebSocket error", { error: String(error) });
+      };
+
+      websocket.onclose = () => {
+        logger.info("GameConnection", "WebSocket disconnected");
+        websocketRef.current = null;
+      };
+    } catch (error) {
+      logger.error("GameConnection", "Failed to connect WebSocket", { error: String(error) });
+    }
+  }, [authToken, playerId, onEvent]);
 
   return {
     ...state,

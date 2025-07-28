@@ -53,7 +53,7 @@ class PersistenceLayer:
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
         # Default to the main production database in the project root
-        self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players.db")
+        self.db_path = db_path or os.environ.get("MYTHOS_DB_PATH", "../data/players/players.db")
 
         # Use absolute path for log file to avoid working directory issues
         if log_path:

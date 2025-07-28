@@ -61,7 +61,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
    npm run dev
    ```
 3. **Visit:**
-   - Backend: http://localhost:8000
+   - Backend: http://localhost:54731
    - Frontend: http://localhost:5173
 
 ---

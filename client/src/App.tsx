@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { GameTerminal } from "./components/GameTerminal";
+import { logger } from "./utils/logger";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,10 +16,14 @@ function App() {
 
   const baseUrl = import.meta.env.VITE_API_URL || "/api";
 
+  logger.info("App", "Component initialized", { baseUrl });
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+
+    logger.info("App", "Login attempt started", { username, baseUrl });
 
     try {
       const response = await fetch(`${baseUrl}/auth/login`, {
@@ -32,16 +37,32 @@ function App() {
         }),
       });
 
+      logger.info("App", "Login response received", {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+      });
+
       if (response.ok) {
         const data = await response.json();
+        logger.info("App", "Login successful", {
+          playerId: data.player_id,
+          hasToken: !!data.access_token,
+        });
+
         setAuthToken(data.access_token);
-        setPlayerId(username); // Use username as player ID since server doesn't return player_id
+        setPlayerId(data.player_id); // Use the actual player ID from the server
         setIsAuthenticated(true);
       } else {
         const errorData = await response.json();
+        logger.error("App", "Login failed", {
+          status: response.status,
+          error: errorData.detail,
+        });
         setError(errorData.detail || "Login failed");
       }
-    } catch {
+    } catch (error) {
+      logger.error("App", "Login network error", { error: error instanceof Error ? error.message : String(error) });
       setError("Failed to connect to server");
     } finally {
       setIsLoading(false);
@@ -49,6 +70,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    logger.info("App", "Logout initiated");
     setIsAuthenticated(false);
     setPlayerId("");
     setAuthToken("");
@@ -64,6 +86,8 @@ function App() {
     setIsLoading(true);
     setError("");
 
+    logger.info("App", "Registration attempt started", { username, inviteCode, baseUrl });
+
     try {
       const response = await fetch(`${baseUrl}/auth/register`, {
         method: "POST",
@@ -77,8 +101,15 @@ function App() {
         }),
       });
 
+      logger.info("App", "Registration response received", {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+      });
+
       if (response.ok) {
-        await response.json();
+        const data = await response.json();
+        logger.info("App", "Registration successful", { data });
         setError("");
         setShowRegistration(false);
         setInviteCode("");
@@ -86,9 +117,16 @@ function App() {
         alert("Registration successful! You may now log in.");
       } else {
         const errorData = await response.json();
+        logger.error("App", "Registration failed", {
+          status: response.status,
+          error: errorData.detail,
+        });
         setError(errorData.detail || "Registration failed");
       }
-    } catch {
+    } catch (error) {
+      logger.error("App", "Registration network error", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       setError("Failed to connect to server");
     } finally {
       setIsLoading(false);
@@ -96,24 +134,29 @@ function App() {
   };
 
   if (isAuthenticated) {
+    logger.info("App", "Rendering authenticated view", { playerId, hasToken: !!authToken });
     return (
       <div className="app">
-        <header className="app-header">
-          <h1>MythosMUD</h1>
+        <GameTerminal playerId={playerId} authToken={authToken} />
+        <div className="button-container">
           <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
-        </header>
-        <GameTerminal playerId={playerId} authToken={authToken} />
+          <button onClick={() => logger.downloadLogs()} className="download-logs-button">
+            Download Logs
+          </button>
+        </div>
       </div>
     );
   }
 
+  logger.info("App", "Rendering login/registration view", { showRegistration });
+
   return (
     <div className="app">
-      <div className="login-container">
+      <div className="auth-container">
         <h1>MythosMUD</h1>
-        <p className="subtitle">Enter the realm of forbidden knowledge...</p>
+        <p className="tagline">Enter the realm of forbidden knowledge...</p>
 
         {!showRegistration ? (
           <>
@@ -210,6 +253,12 @@ function App() {
             </div>
           </>
         )}
+
+        <div className="debug-container">
+          <button onClick={() => logger.downloadLogs()} className="debug-button">
+            Download Debug Logs
+          </button>
+        </div>
       </div>
     </div>
   );
