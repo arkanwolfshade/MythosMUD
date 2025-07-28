@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useGameConnection } from "../hooks/useGameConnection";
+import { ansiToHtmlWithBreaks } from "../utils/ansiToHtml";
+import "./GameTerminal.css";
 
 interface GameTerminalProps {
   playerId: string;
@@ -33,7 +35,11 @@ interface GameState {
   player: Player | null;
   room: Room | null;
   entities: Entity[];
-  messages: string[];
+  messages: Array<{
+    text: string;
+    timestamp: string;
+    isHtml: boolean;
+  }>;
 }
 
 export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
@@ -75,6 +81,9 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
 
       case "motd":
         // Display the Message of the Day
+        console.log("MOTD received:", event.data.message);
+        console.log("MOTD contains ANSI:", (event.data.message as string).includes("\x1b["));
+        console.log("MOTD length:", (event.data.message as string).length);
         addMessage(event.data.message as string);
         break;
 
@@ -127,9 +136,30 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
   }
 
   function addMessage(message: string) {
+    // Check if message contains ANSI escape sequences
+    const hasAnsi = message.includes("\x1b[");
+    console.log("addMessage called with:", message.substring(0, 100) + "...");
+    console.log("hasAnsi:", hasAnsi);
+
+    // Count ANSI sequences manually
+    let ansiCount = 0;
+    for (let i = 0; i < message.length - 1; i++) {
+      if (message[i] === "\x1b" && message[i + 1] === "[") {
+        ansiCount++;
+      }
+    }
+    console.log("ANSI sequences count:", ansiCount);
+
     setGameState((prev) => ({
       ...prev,
-      messages: [...prev.messages, `[${new Date().toLocaleTimeString()}] ${message}`].slice(-100), // Keep last 100 messages
+      messages: [
+        ...prev.messages,
+        {
+          text: message,
+          timestamp: new Date().toLocaleTimeString(),
+          isHtml: hasAnsi,
+        },
+      ].slice(-100), // Keep last 100 messages
     }));
   }
 
@@ -207,72 +237,100 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
 
   return (
     <div className="game-terminal">
-      {/* Connection Status */}
-      <div className="connection-status">
-        <div className={`status-indicator ${isConnected ? "connected" : "disconnected"}`}>
-          {isConnecting ? "Connecting..." : isConnected ? "Connected" : "Disconnected"}
-        </div>
-        {error && <div className="error-message">{error}</div>}
-        {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
+      {/* Main content area - two columns */}
+      <div className="game-content">
+        {/* Left sidebar */}
+        <div className="left-sidebar">
+          {/* Connection Status */}
+          <div className="connection-status">
+            <div className={`status-indicator ${isConnected ? "connected" : "disconnected"}`}>
+              {isConnecting ? "Connecting..." : isConnected ? "Connected" : "Disconnected"}
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
+          </div>
 
-        {/* Connection Controls */}
-        <div className="connection-controls">
-          {!isConnected && !isConnecting && (
-            <button onClick={handleConnect} className="connect-btn">
-              Connect
+          {/* Connection Controls - grouped together */}
+          <div className="connection-controls">
+            {!isConnected && !isConnecting && (
+              <button onClick={handleConnect} className="connect-btn">
+                Connect
+              </button>
+            )}
+            {isConnected && (
+              <button onClick={handleDisconnect} className="disconnect-btn">
+                Disconnect
+              </button>
+            )}
+            <button onClick={() => (window.location.href = "/logout")} className="logout-btn">
+              Logout
             </button>
+            <button
+              onClick={() => {
+                /* TODO: Implement download logs */
+              }}
+              className="download-logs-btn"
+            >
+              Download Logs
+            </button>
+          </div>
+
+          {/* Game State Display */}
+          {gameState.player && (
+            <div className="player-info">
+              <h3>{gameState.player.name}</h3>
+              <div className="stats">
+                <span>HP: {gameState.player.stats?.current_health || 0}</span>
+                <span>Sanity: {gameState.player.stats?.sanity || 0}</span>
+                <span>Level: {gameState.player.level || 1}</span>
+              </div>
+            </div>
           )}
-          {isConnected && (
-            <button onClick={handleDisconnect} className="disconnect-btn">
-              Disconnect
-            </button>
+
+          {/* Room Information */}
+          {gameState.room && (
+            <div className="room-info">
+              <h4>{gameState.room.name}</h4>
+              <p>{gameState.room.description}</p>
+              {gameState.entities.length > 0 && (
+                <div className="entities">
+                  <strong>Entities in room:</strong>
+                  <ul>
+                    {gameState.entities.map((entity, index) => (
+                      <li key={index}>{entity.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           )}
         </div>
-      </div>
 
-      {/* Game State Display */}
-      {gameState.player && (
-        <div className="player-info">
-          <h3>{gameState.player.name}</h3>
-          <div className="stats">
-            <span>HP: {gameState.player.stats?.current_health || 0}</span>
-            <span>Sanity: {gameState.player.stats?.sanity || 0}</span>
-            <span>Level: {gameState.player.level || 1}</span>
+        {/* Right terminal area */}
+        <div className="terminal-area">
+          {/* Message Log */}
+          <div className="message-log">
+            <div className="messages">
+              {gameState.messages.map((message, index) => (
+                <div key={index} className="message">
+                  {message.isHtml ? (
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
+                      }}
+                    />
+                  ) : (
+                    `[${message.timestamp}] ${message.text}`
+                  )}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
         </div>
-      )}
-
-      {/* Room Information */}
-      {gameState.room && (
-        <div className="room-info">
-          <h4>{gameState.room.name}</h4>
-          <p>{gameState.room.description}</p>
-          {gameState.entities.length > 0 && (
-            <div className="entities">
-              <strong>Entities in room:</strong>
-              <ul>
-                {gameState.entities.map((entity, index) => (
-                  <li key={index}>{entity.name}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Message Log */}
-      <div className="message-log">
-        <div className="messages">
-          {gameState.messages.map((message, index) => (
-            <div key={index} className="message">
-              {message}
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
       </div>
 
-      {/* Command Input */}
+      {/* Command Input - full width at bottom */}
       <form onSubmit={handleCommandSubmit} className="command-input">
         <input
           ref={inputRef}

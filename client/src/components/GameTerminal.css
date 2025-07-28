@@ -2,11 +2,43 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-height: 100vh;
   background-color: #0a0a0a;
   color: #00ff00;
   font-family: "Courier New", monospace;
   padding: 20px;
   gap: 10px;
+  overflow: hidden; /* Prevent overall overflow */
+}
+
+/* Main content area - two columns */
+.game-content {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  min-height: 0; /* Important for flex child */
+  max-height: calc(100vh - 40px); /* Account for padding */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Left sidebar */
+.left-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* Right terminal area */
+.terminal-area {
+  flex: 1;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-width: 0; /* Important for flex child */
+  gap: 10px; /* Add spacing between terminal elements */
+  max-height: calc(100vh - 100px); /* Account for header and input area */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .connection-status {
@@ -43,6 +75,70 @@
 .reconnect-info {
   color: #ffff00;
   font-size: 12px;
+}
+
+/* Connection controls - grouped together */
+.connection-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.connection-controls button {
+  background-color: #2a2a2a;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 8px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  flex: 1;
+  min-width: 80px;
+}
+
+.connection-controls button:hover:not(:disabled) {
+  background-color: #3a3a3a;
+}
+
+.connection-controls button:disabled {
+  background-color: #1a1a1a;
+  border-color: #666;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.connect-btn {
+  background-color: #004400 !important;
+}
+
+.connect-btn:hover {
+  background-color: #006600 !important;
+}
+
+.disconnect-btn {
+  background-color: #440000 !important;
+}
+
+.disconnect-btn:hover {
+  background-color: #660000 !important;
+}
+
+.logout-btn {
+  background-color: #660000 !important;
+}
+
+.logout-btn:hover {
+  background-color: #880000 !important;
+}
+
+.download-logs-btn {
+  background-color: #2a2a2a !important;
+}
+
+.download-logs-btn:hover {
+  background-color: #3a3a3a !important;
 }
 
 .player-info {
@@ -100,13 +196,16 @@
 }
 
 .message-log {
-  flex: 1;
+  height: 500px !important; /* Fixed height following industry standards - force override */
+  max-height: 500px !important; /* Ensure it doesn't grow beyond this */
   background-color: #1a1a1a;
   padding: 15px;
   border-radius: 5px;
-  overflow-y: auto;
-  max-height: 400px;
+  overflow-y: auto !important; /* Force scrollbars */
+  overflow-x: hidden; /* Prevent horizontal scroll for long lines */
   border: 1px solid #333;
+  min-height: 500px; /* Ensure minimum height */
+  grid-row: 1; /* Take up the first grid row */
 }
 
 .message {
@@ -123,6 +222,8 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  margin-top: 10px;
+  grid-row: 2; /* Take up the second grid row */
 }
 
 .command-input input {
@@ -200,26 +301,48 @@
 
 /* Scrollbar styling */
 .message-log::-webkit-scrollbar {
-  width: 8px;
+  width: 12px; /* Slightly wider for better usability */
 }
 
 .message-log::-webkit-scrollbar-track {
   background: #1a1a1a;
+  border-radius: 6px;
 }
 
 .message-log::-webkit-scrollbar-thumb {
   background: #00ff00;
-  border-radius: 4px;
+  border-radius: 6px;
+  border: 2px solid #1a1a1a; /* Add border for better definition */
 }
 
 .message-log::-webkit-scrollbar-thumb:hover {
   background: #00cc00;
 }
 
+/* Firefox scrollbar styling */
+.message-log {
+  scrollbar-width: thin;
+  scrollbar-color: #00ff00 #1a1a1a;
+}
+
 /* Responsive design */
+@media (max-width: 1024px) {
+  .game-content {
+    flex-direction: column;
+  }
+
+  .left-sidebar {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .game-terminal {
     padding: 10px;
+  }
+
+  .message-log {
+    height: 400px; /* Smaller height on mobile devices */
   }
 
   .stats {
@@ -237,5 +360,9 @@
 
   .command-input button {
     width: 100%;
+  }
+
+  .connection-controls {
+    flex-direction: column;
   }
 }

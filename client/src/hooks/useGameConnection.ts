@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { logger } from "../utils/logger";
 
 interface GameEvent {
@@ -16,6 +16,8 @@ interface GameConnectionState {
   lastEvent: GameEvent | null;
   error: string | null;
   reconnectAttempts: number;
+  sseConnected: boolean;
+  websocketConnected: boolean;
 }
 
 interface UseGameConnectionOptions {
@@ -41,6 +43,8 @@ export function useGameConnection({
     lastEvent: null,
     error: null,
     reconnectAttempts: 0,
+    sseConnected: false,
+    websocketConnected: false,
   });
 
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -75,7 +79,7 @@ export function useGameConnection({
         isConnectingRef.current = false;
         setState((prev) => ({
           ...prev,
-          isConnected: true,
+          sseConnected: true,
           isConnecting: false,
           error: null,
         }));
@@ -101,7 +105,7 @@ export function useGameConnection({
         isConnectingRef.current = false;
         setState((prev) => ({
           ...prev,
-          isConnected: false,
+          sseConnected: false,
           isConnecting: false,
           error: "Connection failed",
         }));
@@ -112,7 +116,7 @@ export function useGameConnection({
       isConnectingRef.current = false;
       setState((prev) => ({
         ...prev,
-        isConnected: false,
+        sseConnected: false,
         isConnecting: false,
         error: "Failed to connect",
       }));
@@ -136,7 +140,8 @@ export function useGameConnection({
     isConnectingRef.current = false;
     setState((prev) => ({
       ...prev,
-      isConnected: false,
+      sseConnected: false,
+      websocketConnected: false,
       isConnecting: false,
     }));
 
@@ -163,6 +168,16 @@ export function useGameConnection({
     }
   }, []);
 
+  // Update isConnected when both SSE and WebSocket are ready
+  useEffect(() => {
+    const bothConnected = state.sseConnected && state.websocketConnected;
+    setState((prev) => ({ ...prev, isConnected: bothConnected }));
+
+    if (bothConnected) {
+      logger.info("GameConnection", "Both SSE and WebSocket connected");
+    }
+  }, [state.sseConnected, state.websocketConnected]);
+
   // Connect WebSocket for commands after SSE connection is established
   const connectWebSocket = useCallback(() => {
     if (!authToken || !playerId) {
@@ -171,14 +186,15 @@ export function useGameConnection({
     }
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || "/api";
-      const wsUrl = baseUrl.replace(/^http/, "ws");
-      const websocket = new WebSocket(`${wsUrl}/ws/${playerId}?token=${encodeURIComponent(authToken)}`);
+      // WebSocket endpoint is at /ws/{player_id} on port 54731
+      const wsUrl = `ws://localhost:54731/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
+      const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;
 
       websocket.onopen = () => {
         logger.info("GameConnection", "WebSocket connected");
+        setState((prev) => ({ ...prev, websocketConnected: true }));
       };
 
       websocket.onmessage = (event) => {
@@ -199,6 +215,7 @@ export function useGameConnection({
       websocket.onclose = () => {
         logger.info("GameConnection", "WebSocket disconnected");
         websocketRef.current = null;
+        setState((prev) => ({ ...prev, websocketConnected: false }));
       };
     } catch (error) {
       logger.error("GameConnection", "Failed to connect WebSocket", { error: String(error) });

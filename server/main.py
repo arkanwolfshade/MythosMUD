@@ -242,7 +242,16 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
         return
 
     # Verify the authenticated user matches the requested player
-    if authenticated_username != player_id:
+    # Get the player from persistence to check if the player_id matches
+    from persistence import get_persistence
+    persistence = get_persistence()
+    player = persistence.get_player_by_name(authenticated_username)
+    if not player:
+        await websocket.close(code=4004, reason="Player not found in database")
+        return
+
+    # Compare the actual player ID (UUID) with the requested player_id
+    if player.id != player_id:
         await websocket.close(code=4003, reason="Access denied: token does not match player ID")
         return
 
