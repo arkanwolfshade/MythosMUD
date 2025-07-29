@@ -18,7 +18,7 @@ response = client.post(
     json={
         "username": unique_username,
         "password": "testpass",
-        "invite_code": "Dream800",
+        "invite_code": "FRESH_INVITE_ff42f5d9",  # Use unused invite code
     },
 )
 

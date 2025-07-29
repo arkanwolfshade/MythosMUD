@@ -173,7 +173,7 @@ def test_successful_registration(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "VOIDPASS",  # This should be available in production
+            "invite_code": "FRESH_INVITE",  # Use unused invite code
         },
     )
     print(f"Response status: {response.status_code}")
@@ -195,47 +195,30 @@ def test_successful_registration(test_client):
 
 
 def test_duplicate_username():
+    """Test registration with duplicate username."""
     client = TestClient(app)
-    # Register once
-    client.post(
-        "/auth/register",
-        json={
-            "username": "dupeuser",
-            "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",
-        },
-    )
-
-    # Reset invite to unused for second attempt
-    invites_path = app.dependency_overrides[get_invites_file]()
-    with open(invites_path, "w", encoding="utf-8") as f:
-        json.dump(
-            [
-                {"code": "ARKHAM_ACCESS", "used": False},
-                {"code": "USEDINVITE", "used": True},
-            ],
-            f,
-        )
-
-    # Register again with same username
+    # First registration
     response = client.post(
         "/auth/register",
         json={
             "username": "dupeuser",
             "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",
+            "invite_code": "FRESH_INVITE_a0c4220d",  # Use unused invite code
         },
     )
+    assert response.status_code == 200
 
-    # Handle both possible responses due to dependency override issue
-    if response.status_code == 409:
-        assert "Username already exists" in response.json()["detail"]
-    elif response.status_code == 400:
-        # If dependency override is not working, we might get this error
-        error_detail = response.json().get("detail", "")
-        assert "Invite code is invalid" in error_detail or "already used" in error_detail
-    else:
-        assert False, f"Unexpected status code: {response.status_code}"
+    # Second registration with same username
+    response = client.post(
+        "/auth/register",
+        json={
+            "username": "dupeuser",
+            "password": "testpass2",
+            "invite_code": "FRESH_INVITE_ff42f5d9",  # Use unused invite code
+        },
+    )
+    assert response.status_code == 400
+    assert "Username already exists" in response.json()["detail"]
 
 
 def test_invalid_invite_code():
@@ -267,36 +250,32 @@ def test_used_invite_code():
 
 
 def test_successful_login():
+    """Test successful login with valid credentials."""
     client = TestClient(app)
-    # Register user first
-    client.post(
-        "/auth/register",
-        json={
-            "username": "loginuser",
-            "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",
-        },
-    )
-
-    # Try to login
+    # First register a user
     response = client.post(
-        "/auth/login",
+        "/register",
         json={
+            "username": "loginuser",
+            "password": "testpass",
+            "invite_code": "TEST_INVITE_2fdc26c5_1753745215",  # Use unused invite code
+        },
+    )
+    assert response.status_code == 200
+
+    # Then login
+    response = client.post(
+        "/login",
+        data={
             "username": "loginuser",
             "password": "testpass",
         },
     )
-
-    # Handle both possible responses due to dependency override issue
-    if response.status_code == 200:
-        assert "access_token" in response.json()
-        assert "player_id" in response.json()
-    elif response.status_code == 401:
-        # If dependency override is not working, registration might have failed
-        error_detail = response.json().get("detail", "")
-        assert "Invalid username or password" in error_detail
-    else:
-        assert False, f"Unexpected status code: {response.status_code}"
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert "token_type" in data
+    assert data["token_type"] == "bearer"
 
 
 def test_login_wrong_password():
@@ -307,7 +286,7 @@ def test_login_wrong_password():
         json={
             "username": "wrongpass",
             "password": "rightpass",
-            "invite_code": "INVITE123",
+            "invite_code": "FRESH_INVITE",  # Use unused invite code
         },
     )
     response = client.post("/auth/login", json={"username": "wrongpass", "password": "wrongpass"})
@@ -330,7 +309,7 @@ def test_me_valid_token():
         json={
             "username": "meuser",
             "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",
+            "invite_code": "FRESH_INVITE_a0c4220d",  # Use unused invite code
         },
     )
 
