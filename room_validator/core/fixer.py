@@ -9,7 +9,6 @@ import json
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 class RoomFixer:
@@ -46,7 +45,7 @@ class RoomFixer:
         shutil.copy2(file_path, backup_path)
         return backup_path
 
-    def load_room_file(self, file_path: Path) -> Dict:
+    def load_room_file(self, file_path: Path) -> dict:
         """
         Load a room file safely.
 
@@ -57,12 +56,12 @@ class RoomFixer:
             Room data dictionary
         """
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 return json.load(f)
         except (json.JSONDecodeError, FileNotFoundError) as e:
             raise ValueError(f"Failed to load {file_path}: {e}") from e
 
-    def save_room_file(self, file_path: Path, room_data: Dict) -> None:
+    def save_room_file(self, file_path: Path, room_data: dict) -> None:
         """
         Save a room file safely.
 
@@ -71,14 +70,17 @@ class RoomFixer:
             room_data: Room data to save
         """
         try:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(room_data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             raise ValueError(f"Failed to save {file_path}: {e}") from e
 
-    def fix_bidirectional_connections(self, room_database: Dict[str, Dict],
-                                    missing_returns: List[Tuple[str, str, str, str]],
-                                    create_backups: bool = False) -> List[str]:
+    def fix_bidirectional_connections(
+        self,
+        room_database: dict[str, dict],
+        missing_returns: list[tuple[str, str, str, str]],
+        create_backups: bool = False,
+    ) -> list[str]:
         """
         Fix missing bidirectional connections.
 
@@ -96,49 +98,41 @@ class RoomFixer:
             try:
                 # Find the file for room_b
                 room_b_data = room_database[room_b]
-                zone = room_b_data.get('zone', 'unknown')
+                zone = room_b_data.get("zone", "unknown")
                 room_file = self.base_path / "rooms" / zone / f"{room_b}.json"
 
                 if not room_file.exists():
-                    self.fixes_failed.append(
-                        f"Could not find file for {room_b}"
-                    )
+                    self.fixes_failed.append(f"Could not find file for {room_b}")
                     continue
 
                 # Create backup if requested
                 if create_backups:
                     backup_path = self.create_backup(room_file)
-                    self.fixes_applied.append(
-                        f"Created backup: {backup_path}"
-                    )
+                    self.fixes_applied.append(f"Created backup: {backup_path}")
 
                 # Load and fix the room data
                 room_data = self.load_room_file(room_file)
 
                 # Add the missing return path
-                if 'exits' not in room_data:
-                    room_data['exits'] = {}
+                if "exits" not in room_data:
+                    room_data["exits"] = {}
 
-                room_data['exits'][direction_b] = room_a
+                room_data["exits"][direction_b] = room_a
 
                 # Save the fixed room
                 self.save_room_file(room_file, room_data)
 
                 fixed_rooms.append(room_b)
-                self.fixes_applied.append(
-                    f"Added {direction_b} exit to {room_b} → {room_a}"
-                )
+                self.fixes_applied.append(f"Added {direction_b} exit to {room_b} → {room_a}")
 
             except Exception as e:
-                self.fixes_failed.append(
-                    f"Failed to fix {room_b}: {e}"
-                )
+                self.fixes_failed.append(f"Failed to fix {room_b}: {e}")
 
         return fixed_rooms
 
-    def fix_self_references(self, room_database: Dict[str, Dict],
-                           self_references: List[Tuple[str, str]],
-                           create_backups: bool = False) -> List[str]:
+    def fix_self_references(
+        self, room_database: dict[str, dict], self_references: list[tuple[str, str]], create_backups: bool = False
+    ) -> list[str]:
         """
         Fix self-references by adding proper flags.
 
@@ -156,32 +150,25 @@ class RoomFixer:
             try:
                 # Find the file for the room
                 room_data = room_database[room_id]
-                zone = room_data.get('zone', 'unknown')
+                zone = room_data.get("zone", "unknown")
                 room_file = self.base_path / "rooms" / zone / f"{room_id}.json"
 
                 if not room_file.exists():
-                    self.fixes_failed.append(
-                        f"Could not find file for {room_id}"
-                    )
+                    self.fixes_failed.append(f"Could not find file for {room_id}")
                     continue
 
                 # Create backup if requested
                 if create_backups:
                     backup_path = self.create_backup(room_file)
-                    self.fixes_applied.append(
-                        f"Created backup: {backup_path}"
-                    )
+                    self.fixes_applied.append(f"Created backup: {backup_path}")
 
                 # Load and fix the room data
                 room_data = self.load_room_file(room_file)
 
                 # Convert exit to new format with self_reference flag
-                exit_data = room_data['exits'].get(direction)
+                exit_data = room_data["exits"].get(direction)
                 if isinstance(exit_data, str) and exit_data == room_id:
-                    room_data['exits'][direction] = {
-                        "target": room_id,
-                        "flags": ["self_reference"]
-                    }
+                    room_data["exits"][direction] = {"target": room_id, "flags": ["self_reference"]}
                 elif isinstance(exit_data, dict):
                     if "flags" not in exit_data:
                         exit_data["flags"] = []
@@ -192,20 +179,16 @@ class RoomFixer:
                 self.save_room_file(room_file, room_data)
 
                 fixed_rooms.append(room_id)
-                self.fixes_applied.append(
-                    f"Added self_reference flag to {room_id} {direction} exit"
-                )
+                self.fixes_applied.append(f"Added self_reference flag to {room_id} {direction} exit")
 
             except Exception as e:
-                self.fixes_failed.append(
-                    f"Failed to fix {room_id}: {e}"
-                )
+                self.fixes_failed.append(f"Failed to fix {room_id}: {e}")
 
         return fixed_rooms
 
-    def fix_schema_issues(self, room_database: Dict[str, Dict],
-                         schema_errors: Dict[str, List[str]],
-                         create_backups: bool = False) -> List[str]:
+    def fix_schema_issues(
+        self, room_database: dict[str, dict], schema_errors: dict[str, list[str]], create_backups: bool = False
+    ) -> list[str]:
         """
         Fix basic schema issues.
 
@@ -223,21 +206,17 @@ class RoomFixer:
             try:
                 # Find the file for the room
                 room_data = room_database[room_id]
-                zone = room_data.get('zone', 'unknown')
+                zone = room_data.get("zone", "unknown")
                 room_file = self.base_path / "rooms" / zone / f"{room_id}.json"
 
                 if not room_file.exists():
-                    self.fixes_failed.append(
-                        f"Could not find file for {room_id}"
-                    )
+                    self.fixes_failed.append(f"Could not find file for {room_id}")
                     continue
 
                 # Create backup if requested
                 if create_backups:
                     backup_path = self.create_backup(room_file)
-                    self.fixes_applied.append(
-                        f"Created backup: {backup_path}"
-                    )
+                    self.fixes_applied.append(f"Created backup: {backup_path}")
 
                 # Load the room data
                 room_data = self.load_room_file(room_file)
@@ -248,22 +227,26 @@ class RoomFixer:
                 for error in errors:
                     if "missing required field" in error.lower():
                         if "exits" not in room_data:
-                            room_data['exits'] = {
-                                "north": None, "south": None, "east": None,
-                                "west": None, "up": None, "down": None
+                            room_data["exits"] = {
+                                "north": None,
+                                "south": None,
+                                "east": None,
+                                "west": None,
+                                "up": None,
+                                "down": None,
                             }
                             fixed = True
 
                         if "field1" not in room_data:
-                            room_data['field1'] = None
+                            room_data["field1"] = None
                             fixed = True
 
                         if "field2" not in room_data:
-                            room_data['field2'] = None
+                            room_data["field2"] = None
                             fixed = True
 
                         if "field3" not in room_data:
-                            room_data['field3'] = None
+                            room_data["field3"] = None
                             fixed = True
 
                 if fixed:
@@ -271,18 +254,14 @@ class RoomFixer:
                     self.save_room_file(room_file, room_data)
 
                     fixed_rooms.append(room_id)
-                    self.fixes_applied.append(
-                        f"Fixed schema issues in {room_id}"
-                    )
+                    self.fixes_applied.append(f"Fixed schema issues in {room_id}")
 
             except Exception as e:
-                self.fixes_failed.append(
-                    f"Failed to fix {room_id}: {e}"
-                )
+                self.fixes_failed.append(f"Failed to fix {room_id}: {e}")
 
         return fixed_rooms
 
-    def get_fix_summary(self) -> Dict:
+    def get_fix_summary(self) -> dict:
         """
         Get a summary of applied fixes.
 
@@ -290,8 +269,8 @@ class RoomFixer:
             Dictionary with fix statistics
         """
         return {
-            'fixes_applied': len(self.fixes_applied),
-            'fixes_failed': len(self.fixes_failed),
-            'applied_fixes': self.fixes_applied,
-            'failed_fixes': self.fixes_failed
+            "fixes_applied": len(self.fixes_applied),
+            "fixes_failed": len(self.fixes_failed),
+            "applied_fixes": self.fixes_applied,
+            "failed_fixes": self.fixes_failed,
         }

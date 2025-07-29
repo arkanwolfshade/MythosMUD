@@ -1,6 +1,6 @@
+import os
 import subprocess
 import sys
-import os
 
 main_py = os.path.join("server", "main.py")
 

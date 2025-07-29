@@ -7,7 +7,6 @@ Tests output formatting, color handling, and JSON generation.
 import json
 
 # Removed unused import: pytest
-
 from core.reporter import Reporter
 
 
@@ -29,10 +28,7 @@ class TestReporter:
         """Test formatting error with suggestion."""
         reporter = Reporter(use_colors=False)
         formatted = reporter.format_error(
-            "bidirectional",
-            "test_001",
-            "Missing return path",
-            "Add south exit to test_002"
+            "bidirectional", "test_001", "Missing return path", "Add south exit to test_002"
         )
 
         assert "test_001" in formatted
@@ -43,11 +39,7 @@ class TestReporter:
     def test_format_error_without_suggestion(self):
         """Test formatting error without suggestion."""
         reporter = Reporter(use_colors=False)
-        formatted = reporter.format_error(
-            "unreachable",
-            "test_001",
-            "No path from starting room"
-        )
+        formatted = reporter.format_error("unreachable", "test_001", "No path from starting room")
 
         assert "test_001" in formatted
         assert "Unreachable" in formatted
@@ -56,11 +48,7 @@ class TestReporter:
     def test_format_warning(self):
         """Test formatting warning."""
         reporter = Reporter(use_colors=False)
-        formatted = reporter.format_warning(
-            "potential_dead_end",
-            "test_001",
-            "Only one exit"
-        )
+        formatted = reporter.format_warning("potential_dead_end", "test_001", "Only one exit")
 
         assert "test_001" in formatted
         assert "Potential_Dead_End" in formatted
@@ -70,30 +58,18 @@ class TestReporter:
         """Test JSON output generation."""
         reporter = Reporter()
 
-        stats = {
-            "zones": 1,
-            "rooms": 3,
-            "errors": 1,
-            "warnings": 2,
-            "success": False
-        }
+        stats = {"zones": 1, "rooms": 3, "errors": 1, "warnings": 2, "success": False}
 
         errors = [
             {
                 "type": "bidirectional",
                 "room_id": "test_001",
                 "message": "Missing return path",
-                "suggestion": "Add south exit"
+                "suggestion": "Add south exit",
             }
         ]
 
-        warnings = [
-            {
-                "type": "potential_dead_end",
-                "room_id": "test_002",
-                "message": "Only one exit"
-            }
-        ]
+        warnings = [{"type": "potential_dead_end", "room_id": "test_002", "message": "Only one exit"}]
 
         json_output = reporter.generate_json_output(stats, errors, warnings)
 
@@ -195,13 +171,7 @@ class TestReporter:
         """Test printing summary for successful validation."""
         reporter = Reporter(use_colors=False)
 
-        stats = {
-            "zones": 1,
-            "rooms": 3,
-            "errors": 0,
-            "warnings": 1,
-            "success": True
-        }
+        stats = {"zones": 1, "rooms": 3, "errors": 0, "warnings": 1, "success": True}
 
         reporter.print_summary(stats)
 
@@ -217,13 +187,7 @@ class TestReporter:
         """Test printing summary for failed validation."""
         reporter = Reporter(use_colors=False)
 
-        stats = {
-            "zones": 1,
-            "rooms": 3,
-            "errors": 2,
-            "warnings": 1,
-            "success": False
-        }
+        stats = {"zones": 1, "rooms": 3, "errors": 2, "warnings": 1, "success": False}
 
         reporter.print_summary(stats)
 
@@ -247,10 +211,7 @@ class TestReporter:
     def test_print_parsing_errors(self, capsys):
         """Test printing parsing errors."""
         reporter = Reporter(use_colors=False)
-        parsing_errors = [
-            ("file1.json", "Invalid JSON"),
-            ("file2.json", "Missing required field")
-        ]
+        parsing_errors = [("file1.json", "Invalid JSON"), ("file2.json", "Missing required field")]
 
         reporter.print_parsing_errors(parsing_errors)
 
@@ -275,7 +236,7 @@ class TestReporter:
                 "type": "bidirectional",
                 "room_id": "test_001",
                 "message": "Missing return path",
-                "suggestion": "Add south exit"
+                "suggestion": "Add south exit",
             }
         ]
 
@@ -297,13 +258,7 @@ class TestReporter:
     def test_print_validation_warnings(self, capsys):
         """Test printing validation warnings."""
         reporter = Reporter(use_colors=False)
-        warnings = [
-            {
-                "type": "potential_dead_end",
-                "room_id": "test_001",
-                "message": "Only one exit"
-            }
-        ]
+        warnings = [{"type": "potential_dead_end", "room_id": "test_001", "message": "Only one exit"}]
 
         reporter.print_validation_warnings(warnings)
 

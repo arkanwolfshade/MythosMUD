@@ -19,8 +19,13 @@ def patch_persistence_layer(monkeypatch):
     test_config_path = Path(__file__).parent.parent / "test_server_config.yaml"
     config = get_config(str(test_config_path))
 
-    test_db_path = Path(config["db_path"])
-    test_log_path = Path(config["log_path"])
+    # Resolve paths relative to the project root (server directory)
+    project_root = Path(__file__).parent.parent
+    # Remove the "server/" prefix from the config paths since we're already in the server directory
+    db_path = config["db_path"].replace("server/", "")
+    log_path = config["log_path"].replace("server/", "")
+    test_db_path = project_root / db_path
+    test_log_path = project_root / log_path
 
     # Ensure the test database exists
     if not test_db_path.exists():
@@ -126,7 +131,7 @@ def temp_files():
     with open(invites_path, "w", encoding="utf-8") as f:
         json.dump(
             [
-                {"code": "INVITE123", "used": False},
+                {"code": "ARKHAM_ACCESS", "used": False},
                 {"code": "USEDINVITE", "used": True},
             ],
             f,
@@ -181,7 +186,7 @@ def auth_token(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "INVITE123",
+            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
         },
     )
     print(f"[auth_token] Registration response status: {reg_resp.status_code}")
@@ -238,7 +243,7 @@ def test_look_command_with_mock_auth(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "INVITE123",
+            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
         },
     )
     print(f"Register response: {register_resp.status_code} - {register_resp.json()}")
@@ -271,7 +276,7 @@ def test_look_command(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
     assert "You are standing in the bustling heart of Arkham." in result
-    assert "Exits: north, south, east, west" in result
+    assert "\n\nExits: north, south, east, west" in result
 
 
 def test_go_missing_direction(auth_token, test_client):
@@ -286,7 +291,7 @@ def test_go_extra_whitespace(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("East Market Bazaar")
     assert "Colorful tents and exotic wares fill the lively bazaar" in result
-    assert "Exits: west" in result
+    assert "\n\nExits: west" in result
 
 
 def test_say_with_message(auth_token, test_client):
@@ -313,7 +318,7 @@ def test_case_insensitivity(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
     assert "You are standing in the bustling heart of Arkham." in result
-    assert "Exits: north, south, east, west" in result
+    assert "\n\nExits: north, south, east, west" in result
 
 
 def test_max_length(auth_token, test_client):
@@ -363,7 +368,10 @@ def test_look_direction_valid(auth_token, test_client):
 
 
 def test_look_direction_invalid(auth_token, test_client):
-    resp = post_command(test_client, auth_token, "look up")
+    # First move to Clock Tower where most directions are invalid
+    post_command(test_client, auth_token, "go up")
+    # Now try to look in an invalid direction from Clock Tower
+    resp = post_command(test_client, auth_token, "look north")
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result == "You see nothing special that way." or result == "You see nothing special."
@@ -400,7 +408,10 @@ def test_go_valid_direction(auth_token, test_client):
 
 
 def test_go_invalid_direction(auth_token, test_client):
-    resp = post_command(test_client, auth_token, "go up")
+    # First move to Clock Tower where most directions are invalid
+    post_command(test_client, auth_token, "go up")
+    # Now try to go in an invalid direction from Clock Tower
+    resp = post_command(test_client, auth_token, "go north")
     assert resp.status_code == 200
     assert resp.json()["result"] == "You can't go that way"
 

@@ -1,13 +1,8 @@
+import os
 import subprocess
 import sys
-import os
 
-cmd = [
-    "pytest",
-    "--cov=world_loader",
-    "--cov-report=term-missing",
-    "server/tests"
-]
+cmd = ["pytest", "--cov=world_loader", "--cov-report=term-missing", "server/tests"]
 env = dict(**os.environ, PYTHONPATH="server")
 
 print("Running pytest with coverage for world_loader...")

@@ -11,7 +11,7 @@ except (subprocess.CalledProcessError, FileNotFoundError):
     print("❌ uv is not available. Please install uv first:")
     print("  curl -LsSf https://astral.sh/uv/install.sh | sh")
     print("  # or on Windows:")
-    print("  powershell -c \"irm https://astral.sh/uv/install.ps1 | iex\"")
+    print('  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"')
     sys.exit(1)
 
 steps = [

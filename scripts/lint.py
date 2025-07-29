@@ -1,6 +1,6 @@
+import shutil
 import subprocess
 import sys
-import shutil
 
 success = True
 
@@ -17,8 +17,7 @@ else:
 # Detect full path to npx
 npx_path = shutil.which("npx")
 if not npx_path:
-    msg = ("❌ npx not found in PATH. Please install Node.js and "
-           "ensure npx is available.")
+    msg = "❌ npx not found in PATH. Please install Node.js and ensure npx is available."
     print(msg)
     sys.exit(1)
 

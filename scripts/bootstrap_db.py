@@ -1,8 +1,8 @@
-import sqlite3
 import os
+import sqlite3
 
 # Main production database location
-DB_PATH = os.path.join("data", "players.db")
+DB_PATH = os.path.join("data", "players", "players.db")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS players (

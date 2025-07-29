@@ -74,8 +74,7 @@ class TestValidatorComponents:
 
         # Test connectivity analysis
         unreachable = path_validator.find_unreachable_rooms(
-            start_room_id="test_001",
-            room_database=sample_room_database
+            start_room_id="test_001", room_database=sample_room_database
         )
         assert len(unreachable) == 0
 
@@ -94,12 +93,7 @@ class TestValidatorComponents:
         reporter = Reporter(use_colors=False)
 
         # Test error formatting
-        formatted_error = reporter.format_error(
-            "test_error",
-            "test_room",
-            "Test error message",
-            "Test suggestion"
-        )
+        formatted_error = reporter.format_error("test_error", "test_room", "Test error message", "Test suggestion")
         assert "test_room" in formatted_error
         assert "Test error message" in formatted_error
 
@@ -117,10 +111,10 @@ class TestValidatorComponents:
 
     def test_full_validation_pipeline(self, temp_rooms_dir):
         """Test the full validation pipeline."""
-        from core.room_loader import RoomLoader
-        from core.schema_validator import SchemaValidator
         from core.path_validator import PathValidator
         from core.reporter import Reporter
+        from core.room_loader import RoomLoader
+        from core.schema_validator import SchemaValidator
 
         # Load rooms
         loader = RoomLoader(temp_rooms_dir)
@@ -132,10 +126,7 @@ class TestValidatorComponents:
 
         # Validate paths
         path_validator = PathValidator(schema_validator)
-        unreachable = path_validator.find_unreachable_rooms(
-            start_room_id="test_zone_001",
-            room_database=room_database
-        )
+        unreachable = path_validator.find_unreachable_rooms(start_room_id="test_zone_001", room_database=room_database)
         missing_returns = path_validator.check_bidirectional_connections(room_database)
         dead_ends = path_validator.find_dead_ends(room_database)
         potential_dead_ends = path_validator.find_potential_dead_ends(room_database)
@@ -149,47 +140,46 @@ class TestValidatorComponents:
         # Add schema errors
         for room_id, room_errors in schema_errors.items():
             for error_msg in room_errors:
-                errors.append({
-                    "type": "schema",
-                    "room_id": room_id,
-                    "message": error_msg,
-                    "suggestion": "Check JSON structure"
-                })
+                errors.append(
+                    {"type": "schema", "room_id": room_id, "message": error_msg, "suggestion": "Check JSON structure"}
+                )
 
         # Add unreachable room errors
         for room_id in unreachable:
-            errors.append({
-                "type": "unreachable",
-                "room_id": room_id,
-                "message": "No path from starting room",
-                "suggestion": "Add connection from starting room"
-            })
+            errors.append(
+                {
+                    "type": "unreachable",
+                    "room_id": room_id,
+                    "message": "No path from starting room",
+                    "suggestion": "Add connection from starting room",
+                }
+            )
 
         # Add missing return path errors
         for room_a, direction_a, room_b, direction_b in missing_returns:
-            errors.append({
-                "type": "bidirectional",
-                "room_id": room_a,
-                "message": f"Exit '{direction_a}' → {room_b}, but {room_b} has no '{direction_b}' return",
-                "suggestion": f'Add "{direction_b}": "{room_a}" to {room_b} or flag as one_way'
-            })
+            errors.append(
+                {
+                    "type": "bidirectional",
+                    "room_id": room_a,
+                    "message": f"Exit '{direction_a}' → {room_b}, but {room_b} has no '{direction_b}' return",
+                    "suggestion": f'Add "{direction_b}": "{room_a}" to {room_b} or flag as one_way',
+                }
+            )
 
         # Add dead end errors
         for room_id in dead_ends:
-            errors.append({
-                "type": "dead_end",
-                "room_id": room_id,
-                "message": "No exits (dead end)",
-                "suggestion": "Add at least one exit to this room"
-            })
+            errors.append(
+                {
+                    "type": "dead_end",
+                    "room_id": room_id,
+                    "message": "No exits (dead end)",
+                    "suggestion": "Add at least one exit to this room",
+                }
+            )
 
         # Add potential dead end warnings
         for room_id in potential_dead_ends:
-            warnings.append({
-                "type": "potential_dead_end",
-                "room_id": room_id,
-                "message": "Only one exit"
-            })
+            warnings.append({"type": "potential_dead_end", "room_id": room_id, "message": "Only one exit"})
 
         # Generate statistics
         stats = {
@@ -197,7 +187,7 @@ class TestValidatorComponents:
             "rooms": len(room_database),
             "errors": len(errors),
             "warnings": len(warnings),
-            "success": len(errors) == 0
+            "success": len(errors) == 0,
         }
 
         # Test JSON output
@@ -232,7 +222,7 @@ class TestValidatorEdgeCases:
             rooms_dir.mkdir(parents=True)
 
             # Create a malformed JSON file
-            with open(rooms_dir / "malformed.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "malformed.json", "w", encoding="utf-8") as f:
                 f.write('{"invalid": json}')
 
             from core.room_loader import RoomLoader
@@ -253,11 +243,11 @@ class TestValidatorEdgeCases:
             # Create a room missing required fields
             invalid_room = {
                 "id": "invalid_001",
-                "name": "Invalid Room"
+                "name": "Invalid Room",
                 # Missing description, zone, exits
             }
 
-            with open(rooms_dir / "invalid_001.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "invalid_001.json", "w", encoding="utf-8") as f:
                 json.dump(invalid_room, f)
 
             from core.room_loader import RoomLoader
@@ -288,15 +278,15 @@ class TestValidatorEdgeCases:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
+                    "down": None,
+                },
             }
 
-            with open(rooms_dir / "room_001.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "room_001.json", "w", encoding="utf-8") as f:
                 json.dump(room_with_bad_exit, f)
 
-            from core.room_loader import RoomLoader
             from core.path_validator import PathValidator
+            from core.room_loader import RoomLoader
 
             loader = RoomLoader(temp_dir)
             database = loader.build_room_database(show_progress=False)

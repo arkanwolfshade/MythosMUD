@@ -3,7 +3,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
-from server.auth import get_current_user
+from .auth import get_current_user
 
 router = APIRouter(prefix="/command", tags=["command"])
 
@@ -80,12 +80,13 @@ def handle_command(
                     desc = target_room.get("description", "You see nothing special.")
                     return {"result": f"{name}\n{desc}"}
             return {"result": "You see nothing special that way."}
-        desc = room.get("description", "You see nothing special.")
         name = room.get("name", "")
+        desc = room.get("description", "You see nothing special.")
         exits = room.get("exits", {})
-        exits_list = [d for d, v in exits.items() if v]
-        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        return {"result": f"{name}\n{desc}\n{exits_str}"}
+        # Only include exits that have valid room IDs (not null)
+        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+        exit_list = ", ".join(valid_exits) if valid_exits else "none"
+        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "go":
         if not persistence:
             return {"result": "You can't go that way"}
@@ -113,9 +114,10 @@ def handle_command(
         name = target_room.get("name", "")
         desc = target_room.get("description", "You see nothing special.")
         exits = target_room.get("exits", {})
-        exits_list = [d for d, v in exits.items() if v]
-        exits_str = f"Exits: {', '.join(exits_list)}" if exits_list else "No obvious exits."
-        return {"result": f"{name}\n{desc}\n{exits_str}"}
+        # Only include exits that have valid room IDs (not null)
+        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+        exit_list = ", ".join(valid_exits) if valid_exits else "none"
+        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
         message = " ".join(args).strip()
         if not message:

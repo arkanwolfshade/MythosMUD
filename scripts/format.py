@@ -1,6 +1,6 @@
+import shutil
 import subprocess
 import sys
-import shutil
 
 success = True
 
@@ -17,8 +17,7 @@ else:
 # Detect full path to npm
 npm_path = shutil.which("npm")
 if not npm_path:
-    msg = ("❌ npm not found in PATH. Please install Node.js and "
-           "ensure npm is available.")
+    msg = "❌ npm not found in PATH. Please install Node.js and ensure npm is available."
     print(msg)
     sys.exit(1)
 

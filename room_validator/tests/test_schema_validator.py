@@ -9,7 +9,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 from core.schema_validator import SchemaValidator
 
 
@@ -26,7 +25,7 @@ class TestSchemaValidator:
     def test_init_with_custom_schema(self):
         """Test SchemaValidator initialization with custom schema path."""
         # Create a temporary schema file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"type": "object", "properties": {"test": {"type": "string"}}}, f)
             schema_path = f.name
 
@@ -44,7 +43,7 @@ class TestSchemaValidator:
 
     def test_init_invalid_schema_file(self):
         """Test initialization with invalid schema file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write('{"invalid": json}')
             schema_path = f.name
 
@@ -67,7 +66,7 @@ class TestSchemaValidator:
         invalid_room = {
             "id": "test_001",
             "name": "Test Room",
-            "description": "A test room"
+            "description": "A test room",
             # Missing zone and exits
         }
 
@@ -84,7 +83,7 @@ class TestSchemaValidator:
             "name": "Test Room",
             "description": "A test room",
             "zone": "test_zone",
-            "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None}
+            "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
         }
 
         errors = validator.validate_room(invalid_room)
@@ -100,7 +99,7 @@ class TestSchemaValidator:
             "name": "",  # Empty name
             "description": "A test room",
             "zone": "test_zone",
-            "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None}
+            "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
         }
 
         errors = validator.validate_room(invalid_room)
@@ -122,11 +121,7 @@ class TestSchemaValidator:
             "name": "Test Room",
             "description": "A test room",
             "zone": "test_zone",
-            "exits": {
-                "north": "test_002",
-                "south": None,
-                "east": "test_003"
-            }
+            "exits": {"north": "test_002", "south": None, "east": "test_003"},
         }
 
         normalized = validator.normalize_exits(room_data)
@@ -149,15 +144,9 @@ class TestSchemaValidator:
             "description": "A test room",
             "zone": "test_zone",
             "exits": {
-                "north": {
-                    "target": "test_002",
-                    "flags": ["one_way"]
-                },
-                "south": {
-                    "target": "test_003",
-                    "flags": []
-                }
-            }
+                "north": {"target": "test_002", "flags": ["one_way"]},
+                "south": {"target": "test_003", "flags": []},
+            },
         }
 
         normalized = validator.normalize_exits(room_data)
@@ -173,7 +162,7 @@ class TestSchemaValidator:
         """Test validation of valid room file."""
         validator = SchemaValidator()
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(sample_room_data, f)
             file_path = Path(f.name)
 
@@ -187,7 +176,7 @@ class TestSchemaValidator:
         """Test validation of room file with invalid JSON."""
         validator = SchemaValidator()
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write('{"invalid": json}')
             file_path = Path(f.name)
 
@@ -216,9 +205,9 @@ class TestSchemaValidator:
                 "name": "Valid Room",
                 "description": "A valid room",
                 "zone": "test_zone",
-                "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None}
+                "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
             },
-            "invalid_room": invalid_room_data
+            "invalid_room": invalid_room_data,
         }
 
         results = validator.validate_room_database(database)
