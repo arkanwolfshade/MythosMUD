@@ -8,8 +8,8 @@ validation system.
 import json
 import tempfile
 from pathlib import Path
-# Removed unused imports: Dict, List
 
+# Removed unused imports: Dict, List
 import pytest
 
 
@@ -33,11 +33,11 @@ def temp_rooms_dir():
                     "east": "test_zone_003",
                     "west": None,
                     "up": None,
-                    "down": None
+                    "down": None,
                 },
                 "field1": None,
                 "field2": None,
-                "field3": None
+                "field3": None,
             },
             "test_zone_002.json": {
                 "id": "test_zone_002",
@@ -50,11 +50,11 @@ def temp_rooms_dir():
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
+                    "down": None,
                 },
                 "field1": None,
                 "field2": None,
-                "field3": None
+                "field3": None,
             },
             "test_zone_003.json": {
                 "id": "test_zone_003",
@@ -67,17 +67,17 @@ def temp_rooms_dir():
                     "east": None,
                     "west": "test_zone_001",
                     "up": None,
-                    "down": None
+                    "down": None,
                 },
                 "field1": None,
                 "field2": None,
-                "field3": None
-            }
+                "field3": None,
+            },
         }
 
         for filename, room_data in test_rooms.items():
             room_file = rooms_dir / filename
-            with open(room_file, 'w', encoding='utf-8') as f:
+            with open(room_file, "w", encoding="utf-8") as f:
                 json.dump(room_data, f, indent=2)
 
         yield temp_dir
@@ -91,17 +91,10 @@ def sample_room_data():
         "name": "Test Room",
         "description": "A test room for validation",
         "zone": "test_zone",
-        "exits": {
-            "north": "test_002",
-            "south": None,
-            "east": "test_003",
-            "west": None,
-            "up": None,
-            "down": None
-        },
+        "exits": {"north": "test_002", "south": None, "east": "test_003", "west": None, "up": None, "down": None},
         "field1": None,
         "field2": None,
-        "field3": None
+        "field3": None,
     }
 
 
@@ -114,43 +107,22 @@ def sample_room_database():
             "name": "Test Room 1",
             "description": "A test room",
             "zone": "test_zone",
-            "exits": {
-                "north": "test_002",
-                "south": None,
-                "east": "test_003",
-                "west": None,
-                "up": None,
-                "down": None
-            }
+            "exits": {"north": "test_002", "south": None, "east": "test_003", "west": None, "up": None, "down": None},
         },
         "test_002": {
             "id": "test_002",
             "name": "Test Room 2",
             "description": "Another test room",
             "zone": "test_zone",
-            "exits": {
-                "north": None,
-                "south": "test_001",
-                "east": None,
-                "west": None,
-                "up": None,
-                "down": None
-            }
+            "exits": {"north": None, "south": "test_001", "east": None, "west": None, "up": None, "down": None},
         },
         "test_003": {
             "id": "test_003",
             "name": "Test Room 3",
             "description": "A third test room",
             "zone": "test_zone",
-            "exits": {
-                "north": None,
-                "south": None,
-                "east": None,
-                "west": "test_001",
-                "up": None,
-                "down": None
-            }
-        }
+            "exits": {"north": None, "south": None, "east": None, "west": "test_001", "up": None, "down": None},
+        },
     }
 
 
@@ -168,8 +140,8 @@ def invalid_room_data():
             "east": None,
             "west": None,
             "up": None,
-            "down": None
-        }
+            "down": None,
+        },
     }
 
 
@@ -182,19 +154,13 @@ def room_with_new_exit_format():
         "description": "A room using new exit format",
         "zone": "test_zone",
         "exits": {
-            "north": {
-                "target": "new_format_002",
-                "flags": ["one_way"]
-            },
-            "south": {
-                "target": "new_format_003",
-                "flags": []
-            },
+            "north": {"target": "new_format_002", "flags": ["one_way"]},
+            "south": {"target": "new_format_003", "flags": []},
             "east": None,
             "west": None,
             "up": None,
-            "down": None
-        }
+            "down": None,
+        },
     }
 
 
@@ -207,16 +173,13 @@ def room_with_self_reference():
         "description": "A room that references itself",
         "zone": "test_zone",
         "exits": {
-            "north": {
-                "target": "self_ref_001",
-                "flags": ["self_reference"]
-            },
+            "north": {"target": "self_ref_001", "flags": ["self_reference"]},
             "south": None,
             "east": None,
             "west": None,
             "up": None,
-            "down": None
-        }
+            "down": None,
+        },
     }
 
 
@@ -228,14 +191,7 @@ def dead_end_room():
         "name": "Dead End Room",
         "description": "A room with no exits",
         "zone": "test_zone",
-        "exits": {
-            "north": None,
-            "south": None,
-            "east": None,
-            "west": None,
-            "up": None,
-            "down": None
-        }
+        "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
     }
 
 
@@ -247,12 +203,5 @@ def unreachable_room():
         "name": "Unreachable Room",
         "description": "A room with no connection to starting room",
         "zone": "test_zone",
-        "exits": {
-            "north": None,
-            "south": None,
-            "east": None,
-            "west": None,
-            "up": None,
-            "down": None
-        }
+        "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
     }

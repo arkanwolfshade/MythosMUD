@@ -59,8 +59,8 @@ class TestPathValidator:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
+                    "down": None,
+                },
             }
         }
 
@@ -74,10 +74,7 @@ class TestPathValidator:
     def test_find_unreachable_rooms_all_reachable(self, sample_room_database):
         """Test finding unreachable rooms when all are reachable."""
         validator = PathValidator()
-        unreachable = validator.find_unreachable_rooms(
-            start_room_id="test_001",
-            room_database=sample_room_database
-        )
+        unreachable = validator.find_unreachable_rooms(start_room_id="test_001", room_database=sample_room_database)
 
         assert len(unreachable) == 0
 
@@ -89,10 +86,7 @@ class TestPathValidator:
         room_database = sample_room_database.copy()
         room_database["unreachable_001"] = unreachable_room
 
-        unreachable = validator.find_unreachable_rooms(
-            start_room_id="test_001",
-            room_database=room_database
-        )
+        unreachable = validator.find_unreachable_rooms(start_room_id="test_001", room_database=room_database)
 
         assert len(unreachable) == 1
         assert "unreachable_001" in unreachable
@@ -101,8 +95,7 @@ class TestPathValidator:
         """Test finding unreachable rooms when starting room doesn't exist."""
         validator = PathValidator()
         unreachable = validator.find_unreachable_rooms(
-            start_room_id="nonexistent_room",
-            room_database=sample_room_database
+            start_room_id="nonexistent_room", room_database=sample_room_database
         )
 
         # All rooms should be unreachable
@@ -128,14 +121,7 @@ class TestPathValidator:
                 "name": "Room 1",
                 "description": "A room",
                 "zone": "test_zone",
-                "exits": {
-                    "north": "room_002",
-                    "south": None,
-                    "east": None,
-                    "west": None,
-                    "up": None,
-                    "down": None
-                }
+                "exits": {"north": "room_002", "south": None, "east": None, "west": None, "up": None, "down": None},
             },
             "room_002": {
                 "id": "room_002",
@@ -148,9 +134,9 @@ class TestPathValidator:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
-            }
+                    "down": None,
+                },
+            },
         }
 
         missing_returns = validator.check_bidirectional_connections(room_database)
@@ -169,16 +155,13 @@ class TestPathValidator:
                 "description": "A room",
                 "zone": "test_zone",
                 "exits": {
-                    "north": {
-                        "target": "room_002",
-                        "flags": ["one_way"]
-                    },
+                    "north": {"target": "room_002", "flags": ["one_way"]},
                     "south": None,
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
+                    "down": None,
+                },
             },
             "room_002": {
                 "id": "room_002",
@@ -191,9 +174,9 @@ class TestPathValidator:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
-            }
+                    "down": None,
+                },
+            },
         }
 
         missing_returns = validator.check_bidirectional_connections(room_database)
@@ -240,29 +223,15 @@ class TestPathValidator:
                 "name": "Room 1",
                 "description": "A room",
                 "zone": "test_zone",
-                "exits": {
-                    "north": "room_002",
-                    "south": None,
-                    "east": None,
-                    "west": None,
-                    "up": None,
-                    "down": None
-                }
+                "exits": {"north": "room_002", "south": None, "east": None, "west": None, "up": None, "down": None},
             },
             "room_002": {
                 "id": "room_002",
                 "name": "Room 2",
                 "description": "Another room",
                 "zone": "test_zone",
-                "exits": {
-                    "north": None,
-                    "south": "room_001",
-                    "east": None,
-                    "west": None,
-                    "up": None,
-                    "down": None
-                }
-            }
+                "exits": {"north": None, "south": "room_001", "east": None, "west": None, "up": None, "down": None},
+            },
         }
 
         potential_dead_ends = validator.find_potential_dead_ends(room_database)
@@ -294,8 +263,8 @@ class TestPathValidator:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
+                    "down": None,
+                },
             }
         }
 
@@ -331,14 +300,7 @@ class TestPathValidator:
                 "name": "Room 1",
                 "description": "A room",
                 "zone": "test_zone",
-                "exits": {
-                    "north": "room_002",
-                    "south": None,
-                    "east": None,
-                    "west": None,
-                    "up": None,
-                    "down": None
-                }
+                "exits": {"north": "room_002", "south": None, "east": None, "west": None, "up": None, "down": None},
             },
             "room_002": {
                 "id": "room_002",
@@ -351,9 +313,9 @@ class TestPathValidator:
                     "east": None,
                     "west": None,
                     "up": None,
-                    "down": None
-                }
-            }
+                    "down": None,
+                },
+            },
         }
 
         cycles = validator.find_cycles(room_database)

@@ -23,8 +23,9 @@ This guide is specifically crafted for AI agents (Claude Code, Cursor, GitHub Co
 
 1. **`PLANNING.md`** - Project vision, architecture, and technical stack
 2. **[GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)** - Current tasks, priorities, and completion status
-3. **`README.md`** - Project overview and quick start
-4. **`docs/PRD.md`** - Detailed product requirements and game design
+3. **TASKS.local.md** - Locally defined tasks that have not be converted to GitHub Issues
+4. **`README.md`** - Project overview and quick start
+5. **`docs/PRD.md`** - Detailed product requirements and game design
 
 ### **Key Files to Understand:**
 
@@ -100,7 +101,7 @@ cd server && uv sync
 cd client && npm install
 
 # Run development server
-cd server && uv run uvicorn main:app --reload
+uv run uvicorn server.main:app --reload
 
 # Run tests
 cd server && uv run pytest tests/ -v

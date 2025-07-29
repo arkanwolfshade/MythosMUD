@@ -7,8 +7,8 @@ supporting both legacy string format and new object format for exits.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
-from jsonschema import validate, ValidationError
+
+from jsonschema import ValidationError, validate
 
 
 class SchemaValidator:
@@ -33,14 +33,14 @@ class SchemaValidator:
     def _load_schema(self) -> None:
         """Load and cache the JSON schema."""
         try:
-            with open(self.schema_path, 'r', encoding='utf-8') as f:
+            with open(self.schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
         except FileNotFoundError as exc:
             raise FileNotFoundError(f"Schema file not found: {self.schema_path}") from exc
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid schema file: {e}") from e
 
-    def validate_room(self, room_data: Dict, file_path: str = "") -> List[str]:
+    def validate_room(self, room_data: dict, file_path: str = "") -> list[str]:
         """
         Validate a single room against the schema.
 
@@ -65,7 +65,7 @@ class SchemaValidator:
 
         return errors
 
-    def normalize_exits(self, room_data: Dict) -> Dict:
+    def normalize_exits(self, room_data: dict) -> dict:
         """
         Convert legacy string format exits to new object format internally.
 
@@ -79,7 +79,7 @@ class SchemaValidator:
             Room data with normalized exit format
         """
         normalized = room_data.copy()
-        exits = normalized.get('exits', {})
+        exits = normalized.get("exits", {})
         normalized_exits = {}
 
         for direction, exit_data in exits.items():
@@ -87,27 +87,21 @@ class SchemaValidator:
                 normalized_exits[direction] = None
             elif isinstance(exit_data, str):
                 # Legacy format: convert to new format
-                normalized_exits[direction] = {
-                    "target": exit_data,
-                    "flags": []
-                }
+                normalized_exits[direction] = {"target": exit_data, "flags": []}
             elif isinstance(exit_data, dict):
                 # New format: ensure it has required fields
                 if "target" in exit_data:
-                    normalized_exits[direction] = {
-                        "target": exit_data["target"],
-                        "flags": exit_data.get("flags", [])
-                    }
+                    normalized_exits[direction] = {"target": exit_data["target"], "flags": exit_data.get("flags", [])}
                 else:
                     normalized_exits[direction] = exit_data
             else:
                 # Invalid format: preserve as-is for schema validation to catch
                 normalized_exits[direction] = exit_data
 
-        normalized['exits'] = normalized_exits
+        normalized["exits"] = normalized_exits
         return normalized
 
-    def validate_room_file(self, file_path: Path) -> List[str]:
+    def validate_room_file(self, file_path: Path) -> list[str]:
         """
         Validate a room file against the schema.
 
@@ -118,7 +112,7 @@ class SchemaValidator:
             List of validation error messages
         """
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 room_data = json.load(f)
 
             return self.validate_room(room_data, str(file_path))
@@ -128,7 +122,7 @@ class SchemaValidator:
         except Exception as e:
             return [f"{file_path}: Error reading file: {e}"]
 
-    def validate_room_database(self, room_database: Dict[str, Dict]) -> Dict[str, List[str]]:
+    def validate_room_database(self, room_database: dict[str, dict]) -> dict[str, list[str]]:
         """
         Validate all rooms in a database against the schema.
 
@@ -147,7 +141,7 @@ class SchemaValidator:
 
         return validation_results
 
-    def get_exit_target(self, exit_data) -> Optional[str]:
+    def get_exit_target(self, exit_data) -> str | None:
         """
         Extract target room ID from exit data, handling both formats.
 
@@ -166,7 +160,7 @@ class SchemaValidator:
         else:
             return None
 
-    def get_exit_flags(self, exit_data) -> List[str]:
+    def get_exit_flags(self, exit_data) -> list[str]:
         """
         Extract flags from exit data, handling both formats.
 

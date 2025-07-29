@@ -7,7 +7,7 @@ structure and provides utilities for loading and parsing room data.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+
 from tqdm import tqdm
 
 
@@ -28,10 +28,10 @@ class RoomLoader:
             base_path: Base directory containing room files organized by zones
         """
         self.base_path = Path(base_path)
-        self.room_database: Dict[str, Dict] = {}
-        self.parsing_errors: List[Tuple[str, str]] = []
+        self.room_database: dict[str, dict] = {}
+        self.parsing_errors: list[tuple[str, str]] = []
 
-    def discover_room_files(self, base_path: Optional[str] = None) -> List[Path]:
+    def discover_room_files(self, base_path: str | None = None) -> list[Path]:
         """
         Recursively scan directory for all room JSON files.
 
@@ -53,7 +53,7 @@ class RoomLoader:
 
         return sorted(json_files)
 
-    def load_room_data(self, file_path: Path) -> Optional[Dict]:
+    def load_room_data(self, file_path: Path) -> dict | None:
         """
         Parse a single room file with error handling.
 
@@ -64,14 +64,14 @@ class RoomLoader:
             Parsed room data or None if parsing failed
         """
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 room_data = json.load(f)
 
             # Validate basic structure
             if not isinstance(room_data, dict):
                 raise ValueError("Room data must be a JSON object")
 
-            required_fields = ['id', 'name', 'description', 'zone', 'exits']
+            required_fields = ["id", "name", "description", "zone", "exits"]
             for field in required_fields:
                 if field not in room_data:
                     raise ValueError(f"Missing required field: {field}")
@@ -87,8 +87,7 @@ class RoomLoader:
             self.parsing_errors.append((str(file_path), error_msg))
             return None
 
-    def build_room_database(self, base_path: Optional[str] = None,
-                           show_progress: bool = True) -> Dict[str, Dict]:
+    def build_room_database(self, base_path: str | None = None, show_progress: bool = True) -> dict[str, dict]:
         """
         Create complete room index from all discovered files.
 
@@ -119,7 +118,7 @@ class RoomLoader:
         for file_path in files_to_process:
             room_data = self.load_room_data(file_path)
             if room_data:
-                room_id = room_data.get('id')
+                room_id = room_data.get("id")
                 if room_id:
                     self.room_database[room_id] = room_data
                 else:
@@ -127,7 +126,7 @@ class RoomLoader:
 
         return self.room_database
 
-    def get_zones(self) -> List[str]:
+    def get_zones(self) -> list[str]:
         """
         Return list of discovered zones.
 
@@ -136,12 +135,12 @@ class RoomLoader:
         """
         zones = set()
         for room_data in self.room_database.values():
-            zone = room_data.get('zone')
+            zone = room_data.get("zone")
             if zone:
                 zones.add(zone)
-        return sorted(list(zones))
+        return sorted(zones)
 
-    def get_rooms_by_zone(self, zone: str) -> Dict[str, Dict]:
+    def get_rooms_by_zone(self, zone: str) -> dict[str, dict]:
         """
         Get all rooms belonging to a specific zone.
 
@@ -153,11 +152,11 @@ class RoomLoader:
         """
         zone_rooms = {}
         for room_id, room_data in self.room_database.items():
-            if room_data.get('zone') == zone:
+            if room_data.get("zone") == zone:
                 zone_rooms[room_id] = room_data
         return zone_rooms
 
-    def get_parsing_errors(self) -> List[Tuple[str, str]]:
+    def get_parsing_errors(self) -> list[tuple[str, str]]:
         """
         Get list of parsing errors encountered during loading.
 
@@ -166,7 +165,7 @@ class RoomLoader:
         """
         return self.parsing_errors.copy()
 
-    def validate_file_structure(self) -> List[str]:
+    def validate_file_structure(self) -> list[str]:
         """
         Validate that room files follow expected naming convention.
 
@@ -179,12 +178,12 @@ class RoomLoader:
         for file_path in json_files:
             # Check if filename matches expected pattern
             filename = file_path.stem
-            if not filename or '_' not in filename:
+            if not filename or "_" not in filename:
                 warnings.append(f"Unusual filename pattern: {file_path}")
 
             # Check if file is in appropriate zone directory
             zone_dir = file_path.parent.name
-            if zone_dir == 'rooms':
+            if zone_dir == "rooms":
                 warnings.append(f"Room file not in zone directory: {file_path}")
 
         return warnings

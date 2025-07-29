@@ -48,11 +48,11 @@ _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
 _config = None
 
 _DEFAULTS = {
-    "db_path": "../data/players.db",
-    "log_path": "./persistence.log",
+    "db_path": "../data/players/players.db",
+    "log_path": "logs/persistence.log",  # Relative to server directory
     "log_level": "INFO",
     "host": "0.0.0.0",
-    "port": 4000,
+    "port": 54731,
     "max_connections": 100,
     "connection_timeout": 60,
     "data_dir": "./data/",

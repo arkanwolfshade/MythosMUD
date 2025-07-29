@@ -6,7 +6,6 @@ find unreachable rooms, and detect dead ends in the dimensional architecture.
 """
 
 from collections import defaultdict, deque
-from typing import Dict, List, Set, Tuple, Optional
 
 
 class PathValidator:
@@ -25,10 +24,10 @@ class PathValidator:
             schema_validator: Optional schema validator for exit analysis
         """
         self.schema_validator = schema_validator
-        self.graph: Dict[str, Dict[str, str]] = defaultdict(dict)
-        self.reverse_graph: Dict[str, Dict[str, str]] = defaultdict(dict)
+        self.graph: dict[str, dict[str, str]] = defaultdict(dict)
+        self.reverse_graph: dict[str, dict[str, str]] = defaultdict(dict)
 
-    def build_graph(self, room_database: Dict[str, Dict]) -> Dict[str, Dict[str, str]]:
+    def build_graph(self, room_database: dict[str, dict]) -> dict[str, dict[str, str]]:
         """
         Build adjacency graph from room database.
 
@@ -42,7 +41,7 @@ class PathValidator:
         self.reverse_graph.clear()
 
         for room_id, room_data in room_database.items():
-            exits = room_data.get('exits', {})
+            exits = room_data.get("exits", {})
 
             for direction, exit_data in exits.items():
                 target = self._get_exit_target(exit_data)
@@ -52,7 +51,7 @@ class PathValidator:
 
         return dict(self.graph)
 
-    def _get_exit_target(self, exit_data) -> Optional[str]:
+    def _get_exit_target(self, exit_data) -> str | None:
         """Extract target room ID from exit data."""
         if self.schema_validator:
             return self.schema_validator.get_exit_target(exit_data)
@@ -77,8 +76,9 @@ class PathValidator:
             return "one_way" in exit_data.get("flags", [])
         return False
 
-    def find_unreachable_rooms(self, start_room_id: str = "arkham_001",
-                              room_database: Dict[str, Dict] = None) -> Set[str]:
+    def find_unreachable_rooms(
+        self, start_room_id: str = "arkham_001", room_database: dict[str, dict] = None
+    ) -> set[str]:
         """
         Find rooms that cannot be reached from the starting room.
 
@@ -113,7 +113,7 @@ class PathValidator:
         all_rooms = set(self.graph.keys())
         return all_rooms - visited
 
-    def check_bidirectional_connections(self, room_database: Dict[str, Dict]) -> List[Tuple[str, str, str, str]]:
+    def check_bidirectional_connections(self, room_database: dict[str, dict]) -> list[tuple[str, str, str, str]]:
         """
         Check for bidirectional connections between rooms.
 
@@ -129,7 +129,7 @@ class PathValidator:
         for room_a, exits_a in self.graph.items():
             for direction_a, room_b in exits_a.items():
                 # Skip if this is a one-way exit
-                exit_data_a = room_database[room_a]['exits'].get(direction_a)
+                exit_data_a = room_database[room_a]["exits"].get(direction_a)
                 if self._is_one_way_exit(exit_data_a):
                     continue
 
@@ -145,17 +145,10 @@ class PathValidator:
 
     def _get_opposite_direction(self, direction: str) -> str:
         """Get the opposite direction for bidirectional checking."""
-        opposites = {
-            'north': 'south',
-            'south': 'north',
-            'east': 'west',
-            'west': 'east',
-            'up': 'down',
-            'down': 'up'
-        }
+        opposites = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}
         return opposites.get(direction, direction)
 
-    def find_dead_ends(self, room_database: Dict[str, Dict]) -> List[str]:
+    def find_dead_ends(self, room_database: dict[str, dict]) -> list[str]:
         """
         Find rooms with no exits (dead ends).
 
@@ -174,7 +167,7 @@ class PathValidator:
 
         return dead_ends
 
-    def find_potential_dead_ends(self, room_database: Dict[str, Dict]) -> List[str]:
+    def find_potential_dead_ends(self, room_database: dict[str, dict]) -> list[str]:
         """
         Find rooms with only one exit (potential dead ends).
 
@@ -193,7 +186,7 @@ class PathValidator:
 
         return potential_dead_ends
 
-    def find_self_references(self, room_database: Dict[str, Dict]) -> List[Tuple[str, str]]:
+    def find_self_references(self, room_database: dict[str, dict]) -> list[tuple[str, str]]:
         """
         Find rooms that reference themselves.
 
@@ -206,7 +199,7 @@ class PathValidator:
         self_references = []
 
         for room_id, room_data in room_database.items():
-            exits = room_data.get('exits', {})
+            exits = room_data.get("exits", {})
 
             for direction, exit_data in exits.items():
                 target = self._get_exit_target(exit_data)
@@ -227,7 +220,7 @@ class PathValidator:
             return "self_reference" in exit_data.get("flags", [])
         return False
 
-    def find_cycles(self, room_database: Dict[str, Dict]) -> List[List[str]]:
+    def find_cycles(self, room_database: dict[str, dict]) -> list[list[str]]:
         """
         Find cycles in the room graph.
 
@@ -242,7 +235,7 @@ class PathValidator:
         visited = set()
         rec_stack = set()
 
-        def dfs(room_id: str, path: List[str]):
+        def dfs(room_id: str, path: list[str]):
             visited.add(room_id)
             rec_stack.add(room_id)
             path.append(room_id)
@@ -265,7 +258,7 @@ class PathValidator:
 
         return cycles
 
-    def get_room_connectivity_stats(self, room_database: Dict[str, Dict]) -> Dict:
+    def get_room_connectivity_stats(self, room_database: dict[str, dict]) -> dict:
         """
         Get comprehensive connectivity statistics.
 
@@ -288,22 +281,23 @@ class PathValidator:
         cycles = self.find_cycles(room_database)
 
         return {
-            'total_rooms': total_rooms,
-            'total_exits': total_exits,
-            'average_exits_per_room': total_exits / total_rooms if total_rooms > 0 else 0,
-            'unreachable_rooms': len(unreachable),
-            'dead_ends': len(dead_ends),
-            'potential_dead_ends': len(potential_dead_ends),
-            'missing_return_paths': len(missing_returns),
-            'self_references': len(self_references),
-            'cycles': len(cycles),
-            'connectivity_score': self._calculate_connectivity_score(
+            "total_rooms": total_rooms,
+            "total_exits": total_exits,
+            "average_exits_per_room": total_exits / total_rooms if total_rooms > 0 else 0,
+            "unreachable_rooms": len(unreachable),
+            "dead_ends": len(dead_ends),
+            "potential_dead_ends": len(potential_dead_ends),
+            "missing_return_paths": len(missing_returns),
+            "self_references": len(self_references),
+            "cycles": len(cycles),
+            "connectivity_score": self._calculate_connectivity_score(
                 total_rooms, len(unreachable), len(dead_ends), len(missing_returns)
-            )
+            ),
         }
 
-    def _calculate_connectivity_score(self, total_rooms: int, unreachable: int,
-                                    dead_ends: int, missing_returns: int) -> float:
+    def _calculate_connectivity_score(
+        self, total_rooms: int, unreachable: int, dead_ends: int, missing_returns: int
+    ) -> float:
         """Calculate a connectivity score (0-100, higher is better)."""
         if total_rooms == 0:
             return 0.0
