@@ -276,7 +276,7 @@ def test_look_command(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
     assert "You are standing in the bustling heart of Arkham." in result
-    assert "Exits: north, south, east, west" in result
+    assert "\n\nExits: north, south, east, west" in result
 
 
 def test_go_missing_direction(auth_token, test_client):
@@ -291,7 +291,7 @@ def test_go_extra_whitespace(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("East Market Bazaar")
     assert "Colorful tents and exotic wares fill the lively bazaar" in result
-    assert "Exits: west" in result
+    assert "\n\nExits: west" in result
 
 
 def test_say_with_message(auth_token, test_client):
@@ -318,7 +318,7 @@ def test_case_insensitivity(auth_token, test_client):
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
     assert "You are standing in the bustling heart of Arkham." in result
-    assert "Exits: north, south, east, west" in result
+    assert "\n\nExits: north, south, east, west" in result
 
 
 def test_max_length(auth_token, test_client):

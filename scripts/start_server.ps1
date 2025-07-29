@@ -179,13 +179,13 @@ function Start-MythosMUDServer {
 
     $reloadFlag = if ($Reload) { "--reload" } else { "" }
 
-    # Change to server directory and start uvicorn
-    $serverCommand = "cd server; uv run uvicorn main:app --host $ServerHost --port $Port $reloadFlag"
+    # Run uvicorn from project root with proper module path
+    $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag"
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 
     try {
-        # Start the server process
+        # Start the server process from project root
         Start-Process powershell -ArgumentList "-NoExit", "-Command", $serverCommand -WindowStyle Normal
 
         # Wait for server to start

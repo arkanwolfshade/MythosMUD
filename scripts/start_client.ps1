@@ -4,7 +4,7 @@
 # Starts the React development server for the MythosMUD client
 
 param(
-    [string]$Port = "3000",
+    [string]$Port = "5173",
     [switch]$Help
 )
 
@@ -14,11 +14,11 @@ if ($Help) {
     Write-Host "Usage: .\start_client.ps1 [-Port <port>] [-Help]"
     Write-Host ""
     Write-Host "Parameters:"
-    Write-Host "    -Port <port>    Port to run the client on (default: 3000)"
+    Write-Host "    -Port <port>    Port to run the client on (default: 5173)"
     Write-Host "    -Help           Show this help message"
     Write-Host ""
     Write-Host "Examples:"
-    Write-Host "    .\start_client.ps1                    # Start on default port 3000"
+    Write-Host "    .\start_client.ps1                    # Start on default port 5173"
     Write-Host "    .\start_client.ps1 -Port 3001        # Start on port 3001"
     Write-Host "    .\start_client.ps1 -Help             # Show help"
     exit 0
@@ -71,7 +71,7 @@ try {
 
     Write-Host "Starting MythosMUD client on port $Port..." -ForegroundColor Yellow
     Write-Host "Client will be available at: http://localhost:$Port" -ForegroundColor Cyan
-    Write-Host "Make sure the server is running on port 4000" -ForegroundColor Cyan
+    Write-Host "Make sure the server is running on port 54731" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Press Ctrl+C to stop the client" -ForegroundColor Gray
     Write-Host ""

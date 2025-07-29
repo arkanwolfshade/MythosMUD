@@ -229,8 +229,10 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
   // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
-    // Show manual connection message
-    addMessage("Welcome to MythosMUD! Click 'Connect' to join the game.");
+    // Show welcome message and connection instructions
+    addMessage("Welcome to MythosMUD! You are now authenticated.");
+    addMessage("Click the 'Connect' button in the left sidebar to join the game.");
+    addMessage("Once connected, you can enter commands in the input field at the bottom.");
   }, []);
 
   // Remove auto-connect to prevent infinite loop
@@ -256,11 +258,20 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
             {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
           </div>
 
+          {/* Connection Instructions */}
+          {!isConnected && !isConnecting && (
+            <div className="connection-instructions">
+              <h4>Getting Started</h4>
+              <p>You are authenticated and ready to play!</p>
+              <p>Click the "Connect" button below to join the game world.</p>
+            </div>
+          )}
+
           {/* Connection Controls - grouped together */}
           <div className="connection-controls">
             {!isConnected && !isConnecting && (
               <button onClick={handleConnect} className="connect-btn">
-                Connect
+                Connect to Game
               </button>
             )}
             {isConnected && (

@@ -86,7 +86,7 @@ def handle_command(
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\nExits: {exit_list}"}
+        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "go":
         if not persistence:
             return {"result": "You can't go that way"}
@@ -117,7 +117,7 @@ def handle_command(
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\nExits: {exit_list}"}
+        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
         message = " ".join(args).strip()
         if not message:

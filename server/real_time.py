@@ -423,7 +423,12 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                 result = "You see nothing special that way."
         else:
             name = room.get("name", "")
-            result = name
+            desc = room.get("description", "You see nothing special.")
+            exits = room.get("exits", {})
+            # Only include exits that have valid room IDs (not null)
+            valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+            exit_list = ", ".join(valid_exits) if valid_exits else "none"
+            result = f"{name}\n{desc}\n\nExits: {exit_list}"
 
     elif command == "go":
         if not args:

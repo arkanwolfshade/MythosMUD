@@ -8,6 +8,7 @@ This module tests the Server-Sent Events authentication system including:
 - WebSocket authentication
 """
 
+import asyncio
 import json
 import tempfile
 import time
@@ -19,7 +20,7 @@ from fastapi.testclient import TestClient
 
 from server.auth import create_access_token, get_sse_auth_headers, validate_sse_token
 from server.main import app
-from server.real_time import ConnectionManager
+from server.real_time import ConnectionManager, process_command
 
 
 @pytest.fixture(autouse=True)
@@ -461,3 +462,62 @@ class TestSSEIntegration:
                 f"/events/{login_response.json()['player_id']}?token={token}", headers={"Accept": "text/event-stream"}
             )
             assert sse_response.status_code == 200
+
+
+class TestWebSocketCommands:
+    """Test WebSocket command functionality."""
+
+    def test_websocket_look_command_with_exits(self, test_client, valid_token):
+        """Test that WebSocket look command shows exits correctly."""
+
+        # This test would require a more complex WebSocket testing setup
+        # For now, we'll test the command processing logic directly
+        # Mock the connection manager and persistence
+        class MockConnectionManager:
+            """Mock connection manager for testing WebSocket command functionality."""
+
+            def __init__(self):
+                self.persistence = None
+                self.sequence = 0
+
+            def _get_player(self, player_id):
+                # Return a mock player
+                from server.models import Player
+
+                player = Player(id=player_id, name="testuser", current_room_id="arkham_001")
+                return player
+
+            def _get_next_sequence(self):
+                self.sequence += 1
+                return self.sequence
+
+        # Mock the get_room_data function
+        def mock_get_room_data(room_id):
+            if room_id == "arkham_001":
+                return {
+                    "name": "Miskatonic University Library",
+                    "description": "The ancient library contains forbidden knowledge.",
+                    "exits": {
+                        "north": "arkham_002",
+                        "south": None,  # Blocked exit
+                        "east": "arkham_003",
+                        "west": "arkham_004",
+                    },
+                }
+            return None
+
+        # Patch the functions
+        with (
+            patch("server.real_time.connection_manager", MockConnectionManager()),
+            patch("server.real_time.get_room_data", mock_get_room_data),
+        ):
+            # Test the look command
+            result = asyncio.run(process_command("testuser", {"command": "look", "args": []}))
+
+            # Verify the result contains exits
+            assert result.data["success"] is True
+            assert "Miskatonic University Library" in result.data["result"]
+            assert "forbidden knowledge" in result.data["result"]
+            assert "Exits: north, east, west" in result.data["result"]
+            # Should not include "south" since it's None (blocked)
+            assert "south" not in result.data["result"]

@@ -101,7 +101,7 @@ cd server && uv sync
 cd client && npm install
 
 # Run development server
-cd server && uv run uvicorn main:app --reload
+uv run uvicorn server.main:app --reload
 
 # Run tests
 cd server && uv run pytest tests/ -v

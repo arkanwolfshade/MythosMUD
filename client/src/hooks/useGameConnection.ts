@@ -51,6 +51,50 @@ export function useGameConnection({
   const websocketRef = useRef<WebSocket | null>(null);
   const isConnectingRef = useRef(false);
 
+  // Connect WebSocket for commands after SSE connection is established
+  const connectWebSocket = useCallback(() => {
+    if (!authToken || !playerId) {
+      logger.error("GameConnection", "Missing auth token or player ID for WebSocket");
+      return;
+    }
+
+    try {
+      // WebSocket endpoint is at /ws/{player_id} on port 54731
+      const wsUrl = `ws://localhost:54731/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
+      const websocket = new WebSocket(wsUrl);
+
+      websocketRef.current = websocket;
+
+      websocket.onopen = () => {
+        logger.info("GameConnection", "WebSocket connected");
+        setState((prev) => ({ ...prev, websocketConnected: true }));
+      };
+
+      websocket.onmessage = (event) => {
+        try {
+          const gameEvent: GameEvent = JSON.parse(event.data);
+          logger.info("GameConnection", "WebSocket event received", { event_type: gameEvent.event_type });
+          setState((prev) => ({ ...prev, lastEvent: gameEvent }));
+          onEvent?.(gameEvent);
+        } catch (error) {
+          logger.error("GameConnection", "Failed to parse WebSocket event", { error: String(error) });
+        }
+      };
+
+      websocket.onerror = (error) => {
+        logger.error("GameConnection", "WebSocket error", { error: String(error) });
+      };
+
+      websocket.onclose = () => {
+        logger.info("GameConnection", "WebSocket disconnected");
+        websocketRef.current = null;
+        setState((prev) => ({ ...prev, websocketConnected: false }));
+      };
+    } catch (error) {
+      logger.error("GameConnection", "Failed to connect WebSocket", { error: String(error) });
+    }
+  }, [authToken, playerId, onEvent]);
+
   const connect = useCallback(async () => {
     if (isConnectingRef.current || state.isConnected) {
       logger.info("GameConnection", "Already connecting or connected");
@@ -177,50 +221,6 @@ export function useGameConnection({
       logger.info("GameConnection", "Both SSE and WebSocket connected");
     }
   }, [state.sseConnected, state.websocketConnected]);
-
-  // Connect WebSocket for commands after SSE connection is established
-  const connectWebSocket = useCallback(() => {
-    if (!authToken || !playerId) {
-      logger.error("GameConnection", "Missing auth token or player ID for WebSocket");
-      return;
-    }
-
-    try {
-      // WebSocket endpoint is at /ws/{player_id} on port 54731
-      const wsUrl = `ws://localhost:54731/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
-      const websocket = new WebSocket(wsUrl);
-
-      websocketRef.current = websocket;
-
-      websocket.onopen = () => {
-        logger.info("GameConnection", "WebSocket connected");
-        setState((prev) => ({ ...prev, websocketConnected: true }));
-      };
-
-      websocket.onmessage = (event) => {
-        try {
-          const gameEvent: GameEvent = JSON.parse(event.data);
-          logger.info("GameConnection", "WebSocket event received", { event_type: gameEvent.event_type });
-          setState((prev) => ({ ...prev, lastEvent: gameEvent }));
-          onEvent?.(gameEvent);
-        } catch (error) {
-          logger.error("GameConnection", "Failed to parse WebSocket event", { error: String(error) });
-        }
-      };
-
-      websocket.onerror = (error) => {
-        logger.error("GameConnection", "WebSocket error", { error: String(error) });
-      };
-
-      websocket.onclose = () => {
-        logger.info("GameConnection", "WebSocket disconnected");
-        websocketRef.current = null;
-        setState((prev) => ({ ...prev, websocketConnected: false }));
-      };
-    } catch (error) {
-      logger.error("GameConnection", "Failed to connect WebSocket", { error: String(error) });
-    }
-  }, [authToken, playerId, onEvent]);
 
   return {
     ...state,

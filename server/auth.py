@@ -194,7 +194,7 @@ def login_user(
     if not user or not verify_password(req.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid username or password.")
 
-        # Get the player from persistence to return the correct player ID
+    # Get the player from persistence to return the correct player ID
     persistence = request.app.state.persistence
     player = persistence.get_player_by_name(req.username)
     if not player:

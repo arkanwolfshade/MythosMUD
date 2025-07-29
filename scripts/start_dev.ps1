@@ -5,7 +5,7 @@
 
 param(
     [string]$ServerPort = "54731",
-    [string]$ClientPort = "3000",
+    [string]$ClientPort = "5173",
     [switch]$ServerOnly,
     [switch]$ClientOnly,
     [switch]$Help
@@ -18,7 +18,7 @@ if ($Help) {
     Write-Host ""
     Write-Host "Parameters:"
     Write-Host "    -ServerPort <port>    Port to run the server on (default: 54731)"
-    Write-Host "    -ClientPort <port>    Port to run the client on (default: 3000)"
+    Write-Host "    -ClientPort <port>    Port to run the client on (default: 5173)"
     Write-Host "    -ServerOnly           Start only the server"
     Write-Host "    -ClientOnly           Start only the client"
     Write-Host "    -Help                 Show this help message"
