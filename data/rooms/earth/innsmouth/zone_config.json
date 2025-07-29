@@ -1,0 +1,12 @@
+{
+  "zone_type": "city",
+  "environment": "outdoors",
+  "description": "A decaying coastal town with a dark history, known for its strange inhabitants and mysterious disappearances",
+  "weather_patterns": ["fog", "rain", "storm", "overcast"],
+  "special_rules": {
+    "sanity_drain_rate": 0.15,
+    "npc_spawn_modifier": 0.6,
+    "combat_modifier": 1.3,
+    "exploration_bonus": 0.2
+  }
+}

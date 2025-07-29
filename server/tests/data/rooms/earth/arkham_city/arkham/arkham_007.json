@@ -1,0 +1,14 @@
+{
+  "id": "arkham_007",
+  "name": "Restricted Archives",
+  "description": "The deepest recesses of the library, where the most dangerous texts are kept under lock and key. The air crackles with eldritch energy, and the very walls seem to pulse with forbidden knowledge. Strange symbols glow faintly on the spines of books that should not exist, and shadows move in ways that defy the laws of physics.",
+  "zone": "arkham",
+  "exits": {
+    "west": "arkham_002",
+    "down": "arkham_005",
+    "south": "arkham_006"
+  },
+  "field1": null,
+  "field2": null,
+  "field3": null
+}
