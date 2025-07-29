@@ -10,7 +10,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 from core.room_loader import RoomLoader
 
 
@@ -53,7 +52,7 @@ class TestRoomLoader:
         loader = RoomLoader()
 
         # Create a temporary file with valid room data
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(sample_room_data, f)
             file_path = Path(f.name)
 
@@ -69,7 +68,7 @@ class TestRoomLoader:
         loader = RoomLoader()
 
         # Create a temporary file with invalid JSON
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write('{"invalid": json}')
             file_path = Path(f.name)
 
@@ -88,11 +87,11 @@ class TestRoomLoader:
         # Create room data missing required fields
         invalid_data = {
             "id": "test_001",
-            "name": "Test Room"
+            "name": "Test Room",
             # Missing description, zone, exits
         }
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(invalid_data, f)
             file_path = Path(f.name)
 
@@ -109,7 +108,7 @@ class TestRoomLoader:
         loader = RoomLoader()
 
         # Create a file with non-dict data
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(["not", "a", "dict"], f)
             file_path = Path(f.name)
 
@@ -158,14 +157,14 @@ class TestRoomLoader:
                 "name": "Valid Room",
                 "description": "A valid room",
                 "zone": "test_zone",
-                "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None}
+                "exits": {"north": None, "south": None, "east": None, "west": None, "up": None, "down": None},
             }
 
-            with open(rooms_dir / "valid_001.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "valid_001.json", "w", encoding="utf-8") as f:
                 json.dump(valid_room, f)
 
             # Create one invalid file
-            with open(rooms_dir / "invalid.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "invalid.json", "w", encoding="utf-8") as f:
                 f.write('{"invalid": json}')
 
             loader = RoomLoader(temp_dir)
@@ -227,5 +226,5 @@ class TestRoomLoader:
             rooms_dir.mkdir(parents=True)
 
             # Create file with unusual name
-            with open(rooms_dir / "unusual.json", 'w', encoding='utf-8') as f:
+            with open(rooms_dir / "unusual.json", "w", encoding="utf-8") as f:
                 json.dump({"id": "test", "name": "Test", "description": "Test", "zone": "test", "exits": {}}, f)

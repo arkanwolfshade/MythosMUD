@@ -6,7 +6,6 @@ in the room pathing validator system.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
 
 
 class ValidationError:
@@ -18,8 +17,7 @@ class ValidationError:
     """
 
     # pylint: disable=too-many-arguments
-    def __init__(self, rule_name: str, room_id: str, message: str,
-                 suggestion: str = "", error_type: str = "error"):
+    def __init__(self, rule_name: str, room_id: str, message: str, suggestion: str = "", error_type: str = "error"):
         """
         Initialize a validation error.
 
@@ -36,14 +34,14 @@ class ValidationError:
         self.suggestion = suggestion
         self.error_type = error_type
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert error to dictionary format."""
         return {
-            'type': self.rule_name,
-            'room_id': self.room_id,
-            'message': self.message,
-            'suggestion': self.suggestion,
-            'error_type': self.error_type
+            "type": self.rule_name,
+            "room_id": self.room_id,
+            "message": self.message,
+            "suggestion": self.suggestion,
+            "error_type": self.error_type,
         }
 
     def __str__(self) -> str:
@@ -71,8 +69,7 @@ class ValidationRule(ABC):
         self.description = description
 
     @abstractmethod
-    def validate(self, room_database: Dict[str, Dict],
-                zone_filter: Optional[str] = None) -> List[ValidationError]:
+    def validate(self, room_database: dict[str, dict], zone_filter: str | None = None) -> list[ValidationError]:
         """
         Validate rooms according to this rule.
 
@@ -85,8 +82,7 @@ class ValidationRule(ABC):
         """
         # Abstract method - implementation required in subclasses
 
-    def _filter_rooms_by_zone(self, room_database: Dict[str, Dict],
-                             zone_filter: Optional[str]) -> Dict[str, Dict]:
+    def _filter_rooms_by_zone(self, room_database: dict[str, dict], zone_filter: str | None) -> dict[str, dict]:
         """
         Filter rooms by zone if specified.
 
@@ -102,13 +98,12 @@ class ValidationRule(ABC):
 
         filtered = {}
         for room_id, room_data in room_database.items():
-            if room_data.get('zone') == zone_filter:
+            if room_data.get("zone") == zone_filter:
                 filtered[room_id] = room_data
 
         return filtered
 
-    def create_error(self, room_id: str, message: str,
-                    suggestion: str = "") -> ValidationError:
+    def create_error(self, room_id: str, message: str, suggestion: str = "") -> ValidationError:
         """
         Create a validation error for this rule.
 
@@ -135,14 +130,11 @@ class ValidationRule(ABC):
         """
         return ValidationError(self.name, room_id, message, "", "warning")
 
-    def get_rule_info(self) -> Dict:
+    def get_rule_info(self) -> dict:
         """
         Get information about this rule.
 
         Returns:
             Dictionary with rule information
         """
-        return {
-            'name': self.name,
-            'description': self.description
-        }
+        return {"name": self.name, "description": self.description}

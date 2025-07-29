@@ -3,11 +3,11 @@ from pathlib import Path
 
 # List of directories to remove
 DIRS_TO_REMOVE = [
-    Path('server/__pycache__'),
-    Path('server/.pytest_cache'),
-    Path('server/htmlcov'),
-    Path('client/dist'),
-    Path('client/node_modules'),
+    Path("server/__pycache__"),
+    Path("server/.pytest_cache"),
+    Path("server/htmlcov"),
+    Path("client/dist"),
+    Path("client/node_modules"),
 ]
 
 

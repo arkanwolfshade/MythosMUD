@@ -9,27 +9,111 @@ from pathlib import Path
 
 # Mythos-themed words and concepts for invite codes
 MYTHOS_WORDS = [
-    "Cthulhu", "Nyarlathotep", "Azathoth", "YogSothoth", "ShubNiggurath",
-    "Dagon", "Hastur", "Yig", "Tsathoggua", "Nodens", "Bokrug", "Glaaki",
-    "Ithaqua", "AtlachNacha", "Cthugha", "Eihort", "Ghatanothoa", "Hypnos",
-    "Lloigor", "Mnomquah", "RhanTegoth", "ShuddeMell", "Tulzscha", "Ycnagnnis",
-    "Arkham", "Innsmouth", "Dunwich", "Kingsport", "Miskatonic", "Esoteric",
-    "Necronomicon", "Pnakotic", "Rlyeh", "Kadath", "Leng", "Yuggoth", "Xoth",
-    "Yaddith", "Zothique", "Hyperborea", "Mu", "Atlantis", "Lemuria",
-    "Elder", "Great", "Outer", "Inner", "Deep", "Abyss", "Void", "Chaos",
-    "Order", "Cosmos", "Dream", "Nightmare", "Madness", "Sanity", "Truth",
-    "Lies", "Knowledge", "Secrets", "Forbidden", "Hidden", "Ancient",
-    "Eternal", "Timeless", "Infinite", "Vast", "Profound", "Mysterious",
-    "Cryptic", "Arcane", "Occult", "Mystical", "Eldritch", "Unspeakable",
-    "Nameless", "Faceless", "Formless", "Shapeless", "Boundless", "Endless",
-    "Limitless", "Infinite", "Eternal", "Immortal", "Undying", "Ageless",
-    "Primordial", "Prehistoric", "Antediluvian", "Archaic", "Venerable",
-    "Sublime", "Transcendent", "Divine", "Infernal", "Celestial", "Abyssal"
+    "Cthulhu",
+    "Nyarlathotep",
+    "Azathoth",
+    "YogSothoth",
+    "ShubNiggurath",
+    "Dagon",
+    "Hastur",
+    "Yig",
+    "Tsathoggua",
+    "Nodens",
+    "Bokrug",
+    "Glaaki",
+    "Ithaqua",
+    "AtlachNacha",
+    "Cthugha",
+    "Eihort",
+    "Ghatanothoa",
+    "Hypnos",
+    "Lloigor",
+    "Mnomquah",
+    "RhanTegoth",
+    "ShuddeMell",
+    "Tulzscha",
+    "Ycnagnnis",
+    "Arkham",
+    "Innsmouth",
+    "Dunwich",
+    "Kingsport",
+    "Miskatonic",
+    "Esoteric",
+    "Necronomicon",
+    "Pnakotic",
+    "Rlyeh",
+    "Kadath",
+    "Leng",
+    "Yuggoth",
+    "Xoth",
+    "Yaddith",
+    "Zothique",
+    "Hyperborea",
+    "Mu",
+    "Atlantis",
+    "Lemuria",
+    "Elder",
+    "Great",
+    "Outer",
+    "Inner",
+    "Deep",
+    "Abyss",
+    "Void",
+    "Chaos",
+    "Order",
+    "Cosmos",
+    "Dream",
+    "Nightmare",
+    "Madness",
+    "Sanity",
+    "Truth",
+    "Lies",
+    "Knowledge",
+    "Secrets",
+    "Forbidden",
+    "Hidden",
+    "Ancient",
+    "Eternal",
+    "Timeless",
+    "Infinite",
+    "Vast",
+    "Profound",
+    "Mysterious",
+    "Cryptic",
+    "Arcane",
+    "Occult",
+    "Mystical",
+    "Eldritch",
+    "Unspeakable",
+    "Nameless",
+    "Faceless",
+    "Formless",
+    "Shapeless",
+    "Boundless",
+    "Endless",
+    "Limitless",
+    "Infinite",
+    "Eternal",
+    "Immortal",
+    "Undying",
+    "Ageless",
+    "Primordial",
+    "Prehistoric",
+    "Antediluvian",
+    "Archaic",
+    "Venerable",
+    "Sublime",
+    "Transcendent",
+    "Divine",
+    "Infernal",
+    "Celestial",
+    "Abyssal",
 ]
 
 # Additional components for variety
 PREFIXES = ["MYTHOS", "ELDER", "GREAT", "DEEP", "VOID", "COSMOS", "DREAM"]
 SUFFIXES = ["2025", "ACCESS", "GATE", "PORTAL", "KEY", "CODE", "PASS", "INITIATE"]
+
 
 def generate_invite_code():
     """Generate a unique Mythos-themed invite code."""
@@ -51,6 +135,7 @@ def generate_invite_code():
             return f"{prefix}{suffix}{number}"
         return f"{prefix}{suffix}"
 
+
 def generate_unique_codes(count=100):
     """Generate a list of unique invite codes."""
     codes = set()
@@ -65,6 +150,7 @@ def generate_unique_codes(count=100):
 
     return list(codes)
 
+
 def main():
     """Generate 100 invite codes and update the invites.json file."""
     print("Generating 100 unique Mythos-themed invite codes...")
@@ -75,7 +161,7 @@ def main():
     # Load existing invites
     invites_file = Path("server/invites.json")
     if invites_file.exists():
-        with open(invites_file, 'r') as f:
+        with open(invites_file) as f:
             existing_invites = json.load(f)
     else:
         existing_invites = []
@@ -93,7 +179,7 @@ def main():
     all_invites = existing_invites + new_invites
 
     # Save updated invites file
-    with open(invites_file, 'w') as f:
+    with open(invites_file, "w") as f:
         json.dump(all_invites, f, indent=2)
 
     print(f"✓ Generated {len(unique_new_codes)} new invite codes")
@@ -106,6 +192,7 @@ def main():
     for i, invite in enumerate(all_invites[-10:], 1):  # Show last 10
         status = "USED" if invite["used"] else "AVAILABLE"
         print(f"  {i:2d}. {invite['code']:<20} [{status}]")
+
 
 if __name__ == "__main__":
     main()

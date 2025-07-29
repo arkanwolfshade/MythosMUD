@@ -6,8 +6,9 @@ colors and structured output for both console and JSON formats.
 """
 
 import json
-from typing import Dict, List, Any
-from colorama import init, Fore, Style
+from typing import Any
+
+from colorama import Fore, Style, init
 
 # Initialize colorama for cross-platform color support
 init()
@@ -30,8 +31,7 @@ class Reporter:
         """
         self.use_colors = use_colors
 
-    def format_error(self, error_type: str, room_id: str, message: str,
-                    suggestion: str = "") -> str:
+    def format_error(self, error_type: str, room_id: str, message: str, suggestion: str = "") -> str:
         """
         Format a single error message.
 
@@ -84,18 +84,18 @@ class Reporter:
             warning_part = f"⚠️  {warning_type.title()}: {message}"
             return f"{room_part}\n  {warning_part}"
 
-    def print_summary(self, stats: Dict[str, Any]) -> None:
+    def print_summary(self, stats: dict[str, Any]) -> None:
         """
         Print validation summary statistics.
 
         Args:
             stats: Dictionary containing validation statistics
         """
-        zones = stats.get('zones', 0)
-        rooms = stats.get('rooms', 0)
-        errors = stats.get('errors', 0)
-        warnings = stats.get('warnings', 0)
-        success = stats.get('success', True)
+        zones = stats.get("zones", 0)
+        rooms = stats.get("rooms", 0)
+        errors = stats.get("errors", 0)
+        warnings = stats.get("warnings", 0)
+        success = stats.get("success", True)
 
         print("\n📊 SUMMARY:")
         print(f"  Zones: {zones}")
@@ -114,7 +114,7 @@ class Reporter:
             else:
                 print("\n❌ Validation failed - please fix errors above")
 
-    def print_zone_discovery(self, zones: List[str]) -> None:
+    def print_zone_discovery(self, zones: list[str]) -> None:
         """
         Print discovered zones information.
 
@@ -129,7 +129,7 @@ class Reporter:
             else:
                 print(f"✅ {zone} zone discovered")
 
-    def print_parsing_errors(self, parsing_errors: List[tuple]) -> None:
+    def print_parsing_errors(self, parsing_errors: list[tuple]) -> None:
         """
         Print parsing errors encountered during file loading.
 
@@ -147,7 +147,7 @@ class Reporter:
             else:
                 print(f"  {file_path}: {error_msg}")
 
-    def print_validation_errors(self, errors: List[Dict]) -> None:
+    def print_validation_errors(self, errors: list[dict]) -> None:
         """
         Print validation errors.
 
@@ -161,14 +161,14 @@ class Reporter:
 
         for error in errors:
             formatted = self.format_error(
-                error.get('type', 'unknown'),
-                error.get('room_id', 'unknown'),
-                error.get('message', ''),
-                error.get('suggestion', '')
+                error.get("type", "unknown"),
+                error.get("room_id", "unknown"),
+                error.get("message", ""),
+                error.get("suggestion", ""),
             )
             print(f"\n{formatted}")
 
-    def print_validation_warnings(self, warnings: List[Dict]) -> None:
+    def print_validation_warnings(self, warnings: list[dict]) -> None:
         """
         Print validation warnings.
 
@@ -182,14 +182,11 @@ class Reporter:
 
         for warning in warnings:
             formatted = self.format_warning(
-                warning.get('type', 'unknown'),
-                warning.get('room_id', 'unknown'),
-                warning.get('message', '')
+                warning.get("type", "unknown"), warning.get("room_id", "unknown"), warning.get("message", "")
             )
             print(f"\n{formatted}")
 
-    def generate_json_output(self, stats: Dict[str, Any], errors: List[Dict],
-                           warnings: List[Dict]) -> str:
+    def generate_json_output(self, stats: dict[str, Any], errors: list[dict], warnings: list[dict]) -> str:
         """
         Generate JSON output for programmatic consumption.
 
@@ -201,11 +198,7 @@ class Reporter:
         Returns:
             JSON string representation of validation results
         """
-        output = {
-            'summary': stats,
-            'errors': errors,
-            'warnings': warnings
-        }
+        output = {"summary": stats, "errors": errors, "warnings": warnings}
 
         return json.dumps(output, indent=2)
 
@@ -223,14 +216,9 @@ class Reporter:
         if not self.use_colors:
             return text
 
-        color_map = {
-            'red': Fore.RED,
-            'green': Fore.GREEN,
-            'yellow': Fore.YELLOW,
-            'blue': Fore.BLUE
-        }
+        color_map = {"red": Fore.RED, "green": Fore.GREEN, "yellow": Fore.YELLOW, "blue": Fore.BLUE}
 
-        color_code = color_map.get(color.lower(), '')
+        color_code = color_map.get(color.lower(), "")
         return f"{color_code}{text}{Style.RESET_ALL}"
 
     def print_header(self, title: str = "Room Validator v1.0") -> None:

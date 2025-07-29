@@ -6,21 +6,16 @@ structure, and consistency in the MythosMUD world.
 """
 
 from .base_rule import ValidationRule
-from .structure_rules import SchemaValidationRule, DuplicateIDRule, ExitReferenceRule
-from .connectivity_rules import (
-    BidirectionalConnectionRule,
-    UnreachableRoomRule,
-    DeadEndRule,
-    SelfReferenceRule
-)
+from .connectivity_rules import BidirectionalConnectionRule, DeadEndRule, SelfReferenceRule, UnreachableRoomRule
+from .structure_rules import DuplicateIDRule, ExitReferenceRule, SchemaValidationRule
 
 __all__ = [
-    'ValidationRule',
-    'SchemaValidationRule',
-    'DuplicateIDRule',
-    'ExitReferenceRule',
-    'BidirectionalConnectionRule',
-    'UnreachableRoomRule',
-    'DeadEndRule',
-    'SelfReferenceRule'
+    "ValidationRule",
+    "SchemaValidationRule",
+    "DuplicateIDRule",
+    "ExitReferenceRule",
+    "BidirectionalConnectionRule",
+    "UnreachableRoomRule",
+    "DeadEndRule",
+    "SelfReferenceRule",
 ]
