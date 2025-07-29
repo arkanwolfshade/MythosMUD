@@ -39,7 +39,6 @@ jobs:
         run: |
           source $HOME/.cargo/env
           uv sync --dev
-          uv add --dev ruff pytest pytest-cov
       - name: Initialize test database
         run: |
           source $HOME/.cargo/env
