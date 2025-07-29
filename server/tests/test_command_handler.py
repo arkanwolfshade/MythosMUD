@@ -131,7 +131,7 @@ def temp_files():
     with open(invites_path, "w", encoding="utf-8") as f:
         json.dump(
             [
-                {"code": "INVITE123", "used": False},
+                {"code": "ARKHAM_ACCESS", "used": False},
                 {"code": "USEDINVITE", "used": True},
             ],
             f,
@@ -186,7 +186,7 @@ def auth_token(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "INVITE123",
+            "invite_code": "ARKHAM_ACCESS",
         },
     )
     print(f"[auth_token] Registration response status: {reg_resp.status_code}")
@@ -243,7 +243,7 @@ def test_look_command_with_mock_auth(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "INVITE123",
+            "invite_code": "ARKHAM_ACCESS",
         },
     )
     print(f"Register response: {register_resp.status_code} - {register_resp.json()}")

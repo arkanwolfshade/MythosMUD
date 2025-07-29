@@ -95,6 +95,10 @@ omit = [
     "*/__pycache__/*",
     "*/venv/*",
     "*/.venv/*",
+    "tests/init_test_db.py",
+    "tests/mock_data.py",
+    "tests/verify_test_db.py",
+    "debug_test.py",
 ]
 
 [tool.coverage.report]

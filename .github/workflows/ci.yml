@@ -40,6 +40,14 @@ jobs:
           source $HOME/.cargo/env
           uv sync --dev
           uv add --dev ruff pytest pytest-cov
+      - name: Initialize test database
+        run: |
+          source $HOME/.cargo/env
+          python tests/init_test_db.py
+      - name: Verify test database
+        run: |
+          source $HOME/.cargo/env
+          python tests/verify_test_db.py
       - name: Lint with ruff
         run: |
           source $HOME/.cargo/env
@@ -47,7 +55,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           source $HOME/.cargo/env
-          uv run pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70
+          uv run pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
