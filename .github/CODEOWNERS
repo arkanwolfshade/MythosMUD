@@ -1,0 +1,7 @@
+# Code Owners
+# This file defines who is responsible for reviewing code changes in this repository.
+# Each line is a file pattern followed by one or more owners.
+# Order is important; the last matching pattern takes precedence.
+
+# Global codeowner for the entire repository
+* @arkanwolfshade
