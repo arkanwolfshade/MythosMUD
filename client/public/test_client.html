@@ -113,10 +113,20 @@
       let eventSource = null;
       let websocket = null;
 
+      // HTML escaping function to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
       function log(message, type = "info") {
         const output = document.getElementById("output");
         const timestamp = new Date().toLocaleTimeString();
-        output.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+        // Escape the message to prevent XSS while preserving the timestamp
+        const escapedMessage = escapeHtml(message);
+        const escapedTimestamp = escapeHtml(timestamp);
+        output.innerHTML += `<div class="${type}">[${escapedTimestamp}] ${escapedMessage}</div>`;
         output.scrollTop = output.scrollHeight;
       }
 
