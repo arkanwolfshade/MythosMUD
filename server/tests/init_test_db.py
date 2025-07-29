@@ -15,7 +15,7 @@ from pathlib import Path
 TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 
 # Room data paths
-ROOMS_DIR = Path(__file__).parent.parent.parent / "data" / "rooms"
+ROOMS_DIR = Path(__file__).parent / "data" / "rooms"
 
 # Database schema (same as production)
 SCHEMA = """

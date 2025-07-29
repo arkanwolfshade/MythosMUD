@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sub-zone Configuration Schema",
+  "description": "Schema for validating sub-zone configuration files in the MythosMUD world hierarchy",
+  "type": "object",
+  "required": ["environment"],
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["indoors", "outdoors", "underwater"],
+      "description": "Default environmental classification for this sub-zone"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable description of the sub-zone"
+    },
+    "special_rules": {
+      "type": "object",
+      "description": "Sub-zone-specific gameplay rules and modifiers",
+      "properties": {
+        "sanity_drain_rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Rate at which player sanity drains in this sub-zone"
+        },
+        "npc_spawn_modifier": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Multiplier for NPC spawn rates in this sub-zone"
+        },
+        "combat_modifier": {
+          "type": "number",
+          "description": "Combat difficulty modifier for this sub-zone"
+        },
+        "exploration_bonus": {
+          "type": "number",
+          "description": "Bonus to exploration rolls in this sub-zone"
+        },
+        "access_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Requirements needed to access this sub-zone"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

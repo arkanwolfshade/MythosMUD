@@ -1,0 +1,14 @@
+{
+  "id": "arkham_002",
+  "name": "Miskatonic University Gates",
+  "description": "The imposing wrought-iron gates of Miskatonic University stand before you, their intricate patterns hinting at forgotten geometries. Stone pillars rise like sentinels, draped in ivy that seems to whisper ancient incantations. Beyond lies the hallowed halls where forbidden knowledge is both sought and feared.",
+  "zone": "arkham",
+  "exits": {
+    "south": "arkham_001",
+    "north": "arkham_006",
+    "east": "arkham_007"
+  },
+  "field1": null,
+  "field2": null,
+  "field3": null
+}

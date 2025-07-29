@@ -1,0 +1,14 @@
+{
+  "id": "arkham_006",
+  "name": "Miskatonic Library",
+  "description": "The hallowed halls of the Miskatonic Library stretch before you, filled with ancient tomes and forbidden texts. Dust motes dance in the dim light filtering through stained glass windows. The air is heavy with the weight of knowledge that should not be known, and the shelves seem to stretch into impossible dimensions.",
+  "zone": "arkham",
+  "exits": {
+    "south": "arkham_002",
+    "down": "arkham_004",
+    "east": "arkham_007"
+  },
+  "field1": null,
+  "field2": null,
+  "field3": null
+}

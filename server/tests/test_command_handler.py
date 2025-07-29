@@ -31,6 +31,10 @@ def patch_persistence_layer(monkeypatch):
     if not test_db_path.exists():
         raise FileNotFoundError(f"Test database not found at {test_db_path}. Run init_test_db.py first.")
 
+    # Patch the world_loader's ROOMS_BASE_PATH to use test rooms
+    test_rooms_path = Path(__file__).parent / "data" / "rooms"
+    monkeypatch.setattr("server.world_loader.ROOMS_BASE_PATH", str(test_rooms_path))
+
     # Patch the PersistenceLayer constructor to use our test database
     original_init = None
 
@@ -162,12 +166,32 @@ def persistent_patch_app_state(monkeypatch):
 @pytest.fixture
 def test_client(persistent_patch_app_state):
     with TestClient(app) as client:
+        # Ensure the persistence layer is properly initialized in app.state
+        from server.persistence import get_persistence
+
+        client.app.state.persistence = get_persistence()
+
+        # Debug: Check if rooms are loaded
+        persistence = client.app.state.persistence
+        rooms = persistence.list_rooms()
+        print(f"[debug] Loaded {len(rooms)} rooms in persistence")
+        if rooms:
+            print(f"[debug] Sample room: {rooms[0]['id'] if isinstance(rooms[0], dict) else rooms[0]}")
+
         # The persistence layer is already patched to use the test database
         # by the patch_persistence_layer fixture, so we don't need to mock it
-        persistence = client.app.state.persistence
         player = persistence.get_player_by_name("cmduser")
         if player:
             print(f"[debug] Test start: cmduser in {player.current_room_id}")
+            # Debug: Check if the player's room exists in the loaded rooms
+            room = persistence.get_room(player.current_room_id)
+            if room:
+                print(f"[debug] Found room: {room.get('name', 'Unknown')}")
+            else:
+                print(f"[debug] Room {player.current_room_id} not found in persistence")
+                # List available room IDs
+                available_rooms = [r["id"] for r in rooms if isinstance(r, dict)]
+                print(f"[debug] Available rooms: {available_rooms[:5]}...")
         else:
             print("[debug] Test start: cmduser not found")
         yield client
@@ -260,8 +284,8 @@ def test_look_command_with_mock_auth(test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
-    assert "You are standing in the bustling heart of Arkham" in result
-    assert "Exits: north, south, east, west" in result
+    assert "You stand in the heart of Arkham" in result
+    assert "Exits: north, south, east, west, northeast" in result
 
 
 def test_empty_command(auth_token, test_client):
@@ -275,8 +299,8 @@ def test_look_command(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
-    assert "You are standing in the bustling heart of Arkham." in result
-    assert "\n\nExits: north, south, east, west" in result
+    assert "You stand in the heart of Arkham" in result
+    assert "\n\nExits: north, south, east, west, northeast" in result
 
 
 def test_go_missing_direction(auth_token, test_client):
@@ -289,9 +313,9 @@ def test_go_extra_whitespace(auth_token, test_client):
     resp = post_command(test_client, auth_token, "go   east")
     assert resp.status_code == 200
     result = resp.json()["result"]
-    assert result.startswith("East Market Bazaar")
-    assert "Colorful tents and exotic wares fill the lively bazaar" in result
-    assert "\n\nExits: west" in result
+    assert result.startswith("Underground Tunnels")
+    assert "You stand in a network of ancient tunnels beneath Arkham" in result
+    assert "\n\nExits: west, up, north" in result
 
 
 def test_say_with_message(auth_token, test_client):
@@ -317,8 +341,8 @@ def test_case_insensitivity(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")
-    assert "You are standing in the bustling heart of Arkham." in result
-    assert "\n\nExits: north, south, east, west" in result
+    assert "You stand in the heart of Arkham" in result
+    assert "\n\nExits: north, south, east, west, northeast" in result
 
 
 def test_max_length(auth_token, test_client):
@@ -364,14 +388,12 @@ def test_look_direction_valid(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in result
+    assert "The imposing wrought-iron gates of Miskatonic University" in result
 
 
 def test_look_direction_invalid(auth_token, test_client):
-    # First move to Clock Tower where most directions are invalid
-    post_command(test_client, auth_token, "go up")
-    # Now try to look in an invalid direction from Clock Tower
-    resp = post_command(test_client, auth_token, "look north")
+    # Try to look in a direction that doesn't exist from Arkham Town Square
+    resp = post_command(test_client, auth_token, "look northwest")
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result == "You see nothing special that way." or result == "You see nothing special."
@@ -382,7 +404,7 @@ def test_look_direction_extra_whitespace(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in result
+    assert "The imposing wrought-iron gates of Miskatonic University" in result
 
 
 def test_look_direction_case_insensitive(auth_token, test_client):
@@ -390,7 +412,7 @@ def test_look_direction_case_insensitive(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in result
+    assert "The imposing wrought-iron gates of Miskatonic University" in result
 
 
 def test_go_valid_direction(auth_token, test_client):
@@ -398,40 +420,38 @@ def test_go_valid_direction(auth_token, test_client):
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in result
+    assert "The imposing wrought-iron gates of Miskatonic University" in result
     # After moving, look should return the new room
     resp2 = post_command(test_client, auth_token, "look")
     assert resp2.status_code == 200
     result2 = resp2.json()["result"]
     assert result2.startswith("Miskatonic University Gates")
-    assert "The grand wrought-iron gates of Miskatonic University loom here" in result2
+    assert "The imposing wrought-iron gates of Miskatonic University" in result2
 
 
 def test_go_invalid_direction(auth_token, test_client):
-    # First move to Clock Tower where most directions are invalid
-    post_command(test_client, auth_token, "go up")
-    # Now try to go in an invalid direction from Clock Tower
-    resp = post_command(test_client, auth_token, "go north")
+    # Try to go in a direction that doesn't exist from Arkham Town Square
+    resp = post_command(test_client, auth_token, "go northwest")
     assert resp.status_code == 200
     assert resp.json()["result"] == "You can't go that way"
 
 
 def test_go_blocked_exit(auth_token, test_client):
     persistence = test_client.app.state.persistence
-    # Move north first
+    # Move north first to Miskatonic University Gates
     resp1 = post_command(test_client, auth_token, "go north")
     # Refresh player from database to get updated room
     player = persistence.get_player_by_name("cmduser")
     print(f"After first go north: {player.current_room_id}")
     print(f"First go north result: {resp1.json()['result']}")
-    # Try to go north again (should be blocked since arkham_002 has no north exit)
-    resp2 = post_command(test_client, auth_token, "go north")
+    # Try to go west from Miskatonic University Gates (should be blocked since it has no west exit)
+    resp2 = post_command(test_client, auth_token, "go west")
     # Refresh player from database to get updated room
     player = persistence.get_player_by_name("cmduser")
-    print(f"After second go north: {player.current_room_id}")
-    print(f"Second go north result: {resp2.json()['result']}")
+    print(f"After second go west: {player.current_room_id}")
+    print(f"Second go west result: {resp2.json()['result']}")
     assert resp2.status_code == 200
-    # The player should be blocked from going north
+    # The player should be blocked from going west
     assert "You can't go that way" in resp2.json()["result"]
 
 
@@ -535,3 +555,32 @@ def test_player_room_persistence_after_go(auth_token, test_client):
     # Check the result of look
     result2 = resp2.json()["result"]
     print(f"Look result: {result2}")
+
+
+def test_move_north(auth_token, test_client):
+    resp = post_command(test_client, auth_token, "go north")
+    assert resp.status_code == 200
+    result = resp.json()["result"]
+    assert result.startswith("Miskatonic University Gates")
+    assert "The imposing wrought-iron gates of Miskatonic University" in result
+    assert "\n\nExits: south, north, east" in result
+
+
+def test_move_east(auth_token, test_client):
+    resp = post_command(test_client, auth_token, "go east")
+    assert resp.status_code == 200
+    result = resp.json()["result"]
+    assert result.startswith("Underground Tunnels")
+    assert "You stand in a network of ancient tunnels beneath Arkham" in result
+    assert "\n\nExits: west, up, north" in result
+
+
+@pytest.fixture(autouse=True)
+def reset_persistence_singleton(monkeypatch):
+    """Reset the persistence singleton before each test to ensure clean state."""
+    # Clear the global persistence instance
+    import server.persistence
+
+    server.persistence._persistence_instance = None
+
+    yield

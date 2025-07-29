@@ -6,7 +6,6 @@ from collections.abc import Callable
 from typing import Any
 
 from .models import Player  # Assume Room model exists or will be added
-from .world_loader import load_rooms
 
 
 # --- Custom Exceptions ---
@@ -121,11 +120,16 @@ class PersistenceLayer:
     def _load_room_cache(self):
         """Load rooms from JSON files using world_loader instead of SQLite."""
         self._room_cache = {}
+        self._room_mappings = {}
         try:
-            # Use the world_loader to load rooms from JSON files
-            rooms = load_rooms()
-            self._room_cache = rooms
+            # Use the world_loader to load the full world data including room mappings
+            from .world_loader import load_hierarchical_world
+
+            world_data = load_hierarchical_world()
+            self._room_cache = world_data["rooms"]
+            self._room_mappings = world_data["room_mappings"]
             self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
+            self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
         except Exception as e:
             self._log(f"Room cache load failed: {e}")
 
@@ -239,7 +243,16 @@ class PersistenceLayer:
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> dict[str, Any] | None:
         """Get a room by ID from the cache."""
-        return self._room_cache.get(room_id)
+        # First try direct lookup
+        if room_id in self._room_cache:
+            return self._room_cache[room_id]
+
+        # If not found, check if it's an old ID that maps to a new one
+        if room_id in self._room_mappings:
+            new_room_id = self._room_mappings[room_id]
+            return self._room_cache.get(new_room_id)
+
+        return None
 
     def save_room(self, room: dict[str, Any]):
         """Save or update a room. Currently read-only - rooms are stored as JSON files."""
