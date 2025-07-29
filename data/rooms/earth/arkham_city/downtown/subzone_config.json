@@ -1,6 +1,6 @@
 {
   "environment": "outdoors",
-  "description": "The commercial heart of Arkham, filled with shops, restaurants, and the constant bustle of city life",
+  "description": "The bustling commercial heart of Arkham, filled with shops, banks, restaurants, and the constant activity of city life",
   "special_rules": {
     "sanity_drain_rate": 0.08,
     "npc_spawn_modifier": 1.5,

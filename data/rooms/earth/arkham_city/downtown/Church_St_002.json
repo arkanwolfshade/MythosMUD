@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Church_St_002",
+  "name": "Church Street",
+  "description": "A peaceful section of Church Street lined with mature elm trees. Several small professional offices and a modest hotel occupy the buildings here. The street has a more residential feel than the commercial bustle of Main Street to the east.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Church_St_003",
+    "south": "earth_arkham_city_downtown_Church_St_001",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

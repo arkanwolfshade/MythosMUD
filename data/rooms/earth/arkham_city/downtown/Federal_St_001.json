@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Federal_St_001",
+  "name": "Federal Street (West)",
+  "description": "The western end of Federal Street, a prestigious avenue lined with important civic buildings. The architecture here is more formal and imposing, with columns and elaborate stonework. The sidewalks are wide and well-maintained, befitting the street's official importance.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Federal_St_002",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

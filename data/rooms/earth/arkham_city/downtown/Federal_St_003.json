@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Federal_St_003",
+  "name": "Federal Street (Central)",
+  "description": "The central section of Federal Street, approaching the important intersection with Main Street. Here stands the imposing Arkham City Hall, its clock tower visible from many parts of the city. Government workers and businessmen in dark suits move purposefully along the sidewalks.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Federal_St_004",
+    "west": "earth_arkham_city_downtown_Federal_St_002",
+    "up": null,
+    "down": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Main_St_003",
+  "name": "Main Street (Central)",
+  "description": "The heart of downtown's commercial district. Here stand the more prominent businesses - banks, law offices, and upscale shops. The buildings are taller here, some reaching three or four stories, casting shadows across the cobblestone street below.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Main_St_004",
+    "south": "earth_arkham_city_downtown_Main_St_002",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_french_hill_Garrison_St_002",
+  "name": "Garrison Street (Central)",
+  "description": "The central section of Garrison Street. Here the Victorian architecture becomes even more elaborate, with gabled roofs and ornate bay windows. A few residents in fine clothing can be seen hurrying along the sidewalks, avoiding eye contact.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "french_hill",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_french_hill_Garrison_St_003",
+    "south": "earth_arkham_city_french_hill_Garrison_St_001",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

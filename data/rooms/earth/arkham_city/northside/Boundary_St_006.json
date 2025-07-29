@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_Boundary_St_006",
+  "name": "Boundary Street (East)",
+  "description": "The eastern end of Boundary Street, where it approaches the edge of developed Arkham. Here the street takes on a more suburban character, with larger lots and gardens where families grow vegetables and keep small livestock. The northern edge of the city proper can be seen just ahead.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_northside_Boundary_St_005",
+    "up": null,
+    "down": null
+  }
+}

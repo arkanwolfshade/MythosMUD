@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Federal_St_002",
+  "name": "Federal Street",
+  "description": "A distinguished section of Federal Street housing several government offices and professional services. The buildings here are built of red brick and granite, with brass plaques identifying various municipal departments and legal practices.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Federal_St_003",
+    "west": "earth_arkham_city_downtown_Federal_St_001",
+    "up": null,
+    "down": null
+  }
+}

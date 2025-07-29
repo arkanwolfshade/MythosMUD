@@ -1,0 +1,11 @@
+{
+  "environment": "outdoors",
+  "description": "An intersection of two streets",
+  "special_rules": {
+    "sanity_drain_rate": 0.05,
+    "npc_spawn_modifier": 0.8,
+    "combat_modifier": 0.8,
+    "exploration_bonus": 0.3,
+    "access_requirements": ["respectable_appearance"]
+  }
+}
