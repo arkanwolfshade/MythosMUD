@@ -21,6 +21,7 @@ from core.schema_validator import SchemaValidator
 @click.option("--zone", help="Validate specific zone only")
 @click.option("--verbose", "-v", is_flag=True, help="Detailed output")
 @click.option("--schema-only", is_flag=True, help="Only validate JSON schema")
+@click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
 @click.option("--ignore", help="Comma-separated list of rule types to ignore")
 @click.option("--output-format", type=click.Choice(["console", "json"]), default="console")
 @click.option("--base-path", default="./data/rooms", help="Base directory for room files")
@@ -32,6 +33,7 @@ def main(
     zone: str | None,
     verbose: bool,
     schema_only: bool,
+    validate_configs: bool,
     ignore: str | None,
     output_format: str,
     base_path: str,
@@ -188,9 +190,63 @@ def main(
                 for failed_fix in fix_summary["failed_fixes"]:
                     print(f"  ⚠️  {failed_fix}")
 
+        # Validate configuration files if requested
+        if validate_configs:
+            reporter.print_progress("Validating configuration files...")
+            config_files = room_loader.discover_config_files(base_path)
+
+            # Validate sub-zone configurations
+            for config_path in config_files["subzone_config"]:
+                config_data = room_loader.load_config_file(config_path)
+                if config_data:
+                    config_errors = schema_validator.validate_subzone_config(
+                        config_data, str(config_path)
+                    )
+                    for error_msg in config_errors:
+                        errors.append({
+                            "type": "config_schema",
+                            "room_id": str(config_path),
+                            "message": error_msg,
+                            "suggestion": "Check sub-zone configuration schema",
+                        })
+                else:
+                    errors.append({
+                        "type": "config_parse",
+                        "room_id": str(config_path),
+                        "message": "Failed to parse sub-zone configuration",
+                        "suggestion": "Check JSON syntax and structure",
+                    })
+
+            # Validate zone configurations
+            for config_path in config_files["zone_config"]:
+                config_data = room_loader.load_config_file(config_path)
+                if config_data:
+                    config_errors = schema_validator.validate_zone_config(
+                        config_data, str(config_path)
+                    )
+                    for error_msg in config_errors:
+                        errors.append({
+                            "type": "config_schema",
+                            "room_id": str(config_path),
+                            "message": error_msg,
+                            "suggestion": "Check zone configuration schema",
+                        })
+                else:
+                    errors.append({
+                        "type": "config_parse",
+                        "room_id": str(config_path),
+                        "message": "Failed to parse zone configuration",
+                        "suggestion": "Check JSON syntax and structure",
+                    })
+
         # Generate statistics
+        subzones = room_loader.get_subzones()
+        config_subzones = room_loader.count_config_subzones(base_path)
+
         stats = {
             "zones": len(zones),
+            "subzones": len(subzones),
+            "config_subzones": config_subzones,
             "rooms": len(room_database),
             "errors": len(errors),
             "warnings": len(warnings),
