@@ -19,7 +19,9 @@ class SchemaValidator:
     as documented in the restricted archives of dimensional mapping.
     """
 
-    def __init__(self, schema_path: str = "./schemas/room_hierarchy_schema.json"):
+    def __init__(
+        self, schema_path: str = "./schemas/room_hierarchy_schema.json"
+    ):
         """
         Initialize the schema validator.
 
@@ -36,7 +38,9 @@ class SchemaValidator:
             with open(self.schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
         except FileNotFoundError as exc:
-            raise FileNotFoundError(f"Schema file not found: {self.schema_path}") from exc
+            raise FileNotFoundError(
+                f"Schema file not found: {self.schema_path}"
+            ) from exc
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid schema file: {e}") from e
 
@@ -58,7 +62,9 @@ class SchemaValidator:
         except ValidationError as e:
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
-            error_msg = f"Schema validation failed at {path}: {e.message}"
+            error_msg = (
+                f"Schema validation failed at {path}: {e.message}"
+            )
             if file_path:
                 error_msg = f"{file_path}: {error_msg}"
             errors.append(error_msg)
@@ -198,3 +204,73 @@ class SchemaValidator:
             True if exit is marked as self-reference
         """
         return "self_reference" in self.get_exit_flags(exit_data)
+
+    def validate_subzone_config(self, config_data: dict, file_path: str = "") -> list[str]:
+        """
+        Validate a sub-zone configuration against its schema.
+
+        Args:
+            config_data: Sub-zone configuration data
+            file_path: Optional file path for error reporting
+
+        Returns:
+            List of validation error messages
+        """
+        errors = []
+        schema_path = Path(self.schema_path.parent, "subzone_schema.json")
+
+        try:
+            with open(schema_path, encoding="utf-8") as f:
+                schema = json.load(f)
+
+            validate(instance=config_data, schema=schema)
+        except FileNotFoundError:
+            errors.append(f"Sub-zone schema not found: {schema_path}")
+        except ValidationError as e:
+            path = " -> ".join(str(p) for p in e.path) if e.path else "root"
+            error_msg = f"Schema validation failed at {path}: {e.message}"
+            if file_path:
+                error_msg = f"{file_path}: {error_msg}"
+            errors.append(error_msg)
+        except Exception as e:
+            error_msg = f"Validation error: {e}"
+            if file_path:
+                error_msg = f"{file_path}: {error_msg}"
+            errors.append(error_msg)
+
+        return errors
+
+    def validate_zone_config(self, config_data: dict, file_path: str = "") -> list[str]:
+        """
+        Validate a zone configuration against its schema.
+
+        Args:
+            config_data: Zone configuration data
+            file_path: Optional file path for error reporting
+
+        Returns:
+            List of validation error messages
+        """
+        errors = []
+        schema_path = Path(self.schema_path.parent, "zone_schema.json")
+
+        try:
+            with open(schema_path, encoding="utf-8") as f:
+                schema = json.load(f)
+
+            validate(instance=config_data, schema=schema)
+        except FileNotFoundError:
+            errors.append(f"Zone schema not found: {schema_path}")
+        except ValidationError as e:
+            path = " -> ".join(str(p) for p in e.path) if e.path else "root"
+            error_msg = f"Schema validation failed at {path}: {e.message}"
+            if file_path:
+                error_msg = f"{file_path}: {error_msg}"
+            errors.append(error_msg)
+        except Exception as e:
+            error_msg = f"Validation error: {e}"
+            if file_path:
+                error_msg = f"{file_path}: {error_msg}"
+            errors.append(error_msg)
+
+        return errors
