@@ -69,18 +69,6 @@ function App() {
     }
   };
 
-  const handleLogout = () => {
-    logger.info("App", "Logout initiated");
-    setIsAuthenticated(false);
-    setPlayerId("");
-    setAuthToken("");
-    setUsername("");
-    setPassword("");
-    setError("");
-    setShowRegistration(false);
-    setInviteCode("");
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);

@@ -1,18 +1,20 @@
 import json
 import os
+import uuid
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
-from auth_utils import (
+from .auth_utils import (
     create_access_token,
     decode_access_token,
     hash_password,
     verify_password,
 )
-from security_utils import ensure_directory_exists, validate_secure_path
+from .models import Player, Stats
+from .security_utils import ensure_directory_exists, validate_secure_path
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -153,10 +155,6 @@ def register_user(
 
     # Create a player in the persistence layer
     try:
-        import uuid
-
-        from models import Player, Stats
-
         player = Player(
             id=str(uuid.uuid4()),
             name=req.username,
@@ -200,19 +198,13 @@ def login_user(
     persistence = request.app.state.persistence
     player = persistence.get_player_by_name(req.username)
     if not player:
-        raise HTTPException(
-            status_code=500,
-            detail="Player data not found in database."
-        )
+        raise HTTPException(status_code=500, detail="Player data not found in database.")
 
-    access_token = create_access_token(
-        data={"sub": user["username"]},
-        expires_delta=timedelta(minutes=60)
-    )
+    access_token = create_access_token(data={"sub": user["username"]}, expires_delta=timedelta(minutes=60))
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "player_id": player.id  # Return the actual UUID for the client to use
+        "player_id": player.id,  # Return the actual UUID for the client to use
     }
 
 
@@ -300,18 +292,12 @@ def validate_sse_token(token: str, users_file: str = None) -> dict:
         HTTPException: If token is invalid, expired, or user not found
     """
     if not token:
-        raise HTTPException(
-            status_code=401,
-            detail="No authentication token provided"
-        )
+        raise HTTPException(status_code=401, detail="No authentication token provided")
 
     # Decode and validate the token
     payload = decode_access_token(token)
     if not payload or "sub" not in payload:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token"
-        )
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     username = payload["sub"]
 
@@ -319,28 +305,16 @@ def validate_sse_token(token: str, users_file: str = None) -> dict:
     if users_file:
         try:
             users = load_json_file_safely(users_file)
-            user = next(
-                (u for u in users if u["username"] == username),
-                None
-            )
+            user = next((u for u in users if u["username"] == username), None)
             if not user:
-                raise HTTPException(
-                    status_code=404,
-                    detail="User not found"
-                )
+                raise HTTPException(status_code=404, detail="User not found")
             # Exclude password_hash from response
-            user_info = {
-                k: v for k, v in user.items()
-                if k != "password_hash"
-            }
+            user_info = {k: v for k, v in user.items() if k != "password_hash"}
             return user_info
         except Exception as e:
             # Log the error but don't expose it to users
             print(f"Warning: Could not validate user in SSE auth: {e}")
-            raise HTTPException(
-                status_code=500,
-                detail="Authentication service unavailable"
-            )
+            raise HTTPException(status_code=500, detail="Authentication service unavailable") from e
 
     # Return basic user info if no users file provided
     return {"username": username}

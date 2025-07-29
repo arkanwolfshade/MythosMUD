@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import uuid
+
 from fastapi.testclient import TestClient
 
-from main import app
-from persistence import get_persistence
+from .main import app
+from .persistence import get_persistence
 
 client = TestClient(app)
 # Set up the persistence layer manually since TestClient doesn't run lifespan

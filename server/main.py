@@ -8,8 +8,10 @@ from pathlib import Path
 # Fix bcrypt warning by monkey patching before importing passlib
 try:
     import bcrypt
-    if not hasattr(bcrypt, '__about__'):
-        bcrypt.__about__ = type('About', (), {'__version__': '4.3.0'})()
+
+    if not hasattr(bcrypt, "__about__"):
+        bcrypt.__about__ = type("About", (), {"__version__": "4.3.0"})()
+
 except ImportError:
     pass
 
@@ -18,12 +20,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from auth import get_current_user, validate_sse_token, get_sse_auth_headers, get_users_file
-from auth import router as auth_router
-from command_handler import router as command_router
-from models import Player, Stats
-from persistence import get_persistence
-from real_time import (
+from .auth import (
+    get_current_user,
+    get_sse_auth_headers,
+    get_users_file,
+    validate_sse_token,
+)
+from .auth import (
+    router as auth_router,
+)
+from .command_handler import router as command_router
+from .models import Player, Stats
+from .persistence import get_persistence
+from .real_time import (
     broadcast_game_tick,
     connection_manager,
     game_event_stream,
@@ -35,7 +44,8 @@ from real_time import (
 def setup_logging():
     """Setup logging configuration for the server."""
     # Create logs directory if it doesn't exist
-    logs_dir = Path("logs")
+    # Use server directory for logs, not project root
+    logs_dir = Path(__file__).parent / "logs"
     logs_dir.mkdir(exist_ok=True)
 
     # Rotate existing server.log if it exists
@@ -55,11 +65,11 @@ def setup_logging():
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
             logging.FileHandler(server_log_path),
-            logging.StreamHandler()  # Also log to console
-        ]
+            logging.StreamHandler(),  # Also log to console
+        ],
     )
 
     # Also configure uvicorn logging to go to our file
@@ -92,7 +102,8 @@ async def lifespan(app: FastAPI):
     # Startup logic
     app.state.persistence = get_persistence()
     # Set persistence reference in connection manager
-    from real_time import connection_manager
+    from .real_time import connection_manager
+
     connection_manager.persistence = app.state.persistence
     asyncio.create_task(game_tick_loop(app))
     yield
@@ -103,7 +114,7 @@ app = FastAPI(
     title="MythosMUD API",
     description="A Cthulhu Mythos-themed MUD game API with real-time communication",
     version="0.1.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Add CORS middleware
@@ -129,7 +140,7 @@ async def game_tick_loop(app: FastAPI):
         tick_data = {
             "tick_number": tick_count,
             "timestamp": datetime.datetime.utcnow().isoformat(),
-            "active_players": len(connection_manager.player_websockets)
+            "active_players": len(connection_manager.player_websockets),
         }
         await broadcast_game_tick(tick_data)
 
@@ -144,11 +155,7 @@ def read_root():
 
 # Real-time communication endpoints
 @app.get("/events/{player_id}")
-async def game_events_stream(
-    player_id: str,
-    request: Request,
-    users_file: str = Depends(get_users_file)
-):
+async def game_events_stream(player_id: str, request: Request, users_file: str = Depends(get_users_file)):
     """
     Server-Sent Events stream for real-time game updates.
 
@@ -165,10 +172,7 @@ async def game_events_stream(
             token = auth_header[7:]  # Remove "Bearer " prefix
 
     if not token:
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication token required"
-        )
+        raise HTTPException(status_code=401, detail="Authentication token required")
 
         # Validate the token and get user information
     try:
@@ -177,27 +181,18 @@ async def game_events_stream(
     except HTTPException:
         raise
     except Exception:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid authentication token"
-        )
+        raise HTTPException(status_code=401, detail="Invalid authentication token") from None
 
         # Verify the authenticated user matches the requested player
     # Get the player from persistence to check if the player_id matches
     persistence = request.app.state.persistence
     player = persistence.get_player_by_name(authenticated_username)
     if not player:
-        raise HTTPException(
-            status_code=404,
-            detail="Player not found in database"
-        )
+        raise HTTPException(status_code=404, detail="Player not found in database")
 
     # Compare the actual player ID (UUID) with the requested player_id
     if player.id != player_id:
-        raise HTTPException(
-            status_code=403,
-            detail="Access denied: token does not match player ID"
-        )
+        raise HTTPException(status_code=403, detail="Access denied: token does not match player ID")
 
     # Get security headers for SSE
     security_headers = get_sse_auth_headers()
@@ -210,8 +205,8 @@ async def game_events_stream(
             "Connection": "keep-alive",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Cache-Control",
-            **security_headers
-        }
+            **security_headers,
+        },
     )
 
 
@@ -243,7 +238,8 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
 
     # Verify the authenticated user matches the requested player
     # Get the player from persistence to check if the player_id matches
-    from persistence import get_persistence
+    from .persistence import get_persistence
+
     persistence = get_persistence()
     player = persistence.get_player_by_name(authenticated_username)
     if not player:
@@ -395,7 +391,7 @@ def get_game_status():
         "active_connections": connection_manager.get_active_connection_count(),
         "active_players": len(connection_manager.player_websockets),
         "room_subscriptions": len(connection_manager.room_subscriptions),
-        "server_time": datetime.datetime.utcnow().isoformat()
+        "server_time": datetime.datetime.utcnow().isoformat(),
     }
 
 

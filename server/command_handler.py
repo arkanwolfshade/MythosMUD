@@ -3,7 +3,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
-from auth import get_current_user
+from .auth import get_current_user
 
 router = APIRouter(prefix="/command", tags=["command"])
 
@@ -81,7 +81,12 @@ def handle_command(
                     return {"result": f"{name}\n{desc}"}
             return {"result": "You see nothing special that way."}
         name = room.get("name", "")
-        return {"result": name}
+        desc = room.get("description", "You see nothing special.")
+        exits = room.get("exits", {})
+        # Only include exits that have valid room IDs (not null)
+        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+        exit_list = ", ".join(valid_exits) if valid_exits else "none"
+        return {"result": f"{name}\n{desc}\nExits: {exit_list}"}
     elif cmd == "go":
         if not persistence:
             return {"result": "You can't go that way"}
@@ -107,7 +112,12 @@ def handle_command(
         persistence.save_player(player)
         current_user["current_room_id"] = target_room_id
         name = target_room.get("name", "")
-        return {"result": name}
+        desc = target_room.get("description", "You see nothing special.")
+        exits = target_room.get("exits", {})
+        # Only include exits that have valid room IDs (not null)
+        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+        exit_list = ", ".join(valid_exits) if valid_exits else "none"
+        return {"result": f"{name}\n{desc}\nExits: {exit_list}"}
     elif cmd == "say":
         message = " ".join(args).strip()
         if not message:

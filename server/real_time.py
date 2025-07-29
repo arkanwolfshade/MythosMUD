@@ -17,8 +17,8 @@ from typing import Any
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
-from config_loader import get_config
-from models import Player
+from .config_loader import get_config
+from .models import Player
 
 logger = logging.getLogger(__name__)
 
@@ -40,17 +40,15 @@ def load_motd() -> str:
         motd_path = os.path.join(project_root, motd_file.replace("./", ""))
 
         if os.path.exists(motd_path):
-            with open(motd_path, encoding='utf-8') as f:
+            with open(motd_path, encoding="utf-8") as f:
                 return f.read().strip()
         else:
             logger.warning(f"MOTD file not found: {motd_path}")
-            return ("Welcome to MythosMUD - Enter the realm of "
-                    "forbidden knowledge...")
+            return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."
 
     except Exception as e:
         logger.error(f"Error loading MOTD: {e}")
-        return ("Welcome to MythosMUD - Enter the realm of "
-                "forbidden knowledge...")
+        return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."
 
 
 class GameEvent(BaseModel):
@@ -64,9 +62,7 @@ class GameEvent(BaseModel):
     data: dict[str, Any] = Field(default_factory=dict)
 
     class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class ConnectionManager:
@@ -167,7 +163,8 @@ class ConnectionManager:
 
         # Remove old attempts outside the time window
         self.connection_attempts[player_id] = [
-            attempt_time for attempt_time in self.connection_attempts[player_id]
+            attempt_time
+            for attempt_time in self.connection_attempts[player_id]
             if current_time - attempt_time < self.connection_window
         ]
 
@@ -196,12 +193,13 @@ class ConnectionManager:
                 "attempts": 0,
                 "max_attempts": self.max_connection_attempts,
                 "window_seconds": self.connection_window,
-                "reset_time": current_time + self.connection_window
+                "reset_time": current_time + self.connection_window,
             }
 
         # Remove old attempts outside the time window
         self.connection_attempts[player_id] = [
-            attempt_time for attempt_time in self.connection_attempts[player_id]
+            attempt_time
+            for attempt_time in self.connection_attempts[player_id]
             if current_time - attempt_time < self.connection_window
         ]
 
@@ -212,7 +210,7 @@ class ConnectionManager:
             "max_attempts": self.max_connection_attempts,
             "window_seconds": self.connection_window,
             "attempts_remaining": attempts_remaining,
-            "reset_time": current_time + self.connection_window
+            "reset_time": current_time + self.connection_window,
         }
 
     async def subscribe_to_room(self, player_id: str, room_id: str):
@@ -303,8 +301,8 @@ async def game_event_stream(player_id: str):
             data={
                 "error": "rate_limited",
                 "message": "Too many connection attempts",
-                "rate_limit_info": rate_limit_info
-            }
+                "rate_limit_info": rate_limit_info,
+            },
         )
         yield f"data: {error_event.json()}\n\n"
         return
@@ -321,10 +319,7 @@ async def game_event_stream(player_id: str):
                 sequence_number=connection_manager._get_next_sequence(),
                 player_id=player_id,
                 room_id=player.current_room_id,
-                data={
-                    "player": player.dict(),
-                    "room": get_room_data(player.current_room_id)
-                }
+                data={"player": player.dict(), "room": get_room_data(player.current_room_id)},
             )
             yield f"data: {initial_event.json()}\n\n"
 
@@ -339,7 +334,7 @@ async def game_event_stream(player_id: str):
             event_type="motd",
             sequence_number=connection_manager._get_next_sequence(),
             player_id=player_id,
-            data={"message": motd_content}
+            data={"message": motd_content},
         )
         yield f"data: {motd_event.json()}\n\n"
 
@@ -347,9 +342,7 @@ async def game_event_stream(player_id: str):
         while True:
             await asyncio.sleep(30)  # Heartbeat every 30 seconds
             heartbeat = GameEvent(
-                event_type="heartbeat",
-                sequence_number=connection_manager._get_next_sequence(),
-                player_id=player_id
+                event_type="heartbeat", sequence_number=connection_manager._get_next_sequence(), player_id=player_id
             )
             yield f"data: {heartbeat.json()}\n\n"
 
@@ -407,11 +400,7 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
             event_type="command_response",
             sequence_number=connection_manager._get_next_sequence(),
             player_id=player_id,
-            data={
-                "command": command,
-                "result": "Player not found",
-                "success": False
-            }
+            data={"command": command, "result": "Player not found", "success": False},
         )
 
     # Process command using similar logic to command_handler
@@ -469,10 +458,10 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                         data={
                             "room": {
                                 "name": target_room.get("name", ""),
-                                "description": target_room.get("description", "You see nothing special.")
+                                "description": target_room.get("description", "You see nothing special."),
                             },
-                            "entities": []  # TODO: Add entities when implemented
-                        }
+                            "entities": [],  # TODO: Add entities when implemented
+                        },
                     )
                     await connection_manager.send_personal_message(player_id, room_update_event)
 
@@ -481,7 +470,7 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                         target_room_id,
                         "player_entered",
                         {"player_name": player.name, "player_id": player_id},
-                        exclude_player=player_id
+                        exclude_player=player_id,
                     )
 
     elif command == "say":
@@ -495,7 +484,7 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                 player.current_room_id,
                 "chat_message",
                 {"channel": "room", "player_name": player.name, "message": message},
-                exclude_player=player_id
+                exclude_player=player_id,
             )
 
     else:
@@ -505,31 +494,22 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
         event_type="command_response",
         sequence_number=connection_manager._get_next_sequence(),
         player_id=player_id,
-        data={
-            "command": command,
-            "result": result,
-            "success": True
-        }
+        data={"command": command, "result": result, "success": True},
     )
 
 
 # Game tick integration
 async def broadcast_game_tick(tick_data: dict[str, Any]):
     """Broadcast game tick updates to all connected players."""
-    event = GameEvent(
-        event_type="game_tick",
-        sequence_number=connection_manager._get_next_sequence(),
-        data=tick_data
-    )
+    event = GameEvent(event_type="game_tick", sequence_number=connection_manager._get_next_sequence(), data=tick_data)
     await connection_manager.broadcast_global(event)
 
 
-async def broadcast_room_event(room_id: str, event_type: str, event_data: dict[str, Any], exclude_player: str | None = None):
+async def broadcast_room_event(
+    room_id: str, event_type: str, event_data: dict[str, Any], exclude_player: str | None = None
+):
     """Broadcast a room-specific event to all players in that room."""
     event = GameEvent(
-        event_type=event_type,
-        sequence_number=connection_manager._get_next_sequence(),
-        room_id=room_id,
-        data=event_data
+        event_type=event_type, sequence_number=connection_manager._get_next_sequence(), room_id=room_id, data=event_data
     )
     await connection_manager.broadcast_to_room(room_id, event, exclude_player)

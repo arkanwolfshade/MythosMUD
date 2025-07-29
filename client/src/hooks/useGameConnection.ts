@@ -122,7 +122,7 @@ export function useGameConnection({
       }));
       onError?.("Failed to connect");
     }
-  }, [playerId, authToken, onConnect, onEvent, onError, state.isConnected]);
+  }, [playerId, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
 
   const disconnect = useCallback(() => {
     logger.info("GameConnection", "Disconnecting");

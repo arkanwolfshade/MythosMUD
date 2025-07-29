@@ -9,6 +9,14 @@ interface LogEntry {
   data?: unknown;
 }
 
+// Extend Window interface for our custom properties
+declare global {
+  interface Window {
+    mythosMudLogUrl?: string;
+    mythosMudLogger?: ClientLogger;
+  }
+}
+
 class ClientLogger {
   private logBuffer: LogEntry[] = [];
   private maxBufferSize = 1000;
@@ -103,7 +111,7 @@ class ClientLogger {
       const url = URL.createObjectURL(blob);
 
       // Store the URL for later download
-      (window as any).mythosMudLogUrl = url;
+      window.mythosMudLogUrl = url;
 
       // Clear the buffer after successful flush
       this.logBuffer = [];
@@ -116,9 +124,9 @@ class ClientLogger {
 
   // Method to manually download logs
   downloadLogs() {
-    if ((window as any).mythosMudLogUrl) {
+    if (window.mythosMudLogUrl) {
       const link = document.createElement("a");
-      link.href = (window as any).mythosMudLogUrl;
+      link.href = window.mythosMudLogUrl;
       link.download = `mythosmud-client-${new Date().toISOString().replace(/[:.]/g, "-")}.log`;
       document.body.appendChild(link);
       link.click();
@@ -144,4 +152,4 @@ class ClientLogger {
 export const logger = new ClientLogger();
 
 // Export for global access (useful for debugging)
-(window as any).mythosMudLogger = logger;
+window.mythosMudLogger = logger;
