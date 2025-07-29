@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Federal_St_004",
+  "name": "Federal Street (Upper Central)",
+  "description": "An important stretch of Federal Street featuring the city's main courthouse and several law offices. The buildings here are particularly grand, with marble steps and ornate metalwork. The intersection with Main Street creates a bustling hub of activity.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_downtown_intersection_Main_Federal",
+    "east": "earth_arkham_city_downtown_Federal_St_005",
+    "west": "earth_arkham_city_downtown_Federal_St_003",
+    "up": null,
+    "down": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_french_hill_Walnut_St_003",
+  "name": "Walnut Street (East)",
+  "description": "The eastern end of Walnut Street, approaching the intersection with Garrison Street. The houses here are grander, with elaborate porches and carved wooden details. Despite their beauty, an aura of unease seems to emanate from these homes.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "french_hill",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_french_hill_intersection_Garrison_Walnut",
+    "east": null,
+    "west": "earth_arkham_city_french_hill_Walnut_St_002",
+    "up": null,
+    "down": null
+  }
+}

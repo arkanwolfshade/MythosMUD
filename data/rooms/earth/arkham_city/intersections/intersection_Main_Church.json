@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_intersection_Main_Church",
+  "name": "Main and Church Intersection",
+  "description": "The intersection where Main Street meets Church Street, dominated by the imposing presence of the First Congregational Church. The church's Gothic architecture creates an interesting contrast with the more commercial buildings of Main Street. A small green space with a few benches provides a quiet respite from the city's bustle.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Main_St_005",
+    "west": "earth_arkham_city_downtown_Church_St_003",
+    "up": null,
+    "down": null
+  }
+}

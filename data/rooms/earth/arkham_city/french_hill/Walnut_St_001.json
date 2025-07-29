@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_french_hill_Walnut_St_001",
+  "name": "Walnut Street (West)",
+  "description": "The western end of Walnut Street, a quieter residential road that runs perpendicular to the main thoroughfares. Smaller but still elegant homes line this street, many with well-tended gardens. The scent of old roses mingles with something less pleasant.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "french_hill",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_french_hill_Walnut_St_002",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

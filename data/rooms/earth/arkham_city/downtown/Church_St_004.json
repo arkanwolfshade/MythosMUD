@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Church_St_004",
+  "name": "Church Street (North)",
+  "description": "The northern end of Church Street, where it transitions into a more residential area. The buildings here are smaller and more intimate, housing local services and small businesses that cater to the nearby neighborhoods. The church bells can still be heard echoing from the south.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_downtown_Church_St_003",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

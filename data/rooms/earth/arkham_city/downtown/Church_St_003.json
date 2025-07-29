@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Church_St_003",
+  "name": "Church Street (Upper)",
+  "description": "The upper section of Church Street, approaching its intersection with Main Street. Here stands the imposing First Congregational Church of Arkham, its Gothic spire reaching toward the sky. The church's presence lends a solemn dignity to this part of the street.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Church_St_004",
+    "south": "earth_arkham_city_downtown_Church_St_002",
+    "east": "earth_arkham_city_downtown_intersection_Main_Church",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}
