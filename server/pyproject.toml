@@ -23,6 +23,14 @@ dev = [
     "ruff==0.12.5",
 ]
 
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["*"]
+exclude = ["tests*", "htmlcov*", "logs*", "*.pyc", "__pycache__*"]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 120

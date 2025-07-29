@@ -186,7 +186,7 @@ def auth_token(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "FRESH_INVITE",  # Use unused invite code
+            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
         },
     )
     print(f"[auth_token] Registration response status: {reg_resp.status_code}")
@@ -243,7 +243,7 @@ def test_look_command_with_mock_auth(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "FRESH_INVITE_a0c4220d",  # Use unused invite code
+            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
         },
     )
     print(f"Register response: {register_resp.status_code} - {register_resp.json()}")

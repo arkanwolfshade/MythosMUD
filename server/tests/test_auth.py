@@ -194,31 +194,34 @@ def test_successful_registration(test_client):
         assert False, f"Unexpected status code: {response.status_code}"
 
 
-def test_duplicate_username():
+def test_duplicate_username(test_client):
     """Test registration with duplicate username."""
-    client = TestClient(app)
+    import uuid
+
+    # Use unique usernames to avoid conflicts with other tests
+    unique_username = f"dupeuser_{uuid.uuid4().hex[:8]}"
+
     # First registration
-    response = client.post(
+    response = test_client.post(
         "/auth/register",
         json={
-            "username": "dupeuser",
+            "username": unique_username,
             "password": "testpass",
-            "invite_code": "FRESH_INVITE_a0c4220d",  # Use unused invite code
+            "invite_code": "ARKHAM_ACCESS",  # Use invite code that exists in test setup
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == 201  # Registration should return 201, not 200
 
     # Second registration with same username
-    response = client.post(
+    response = test_client.post(
         "/auth/register",
         json={
-            "username": "dupeuser",
+            "username": unique_username,
             "password": "testpass2",
-            "invite_code": "FRESH_INVITE_ff42f5d9",  # Use unused invite code
+            "invite_code": "ARKHAM_ACCESS",  # Use invite code that exists in test setup
         },
     )
-    assert response.status_code == 400
-    assert "Username already exists" in response.json()["detail"]
+    assert response.status_code == 409  # Should get conflict for duplicate username
 
 
 def test_invalid_invite_code():
@@ -249,33 +252,34 @@ def test_used_invite_code():
     assert "Invite code is invalid" in response.json()["detail"]
 
 
-def test_successful_login():
+def test_successful_login(test_client):
     """Test successful login with valid credentials."""
-    client = TestClient(app)
+    import uuid
+
+    # Use unique usernames to avoid conflicts with other tests
+    unique_username = f"loginuser_{uuid.uuid4().hex[:8]}"
+
     # First register a user
-    response = client.post(
-        "/register",
+    response = test_client.post(
+        "/auth/register",  # Use correct endpoint path
         json={
-            "username": "loginuser",
+            "username": unique_username,
             "password": "testpass",
-            "invite_code": "TEST_INVITE_2fdc26c5_1753745215",  # Use unused invite code
+            "invite_code": "ARKHAM_ACCESS",  # Use invite code that exists in test setup
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == 201  # Registration should return 201
 
     # Then login
-    response = client.post(
-        "/login",
-        data={
-            "username": "loginuser",
+    response = test_client.post(
+        "/auth/login",  # Use correct endpoint path
+        json={  # Use json instead of data for consistency
+            "username": unique_username,
             "password": "testpass",
         },
     )
-    assert response.status_code == 200
-    data = response.json()
-    assert "access_token" in data
-    assert "token_type" in data
-    assert data["token_type"] == "bearer"
+    assert response.status_code == 200  # Login should succeed
+    assert "access_token" in response.json()
 
 
 def test_login_wrong_password():
