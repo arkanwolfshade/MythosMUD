@@ -132,10 +132,12 @@
         try {
           const response = await fetch(`${baseUrl}/`);
           const data = await response.json();
-          status.innerHTML = `<span class="success">✓ Server connected: ${data.message}</span>`;
+          status.textContent = `✓ Server connected: ${data.message}`;
+          status.className = "success";
           log("Server connection test: SUCCESS", "success");
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ Server connection failed: ${error.message}</span>`;
+          status.textContent = `✗ Server connection failed: ${error.message}`;
+          status.className = "error";
           log(`Server connection test: FAILED - ${error.message}`, "error");
         }
       }
@@ -161,15 +163,18 @@
 
           if (response.ok) {
             const data = await response.json();
-            status.innerHTML = `<span class="success">✓ Registration successful: ${data.message}</span>`;
+            status.textContent = `✓ Registration successful: ${data.message}`;
+            status.className = "success";
             log("Registration test: SUCCESS", "success");
           } else {
             const errorData = await response.json();
-            status.innerHTML = `<span class="error">✗ Registration failed: ${errorData.detail}</span>`;
+            status.textContent = `✗ Registration failed: ${errorData.detail}`;
+            status.className = "error";
             log(`Registration test: FAILED - ${errorData.detail}`, "error");
           }
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ Registration failed: ${error.message}</span>`;
+          status.textContent = `✗ Registration failed: ${error.message}`;
+          status.className = "error";
           log(`Registration test: FAILED - ${error.message}`, "error");
         }
       }
@@ -192,15 +197,18 @@
             const data = await response.json();
             authToken = data.access_token;
             playerId = username;
-            status.innerHTML = `<span class="success">✓ Authentication successful</span>`;
+            status.textContent = "✓ Authentication successful";
+            status.className = "success";
             log("Authentication test: SUCCESS", "success");
           } else {
             const errorData = await response.json();
-            status.innerHTML = `<span class="error">✗ Authentication failed: ${errorData.detail}</span>`;
+            status.textContent = `✗ Authentication failed: ${errorData.detail}`;
+            status.className = "error";
             log(`Authentication test: FAILED - ${errorData.detail}`, "error");
           }
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ Authentication failed: ${error.message}</span>`;
+          status.textContent = `✗ Authentication failed: ${error.message}`;
+          status.className = "error";
           log(`Authentication test: FAILED - ${error.message}`, "error");
         }
       }
@@ -209,7 +217,8 @@
         const status = document.getElementById("sse-status");
 
         if (!authToken || !playerId) {
-          status.innerHTML = '<span class="error">✗ Please authenticate first</span>';
+          status.textContent = "✗ Please authenticate first";
+          status.className = "error";
           return;
         }
 
@@ -221,7 +230,8 @@
           eventSource = new EventSource(`/events/${playerId}?token=${encodeURIComponent(authToken)}`);
 
           eventSource.onopen = () => {
-            status.innerHTML = '<span class="success">✓ SSE connection established</span>';
+            status.textContent = "✓ SSE connection established";
+            status.className = "success";
             log("SSE connection: ESTABLISHED", "success");
           };
 
@@ -235,11 +245,13 @@
           };
 
           eventSource.onerror = (error) => {
-            status.innerHTML = '<span class="error">✗ SSE connection failed</span>';
+            status.textContent = "✗ SSE connection failed";
+            status.className = "error";
             log(`SSE connection: FAILED - ${error}`, "error");
           };
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ SSE connection failed: ${error.message}</span>`;
+          status.textContent = `✗ SSE connection failed: ${error.message}`;
+          status.className = "error";
           log(`SSE connection: FAILED - ${error.message}`, "error");
         }
       }
@@ -248,7 +260,8 @@
         const status = document.getElementById("ws-status");
 
         if (!playerId) {
-          status.innerHTML = '<span class="error">✗ Please authenticate first</span>';
+          status.textContent = "✗ Please authenticate first";
+          status.className = "error";
           return;
         }
 
@@ -261,7 +274,8 @@
           websocket = new WebSocket(wsUrl);
 
           websocket.onopen = () => {
-            status.innerHTML = '<span class="success">✓ WebSocket connection established</span>';
+            status.textContent = "✓ WebSocket connection established";
+            status.className = "success";
             log("WebSocket connection: ESTABLISHED", "success");
           };
 
@@ -275,16 +289,19 @@
           };
 
           websocket.onerror = (error) => {
-            status.innerHTML = '<span class="error">✗ WebSocket connection failed</span>';
+            status.textContent = "✗ WebSocket connection failed";
+            status.className = "error";
             log(`WebSocket connection: FAILED - ${error}`, "error");
           };
 
           websocket.onclose = () => {
-            status.innerHTML = '<span class="info">WebSocket connection closed</span>';
+            status.textContent = "WebSocket connection closed";
+            status.className = "info";
             log("WebSocket connection: CLOSED", "info");
           };
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ WebSocket connection failed: ${error.message}</span>`;
+          status.textContent = `✗ WebSocket connection failed: ${error.message}`;
+          status.className = "error";
           log(`WebSocket connection: FAILED - ${error.message}`, "error");
         }
       }
@@ -294,7 +311,8 @@
         const command = document.getElementById("command").value;
 
         if (!websocket || websocket.readyState !== WebSocket.OPEN) {
-          status.innerHTML = '<span class="error">✗ WebSocket not connected</span>';
+          status.textContent = "✗ WebSocket not connected";
+          status.className = "error";
           return;
         }
 
@@ -306,10 +324,12 @@
           };
 
           websocket.send(JSON.stringify(message));
-          status.innerHTML = '<span class="success">✓ Command sent</span>';
+          status.textContent = "✓ Command sent";
+          status.className = "success";
           log(`Command sent: ${command}`, "success");
         } catch (error) {
-          status.innerHTML = `<span class="error">✗ Command failed: ${error.message}</span>`;
+          status.textContent = `✗ Command failed: ${error.message}`;
+          status.className = "error";
           log(`Command failed: ${error.message}`, "error");
         }
       }
