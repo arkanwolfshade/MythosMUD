@@ -50,7 +50,7 @@ jobs:
       - name: Lint with ruff
         run: |
           source $HOME/.cargo/env
-          uv run ruff check --line-length=120 .
+          uv run python -m ruff check --line-length=120 .
       - name: Run tests with coverage
         run: |
           source $HOME/.cargo/env
