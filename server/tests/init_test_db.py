@@ -56,6 +56,14 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Players table for game data
+# Test database path
+TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
+
+# Room data paths
+ROOMS_DIR = Path(__file__).parent / "data" / "rooms"
+
+# Database schema (same as production)
+SCHEMA = """
 CREATE TABLE IF NOT EXISTS players (
     player_id TEXT PRIMARY KEY NOT NULL,
     user_id TEXT NOT NULL UNIQUE,
