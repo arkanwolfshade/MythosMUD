@@ -1,50 +1,14 @@
 [
   {
-    "username": "testuser",
-    "password_hash": "$2b$12$LI1LZhAEsPtVmTA2OKWw.O8XnfhhFuoVAWRYdtoJXqk1Qc5CyfIDC",
-    "invite_code": "INVITE123",
-    "created_at": "2025-07-25T23:42:04.373301Z"
-  },
-  {
-    "username": "testuser_d1136348",
-    "password_hash": "$2b$12$dVvGoRxtFmYcl8.Mu9AUtu3WLxXCOnwGuM9mQZv5rl12eskZA52Ia",
-    "invite_code": "MYTHOS2025",
-    "created_at": "2025-07-27T21:56:07.476711Z"
-  },
-  {
-    "username": "testuser_682b49cf",
-    "password_hash": "$2b$12$f5nO5lVFGfBN3cCOuNge2e9/l3NcIOTx9dL7HRgw5EINJBjHCFb0O",
-    "invite_code": "ARKHAM_ACCESS",
-    "created_at": "2025-07-27T21:56:36.833085Z"
-  },
-  {
-    "username": "testuser_88f882a9",
-    "password_hash": "$2b$12$/MAXBNHV7MWVSIL9Pueb7e7WW35mMe6KyGajthzBjXGWItoUptTgW",
-    "invite_code": "Dream800",
-    "created_at": "2025-07-27T21:57:45.323044Z"
-  },
-  {
     "username": "ArkanWolfshade",
-    "password_hash": "$2b$12$2DiC6H5Ax7Mzgm4jOZa4N.8OykZ9B70Rkhg/DaNObGeeNtyJoiVZu",
+    "password_hash": "$2b$12$qIF6TH/4AE.z7sWxrsqrqeuYn36w.bgNeTaYcyDfbMxC0gYcM0tbu",
     "invite_code": "MYTHOS2025",
-    "created_at": "2025-07-28T00:16:21.114976Z"
+    "created_at": "2025-07-30T17:38:28.435777Z"
   },
   {
-    "username": "debuguser",
-    "password_hash": "$2b$12$rQqtYwrk7K7M9D9rbGj21.YhixyI.dQ9aJ/Q6DUcY31kRHTHeyn0e",
-    "invite_code": "Venerable309",
-    "created_at": "2025-07-28T05:16:47.827757Z"
-  },
-  {
-    "username": "playwright_test_user",
-    "password_hash": "$2b$12$r.ES6aFMaq9BfoOs1y6Fy.sE3ctkY.ExsnbeCLXSAaVZsk5pg2Z9m",
-    "invite_code": "Prehistoric",
-    "created_at": "2025-07-28T22:17:18.161578Z"
-  },
-  {
-    "username": "testuser_1753742814",
-    "password_hash": "$2b$12$YSykLrBwimBE2kPMavngve5ppYY3FzVRii.nhclDEsyt7N8fUfA5m",
-    "invite_code": "VOIDPASS",
-    "created_at": "2025-07-28T22:46:55.072359Z"
+    "username": "helpuser",
+    "password_hash": "$2b$12$eb6/0xX3lOcmBKIszNIHeORyqJ.Yi5EMyK5cTEa6tRbW6mB52XsIC",
+    "invite_code": "INVITE123",
+    "created_at": "2025-07-30T18:37:26.458812Z"
   }
 ]

@@ -584,3 +584,229 @@ def reset_persistence_singleton(monkeypatch):
     server.persistence._persistence_instance = None
 
     yield
+
+
+def test_help_command_general(auth_token, test_client):
+    """Test the help command without arguments shows all commands."""
+    response = post_command(test_client, auth_token, "help")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "MYTHOSMUD COMMAND GRIMOIRE" in result
+
+    # Should contain all command categories
+    assert "EXPLORATION COMMANDS" in result
+    assert "MOVEMENT COMMANDS" in result
+    assert "COMMUNICATION COMMANDS" in result
+    assert "INFORMATION COMMANDS" in result
+
+    # Should contain all commands
+    assert "look" in result
+    assert "go" in result
+    assert "say" in result
+    assert "help" in result
+
+
+def test_help_command_specific_look(auth_token, test_client):
+    """Test help for specific command - look."""
+    response = post_command(test_client, auth_token, "help look")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "LOOK Command" in result
+    assert "Usage:" in result
+    assert "Examples:" in result
+    assert "look" in result
+    assert "look north" in result
+    assert "look east" in result
+    assert "Necronomicon" in result
+
+
+def test_help_command_specific_go(auth_token, test_client):
+    """Test help for specific command - go."""
+    response = post_command(test_client, auth_token, "help go")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "GO Command" in result
+    assert "Usage:" in result
+    assert "Available Directions:" in result
+    assert "north" in result
+    assert "south" in result
+    assert "east" in result
+    assert "west" in result
+    assert "Prof. Armitage" in result
+
+
+def test_help_command_specific_say(auth_token, test_client):
+    """Test help for specific command - say."""
+    response = post_command(test_client, auth_token, "help say")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "SAY Command" in result
+    assert "Usage:" in result
+    assert "Examples:" in result
+    assert "say Hello there!" in result
+    assert "Miskatonic University Archives" in result
+
+
+def test_help_command_specific_help(auth_token, test_client):
+    """Test help for specific command - help."""
+    response = post_command(test_client, auth_token, "help help")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "HELP Command" in result
+    assert "Usage:" in result
+    assert "Examples:" in result
+    assert "help" in result
+    assert "help look" in result
+    assert "help go" in result
+    assert "help say" in result
+    assert "Restricted Section" in result
+
+
+def test_help_command_unknown_command(auth_token, test_client):
+    """Test help for unknown command."""
+    response = post_command(test_client, auth_token, "help nonexistent")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "Unknown Command: nonexistent" in result
+    assert "forbidden texts" in result
+    assert "Use 'help' to see all available commands" in result
+
+
+def test_help_command_too_many_arguments(auth_token, test_client):
+    """Test help command with too many arguments."""
+    response = post_command(test_client, auth_token, "help look go")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    assert "Too many arguments" in result
+    assert "Usage: help [command]" in result
+
+
+def test_help_command_case_insensitive(auth_token, test_client):
+    """Test help command is case insensitive."""
+    response = post_command(test_client, auth_token, "HELP LOOK")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "LOOK Command" in result
+
+
+def test_help_command_extra_whitespace(auth_token, test_client):
+    """Test help command handles extra whitespace."""
+    response = post_command(test_client, auth_token, "  help  look  ")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should contain HTML formatting
+    assert "<div" in result
+    assert "LOOK Command" in result
+
+
+def test_help_command_empty_argument(auth_token, test_client):
+    """Test help command with empty argument."""
+    response = post_command(test_client, auth_token, "help ")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Should show general help
+    assert "MYTHOSMUD COMMAND GRIMOIRE" in result
+    assert "EXPLORATION COMMANDS" in result
+
+
+def test_help_command_mythos_theming(auth_token, test_client):
+    """Test that help content has proper Mythos theming."""
+    response = post_command(test_client, auth_token, "help")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Check for Mythos-themed content
+    assert "Miskatonic" in result
+    assert "forbidden knowledge" in result
+    assert "stars are right" in result
+
+
+def test_help_command_html_formatting(auth_token, test_client):
+    """Test that help content is properly HTML formatted."""
+    response = post_command(test_client, auth_token, "help look")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Check for proper HTML structure
+    assert "<div" in result
+    assert result.strip().endswith("</div>")
+    assert "<h3>" in result
+    assert "<h4>" in result
+    assert "<ul>" in result
+    assert "<li>" in result
+    assert "<strong>" in result
+    assert "style=" in result  # Should have CSS styling
+
+
+def test_help_command_categories_organized(auth_token, test_client):
+    """Test that help categories are properly organized."""
+    response = post_command(test_client, auth_token, "help")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Check that categories are in alphabetical order
+    communication_index = result.find("COMMUNICATION COMMANDS")
+    exploration_index = result.find("EXPLORATION COMMANDS")
+    information_index = result.find("INFORMATION COMMANDS")
+    movement_index = result.find("MOVEMENT COMMANDS")
+
+    # Categories should be in alphabetical order
+    assert communication_index < exploration_index
+    assert exploration_index < information_index
+    assert information_index < movement_index
+
+
+def test_help_command_commands_in_categories(auth_token, test_client):
+    """Test that commands are properly categorized."""
+    response = post_command(test_client, auth_token, "help")
+    assert response.status_code == 200
+    data = response.json()
+    result = data["result"]
+
+    # Check that commands appear in their correct categories
+    communication_section = result[result.find("COMMUNICATION COMMANDS"):result.find("EXPLORATION COMMANDS")]
+    exploration_section = result[result.find("EXPLORATION COMMANDS"):result.find("INFORMATION COMMANDS")]
+    information_section = result[result.find("INFORMATION COMMANDS"):result.find("MOVEMENT COMMANDS")]
+    movement_section = result[result.find("MOVEMENT COMMANDS"):]
+
+    assert "look" in exploration_section
+    assert "go" in movement_section
+    assert "say" in communication_section
+    assert "help" in information_section

@@ -40,6 +40,7 @@ interface GameState {
     text: string;
     timestamp: string;
     isHtml: boolean;
+    isCompleteHtml?: boolean;
   }>;
 }
 
@@ -151,6 +152,14 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     }
     console.log("ANSI sequences count:", ansiCount);
 
+    // Check if message contains HTML tags
+    const hasHtml = /<[^>]*>/.test(message);
+    console.log("hasHtml:", hasHtml);
+
+    // Check if this is a complete HTML document (starts with <!DOCTYPE or <html)
+    const isCompleteHtml = message.trim().startsWith("<!DOCTYPE") || message.trim().startsWith("<html");
+    console.log("isCompleteHtml:", isCompleteHtml);
+
     setGameState((prev) => ({
       ...prev,
       messages: [
@@ -158,7 +167,8 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
         {
           text: message,
           timestamp: new Date().toLocaleTimeString(),
-          isHtml: hasAnsi,
+          isHtml: hasAnsi || hasHtml,
+          isCompleteHtml: isCompleteHtml,
         },
       ].slice(-100), // Keep last 100 messages
     }));
@@ -339,7 +349,9 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
                   {message.isHtml ? (
                     <span
                       dangerouslySetInnerHTML={{
-                        __html: `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
+                        __html: message.isCompleteHtml
+                          ? message.text
+                          : `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
                       }}
                     />
                   ) : (

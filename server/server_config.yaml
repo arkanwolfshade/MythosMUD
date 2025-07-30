@@ -15,7 +15,7 @@ connection_timeout: 60  # seconds
 data_dir: ./data/
 player_dir: ./data/players/
 log_dir: ./logs/
-motd_file: ./data/motd.txt
+motd_file: ./data/motd.html
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---

@@ -58,7 +58,7 @@ _DEFAULTS = {
     "data_dir": "./data/",
     "player_dir": "./data/players/",
     "log_dir": "./logs/",
-    "motd_file": "./data/motd.txt",
+    "motd_file": "./data/motd.html",
     "start_room": "arkham_001",
     "starting_level": 1,
     "allow_multiplay": False,
