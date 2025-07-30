@@ -123,8 +123,8 @@ def main(
                     {
                         "type": "unreachable",
                         "room_id": room_id,
-                        "message": "No path from starting room earth_arkham_city_campus_E_College_St_003",
-                        "suggestion": "Add connection from earth_arkham_city_campus_E_College_St_003 or another reachable room",
+                        "message": "No path from starting room earth_arkham_city_campus_W_College_St_003",
+                        "suggestion": "Add connection from earth_arkham_city_campus_W_College_St_003 or another reachable room",
                     }
                 )
 

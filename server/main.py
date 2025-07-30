@@ -194,7 +194,7 @@ def get_room(room_id: str):
 
 # Player management endpoints
 @app.post("/players", response_model=Player)
-def create_player(name: str, starting_room_id: str = "earth_arkham_city_campus_E_College_St_003"):
+def create_player(name: str, starting_room_id: str = "earth_arkham_city_campus_W_College_St_003"):
     """Create a new player character."""
     existing_player = app.state.persistence.get_player_by_name(name)
     if existing_player:

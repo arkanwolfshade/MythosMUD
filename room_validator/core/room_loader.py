@@ -131,7 +131,56 @@ class RoomLoader:
                 else:
                     self.parsing_errors.append((str(file_path), "Missing room ID"))
 
+        # Load referenced intersection files
+        self._load_referenced_intersections(base_path)
+
         return self.room_database
+
+    def _load_referenced_intersections(self, base_path: str | None = None):
+        """
+        Load intersection files that are referenced by rooms in the database.
+
+        Args:
+            base_path: Optional override for base path
+        """
+        search_path = Path(base_path) if base_path else self.base_path
+
+        # Find intersection directory
+        intersection_dir = search_path / "intersections"
+        if not intersection_dir.exists():
+            return
+
+        # Get all referenced room IDs from current database
+        referenced_rooms = set()
+        for room_data in self.room_database.values():
+            exits = room_data.get("exits", {})
+            for direction, target_room in exits.items():
+                if target_room and isinstance(target_room, str):
+                    referenced_rooms.add(target_room)
+
+        # Load intersection files that reference rooms in our database
+        for intersection_file in intersection_dir.glob("*.json"):
+            if intersection_file.name in ["subzone_config.json", "zone_config.json"]:
+                continue
+
+            intersection_data = self.load_room_data(intersection_file)
+            if not intersection_data:
+                continue
+
+            # Check if this intersection references any rooms in our database
+            exits = intersection_data.get("exits", {})
+            references_our_rooms = False
+            for direction, target_room in exits.items():
+                if target_room and isinstance(target_room, str):
+                    if target_room in self.room_database:
+                        references_our_rooms = True
+                        break
+
+            # If intersection references our rooms, add it to database
+            if references_our_rooms:
+                room_id = intersection_data.get("id")
+                if room_id:
+                    self.room_database[room_id] = intersection_data
 
     def get_zones(self) -> list[str]:
         """

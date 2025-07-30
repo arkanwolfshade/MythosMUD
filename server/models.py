@@ -216,7 +216,7 @@ class Player(BaseModel):
     stats: Stats = Field(default_factory=Stats)
     inventory: list[InventoryItem] = Field(default_factory=list)
     status_effects: list[StatusEffect] = Field(default_factory=list)
-    current_room_id: str = Field(default="earth_arkham_city_campus_E_College_St_003")
+    current_room_id: str = Field(default="earth_arkham_city_campus_W_College_St_003")
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     last_active: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

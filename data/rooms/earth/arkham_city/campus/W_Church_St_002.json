@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_W_Church_St_002",
+  "name": "W. Church Street (Central Campus)",
+  "description": "The central section of W. Church Street within the campus area. This quiet residential street is lined with mature trees and well-maintained homes. The architecture here is a mix of Victorian and Colonial styles, typical of the campus neighborhood.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_campus_W_Church_St_003",
+    "west": "earth_arkham_city_campus_W_Church_St_001",
+    "up": null,
+    "down": null
+  }
+}
