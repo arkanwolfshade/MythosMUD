@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_merchant_E_Saltonstall_St_001",
+  "name": "E. Saltonstall Street (West)",
+  "description": "The western end of E. Saltonstall Street in the Merchant district. The street is lined with commercial buildings that seem to change location when one isn't looking directly at them. The air carries the scent of commerce and something that makes the mind uneasy.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "merchant",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_merchant_E_Saltonstall_St_002",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

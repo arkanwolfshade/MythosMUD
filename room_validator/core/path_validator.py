@@ -77,7 +77,7 @@ class PathValidator:
         return False
 
     def find_unreachable_rooms(
-        self, start_room_id: str = "arkham_001", room_database: dict[str, dict] = None
+        self, start_room_id: str = "earth_arkham_city_campus_E_College_St_003", room_database: dict[str, dict] = None
     ) -> set[str]:
         """
         Find rooms that cannot be reached from the starting room.
@@ -313,3 +313,70 @@ class PathValidator:
 
         score = 100 - unreachable_penalty - dead_end_penalty - return_penalty
         return max(0.0, min(100.0, score))
+
+    def generate_minimap_graph(self, room_database: dict[str, dict], max_depth: int = 3) -> dict:
+        """
+        Generate a simplified graph for mini-map display.
+
+        Args:
+            room_database: Dictionary mapping room IDs to room data
+            max_depth: Maximum depth to traverse from starting room
+
+        Returns:
+            Dictionary with mini-map data including nodes, edges, and metadata
+        """
+        self.build_graph(room_database)
+
+        start_room = "earth_arkham_city_campus_E_College_St_003"
+        if start_room not in self.graph:
+            return {"error": "Starting room not found", "nodes": [], "edges": []}
+
+        # BFS to find reachable rooms within max_depth
+        visited = set()
+        queue = [(start_room, 0)]  # (room_id, depth)
+        nodes = []
+        edges = []
+
+        while queue:
+            current_room, depth = queue.pop(0)
+
+            if current_room in visited or depth > max_depth:
+                continue
+
+            visited.add(current_room)
+
+            # Get room data for display
+            room_data = room_database.get(current_room, {})
+            room_name = room_data.get("name", current_room)
+            sub_zone = room_data.get("sub_zone", "unknown")
+
+            # Add node
+            nodes.append({
+                "id": current_room,
+                "name": room_name,
+                "sub_zone": sub_zone,
+                "depth": depth,
+                "is_start": current_room == start_room
+            })
+
+            # Add edges to neighbors
+            for direction, target in self.graph.get(current_room, {}).items():
+                if target in room_database:
+                    edges.append({
+                        "from": current_room,
+                        "to": target,
+                        "direction": direction
+                    })
+
+                    # Add target to queue if not visited and within depth limit
+                    if target not in visited and depth < max_depth:
+                        queue.append((target, depth + 1))
+
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "total_nodes": len(nodes),
+            "total_edges": len(edges),
+            "max_depth": max_depth,
+            "starting_room": start_room
+        }

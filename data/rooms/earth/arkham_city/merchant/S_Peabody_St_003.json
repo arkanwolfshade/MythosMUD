@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_merchant_S_Peabody_St_003",
+  "name": "S. Peabody Street (Merchant North)",
+  "description": "The northern end of S. Peabody Street within the Merchant district, where it approaches the intersection with the main thoroughfares. The commercial activity here is somewhat diminished, though the buildings still carry the same aura of secrets best left unexplored.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "merchant",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_merchant_S_Peabody_St_002",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

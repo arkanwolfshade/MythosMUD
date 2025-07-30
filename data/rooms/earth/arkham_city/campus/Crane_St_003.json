@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_Crane_St_003",
+  "name": "Crane Street (East)",
+  "description": "The eastern end of Crane Street, where it approaches the intersection with the main campus thoroughfares. Here the academic atmosphere is most intense, with students and faculty hurrying between classes, their faces bearing expressions of both scholarly focus and something that might be described as... hunger for knowledge.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_campus_Crane_St_002",
+    "up": null,
+    "down": null
+  }
+}

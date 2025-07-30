@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_E_College_Federal",
+  "name": "E. College and Federal Intersection",
+  "description": "The intersection where E. College Street meets Federal Street, marking the boundary between the university campus and downtown Arkham. The streetlights here cast long shadows that seem to move independently of the wind, and the air carries the mingled scents of academia and commerce.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Federal_St_001",
+    "south": null,
+    "east": "earth_arkham_city_campus_E_College_St_001",
+    "west": "earth_arkham_city_intersection_Main_Federal",
+    "up": "earth_arkham_city_intersection_Main_Federal",
+    "down": null
+  }
+}

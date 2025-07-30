@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Washington_Miskatonic",
+  "name": "Washington and Miskatonic Intersection",
+  "description": "The intersection where Washington Street meets Miskatonic Avenue, serving as a gateway between downtown and the merchant district. The street is lined with shops and businesses, with a mix of older brick buildings and newer commercial structures. The air carries the scent of coffee from nearby cafes and the sound of commerce from the busy shops.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Washington_St_001",
+    "south": "earth_arkham_city_merchant_Washington_St_001",
+    "east": "earth_arkham_city_merchant_E_Miskatonic_Ave_001",
+    "west": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_003",
+    "up": null,
+    "down": null
+  }
+}

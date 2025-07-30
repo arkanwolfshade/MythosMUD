@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_Garrison_St_006",
+  "name": "Garrison Street (Campus Central)",
+  "description": "The central section of Garrison Street within the campus district. Here the university's most imposing buildings stand, their Gothic architecture creating an atmosphere of both scholarly pursuit and something that might be described as... hunger for forbidden knowledge.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_campus_Garrison_St_007",
+    "south": "earth_arkham_city_campus_Garrison_St_005",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

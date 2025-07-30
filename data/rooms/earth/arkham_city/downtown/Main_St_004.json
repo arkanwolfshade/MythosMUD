@@ -9,8 +9,7 @@
   "exits": {
     "north": "earth_arkham_city_downtown_Main_St_005",
     "south": "earth_arkham_city_downtown_Main_St_003",
-    "east": "earth_arkham_city_downtown_intersection_Main_Federal",
-    "west": null,
+    "west": "earth_arkham_city_intersection_Main_Federal",
     "up": null,
     "down": null
   }

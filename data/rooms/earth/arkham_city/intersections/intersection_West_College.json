@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_West_College",
+  "name": "West and College Intersection",
+  "description": "The intersection where West Street meets College Street, marking the boundary between downtown and the university campus. The streetlights here cast a warm glow on the cobblestones, and the air carries the mingled scents of academia and commerce. Students and townspeople alike pass through this busy crossing.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_West_St_001",
+    "south": "earth_arkham_city_campus_West_St_007",
+    "east": "earth_arkham_city_campus_W_College_St_001",
+    "west": "earth_arkham_city_campus_W_College_St_002",
+    "up": null,
+    "down": null
+  }
+}

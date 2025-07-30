@@ -8,6 +8,7 @@ described in the Pnakotic Manuscripts.
 """
 
 import sys
+from datetime import datetime
 
 import click
 from core.fixer import RoomFixer
@@ -15,6 +16,7 @@ from core.path_validator import PathValidator
 from core.reporter import Reporter
 from core.room_loader import RoomLoader
 from core.schema_validator import SchemaValidator
+from core.minimap_renderer import MinimapRenderer
 
 
 @click.command()
@@ -28,6 +30,8 @@ from core.schema_validator import SchemaValidator
 @click.option("--no-colors", is_flag=True, help="Disable colored output")
 @click.option("--fix", is_flag=True, help="Automatically fix issues (use with caution)")
 @click.option("--backup", is_flag=True, help="Create backup files before fixing")
+@click.option("--minimap", is_flag=True, help="Generate mini-map visualization")
+@click.option("--minimap-depth", default=3, help="Maximum depth for mini-map (default: 3)")
 # pylint: disable=too-many-arguments
 def main(
     zone: str | None,
@@ -40,6 +44,8 @@ def main(
     no_colors: bool,
     fix: bool,
     backup: bool,
+    minimap: bool,
+    minimap_depth: int,
 ):
     """
     Validate room connectivity and structure in the MythosMUD world.
@@ -117,8 +123,8 @@ def main(
                     {
                         "type": "unreachable",
                         "room_id": room_id,
-                        "message": "No path from starting room arkham_001",
-                        "suggestion": "Add connection from arkham_001 or another reachable room",
+                        "message": "No path from starting room earth_arkham_city_campus_E_College_St_003",
+                        "suggestion": "Add connection from earth_arkham_city_campus_E_College_St_003 or another reachable room",
                     }
                 )
 
@@ -239,6 +245,26 @@ def main(
                         "suggestion": "Check JSON syntax and structure",
                     })
 
+        # Generate mini-map if requested
+        if minimap:
+            reporter.print_progress("Generating mini-map visualization...")
+            minimap_data = path_validator.generate_minimap_graph(room_database, minimap_depth)
+            minimap_renderer = MinimapRenderer()
+
+            print("\n" + "="*80)
+            print("🗺️  MINI-MAP VISUALIZATION")
+            print("="*80)
+
+            # Render ASCII map
+            ascii_map = minimap_renderer.render_ascii_map(minimap_data)
+            print(ascii_map)
+
+            # Render connectivity stats
+            stats_map = minimap_renderer.render_connectivity_stats(minimap_data)
+            print("\n" + stats_map)
+
+            print("="*80)
+
         # Generate statistics
         subzones = room_loader.get_subzones()
         config_subzones = room_loader.count_config_subzones(base_path)
@@ -253,12 +279,27 @@ def main(
             "success": len(errors) == 0,
         }
 
+        # Log errors to file if any exist
+        if errors:
+            error_log_path = "error.log"
+            with open(error_log_path, "w", encoding="utf-8") as f:
+                f.write(f"Room Validator Error Log - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write("="*80 + "\n\n")
+                for error in errors:
+                    f.write(f"🏠 {error['room_id']}\n")
+                    f.write(f"  ❌ {error['type'].title()}: {error['message']}\n")
+                    f.write(f"     💡 Suggestion: {error['suggestion']}\n\n")
+            print(f"📝 Errors logged to {error_log_path}")
+
         # Reporting phase
         if output_format == "json":
             json_output = reporter.generate_json_output(stats, errors, warnings)
             print(json_output)
         else:
-            reporter.print_validation_errors(errors)
+            if errors:
+                print(f"❌ {len(errors)} errors found (see error.log for details)")
+            else:
+                reporter.print_success()
             reporter.print_validation_warnings(warnings)
             reporter.print_summary(stats)
 

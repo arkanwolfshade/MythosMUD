@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_East_St_003",
+  "name": "East Street (Campus North)",
+  "description": "The northern end of East Street within the campus district, where it approaches the intersection with the main campus thoroughfares. The buildings here are the most ancient on campus, their weathered stone facades bearing inscriptions that seem to shift when not directly observed.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_campus_East_St_002",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

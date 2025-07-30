@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Garrison_French_Hill",
+  "name": "Garrison and French Hill Intersection",
+  "description": "The intersection where Garrison Street meets French Hill Street, marking the transition from downtown to the more residential French Hill area. The architecture here becomes more elegant and refined, with well-maintained homes and gardens. The street is quieter here, with a more genteel atmosphere.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Garrison_St_006",
+    "south": "earth_arkham_city_french_hill_Garrison_St_001",
+    "east": "earth_arkham_city_french_hill_N_French_Hill_St_001",
+    "west": "earth_arkham_city_campus_Garrison_St_005",
+    "up": null,
+    "down": null
+  }
+}

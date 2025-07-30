@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_003",
+  "name": "W. Miskatonic Avenue (East)",
+  "description": "The eastern end of W. Miskatonic Avenue within the Lower Southside district, where it approaches the intersection with the main thoroughfares. The industrial activity here is somewhat diminished, though the buildings still carry the same aura of secrets best left unexplored.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "lower_southside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_002",
+    "up": null,
+    "down": null
+  }
+}

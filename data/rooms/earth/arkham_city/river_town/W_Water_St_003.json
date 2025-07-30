@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_river_town_W_Water_St_003",
+  "name": "W. Water Street (East)",
+  "description": "The eastern end of W. Water Street within the River Town district, where it approaches the intersection with the main thoroughfares. The river flows dark and deep here, carrying secrets from places best left unvisited.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "river_town",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_river_town_W_Water_St_002",
+    "up": null,
+    "down": null
+  }
+}

@@ -1,17 +1,17 @@
 {
-  "id": "earth_arkham_city_northside_intersection_Boundary_Curwen",
+  "id": "earth_arkham_city_intersection_Boundary_Curwen",
   "name": "Boundary and Curwen Intersection",
-  "description": "The intersection of Boundary Street and Curwen Street, serving as the commercial and social heart of Northside. A small green space at the center features a simple wooden gazebo where community meetings are held. The surrounding buildings include the essential services that keep this working-class neighborhood functioning.",
+  "description": "The intersection where Boundary Street meets Curwen Street, marking the northern boundary of downtown and the gateway to the residential northside area. The architecture here transitions from commercial to residential, with well-maintained homes and tree-lined streets. The area has a quiet, genteel atmosphere.",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "northside",
+  "sub_zone": "intersections",
   "environment": "outdoors",
   "exits": {
-    "north": "earth_arkham_city_northside_Boundary_St_003",
-    "south": "earth_arkham_city_northside_Curwen_St_003",
-    "east": null,
-    "west": null,
+    "north": "earth_arkham_city_northside_Curwen_St_003",
+    "south": "earth_arkham_city_northside_Curwen_St_002",
+    "east": "earth_arkham_city_northside_Boundary_St_003",
+    "west": "earth_arkham_city_northside_Boundary_St_004",
     "up": null,
-    "down": null
+    "down": "earth_arkham_city_intersection_Church_Federal"
   }
 }
