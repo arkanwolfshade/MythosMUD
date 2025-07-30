@@ -1,0 +1,11 @@
+{
+  "environment": "indoors",
+  "description": "The ancient palace complex where reality itself seems to shift and change, home to eldritch entities and forbidden knowledge",
+  "special_rules": {
+    "sanity_drain_rate": 0.3,
+    "npc_spawn_modifier": 2.0,
+    "combat_modifier": 1.6,
+    "exploration_bonus": 1.2,
+    "access_requirements": ["dimensional_key", "reality_anchor"]
+  }
+}

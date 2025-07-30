@@ -1,0 +1,12 @@
+{
+  "zone_type": "city",
+  "environment": "outdoors",
+  "description": "A mystical city in the plane of Yeng, where reality bends and the laws of physics are mere suggestions",
+  "weather_patterns": ["ethereal_mist", "dimensional_rain", "reality_shift"],
+  "special_rules": {
+    "sanity_drain_rate": 0.25,
+    "npc_spawn_modifier": 1.8,
+    "combat_modifier": 1.4,
+    "exploration_bonus": 1.0
+  }
+}

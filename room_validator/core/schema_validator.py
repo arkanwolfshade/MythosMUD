@@ -19,7 +19,7 @@ class SchemaValidator:
     as documented in the restricted archives of dimensional mapping.
     """
 
-    def __init__(self, schema_path: str = "./schemas/room_schema.json"):
+    def __init__(self, schema_path: str = "./schemas/room_hierarchy_schema.json"):
         """
         Initialize the schema validator.
 
