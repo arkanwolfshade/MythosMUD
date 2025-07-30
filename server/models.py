@@ -76,6 +76,23 @@ class Alias(BaseModel):
     # metadata: dict = Field(default_factory=dict,
     #                        description="Additional metadata")
 
+    def __eq__(self, other: object) -> bool:
+        """Custom equality comparison that ignores timestamp fields.
+
+        As noted in the Pnakotic Manuscripts, temporal signatures can create
+        false distinctions between otherwise identical entities. This method
+        ensures that aliases are compared by their essential properties only.
+        """
+        if not isinstance(other, Alias):
+            return False
+        return (self.name == other.name and
+                self.command == other.command and
+                self.version == other.version)
+
+    def __hash__(self) -> int:
+        """Custom hash method that matches the equality comparison."""
+        return hash((self.name, self.command, self.version))
+
     def update_timestamp(self) -> None:
         """Update the updated_at timestamp."""
         self.updated_at = datetime.now(UTC)
