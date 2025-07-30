@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_W_College_St_005",
+  "name": "W. College Street (East Campus)",
+  "description": "The eastern section of W. College Street within the campus area. This quiet residential street is lined with mature trees and well-maintained homes. The architecture here is a mix of Victorian and Colonial styles, typical of the campus neighborhood.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_campus_W_College_St_004",
+    "south": null,
+    "east": "earth_arkham_city_campus_W_College_St_006",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

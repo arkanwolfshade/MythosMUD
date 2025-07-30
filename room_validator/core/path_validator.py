@@ -77,7 +77,7 @@ class PathValidator:
         return False
 
     def find_unreachable_rooms(
-        self, start_room_id: str = "earth_arkham_city_campus_E_College_St_003", room_database: dict[str, dict] = None
+        self, start_room_id: str = "earth_arkham_city_campus_Boundary_St_001", room_database: dict[str, dict] = None
     ) -> set[str]:
         """
         Find rooms that cannot be reached from the starting room.
@@ -327,7 +327,7 @@ class PathValidator:
         """
         self.build_graph(room_database)
 
-        start_room = "earth_arkham_city_campus_E_College_St_003"
+        start_room = "earth_arkham_city_campus_Boundary_St_001"
         if start_room not in self.graph:
             return {"error": "Starting room not found", "nodes": [], "edges": []}
 

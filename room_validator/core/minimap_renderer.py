@@ -5,7 +5,7 @@ This module provides visual representations of room connectivity graphs
 for use in client mini-maps and debugging room layouts.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 
 
 class MinimapRenderer:
@@ -31,6 +31,8 @@ class MinimapRenderer:
         self.street_acronyms = {
             "E_College_St": "ECS",
             "W_College_St": "WCS",
+            "W_Church_St": "WCS",
+            "West_St": "WS",
             "Main_St": "MS",
             "Federal_St": "FS",
             "Garrison_St": "GS",
@@ -77,12 +79,67 @@ class MinimapRenderer:
             "intersection": "INT"
         }
 
+        # Color codes for different streets (ANSI color codes)
+        self.street_colors = {
+            "E_College_St": "\033[32m",        # Green
+            "W_College_St": "\033[36m",        # Cyan
+            "W_Church_St": "\033[35m",         # Magenta
+            "West_St": "\033[91m",             # Bright Red
+            "Main_St": "\033[33m",             # Yellow
+            "Federal_St": "\033[35m",          # Magenta
+            "Garrison_St": "\033[34m",         # Blue
+            "Boundary_St": "\033[31m",         # Red
+            "Peabody_Ave": "\033[37m",         # White
+            "Pickman_St": "\033[90m",          # Dark Gray
+            "Washington_St": "\033[95m",       # Bright Magenta
+            "Miskatonic_Ave": "\033[94m",      # Bright Blue
+            "Saltonstall_St": "\033[96m",      # Bright Cyan
+            "High_St": "\033[93m",             # Bright Yellow
+            "East_St": "\033[92m",             # Bright Green
+            "West_St": "\033[91m",             # Bright Red
+            "North_St": "\033[97m",            # Bright White
+            "South_St": "\033[30m",            # Black
+            "Church_St": "\033[33m",           # Yellow
+            "Curwen_St": "\033[35m",           # Magenta
+            "Jenkin_St": "\033[36m",           # Cyan
+            "Whateley_St": "\033[32m",         # Green
+            "Armitage_St": "\033[34m",         # Blue
+            "River_St": "\033[94m",            # Bright Blue
+            "Water_St": "\033[96m",            # Bright Cyan
+            "Sentinel_St": "\033[95m",         # Bright Magenta
+            "New_St": "\033[93m",              # Bright Yellow
+            "Crane_St": "\033[92m",            # Bright Green
+            "N_French_Hill_St": "\033[90m",    # Dark Gray
+            "S_Parsonage_St": "\033[37m",      # White
+            "E_High_St": "\033[33m",           # Yellow
+            "E_Miskatonic_Ave": "\033[94m",    # Bright Blue
+            "E_Pickman_St": "\033[90m",        # Dark Gray
+            "E_Saltonstall_St": "\033[96m",    # Bright Cyan
+            "E_Washington_St": "\033[95m",     # Bright Magenta
+            "E_River_St": "\033[94m",          # Bright Blue
+            "E_Water_St": "\033[96m",          # Bright Cyan
+            "W_High_St": "\033[33m",           # Yellow
+            "W_Miskatonic_Ave": "\033[94m",    # Bright Blue
+            "W_Pickman_St": "\033[90m",        # Dark Gray
+            "W_Saltonstall_St": "\033[96m",    # Bright Cyan
+            "W_Washington_St": "\033[95m",     # Bright Magenta
+            "W_River_St": "\033[94m",          # Bright Blue
+            "W_Water_St": "\033[96m",          # Bright Cyan
+            "S_Peabody_St": "\033[37m",        # White
+            "Powder_Mill_St": "\033[90m",      # Dark Gray
+            "Walnut_St": "\033[33m",           # Yellow
+            "intersection": "\033[93m"         # Bright Yellow
+        }
+
+        # Reset color code
+        self.color_reset = "\033[0m"
+
     def get_street_acronym(self, room_id: str) -> str:
         """
         Extract street acronym from room ID.
 
         Args:
-            room_id: Full room ID (e.g., earth_arkham_city_campus_E_College_St_003)
+            room_id: Full room ID (e.g., earth_arkham_city_campus_W_College_St_003)
 
         Returns:
             Street acronym (e.g., ECS)
@@ -105,9 +162,49 @@ class MinimapRenderer:
         # Fallback: return first 3 letters of the last part
         return parts[-1][:3].upper()
 
+    def get_street_name(self, room_id: str) -> str:
+        """
+        Extract street name from room ID.
+
+        Args:
+            room_id: Full room ID
+
+        Returns:
+            Street name (e.g., W_College_St)
+        """
+        parts = room_id.split('_')
+        if len(parts) >= 4:
+            # Look for street name patterns
+            for i in range(len(parts) - 1):
+                potential_street = '_'.join(parts[i:i+2])
+                if potential_street in self.street_acronyms:
+                    return potential_street
+
+                # Try with more parts for longer street names
+                if i + 2 < len(parts):
+                    potential_street = '_'.join(parts[i:i+3])
+                    if potential_street in self.street_acronyms:
+                        return potential_street
+
+        return "unknown"
+
+    def get_street_color(self, room_id: str) -> str:
+        """
+        Get color code for a street.
+
+        Args:
+            room_id: Full room ID
+
+        Returns:
+            ANSI color code for the street
+        """
+        street_name = self.get_street_name(room_id)
+        # Default to white
+        return self.street_colors.get(street_name, "\033[37m")
+
     def render_ascii_map(self, minimap_data: Dict[str, Any], max_width: int = 80) -> str:
         """
-        Render the mini-map as ASCII art.
+        Render the mini-map as ASCII art with grid-based visualization.
 
         Args:
             minimap_data: Mini-map graph data from PathValidator
@@ -125,7 +222,7 @@ class MinimapRenderer:
         if not nodes:
             return "No rooms found in mini-map"
 
-        # Build the linear representation
+        # Build the grid-based representation
         lines = []
         lines.append("🗺️  MINI-MAP OF ARKHAM CITY")
         lines.append("=" * max_width)
@@ -133,126 +230,261 @@ class MinimapRenderer:
         lines.append(f"Total Rooms: {len(nodes)} | Total Connections: {len(edges)}")
         lines.append("=" * max_width)
 
-        # Create a simple linear chain representation
-        if len(nodes) <= 20:  # Only for small maps
-            lines.append("\n📍 ROOM CONNECTIVITY:")
-            lines.append("-" * 40)
+        # Create grid-based visualization
+        grid_map = self._create_grid_map(nodes, edges, minimap_data.get("starting_room", ""))
+        lines.append("\n📍 GRID VISUALIZATION:")
+        lines.append("-" * 40)
+        lines.append(grid_map)
 
-            # Build connection chains
-            room_connections = {}
-            for edge in edges:
-                if edge["from"] not in room_connections:
-                    room_connections[edge["from"]] = []
-                room_connections[edge["from"]].append(edge)
-
-            # Find the starting room
-            start_room = minimap_data.get("starting_room", "")
-            if start_room and start_room in room_connections:
-                chain = self._build_room_chain(start_room, room_connections, nodes)
-                lines.append(chain)
-            else:
-                # Fallback to depth-based display
-                lines.append(self._render_depth_based(nodes, edges))
+        # Add legend
+        legend = self._generate_color_legend(nodes)
+        lines.append("\n" + legend)
 
         return "\n".join(lines)
 
-    def _build_room_chain(self, start_room: str, room_connections: Dict, nodes: List) -> str:
-        """Build a linear chain representation of connected rooms."""
-        visited = set()
-        used_acronyms = set()
-
-        def traverse(room_id: str) -> str:
-            if room_id in visited:
-                return ""
-            visited.add(room_id)
-
-            # Get acronym for room
-            acronym = self.get_street_acronym(room_id)
-            used_acronyms.add(acronym)
-
-            # Find next room
-            if room_id in room_connections:
-                for edge in room_connections[room_id]:
-                    next_room = edge["to"]
-                    if next_room not in visited:
-                        return f"[{acronym}]<->{traverse(next_room)}"
-
-            return f"[{acronym}]"
-
-        chain = traverse(start_room)
-
-        # Generate legend
-        legend = self._generate_legend(used_acronyms)
-
-        return f"{chain}\n\n{legend}"
-
-    def _generate_legend(self, used_acronyms: set) -> str:
+    def _create_grid_map(self, nodes: List, edges: List, start_room: str) -> str:
         """
-        Generate a legend for the used acronyms.
+        Create a grid-based map visualization.
 
         Args:
-            used_acronyms: Set of acronyms used in the map
+            nodes: List of room nodes
+            edges: List of connections
+            start_room: Starting room ID
+
+        Returns:
+            Grid-based ASCII map
+        """
+        # Create coordinate system
+        coords = self._assign_coordinates(nodes, edges, start_room)
+
+        # Find grid boundaries
+        min_x = min(coord[0] for coord in coords.values()) if coords else 0
+        max_x = max(coord[0] for coord in coords.values()) if coords else 0
+        min_y = min(coord[1] for coord in coords.values()) if coords else 0
+        max_y = max(coord[1] for coord in coords.values()) if coords else 0
+
+        # Create grid
+        grid_width = max_x - min_x + 1
+        grid_height = max_y - min_y + 1
+
+        # Initialize grid with empty spaces
+        grid = [[' ' for _ in range(grid_width * 3)] for _ in range(grid_height * 2)]
+
+        # Place rooms in grid
+        for room_id, (x, y) in coords.items():
+            grid_x = (x - min_x) * 3
+            grid_y = (y - min_y) * 2
+
+            # Get room info
+            room_info = next((n for n in nodes if n["id"] == room_id), None)
+            if room_info:
+                color = self.get_street_color(room_id)
+
+                # Determine room symbol
+                symbol = "□"
+                if room_id == start_room:
+                    symbol = "★"  # Starting point
+                elif "intersection" in room_id.lower():
+                    symbol = "◆"  # Intersection
+
+                # Place room in grid
+                if 0 <= grid_y < len(grid) and 0 <= grid_x < len(grid[0]):
+                    grid[grid_y][grid_x] = f"{color}{symbol}{self.color_reset}"
+
+        # Add connections
+        for edge in edges:
+            from_room = edge["from"]
+            to_room = edge["to"]
+            direction = edge["direction"]
+
+            if from_room in coords and to_room in coords:
+                from_x, from_y = coords[from_room]
+                to_x, to_y = coords[to_room]
+
+                # Calculate grid positions
+                grid_from_x = (from_x - min_x) * 3
+                grid_from_y = (from_y - min_y) * 2
+                grid_to_x = (to_x - min_x) * 3
+                grid_to_y = (to_y - min_y) * 2
+
+                # Draw connection line
+                self._draw_connection(grid, grid_from_x, grid_from_y, grid_to_x, grid_to_y, direction)
+
+        # Convert grid to string
+        lines = []
+        for row in grid:
+            line = ''.join(row)
+            if line.strip():  # Only add non-empty lines
+                lines.append(line)
+
+        return '\n'.join(lines)
+
+    def _assign_coordinates(self, nodes: List, edges: List, start_room: str) -> Dict[str, Tuple[int, int]]:
+        """
+        Assign grid coordinates to rooms based on connectivity.
+
+        Args:
+            nodes: List of room nodes
+            edges: List of connections
+            start_room: Starting room ID
+
+        Returns:
+            Dictionary mapping room IDs to (x, y) coordinates
+        """
+        coords = {}
+        visited = set()
+
+        if not start_room or start_room not in [n["id"] for n in nodes]:
+            # Use first room as starting point
+            start_room = nodes[0]["id"] if nodes else ""
+
+        if not start_room:
+            return coords
+
+        # Start with the starting room at (0, 0)
+        coords[start_room] = (0, 0)
+        visited.add(start_room)
+
+        # Build adjacency list
+        adjacency = {}
+        for edge in edges:
+            if edge["from"] not in adjacency:
+                adjacency[edge["from"]] = []
+            adjacency[edge["from"]].append((edge["to"], edge["direction"]))
+
+            if edge["to"] not in adjacency:
+                adjacency[edge["to"]] = []
+            adjacency[edge["to"]].append((edge["from"], self._reverse_direction(edge["direction"])))
+
+        # BFS to assign coordinates
+        queue = [(start_room, 0, 0)]
+        while queue:
+            room_id, x, y = queue.pop(0)
+
+            if room_id in adjacency:
+                for next_room, direction in adjacency[room_id]:
+                    if next_room not in visited:
+                        # Calculate new coordinates based on direction
+                        new_x, new_y = self._get_next_coordinates(x, y, direction)
+                        coords[next_room] = (new_x, new_y)
+                        visited.add(next_room)
+                        queue.append((next_room, new_x, new_y))
+
+        return coords
+
+    def _get_next_coordinates(self, x: int, y: int, direction: str) -> Tuple[int, int]:
+        """
+        Get coordinates for the next room based on direction.
+
+        Args:
+            x: Current x coordinate
+            y: Current y coordinate
+            direction: Direction to move
+
+        Returns:
+            New (x, y) coordinates
+        """
+        if direction == "north":
+            return (x, y - 1)
+        elif direction == "south":
+            return (x, y + 1)
+        elif direction == "east":
+            return (x + 1, y)
+        elif direction == "west":
+            return (x - 1, y)
+        else:
+            return (x, y)  # No change for up/down
+
+    def _reverse_direction(self, direction: str) -> str:
+        """
+        Reverse a direction.
+
+        Args:
+            direction: Original direction
+
+        Returns:
+            Reversed direction
+        """
+        direction_map = {
+            "north": "south",
+            "south": "north",
+            "east": "west",
+            "west": "east",
+            "up": "down",
+            "down": "up"
+        }
+        return direction_map.get(direction, direction)
+
+    def _draw_connection(self, grid: List[List[str]], x1: int, y1: int, x2: int, y2: int, direction: str):
+        """
+        Draw a connection line between two rooms.
+
+        Args:
+            grid: The grid to draw on
+            x1, y1: Coordinates of first room
+            x2, y2: Coordinates of second room
+            direction: Direction of connection
+        """
+        # Determine connection symbol based on direction
+        if direction == "north":
+            symbol = "↑"
+        elif direction == "south":
+            symbol = "↓"
+        elif direction == "east":
+            symbol = "→"
+        elif direction == "west":
+            symbol = "←"
+        else:
+            symbol = "·"
+
+        # Place connection symbol between rooms
+        mid_x = (x1 + x2) // 2
+        mid_y = (y1 + y2) // 2
+
+        if 0 <= mid_y < len(grid) and 0 <= mid_x < len(grid[0]):
+            grid[mid_y][mid_x] = symbol
+
+    def _generate_color_legend(self, nodes: List) -> str:
+        """
+        Generate a color-coded legend for the streets and special symbols.
+
+        Args:
+            nodes: List of room nodes
 
         Returns:
             Formatted legend string
         """
-        legend_lines = ["📍 LEGEND:"]
+        legend_lines = ["📍 COLOR LEGEND:"]
         legend_lines.append("-" * 40)
 
-        # Create reverse mapping from acronym to full name
-        acronym_to_name = {}
-        for full_name, acronym in self.street_acronyms.items():
-            if acronym in used_acronyms:
-                # Convert full_name to readable format
-                readable_name = full_name.replace('_', ' ')
-                acronym_to_name[acronym] = readable_name
+        # Collect unique streets
+        streets_used = set()
+        for node in nodes:
+            street_name = self.get_street_name(node["id"])
+            if street_name != "unknown":
+                streets_used.add(street_name)
 
-        # Sort by acronym for consistent display
-        for acronym in sorted(acronym_to_name.keys()):
-            full_name = acronym_to_name[acronym]
-            legend_lines.append(f"{acronym}: {full_name}")
+        # Sort streets for consistent display
+        for street_name in sorted(streets_used):
+            acronym = self.street_acronyms.get(street_name, street_name[:3].upper())
+            color = self.street_colors.get(street_name, "\033[37m")
+            readable_name = street_name.replace('_', ' ')
+
+            legend_lines.append(f"{color}■{self.color_reset} {acronym}: {readable_name}")
+
+        # Add special symbols legend
+        legend_lines.append("")
+        legend_lines.append("📍 SPECIAL SYMBOLS:")
+        legend_lines.append("-" * 40)
+        legend_lines.append("★ Starting Point")
+        legend_lines.append("◆ Intersection")
+        legend_lines.append("□ Regular Room")
+        legend_lines.append("")
+        legend_lines.append("📍 DIRECTIONAL MARKERS:")
+        legend_lines.append("-" * 40)
+        legend_lines.append("↑ North  ↓ South  → East  ← West")
 
         return "\n".join(legend_lines)
-
-    def _render_depth_based(self, nodes: List, edges: List) -> str:
-        """Fallback depth-based rendering for complex maps."""
-        # Group nodes by depth
-        depth_groups = {}
-        for node in nodes:
-            depth = node["depth"]
-            if depth not in depth_groups:
-                depth_groups[depth] = []
-            depth_groups[depth].append(node)
-
-        lines = []
-        for depth in sorted(depth_groups.keys()):
-            lines.append(f"\n📍 DEPTH {depth}:")
-            lines.append("-" * 40)
-
-            for node in depth_groups[depth]:
-                # Find connections for this node
-                connections = []
-                for edge in edges:
-                    if edge["from"] == node["id"]:
-                        direction = edge["direction"]
-                        symbol = self.direction_symbols.get(direction, direction)
-                        connections.append(f"{symbol} {edge['to']}")
-
-                # Format the room display
-                room_display = f"🏠 {node['name']}"
-                if node.get("is_start"):
-                    room_display += " [START]"
-                room_display += f" ({node['sub_zone']})"
-
-                lines.append(room_display)
-
-                if connections:
-                    for conn in connections:
-                        lines.append(f"  {conn}")
-                else:
-                    lines.append("  [No exits]")
-
-        return "\n".join(lines)
 
     def render_json_summary(self, minimap_data: Dict[str, Any]) -> str:
         """

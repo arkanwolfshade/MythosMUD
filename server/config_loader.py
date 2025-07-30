@@ -59,7 +59,7 @@ _DEFAULTS = {
     "player_dir": "./data/players/",
     "log_dir": "./logs/",
     "motd_file": "./data/motd.txt",
-    "start_room": "earth_arkham_city_campus_E_College_St_003",
+    "start_room": "earth_arkham_city_campus_W_College_St_003",
     "starting_level": 1,
     "allow_multiplay": False,
     "max_players": 100,
