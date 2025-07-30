@@ -79,8 +79,8 @@ def patch_get_current_user(monkeypatch):
     """Patch get_current_user to return mock user data."""
 
     def get_current_user_mock(credentials=None, users_file=None):
-        # For SSE tests, always return the testuser
-        return {"username": "testuser", "current_room_id": "arkham_001"}
+        # For SSE tests, always return the TestPlayer1
+        return {"username": "TestPlayer1", "current_room_id": "arkham_001"}
 
     # Mock the get_current_user function
     monkeypatch.setattr("server.auth.get_current_user", get_current_user_mock)
@@ -93,7 +93,7 @@ def temp_files():
         json.dump(
             [
                 {
-                    "username": "testuser",
+                    "username": "TestPlayer1",
                     "password_hash": "hashed_password",
                     "invite_code": "TEST_INVITE",
                     "created_at": "2024-01-01T00:00:00Z",
@@ -141,7 +141,7 @@ def test_client(temp_files):
 @pytest.fixture
 def valid_token():
     """Create a valid JWT token for testing."""
-    return create_access_token(data={"sub": "testuser"})
+    return create_access_token(data={"sub": "TestPlayer1"})
 
 
 @pytest.fixture
@@ -157,7 +157,7 @@ class TestSSETokenValidation:
         """Test that valid tokens are accepted."""
         users_path, _ = temp_files
         user_info = validate_sse_token(valid_token, users_path)
-        assert user_info["username"] == "testuser"
+        assert user_info["username"] == "TestPlayer1"
 
     def test_validate_sse_token_invalid(self, temp_files, invalid_token):
         """Test that invalid tokens are rejected."""
@@ -180,7 +180,7 @@ class TestSSETokenValidation:
     def test_validate_sse_token_no_users_file(self, valid_token):
         """Test token validation without users file."""
         user_info = validate_sse_token(valid_token)
-        assert user_info["username"] == "testuser"
+        assert user_info["username"] == "TestPlayer1"
 
     def test_validate_sse_token_user_not_found(self, temp_files):
         """Test token validation when user doesn't exist in users file."""
@@ -225,7 +225,10 @@ class TestSSEEndpointAuthentication:
 
             mock_stream.side_effect = mock_generator
 
-            response = test_client.get(f"/events/testuser?token={valid_token}", headers={"Accept": "text/event-stream"})
+            # Use the actual player ID from test database
+            response = test_client.get(
+                f"/events/test-player-1?token={valid_token}", headers={"Accept": "text/event-stream"}
+            )
 
             assert response.status_code == 200
             assert response.headers["content-type"].startswith("text/event-stream")
@@ -242,18 +245,20 @@ class TestSSEEndpointAuthentication:
 
     def test_sse_endpoint_with_invalid_token(self, test_client, invalid_token):
         """Test SSE endpoint with invalid authentication token."""
-        response = test_client.get(f"/events/testuser?token={invalid_token}", headers={"Accept": "text/event-stream"})
+        response = test_client.get(
+            f"/events/test-player-1?token={invalid_token}", headers={"Accept": "text/event-stream"}
+        )
         assert response.status_code == 401
 
     def test_sse_endpoint_without_token(self, test_client):
         """Test SSE endpoint without authentication token."""
-        response = test_client.get("/events/testuser", headers={"Accept": "text/event-stream"})
+        response = test_client.get("/events/test-player-1", headers={"Accept": "text/event-stream"})
         assert response.status_code == 401
 
     def test_sse_endpoint_token_mismatch(self, test_client, valid_token):
         """Test SSE endpoint when token doesn't match player ID."""
         response = test_client.get(
-            f"/events/differentuser?token={valid_token}", headers={"Accept": "text/event-stream"}
+            f"/events/test-player-2?token={valid_token}", headers={"Accept": "text/event-stream"}
         )
         assert response.status_code == 403
 
@@ -268,7 +273,8 @@ class TestSSEEndpointAuthentication:
             mock_stream.side_effect = mock_generator
 
             response = test_client.get(
-                "/events/testuser", headers={"Accept": "text/event-stream", "Authorization": f"Bearer {valid_token}"}
+                "/events/test-player-1",
+                headers={"Accept": "text/event-stream", "Authorization": f"Bearer {valid_token}"},
             )
             assert response.status_code == 200
 
@@ -278,7 +284,7 @@ class TestWebSocketAuthentication:
 
     def test_websocket_with_valid_token(self, test_client, valid_token):
         """Test WebSocket connection with valid token."""
-        with test_client.websocket_connect(f"/ws/testuser?token={valid_token}") as websocket:
+        with test_client.websocket_connect(f"/ws/test-player-1?token={valid_token}") as websocket:
             # Connection should be established
             assert websocket is not None
 

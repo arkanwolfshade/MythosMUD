@@ -801,10 +801,10 @@ def test_help_command_commands_in_categories(auth_token, test_client):
     result = data["result"]
 
     # Check that commands appear in their correct categories
-    communication_section = result[result.find("COMMUNICATION COMMANDS"):result.find("EXPLORATION COMMANDS")]
-    exploration_section = result[result.find("EXPLORATION COMMANDS"):result.find("INFORMATION COMMANDS")]
-    information_section = result[result.find("INFORMATION COMMANDS"):result.find("MOVEMENT COMMANDS")]
-    movement_section = result[result.find("MOVEMENT COMMANDS"):]
+    communication_section = result[result.find("COMMUNICATION COMMANDS") : result.find("EXPLORATION COMMANDS")]
+    exploration_section = result[result.find("EXPLORATION COMMANDS") : result.find("INFORMATION COMMANDS")]
+    information_section = result[result.find("INFORMATION COMMANDS") : result.find("MOVEMENT COMMANDS")]
+    movement_section = result[result.find("MOVEMENT COMMANDS") :]
 
     assert "look" in exploration_section
     assert "go" in movement_section

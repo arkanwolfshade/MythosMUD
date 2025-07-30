@@ -3,6 +3,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
+from .alias_storage import AliasStorage
 from .auth import get_current_user
 
 router = APIRouter(prefix="/command", tags=["command"])
@@ -129,6 +130,103 @@ Your words may attract attention from entities best left undisturbed.</p>
 </div>
 """,
     },
+    "alias": {
+        "category": "Aliases",
+        "description": "Create or manage command aliases",
+        "usage": "alias <name> <command>",
+        "examples": ["alias l look", "alias n 'go north'", "alias l"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>ALIAS Command</h3>
+<p>Create shortcuts for commonly used commands, as documented in the restricted
+archives of Miskatonic University. These eldritch shortcuts allow for more
+efficient exploration of our realm.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>alias [name] [command]</strong> - Create or update an alias</li>
+<li><strong>alias [name]</strong> - Show details of a specific alias</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>alias l look</li>
+<li>alias n 'go north'</li>
+<li>alias greet 'say Hello there!'</li>
+<li>alias l</li>
+</ul>
+
+<h4>Rules:</h4>
+<ul>
+<li>Alias names must start with a letter</li>
+<li>Only alphanumeric characters and underscores allowed</li>
+<li>Maximum 50 aliases per player</li>
+<li>Cannot alias reserved commands (alias, aliases, unalias, help)</li>
+</ul>
+
+<p>"Efficiency in command is the mark of a true scholar." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "aliases": {
+        "category": "Aliases",
+        "description": "List all your command aliases",
+        "usage": "aliases",
+        "examples": ["aliases"],
+        "detailed_help": """
+<div style="color: #2F4F4F;">
+<h3>ALIASES Command</h3>
+<p>Display all your currently defined command aliases, as catalogued in the
+forbidden archives of Miskatonic University.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>aliases</strong> - List all your aliases</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>aliases</li>
+</ul>
+
+<p>The list shows each alias name and its corresponding command, allowing you
+to review your eldritch shortcuts at a glance.</p>
+
+<p>"A well-organized mind is a prepared mind." - Miskatonic University Archives</p>
+</div>
+""",
+    },
+    "unalias": {
+        "category": "Aliases",
+        "description": "Remove a command alias",
+        "usage": "unalias <name>",
+        "examples": ["unalias l", "unalias n"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>UNALIAS Command</h3>
+<p>Remove unwanted command aliases from your collection, as documented in the
+restricted archives. This allows you to clean up your command shortcuts.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>unalias [name]</strong> - Remove the specified alias</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>unalias l</li>
+<li>unalias n</li>
+<li>unalias greet</li>
+</ul>
+
+<h4>Note:</h4>
+<p>This action cannot be undone. The alias will be permanently removed from
+your collection.</p>
+
+<p>"Sometimes the greatest wisdom lies in knowing what to remove." - Prof. Armitage</p>
+</div>
+""",
+    },
     "help": {
         "category": "Information",
         "description": "Get help on commands and game features",
@@ -243,10 +341,68 @@ def handle_command(
     command_line = clean_command_input(command_line)
     if not command_line:
         return {"result": ""}
+
+    # Initialize alias storage
+    alias_storage = AliasStorage()
+    player_name = current_user["username"]
+
+    # Check for alias expansion before command processing
     parts = command_line.split()
     cmd = parts[0].lower()
     args = parts[1:]
 
+    # Handle alias management commands first (don't expand these)
+    if cmd in ["alias", "aliases", "unalias"]:
+        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+
+    # Check if this is an alias
+    alias = alias_storage.get_alias(player_name, cmd)
+    if alias:
+        # Expand the alias
+        expanded_command = alias.get_expanded_command(args)
+        # Recursively process the expanded command (with depth limit to prevent loops)
+        return handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth=0)
+
+    # Process command normally
+    return process_command(cmd, args, current_user, request, alias_storage, player_name)
+
+
+def handle_expanded_command(
+    command_line: str,
+    current_user: dict,
+    request: Request,
+    alias_storage: AliasStorage,
+    player_name: str,
+    depth: int = 0,
+) -> dict:
+    """Handle command processing with alias expansion and loop detection."""
+    # Prevent infinite loops
+    if depth > 10:
+        return {"result": "Error: Alias loop detected. Maximum recursion depth exceeded."}
+
+    # Handle alias management commands first (don't expand these)
+    parts = command_line.split()
+    cmd = parts[0].lower()
+    args = parts[1:]
+
+    if cmd in ["alias", "aliases", "unalias"]:
+        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+
+    # Check for alias expansion
+    alias = alias_storage.get_alias(player_name, cmd)
+    if alias:
+        # Expand the alias and recurse
+        expanded_command = alias.get_expanded_command(args)
+        return handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth + 1)
+
+    # Process command normally
+    return process_command(cmd, args, current_user, request, alias_storage, player_name)
+
+
+def process_command(
+    cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
+) -> dict:
+    """Process a command with alias management support."""
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -256,6 +412,16 @@ def handle_command(
             return {"result": "Too many arguments. Usage: help [command]"}
         command_name = args[0] if args else None
         return {"result": get_help_content(command_name)}
+
+    # Handle alias management commands
+    if cmd == "alias":
+        return handle_alias_command(args, alias_storage, player_name)
+
+    if cmd == "aliases":
+        return handle_aliases_command(alias_storage, player_name)
+
+    if cmd == "unalias":
+        return handle_unalias_command(args, alias_storage, player_name)
 
     if cmd == "look":
         if not persistence:
@@ -323,3 +489,80 @@ def handle_command(
         return {"result": f"You say: {message}"}
     else:
         return {"result": f"Unknown command: {cmd}"}
+
+
+def handle_alias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
+    """Handle the alias command for creating and viewing aliases."""
+    if not args:
+        return {"result": "Usage: alias <name> <command> or alias <name> to view"}
+
+    alias_name = args[0]
+
+    # If only one argument, show the alias details
+    if len(args) == 1:
+        alias = alias_storage.get_alias(player_name, alias_name)
+        if alias:
+            return {"result": f"Alias '{alias_name}' -> '{alias.command}'"}
+        else:
+            return {"result": f"No alias found with name '{alias_name}'"}
+
+    # Create or update alias
+    command = " ".join(args[1:])
+
+    # Validate alias name
+    if not alias_storage.validate_alias_name(alias_name):
+        return {
+            "result": "Invalid alias name. Must start with a letter and contain only alphanumeric characters and underscores."
+        }
+
+    # Validate command
+    if not alias_storage.validate_alias_command(command):
+        return {"result": "Invalid command. Cannot alias reserved commands or empty commands."}
+
+    # Check alias count limit
+    if alias_storage.get_alias_count(player_name) >= 50:
+        existing_alias = alias_storage.get_alias(player_name, alias_name)
+        if not existing_alias:
+            return {"result": "Maximum number of aliases (50) reached. Remove some aliases before creating new ones."}
+
+    # Create the alias
+    alias = alias_storage.create_alias(player_name, alias_name, command)
+    if alias:
+        return {"result": f"Alias '{alias_name}' created: '{command}'"}
+    else:
+        return {"result": "Failed to create alias. Please check your input."}
+
+
+def handle_aliases_command(alias_storage: AliasStorage, player_name: str) -> dict:
+    """Handle the aliases command for listing all aliases."""
+    aliases = alias_storage.get_player_aliases(player_name)
+
+    if not aliases:
+        return {"result": "You have no aliases defined."}
+
+    # Format alias list
+    alias_list = []
+    for alias in aliases:
+        alias_list.append(f"  {alias.name} -> {alias.command}")
+
+    result = f"You have {len(aliases)} alias(es):\n" + "\n".join(alias_list)
+    return {"result": result}
+
+
+def handle_unalias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
+    """Handle the unalias command for removing aliases."""
+    if not args:
+        return {"result": "Usage: unalias <name>"}
+
+    alias_name = args[0]
+
+    # Check if alias exists
+    existing_alias = alias_storage.get_alias(player_name, alias_name)
+    if not existing_alias:
+        return {"result": f"No alias found with name '{alias_name}'"}
+
+    # Remove the alias
+    if alias_storage.remove_alias(player_name, alias_name):
+        return {"result": f"Alias '{alias_name}' removed."}
+    else:
+        return {"result": f"Failed to remove alias '{alias_name}'."}
