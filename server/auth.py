@@ -118,8 +118,10 @@ def save_json_file_safely(file_path: str, data: list) -> bool:
         # Validate the file path is within our secure directory
         # Handle cross-drive scenarios gracefully
         try:
-            rel_path = os.path.relpath(file_path, SERVER_DIR)
-            validate_secure_path(SERVER_DIR, rel_path)
+            normalized_path = os.path.normpath(file_path)
+            if not normalized_path.startswith(SERVER_DIR):
+                raise ValueError(f"Invalid file path: {file_path}")
+            validate_secure_path(SERVER_DIR, os.path.relpath(normalized_path, SERVER_DIR))
         except (ValueError, HTTPException) as e:
             # For cross-drive scenarios on Windows, we need to handle this differently
             # Instead of silently passing, we'll validate the absolute path
