@@ -93,13 +93,13 @@ def load_json_file_safely(file_path: str, default: list = None) -> list:
                     print(f"Warning: Path validation failed for {file_path}: {e}")
                     return default
 
-        if os.path.exists(file_path):
-            with open(file_path, encoding="utf-8") as f:
+        if os.path.exists(normalized_path):
+            with open(normalized_path, encoding="utf-8") as f:
                 return json.load(f)
         return default
     except Exception as e:
         # Log the error in production, but don't expose it to users
-        print(f"Warning: Could not load {file_path}: {e}")
+        print(f"Warning: Could not load {normalized_path}: {e}")
         return default
 
 
@@ -149,13 +149,13 @@ def save_json_file_safely(file_path: str, data: list) -> bool:
                     return False
 
         # Ensure the directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(normalized_path), exist_ok=True)
 
-        with open(file_path, "w", encoding="utf-8") as f:
+        with open(normalized_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
         return True
     except Exception as e:
-        print(f"Warning: Could not save {file_path}: {e}")
+        print(f"Warning: Could not save {normalized_path}: {e}")
         return False
 
 
