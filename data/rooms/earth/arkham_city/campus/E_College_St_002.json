@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_E_College_St_002",
+  "name": "E. College Street (Central)",
+  "description": "The central section of E. College Street, where the university's research facilities and laboratories stand. The air here carries the faint scent of chemicals and something else, something that makes the back of your throat itch.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_campus_E_College_St_003",
+    "west": "earth_arkham_city_campus_E_College_St_001",
+    "up": null,
+    "down": null
+  }
+}

@@ -9,7 +9,7 @@
   "exits": {
     "north": "earth_arkham_city_downtown_Main_St_003",
     "south": "earth_arkham_city_downtown_Main_St_001",
-    "east": null,
+    "east": "earth_arkham_city_intersection_Main_Church",
     "west": null,
     "up": null,
     "down": null

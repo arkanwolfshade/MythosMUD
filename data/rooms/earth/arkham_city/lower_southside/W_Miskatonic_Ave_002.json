@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_002",
+  "name": "W. Miskatonic Avenue (Central)",
+  "description": "The central section of W. Miskatonic Avenue within the Lower Southside district. Here the buildings are particularly decrepit, with broken windows and doors that seem to lead to places that shouldn't exist. The street has an air of being watched by unseen observers.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "lower_southside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_003",
+    "west": "earth_arkham_city_lower_southside_W_Miskatonic_Ave_001",
+    "up": null,
+    "down": null
+  }
+}

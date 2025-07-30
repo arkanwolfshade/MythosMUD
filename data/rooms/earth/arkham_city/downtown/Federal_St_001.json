@@ -8,7 +8,7 @@
   "environment": "outdoors",
   "exits": {
     "north": null,
-    "south": null,
+    "south": "earth_arkham_city_intersection_E_College_Federal",
     "east": "earth_arkham_city_downtown_Federal_St_002",
     "west": null,
     "up": null,

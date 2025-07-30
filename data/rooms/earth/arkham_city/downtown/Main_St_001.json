@@ -10,7 +10,7 @@
     "north": "earth_arkham_city_downtown_Main_St_002",
     "south": null,
     "east": null,
-    "west": null,
+    "west": "earth_arkham_city_intersection_Main_Church",
     "up": null,
     "down": null
   }

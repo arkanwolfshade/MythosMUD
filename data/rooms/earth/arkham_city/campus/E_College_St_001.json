@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_E_College_St_001",
+  "name": "E. College Street (West)",
+  "description": "The western end of E. College Street, where the university's eastern campus begins. The buildings here have a more modern appearance, though their foundations seem to sink deeper into the earth than physics would suggest possible.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_campus_E_College_St_002",
+    "west": "earth_arkham_city_intersection_E_College_Federal",
+    "up": null,
+    "down": null
+  }
+}

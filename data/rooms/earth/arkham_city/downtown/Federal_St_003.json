@@ -10,7 +10,8 @@
     "north": null,
     "south": null,
     "east": "earth_arkham_city_downtown_Federal_St_004",
-    "west": "earth_arkham_city_downtown_Federal_St_002",
+    "south": "earth_arkham_city_intersection_Main_Federal",
+    "west": "earth_arkham_city_intersection_Main_Federal",
     "up": null,
     "down": null
   }

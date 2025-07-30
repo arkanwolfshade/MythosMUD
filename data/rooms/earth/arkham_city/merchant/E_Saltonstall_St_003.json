@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_merchant_E_Saltonstall_St_003",
+  "name": "E. Saltonstall Street (East)",
+  "description": "The eastern end of E. Saltonstall Street within the Merchant district, where it approaches the intersection with the main thoroughfares. The commercial activity here is somewhat diminished, though the buildings still carry the same aura of secrets best left unexplored.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "merchant",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_merchant_E_Saltonstall_St_002",
+    "up": null,
+    "down": null
+  }
+}

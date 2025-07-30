@@ -211,7 +211,7 @@ def register_user(
             id=str(uuid.uuid4()),
             name=req.username,
             stats=Stats(),
-            current_room_id="arkham_001",  # Start in the town square
+            current_room_id="earth_arkham_city_campus_E_College_St_003",  # Start in E. College Street
             created_at=datetime.utcnow(),
             last_active=datetime.utcnow(),
             experience_points=0,

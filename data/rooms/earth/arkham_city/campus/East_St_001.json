@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_East_St_001",
+  "name": "East Street (Campus South)",
+  "description": "The southern end of East Street as it enters the campus district. The street takes on a more academic character here, with university buildings replacing the commercial establishments of downtown. The air carries the scent of old books and something more ancient.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_campus_East_St_002",
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

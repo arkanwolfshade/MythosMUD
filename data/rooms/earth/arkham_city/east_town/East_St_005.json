@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_east_town_East_St_005",
+  "name": "East Street (East Town Central)",
+  "description": "The central section of East Street within the East Town district. Here the industrial buildings are most dense, with smoke-belching factories and warehouses that seem to lean inward as if trying to hide their secrets. The air is thick with the acrid tang of chemicals.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "east_town",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_east_town_East_St_006",
+    "south": "earth_arkham_city_east_town_East_St_004",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

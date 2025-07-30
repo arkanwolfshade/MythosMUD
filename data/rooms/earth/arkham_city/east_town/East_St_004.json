@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_east_town_East_St_004",
+  "name": "East Street (East Town South)",
+  "description": "The southern end of East Street as it enters the East Town district. The street takes on a more industrial character here, with warehouses and factories replacing the academic buildings of campus. The air carries the scent of machinery and something more metallic.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "east_town",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_east_town_East_St_005",
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

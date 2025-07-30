@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_uptown_E_Armitage_St_001",
+  "name": "E. Armitage Street (West)",
+  "description": "The western end of E. Armitage Street in the Uptown district. The street is lined with stately mansions with manicured gardens, though behind the facade of respectability lurks a decadence that would shock even the most jaded observer.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "uptown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_uptown_E_Armitage_St_002",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}
