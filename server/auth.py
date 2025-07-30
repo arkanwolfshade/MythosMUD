@@ -80,17 +80,17 @@ def load_json_file_safely(file_path: str, default: list = None) -> list:
                 if not abs_file_path.startswith(abs_server_dir):
                     # Allow test files in test environment
                     if is_test_environment():
-                        print(f"Test environment: Allowing external file {file_path}")
+                        print(f"Test environment: Allowing external file {normalized_path}")
                     else:
-                        print(f"Warning: Path {file_path} is outside server directory")
+                        print(f"Warning: Path {normalized_path} is outside server directory")
                         return default
             else:
                 # On non-Windows systems, if validation fails, it's a security issue
                 # Allow test files in test environment
                 if is_test_environment():
-                    print(f"Test environment: Allowing external file {file_path}")
+                    print(f"Test environment: Allowing external file {normalized_path}")
                 else:
-                    print(f"Warning: Path validation failed for {file_path}: {e}")
+                    print(f"Warning: Path validation failed for {normalized_path}: {e}")
                     return default
 
         if os.path.exists(normalized_path):
@@ -135,9 +135,9 @@ def save_json_file_safely(file_path: str, data: list) -> bool:
                 if not abs_file_path.startswith(abs_server_dir):
                     # Allow test files in test environment
                     if is_test_environment():
-                        print(f"Test environment: Allowing external file {file_path}")
+                        print(f"Test environment: Allowing external file {normalized_path}")
                     else:
-                        print(f"Warning: Path {file_path} is outside server directory")
+                        print(f"Warning: Path {normalized_path} is outside server directory")
                         return False
             else:
                 # On non-Windows systems, if validation fails, it's a security issue
