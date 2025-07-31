@@ -580,6 +580,7 @@ class TestWebSocketCommands:
             def __init__(self):
                 self.persistence = None
                 self.sequence = 0
+                self.app = None
 
             def _get_player(self, player_id):
                 # Return a mock player
@@ -592,25 +593,38 @@ class TestWebSocketCommands:
                 self.sequence += 1
                 return self.sequence
 
-        # Mock the get_room_data function
-        def mock_get_room_data(room_id):
-            if room_id == "arkham_001":
-                return {
-                    "name": "Miskatonic University Library",
-                    "description": "The ancient library contains forbidden knowledge.",
-                    "exits": {
-                        "north": "arkham_002",
-                        "south": None,  # Blocked exit
-                        "east": "arkham_003",
-                        "west": "arkham_004",
-                    },
-                }
-            return None
+        # Mock the persistence layer
+        class MockPersistence:
+            def get_player_by_name(self, username):
+                from server.models import Player
+                return Player(id="testuser", name=username, current_room_id="arkham_001")
+
+            def get_room(self, room_id):
+                if room_id == "arkham_001":
+                    return {
+                        "name": "Miskatonic University Library",
+                        "description": "The ancient library contains forbidden knowledge.",
+                        "exits": {
+                            "north": "arkham_002",
+                            "south": None,  # Blocked exit
+                            "east": "arkham_003",
+                            "west": "arkham_004",
+                        },
+                    }
+                return None
+
+        # Create a mock app with persistence
+        class MockApp:
+            def __init__(self):
+                self.state = type('obj', (object,), {'persistence': MockPersistence()})()
+
+        # Update MockConnectionManager to have the app
+        mock_connection_manager = MockConnectionManager()
+        mock_connection_manager.app = MockApp()
 
         # Patch the functions
         with (
-            patch("server.real_time.connection_manager", MockConnectionManager()),
-            patch("server.real_time.get_room_data", mock_get_room_data),
+            patch("server.real_time.connection_manager", mock_connection_manager),
         ):
             # Test the look command
             result = asyncio.run(process_command("testuser", {"command": "look", "args": []}))

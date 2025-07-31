@@ -13,6 +13,7 @@ function App() {
   const [error, setError] = useState("");
   const [showRegistration, setShowRegistration] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
+  const [playerName, setPlayerName] = useState("");
 
   const baseUrl = import.meta.env.VITE_API_URL || "/api";
 
@@ -52,6 +53,7 @@ function App() {
 
         setAuthToken(data.access_token);
         setPlayerId(data.player_id); // Use the actual player ID from the server
+        setPlayerName(username); // Store the username for SSE connection
         setIsAuthenticated(true);
       } else {
         const errorData = await response.json();
@@ -125,7 +127,7 @@ function App() {
     logger.info("App", "Rendering authenticated view", { playerId, hasToken: !!authToken });
     return (
       <div className="app">
-        <GameTerminal playerId={playerId} authToken={authToken} />
+        <GameTerminal playerId={playerId} playerName={playerName} authToken={authToken} />
       </div>
     );
   }

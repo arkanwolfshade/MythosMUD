@@ -403,113 +403,37 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
             data={"command": command, "result": "Player not found", "success": False},
         )
 
-    # Process command using similar logic to command_handler
-    if command == "look":
-        room_id = player.current_room_id
-        room = get_room_data(room_id)
-        if args:
-            direction = args[0].lower()
-            exits = room.get("exits", {})
-            target_room_id = exits.get(direction)
-            if target_room_id:
-                target_room = get_room_data(target_room_id)
-                if target_room:
-                    name = target_room.get("name", "")
-                    desc = target_room.get("description", "You see nothing special.")
-                    result = f"{name}\n{desc}"
-                else:
-                    result = "You see nothing special that way."
-            else:
-                result = "You see nothing special that way."
-        else:
-            name = room.get("name", "")
-            desc = room.get("description", "You see nothing special.")
-            exits = room.get("exits", {})
-            # Only include exits that have valid room IDs (not null)
-            valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
-            exit_list = ", ".join(valid_exits) if valid_exits else "none"
-            result = f"{name}\n{desc}\n\nExits: {exit_list}"
+    # Use the command handler from command_handler.py for all commands
 
-    elif command == "go":
-        if not args:
-            result = "Go where? Usage: go <direction>"
-        else:
-            direction = args[0].lower()
-            room_id = player.current_room_id
-            room = get_room_data(room_id)
-            exits = room.get("exits", {})
-            target_room_id = exits.get(direction)
-            if not target_room_id:
-                result = "You can't go that way"
-            else:
-                target_room = get_room_data(target_room_id)
-                if not target_room:
-                    result = "You can't go that way"
-                else:
-                    # Move the player
-                    player.current_room_id = target_room_id
-                    if connection_manager.persistence:
-                        connection_manager.persistence.save_player(player)
+    from .alias_storage import AliasStorage
+    from .command_handler import handle_expanded_command
 
-                    name = target_room.get("name", "")
-                    result = name
+    # Create a mock request object for the command handler
+    class MockRequest:
+        def __init__(self, app):
+            self.app = app
 
-                    # Send room update to the moving player
-                    room_update_event = GameEvent(
-                        event_type="room_update",
-                        sequence_number=connection_manager._get_next_sequence(),
-                        player_id=player_id,
-                        room_id=target_room_id,
-                        data={
-                            "room": {
-                                "name": target_room.get("name", ""),
-                                "description": target_room.get("description", "You see nothing special."),
-                            },
-                            "entities": [],  # TODO: Add entities when implemented
-                        },
-                    )
-                    await connection_manager.send_personal_message(player_id, room_update_event)
+    mock_request = MockRequest(connection_manager.app if hasattr(connection_manager, "app") else None)
 
-                    # Broadcast room change to other players in the room (exclude the moving player)
-                    await broadcast_room_event(
-                        target_room_id,
-                        "player_entered",
-                        {"player_name": player.name, "player_id": player_id},
-                        exclude_player=player_id,
-                    )
+    # Create current_user dict for the command handler
+    current_user = {"username": player_id}
 
-    elif command == "help":
-        # Import the help function from command_handler
-        from .command_handler import get_help_content
+    # Initialize alias storage
+    alias_storage = AliasStorage()
 
-        if len(args) > 1:
-            result = "Too many arguments. Usage: help [command]"
-        else:
-            command_name = args[0] if args else None
-            result = get_help_content(command_name)
+    # Process the command using the command handler
+    command_line = f"{command} {' '.join(args)}".strip()
+    result = handle_expanded_command(command_line, current_user, mock_request, alias_storage, player_id)
 
-    elif command == "say":
-        message = " ".join(args).strip()
-        if not message:
-            result = "You open your mouth, but no words come out"
-        else:
-            result = f"You say: {message}"
-            # Broadcast to other players in the room
-            await broadcast_room_event(
-                player.current_room_id,
-                "chat_message",
-                {"channel": "room", "player_name": player.name, "message": message},
-                exclude_player=player_id,
-            )
-
-    else:
-        result = f"Unknown command: {command}"
+    # Extract alias chain information if present
+    alias_chain = result.get("alias_chain", [])
 
     return GameEvent(
         event_type="command_response",
         sequence_number=connection_manager._get_next_sequence(),
         player_id=player_id,
-        data={"command": command, "result": result, "success": True},
+        data={"command": command, "result": result.get("result", "Unknown command"), "success": True},
+        alias_chain=alias_chain if alias_chain else None,
     )
 
 

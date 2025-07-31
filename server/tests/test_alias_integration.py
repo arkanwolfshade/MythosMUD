@@ -357,3 +357,48 @@ class TestAliasIntegration:
 
             # Should still call get_alias
             mock_storage.get_alias.assert_called_with("testuser", "l")
+
+    def test_alias_chain_in_response(self):
+        """Test that alias chain information is included in response."""
+        mock_command_request = Mock()
+        mock_command_request.command = "l"
+
+        mock_user = {"username": "testuser"}
+
+        mock_request = Mock()
+        # Mock the persistence layer
+        mock_app = Mock()
+        mock_persistence = Mock()
+        mock_app.state.persistence = mock_persistence
+        mock_request.app = mock_app
+
+        # Mock player and room data
+        mock_player = Mock()
+        mock_player.current_room_id = "arkham_001"
+        mock_persistence.get_player_by_name.return_value = mock_player
+
+        mock_room = {
+            "name": "Test Room",
+            "description": "A test room for testing.",
+            "exits": {"north": "arkham_002", "south": "arkham_003"},
+        }
+        mock_persistence.get_room.return_value = mock_room
+
+        with patch("server.command_handler.AliasStorage") as mock_storage_class:
+            mock_storage = Mock()
+            # First call: check if "l" is an alias
+            mock_storage.get_alias.side_effect = [
+                Alias(name="l", command="look"),  # "l" is an alias
+                None,  # "look" is not an alias
+            ]
+            mock_storage.get_alias_count.return_value = 0
+            mock_storage_class.return_value = mock_storage
+
+            result = handle_command(mock_command_request, mock_user, mock_request)
+
+            # Should include alias chain information
+            assert "alias_chain" in result
+            assert len(result["alias_chain"]) == 1
+            assert result["alias_chain"][0]["original"] == "l"
+            assert result["alias_chain"][0]["expanded"] == "look"
+            assert result["alias_chain"][0]["alias_name"] == "l"

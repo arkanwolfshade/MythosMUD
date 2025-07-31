@@ -397,3 +397,39 @@
     flex-direction: column;
   }
 }
+
+/* Alias expansion styles */
+.alias-expansion {
+  background-color: #1a1a1a;
+  border: 1px solid #00aa00;
+  border-radius: 3px;
+  padding: 5px 8px;
+  margin-bottom: 5px;
+  font-size: 11px;
+  color: #00cc00;
+}
+
+.alias-indicator {
+  margin-right: 5px;
+  font-size: 10px;
+}
+
+.alias-chain {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.alias-original {
+  color: #ffaa00;
+  font-weight: bold;
+}
+
+.alias-arrow {
+  color: #00aa00;
+  margin: 0 3px;
+}
+
+.alias-expanded {
+  color: #00ff00;
+  font-style: italic;
+}
