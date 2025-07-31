@@ -430,5 +430,317 @@
   {
     "code": "TEST_INVITE_2fdc26c5_1753745215",
     "used": false
+  },
+  {
+    "code": "COSMOSINITIATE20",
+    "used": false
+  },
+  {
+    "code": "ELDERPORTAL",
+    "used": false
+  },
+  {
+    "code": "Ageless",
+    "used": false
+  },
+  {
+    "code": "Nameless",
+    "used": false
+  },
+  {
+    "code": "Xoth",
+    "used": false
+  },
+  {
+    "code": "COSMOSKEY14",
+    "used": false
+  },
+  {
+    "code": "Nameless980",
+    "used": false
+  },
+  {
+    "code": "GREATINITIATE30",
+    "used": false
+  },
+  {
+    "code": "MYTHOSGATE62",
+    "used": false
+  },
+  {
+    "code": "ELDERCODE",
+    "used": false
+  },
+  {
+    "code": "DEEPACCESS86",
+    "used": false
+  },
+  {
+    "code": "DREAM2025",
+    "used": false
+  },
+  {
+    "code": "DEEPCODE",
+    "used": false
+  },
+  {
+    "code": "VOIDINITIATE",
+    "used": false
+  },
+  {
+    "code": "Azathoth",
+    "used": false
+  },
+  {
+    "code": "GREATCODE",
+    "used": false
+  },
+  {
+    "code": "COSMOS202561",
+    "used": false
+  },
+  {
+    "code": "COSMOSKEY",
+    "used": false
+  },
+  {
+    "code": "Profound",
+    "used": false
+  },
+  {
+    "code": "Archaic662",
+    "used": false
+  },
+  {
+    "code": "GREAT2025",
+    "used": false
+  },
+  {
+    "code": "ELDERPASS",
+    "used": false
+  },
+  {
+    "code": "GREATGATE",
+    "used": false
+  },
+  {
+    "code": "Lloigor",
+    "used": false
+  },
+  {
+    "code": "DEEPACCESS",
+    "used": false
+  },
+  {
+    "code": "DREAMPASS59",
+    "used": false
+  },
+  {
+    "code": "Yaddith",
+    "used": false
+  },
+  {
+    "code": "DEEPPORTAL",
+    "used": false
+  },
+  {
+    "code": "MYTHOSKEY20",
+    "used": false
+  },
+  {
+    "code": "MYTHOS202577",
+    "used": false
+  },
+  {
+    "code": "ELDERGATE",
+    "used": false
+  },
+  {
+    "code": "ELDERACCESS32",
+    "used": false
+  },
+  {
+    "code": "RhanTegoth617",
+    "used": false
+  },
+  {
+    "code": "Atlantis757",
+    "used": false
+  },
+  {
+    "code": "Archaic",
+    "used": false
+  },
+  {
+    "code": "GREATGATE75",
+    "used": false
+  },
+  {
+    "code": "GREAT202578",
+    "used": false
+  },
+  {
+    "code": "Yuggoth313",
+    "used": false
+  },
+  {
+    "code": "GREATPASS",
+    "used": false
+  },
+  {
+    "code": "DREAMGATE",
+    "used": false
+  },
+  {
+    "code": "Yig539",
+    "used": false
+  },
+  {
+    "code": "DREAMCODE85",
+    "used": false
+  },
+  {
+    "code": "Eldritch627",
+    "used": false
+  },
+  {
+    "code": "Limitless",
+    "used": false
+  },
+  {
+    "code": "MYTHOSCODE",
+    "used": false
+  },
+  {
+    "code": "ELDERPORTAL73",
+    "used": false
+  },
+  {
+    "code": "DEEPPASS",
+    "used": false
+  },
+  {
+    "code": "Nodens",
+    "used": false
+  },
+  {
+    "code": "Elder757",
+    "used": false
+  },
+  {
+    "code": "Undying645",
+    "used": false
+  },
+  {
+    "code": "Endless",
+    "used": false
+  },
+  {
+    "code": "DREAMKEY",
+    "used": false
+  },
+  {
+    "code": "Esoteric681",
+    "used": false
+  },
+  {
+    "code": "MYTHOSKEY42",
+    "used": false
+  },
+  {
+    "code": "Outer",
+    "used": false
+  },
+  {
+    "code": "VOIDKEY21",
+    "used": false
+  },
+  {
+    "code": "DREAM202545",
+    "used": false
+  },
+  {
+    "code": "ELDERGATE60",
+    "used": false
+  },
+  {
+    "code": "DEEP202528",
+    "used": false
+  },
+  {
+    "code": "Tsathoggua389",
+    "used": false
+  },
+  {
+    "code": "VOIDKEY66",
+    "used": false
+  },
+  {
+    "code": "Deep320",
+    "used": false
+  },
+  {
+    "code": "Vast",
+    "used": false
+  },
+  {
+    "code": "Dream",
+    "used": false
+  },
+  {
+    "code": "Nyarlathotep",
+    "used": false
+  },
+  {
+    "code": "Abyssal",
+    "used": false
+  },
+  {
+    "code": "Forbidden962",
+    "used": false
+  },
+  {
+    "code": "COSMOSGATE",
+    "used": false
+  },
+  {
+    "code": "Primordial671",
+    "used": true
+  },
+  {
+    "code": "Yuggoth",
+    "used": false
+  },
+  {
+    "code": "GREAT202532",
+    "used": false
+  },
+  {
+    "code": "VOIDKEY17",
+    "used": false
+  },
+  {
+    "code": "ELDERINITIATE14",
+    "used": false
+  },
+  {
+    "code": "Cosmos",
+    "used": false
+  },
+  {
+    "code": "Rlyeh",
+    "used": false
+  },
+  {
+    "code": "Nodens943",
+    "used": false
+  },
+  {
+    "code": "Dagon",
+    "used": false
+  },
+  {
+    "code": "MYTHOSINITIATE77",
+    "used": false
   }
 ]

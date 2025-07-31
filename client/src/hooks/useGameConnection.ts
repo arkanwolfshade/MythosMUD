@@ -27,6 +27,7 @@ interface GameConnectionState {
 
 interface UseGameConnectionOptions {
   playerId: string;
+  playerName: string;
   authToken: string;
   onEvent?: (event: GameEvent) => void;
   onConnect?: () => void;
@@ -36,6 +37,7 @@ interface UseGameConnectionOptions {
 
 export function useGameConnection({
   playerId,
+  playerName,
   authToken,
   onEvent,
   onConnect,
@@ -64,8 +66,8 @@ export function useGameConnection({
     }
 
     try {
-      // WebSocket endpoint is at /ws/{player_id} on port 54731
-      const wsUrl = `ws://localhost:54731/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
+      // WebSocket endpoint is at /ws/{player_name} on port 54731 (server expects username, not UUID)
+      const wsUrl = `ws://localhost:54731/ws/${playerName}?token=${encodeURIComponent(authToken)}`;
       const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;
@@ -98,7 +100,7 @@ export function useGameConnection({
     } catch (error) {
       logger.error("GameConnection", "Failed to connect WebSocket", { error: String(error) });
     }
-  }, [authToken, playerId, onEvent]);
+  }, [authToken, playerId, playerName, onEvent]);
 
   const connect = useCallback(async () => {
     if (isConnectingRef.current || state.isConnected) {
@@ -119,7 +121,8 @@ export function useGameConnection({
       }
 
       // Create new EventSource with authentication token as query parameter
-      const eventSource = new EventSource(`/api/events/${playerId}?token=${encodeURIComponent(authToken)}`);
+      // Use playerName for SSE connection (server expects username, not UUID)
+      const eventSource = new EventSource(`/api/events/${playerName}?token=${encodeURIComponent(authToken)}`);
 
       eventSourceRef.current = eventSource;
 
@@ -171,7 +174,7 @@ export function useGameConnection({
       }));
       onError?.("Failed to connect");
     }
-  }, [playerId, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
+  }, [playerName, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
 
   const disconnect = useCallback(() => {
     logger.info("GameConnection", "Disconnecting");

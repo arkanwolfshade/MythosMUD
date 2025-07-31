@@ -6,6 +6,7 @@ import "./GameTerminal.css";
 
 interface GameTerminalProps {
   playerId: string;
+  playerName: string;
   authToken: string;
 }
 
@@ -30,6 +31,11 @@ interface Entity {
 interface GameEvent {
   event_type: string;
   data: Record<string, unknown>;
+  alias_chain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
 }
 
 interface GameState {
@@ -49,7 +55,7 @@ interface GameState {
   }>;
 }
 
-export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
+export function GameTerminal({ playerId, playerName, authToken }: GameTerminalProps) {
   const [gameState, setGameState] = useState<GameState>({
     player: null,
     room: null,
@@ -66,6 +72,7 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
 
   const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
     playerId,
+    playerName,
     authToken,
     onEvent: handleGameEvent,
     onConnect: () => addMessage("Connected to MythosMUD..."),

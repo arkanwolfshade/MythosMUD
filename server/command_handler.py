@@ -361,7 +361,9 @@ def handle_command(
         # Expand the alias
         expanded_command = alias.get_expanded_command(args)
         # Recursively process the expanded command (with depth limit to prevent loops)
-        result = handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[])
+        result = handle_expanded_command(
+            expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
+        )
         # Add alias chain information to the result
         if "alias_chain" not in result:
             result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
