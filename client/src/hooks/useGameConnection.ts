@@ -8,6 +8,11 @@ interface GameEvent {
   player_id?: string;
   room_id?: string;
   data: Record<string, unknown>;
+  alias_chain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
 }
 
 interface GameConnectionState {

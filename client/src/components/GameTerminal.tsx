@@ -41,6 +41,11 @@ interface GameState {
     timestamp: string;
     isHtml: boolean;
     isCompleteHtml?: boolean;
+    aliasChain?: Array<{
+      original: string;
+      expanded: string;
+      alias_name: string;
+    }>;
   }>;
 }
 
@@ -124,9 +129,13 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
         }
         break;
 
-      case "command_response":
-        addMessage(event.data.result as string);
+      case "command_response": {
+        // Handle command response with potential alias chain information
+        const result = event.data.result as string;
+        const aliasChain = event.alias_chain;
+        addMessage(result, aliasChain);
         break;
+      }
 
       case "heartbeat":
         // Silent heartbeat - just keep connection alive
@@ -137,7 +146,7 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
     }
   }
 
-  function addMessage(message: string) {
+  function addMessage(message: string, aliasChain?: Array<{ original: string; expanded: string; alias_name: string }>) {
     // Check if message contains ANSI escape sequences
     const hasAnsi = message.includes("\x1b[");
     console.log("addMessage called with:", message.substring(0, 100) + "...");
@@ -169,6 +178,7 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
           timestamp: new Date().toLocaleTimeString(),
           isHtml: hasAnsi || hasHtml,
           isCompleteHtml: isCompleteHtml,
+          aliasChain: aliasChain,
         },
       ].slice(-100), // Keep last 100 messages
     }));
@@ -346,6 +356,21 @@ export function GameTerminal({ playerId, authToken }: GameTerminalProps) {
             <div className="messages">
               {gameState.messages.map((message, index) => (
                 <div key={index} className="message">
+                  {/* Show alias expansion information if available */}
+                  {message.aliasChain && message.aliasChain.length > 0 && (
+                    <div className="alias-expansion">
+                      <span className="alias-indicator">🔗</span>
+                      {message.aliasChain.map((alias, chainIndex) => (
+                        <span key={chainIndex} className="alias-chain">
+                          <span className="alias-original">{alias.original}</span>
+                          <span className="alias-arrow">→</span>
+                          <span className="alias-expanded">{alias.expanded}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Regular message content */}
                   {message.isHtml ? (
                     <span
                       dangerouslySetInnerHTML={{

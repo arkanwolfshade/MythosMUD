@@ -361,7 +361,11 @@ def handle_command(
         # Expand the alias
         expanded_command = alias.get_expanded_command(args)
         # Recursively process the expanded command (with depth limit to prevent loops)
-        return handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth=0)
+        result = handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[])
+        # Add alias chain information to the result
+        if "alias_chain" not in result:
+            result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
+        return result
 
     # Process command normally
     return process_command(cmd, args, current_user, request, alias_storage, player_name)
@@ -374,11 +378,16 @@ def handle_expanded_command(
     alias_storage: AliasStorage,
     player_name: str,
     depth: int = 0,
+    alias_chain: list[dict] = None,
 ) -> dict:
     """Handle command processing with alias expansion and loop detection."""
     # Prevent infinite loops
     if depth > 10:
         return {"result": "Error: Alias loop detected. Maximum recursion depth exceeded."}
+
+    # Initialize alias chain if not provided
+    if alias_chain is None:
+        alias_chain = []
 
     # Handle alias management commands first (don't expand these)
     parts = command_line.split()
@@ -391,12 +400,34 @@ def handle_expanded_command(
     # Check for alias expansion
     alias = alias_storage.get_alias(player_name, cmd)
     if alias:
+        # Track alias usage for client display
+        alias_info = {
+            "original": cmd,
+            "expanded": alias.get_expanded_command(args),
+            "alias_name": alias.name,
+        }
+        alias_chain.append(alias_info)
+
         # Expand the alias and recurse
         expanded_command = alias.get_expanded_command(args)
-        return handle_expanded_command(expanded_command, current_user, request, alias_storage, player_name, depth + 1)
+        result = handle_expanded_command(
+            expanded_command, current_user, request, alias_storage, player_name, depth + 1, alias_chain
+        )
+
+        # Add alias chain to result if this is the top level
+        if depth == 0 and alias_chain:
+            result["alias_chain"] = alias_chain
+
+        return result
 
     # Process command normally
-    return process_command(cmd, args, current_user, request, alias_storage, player_name)
+    result = process_command(cmd, args, current_user, request, alias_storage, player_name)
+
+    # Add alias chain to result if this is the top level
+    if depth == 0 and alias_chain:
+        result["alias_chain"] = alias_chain
+
+    return result
 
 
 def process_command(
