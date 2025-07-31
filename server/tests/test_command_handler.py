@@ -438,16 +438,24 @@ def test_go_invalid_direction(auth_token, test_client):
 
 def test_go_blocked_exit(auth_token, test_client):
     persistence = test_client.app.state.persistence
+
+    # Get the player name from the auth token by using the existing auth functionality
+    from server.auth import validate_sse_token
+
+    # Decode the token to get the username
+    user_info = validate_sse_token(auth_token)
+    username = user_info["username"]
+
     # Move north first to Miskatonic University Gates
     resp1 = post_command(test_client, auth_token, "go north")
     # Refresh player from database to get updated room
-    player = persistence.get_player_by_name("cmduser")
+    player = persistence.get_player_by_name(username)
     print(f"After first go north: {player.current_room_id}")
     print(f"First go north result: {resp1.json()['result']}")
     # Try to go west from Miskatonic University Gates (should be blocked since it has no west exit)
     resp2 = post_command(test_client, auth_token, "go west")
     # Refresh player from database to get updated room
-    player = persistence.get_player_by_name("cmduser")
+    player = persistence.get_player_by_name(username)
     print(f"After second go west: {player.current_room_id}")
     print(f"Second go west result: {resp2.json()['result']}")
     assert resp2.status_code == 200

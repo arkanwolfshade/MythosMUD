@@ -163,6 +163,7 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
     room changes, combat events, and other real-time information.
 
     Authentication is handled via JWT token in query parameter or Authorization header.
+    The player_id parameter should be the player name, not the UUID.
     """
     # Extract token from query parameter or Authorization header
     token = request.query_params.get("token")
@@ -174,7 +175,7 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
     if not token:
         raise HTTPException(status_code=401, detail="Authentication token required")
 
-        # Validate the token and get user information
+    # Validate the token and get user information
     try:
         user_info = validate_sse_token(token, users_file)
         authenticated_username = user_info["username"]
@@ -183,15 +184,15 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid authentication token") from None
 
-        # Verify the authenticated user matches the requested player
+    # Verify the authenticated user matches the requested player
     # Get the player from persistence to check if the player_id matches
     persistence = request.app.state.persistence
     player = persistence.get_player_by_name(authenticated_username)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found in database")
 
-    # Compare the actual player ID (UUID) with the requested player_id
-    if player.id != player_id:
+    # Compare the authenticated username with the requested player_id (which should be the player name)
+    if authenticated_username != player_id:
         raise HTTPException(status_code=403, detail="Access denied: token does not match player ID")
 
     # Get security headers for SSE
@@ -221,6 +222,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     - Real-time interactions
 
     Authentication is handled via JWT token in query parameter.
+    The player_id parameter should be the player name, not the UUID.
     """
     # Extract token from query parameter
     token = websocket.query_params.get("token")
@@ -246,8 +248,8 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
         await websocket.close(code=4004, reason="Player not found in database")
         return
 
-    # Compare the actual player ID (UUID) with the requested player_id
-    if player.id != player_id:
+    # Compare the authenticated username with the requested player_id (which should be the player name)
+    if authenticated_username != player_id:
         await websocket.close(code=4003, reason="Access denied: token does not match player ID")
         return
 

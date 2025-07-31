@@ -43,9 +43,88 @@ def patch_persistence_layer(monkeypatch):
     test_db_path = project_root / db_path
     test_log_path = project_root / log_path
 
-    # Ensure the test database exists
+    # Ensure the test database exists and has required test players
     if not test_db_path.exists():
         raise FileNotFoundError(f"Test database not found at {test_db_path}. Run init_test_db.py first.")
+
+    # Ensure required test players exist
+    import sqlite3
+
+    conn = sqlite3.connect(test_db_path)
+    cursor = conn.cursor()
+
+    # Check if TestPlayer1 exists
+    cursor.execute("SELECT name FROM players WHERE name = 'TestPlayer1'")
+    if not cursor.fetchone():
+        # Add TestPlayer1 if it doesn't exist
+        from datetime import datetime
+
+        cursor.execute(
+            """
+            INSERT INTO players (id, name, strength, dexterity, constitution, intelligence,
+                               wisdom, charisma, sanity, occult_knowledge, fear, corruption,
+                               cult_affiliation, current_room_id, created_at, last_active,
+                               experience_points, level)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+            (
+                "test-player-1",
+                "TestPlayer1",
+                12,
+                14,
+                10,
+                16,
+                8,
+                10,
+                100,
+                0,
+                0,
+                0,
+                0,
+                "arkham_001",
+                datetime.utcnow().isoformat(),
+                datetime.utcnow().isoformat(),
+                0,
+                1,
+            ),
+        )
+
+    # Check if TestPlayer2 exists
+    cursor.execute("SELECT name FROM players WHERE name = 'TestPlayer2'")
+    if not cursor.fetchone():
+        # Add TestPlayer2 if it doesn't exist
+        cursor.execute(
+            """
+            INSERT INTO players (id, name, strength, dexterity, constitution, intelligence,
+                               wisdom, charisma, sanity, occult_knowledge, fear, corruption,
+                               cult_affiliation, current_room_id, created_at, last_active,
+                               experience_points, level)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+            (
+                "test-player-2",
+                "TestPlayer2",
+                10,
+                12,
+                14,
+                10,
+                16,
+                8,
+                85,
+                5,
+                15,
+                0,
+                0,
+                "arkham_002",
+                datetime.utcnow().isoformat(),
+                datetime.utcnow().isoformat(),
+                100,
+                2,
+            ),
+        )
+
+    conn.commit()
+    conn.close()
 
     # Patch the PersistenceLayer constructor to use our test database
     original_init = None
@@ -128,10 +207,28 @@ def test_client(temp_files):
     app.dependency_overrides[get_invites_file] = lambda: invites_path
 
     with TestClient(app) as client:
-        # Set up the persistence layer in app state
-        from server.persistence import get_persistence
+        # Set up the persistence layer in app state with test database
+        from pathlib import Path
 
-        client.app.state.persistence = get_persistence()
+        from server.config_loader import get_config
+
+        # Load test configuration
+        test_config_path = Path(__file__).parent.parent / "test_server_config.yaml"
+        config = get_config(str(test_config_path))
+
+        # Resolve paths relative to the project root (server directory)
+        project_root = Path(__file__).parent.parent
+        # Remove the "server/" prefix from the config paths since we're already in the server directory
+        db_path = config["db_path"].replace("server/", "")
+        log_path = config["log_path"].replace("server/", "")
+        test_db_path = project_root / db_path
+        test_log_path = project_root / log_path
+
+        # Create persistence layer with test database
+        from server.persistence import PersistenceLayer
+
+        persistence = PersistenceLayer(str(test_db_path), str(test_log_path))
+        client.app.state.persistence = persistence
 
         yield client
 
@@ -225,9 +322,9 @@ class TestSSEEndpointAuthentication:
 
             mock_stream.side_effect = mock_generator
 
-            # Use the actual player ID from test database
+            # Use the player name that matches the token (TestPlayer1)
             response = test_client.get(
-                f"/events/test-player-1?token={valid_token}", headers={"Accept": "text/event-stream"}
+                f"/events/TestPlayer1?token={valid_token}", headers={"Accept": "text/event-stream"}
             )
 
             assert response.status_code == 200
@@ -257,9 +354,7 @@ class TestSSEEndpointAuthentication:
 
     def test_sse_endpoint_token_mismatch(self, test_client, valid_token):
         """Test SSE endpoint when token doesn't match player ID."""
-        response = test_client.get(
-            f"/events/test-player-2?token={valid_token}", headers={"Accept": "text/event-stream"}
-        )
+        response = test_client.get(f"/events/TestPlayer2?token={valid_token}", headers={"Accept": "text/event-stream"})
         assert response.status_code == 403
 
     def test_sse_endpoint_with_authorization_header(self, test_client, valid_token):
@@ -273,7 +368,7 @@ class TestSSEEndpointAuthentication:
             mock_stream.side_effect = mock_generator
 
             response = test_client.get(
-                "/events/test-player-1",
+                "/events/TestPlayer1",
                 headers={"Accept": "text/event-stream", "Authorization": f"Bearer {valid_token}"},
             )
             assert response.status_code == 200
@@ -284,7 +379,7 @@ class TestWebSocketAuthentication:
 
     def test_websocket_with_valid_token(self, test_client, valid_token):
         """Test WebSocket connection with valid token."""
-        with test_client.websocket_connect(f"/ws/test-player-1?token={valid_token}") as websocket:
+        with test_client.websocket_connect(f"/ws/TestPlayer1?token={valid_token}") as websocket:
             # Connection should be established
             assert websocket is not None
 
@@ -463,9 +558,9 @@ class TestSSEIntegration:
             token = login_response.json()["access_token"]
 
             # Now try to connect to SSE with the token
-            # Use the actual player ID from the login response, not the username
+            # Use the username, not the player_id
             sse_response = test_client.get(
-                f"/events/{login_response.json()['player_id']}?token={token}", headers={"Accept": "text/event-stream"}
+                f"/events/{unique_username}?token={token}", headers={"Accept": "text/event-stream"}
             )
             assert sse_response.status_code == 200
 

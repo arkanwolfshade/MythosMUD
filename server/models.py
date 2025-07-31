@@ -85,9 +85,7 @@ class Alias(BaseModel):
         """
         if not isinstance(other, Alias):
             return False
-        return (self.name == other.name and
-                self.command == other.command and
-                self.version == other.version)
+        return self.name == other.name and self.command == other.command and self.version == other.version
 
     def __hash__(self) -> int:
         """Custom hash method that matches the equality comparison."""

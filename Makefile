@@ -7,7 +7,7 @@ help:
 	@echo "  clean     - Remove build, dist, and cache files"
 	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
 	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
-	@echo "  test      - Run Python and Node tests"
+	@echo "  test      - Run Python and Node tests (includes test DB cleanup)"
 	@echo "  coverage  - Run Python tests with coverage"
 	@echo "  build     - Build the client (Node)"
 
