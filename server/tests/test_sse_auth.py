@@ -597,6 +597,7 @@ class TestWebSocketCommands:
         class MockPersistence:
             def get_player_by_name(self, username):
                 from server.models import Player
+
                 return Player(id="testuser", name=username, current_room_id="arkham_001")
 
             def get_room(self, room_id):
@@ -616,7 +617,7 @@ class TestWebSocketCommands:
         # Create a mock app with persistence
         class MockApp:
             def __init__(self):
-                self.state = type('obj', (object,), {'persistence': MockPersistence()})()
+                self.state = type("obj", (object,), {"persistence": MockPersistence()})()
 
         # Update MockConnectionManager to have the app
         mock_connection_manager = MockConnectionManager()

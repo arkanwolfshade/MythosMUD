@@ -25,7 +25,7 @@ class Alias(BaseModel):
 
 ### Storage Structure
 
-- **Location**: `data/players/aliases/`
+- **Location**: `data/players/aliases/` (production)
 - **Format**: One JSON file per player: `{player_name}_aliases.json`
 - **Schema**: Validated JSON structure with version tracking
 
@@ -80,7 +80,7 @@ class Alias(BaseModel):
 
 #### 1.1 Data Model and Storage
 - [ ] Create `Alias` model in `server/models.py`
-- [ ] Implement alias storage in `data/players/aliases/`
+- [ ] Implement alias storage in `data/players/aliases/` (production)
 - [ ] Add JSON schema validation
 - [ ] Create alias loading/saving utilities
 
@@ -241,5 +241,5 @@ When implementing this feature:
 - `server/models.py` - Alias model definition
 - `server/command_handler.py` - Command processing and alias management
 - `client/src/components/GameTerminal.tsx` - Client-side visual indicators
-- `data/players/aliases/` - Alias storage directory
+- `data/players/aliases/` - Alias storage directory (production)
 - `server/tests/` - Test suite for alias functionality
