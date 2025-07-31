@@ -43,9 +43,88 @@ def patch_persistence_layer(monkeypatch):
     test_db_path = project_root / db_path
     test_log_path = project_root / log_path
 
-    # Ensure the test database exists
+    # Ensure the test database exists and has required test players
     if not test_db_path.exists():
         raise FileNotFoundError(f"Test database not found at {test_db_path}. Run init_test_db.py first.")
+
+    # Ensure required test players exist
+    import sqlite3
+
+    conn = sqlite3.connect(test_db_path)
+    cursor = conn.cursor()
+
+    # Check if TestPlayer1 exists
+    cursor.execute("SELECT name FROM players WHERE name = 'TestPlayer1'")
+    if not cursor.fetchone():
+        # Add TestPlayer1 if it doesn't exist
+        from datetime import datetime
+
+        cursor.execute(
+            """
+            INSERT INTO players (id, name, strength, dexterity, constitution, intelligence,
+                               wisdom, charisma, sanity, occult_knowledge, fear, corruption,
+                               cult_affiliation, current_room_id, created_at, last_active,
+                               experience_points, level)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+            (
+                "test-player-1",
+                "TestPlayer1",
+                12,
+                14,
+                10,
+                16,
+                8,
+                10,
+                100,
+                0,
+                0,
+                0,
+                0,
+                "arkham_001",
+                datetime.utcnow().isoformat(),
+                datetime.utcnow().isoformat(),
+                0,
+                1,
+            ),
+        )
+
+    # Check if TestPlayer2 exists
+    cursor.execute("SELECT name FROM players WHERE name = 'TestPlayer2'")
+    if not cursor.fetchone():
+        # Add TestPlayer2 if it doesn't exist
+        cursor.execute(
+            """
+            INSERT INTO players (id, name, strength, dexterity, constitution, intelligence,
+                               wisdom, charisma, sanity, occult_knowledge, fear, corruption,
+                               cult_affiliation, current_room_id, created_at, last_active,
+                               experience_points, level)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+            (
+                "test-player-2",
+                "TestPlayer2",
+                10,
+                12,
+                14,
+                10,
+                16,
+                8,
+                85,
+                5,
+                15,
+                0,
+                0,
+                "arkham_002",
+                datetime.utcnow().isoformat(),
+                datetime.utcnow().isoformat(),
+                100,
+                2,
+            ),
+        )
+
+    conn.commit()
+    conn.close()
 
     # Patch the PersistenceLayer constructor to use our test database
     original_init = None
@@ -79,8 +158,8 @@ def patch_get_current_user(monkeypatch):
     """Patch get_current_user to return mock user data."""
 
     def get_current_user_mock(credentials=None, users_file=None):
-        # For SSE tests, always return the testuser
-        return {"username": "testuser", "current_room_id": "arkham_001"}
+        # For SSE tests, always return the TestPlayer1
+        return {"username": "TestPlayer1", "current_room_id": "arkham_001"}
 
     # Mock the get_current_user function
     monkeypatch.setattr("server.auth.get_current_user", get_current_user_mock)
@@ -93,7 +172,7 @@ def temp_files():
         json.dump(
             [
                 {
-                    "username": "testuser",
+                    "username": "TestPlayer1",
                     "password_hash": "hashed_password",
                     "invite_code": "TEST_INVITE",
                     "created_at": "2024-01-01T00:00:00Z",
@@ -128,10 +207,28 @@ def test_client(temp_files):
     app.dependency_overrides[get_invites_file] = lambda: invites_path
 
     with TestClient(app) as client:
-        # Set up the persistence layer in app state
-        from server.persistence import get_persistence
+        # Set up the persistence layer in app state with test database
+        from pathlib import Path
 
-        client.app.state.persistence = get_persistence()
+        from server.config_loader import get_config
+
+        # Load test configuration
+        test_config_path = Path(__file__).parent.parent / "test_server_config.yaml"
+        config = get_config(str(test_config_path))
+
+        # Resolve paths relative to the project root (server directory)
+        project_root = Path(__file__).parent.parent
+        # Remove the "server/" prefix from the config paths since we're already in the server directory
+        db_path = config["db_path"].replace("server/", "")
+        log_path = config["log_path"].replace("server/", "")
+        test_db_path = project_root / db_path
+        test_log_path = project_root / log_path
+
+        # Create persistence layer with test database
+        from server.persistence import PersistenceLayer
+
+        persistence = PersistenceLayer(str(test_db_path), str(test_log_path))
+        client.app.state.persistence = persistence
 
         yield client
 
@@ -141,7 +238,7 @@ def test_client(temp_files):
 @pytest.fixture
 def valid_token():
     """Create a valid JWT token for testing."""
-    return create_access_token(data={"sub": "testuser"})
+    return create_access_token(data={"sub": "TestPlayer1"})
 
 
 @pytest.fixture
@@ -157,7 +254,7 @@ class TestSSETokenValidation:
         """Test that valid tokens are accepted."""
         users_path, _ = temp_files
         user_info = validate_sse_token(valid_token, users_path)
-        assert user_info["username"] == "testuser"
+        assert user_info["username"] == "TestPlayer1"
 
     def test_validate_sse_token_invalid(self, temp_files, invalid_token):
         """Test that invalid tokens are rejected."""
@@ -180,7 +277,7 @@ class TestSSETokenValidation:
     def test_validate_sse_token_no_users_file(self, valid_token):
         """Test token validation without users file."""
         user_info = validate_sse_token(valid_token)
-        assert user_info["username"] == "testuser"
+        assert user_info["username"] == "TestPlayer1"
 
     def test_validate_sse_token_user_not_found(self, temp_files):
         """Test token validation when user doesn't exist in users file."""
@@ -225,7 +322,10 @@ class TestSSEEndpointAuthentication:
 
             mock_stream.side_effect = mock_generator
 
-            response = test_client.get(f"/events/testuser?token={valid_token}", headers={"Accept": "text/event-stream"})
+            # Use the player name that matches the token (TestPlayer1)
+            response = test_client.get(
+                f"/events/TestPlayer1?token={valid_token}", headers={"Accept": "text/event-stream"}
+            )
 
             assert response.status_code == 200
             assert response.headers["content-type"].startswith("text/event-stream")
@@ -242,19 +342,19 @@ class TestSSEEndpointAuthentication:
 
     def test_sse_endpoint_with_invalid_token(self, test_client, invalid_token):
         """Test SSE endpoint with invalid authentication token."""
-        response = test_client.get(f"/events/testuser?token={invalid_token}", headers={"Accept": "text/event-stream"})
+        response = test_client.get(
+            f"/events/test-player-1?token={invalid_token}", headers={"Accept": "text/event-stream"}
+        )
         assert response.status_code == 401
 
     def test_sse_endpoint_without_token(self, test_client):
         """Test SSE endpoint without authentication token."""
-        response = test_client.get("/events/testuser", headers={"Accept": "text/event-stream"})
+        response = test_client.get("/events/test-player-1", headers={"Accept": "text/event-stream"})
         assert response.status_code == 401
 
     def test_sse_endpoint_token_mismatch(self, test_client, valid_token):
         """Test SSE endpoint when token doesn't match player ID."""
-        response = test_client.get(
-            f"/events/differentuser?token={valid_token}", headers={"Accept": "text/event-stream"}
-        )
+        response = test_client.get(f"/events/TestPlayer2?token={valid_token}", headers={"Accept": "text/event-stream"})
         assert response.status_code == 403
 
     def test_sse_endpoint_with_authorization_header(self, test_client, valid_token):
@@ -268,7 +368,8 @@ class TestSSEEndpointAuthentication:
             mock_stream.side_effect = mock_generator
 
             response = test_client.get(
-                "/events/testuser", headers={"Accept": "text/event-stream", "Authorization": f"Bearer {valid_token}"}
+                "/events/TestPlayer1",
+                headers={"Accept": "text/event-stream", "Authorization": f"Bearer {valid_token}"},
             )
             assert response.status_code == 200
 
@@ -278,7 +379,7 @@ class TestWebSocketAuthentication:
 
     def test_websocket_with_valid_token(self, test_client, valid_token):
         """Test WebSocket connection with valid token."""
-        with test_client.websocket_connect(f"/ws/testuser?token={valid_token}") as websocket:
+        with test_client.websocket_connect(f"/ws/TestPlayer1?token={valid_token}") as websocket:
             # Connection should be established
             assert websocket is not None
 
@@ -457,9 +558,9 @@ class TestSSEIntegration:
             token = login_response.json()["access_token"]
 
             # Now try to connect to SSE with the token
-            # Use the actual player ID from the login response, not the username
+            # Use the username, not the player_id
             sse_response = test_client.get(
-                f"/events/{login_response.json()['player_id']}?token={token}", headers={"Accept": "text/event-stream"}
+                f"/events/{unique_username}?token={token}", headers={"Accept": "text/event-stream"}
             )
             assert sse_response.status_code == 200
 

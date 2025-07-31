@@ -478,6 +478,16 @@ async def process_command(player_id: str, command_data: dict[str, Any]) -> GameE
                         exclude_player=player_id,
                     )
 
+    elif command == "help":
+        # Import the help function from command_handler
+        from .command_handler import get_help_content
+
+        if len(args) > 1:
+            result = "Too many arguments. Usage: help [command]"
+        else:
+            command_name = args[0] if args else None
+            result = get_help_content(command_name)
+
     elif command == "say":
         message = " ".join(args).strip()
         if not message:

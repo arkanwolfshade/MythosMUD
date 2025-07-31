@@ -52,6 +52,76 @@ class StatusEffect(BaseModel):
         return current_tick < self.duration
 
 
+class Alias(BaseModel):
+    """Represents a user command alias for MythosMUD.
+
+    As noted in the restricted archives of Miskatonic University, command
+    aliases allow players to create shortcuts for commonly used commands,
+    improving gameplay efficiency while maintaining the integrity of the
+    command system.
+    """
+
+    name: str = Field(..., description="Alias name (case-insensitive)")
+    command: str = Field(..., description="Target command to execute")
+    version: str = Field(default="1.0", description="Schema version for future compatibility")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    # Future expansion fields (commented for now):
+    # alias_type: str = Field(default="simple", description="simple|parameter|multi")
+    # parameters: dict = Field(default_factory=dict,
+    #                         description="Parameter definitions for future use")
+    # conditions: dict = Field(default_factory=dict,
+    #                         description="Conditional logic for future use")
+    # metadata: dict = Field(default_factory=dict,
+    #                        description="Additional metadata")
+
+    def __eq__(self, other: object) -> bool:
+        """Custom equality comparison that ignores timestamp fields.
+
+        As noted in the Pnakotic Manuscripts, temporal signatures can create
+        false distinctions between otherwise identical entities. This method
+        ensures that aliases are compared by their essential properties only.
+        """
+        if not isinstance(other, Alias):
+            return False
+        return self.name == other.name and self.command == other.command and self.version == other.version
+
+    def __hash__(self) -> int:
+        """Custom hash method that matches the equality comparison."""
+        return hash((self.name, self.command, self.version))
+
+    def update_timestamp(self) -> None:
+        """Update the updated_at timestamp."""
+        self.updated_at = datetime.now(UTC)
+
+    def is_reserved_command(self) -> bool:
+        """Check if this alias targets a reserved command."""
+        reserved_commands = {"alias", "aliases", "unalias", "help"}
+        return self.command.lower().split()[0] in reserved_commands
+
+    def validate_name(self) -> bool:
+        """Validate alias name follows naming conventions."""
+        import re
+
+        # Must start with letter, contain only alphanumeric and underscore
+        pattern = r"^[a-zA-Z][a-zA-Z0-9_]*$"
+        return bool(re.match(pattern, self.name))
+
+    def get_expanded_command(self, args: list[str] = None) -> str:
+        """Get the expanded command with optional arguments.
+
+        For future parameter-based aliases, this method will handle
+        argument substitution. Currently returns the base command.
+        """
+        if args is None:
+            args = []
+
+        # For now, simple command expansion
+        # Future: implement parameter substitution like $1, $2, etc.
+        return self.command
+
+
 class Stats(BaseModel):
     """Core character statistics with Lovecraftian horror elements."""
 
