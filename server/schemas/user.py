@@ -1,0 +1,86 @@
+"""
+Pydantic schemas for User model.
+
+This module defines Pydantic schemas for user creation, reading,
+and updating operations.
+"""
+
+import uuid
+from datetime import datetime
+
+from pydantic import BaseModel, EmailStr, Field
+
+
+class UserBase(BaseModel):
+    """Base user schema with common fields."""
+
+    email: EmailStr = Field(..., description="User's email address")
+    is_active: bool = Field(default=True, description="Whether user is active")
+    is_superuser: bool = Field(default=False, description="Whether user is superuser")
+    is_verified: bool = Field(default=False, description="Whether user is verified")
+
+
+class UserCreate(UserBase):
+    """Schema for creating a new user."""
+
+    password: str = Field(..., min_length=8, description="User's password")
+
+    class Config:
+        """Pydantic configuration."""
+
+        json_schema_extra = {
+            "example": {
+                "email": "user@example.com",
+                "password": "securepassword123",
+                "is_active": True,
+                "is_superuser": False,
+                "is_verified": False,
+            }
+        }
+
+
+class UserRead(UserBase):
+    """Schema for reading user data."""
+
+    id: uuid.UUID = Field(..., description="User's unique identifier")
+    created_at: datetime = Field(..., description="User creation timestamp")
+    updated_at: datetime = Field(..., description="User last update timestamp")
+
+    class Config:
+        """Pydantic configuration."""
+
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "id": "123e4567-e89b-12d3-a456-426614174000",
+                "email": "user@example.com",
+                "is_active": True,
+                "is_superuser": False,
+                "is_verified": False,
+                "created_at": "2024-01-01T00:00:00Z",
+                "updated_at": "2024-01-01T00:00:00Z",
+            }
+        }
+
+
+class UserUpdate(BaseModel):
+    """Schema for updating user data."""
+
+    email: EmailStr | None = Field(None, description="User's email address")
+    password: str | None = Field(None, min_length=8, description="User's password")
+    is_active: bool | None = Field(None, description="Whether user is active")
+    is_superuser: bool | None = Field(None, description="Whether user is superuser")
+    is_verified: bool | None = Field(None, description="Whether user is verified")
+
+    class Config:
+        """Pydantic configuration."""
+
+        json_schema_extra = {
+            "example": {
+                "email": "newemail@example.com",
+                "password": "newsecurepassword123",
+                "is_active": True,
+                "is_superuser": False,
+                "is_verified": True,
+            }
+        }
