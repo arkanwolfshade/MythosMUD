@@ -123,6 +123,9 @@ security = HTTPBearer()
 async def game_tick_loop(app: FastAPI = None):
     """Main game loop that runs every tick interval."""
     tick_count = 0
+    # Cache the tick interval to avoid repeated logging
+    tick_interval = get_tick_interval()
+
     while True:
         try:
             # TODO: Implement status/effect ticks using persistence layer
@@ -137,7 +140,7 @@ async def game_tick_loop(app: FastAPI = None):
             await broadcast_game_tick(tick_data)
 
             tick_count += 1
-            await asyncio.sleep(get_tick_interval())
+            await asyncio.sleep(tick_interval)
         except asyncio.CancelledError:
             break
         except Exception as e:

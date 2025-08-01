@@ -431,6 +431,30 @@ class TestGameTickLoop:
                     # Verify logging was called
                     mock_logging.info.assert_called()
 
+    @pytest.mark.asyncio
+    async def test_game_tick_loop_caches_interval(self):
+        """Test that game tick loop caches the tick interval to avoid repeated logging."""
+        mock_app = Mock()
+        mock_app.state.persistence = Mock()
+
+        with patch("server.main.get_tick_interval") as mock_get_interval:
+            mock_get_interval.return_value = 1.0
+
+            with patch("server.main.broadcast_game_tick"):
+                with patch("server.main.connection_manager") as mock_connection_manager:
+                    mock_connection_manager.player_websockets = {}
+
+                    # Import the function directly to avoid import issues
+                    from ..main import game_tick_loop
+
+                    # Run the tick loop for a short time
+                    task = asyncio.create_task(game_tick_loop(mock_app))
+                    await asyncio.sleep(0.1)  # Let it run for a short time
+                    task.cancel()
+
+                    # Verify get_tick_interval was called only once during initialization
+                    mock_get_interval.assert_called_once()
+
 
 class TestWebSocketEndpoints:
     """Test WebSocket endpoints."""
