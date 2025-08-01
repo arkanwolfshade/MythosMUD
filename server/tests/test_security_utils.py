@@ -50,8 +50,10 @@ class TestValidateSecurePath:
 
         result = validate_secure_path(base_path, user_path)
 
-        expected = os.path.join(os.path.abspath(base_path), "subdir/file.txt")
-        assert Path(result).as_posix() == Path(expected).as_posix()
+        # The function should normalize backslashes to forward slashes
+        # Use Path to handle cross-platform normalization
+        expected = Path(os.path.join(os.path.abspath(base_path), "subdir/file.txt"))
+        assert Path(result).resolve() == expected.resolve()
 
     def test_validate_secure_path_path_traversal_dotdot(self):
         """Test rejection of path traversal with .."""
