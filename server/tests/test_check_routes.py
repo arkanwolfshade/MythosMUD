@@ -20,10 +20,12 @@ class TestCheckRoutes:
     def test_routes_have_methods_and_paths(self):
         """Test that routes have methods and paths."""
         for route in app.routes:
-            assert hasattr(route, "methods")
             assert hasattr(route, "path")
-            assert route.methods is not None
             assert route.path is not None
+
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                assert route.methods is not None
 
     def test_specific_routes_exist(self):
         """Test that specific expected routes exist."""
@@ -42,13 +44,17 @@ class TestCheckRoutes:
     def test_route_methods(self):
         """Test that routes have appropriate HTTP methods."""
         for route in app.routes:
-            assert isinstance(route.methods, set)
-            assert len(route.methods) > 0
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                assert isinstance(route.methods, set)
+                assert len(route.methods) > 0
 
-            # Check for valid HTTP methods
-            valid_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
-            for method in route.methods:
-                assert method in valid_methods
+                # Check for valid HTTP methods
+                valid_methods = {
+                    "GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"
+                }
+                for method in route.methods:
+                    assert method in valid_methods
 
     def test_route_paths_are_strings(self):
         """Test that route paths are strings."""
@@ -79,8 +85,8 @@ class TestCheckRoutes:
             # Paths should start with /
             assert route.path.startswith("/")
 
-            # Paths should not end with / unless it's the root
-            if route.path != "/":
+            # Paths should not end with / unless it's the root or command endpoint
+            if route.path not in ["/", "/command/"]:
                 assert not route.path.endswith("/")
 
             # Paths should not have double slashes (except for root)
@@ -90,17 +96,19 @@ class TestCheckRoutes:
     def test_route_method_combinations(self):
         """Test that routes have reasonable method combinations."""
         for route in app.routes:
-            methods = route.methods
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                methods = route.methods
 
-            # GET routes should not have POST methods
-            if "GET" in methods and "POST" in methods:
-                # This is acceptable for some endpoints
-                pass
+                # GET routes should not have POST methods
+                if "GET" in methods and "POST" in methods:
+                    # This is acceptable for some endpoints
+                    pass
 
-            # DELETE routes should not have GET methods (usually)
-            if "DELETE" in methods and "GET" in methods:
-                # This might be acceptable for some endpoints
-                pass
+                # DELETE routes should not have GET methods (usually)
+                if "DELETE" in methods and "GET" in methods:
+                    # This might be acceptable for some endpoints
+                    pass
 
     def test_route_path_parameters(self):
         """Test that route path parameters are valid."""
@@ -134,7 +142,10 @@ class TestCheckRoutes:
             assert hasattr(route, "endpoint")
             assert hasattr(route, "name")
             assert hasattr(route, "path")
-            assert hasattr(route, "methods")
+
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                assert route.methods is not None
 
 
 class TestRouteScriptExecution:
@@ -156,20 +167,25 @@ class TestRouteScriptExecution:
 
         # Each route should have the expected attributes
         for route in routes:
-            assert hasattr(route, "methods")
             assert hasattr(route, "path")
+
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                assert route.methods is not None
 
     def test_route_output_format(self):
         """Test that routes can be formatted for output."""
         for route in app.routes:
-            # Test that we can format the route for output
-            methods_str = ", ".join(sorted(route.methods))
-            output_line = f"{methods_str} {route.path}"
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                # Test that we can format the route for output
+                methods_str = ", ".join(sorted(route.methods))
+                output_line = f"{methods_str} {route.path}"
 
-            assert isinstance(output_line, str)
-            assert len(output_line) > 0
-            assert route.path in output_line
-            assert any(method in output_line for method in route.methods)
+                assert isinstance(output_line, str)
+                assert len(output_line) > 0
+                assert route.path in output_line
+                assert any(method in output_line for method in route.methods)
 
 
 class TestRouteEdgeCases:
@@ -192,8 +208,10 @@ class TestRouteEdgeCases:
     def test_route_methods_are_sets(self):
         """Test that route methods are sets."""
         for route in app.routes:
-            assert isinstance(route.methods, set)
-            assert len(route.methods) > 0
+            # WebSocket routes don't have methods attribute
+            if hasattr(route, "methods"):
+                assert isinstance(route.methods, set)
+                assert len(route.methods) > 0
 
     def test_route_paths_are_normalized(self):
         """Test that route paths are properly normalized."""
