@@ -99,8 +99,8 @@ SAMPLE_PLAYERS = [
             '"constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, '
             '"occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
         ),
-        "inventory": '[]',
-        "status_effects": '[]',
+        "inventory": "[]",
+        "status_effects": "[]",
         "current_room_id": "arkham_001",
         "experience_points": 0,
         "level": 1,
@@ -114,8 +114,8 @@ SAMPLE_PLAYERS = [
             '"constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, '
             '"occult_knowledge": 5, "fear": 15, "corruption": 0, "cult_affiliation": 0}'
         ),
-        "inventory": '[]',
-        "status_effects": '[]',
+        "inventory": "[]",
+        "status_effects": "[]",
         "current_room_id": "arkham_002",
         "experience_points": 100,
         "level": 2,
