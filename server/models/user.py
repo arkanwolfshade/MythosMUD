@@ -13,7 +13,7 @@ from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
-from ..database import metadata
+from ..metadata import metadata
 
 # Create base class for declarative models
 Base = declarative_base(metadata=metadata)

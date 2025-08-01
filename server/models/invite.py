@@ -12,7 +12,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
-from ..database import metadata
+from ..metadata import metadata
 
 Base = declarative_base(metadata=metadata)
 
