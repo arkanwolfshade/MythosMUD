@@ -9,6 +9,17 @@ import importlib.util
 import os
 from unittest.mock import Mock, patch
 
+from ..command_handler import (
+    clean_command_input,
+    get_help_content,
+    handle_alias_command,
+    handle_aliases_command,
+    handle_expanded_command,
+    handle_unalias_command,
+    is_suspicious_input,
+    process_command,
+)
+
 # Import models.py directly to avoid package conflicts
 spec = importlib.util.spec_from_file_location(
     "models_module", os.path.join(os.path.dirname(__file__), "..", "models.py")
@@ -17,17 +28,6 @@ models_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(models_module)
 
 Alias = models_module.Alias
-
-from ..command_handler import (
-    is_suspicious_input,
-    clean_command_input,
-    get_help_content,
-    handle_expanded_command,
-    process_command,
-    handle_alias_command,
-    handle_aliases_command,
-    handle_unalias_command,
-)
 
 
 class TestSecurityValidation:
@@ -632,7 +632,6 @@ class TestCommandValidation:
         """Test command length validation."""
         # Test various command lengths
         short_cmd = "look"
-        long_cmd = "a" * 100
 
         assert not is_suspicious_input(short_cmd)
         # Long commands might be flagged as suspicious or handled differently
