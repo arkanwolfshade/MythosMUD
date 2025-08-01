@@ -50,9 +50,7 @@ class TestCheckRoutes:
                 assert len(route.methods) > 0
 
                 # Check for valid HTTP methods
-                valid_methods = {
-                    "GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"
-                }
+                valid_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
                 for method in route.methods:
                     assert method in valid_methods
 
@@ -64,8 +62,19 @@ class TestCheckRoutes:
 
     def test_no_duplicate_routes(self):
         """Test that there are no duplicate route paths."""
-        paths = [route.path for route in app.routes]
-        assert len(paths) == len(set(paths)), "Duplicate routes found"
+        # Create path+method combinations to check for true duplicates
+        route_combinations = []
+        for route in app.routes:
+            if hasattr(route, "methods"):
+                for method in route.methods:
+                    route_combinations.append(f"{method} {route.path}")
+            else:
+                # WebSocket routes don't have methods
+                route_combinations.append(f"WEBSOCKET {route.path}")
+
+        # Check for duplicates in the combinations
+        unique_combinations = set(route_combinations)
+        assert len(route_combinations) == len(unique_combinations), "Duplicate route+method combinations found"
 
     def test_route_parameters(self):
         """Test that routes with parameters are properly formatted."""

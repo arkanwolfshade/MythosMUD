@@ -9,7 +9,6 @@ from fastapi import APIRouter, Depends
 
 from ..models.user import User
 from ..schemas.invite import InviteRead
-from ..schemas.user import UserCreate, UserRead, UserUpdate
 from .dependencies import get_current_superuser, require_invite_code
 from .invites import InviteManager, get_invite_manager
 from .users import fastapi_users, get_auth_backend
@@ -139,11 +138,13 @@ async def list_unused_invites(
     ]
 
 
-# Include FastAPI Users routes
+# Include only JWT auth routes from FastAPI Users (avoiding conflicts)
 auth_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/jwt", tags=["authentication"])
 
-auth_router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate), prefix="/register", tags=["authentication"]
-)
+# Don't include register router since we have custom registration
+# auth_router.include_router(
+#     fastapi_users.get_register_router(UserRead, UserCreate), prefix="/register", tags=["authentication"]
+# )
 
-auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+# Don't include users router since we have custom user management
+# auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
