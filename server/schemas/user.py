@@ -17,7 +17,6 @@ class UserBase(BaseModel):
     email: EmailStr = Field(..., description="User's email address")
     is_active: bool = Field(default=True, description="Whether user is active")
     is_superuser: bool = Field(default=False, description="Whether user is superuser")
-    is_verified: bool = Field(default=False, description="Whether user is verified")
 
 
 class UserCreate(UserBase):
@@ -42,7 +41,7 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     """Schema for reading user data."""
 
-    id: uuid.UUID = Field(..., description="User's unique identifier")
+    user_id: uuid.UUID = Field(..., description="User's unique identifier")
     created_at: datetime = Field(..., description="User creation timestamp")
     updated_at: datetime = Field(..., description="User last update timestamp")
 
@@ -70,7 +69,6 @@ class UserUpdate(BaseModel):
     password: str | None = Field(None, min_length=8, description="User's password")
     is_active: bool | None = Field(None, description="Whether user is active")
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
-    is_verified: bool | None = Field(None, description="Whether user is verified")
 
     class Config:
         """Pydantic configuration."""

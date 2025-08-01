@@ -7,8 +7,7 @@ authentication and authorization in FastAPI endpoints.
 
 from fastapi import Depends, HTTPException, status
 
-from models.user import User
-
+from ..models.user import User
 from .invites import InviteManager, get_invite_manager
 from .users import get_current_active_user, get_current_user
 

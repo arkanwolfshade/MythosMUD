@@ -12,8 +12,8 @@ from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_async_session
-from models.invite import Invite
+from ..database import get_async_session
+from ..models.invite import Invite
 
 
 class InviteManager:

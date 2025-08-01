@@ -7,8 +7,9 @@ This package contains all database models including:
 - Invite model (custom invite system)
 """
 
+from .alias import Alias
 from .invite import Invite
 from .player import Player
 from .user import User
 
-__all__ = ["User", "Player", "Invite"]
+__all__ = ["User", "Player", "Invite", "Alias"]

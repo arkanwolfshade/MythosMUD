@@ -7,9 +7,9 @@ registration, and management with invite-only functionality.
 
 from fastapi import APIRouter, Depends
 
-from models.user import User
-from schemas.invite import InviteRead
-
+from ..models.user import User
+from ..schemas.invite import InviteRead
+from ..schemas.user import UserCreate, UserRead, UserUpdate
 from .dependencies import get_current_superuser, require_invite_code
 from .invites import InviteManager, get_invite_manager
 from .users import fastapi_users, get_auth_backend
@@ -142,6 +142,8 @@ async def list_unused_invites(
 # Include FastAPI Users routes
 auth_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/jwt", tags=["authentication"])
 
-auth_router.include_router(fastapi_users.get_register_router(), prefix="/register", tags=["authentication"])
+auth_router.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate), prefix="/register", tags=["authentication"]
+)
 
-auth_router.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
+auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])

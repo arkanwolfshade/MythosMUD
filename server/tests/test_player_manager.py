@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from server.models import Player, Stats
+from server.models import Player
 from server.persistence import PersistenceLayer
 
 
@@ -16,33 +16,29 @@ def temp_db_path(tmp_path):
 
     conn = sqlite3.connect(str(db_path))
     conn.executescript("""
-        CREATE TABLE IF NOT EXISTS players (
-            id TEXT PRIMARY KEY,
-            name TEXT UNIQUE NOT NULL,
-            strength INTEGER,
-            dexterity INTEGER,
-            constitution INTEGER,
-            intelligence INTEGER,
-            wisdom INTEGER,
-            charisma INTEGER,
-            sanity INTEGER,
-            occult_knowledge INTEGER,
-            fear INTEGER,
-            corruption INTEGER,
-            cult_affiliation INTEGER,
-            current_room_id TEXT,
-            created_at TEXT,
-            last_active TEXT,
-            experience_points INTEGER,
-            level INTEGER
+        CREATE TABLE IF NOT EXISTS users (
+            user_id TEXT PRIMARY KEY NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            hashed_password TEXT NOT NULL,
+            is_active BOOLEAN NOT NULL DEFAULT 1,
+            is_superuser BOOLEAN NOT NULL DEFAULT 0,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
 
-        CREATE TABLE IF NOT EXISTS rooms (
-            id TEXT PRIMARY KEY,
-            name TEXT,
-            description TEXT,
-            exits TEXT,
-            zone TEXT
+        CREATE TABLE IF NOT EXISTS players (
+            player_id TEXT PRIMARY KEY NOT NULL,
+            user_id TEXT NOT NULL UNIQUE,
+            name TEXT UNIQUE NOT NULL,
+            stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
+            inventory TEXT NOT NULL DEFAULT '[]',
+            status_effects TEXT NOT NULL DEFAULT '[]',
+            current_room_id TEXT NOT NULL DEFAULT 'arkham_001',
+            experience_points INTEGER NOT NULL DEFAULT 0,
+            level INTEGER NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
         );
     """)
     conn.commit()
@@ -78,15 +74,15 @@ def test_persistence_creation(persistence):
 
 def test_create_player(persistence):
     player = Player(
-        id="testid",
+        player_id="testid",
+        user_id="testuserid",
         name="TestPlayer",
-        stats=Stats(),
         current_room_id="arkham_001",
         experience_points=0,
         level=1,
     )
     persistence.save_player(player)
-    loaded = persistence.get_player(player.id)
+    loaded = persistence.get_player(player.player_id)
     assert loaded is not None
     assert loaded.name == "TestPlayer"
     assert loaded.current_room_id == "arkham_001"
@@ -94,31 +90,31 @@ def test_create_player(persistence):
 
 def test_create_player_custom_room(persistence):
     player = Player(
-        id="testid2",
+        player_id="testid2",
+        user_id="testuserid2",
         name="TestPlayer2",
-        stats=Stats(),
         current_room_id="custom_room_001",
         experience_points=0,
         level=1,
     )
     persistence.save_player(player)
-    loaded = persistence.get_player(player.id)
+    loaded = persistence.get_player(player.player_id)
     assert loaded.current_room_id == "custom_room_001"
 
 
 def test_get_player(persistence):
     player = Player(
-        id="testid3",
+        player_id="testid3",
+        user_id="testuserid3",
         name="TestPlayer3",
-        stats=Stats(),
         current_room_id="arkham_001",
         experience_points=0,
         level=1,
     )
     persistence.save_player(player)
-    fetched = persistence.get_player(player.id)
+    fetched = persistence.get_player(player.player_id)
     assert fetched is not None
-    assert fetched.id == player.id
+    assert fetched.player_id == player.player_id
     assert fetched.name == "TestPlayer3"
 
 
@@ -129,35 +125,37 @@ def test_get_non_existent_player(persistence):
 
 def test_save_player(persistence):
     player = Player(
-        id="testid4",
+        player_id="testid4",
+        user_id="testuserid4",
         name="TestPlayer4",
-        stats=Stats(strength=5),
         current_room_id="arkham_001",
         experience_points=0,
         level=1,
     )
     persistence.save_player(player)
-    # Update stat
-    player.stats.strength = 10
+    # Update stats
+    stats = player.get_stats()
+    stats["strength"] = 10
+    player.set_stats(stats)
     persistence.save_player(player)
-    loaded = persistence.get_player(player.id)
+    loaded = persistence.get_player(player.player_id)
     assert loaded is not None
-    assert loaded.stats.strength == 10
+    assert loaded.get_stats()["strength"] == 10
 
 
 def test_list_players(persistence):
     player1 = Player(
-        id="id1",
+        player_id="id1",
+        user_id="userid1",
         name="Alice",
-        stats=Stats(),
         current_room_id="r1",
         experience_points=0,
         level=1,
     )
     player2 = Player(
-        id="id2",
+        player_id="id2",
+        user_id="userid2",
         name="Bob",
-        stats=Stats(),
         current_room_id="r2",
         experience_points=0,
         level=1,
@@ -170,9 +168,9 @@ def test_list_players(persistence):
 
 def test_get_player_by_name(persistence):
     player = Player(
-        id="id3",
+        player_id="id3",
+        user_id="userid3",
         name="Carol",
-        stats=Stats(),
         current_room_id="r3",
         experience_points=0,
         level=1,
@@ -185,28 +183,28 @@ def test_get_player_by_name(persistence):
 
 def test_delete_player(persistence):
     player = Player(
-        id="id4",
+        player_id="id4",
+        user_id="userid4",
         name="DeleteMe",
-        stats=Stats(),
         current_room_id="r4",
         experience_points=0,
         level=1,
     )
     persistence.save_player(player)
     # Simulate delete (not yet implemented in PersistenceLayer)
-    # persistence.delete_player(player.id)
-    # assert persistence.get_player(player.id) is None
+    # persistence.delete_player(player.player_id)
+    # assert persistence.get_player(player.player_id) is None
     # For now, just check player exists
-    loaded = persistence.get_player(player.id)
+    loaded = persistence.get_player(player.player_id)
     assert loaded is not None
 
 
 def test_batch_save_players(persistence):
     players = [
         Player(
-            id=f"id{i}",
+            player_id=f"id{i}",
+            user_id=f"userid{i}",
             name=f"Player{i}",
-            stats=Stats(),
             current_room_id=f"r{i}",
             experience_points=0,
             level=1,
