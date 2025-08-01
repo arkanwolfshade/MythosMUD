@@ -50,7 +50,9 @@ class TestCheckRoutes:
                 assert len(route.methods) > 0
 
                 # Check for valid HTTP methods
-                valid_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
+                valid_methods = {
+                    "GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"
+                }
                 for method in route.methods:
                     assert method in valid_methods
 

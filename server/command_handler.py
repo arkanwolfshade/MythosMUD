@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
-from .auth import get_current_user
+from .auth.users import get_current_user
 
 router = APIRouter(prefix="/command", tags=["command"])
 
