@@ -6,137 +6,121 @@ This script creates a SQLite database in server/tests/data/ with the same schema
 as the production database and populates it with test player data.
 """
 
-import json
 import sqlite3
-from datetime import datetime
 from pathlib import Path
 
 # Test database path
 TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 
-# Room data paths
-ROOMS_DIR = Path(__file__).parent / "data" / "rooms"
+# Load the production schema
+SCHEMA_PATH = Path(__file__).parent.parent / "sql" / "schema.sql"
 
-# Database schema (same as production)
-SCHEMA = """
+
+def load_schema():
+    """Load the production database schema."""
+    if SCHEMA_PATH.exists():
+        return SCHEMA_PATH.read_text()
+    else:
+        # Fallback schema if the file doesn't exist
+        return """
+-- Users table for authentication
+CREATE TABLE IF NOT EXISTS users (
+    user_id TEXT PRIMARY KEY NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT 1,
+    is_superuser BOOLEAN NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Players table for game data
 CREATE TABLE IF NOT EXISTS players (
-    id TEXT PRIMARY KEY,
+    player_id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL UNIQUE,
     name TEXT UNIQUE NOT NULL,
-    strength INTEGER,
-    dexterity INTEGER,
-    constitution INTEGER,
-    intelligence INTEGER,
-    wisdom INTEGER,
-    charisma INTEGER,
-    sanity INTEGER,
-    occult_knowledge INTEGER,
-    fear INTEGER,
-    corruption INTEGER,
-    cult_affiliation INTEGER,
-    current_room_id TEXT,
-    created_at TEXT,
-    last_active TEXT,
-    experience_points INTEGER,
-    level INTEGER
+    stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
+    inventory TEXT NOT NULL DEFAULT '[]',
+    status_effects TEXT NOT NULL DEFAULT '[]',
+    current_room_id TEXT NOT NULL DEFAULT 'arkham_001',
+    experience_points INTEGER NOT NULL DEFAULT 0,
+    level INTEGER NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS rooms (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    description TEXT,
-    exits TEXT,
-    zone TEXT
+-- Invites table for invite-only registration
+CREATE TABLE IF NOT EXISTS invites (
+    id TEXT PRIMARY KEY NOT NULL,
+    invite_code TEXT UNIQUE NOT NULL,
+    used_by_user_id TEXT,
+    is_used BOOLEAN NOT NULL DEFAULT 0,
+    expires_at DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
+CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
+CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
+CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
 """
+
+
+# Sample test user data
+SAMPLE_USERS = [
+    {
+        "user_id": "test-user-1",
+        "email": "test1@example.com",
+        "hashed_password": "hashed_password_1",
+        "is_active": True,
+        "is_superuser": False,
+    },
+    {
+        "user_id": "test-user-2",
+        "email": "test2@example.com",
+        "hashed_password": "hashed_password_2",
+        "is_active": True,
+        "is_superuser": False,
+    },
+]
 
 # Sample test player data
 SAMPLE_PLAYERS = [
     {
-        "id": "test-player-1",
+        "player_id": "test-player-1",
+        "user_id": "test-user-1",
         "name": "TestPlayer1",
-        "strength": 12,
-        "dexterity": 14,
-        "constitution": 10,
-        "intelligence": 16,
-        "wisdom": 8,
-        "charisma": 10,
-        "sanity": 100,
-        "occult_knowledge": 0,
-        "fear": 0,
-        "corruption": 0,
-        "cult_affiliation": 0,
+        "stats": (
+            '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, '
+            '"constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, '
+            '"occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
+        ),
+        "inventory": '[]',
+        "status_effects": '[]',
         "current_room_id": "arkham_001",
-        "created_at": datetime.utcnow().isoformat(),
-        "last_active": datetime.utcnow().isoformat(),
         "experience_points": 0,
         "level": 1,
     },
     {
-        "id": "test-player-2",
+        "player_id": "test-player-2",
+        "user_id": "test-user-2",
         "name": "TestPlayer2",
-        "strength": 10,
-        "dexterity": 12,
-        "constitution": 14,
-        "intelligence": 10,
-        "wisdom": 16,
-        "charisma": 8,
-        "sanity": 85,
-        "occult_knowledge": 5,
-        "fear": 15,
-        "corruption": 0,
-        "cult_affiliation": 0,
+        "stats": (
+            '{"health": 100, "sanity": 85, "strength": 10, "dexterity": 12, '
+            '"constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, '
+            '"occult_knowledge": 5, "fear": 15, "corruption": 0, "cult_affiliation": 0}'
+        ),
+        "inventory": '[]',
+        "status_effects": '[]',
         "current_room_id": "arkham_002",
-        "created_at": datetime.utcnow().isoformat(),
-        "last_active": datetime.utcnow().isoformat(),
         "experience_points": 100,
         "level": 2,
     },
 ]
-
-
-def load_room_data():
-    """Load room data from JSON files into the database."""
-    room_count = 0
-
-    if not ROOMS_DIR.exists():
-        print(f"⚠ Rooms directory not found: {ROOMS_DIR}")
-        return room_count
-
-    with sqlite3.connect(TEST_DB_PATH) as conn:
-        # Load rooms from each zone directory
-        for zone_dir in ROOMS_DIR.iterdir():
-            if zone_dir.is_dir():
-                print(f"Loading rooms from zone: {zone_dir.name}")
-
-                for room_file in zone_dir.glob("*.json"):
-                    try:
-                        with open(room_file, encoding="utf-8") as f:
-                            room_data = json.load(f)
-
-                        # Insert room into database
-                        conn.execute(
-                            """
-                            INSERT OR REPLACE INTO rooms (
-                                id, name, description, exits, zone
-                            ) VALUES (?, ?, ?, ?, ?)
-                            """,
-                            (
-                                room_data["id"],
-                                room_data["name"],
-                                room_data["description"],
-                                json.dumps(room_data["exits"]),  # Store exits as JSON string
-                                room_data["zone"],
-                            ),
-                        )
-                        room_count += 1
-                        print(f"  ✓ Loaded room: {room_data['name']} ({room_data['id']})")
-
-                    except Exception as e:
-                        print(f"  ✗ Failed to load room {room_file}: {e}")
-
-        conn.commit()
-
-    return room_count
 
 
 def init_test_database():
@@ -148,44 +132,45 @@ def init_test_database():
 
     # Create database and schema
     with sqlite3.connect(TEST_DB_PATH) as conn:
-        conn.executescript(SCHEMA)
+        conn.executescript(load_schema())
         conn.commit()
 
     print("✓ Database schema created")
 
-    # Load room data from JSON files
-    room_count = load_room_data()
-    print(f"✓ Loaded {room_count} rooms from JSON files")
-
     # Insert sample test players into database
     with sqlite3.connect(TEST_DB_PATH) as conn:
+        for user_data in SAMPLE_USERS:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO users (
+                    user_id, email, hashed_password, is_active, is_superuser
+                ) VALUES (?, ?, ?, ?, ?)
+            """,
+                (
+                    user_data["user_id"],
+                    user_data["email"],
+                    user_data["hashed_password"],
+                    user_data["is_active"],
+                    user_data["is_superuser"],
+                ),
+            )
+
         for player_data in SAMPLE_PLAYERS:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO players (
-                    id, name, strength, dexterity, constitution, intelligence,
-                    wisdom, charisma, sanity, occult_knowledge, fear, corruption,
-                    cult_affiliation, current_room_id, created_at, last_active,
-                    experience_points, level
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    player_id, user_id, name, stats, inventory, status_effects,
+                    current_room_id, experience_points, level
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    player_data["id"],
+                    player_data["player_id"],
+                    player_data["user_id"],
                     player_data["name"],
-                    player_data["strength"],
-                    player_data["dexterity"],
-                    player_data["constitution"],
-                    player_data["intelligence"],
-                    player_data["wisdom"],
-                    player_data["charisma"],
-                    player_data["sanity"],
-                    player_data["occult_knowledge"],
-                    player_data["fear"],
-                    player_data["corruption"],
-                    player_data["cult_affiliation"],
+                    player_data["stats"],
+                    player_data["inventory"],
+                    player_data["status_effects"],
                     player_data["current_room_id"],
-                    player_data["created_at"],
-                    player_data["last_active"],
                     player_data["experience_points"],
                     player_data["level"],
                 ),
@@ -197,13 +182,13 @@ def init_test_database():
 
     # Verify the database was created successfully
     with sqlite3.connect(TEST_DB_PATH) as conn:
+        cursor = conn.execute("SELECT COUNT(*) FROM users")
+        user_count = cursor.fetchone()[0]
+        print(f"✓ Test database contains {user_count} users")
+
         cursor = conn.execute("SELECT COUNT(*) FROM players")
         player_count = cursor.fetchone()[0]
         print(f"✓ Test database contains {player_count} players")
-
-        cursor = conn.execute("SELECT COUNT(*) FROM rooms")
-        room_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {room_count} rooms")
 
     print("✓ Test database initialization complete!")
 
