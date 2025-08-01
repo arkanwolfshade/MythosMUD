@@ -5,6 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import asyncio
+import logging
 import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -14,7 +15,7 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 
 # Import the app directly to avoid import issues
-from ..main import app
+from ..main import app, get_tick_interval
 
 
 class TestFastAPIApp:
@@ -287,6 +288,97 @@ class TestEndpoints:
             assert data["active_players"] == 2
             assert data["room_subscriptions"] == 1
             assert "server_time" in data
+
+
+class TestGameTickConfiguration:
+    """Test configurable game tick rate functionality."""
+
+    def test_get_tick_interval_default_value(self):
+        """Test that get_tick_interval returns default value when config is missing."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_valid_config(self):
+        """Test that get_tick_interval returns configured value."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 2.5}
+
+            result = get_tick_interval()
+
+            assert result == 2.5
+
+    def test_get_tick_interval_invalid_type(self):
+        """Test that get_tick_interval handles invalid type gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": "invalid"}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_negative_value(self):
+        """Test that get_tick_interval handles negative values gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": -1.0}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_zero_value(self):
+        """Test that get_tick_interval handles zero values gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 0}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_too_high(self):
+        """Test that get_tick_interval caps values at maximum."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 100.0}
+
+            result = get_tick_interval()
+
+            assert result == 60.0
+
+    def test_get_tick_interval_logging(self, caplog):
+        """Test that get_tick_interval logs configuration."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 3.0}
+
+            with caplog.at_level(logging.INFO):
+                result = get_tick_interval()
+
+            assert "Game tick rate configured: 3.0 seconds" in caplog.text
+            assert result == 3.0
+
+    def test_get_tick_interval_warning_logging(self, caplog):
+        """Test that get_tick_interval logs warnings for invalid values."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": -5.0}
+
+            with caplog.at_level(logging.WARNING):
+                result = get_tick_interval()
+
+            assert "Invalid game_tick_rate in config: -5.0" in caplog.text
+            assert result == 1.0
+
+    def test_get_tick_interval_max_warning_logging(self, caplog):
+        """Test that get_tick_interval logs warnings for values too high."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 100.0}
+
+            with caplog.at_level(logging.WARNING):
+                result = get_tick_interval()
+
+            assert "Game tick rate too high: 100.0" in caplog.text
+            assert result == 60.0
 
 
 class TestGameTickLoop:

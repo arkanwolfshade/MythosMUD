@@ -23,6 +23,7 @@ from fastapi.security import HTTPBearer
 from .auth.endpoints import auth_router
 from .auth.users import get_current_user
 from .command_handler import router as command_router
+from .config_loader import get_config
 from .models.player import Player
 from .persistence import get_persistence
 from .real_time import (
@@ -85,7 +86,29 @@ def setup_logging():
 setup_logging()
 
 
-TICK_INTERVAL = 1.0  # seconds
+def get_tick_interval() -> float:
+    """Get the game tick interval from configuration with validation."""
+    config = get_config()
+    tick_rate = config.get("game_tick_rate", 1.0)
+
+    # Validate tick rate (must be positive and reasonable)
+    if not isinstance(tick_rate, int | float) or tick_rate <= 0:
+        logging.warning(
+            f"Invalid game_tick_rate in config: {tick_rate}. "
+            "Using default value of 1.0 seconds."
+        )
+        return 1.0
+
+    if tick_rate > 60:  # Maximum 60 seconds between ticks
+        logging.warning(
+            f"Game tick rate too high: {tick_rate}. "
+            "Using maximum value of 60.0 seconds."
+        )
+        return 60.0
+
+    logging.info(f"Game tick rate configured: {tick_rate} seconds")
+    return float(tick_rate)
+
 
 # Security scheme for WebSocket authentication
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -139,7 +162,7 @@ async def game_tick_loop(app: FastAPI):
         await broadcast_game_tick(tick_data)
 
         tick_count += 1
-        await asyncio.sleep(TICK_INTERVAL)
+        await asyncio.sleep(get_tick_interval())
 
 
 @app.get("/")
