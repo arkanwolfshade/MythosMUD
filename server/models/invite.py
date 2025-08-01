@@ -10,8 +10,11 @@ import uuid
 from datetime import datetime, timedelta
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy.ext.declarative import declarative_base
 
-from .base import Base
+from ..metadata import metadata
+
+Base = declarative_base(metadata=metadata)
 
 
 class Invite(Base):

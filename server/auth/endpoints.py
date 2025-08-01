@@ -20,7 +20,7 @@ from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
-from .users import UserManager, fastapi_users, get_auth_backend, get_user_manager
+from .users import UserManager, get_auth_backend, get_user_manager
 
 fake = Faker()
 
@@ -192,7 +192,4 @@ async def create_invite(
     return InviteRead.from_orm(invite)
 
 
-# Include FastAPI Users router
-auth_router.include_router(fastapi_users.get_auth_router(get_auth_backend()))
-auth_router.include_router(fastapi_users.get_register_router(LoginResponse, LoginResponse))
-auth_router.include_router(fastapi_users.get_users_router(LoginResponse, LoginResponse))
+# Note: FastAPI Users router is included in main.py to avoid route duplication

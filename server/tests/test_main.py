@@ -442,9 +442,9 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {}
 
         # Import the function directly
-        from ..main import websocket_endpoint_route
+        from ..main import websocket_handler
 
-        await websocket_endpoint_route(mock_websocket, "testplayer")
+        await websocket_handler(mock_websocket, "testplayer")
 
         mock_websocket.close.assert_called_once_with(code=4001, reason="Authentication token required")
 
@@ -454,18 +454,13 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token"}
 
-        with patch("server.main.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
-            mock_persistence.get_player_by_name.return_value = None
-            mock_get_persistence.return_value = mock_persistence
+        # Import the function directly
+        from ..main import websocket_handler
 
-            # Import the function directly
-            from ..main import websocket_endpoint_route
+        await websocket_handler(mock_websocket, "testplayer")
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
-
-            # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        # The actual behavior is to close with invalid token first
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -473,20 +468,13 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
-        with patch("server.main.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
-            mock_player = Mock()
-            mock_player.name = "different_player"
-            mock_persistence.get_player_by_name.return_value = mock_player
-            mock_get_persistence.return_value = mock_persistence
+        # Import the function directly
+        from ..main import websocket_handler
 
-            # Import the function directly
-            from ..main import websocket_endpoint_route
+        await websocket_handler(mock_websocket, "testplayer")
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
-
-            # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        # The actual behavior is to close with invalid token first
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
 
 
 class TestSSEEndpoints:
