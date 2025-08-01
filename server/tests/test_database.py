@@ -73,7 +73,7 @@ class TestGetDatabasePath:
             result = get_database_path()
 
             assert isinstance(result, Path)
-            assert str(result) == "path/to/db.db"
+            assert result.as_posix() == "path/to/db.db"
 
     def test_get_database_path_with_relative_path(self):
         """Test getting database path with relative path."""
@@ -81,7 +81,7 @@ class TestGetDatabasePath:
             result = get_database_path()
 
             assert isinstance(result, Path)
-            assert str(result) == "./relative/path.db"
+            assert result.as_posix() == "relative/path.db"
 
     def test_get_database_path_with_absolute_path(self):
         """Test getting database path with absolute path."""
@@ -89,7 +89,7 @@ class TestGetDatabasePath:
             result = get_database_path()
 
             assert isinstance(result, Path)
-            assert str(result) == "/absolute/path.db"
+            assert result.as_posix() == "/absolute/path.db"
 
     def test_get_database_path_unsupported_url(self):
         """Test getting database path with unsupported URL."""
