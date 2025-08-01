@@ -422,9 +422,18 @@ def delete_player(player_id: str):
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
 
-    # TODO: Implement delete_player in PersistenceLayer
-    # For now, raise NotImplementedError
-    raise NotImplementedError("delete_player not yet implemented in PersistenceLayer")
+    # Delete the player from the database
+    success = app.state.persistence.delete_player(player_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to delete player")
+
+    # Delete player aliases if they exist
+    from .alias_storage import AliasStorage
+
+    alias_storage = AliasStorage()
+    alias_storage.delete_player_aliases(player.name)
+
+    return {"message": f"Player {player.name} has been deleted"}
 
 
 # Player stats and effects endpoints

@@ -191,12 +191,46 @@ def test_delete_player(persistence):
         level=1,
     )
     persistence.save_player(player)
-    # Simulate delete (not yet implemented in PersistenceLayer)
-    # persistence.delete_player(player.player_id)
-    # assert persistence.get_player(player.player_id) is None
-    # For now, just check player exists
+
+    # Verify player exists before deletion
     loaded = persistence.get_player(player.player_id)
     assert loaded is not None
+    assert loaded.name == "DeleteMe"
+
+    # Delete the player
+    result = persistence.delete_player(player.player_id)
+    assert result is True
+
+    # Verify player no longer exists
+    deleted_player = persistence.get_player(player.player_id)
+    assert deleted_player is None
+
+
+def test_delete_non_existent_player(persistence):
+    """Test deleting a player that doesn't exist."""
+    result = persistence.delete_player("non_existent_id")
+    assert result is False
+
+
+def test_delete_player_twice(persistence):
+    """Test that deleting a player twice returns False the second time."""
+    player = Player(
+        player_id="id5",
+        user_id="userid5",
+        name="DoubleDelete",
+        current_room_id="r5",
+        experience_points=0,
+        level=1,
+    )
+    persistence.save_player(player)
+
+    # First deletion should succeed
+    result1 = persistence.delete_player(player.player_id)
+    assert result1 is True
+
+    # Second deletion should fail (player no longer exists)
+    result2 = persistence.delete_player(player.player_id)
+    assert result2 is False
 
 
 def test_batch_save_players(persistence):

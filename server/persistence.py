@@ -224,6 +224,43 @@ class PersistenceLayer:
                 self._log(f"Batch unique constraint error: {e}")
                 raise UniqueConstraintError(str(e)) from e
 
+    def delete_player(self, player_id: str) -> bool:
+        """
+        Delete a player from the database.
+
+        Args:
+            player_id: The unique identifier of the player to delete
+
+        Returns:
+            bool: True if player was deleted, False if player didn't exist
+
+        Raises:
+            PersistenceError: If deletion fails due to database constraints or errors
+        """
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            try:
+                # First check if player exists
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
+                if not cursor.fetchone():
+                    self._log(f"Delete attempted for non-existent player: {player_id}")
+                    return False
+
+                # Delete the player (foreign key constraints will handle related data)
+                cursor = conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
+                conn.commit()
+
+                if cursor.rowcount > 0:
+                    self._log(f"Successfully deleted player {player_id}")
+                    self._run_hooks("after_delete_player", player_id)
+                    return True
+                else:
+                    self._log(f"No rows affected when deleting player {player_id}")
+                    return False
+
+            except sqlite3.Error as e:
+                self._log(f"Database error deleting player {player_id}: {e}")
+                raise PersistenceError(f"Failed to delete player {player_id}: {e}") from e
+
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> dict[str, Any] | None:
         """Get a room by ID from the cache."""

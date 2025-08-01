@@ -238,12 +238,39 @@ class TestEndpoints:
             assert response.status_code == 404
             assert "not found" in response.json()["detail"]
 
-    def test_delete_player_not_implemented(self, client):
-        """Test that delete player endpoint raises NotImplementedError."""
-        response = client.delete("/players/1")
+    def test_delete_player_not_found(self, client):
+        """Test that delete player endpoint returns 404 for non-existent player."""
+        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
+            # Mock that player doesn't exist
+            mock_get_player.return_value = None
 
-        assert response.status_code == 500
-        assert "NotImplementedError" in response.text
+            response = client.delete("/players/non_existent_id")
+
+            assert response.status_code == 404
+            assert "Player not found" in response.text
+
+    def test_delete_player_success(self, client):
+        """Test that delete player endpoint successfully deletes a player."""
+        # Mock the persistence methods
+        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
+            with patch.object(client.app.state.persistence, "delete_player") as mock_delete_player:
+                # Mock a player that exists
+                mock_player = Mock()
+                mock_player.name = "TestDeletePlayer"
+                mock_get_player.return_value = mock_player
+
+                # Mock successful deletion
+                mock_delete_player.return_value = True
+
+                # Test the delete endpoint
+                response = client.delete("/players/test_player_id")
+
+                assert response.status_code == 200
+                assert "has been deleted" in response.text
+
+                # Verify the persistence methods were called
+                mock_get_player.assert_called_once_with("test_player_id")
+                mock_delete_player.assert_called_once_with("test_player_id")
 
     def test_get_game_status(self, client):
         """Test getting game status."""
