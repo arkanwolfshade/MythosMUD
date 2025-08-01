@@ -1,6 +1,7 @@
 """
 Security utilities for MythosMUD server.
-Implements secure path validation and file operations to prevent path traversal attacks.
+Implements secure path validation and file operations to prevent path
+traversal attacks.
 """
 
 import os
@@ -11,7 +12,8 @@ from fastapi import HTTPException
 
 def validate_secure_path(base_path: str, user_path: str) -> str:
     """
-    Validate and sanitize a user-provided path to prevent path traversal attacks.
+    Validate and sanitize a user-provided path to prevent path traversal
+    attacks.
 
     Args:
         base_path: The base directory that the path must be within
@@ -32,6 +34,9 @@ def validate_secure_path(base_path: str, user_path: str) -> str:
 
     # Remove any leading slashes or backslashes
     user_path = user_path.lstrip("/\\")
+    # Normalize all backslashes to forward slashes for cross-platform
+    # consistency
+    user_path = user_path.replace("\\", "/")
 
     # Construct the full path
     full_path = os.path.join(base_path, user_path)
@@ -44,11 +49,13 @@ def validate_secure_path(base_path: str, user_path: str) -> str:
     try:
         common_path = os.path.commonpath([base_path, full_path])
         if common_path != base_path:
-            raise HTTPException(status_code=400, detail="Path traversal attempt detected")
+            raise HTTPException(
+                status_code=400,
+                detail="Path traversal attempt detected",
+            )
     except ValueError:
         # If paths are on different drives (Windows), commonpath will fail
         # In this case, we'll allow it for testing purposes
-        # In production, you might want to be more restrictive
         pass
 
     return full_path
