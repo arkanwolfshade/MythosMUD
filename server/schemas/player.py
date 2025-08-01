@@ -49,7 +49,7 @@ class PlayerCreate(PlayerBase):
 class PlayerRead(PlayerBase):
     """Schema for reading player data."""
 
-    id: uuid.UUID = Field(..., description="Player's unique identifier", alias="player_id")
+    id: uuid.UUID = Field(..., description="Player's unique identifier")
     user_id: uuid.UUID = Field(..., description="Associated user ID")
     stats: dict[str, Any] = Field(..., description="Player stats")
     inventory: list[dict[str, Any]] = Field(..., description="Player inventory")

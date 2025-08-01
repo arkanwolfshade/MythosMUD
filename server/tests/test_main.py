@@ -120,7 +120,7 @@ class TestEndpoints:
 
         mock_players = [
             {
-                "id": test_uuid1,
+                "player_id": test_uuid1,
                 "name": "player1",
                 "user_id": test_user_uuid1,
                 "stats": {"health": 100, "sanity": 90},
@@ -133,7 +133,7 @@ class TestEndpoints:
                 "level": 1,
             },
             {
-                "id": test_uuid2,
+                "player_id": test_uuid2,
                 "name": "player2",
                 "user_id": test_user_uuid2,
                 "stats": {"health": 100, "sanity": 90},
@@ -152,7 +152,13 @@ class TestEndpoints:
             response = client.get("/players")
 
             assert response.status_code == 200
-            assert response.json() == mock_players
+            # Convert expected format to match PlayerRead schema
+            expected_response = []
+            for player in mock_players:
+                expected_player = player.copy()
+                expected_player["id"] = expected_player.pop("player_id")
+                expected_response.append(expected_player)
+            assert response.json() == expected_response
 
     def test_get_player_by_id_success(self, client):
         """Test getting a player by ID."""
@@ -160,7 +166,7 @@ class TestEndpoints:
         test_user_uuid = str(uuid.uuid4())
 
         mock_player = {
-            "id": test_uuid,
+            "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
             "stats": {"health": 100, "sanity": 90},
@@ -178,7 +184,10 @@ class TestEndpoints:
             response = client.get(f"/players/{test_uuid}")
 
             assert response.status_code == 200
-            assert response.json() == mock_player
+            # Convert expected format to match PlayerRead schema
+            expected_player = mock_player.copy()
+            expected_player["id"] = expected_player.pop("player_id")
+            assert response.json() == expected_player
 
     def test_get_player_by_id_not_found(self, client):
         """Test getting a non-existent player by ID."""
@@ -196,7 +205,7 @@ class TestEndpoints:
         test_user_uuid = str(uuid.uuid4())
 
         mock_player = {
-            "id": test_uuid,
+            "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
             "stats": {"health": 100, "sanity": 90},
@@ -214,7 +223,10 @@ class TestEndpoints:
             response = client.get("/players/name/testplayer")
 
             assert response.status_code == 200
-            assert response.json() == mock_player
+            # Convert expected format to match PlayerRead schema
+            expected_player = mock_player.copy()
+            expected_player["id"] = expected_player.pop("player_id")
+            assert response.json() == expected_player
 
     def test_get_player_by_name_not_found(self, client):
         """Test getting a non-existent player by name."""
@@ -315,9 +327,7 @@ class TestWebSocketEndpoints:
 
         await websocket_endpoint_route(mock_websocket, "testplayer")
 
-        mock_websocket.close.assert_called_once_with(
-            code=4001, reason="Authentication token required"
-        )
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Authentication token required")
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_invalid_token(self):
@@ -336,9 +346,7 @@ class TestWebSocketEndpoints:
             await websocket_endpoint_route(mock_websocket, "testplayer")
 
             # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(
-                code=4001, reason="Invalid authentication token"
-            )
+            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -359,9 +367,7 @@ class TestWebSocketEndpoints:
             await websocket_endpoint_route(mock_websocket, "testplayer")
 
             # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(
-                code=4001, reason="Invalid authentication token"
-            )
+            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
 
 
 class TestSSEEndpoints:
