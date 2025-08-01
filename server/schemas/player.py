@@ -49,7 +49,7 @@ class PlayerCreate(PlayerBase):
 class PlayerRead(PlayerBase):
     """Schema for reading player data."""
 
-    id: uuid.UUID = Field(..., description="Player's unique identifier")
+    id: uuid.UUID = Field(..., description="Player's unique identifier", alias="player_id")
     user_id: uuid.UUID = Field(..., description="Associated user ID")
     stats: dict[str, Any] = Field(..., description="Player stats")
     inventory: list[dict[str, Any]] = Field(..., description="Player inventory")
@@ -61,6 +61,7 @@ class PlayerRead(PlayerBase):
         """Pydantic configuration."""
 
         from_attributes = True
+        populate_by_name = True
         json_schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",

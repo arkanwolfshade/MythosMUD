@@ -269,13 +269,14 @@ def create_player(name: str, starting_room_id: str = "arkham_001"):
     existing_player = app.state.persistence.get_player_by_name(name)
     if existing_player:
         raise HTTPException(status_code=400, detail="Player name already exists")
+    # For now, create a temporary user_id - in a real app this would come from authentication
+    temp_user_id = uuid.uuid4()
     player = Player(
-        id=str(uuid.uuid4()),
+        player_id=uuid.uuid4(),
+        user_id=temp_user_id,
         name=name,
         # Stats are now stored as JSON in the Player model
         current_room_id=starting_room_id,
-        created_at=datetime.datetime.utcnow(),
-        last_active=datetime.datetime.utcnow(),
         experience_points=0,
         level=1,
     )

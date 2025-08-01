@@ -5,6 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import asyncio
+import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -111,12 +112,17 @@ class TestEndpoints:
 
     def test_list_players(self, client):
         """Test listing all players."""
-        # Create mock players that match the expected schema
+        # Create mock players that match the expected schema with proper UUIDs
+        test_uuid1 = str(uuid.uuid4())
+        test_uuid2 = str(uuid.uuid4())
+        test_user_uuid1 = str(uuid.uuid4())
+        test_user_uuid2 = str(uuid.uuid4())
+
         mock_players = [
             {
-                "id": "550e8400-e29b-41d4-a716-446655440000",
+                "id": test_uuid1,
                 "name": "player1",
-                "user_id": "user1",
+                "user_id": test_user_uuid1,
                 "stats": {"health": 100, "sanity": 90},
                 "inventory": [],
                 "status_effects": [],
@@ -127,9 +133,9 @@ class TestEndpoints:
                 "level": 1,
             },
             {
-                "id": "550e8400-e29b-41d4-a716-446655440001",
+                "id": test_uuid2,
                 "name": "player2",
-                "user_id": "user2",
+                "user_id": test_user_uuid2,
                 "stats": {"health": 100, "sanity": 90},
                 "inventory": [],
                 "status_effects": [],
@@ -150,10 +156,13 @@ class TestEndpoints:
 
     def test_get_player_by_id_success(self, client):
         """Test getting a player by ID."""
+        test_uuid = str(uuid.uuid4())
+        test_user_uuid = str(uuid.uuid4())
+
         mock_player = {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "id": test_uuid,
             "name": "testplayer",
-            "user_id": "user1",
+            "user_id": test_user_uuid,
             "stats": {"health": 100, "sanity": 90},
             "inventory": [],
             "status_effects": [],
@@ -166,7 +175,7 @@ class TestEndpoints:
         with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
             mock_get_player.return_value = mock_player
 
-            response = client.get("/players/550e8400-e29b-41d4-a716-446655440000")
+            response = client.get(f"/players/{test_uuid}")
 
             assert response.status_code == 200
             assert response.json() == mock_player
@@ -183,10 +192,13 @@ class TestEndpoints:
 
     def test_get_player_by_name_success(self, client):
         """Test getting a player by name."""
+        test_uuid = str(uuid.uuid4())
+        test_user_uuid = str(uuid.uuid4())
+
         mock_player = {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "id": test_uuid,
             "name": "testplayer",
-            "user_id": "user1",
+            "user_id": test_user_uuid,
             "stats": {"health": 100, "sanity": 90},
             "inventory": [],
             "status_effects": [],
