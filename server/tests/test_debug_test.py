@@ -38,7 +38,7 @@ class TestDebugTest:
         # Check for auth routes
         auth_routes = [
             "/auth/register",
-            "/auth/login",
+            "/auth/jwt/login",
         ]
 
         for route in auth_routes:
