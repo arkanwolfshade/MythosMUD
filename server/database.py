@@ -19,7 +19,7 @@ from sqlalchemy.pool import StaticPool
 from .metadata import metadata
 
 # Database URL configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///../../data/players/players.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///data/players/players.db")
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./tests/data/test_players.db")
 
 # Create async engine

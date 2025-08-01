@@ -26,7 +26,7 @@ def load_schema():
 -- Users table for authentication
 CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY NOT NULL,
-    email TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT 1,
     is_superuser BOOLEAN NOT NULL DEFAULT 0,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS invites (
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
 CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
@@ -74,14 +74,14 @@ CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_i
 SAMPLE_USERS = [
     {
         "user_id": "test-user-1",
-        "email": "test1@example.com",
+        "username": "test1",
         "hashed_password": "hashed_password_1",
         "is_active": True,
         "is_superuser": False,
     },
     {
         "user_id": "test-user-2",
-        "email": "test2@example.com",
+        "username": "test2",
         "hashed_password": "hashed_password_2",
         "is_active": True,
         "is_superuser": False,
@@ -143,12 +143,12 @@ def init_test_database():
             conn.execute(
                 """
                 INSERT OR REPLACE INTO users (
-                    user_id, email, hashed_password, is_active, is_superuser
+                    user_id, username, hashed_password, is_active, is_superuser
                 ) VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     user_data["user_id"],
-                    user_data["email"],
+                    user_data["username"],
                     user_data["hashed_password"],
                     user_data["is_active"],
                     user_data["is_superuser"],

@@ -1,150 +1,198 @@
 """
 Authentication endpoints for MythosMUD.
 
-This module provides FastAPI endpoints for user authentication,
-registration, and management with invite-only functionality.
+This module provides endpoints for user registration, login, and authentication
+management. It integrates with FastAPI Users for user management and includes
+custom invite code validation.
 """
 
-from fastapi import APIRouter, Depends
+from typing import Any
 
+from faker import Faker
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi_users import InvalidPasswordException
+from fastapi_users.schemas import BaseUserCreate
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..database import get_async_session
 from ..models.user import User
 from ..schemas.invite import InviteRead
-from .dependencies import get_current_superuser, require_invite_code
+from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
-from .users import fastapi_users, get_auth_backend
+from .users import UserManager, fastapi_users, get_auth_backend, get_user_manager
+
+fake = Faker()
 
 # Create router for auth endpoints
-auth_router = APIRouter(prefix="/auth", tags=["authentication"])
-
-# Get authentication backend
-auth_backend = get_auth_backend()
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@auth_router.post("/register", response_model=dict)
-async def register_with_invite(
-    email: str,
-    password: str,
-    invite_code: str,
+# Define user creation schema
+class UserCreate(BaseUserCreate):
+    """Schema for user creation with invite code validation."""
+
+    invite_code: str
+
+
+# Define login request schema
+class LoginRequest(BaseModel):
+    """Schema for login requests."""
+
+    username: str
+    password: str
+
+
+# Define login response schema
+class LoginResponse(BaseModel):
+    """Schema for login responses."""
+
+    access_token: str
+    token_type: str = "bearer"
+    user_id: str
+
+
+@auth_router.post("/register", response_model=LoginResponse)
+async def register_user(
+    user_create: UserCreate,
     invite_manager: InviteManager = Depends(get_invite_manager),
-):
+    user_manager: UserManager = Depends(get_user_manager),
+    session: AsyncSession = Depends(get_async_session),
+) -> LoginResponse:
     """
     Register a new user with invite code validation.
 
-    This endpoint validates the invite code before allowing registration.
+    This endpoint validates the invite code and creates a new user account.
+    The invite code is marked as used after successful registration.
     """
+    print(f"Registration attempt for username: {user_create.email}")
 
     # Validate invite code
-    await require_invite_code(invite_code, invite_manager)
+    invite = await invite_manager.get_invite_by_code(user_create.invite_code)
+    if not invite:
+        raise HTTPException(status_code=400, detail="Invalid invite code")
 
-    # Create user using FastAPI Users
-    user_manager = fastapi_users._user_manager
-    user = await user_manager.create(
-        {
-            "email": email,
-            "password": password,
-            "is_active": True,
-            "is_superuser": False,
-            "is_verified": True,  # Auto-verify for invite-only system
-        }
-    )
+    if invite.used:
+        raise HTTPException(status_code=400, detail="Invite code already used")
+
+    # Create user
+    try:
+        user = await user_manager.create(user_create)
+    except InvalidPasswordException as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
     # Mark invite as used
-    await invite_manager.use_invite(invite_code, user.user_id)
+    await invite_manager.mark_invite_used(invite.id)
 
-    return {"message": "User registered successfully", "user_id": str(user.id), "email": user.email}
-
-
-@auth_router.post("/invites", response_model=InviteRead)
-async def create_invite(
-    expires_in_days: int = 30,
-    current_user: User = Depends(get_current_superuser),
-    invite_manager: InviteManager = Depends(get_invite_manager),
-):
-    """
-    Create a new invite code (superuser only).
-    """
-
-    invite = await invite_manager.create_invite(expires_in_days=expires_in_days)
-
-    return InviteRead(
-        id=invite.id,
-        invite_code=invite.invite_code,
-        used_by_user_id=invite.used_by_user_id,
-        is_used=invite.is_used,
-        expires_at=invite.expires_at,
-        created_at=invite.created_at,
+    # Generate access token
+    access_token = await get_auth_backend().login(
+        user_manager.strategy,
+        user,
     )
+
+    return LoginResponse(
+        access_token=access_token.access_token,
+        user_id=str(user.id),
+    )
+
+
+@auth_router.post("/login", response_model=LoginResponse)
+async def login_user(
+    request: LoginRequest,
+    user_manager: UserManager = Depends(get_user_manager),
+) -> LoginResponse:
+    """
+    Authenticate a user and return an access token.
+
+    This endpoint validates user credentials and returns a JWT token
+    for authenticated requests.
+    """
+    print(f"Login attempt for username: {request.username}")
+
+    from sqlalchemy import select
+
+    # Find user by username
+    stmt = select(User).where(User.username == request.username)
+    async with user_manager.user_db.session() as session:
+        result = await session.execute(stmt)
+        user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # Verify password
+    try:
+        await user_manager.authenticate(
+            user_manager.user_db.get_user_by_username(request.username),
+            request.password,
+        )
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid credentials") from None
+
+    # Generate access token
+    try:
+        access_token = await get_auth_backend().login(
+            user_manager.strategy,
+            user,
+        )
+    except Exception as e:
+        print(f"Token generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Token generation failed: {str(e)}") from e
+
+    return LoginResponse(
+        access_token=access_token.access_token,
+        user_id=str(user.id),
+    )
+
+
+@auth_router.get("/me", response_model=dict[str, Any])
+async def get_current_user_info(
+    current_user: User = Depends(get_current_superuser),
+) -> dict[str, Any]:
+    """
+    Get current user information.
+
+    This endpoint returns information about the currently authenticated user.
+    """
+    return {
+        "id": str(current_user.id),
+        "email": current_user.email,
+        "username": current_user.username,
+        "is_superuser": current_user.is_superuser,
+    }
 
 
 @auth_router.get("/invites", response_model=list[InviteRead])
 async def list_invites(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-):
+) -> list[InviteRead]:
     """
-    List all invites (superuser only).
+    List all invite codes (superuser only).
+
+    This endpoint returns all invite codes in the system.
+    Only superusers can access this endpoint.
     """
-
-    invites = await invite_manager.get_user_invites(current_user.user_id)
-
-    return [
-        InviteRead(
-            id=invite.id,
-            invite_code=invite.invite_code,
-            used_by_user_id=invite.used_by_user_id,
-            is_used=invite.is_used,
-            expires_at=invite.expires_at,
-            created_at=invite.created_at,
-        )
-        for invite in invites
-    ]
+    invites = await invite_manager.get_all_invites()
+    return [InviteRead.from_orm(invite) for invite in invites]
 
 
-@auth_router.post("/invites/cleanup")
-async def cleanup_expired_invites(
+@auth_router.post("/invites", response_model=InviteRead)
+async def create_invite(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-):
+) -> InviteRead:
     """
-    Clean up expired invites (superuser only).
+    Create a new invite code (superuser only).
+
+    This endpoint generates a new invite code for user registration.
+    Only superusers can create invite codes.
     """
-
-    removed_count = await invite_manager.cleanup_expired_invites()
-
-    return {"message": f"Cleaned up {removed_count} expired invites", "removed_count": removed_count}
+    invite = await invite_manager.create_invite()
+    return InviteRead.from_orm(invite)
 
 
-@auth_router.get("/invites/unused", response_model=list[InviteRead])
-async def list_unused_invites(
-    current_user: User = Depends(get_current_superuser),
-    invite_manager: InviteManager = Depends(get_invite_manager),
-):
-    """
-    List all unused invites (superuser only).
-    """
-
-    invites = await invite_manager.get_unused_invites()
-
-    return [
-        InviteRead(
-            id=invite.id,
-            invite_code=invite.invite_code,
-            used_by_user_id=invite.used_by_user_id,
-            is_used=invite.is_used,
-            expires_at=invite.expires_at,
-            created_at=invite.created_at,
-        )
-        for invite in invites
-    ]
-
-
-# Include only JWT auth routes from FastAPI Users (avoiding conflicts)
-auth_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/jwt", tags=["authentication"])
-
-# Don't include register router since we have custom registration
-# auth_router.include_router(
-#     fastapi_users.get_register_router(UserRead, UserCreate), prefix="/register", tags=["authentication"]
-# )
-
-# Don't include users router since we have custom user management
-# auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+# Include FastAPI Users router
+auth_router.include_router(fastapi_users.get_auth_router(get_auth_backend()))
+auth_router.include_router(fastapi_users.get_register_router(LoginResponse, LoginResponse))
+auth_router.include_router(fastapi_users.get_users_router(LoginResponse, LoginResponse))

@@ -7,7 +7,7 @@ from server.main import app
 TEST_SCHEMA = """
 CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY NOT NULL,
-    email TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT 1,
     is_superuser BOOLEAN NOT NULL DEFAULT 0,
@@ -82,7 +82,7 @@ def test_successful_registration(test_client):
 
 
 def test_duplicate_username(test_client):
-    """Test registration with duplicate email."""
+    """Test registration with duplicate username."""
     pytest.skip("Auth system working but needs admin token setup")
 
 

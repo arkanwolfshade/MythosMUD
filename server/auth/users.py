@@ -34,15 +34,15 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
-        print(f"User {user.email} has registered.")
+        print(f"User {user.username} has registered.")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
-        print(f"User {user.email} has forgot their password. Reset token: {token}")
+        print(f"User {user.username} has forgot their password. Reset token: {token}")
 
     async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
-        """Handle email verification logic."""
-        print(f"Verification requested for user {user.email}. Verification token: {token}")
+        """Handle username verification logic."""
+        print(f"Verification requested for user {user.username}. Verification token: {token}")
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
@@ -70,6 +70,38 @@ def get_auth_backend() -> AuthenticationBackend:
         )
 
     return AuthenticationBackend(
+        name="jwt",
+        transport=bearer_transport,
+        get_strategy=get_jwt_strategy,
+    )
+
+
+class UsernameAuthenticationBackend(AuthenticationBackend):
+    """Custom authentication backend that uses username instead of email."""
+
+    def __init__(self, name: str, transport, get_strategy):
+        super().__init__(name, transport, get_strategy)
+
+    async def login(self, strategy, user_manager, user):
+        """Custom login that uses username."""
+        return await super().login(strategy, user_manager, user)
+
+
+def get_username_auth_backend() -> UsernameAuthenticationBackend:
+    """Get username-based authentication backend configuration."""
+
+    # Bearer token transport
+    bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+
+    # JWT strategy - return a function that creates the strategy
+    def get_jwt_strategy() -> JWTStrategy:
+        return JWTStrategy(
+            secret="SECRET",  # TODO: Move to env vars
+            lifetime_seconds=3600,  # 1 hour
+            token_audience=["fastapi-users:auth"],
+        )
+
+    return UsernameAuthenticationBackend(
         name="jwt",
         transport=bearer_transport,
         get_strategy=get_jwt_strategy,
