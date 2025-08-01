@@ -93,17 +93,11 @@ def get_tick_interval() -> float:
 
     # Validate tick rate (must be positive and reasonable)
     if not isinstance(tick_rate, int | float) or tick_rate <= 0:
-        logging.warning(
-            f"Invalid game_tick_rate in config: {tick_rate}. "
-            "Using default value of 1.0 seconds."
-        )
+        logging.warning(f"Invalid game_tick_rate in config: {tick_rate}. Using default value of 1.0 seconds.")
         return 1.0
 
     if tick_rate > 60:  # Maximum 60 seconds between ticks
-        logging.warning(
-            f"Game tick rate too high: {tick_rate}. "
-            "Using maximum value of 60.0 seconds."
-        )
+        logging.warning(f"Game tick rate too high: {tick_rate}. Using maximum value of 60.0 seconds.")
         return 60.0
 
     logging.info(f"Game tick rate configured: {tick_rate} seconds")
