@@ -147,7 +147,7 @@ class PersistenceLayer:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE id = ?", (player_id,)).fetchone()
+            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
             if row:
                 return Player(**dict(row))
             return None
@@ -159,34 +159,26 @@ class PersistenceLayer:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
-                        id, name, strength, dexterity, constitution, intelligence, wisdom, charisma,
-                        sanity, occult_knowledge, fear, corruption, cult_affiliation,
-                        current_room_id, created_at, last_active, experience_points, level
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        player_id, user_id, name, stats, inventory, status_effects,
+                        current_room_id, experience_points, level, created_at, last_active
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        player.id,
+                        player.player_id,
+                        player.user_id,
                         player.name,
-                        player.stats.strength,
-                        player.stats.dexterity,
-                        player.stats.constitution,
-                        player.stats.intelligence,
-                        player.stats.wisdom,
-                        player.stats.charisma,
-                        player.stats.sanity,
-                        player.stats.occult_knowledge,
-                        player.stats.fear,
-                        player.stats.corruption,
-                        player.stats.cult_affiliation,
+                        player.stats,
+                        player.inventory,
+                        player.status_effects,
                         player.current_room_id,
-                        player.created_at.isoformat(),
-                        player.last_active.isoformat(),
                         player.experience_points,
                         player.level,
+                        player.created_at.isoformat() if player.created_at else None,
+                        player.last_active.isoformat() if player.last_active else None,
                     ),
                 )
                 conn.commit()
-                self._log(f"Saved player {player.name} ({player.id})")
+                self._log(f"Saved player {player.name} ({player.player_id})")
                 self._run_hooks("after_save_player", player)
             except sqlite3.IntegrityError as e:
                 self._log(f"Unique constraint error saving player: {e}")
@@ -207,30 +199,22 @@ class PersistenceLayer:
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
-                            id, name, strength, dexterity, constitution, intelligence, wisdom, charisma,
-                            sanity, occult_knowledge, fear, corruption, cult_affiliation,
-                            current_room_id, created_at, last_active, experience_points, level
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            player_id, user_id, name, stats, inventory, status_effects,
+                            current_room_id, experience_points, level, created_at, last_active
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
-                            player.id,
+                            player.player_id,
+                            player.user_id,
                             player.name,
-                            player.stats.strength,
-                            player.stats.dexterity,
-                            player.stats.constitution,
-                            player.stats.intelligence,
-                            player.stats.wisdom,
-                            player.stats.charisma,
-                            player.stats.sanity,
-                            player.stats.occult_knowledge,
-                            player.stats.fear,
-                            player.stats.corruption,
-                            player.stats.cult_affiliation,
+                            player.stats,
+                            player.inventory,
+                            player.status_effects,
                             player.current_room_id,
-                            player.created_at.isoformat(),
-                            player.last_active.isoformat(),
                             player.experience_points,
                             player.level,
+                            player.created_at.isoformat() if player.created_at else None,
+                            player.last_active.isoformat() if player.last_active else None,
                         ),
                     )
                 conn.commit()
@@ -239,6 +223,43 @@ class PersistenceLayer:
             except sqlite3.IntegrityError as e:
                 self._log(f"Batch unique constraint error: {e}")
                 raise UniqueConstraintError(str(e)) from e
+
+    def delete_player(self, player_id: str) -> bool:
+        """
+        Delete a player from the database.
+
+        Args:
+            player_id: The unique identifier of the player to delete
+
+        Returns:
+            bool: True if player was deleted, False if player didn't exist
+
+        Raises:
+            PersistenceError: If deletion fails due to database constraints or errors
+        """
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            try:
+                # First check if player exists
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
+                if not cursor.fetchone():
+                    self._log(f"Delete attempted for non-existent player: {player_id}")
+                    return False
+
+                # Delete the player (foreign key constraints will handle related data)
+                cursor = conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
+                conn.commit()
+
+                if cursor.rowcount > 0:
+                    self._log(f"Successfully deleted player {player_id}")
+                    self._run_hooks("after_delete_player", player_id)
+                    return True
+                else:
+                    self._log(f"No rows affected when deleting player {player_id}")
+                    return False
+
+            except sqlite3.Error as e:
+                self._log(f"Database error deleting player {player_id}: {e}")
+                raise PersistenceError(f"Failed to delete player {player_id}: {e}") from e
 
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> dict[str, Any] | None:
