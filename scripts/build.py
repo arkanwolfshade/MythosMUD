@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-cmd = ["npm", "run", "build"]
+cmd = ["npm.cmd", "run", "build"]
 
 print("Running npm run build in client directory...")
 result = subprocess.run(cmd, cwd="client")

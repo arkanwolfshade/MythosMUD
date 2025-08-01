@@ -1,3 +1,5 @@
+
+import os
 import subprocess
 import sys
 
@@ -14,17 +16,16 @@ except (subprocess.CalledProcessError, FileNotFoundError):
     print('  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"')
     sys.exit(1)
 
+
 steps = [
-    # Install Python dependencies using uv
     ["uv", "sync", "--project", "server"],
-    # Install pre-commit hooks
     ["uv", "run", "--active", "pre-commit", "install", "-f"],
-    # Ensure npx is available
-    ["npx", "--version"],
-    # Install client dependencies
-    ["npm", "install"],
+    ["npx.cmd" if is_windows else "npx", "--version"],
+    ["npm.cmd" if is_windows else "npm", "install"],
 ]
 
+
+print("PYTHON ENV PATH:", os.environ["PATH"])
 print("Installing server and client dependencies...")
 
 for i, step in enumerate(steps):
