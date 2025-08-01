@@ -6,13 +6,9 @@ in JSON format with comprehensive CRUD operations and validation.
 """
 
 import json
-import tempfile
 import shutil
-from datetime import datetime
+import tempfile
 from pathlib import Path
-from unittest.mock import patch, mock_open
-
-import pytest
 
 from ..alias_storage import AliasStorage
 from ..models import Alias
@@ -36,7 +32,7 @@ class TestAliasStorage:
         """Test that __init__ creates the storage directory."""
         # Create a new storage instance with a new directory
         new_dir = Path(self.temp_dir) / "new_aliases"
-        storage = AliasStorage(storage_dir=str(new_dir))
+        AliasStorage(storage_dir=str(new_dir))
 
         assert new_dir.exists()
         assert new_dir.is_dir()
@@ -122,7 +118,7 @@ class TestAliasStorage:
         assert file_path.exists()
 
         # Verify content
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             saved_data = json.load(f)
 
         assert saved_data["version"] == "1.0"

@@ -46,6 +46,7 @@ class TestDatabaseConfiguration:
         """Test DATABASE_URL from environment variable."""
         # Re-import to get the updated value
         import importlib
+
         import server.database
 
         importlib.reload(server.database)
@@ -57,6 +58,7 @@ class TestDatabaseConfiguration:
         """Test TEST_DATABASE_URL from environment variable."""
         # Re-import to get the updated value
         import importlib
+
         import server.database
 
         importlib.reload(server.database)
@@ -180,10 +182,10 @@ class TestGetAsyncSession:
             mock_session_maker.return_value.__aenter__.return_value = mock_session
 
             # Simulate an exception
-            mock_session_maker.return_value.__aenter__.side_effect = Exception("Test error")
+            mock_session_maker.return_value.__aenter__.side_effect = RuntimeError("Test error")
 
-            with pytest.raises(Exception):
-                async for session in get_async_session():
+            with pytest.raises(RuntimeError):
+                async for _session in get_async_session():
                     pass
 
 
@@ -222,9 +224,9 @@ class TestInitDB:
     async def test_init_db_engine_begin_failure(self):
         """Test init_db when engine.begin() fails."""
         with patch("server.database.engine") as mock_engine:
-            mock_engine.begin.side_effect = Exception("Engine error")
+            mock_engine.begin.side_effect = RuntimeError("Engine error")
 
-            with pytest.raises(Exception):
+            with pytest.raises(RuntimeError):
                 await init_db()
 
 
@@ -245,9 +247,9 @@ class TestCloseDB:
     async def test_close_db_engine_dispose_failure(self):
         """Test close_db when engine.dispose() fails."""
         with patch("server.database.engine") as mock_engine:
-            mock_engine.dispose.side_effect = Exception("Dispose error")
+            mock_engine.dispose.side_effect = RuntimeError("Dispose error")
 
-            with pytest.raises(Exception):
+            with pytest.raises(RuntimeError):
                 await close_db()
 
 

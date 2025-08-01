@@ -20,8 +20,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from .auth.users import get_current_user
 from .auth.endpoints import auth_router
+from .auth.users import get_current_user
 from .command_handler import router as command_router
 from .models import Player
 from .persistence import get_persistence

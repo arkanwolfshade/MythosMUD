@@ -5,12 +5,9 @@ This module tests all the Pydantic models defined in models.py including
 Player, Stats, StatusEffect, Alias, Item, InventoryItem, and NPC models.
 """
 
-import pytest
-from datetime import UTC, datetime
-from typing import Any
-
 import importlib.util
 import os
+from datetime import datetime
 
 # Import models.py directly to avoid package conflicts
 spec = importlib.util.spec_from_file_location(

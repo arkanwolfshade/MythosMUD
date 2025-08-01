@@ -194,6 +194,7 @@ class TestConstants:
         """Test SECRET_KEY from environment variable."""
         # Re-import to get the updated value
         import importlib
+
         import server.auth_utils
 
         importlib.reload(server.auth_utils)
