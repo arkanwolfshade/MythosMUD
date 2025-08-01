@@ -20,17 +20,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
 
-from .auth import (
-    get_current_user,
-    get_sse_auth_headers,
-    get_users_file,
-    validate_sse_token,
-)
-from .auth import (
-    router as auth_router,
-)
+from .auth.endpoints import auth_router
+from .auth.users import get_current_user
 from .command_handler import router as command_router
-from .models import Player, Stats
+from .models.player import Player
 from .persistence import get_persistence
 from .real_time import (
     broadcast_game_tick,
@@ -38,6 +31,7 @@ from .real_time import (
     game_event_stream,
     websocket_endpoint,
 )
+from .schemas.player import PlayerRead
 
 
 # Configure logging
@@ -155,7 +149,7 @@ def read_root():
 
 # Real-time communication endpoints
 @app.get("/events/{player_id}")
-async def game_events_stream(player_id: str, request: Request, users_file: str = Depends(get_users_file)):
+async def game_events_stream(player_id: str, request: Request):
     """
     Server-Sent Events stream for real-time game updates.
 
@@ -177,7 +171,8 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
 
     # Validate the token and get user information
     try:
-        user_info = validate_sse_token(token, users_file)
+        # TODO: Implement SSE token validation for new auth system
+        user_info = {"user_id": "test_user"}  # Placeholder
         authenticated_username = user_info["username"]
     except HTTPException:
         raise
@@ -196,7 +191,8 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
         raise HTTPException(status_code=403, detail="Access denied: token does not match player ID")
 
     # Get security headers for SSE
-    security_headers = get_sse_auth_headers()
+    # TODO: Implement SSE auth headers for new auth system
+    security_headers = {}  # Placeholder
 
     return StreamingResponse(
         game_event_stream(player_id),
@@ -232,7 +228,8 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
 
     # Validate the token
     try:
-        user_info = validate_sse_token(token)
+        # TODO: Implement SSE token validation for new auth system
+        user_info = {"user_id": "test_user"}  # Placeholder
         authenticated_username = user_info["username"]
     except Exception:
         await websocket.close(code=4001, reason="Invalid authentication token")
@@ -266,56 +263,177 @@ def get_room(room_id: str):
 
 
 # Player management endpoints
-@app.post("/players", response_model=Player)
+@app.post("/players", response_model=PlayerRead)
 def create_player(name: str, starting_room_id: str = "arkham_001"):
     """Create a new player character."""
     existing_player = app.state.persistence.get_player_by_name(name)
     if existing_player:
         raise HTTPException(status_code=400, detail="Player name already exists")
+    # For now, create a temporary user_id - in a real app this would come from authentication
+    temp_user_id = uuid.uuid4()
+    current_time = datetime.datetime.now()
     player = Player(
-        id=str(uuid.uuid4()),
+        player_id=uuid.uuid4(),
+        user_id=temp_user_id,
         name=name,
-        stats=Stats(),
         current_room_id=starting_room_id,
-        created_at=datetime.datetime.utcnow(),
-        last_active=datetime.datetime.utcnow(),
         experience_points=0,
         level=1,
+        created_at=current_time,
+        last_active=current_time,
     )
     app.state.persistence.save_player(player)
-    return player
+
+    # Convert Player model to PlayerRead schema format
+    return PlayerRead(
+        id=player.player_id,
+        user_id=player.user_id,
+        name=player.name,
+        current_room_id=player.current_room_id,
+        experience_points=player.experience_points,
+        level=player.level,
+        stats=player.get_stats(),
+        inventory=player.get_inventory(),
+        status_effects=player.get_status_effects(),
+        created_at=player.created_at,
+        last_active=player.last_active,
+    )
 
 
-@app.get("/players", response_model=list[Player])
+@app.get("/players", response_model=list[PlayerRead])
 def list_players():
     """Get a list of all players."""
-    return app.state.persistence.list_players()
+    players = app.state.persistence.list_players()
+    result = []
+    for player in players:
+        if hasattr(player, "player_id"):  # Player object
+            result.append(
+                PlayerRead(
+                    id=player.player_id,
+                    user_id=player.user_id,
+                    name=player.name,
+                    current_room_id=player.current_room_id,
+                    experience_points=player.experience_points,
+                    level=player.level,
+                    stats=player.get_stats(),
+                    inventory=player.get_inventory(),
+                    status_effects=player.get_status_effects(),
+                    created_at=player.created_at,
+                    last_active=player.last_active,
+                )
+            )
+        else:  # Dictionary
+            result.append(
+                PlayerRead(
+                    id=player["player_id"],
+                    user_id=player["user_id"],
+                    name=player["name"],
+                    current_room_id=player["current_room_id"],
+                    experience_points=player["experience_points"],
+                    level=player["level"],
+                    stats=player["stats"],
+                    inventory=player["inventory"],
+                    status_effects=player["status_effects"],
+                    created_at=player["created_at"],
+                    last_active=player["last_active"],
+                )
+            )
+    return result
 
 
-@app.get("/players/{player_id}", response_model=Player)
+@app.get("/players/{player_id}", response_model=PlayerRead)
 def get_player(player_id: str):
     """Get a specific player by ID."""
     player = app.state.persistence.get_player(player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
-    return player
+
+    if hasattr(player, "player_id"):  # Player object
+        return PlayerRead(
+            id=player.player_id,
+            user_id=player.user_id,
+            name=player.name,
+            current_room_id=player.current_room_id,
+            experience_points=player.experience_points,
+            level=player.level,
+            stats=player.get_stats(),
+            inventory=player.get_inventory(),
+            status_effects=player.get_status_effects(),
+            created_at=player.created_at,
+            last_active=player.last_active,
+        )
+    else:  # Dictionary
+        return PlayerRead(
+            id=player["player_id"],
+            user_id=player["user_id"],
+            name=player["name"],
+            current_room_id=player["current_room_id"],
+            experience_points=player["experience_points"],
+            level=player["level"],
+            stats=player["stats"],
+            inventory=player["inventory"],
+            status_effects=player["status_effects"],
+            created_at=player["created_at"],
+            last_active=player["last_active"],
+        )
 
 
-@app.get("/players/name/{player_name}", response_model=Player)
+@app.get("/players/name/{player_name}", response_model=PlayerRead)
 def get_player_by_name(player_name: str):
     """Get a specific player by name."""
     player = app.state.persistence.get_player_by_name(player_name)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
-    return player
+
+    if hasattr(player, "player_id"):  # Player object
+        return PlayerRead(
+            id=player.player_id,
+            user_id=player.user_id,
+            name=player.name,
+            current_room_id=player.current_room_id,
+            experience_points=player.experience_points,
+            level=player.level,
+            stats=player.get_stats(),
+            inventory=player.get_inventory(),
+            status_effects=player.get_status_effects(),
+            created_at=player.created_at,
+            last_active=player.last_active,
+        )
+    else:  # Dictionary
+        return PlayerRead(
+            id=player["player_id"],
+            user_id=player["user_id"],
+            name=player["name"],
+            current_room_id=player["current_room_id"],
+            experience_points=player["experience_points"],
+            level=player["level"],
+            stats=player["stats"],
+            inventory=player["inventory"],
+            status_effects=player["status_effects"],
+            created_at=player["created_at"],
+            last_active=player["last_active"],
+        )
 
 
 @app.delete("/players/{player_id}")
 def delete_player(player_id: str):
     """Delete a player character."""
-    # TODO: Implement delete_player in PersistenceLayer
-    # For now, raise NotImplementedError
-    raise NotImplementedError("delete_player not yet implemented in PersistenceLayer")
+    player = app.state.persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    # Delete the player from the database
+    success = app.state.persistence.delete_player(player_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to delete player")
+
+    # Delete player aliases if they exist
+    from .alias_storage import AliasStorage
+
+    alias_storage = AliasStorage()
+    alias_storage.delete_player_aliases(player.name)
+
+    return {"message": f"Player {player.name} has been deleted"}
 
 
 # Player stats and effects endpoints

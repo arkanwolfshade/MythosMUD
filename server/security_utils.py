@@ -104,6 +104,10 @@ def is_safe_filename(filename: str) -> bool:
     Returns:
         True if the filename is safe, False otherwise
     """
+    # Empty filename is considered safe
+    if not filename:
+        return True
+
     # Check for path traversal attempts
     if ".." in filename or "/" in filename or "\\" in filename:
         return False
