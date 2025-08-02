@@ -58,7 +58,7 @@ function App() {
         });
 
         setAuthToken(data.access_token);
-        setPlayerId(data.player_id); // Use the actual player ID from the server
+        setPlayerId(data.user_id); // Use user_id from the server response
         setPlayerName(username); // Store the username for SSE connection
         setIsAuthenticated(true);
       } else {

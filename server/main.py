@@ -13,6 +13,7 @@ and chaos in our digital realm.
 
 import asyncio
 import datetime
+import json
 import logging
 import uuid
 import warnings
@@ -56,10 +57,7 @@ if log_file.exists():
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("server/logs/server.log"),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler("server/logs/server.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
@@ -217,10 +215,104 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
         await websocket.close(code=4001, reason="Authentication token required")
         return
 
-    # For now, return 4001 for any token to match test expectations
-    # This endpoint should be updated to handle proper authentication
-    await websocket.close(code=4001, reason="Invalid authentication token")
-    return
+    # TODO: Implement proper token validation
+    # For now, accept any token to allow connection testing
+    # This should be updated to validate the JWT token properly
+
+    try:
+        await websocket.accept()
+        logger.info(f"WebSocket connection established for player {player_id}")
+
+        # Send initial connection confirmation
+        await websocket.send_text(
+            json.dumps(
+                {
+                    "event_type": "websocket_connected",
+                    "player_id": player_id,
+                    "timestamp": datetime.datetime.now().isoformat(),
+                }
+            )
+        )
+
+        # Handle incoming messages
+        while True:
+            try:
+                # Wait for messages from the client
+                data = await websocket.receive_text()
+                message = json.loads(data)
+
+                logger.info(f"Received WebSocket message from {player_id}: {message}")
+
+                # Handle different command types
+                command = message.get("command", "")
+                args = message.get("args", [])
+
+                if command == "ping":
+                    # Respond to ping with pong
+                    await websocket.send_text(
+                        json.dumps({"event_type": "pong", "timestamp": datetime.datetime.now().isoformat()})
+                    )
+                elif command == "look":
+                    # Handle look command
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "event_type": "command_response",
+                                "command": "look",
+                                "result": f"You are in a mysterious room. Player ID: {player_id}",
+                                "timestamp": datetime.datetime.now().isoformat(),
+                            }
+                        )
+                    )
+                elif command == "say":
+                    # Handle say command
+                    message_text = " ".join(args) if args else "Hello!"
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "event_type": "command_response",
+                                "command": "say",
+                                "result": f"You say: {message_text}",
+                                "timestamp": datetime.datetime.now().isoformat(),
+                            }
+                        )
+                    )
+                else:
+                    # Handle unknown commands
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "event_type": "command_response",
+                                "command": command,
+                                "result": f"Unknown command: {command}",
+                                "timestamp": datetime.datetime.now().isoformat(),
+                            }
+                        )
+                    )
+
+            except json.JSONDecodeError:
+                logger.error(f"Invalid JSON received from {player_id}")
+                await websocket.send_text(
+                    json.dumps(
+                        {
+                            "event_type": "error",
+                            "error": "Invalid JSON format",
+                            "timestamp": datetime.datetime.now().isoformat(),
+                        }
+                    )
+                )
+            except Exception as e:
+                logger.error(f"Error processing WebSocket message from {player_id}: {e}")
+                await websocket.send_text(
+                    json.dumps(
+                        {"event_type": "error", "error": str(e), "timestamp": datetime.datetime.now().isoformat()}
+                    )
+                )
+
+    except Exception as e:
+        logger.error(f"WebSocket error for player {player_id}: {e}")
+    finally:
+        logger.info(f"WebSocket connection closed for player {player_id}")
 
 
 @app.get("/game/events")
@@ -247,9 +339,36 @@ async def game_events_legacy(player_id: str, request: Request = None):
     if not token:
         raise HTTPException(status_code=401, detail="Authentication token required")
 
-    # For now, return 401 for any token to match test expectations
-    # This endpoint should be updated to handle proper authentication
-    raise HTTPException(status_code=401, detail="Invalid authentication token")
+    # TODO: Implement proper token validation
+    # For now, accept any token to allow connection testing
+    # This should be updated to validate the JWT token properly
+
+    async def event_generator():
+        """Generate Server-Sent Events for the game."""
+        try:
+            # Send initial connection event
+            yield f"data: {json.dumps({'event_type': 'connection_established', 'player_id': player_id, 'timestamp': datetime.datetime.now().isoformat()})}\n\n"
+
+            # Keep connection alive with periodic events
+            while True:
+                await asyncio.sleep(5)  # Send event every 5 seconds
+                yield f"data: {json.dumps({'event_type': 'heartbeat', 'player_id': player_id, 'timestamp': datetime.datetime.now().isoformat()})}\n\n"
+        except asyncio.CancelledError:
+            # Connection was closed by client
+            pass
+        except Exception as e:
+            logger.error(f"Error in event generator for player {player_id}: {e}")
+            yield f"data: {json.dumps({'event_type': 'error', 'error': str(e), 'timestamp': datetime.datetime.now().isoformat()})}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/plain",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Content-Type": "text/event-stream",
+        },
+    )
 
 
 @app.get("/game/players/{player_id}", response_model=PlayerRead)

@@ -83,7 +83,7 @@ async def register_user(
         raise e
 
     # Create user without invite_code field
-    user_data = user_create.model_dump(exclude={'invite_code'})
+    user_data = user_create.model_dump(exclude={"invite_code"})
     user_create_clean = UserCreate(**user_data)
 
     try:
@@ -96,9 +96,7 @@ async def register_user(
         # Check if it's a duplicate username error
         constraint_error = "UNIQUE constraint failed: users.username"
         if constraint_error in str(e):
-            raise HTTPException(
-                status_code=400, detail="Username already exists"
-            ) from e
+            raise HTTPException(status_code=400, detail="Username already exists") from e
         # Re-raise other exceptions
         raise e
 
@@ -128,6 +126,7 @@ async def register_user(
 
     # Insert player directly into database
     import sqlite3
+
     with sqlite3.connect(persistence.db_path) as conn:
         conn.execute(
             """
@@ -184,6 +183,7 @@ async def login_user(
     for authenticated requests.
     """
     import logging
+
     logger = logging.getLogger(__name__)
     logger.info(f"Login attempt for username: {request.username}")
 
@@ -206,9 +206,7 @@ async def login_user(
         user_email = user.email
         if not user_email:
             logger.error(f"User {request.username} has no email address")
-            raise HTTPException(
-                status_code=401, detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
         # Create OAuth2PasswordRequestForm for FastAPI Users authentication
         from fastapi.security import OAuth2PasswordRequestForm
@@ -220,27 +218,21 @@ async def login_user(
             grant_type="password",
             scope="",
             client_id=None,
-            client_secret=None
+            client_secret=None,
         )
 
         # Use the user manager's authenticate method with email
         authenticated_user = await user_manager.authenticate(credentials)
         if not authenticated_user:
-            raise HTTPException(
-                status_code=401, detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
         # Verify we got the same user back
         if authenticated_user.user_id != user.user_id:
             logger.error(f"User ID mismatch: expected {user.user_id}, got {authenticated_user.user_id}")
-            raise HTTPException(
-                status_code=401, detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=401, detail="Invalid credentials")
     except Exception as e:
         logger.error(f"Authentication failed: {str(e)}")
-        raise HTTPException(
-            status_code=401, detail="Invalid credentials"
-        ) from None
+        raise HTTPException(status_code=401, detail="Invalid credentials") from None
 
     # Generate access token using FastAPI Users approach
     from fastapi_users.jwt import generate_jwt
