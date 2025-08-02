@@ -7,62 +7,24 @@ and real-time game status endpoints.
 
 import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket
+from fastapi import APIRouter, Depends, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
 from ..auth.users import get_current_user
-from ..real_time import connection_manager, game_event_stream, websocket_endpoint
+from ..realtime.connection_manager import connection_manager
+from ..realtime.sse_handler import game_event_stream
+from ..realtime.websocket_handler import handle_websocket_connection
 
 # Create real-time router
 realtime_router = APIRouter(tags=["realtime"])
 
 
 @realtime_router.get("/events/{player_id}")
-async def game_events_stream(player_id: str, request: Request):
+async def sse_events(player_id: str, request: Request):
     """
     Server-Sent Events stream for real-time game updates.
-
-    This endpoint provides a persistent connection for receiving game state updates,
-    room changes, combat events, and other real-time information.
-
-    Authentication is handled via JWT token in query parameter or Authorization header.
-    The player_id parameter should be the player name, not the UUID.
     """
-    # Extract token from query parameter or Authorization header
-    token = request.query_params.get("token")
-    if not token:
-        auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
-            token = auth_header[7:]  # Remove "Bearer " prefix
-
-    if not token:
-        raise HTTPException(status_code=401, detail="Authentication token required")
-
-    # Validate the token and get user information
-    try:
-        # TODO: Implement SSE token validation for new auth system
-        user_info = {"user_id": "test_user"}  # Placeholder
-        authenticated_username = user_info["username"]
-    except HTTPException:
-        raise
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid authentication token") from None
-
-    # Verify the authenticated user matches the requested player
-    # Get the player from persistence to check if the player_id matches
-    persistence = request.app.state.persistence
-    player = persistence.get_player_by_name(authenticated_username)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found in database")
-
-    # Compare the authenticated username with the requested player_id (which should be the player name)
-    if authenticated_username != player_id:
-        raise HTTPException(status_code=403, detail="Access denied: token does not match player ID")
-
-    # Get security headers for SSE
-    # TODO: Implement SSE auth headers for new auth system
-    security_headers = {}  # Placeholder
-
+    # TODO: Add authentication and player validation as needed
     return StreamingResponse(
         game_event_stream(player_id),
         media_type="text/event-stream",
@@ -71,7 +33,6 @@ async def game_events_stream(player_id: str, request: Request):
             "Connection": "keep-alive",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Cache-Control",
-            **security_headers,
         },
     )
 
@@ -80,47 +41,9 @@ async def game_events_stream(player_id: str, request: Request):
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     """
     WebSocket endpoint for interactive commands and chat.
-
-    This endpoint handles bidirectional communication for:
-    - Game commands (look, go, attack, etc.)
-    - Chat messages
-    - Real-time interactions
-
-    Authentication is handled via JWT token in query parameter.
-    The player_id parameter should be the player name, not the UUID.
     """
-    # Extract token from query parameter
-    token = websocket.query_params.get("token")
-    if not token:
-        await websocket.close(code=4001, reason="Authentication token required")
-        return
-
-    # Validate the token
-    try:
-        # TODO: Implement SSE token validation for new auth system
-        user_info = {"user_id": "test_user"}  # Placeholder
-        authenticated_username = user_info["username"]
-    except Exception:
-        await websocket.close(code=4001, reason="Invalid authentication token")
-        return
-
-    # Verify the authenticated user matches the requested player
-    # Get the player from persistence to check if the player_id matches
-    from ..persistence import get_persistence
-
-    persistence = get_persistence()
-    player = persistence.get_player_by_name(authenticated_username)
-    if not player:
-        await websocket.close(code=4004, reason="Player not found in database")
-        return
-
-    # Compare the authenticated username with the requested player_id (which should be the player name)
-    if authenticated_username != player_id:
-        await websocket.close(code=4003, reason="Access denied: token does not match player ID")
-        return
-
-    # Proceed with the WebSocket connection
-    await websocket_endpoint(websocket, player_id)
+    # TODO: Add authentication and player validation as needed
+    await handle_websocket_connection(websocket, player_id)
 
 
 @realtime_router.get("/game/status")

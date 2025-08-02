@@ -25,12 +25,9 @@ from .auth.users import get_current_user
 from .command_handler import router as command_router
 from .models.player import Player
 from .persistence import get_persistence
-from .real_time import (
-    broadcast_game_tick,
-    connection_manager,
-    game_event_stream,
-    websocket_endpoint,
-)
+from .realtime.connection_manager import connection_manager
+from .realtime.sse_handler import broadcast_game_event, game_event_stream
+from .realtime.websocket_handler import handle_websocket_connection
 from .schemas.player import PlayerRead
 
 
@@ -96,8 +93,6 @@ async def lifespan(app: FastAPI):
     # Startup logic
     app.state.persistence = get_persistence()
     # Set persistence reference in connection manager
-    from .real_time import connection_manager
-
     connection_manager.persistence = app.state.persistence
     asyncio.create_task(game_tick_loop(app))
     yield
@@ -136,7 +131,7 @@ async def game_tick_loop(app: FastAPI):
             "timestamp": datetime.datetime.utcnow().isoformat(),
             "active_players": len(connection_manager.player_websockets),
         }
-        await broadcast_game_tick(tick_data)
+        await broadcast_game_event("game_tick", tick_data)
 
         tick_count += 1
         await asyncio.sleep(TICK_INTERVAL)
@@ -251,7 +246,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
         return
 
     # Proceed with the WebSocket connection
-    await websocket_endpoint(websocket, player_id)
+    await handle_websocket_connection(websocket, player_id)
 
 
 @app.get("/rooms/{room_id}")

@@ -34,3 +34,8 @@ install:
 
 run:
 	python scripts/run.py
+
+all:
+	make format
+	make lint
+	make test

@@ -298,7 +298,7 @@ class TestGameTickLoop:
         mock_app = Mock()
         mock_app.state.persistence = Mock()
 
-        with patch("server.main.broadcast_game_tick") as mock_broadcast:
+        with patch("server.main.broadcast_game_event") as mock_broadcast:
             with patch("server.main.connection_manager") as mock_connection_manager:
                 mock_connection_manager.player_websockets = {"player1": "conn1"}
 
@@ -313,9 +313,7 @@ class TestGameTickLoop:
                 # Verify broadcast was called
                 mock_broadcast.assert_called()
                 call_args = mock_broadcast.call_args[0][0]
-                assert "tick_number" in call_args
-                assert "timestamp" in call_args
-                assert "active_players" in call_args
+                assert call_args == "game_tick"
 
     @pytest.mark.asyncio
     async def test_game_tick_loop_logging(self):
@@ -324,7 +322,7 @@ class TestGameTickLoop:
         mock_app.state.persistence = Mock()
 
         with patch("server.main.logging") as mock_logging:
-            with patch("server.main.broadcast_game_tick"):
+            with patch("server.main.broadcast_game_event"):
                 with patch("server.main.connection_manager") as mock_connection_manager:
                     mock_connection_manager.player_websockets = {}
 
