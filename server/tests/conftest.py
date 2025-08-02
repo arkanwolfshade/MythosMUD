@@ -9,14 +9,24 @@ import os
 import sys
 from pathlib import Path
 
+# Set environment variables BEFORE any imports to prevent module-level instantiations
+# from using the wrong paths
+os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
+os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
+os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
+os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+os.environ["MYTHOS_PERSIST_LOG"] = "server/tests/logs/test_persistence.log"
+os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+
 import pytest
 from dotenv import load_dotenv
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-# Load test environment variables from test.env file
-TEST_ENV_PATH = Path(__file__).parent / "test.env"
+# Load test environment variables from .env.test file
+TEST_ENV_PATH = Path(__file__).parent / ".env.test"
 if TEST_ENV_PATH.exists():
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
     print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
@@ -33,8 +43,9 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///E:/projects/GitHub/MythosMUD/server/tests/data/players/test_players.db"
-    os.environ["MYTHOS_PERSIST_LOG"] = "E:/projects/GitHub/MythosMUD/server/tests/logs/test_persistence.log"
+    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+    os.environ["MYTHOS_PERSIST_LOG"] = "server/tests/logs/test_persistence.log"
+    os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 
 @pytest.fixture(scope="session")

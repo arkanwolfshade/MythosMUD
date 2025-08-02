@@ -6,6 +6,7 @@ a robust and extensible storage system for user-defined command shortcuts.
 """
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -19,8 +20,16 @@ class AliasStorage:
     data/players/aliases/{player_name}_aliases.json
     """
 
-    def __init__(self, storage_dir: str = "data/players/aliases"):
-        self.storage_dir = Path(storage_dir)
+    def __init__(self, storage_dir: str | None = None):
+        if storage_dir:
+            self.storage_dir = Path(storage_dir)
+        elif os.environ.get("ALIASES_DIR"):
+            self.storage_dir = Path(os.environ.get("ALIASES_DIR"))
+        else:
+            # Fallback to project root data directory
+            project_root = Path(__file__).parent.parent.parent
+            self.storage_dir = project_root / "data" / "players" / "aliases"
+
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_alias_file_path(self, player_name: str) -> Path:
