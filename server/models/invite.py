@@ -24,8 +24,8 @@ class Invite(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     invite_code = Column(String, unique=True, nullable=False, index=True)
-    created_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
-    used_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    created_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
+    used_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
     used = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -40,6 +40,11 @@ class Invite(Base):
     def is_valid(self) -> bool:
         """Check if the invite is valid (not used and not expired)."""
         return not self.used and not self.is_expired()
+
+    def use_invite(self, user_id: str) -> None:
+        """Mark this invite as used by a specific user."""
+        self.used = True
+        self.used_by_user_id = user_id
 
     @classmethod
     def create_invite(cls, created_by_user_id: str | None = None, expires_in_days: int = 30) -> "Invite":

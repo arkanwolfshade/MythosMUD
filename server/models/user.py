@@ -51,6 +51,11 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
         return f"<User(user_id={self.user_id}, username={self.username}, is_active={self.is_active})>"
 
     @property
+    def id(self) -> uuid.UUID:
+        """Get the user ID for FastAPI Users compatibility."""
+        return self.user_id
+
+    @property
     def is_authenticated(self) -> bool:
         """Check if user is authenticated."""
         return self.is_active

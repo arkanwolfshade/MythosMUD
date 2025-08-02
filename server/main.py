@@ -22,6 +22,9 @@ from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
+from starlette.responses import Response
 
 from .auth.endpoints import auth_router
 from .auth.users import get_current_user
@@ -39,16 +42,53 @@ from .schemas.player import PlayerRead
 # Suppress passlib deprecation warning about pkg_resources
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
+import os
+from pathlib import Path
+
+# Rotate log file if it exists
+log_file = Path("server/logs/server.log")
+if log_file.exists():
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")
+    rotated_log = log_file.with_name(f"server.log.{timestamp}")
+    log_file.rename(rotated_log)
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("server/logs/server.log"),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
+
+# Configure uvicorn access logging
+uvicorn_logger = logging.getLogger("uvicorn.access")
+uvicorn_logger.setLevel(logging.INFO)
+uvicorn_logger.addHandler(logging.FileHandler("server/logs/server.log"))
+
+# Configure uvicorn error logging
+uvicorn_error_logger = logging.getLogger("uvicorn.error")
+uvicorn_error_logger.setLevel(logging.INFO)
+uvicorn_error_logger.addHandler(logging.FileHandler("server/logs/server.log"))
 
 # Global variables for game state
 game_tick_task: asyncio.Task | None = None
 game_tick_interval = 1.0  # seconds
+
+
+class ErrorLoggingMiddleware(BaseHTTPMiddleware):
+    """Middleware to log all errors and exceptions."""
+
+    async def dispatch(self, request: StarletteRequest, call_next):
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as e:
+            logger.error(f"Unhandled exception in {request.url.path}: {str(e)}", exc_info=True)
+            # Re-raise the exception to maintain the error handling chain
+            raise e
 
 
 def get_tick_interval() -> float:
@@ -103,6 +143,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Add error logging middleware
+app.add_middleware(ErrorLoggingMiddleware)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -135,7 +178,7 @@ async def game_tick_loop(app: FastAPI = None):
             tick_data = {
                 "tick_number": tick_count,
                 "timestamp": datetime.datetime.utcnow().isoformat(),
-                "active_players": len(connection_manager.active_connections),
+                "active_players": connection_manager.get_active_connection_count(),
             }
             await broadcast_game_tick(tick_data)
 

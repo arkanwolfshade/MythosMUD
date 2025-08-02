@@ -115,7 +115,7 @@ def create_invites_in_db(count: int = 100) -> None:
         for code in unique_new_codes:
             invite_id = str(uuid.uuid4())
             cursor.execute(
-                "INSERT INTO invites (id, invite_code, is_used, expires_at, created_at) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO invites (id, invite_code, used, expires_at, created_at) VALUES (?, ?, ?, ?, ?)",
                 (invite_id, code, False, expires_at.isoformat(), datetime.utcnow().isoformat())
             )
             invites_created += 1
@@ -129,7 +129,7 @@ def create_invites_in_db(count: int = 100) -> None:
         cursor.execute("SELECT COUNT(*) FROM invites")
         total_invites = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM invites WHERE is_used = 1")
+        cursor.execute("SELECT COUNT(*) FROM invites WHERE used = 1")
         used_count = cursor.fetchone()[0]
 
         available_count = total_invites - used_count
@@ -140,9 +140,9 @@ def create_invites_in_db(count: int = 100) -> None:
 
         # Show some examples
         print("\nExample invite codes:")
-        cursor.execute("SELECT invite_code, is_used FROM invites ORDER BY created_at DESC LIMIT 10")
-        for i, (code, is_used) in enumerate(cursor.fetchall(), 1):
-            status = "USED" if is_used else "AVAILABLE"
+        cursor.execute("SELECT invite_code, used FROM invites ORDER BY created_at DESC LIMIT 10")
+        for i, (code, used) in enumerate(cursor.fetchall(), 1):
+            status = "USED" if used else "AVAILABLE"
             print(f"  {i:2d}. {code:<20} [{status}]")
 
     finally:

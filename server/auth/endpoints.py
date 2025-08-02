@@ -11,6 +11,7 @@ from typing import Any
 from faker import Faker
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_users import InvalidPasswordException
+from fastapi_users.exceptions import UserAlreadyExists
 from fastapi_users.schemas import BaseUserCreate
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,7 +21,7 @@ from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
-from .users import UserManager, get_auth_backend, get_user_manager
+from .users import UserManager, get_user_manager
 
 fake = Faker()
 
@@ -32,7 +33,11 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 class UserCreate(BaseUserCreate):
     """Schema for user creation with invite code validation."""
 
-    invite_code: str
+    username: str
+    invite_code: str | None = None
+
+    # Override email to make it optional
+    email: str | None = None
 
 
 # Define login request schema
@@ -65,34 +70,104 @@ async def register_user(
     This endpoint validates the invite code and creates a new user account.
     The invite code is marked as used after successful registration.
     """
-    print(f"Registration attempt for username: {user_create.email}")
+    print(f"Registration attempt for username: {user_create.username}")
+
+    # Generate bogus email if not provided
+    if not user_create.email:
+        user_create.email = f"{user_create.username}@wolfshade.org"
 
     # Validate invite code
-    invite = await invite_manager.get_invite_by_code(user_create.invite_code)
-    if not invite:
-        raise HTTPException(status_code=400, detail="Invalid invite code")
-
-    if invite.used:
-        raise HTTPException(status_code=400, detail="Invite code already used")
-
-    # Create user
     try:
-        user = await user_manager.create(user_create)
+        await invite_manager.validate_invite(user_create.invite_code)
+    except HTTPException as e:
+        raise e
+
+    # Create user without invite_code field
+    user_data = user_create.model_dump(exclude={'invite_code'})
+    user_create_clean = UserCreate(**user_data)
+
+    try:
+        user = await user_manager.create(user_create_clean)
     except InvalidPasswordException as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+    except UserAlreadyExists as e:
+        raise HTTPException(status_code=400, detail="Username already exists") from e
+    except Exception as e:
+        # Check if it's a duplicate username error
+        constraint_error = "UNIQUE constraint failed: users.username"
+        if constraint_error in str(e):
+            raise HTTPException(
+                status_code=400, detail="Username already exists"
+            ) from e
+        # Re-raise other exceptions
+        raise e
 
     # Mark invite as used
-    await invite_manager.mark_invite_used(invite.id)
+    await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
 
-    # Generate access token
-    access_token = await get_auth_backend().login(
-        user_manager.strategy,
-        user,
+    # Create player record for the new user
+    from ..persistence import get_persistence
+    import uuid
+    from datetime import datetime
+
+    # Create player record directly in database to match SQLite schema
+    persistence = get_persistence()
+
+    # Generate player data matching the database schema
+    player_id = str(uuid.uuid4())
+    user_id = str(user.user_id)
+    player_name = user.username
+    stats = '{"health": 100, "sanity": 100, "strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
+    inventory = "[]"
+    status_effects = "[]"
+    current_room_id = "earth_arkham_city_downtown_Main_St_001"
+    experience_points = 0
+    level = 1
+    created_at = user.created_at.isoformat() if user.created_at else datetime.utcnow().isoformat()
+    last_active = user.created_at.isoformat() if user.created_at else datetime.utcnow().isoformat()
+
+    # Insert player directly into database
+    import sqlite3
+    with sqlite3.connect(persistence.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO players (
+                player_id, user_id, name, stats, inventory, status_effects,
+                current_room_id, experience_points, level, created_at, last_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                player_id,
+                user_id,
+                player_name,
+                stats,
+                inventory,
+                status_effects,
+                current_room_id,
+                experience_points,
+                level,
+                created_at,
+                last_active,
+            ),
+        )
+        conn.commit()
+
+    persistence._log(f"Created player {player_name} ({player_id}) for user {user_id}")
+
+    # Generate access token using FastAPI Users approach
+    from fastapi_users.jwt import generate_jwt
+
+    # Create JWT token manually
+    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    access_token = generate_jwt(
+        data,
+        "SECRET",  # TODO: Move to env vars
+        lifetime_seconds=3600,  # 1 hour
     )
 
     return LoginResponse(
-        access_token=access_token.access_token,
-        user_id=str(user.id),
+        access_token=access_token,
+        user_id=str(user.user_id),
     )
 
 
@@ -100,6 +175,7 @@ async def register_user(
 async def login_user(
     request: LoginRequest,
     user_manager: UserManager = Depends(get_user_manager),
+    session: AsyncSession = Depends(get_async_session),
 ) -> LoginResponse:
     """
     Authenticate a user and return an access token.
@@ -107,41 +183,79 @@ async def login_user(
     This endpoint validates user credentials and returns a JWT token
     for authenticated requests.
     """
-    print(f"Login attempt for username: {request.username}")
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"Login attempt for username: {request.username}")
 
     from sqlalchemy import select
 
     # Find user by username
     stmt = select(User).where(User.username == request.username)
-    async with user_manager.user_db.session() as session:
-        result = await session.execute(stmt)
-        user = result.scalar_one_or_none()
+    result = await session.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    logger.info(f"User lookup result: {user}")
 
     if not user:
+        logger.warning(f"User not found: {request.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # Verify password
+    # Verify password using FastAPI Users with email lookup
     try:
-        await user_manager.authenticate(
-            user_manager.user_db.get_user_by_username(request.username),
-            request.password,
-        )
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid credentials") from None
+        # Get the user's email for FastAPI Users authentication
+        user_email = user.email
+        if not user_email:
+            logger.error(f"User {request.username} has no email address")
+            raise HTTPException(
+                status_code=401, detail="Invalid credentials"
+            )
 
-    # Generate access token
-    try:
-        access_token = await get_auth_backend().login(
-            user_manager.strategy,
-            user,
+        # Create OAuth2PasswordRequestForm for FastAPI Users authentication
+        from fastapi.security import OAuth2PasswordRequestForm
+
+        # Create credentials form with email (not username) for FastAPI Users
+        credentials = OAuth2PasswordRequestForm(
+            username=user_email,  # Use email for FastAPI Users
+            password=request.password,
+            grant_type="password",
+            scope="",
+            client_id=None,
+            client_secret=None
         )
+
+        # Use the user manager's authenticate method with email
+        authenticated_user = await user_manager.authenticate(credentials)
+        if not authenticated_user:
+            raise HTTPException(
+                status_code=401, detail="Invalid credentials"
+            )
+
+        # Verify we got the same user back
+        if authenticated_user.user_id != user.user_id:
+            logger.error(f"User ID mismatch: expected {user.user_id}, got {authenticated_user.user_id}")
+            raise HTTPException(
+                status_code=401, detail="Invalid credentials"
+            )
     except Exception as e:
-        print(f"Token generation failed: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Token generation failed: {str(e)}") from e
+        logger.error(f"Authentication failed: {str(e)}")
+        raise HTTPException(
+            status_code=401, detail="Invalid credentials"
+        ) from None
+
+    # Generate access token using FastAPI Users approach
+    from fastapi_users.jwt import generate_jwt
+
+    # Create JWT token manually
+    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    access_token = generate_jwt(
+        data,
+        "SECRET",  # TODO: Move to env vars
+        lifetime_seconds=3600,  # 1 hour
+    )
 
     return LoginResponse(
-        access_token=access_token.access_token,
-        user_id=str(user.id),
+        access_token=access_token,
+        user_id=str(user.user_id),
     )
 
 
@@ -155,7 +269,7 @@ async def get_current_user_info(
     This endpoint returns information about the currently authenticated user.
     """
     return {
-        "id": str(current_user.id),
+        "id": str(current_user.user_id),
         "email": current_user.email,
         "username": current_user.username,
         "is_superuser": current_user.is_superuser,
@@ -168,13 +282,11 @@ async def list_invites(
     invite_manager: InviteManager = Depends(get_invite_manager),
 ) -> list[InviteRead]:
     """
-    List all invite codes (superuser only).
+    List all invite codes.
 
     This endpoint returns all invite codes in the system.
-    Only superusers can access this endpoint.
     """
-    invites = await invite_manager.get_all_invites()
-    return [InviteRead.from_orm(invite) for invite in invites]
+    return await invite_manager.list_invites()
 
 
 @auth_router.post("/invites", response_model=InviteRead)
@@ -183,13 +295,8 @@ async def create_invite(
     invite_manager: InviteManager = Depends(get_invite_manager),
 ) -> InviteRead:
     """
-    Create a new invite code (superuser only).
+    Create a new invite code.
 
-    This endpoint generates a new invite code for user registration.
-    Only superusers can create invite codes.
+    This endpoint creates a new invite code for user registration.
     """
-    invite = await invite_manager.create_invite()
-    return InviteRead.from_orm(invite)
-
-
-# Note: FastAPI Users router is included in main.py to avoid route duplication
+    return await invite_manager.create_invite()

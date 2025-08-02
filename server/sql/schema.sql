@@ -34,10 +34,12 @@ CREATE TABLE IF NOT EXISTS players (
 CREATE TABLE IF NOT EXISTS invites (
     id TEXT PRIMARY KEY NOT NULL,
     invite_code TEXT UNIQUE NOT NULL,
+    created_by_user_id TEXT,
     used_by_user_id TEXT,
-    is_used BOOLEAN NOT NULL DEFAULT 0,
+    used BOOLEAN NOT NULL DEFAULT 0,
     expires_at DATETIME,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
