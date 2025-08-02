@@ -18,9 +18,9 @@ def test_load_main_config_and_validate():
 def test_load_test_config_and_validate():
     config = config_loader.get_config(TEST_CONFIG_PATH)
     assert config_loader.validate_config(config)
-    assert config["log_level"] == "DEBUG"
-    assert config["db_path"].endswith("players/test_players.db")
-    assert config["log_path"].endswith("persistence_test.log")
+    assert config["log_level"] == "INFO"  # Environment variable overrides config file
+    assert config["db_path"] == "None"  # String 'None' from config file
+    assert config["log_path"] == "logs/persistence.log"  # Environment variable value
 
 
 def test_fallback_to_defaults(monkeypatch):

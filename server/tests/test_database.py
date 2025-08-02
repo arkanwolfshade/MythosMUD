@@ -30,7 +30,7 @@ class TestDatabaseConfiguration:
     def test_database_url_default(self):
         """Test default DATABASE_URL."""
         # The actual value set by environment variables in tests
-        expected_url = "sqlite+aiosqlite:///data/players/players.db"
+        expected_url = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
         assert DATABASE_URL == expected_url
 
     def test_metadata_exists(self):

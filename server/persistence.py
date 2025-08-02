@@ -54,11 +54,13 @@ class PersistenceLayer:
         # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
-        elif os.environ.get("MYTHOS_DB_PATH"):
-            self.db_path = os.environ.get("MYTHOS_DB_PATH")
+        elif os.environ.get("DATABASE_URL"):
+            # Derive database path from DATABASE_URL
+            from .database import get_database_path
+            self.db_path = str(get_database_path())
         else:
             raise ValueError(
-                "MYTHOS_DB_PATH environment variable must be set. See server/env.example for configuration template."
+                "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
             )
 
         # Use absolute path for log file to avoid working directory issues
