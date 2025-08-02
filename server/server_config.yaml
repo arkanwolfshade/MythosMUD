@@ -4,6 +4,7 @@
 db_path: ../data/players/players.db
 log_path: ./logs/persistence.log
 log_level: DEBUG
+disable_logging: false
 
 # --- Network ---
 host: 0.0.0.0  # Server bind address

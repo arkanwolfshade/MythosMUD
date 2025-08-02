@@ -51,20 +51,22 @@ def _ensure_logging_initialized():
     """Ensure logging is initialized only once."""
     global _logging_initialized
     if not _logging_initialized:
-        setup_logging()
+        # Get config to determine logging settings
+        config = get_config()
+
+        # Check if we should disable logging (for tests)
+        disable_logging = config.get("disable_logging", False)
+
+        if disable_logging:
+            setup_logging(disable_logging=True)
+        else:
+            setup_logging()
+
         _logging_initialized = True
 
 
-def _ensure_test_logging_initialized():
-    """Ensure logging is initialized for tests (disabled)."""
-    global _logging_initialized
-    if not _logging_initialized:
-        setup_logging(disable_logging=True)
-        _logging_initialized = True
-
-
-# For now, use test logging to avoid permission issues
-_ensure_test_logging_initialized()
+# Initialize logging
+_ensure_logging_initialized()
 logger = get_logger(__name__)
 
 # Global variables for game state
