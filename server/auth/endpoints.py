@@ -17,11 +17,14 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, get_user_manager
+
+logger = get_logger(__name__)
 
 fake = Faker()
 
@@ -70,7 +73,7 @@ async def register_user(
     This endpoint validates the invite code and creates a new user account.
     The invite code is marked as used after successful registration.
     """
-    print(f"Registration attempt for username: {user_create.username}")
+    logger.info(f"Registration attempt for username: {user_create.username}")
 
     # Generate bogus email if not provided
     if not user_create.email:
@@ -104,9 +107,10 @@ async def register_user(
     await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
 
     # Create player record for the new user
-    from ..persistence import get_persistence
     import uuid
     from datetime import datetime
+
+    from ..persistence import get_persistence
 
     # Create player record directly in database to match SQLite schema
     persistence = get_persistence()
@@ -182,9 +186,9 @@ async def login_user(
     This endpoint validates user credentials and returns a JWT token
     for authenticated requests.
     """
-    import logging
+    from ..logging_config import get_logger
 
-    logger = logging.getLogger(__name__)
+    logger = get_logger(__name__)
     logger.info(f"Login attempt for username: {request.username}")
 
     from sqlalchemy import select

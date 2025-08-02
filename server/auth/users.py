@@ -18,7 +18,10 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..logging_config import get_logger
 from ..models.user import User
+
+logger = get_logger(__name__)
 
 
 class UserManager(BaseUserManager[User, uuid.UUID]):
@@ -34,15 +37,15 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
-        print(f"User {user.username} has registered.")
+        logger.info(f"User {user.username} has registered.")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
-        print(f"User {user.username} has forgot their password. Reset token: {token}")
+        logger.info(f"User {user.username} has forgot their password. Reset token: {token}")
 
     async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
         """Handle username verification logic."""
-        print(f"Verification requested for user {user.username}. Verification token: {token}")
+        logger.info(f"Verification requested for user {user.username}. Verification token: {token}")
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

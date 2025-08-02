@@ -7,7 +7,6 @@ interactive commands.
 
 import asyncio
 import json
-import logging
 import os
 import time
 import uuid
@@ -18,9 +17,10 @@ from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
 from .config_loader import get_config
+from .logging_config import get_logger
 from .models import Player
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def load_motd() -> str:
