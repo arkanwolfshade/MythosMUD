@@ -5,6 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import asyncio
+import logging
 import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -14,7 +15,7 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 
 # Import the app directly to avoid import issues
-from ..main import app
+from ..main import app, get_tick_interval
 
 
 class TestFastAPIApp:
@@ -289,6 +290,97 @@ class TestEndpoints:
             assert "server_time" in data
 
 
+class TestGameTickConfiguration:
+    """Test configurable game tick rate functionality."""
+
+    def test_get_tick_interval_default_value(self):
+        """Test that get_tick_interval returns default value when config is missing."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_valid_config(self):
+        """Test that get_tick_interval returns configured value."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 2.5}
+
+            result = get_tick_interval()
+
+            assert result == 2.5
+
+    def test_get_tick_interval_invalid_type(self):
+        """Test that get_tick_interval handles invalid type gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": "invalid"}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_negative_value(self):
+        """Test that get_tick_interval handles negative values gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": -1.0}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_zero_value(self):
+        """Test that get_tick_interval handles zero values gracefully."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 0}
+
+            result = get_tick_interval()
+
+            assert result == 1.0
+
+    def test_get_tick_interval_too_high(self):
+        """Test that get_tick_interval caps values at maximum."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 100.0}
+
+            result = get_tick_interval()
+
+            assert result == 60.0
+
+    def test_get_tick_interval_logging(self, caplog):
+        """Test that get_tick_interval logs configuration."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 3.0}
+
+            with caplog.at_level(logging.INFO):
+                result = get_tick_interval()
+
+            assert "Game tick rate configured: 3.0 seconds" in caplog.text
+            assert result == 3.0
+
+    def test_get_tick_interval_warning_logging(self, caplog):
+        """Test that get_tick_interval logs warnings for invalid values."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": -5.0}
+
+            with caplog.at_level(logging.WARNING):
+                result = get_tick_interval()
+
+            assert "Invalid game_tick_rate in config: -5.0" in caplog.text
+            assert result == 1.0
+
+    def test_get_tick_interval_max_warning_logging(self, caplog):
+        """Test that get_tick_interval logs warnings for values too high."""
+        with patch("server.main.get_config") as mock_get_config:
+            mock_get_config.return_value = {"game_tick_rate": 100.0}
+
+            with caplog.at_level(logging.WARNING):
+                result = get_tick_interval()
+
+            assert "Game tick rate too high: 100.0" in caplog.text
+            assert result == 60.0
+
+
 class TestGameTickLoop:
     """Test game tick loop functionality."""
 
@@ -339,6 +431,30 @@ class TestGameTickLoop:
                     # Verify logging was called
                     mock_logging.info.assert_called()
 
+    @pytest.mark.asyncio
+    async def test_game_tick_loop_caches_interval(self):
+        """Test that game tick loop caches the tick interval to avoid repeated logging."""
+        mock_app = Mock()
+        mock_app.state.persistence = Mock()
+
+        with patch("server.main.get_tick_interval") as mock_get_interval:
+            mock_get_interval.return_value = 1.0
+
+            with patch("server.main.broadcast_game_tick"):
+                with patch("server.main.connection_manager") as mock_connection_manager:
+                    mock_connection_manager.player_websockets = {}
+
+                    # Import the function directly to avoid import issues
+                    from ..main import game_tick_loop
+
+                    # Run the tick loop for a short time
+                    task = asyncio.create_task(game_tick_loop(mock_app))
+                    await asyncio.sleep(0.1)  # Let it run for a short time
+                    task.cancel()
+
+                    # Verify get_tick_interval was called only once during initialization
+                    mock_get_interval.assert_called_once()
+
 
 class TestWebSocketEndpoints:
     """Test WebSocket endpoints."""
@@ -350,9 +466,9 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {}
 
         # Import the function directly
-        from ..main import websocket_endpoint_route
+        from ..main import websocket_handler
 
-        await websocket_endpoint_route(mock_websocket, "testplayer")
+        await websocket_handler(mock_websocket, "testplayer")
 
         mock_websocket.close.assert_called_once_with(code=4001, reason="Authentication token required")
 
@@ -362,18 +478,14 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token"}
 
-        with patch("server.main.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
-            mock_persistence.get_player_by_name.return_value = None
-            mock_get_persistence.return_value = mock_persistence
+        # Import the function directly
+        from ..main import websocket_handler
 
-            # Import the function directly
-            from ..main import websocket_endpoint_route
+        await websocket_handler(mock_websocket, "testplayer")
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
-
-            # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        # The new behavior is to reject invalid tokens
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        mock_websocket.accept.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -381,20 +493,14 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
-        with patch("server.main.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
-            mock_player = Mock()
-            mock_player.name = "different_player"
-            mock_persistence.get_player_by_name.return_value = mock_player
-            mock_get_persistence.return_value = mock_persistence
+        # Import the function directly
+        from ..main import websocket_handler
 
-            # Import the function directly
-            from ..main import websocket_endpoint_route
+        await websocket_handler(mock_websocket, "testplayer")
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
-
-            # The actual behavior is to close with invalid token first
-            mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        # The new behavior is to reject invalid tokens
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        mock_websocket.accept.assert_not_called()
 
 
 class TestSSEEndpoints:
@@ -421,16 +527,16 @@ class TestSSEEndpoints:
 
     def test_game_events_stream_player_not_found(self, client):
         """Test SSE endpoint with player not found."""
-        # The actual behavior is to return 401 for invalid token first
-        response = client.get("/events/testplayer?token=valid")
+        # Test with invalid token to get 401 error
+        response = client.get("/events/testplayer?token=invalid")
 
         assert response.status_code == 401
         assert "Invalid authentication token" in response.json()["detail"]
 
     def test_game_events_stream_token_mismatch(self, client):
         """Test SSE endpoint with token mismatch."""
-        # The actual behavior is to return 401 for invalid token first
-        response = client.get("/events/testplayer?token=valid")
+        # Test with invalid token to get 401 error
+        response = client.get("/events/testplayer?token=invalid")
 
         assert response.status_code == 401
         assert "Invalid authentication token" in response.json()["detail"]

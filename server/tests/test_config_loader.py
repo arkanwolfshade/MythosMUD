@@ -23,6 +23,32 @@ def test_load_test_config_and_validate():
     assert config["log_path"].endswith("persistence_test.log")
 
 
+def test_environment_based_config_selection():
+    """Test that environment-based config selection works correctly."""
+    # Since we're running under pytest, it should automatically use test config
+    # But we can test the explicit environment variable approach
+    original_env = os.environ.get("MYTHOSMUD_TEST_MODE")
+
+    try:
+        # Test explicit test mode
+        os.environ["MYTHOSMUD_TEST_MODE"] = "1"
+        config_loader._config = None  # Reset config cache
+        config = config_loader.get_config()
+        assert config["port"] == 4999  # Test port
+        assert config["host"] == "127.0.0.1"  # Test host
+        assert config["disable_logging"] is True  # Test logging disabled
+
+    finally:
+        # Restore original environment
+        if original_env:
+            os.environ["MYTHOSMUD_TEST_MODE"] = original_env
+        elif "MYTHOSMUD_TEST_MODE" in os.environ:
+            del os.environ["MYTHOSMUD_TEST_MODE"]
+
+        # Reset config cache
+        config_loader._config = None
+
+
 def test_fallback_to_defaults(monkeypatch):
     # Simulate missing file
     monkeypatch.setattr(config_loader, "_config", None)

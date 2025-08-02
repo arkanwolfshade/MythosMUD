@@ -2,6 +2,10 @@ import json
 import os
 from typing import Any
 
+from .logging_config import get_logger
+
+logger = get_logger(__name__)
+
 ROOMS_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "rooms"))
 
 
@@ -168,11 +172,11 @@ def load_hierarchical_world() -> dict[str, Any]:
                                     room_data["id"] = new_room_id
 
                             except (OSError, json.JSONDecodeError) as e:
-                                print(f"Warning: Could not load room file {file_path}: {e}")
+                                logger.warning(f"Could not load room file {file_path}: {e}")
                                 continue
 
     except OSError as e:
-        print(f"Warning: Could not access rooms directory {ROOMS_BASE_PATH}: {e}")
+        logger.warning(f"Could not access rooms directory {ROOMS_BASE_PATH}: {e}")
 
     return world_data
 
@@ -217,12 +221,15 @@ def load_rooms() -> dict[str, Any]:
 
 
 if __name__ == "__main__":
+    from .logging_config import get_logger
+
+    logger = get_logger(__name__)
     world_data = load_hierarchical_world()
-    print(f"Loaded {len(world_data['rooms'])} rooms:")
+    logger.info(f"Loaded {len(world_data['rooms'])} rooms:")
     for room_id, room in world_data["rooms"].items():
         env = room.get("resolved_environment", "unknown")
-        print(f"- {room_id}: {room['name']} (Environment: {env})")
+        logger.info(f"- {room_id}: {room['name']} (Environment: {env})")
 
-    print(f"\nZone configurations: {len(world_data['zone_configs'])}")
-    print(f"Sub-zone configurations: {len(world_data['subzone_configs'])}")
-    print(f"Room mappings: {len(world_data['room_mappings'])}")
+    logger.info(f"Zone configurations: {len(world_data['zone_configs'])}")
+    logger.info(f"Sub-zone configurations: {len(world_data['subzone_configs'])}")
+    logger.info(f"Room mappings: {len(world_data['room_mappings'])}")

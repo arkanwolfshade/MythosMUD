@@ -68,7 +68,7 @@ class TestJWTTokenCreation:
 
     def test_create_access_token_default_expiry(self):
         """Test access token creation with default expiry."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data)
 
         assert isinstance(token, str)
@@ -76,7 +76,7 @@ class TestJWTTokenCreation:
 
     def test_create_access_token_custom_expiry(self):
         """Test access token creation with custom expiry."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         expires_delta = timedelta(hours=2)
         token = create_access_token(data, expires_delta=expires_delta)
 
@@ -85,7 +85,7 @@ class TestJWTTokenCreation:
 
     def test_create_access_token_custom_secret(self):
         """Test access token creation with custom secret key."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         custom_secret = "custom-secret-key"
         token = create_access_token(data, secret_key=custom_secret)
 
@@ -94,7 +94,7 @@ class TestJWTTokenCreation:
 
     def test_create_access_token_custom_algorithm(self):
         """Test access token creation with custom algorithm."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data, algorithm="HS256")
 
         assert isinstance(token, str)
@@ -112,7 +112,7 @@ class TestJWTTokenCreation:
         """Test access token creation with nested data."""
         data = {
             "sub": "test_user",
-            "email": "test@example.com",
+            "username": "test",
             "roles": ["user", "admin"],
             "metadata": {"created_at": "2023-01-01"},
         }
@@ -127,18 +127,18 @@ class TestJWTTokenDecoding:
 
     def test_decode_access_token_valid(self):
         """Test decoding a valid access token."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data)
         decoded = decode_access_token(token)
 
         assert decoded is not None
         assert decoded["sub"] == "test_user"
-        assert decoded["email"] == "test@example.com"
+        assert decoded["username"] == "test"
         assert "exp" in decoded
 
     def test_decode_access_token_custom_secret(self):
         """Test decoding with custom secret key."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         custom_secret = "custom-secret-key"
         token = create_access_token(data, secret_key=custom_secret)
         decoded = decode_access_token(token, secret_key=custom_secret)
@@ -155,7 +155,7 @@ class TestJWTTokenDecoding:
 
     def test_decode_access_token_wrong_secret(self):
         """Test decoding with wrong secret key."""
-        data = {"sub": "test_user", "email": "test@example.com"}
+        data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data, secret_key="correct-secret")
         decoded = decode_access_token(token, secret_key="wrong-secret")
 
@@ -179,7 +179,7 @@ class TestConstants:
 
     def test_secret_key_default(self):
         """Test SECRET_KEY default value."""
-        assert SECRET_KEY == "mythosmud-dev-secret-key-change-in-production"
+        assert SECRET_KEY == "SECRET"
 
     def test_algorithm_default(self):
         """Test ALGORITHM default value."""

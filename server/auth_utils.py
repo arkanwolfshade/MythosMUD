@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Use environment variable for secret key, with fallback for development
-SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY", "mythosmud-dev-secret-key-change-in-production")
+SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY", "SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -38,7 +38,7 @@ def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str
     if token is None:
         return None
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         return payload
     except JWTError:
         return None

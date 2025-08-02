@@ -69,7 +69,7 @@ class InviteManager:
     async def get_user_invites(self, user_id: uuid.UUID) -> list[Invite]:
         """Get all invites used by a user."""
 
-        result = await self.session.execute(select(Invite).where(Invite.used_by_user_id == user_id))
+        result = await self.session.execute(select(Invite).where(Invite.used_by_user_id == str(user_id)))
         return result.scalars().all()
 
     async def get_unused_invites(self) -> list[Invite]:

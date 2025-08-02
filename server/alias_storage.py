@@ -9,7 +9,10 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from .logging_config import get_logger
 from .models import Alias
+
+logger = get_logger(__name__)
 
 
 class AliasStorage:
@@ -40,7 +43,7 @@ class AliasStorage:
                 return data
         except (OSError, json.JSONDecodeError) as e:
             # Log error and return default structure
-            print(f"Error loading alias data for {player_name}: {e}")
+            logger.error(f"Error loading alias data for {player_name}: {e}")
             return {"version": "1.0", "aliases": []}
 
     def _save_alias_data(self, player_name: str, data: dict) -> bool:
@@ -55,7 +58,7 @@ class AliasStorage:
                 json.dump(data, f, indent=2, default=str)
             return True
         except OSError as e:
-            print(f"Error saving alias data for {player_name}: {e}")
+            logger.error(f"Error saving alias data for {player_name}: {e}")
             return False
 
     def get_player_aliases(self, player_name: str) -> list[Alias]:
@@ -74,7 +77,7 @@ class AliasStorage:
                 alias = Alias(**alias_data)
                 aliases.append(alias)
             except Exception as e:
-                print(f"Error parsing alias data: {e}")
+                logger.error(f"Error parsing alias data: {e}")
                 continue
 
         return aliases
@@ -216,7 +219,7 @@ class AliasStorage:
                 file_path.unlink()
                 return True
             except OSError as e:
-                print(f"Error deleting alias file for {player_name}: {e}")
+                logger.error(f"Error deleting alias file for {player_name}: {e}")
                 return False
 
         return True  # File doesn't exist, consider it "deleted"
@@ -241,5 +244,5 @@ class AliasStorage:
             shutil.copy2(source_file, backup_file)
             return True
         except OSError as e:
-            print(f"Error creating backup for {player_name}: {e}")
+            logger.error(f"Error creating backup for {player_name}: {e}")
             return False

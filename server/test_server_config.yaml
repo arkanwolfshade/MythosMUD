@@ -4,6 +4,7 @@
 db_path: server/tests/data/players/test_players.db  # Test DB
 log_path: server/tests/data/persistence_test.log   # Test log file
 log_level: DEBUG                  # Verbose logging for tests
+disable_logging: true            # Disable logging for tests
 
 # --- Network ---
 host: 127.0.0.1  # Test server bind address

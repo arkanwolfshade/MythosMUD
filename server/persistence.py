@@ -1,4 +1,3 @@
-import logging
 import os
 import sqlite3
 import threading
@@ -78,20 +77,10 @@ class PersistenceLayer:
         self._load_room_cache()
 
     def _setup_logger(self):
-        logger = logging.getLogger("PersistenceLayer")
-        logger.setLevel(logging.INFO)
+        # Use centralized logging configuration
+        from .logging_config import get_logger
 
-        # Create log directory if it doesn't exist
-        log_dir = os.path.dirname(self.log_path)
-        if log_dir and not os.path.exists(log_dir):
-            os.makedirs(log_dir, exist_ok=True)
-
-        fh = logging.FileHandler(self.log_path)
-        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-        fh.setFormatter(formatter)
-        if not logger.handlers:
-            logger.addHandler(fh)
-        return logger
+        return get_logger("PersistenceLayer")
 
     def _log(self, msg: str):
         self._logger.info(msg)

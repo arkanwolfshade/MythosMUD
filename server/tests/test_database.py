@@ -30,7 +30,7 @@ class TestDatabaseConfiguration:
 
     def test_database_url_default(self):
         """Test default DATABASE_URL."""
-        assert DATABASE_URL == "sqlite+aiosqlite:///../../data/players/players.db"
+        assert DATABASE_URL == "sqlite+aiosqlite:///data/players/players.db"
 
     def test_test_database_url_default(self):
         """Test default TEST_DATABASE_URL."""

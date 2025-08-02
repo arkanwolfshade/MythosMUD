@@ -5,9 +5,11 @@
 CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY NOT NULL,
     email TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT 1,
     is_superuser BOOLEAN NOT NULL DEFAULT 0,
+    is_verified BOOLEAN NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -32,15 +34,17 @@ CREATE TABLE IF NOT EXISTS players (
 CREATE TABLE IF NOT EXISTS invites (
     id TEXT PRIMARY KEY NOT NULL,
     invite_code TEXT UNIQUE NOT NULL,
+    created_by_user_id TEXT,
     used_by_user_id TEXT,
-    is_used BOOLEAN NOT NULL DEFAULT 0,
+    used BOOLEAN NOT NULL DEFAULT 0,
     expires_at DATETIME,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
 CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);

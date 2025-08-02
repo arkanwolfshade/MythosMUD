@@ -3,6 +3,26 @@
 
 Write-Host "Initializing MythosMUD databases..." -ForegroundColor Green
 
+# Check if server is running and stop it if necessary
+Write-Host "Checking if MythosMUD server is running..." -ForegroundColor Yellow
+$serverProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" -or $_.ProcessName -like "*uvicorn*" } -ErrorAction SilentlyContinue
+
+if ($serverProcesses) {
+    Write-Host "⚠️  MythosMUD server is running. Stopping server to unlock database..." -ForegroundColor Yellow
+    try {
+        # Try to stop server gracefully first
+        .\scripts\stop_server.ps1
+        Start-Sleep -Seconds 3
+    } catch {
+        Write-Host "⚠️  Could not stop server gracefully. Force stopping processes..." -ForegroundColor Yellow
+        Get-Process | Where-Object { $_.ProcessName -like "*python*" -or $_.ProcessName -like "*uvicorn*" } | Stop-Process -Force
+        Start-Sleep -Seconds 2
+    }
+    Write-Host "✓ Server stopped" -ForegroundColor Green
+} else {
+    Write-Host "✓ Server is not running" -ForegroundColor Green
+}
+
 # Create directories if they don't exist
 $prodDir = "../../data/players"
 $testDir = "./tests/data/players"
@@ -42,7 +62,28 @@ if (Test-Path $prodDb) {
     Write-Host "✓ Backup created: $backupPath" -ForegroundColor Green
 }
 
-sqlite3 $prodDb < ./sql/schema.sql
+# Drop all existing objects and recreate schema
+Write-Host "Dropping all existing database objects..." -ForegroundColor Yellow
+
+# First, try to drop tables if they exist
+$dropCommands = @"
+DROP TABLE IF EXISTS invites;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS users;
+"@
+
+$dropCommands | sqlite3 $prodDb
+
+# If database is corrupted or locked, recreate it completely
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "⚠️  Database may be locked or corrupted. Recreating database file..." -ForegroundColor Yellow
+    if (Test-Path $prodDb) {
+        Remove-Item $prodDb -Force
+    }
+}
+
+# Create fresh schema
+Get-Content ./sql/schema.sql | sqlite3 $prodDb
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Production database initialized successfully" -ForegroundColor Green
 } else {
@@ -59,7 +100,9 @@ if (Test-Path $testDb) {
     Remove-Item $testDb -Force
 }
 
-sqlite3 $testDb < ./sql/schema.sql
+# Create test database with clean schema
+Write-Host "Creating test database with clean schema..." -ForegroundColor Yellow
+Get-Content ./sql/schema.sql | sqlite3 $testDb
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Test database initialized successfully" -ForegroundColor Green
 } else {
