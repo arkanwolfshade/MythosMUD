@@ -8,6 +8,7 @@ sanity, fear, corruption, healing, and damage mechanics.
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..auth.users import get_current_user
+from ..game.mechanics import GameMechanicsService
 
 # Create game router
 game_router = APIRouter(prefix="/players", tags=["game"])
@@ -23,12 +24,13 @@ def apply_sanity_loss(
 ):
     """Apply sanity loss to a player."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.apply_sanity_loss(player, amount, source)
-    return {"message": f"Applied {amount} sanity loss to {player.name}"}
+    success, message = mechanics_service.apply_sanity_loss(player_id, amount, source)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}
 
 
 @game_router.post("/{player_id}/fear")
@@ -41,12 +43,13 @@ def apply_fear(
 ):
     """Apply fear to a player."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.apply_fear(player, amount, source)
-    return {"message": f"Applied {amount} fear to {player.name}"}
+    success, message = mechanics_service.apply_fear(player_id, amount, source)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}
 
 
 @game_router.post("/{player_id}/corruption")
@@ -59,12 +62,13 @@ def apply_corruption(
 ):
     """Apply corruption to a player."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.apply_corruption(player, amount, source)
-    return {"message": f"Applied {amount} corruption to {player.name}"}
+    success, message = mechanics_service.apply_corruption(player_id, amount, source)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}
 
 
 @game_router.post("/{player_id}/occult-knowledge")
@@ -76,12 +80,13 @@ def gain_occult_knowledge(
 ):
     """Gain occult knowledge (with sanity loss)."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.gain_occult_knowledge(player, amount, source)
-    return {"message": f"Gained {amount} occult knowledge for {player.name}"}
+    success, message = mechanics_service.gain_occult_knowledge(player_id, amount, source)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}
 
 
 @game_router.post("/{player_id}/heal")
@@ -92,12 +97,13 @@ def heal_player(
 ):
     """Heal a player's health."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.heal_player(player, amount)
-    return {"message": f"Healed {player.name} for {amount} health"}
+    success, message = mechanics_service.heal_player(player_id, amount)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}
 
 
 @game_router.post("/{player_id}/damage")
@@ -109,9 +115,10 @@ def damage_player(
 ):
     """Damage a player's health."""
     persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+    mechanics_service = GameMechanicsService(persistence)
 
-    persistence.damage_player(player, amount, damage_type)
-    return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+    success, message = mechanics_service.damage_player(player_id, amount, damage_type)
+    if not success:
+        raise HTTPException(status_code=404, detail=message)
+
+    return {"message": message}

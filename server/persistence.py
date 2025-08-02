@@ -57,6 +57,7 @@ class PersistenceLayer:
         elif os.environ.get("DATABASE_URL"):
             # Derive database path from DATABASE_URL
             from .database import get_database_path
+
             self.db_path = str(get_database_path())
         else:
             raise ValueError(
