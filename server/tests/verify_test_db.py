@@ -6,10 +6,10 @@ import sqlite3
 from pathlib import Path
 
 # Use environment variable for test database path - require it to be set
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+TEST_DATABASE_URL = os.getenv("DATABASE_URL")
 if not TEST_DATABASE_URL:
     raise ValueError(
-        "TEST_DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
     )
 
 if TEST_DATABASE_URL.startswith("sqlite+aiosqlite:///"):

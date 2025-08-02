@@ -15,10 +15,10 @@ from pathlib import Path
 def clean_test_database():
     """Clean the test database by deleting all rows from the players table."""
     # Use environment variable for test database path - require it to be set
-    test_db_url = os.getenv("TEST_DATABASE_URL")
+    test_db_url = os.getenv("DATABASE_URL")
     if not test_db_url:
         raise ValueError(
-            "TEST_DATABASE_URL environment variable must be set. "
+            "DATABASE_URL environment variable must be set. "
             "See server/env.example for configuration template."
         )
 

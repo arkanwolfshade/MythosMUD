@@ -25,12 +25,6 @@ if not DATABASE_URL:
         "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
     )
 
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
-if not TEST_DATABASE_URL:
-    raise ValueError(
-        "TEST_DATABASE_URL environment variable must be set. See server/env.example for configuration template."
-    )
-
 # Create async engine
 engine = create_async_engine(
     DATABASE_URL,

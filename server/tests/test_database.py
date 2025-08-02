@@ -15,7 +15,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.database import (
     DATABASE_URL,
-    TEST_DATABASE_URL,
     close_db,
     ensure_database_directory,
     get_async_session,
@@ -34,12 +33,6 @@ class TestDatabaseConfiguration:
         expected_url = "sqlite+aiosqlite:///data/players/players.db"
         assert DATABASE_URL == expected_url
 
-    def test_test_database_url_default(self):
-        """Test default TEST_DATABASE_URL."""
-        # The actual value set by environment variables in tests
-        expected_url = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-        assert TEST_DATABASE_URL == expected_url
-
     def test_metadata_exists(self):
         """Test that metadata is properly initialized."""
         assert metadata is not None
@@ -56,18 +49,6 @@ class TestDatabaseConfiguration:
         importlib.reload(server.database)
 
         assert server.database.DATABASE_URL == "sqlite+aiosqlite:///custom/path.db"
-
-    @patch.dict(os.environ, {"TEST_DATABASE_URL": "sqlite+aiosqlite:///test/path.db"})
-    def test_test_database_url_from_env(self):
-        """Test TEST_DATABASE_URL from environment variable."""
-        # Re-import to get the updated value
-        import importlib
-
-        import server.database
-
-        importlib.reload(server.database)
-
-        assert server.database.TEST_DATABASE_URL == "sqlite+aiosqlite:///test/path.db"
 
 
 class TestGetDatabasePath:
