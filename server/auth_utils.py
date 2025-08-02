@@ -38,7 +38,7 @@ def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str
     if token is None:
         return None
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         return payload
     except JWTError:
         return None
