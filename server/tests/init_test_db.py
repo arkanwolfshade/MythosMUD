@@ -2,27 +2,34 @@
 """
 Initialize test database with schema and test player data.
 
-This script creates a SQLite database using the TEST_DATABASE_URL environment variable
-with the same schema as the production database and populates it with test player data.
+This script creates a SQLite database using the DATABASE_URL environment
+variable with the same schema as the production database and populates it with
+test player data.
 """
 
 import os
 import sqlite3
 from pathlib import Path
 
-# Get test database path from environment variable
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./tests/data/test_players.db")
+# Get test database path from environment variable - require it to be set
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+    )
 
 # Extract file path from SQLite URL
-if TEST_DATABASE_URL.startswith("sqlite+aiosqlite:///"):
-    db_path = TEST_DATABASE_URL.replace("sqlite+aiosqlite:///", "")
-    # Handle relative paths
+if DATABASE_URL.startswith("sqlite+aiosqlite:///"):
+    db_path = DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+    # Handle relative paths by resolving from project root
     if db_path.startswith("./"):
         db_path = db_path[2:]  # Remove "./"
-    TEST_DB_PATH = Path(db_path)
+
+    # Resolve the path relative to the project root to prevent directory duplication
+    project_root = Path(__file__).parent.parent.parent  # Go up to MythosMUD root
+    TEST_DB_PATH = project_root / db_path
 else:
-    # Fallback to default location
-    TEST_DB_PATH = Path(__file__).parent / "data" / "test_players.db"
+    raise ValueError(f"Unsupported database URL format: {DATABASE_URL}")
 
 # Load the production schema
 SCHEMA_PATH = Path(__file__).parent.parent / "sql" / "schema.sql"

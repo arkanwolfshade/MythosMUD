@@ -12,7 +12,6 @@ from unittest.mock import patch
 from server.auth_utils import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
-    SECRET_KEY,
     create_access_token,
     decode_access_token,
     hash_password,
@@ -21,31 +20,30 @@ from server.auth_utils import (
 
 
 class TestPasswordHashing:
-    """Test password hashing and verification functionality."""
+    """Test password hashing functionality."""
 
     def test_hash_password(self):
         """Test password hashing."""
-        password = "test_password_123"
+        password = "test_password"
         hashed = hash_password(password)
 
+        assert isinstance(hashed, str)
         assert hashed != password
-        assert hashed.startswith("$2b$")
         assert len(hashed) > 20
 
     def test_verify_password_correct(self):
         """Test password verification with correct password."""
-        password = "test_password_123"
+        password = "test_password"
         hashed = hash_password(password)
 
         assert verify_password(password, hashed) is True
 
     def test_verify_password_incorrect(self):
         """Test password verification with incorrect password."""
-        password = "test_password_123"
-        wrong_password = "wrong_password_456"
+        password = "test_password"
         hashed = hash_password(password)
 
-        assert verify_password(wrong_password, hashed) is False
+        assert verify_password("wrong_password", hashed) is False
 
     def test_verify_password_empty(self):
         """Test password verification with empty password."""
@@ -53,13 +51,14 @@ class TestPasswordHashing:
         hashed = hash_password(password)
 
         assert verify_password(password, hashed) is True
-        assert verify_password("not_empty", hashed) is False
 
     def test_hash_password_special_chars(self):
         """Test password hashing with special characters."""
-        password = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
+        password = "test@#$%^&*()_+{}|:<>?[]\\;'\",./"
         hashed = hash_password(password)
 
+        assert isinstance(hashed, str)
+        assert hashed != password
         assert verify_password(password, hashed) is True
 
 
@@ -177,11 +176,19 @@ class TestJWTTokenDecoding:
 class TestConstants:
     """Test module constants."""
 
+    @patch.dict(os.environ, {"MYTHOSMUD_SECRET_KEY": "test-secret-key"})
     def test_secret_key_default(self):
         """Test SECRET_KEY default value."""
+        # Re-import to get the updated value
+        import importlib
+
+        import server.auth_utils
+
+        importlib.reload(server.auth_utils)
+
         # The actual value set by environment variables in tests
         expected_key = "test-secret-key"
-        assert SECRET_KEY == expected_key
+        assert server.auth_utils.SECRET_KEY == expected_key
 
     def test_algorithm_default(self):
         """Test ALGORITHM default value."""

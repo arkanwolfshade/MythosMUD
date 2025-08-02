@@ -48,7 +48,7 @@ _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
 _config = None
 
 _DEFAULTS = {
-    "db_path": "../data/players/players.db",
+    "db_path": None,  # Must be set via environment variable or config file
     "log_path": "logs/persistence.log",  # Relative to server directory
     "log_level": "INFO",
     "host": "0.0.0.0",
@@ -68,7 +68,7 @@ _DEFAULTS = {
     "enable_pvp": False,
     "enable_stack_traces": True,
     "auth_backend": "sqlite",
-    "auth_db_file": "./data/users.db",
+    "auth_db_file": None,  # Must be set via environment variable or config file
     "registration_enabled": True,
     "allow_guest_login": False,
     "areas": ["./data/rooms/arkham/"],

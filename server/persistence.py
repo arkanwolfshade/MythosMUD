@@ -51,16 +51,15 @@ class PersistenceLayer:
     _hooks: dict[str, list[Callable]] = {}
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
-        # Default to the main production database in the project root
+        # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
         elif os.environ.get("MYTHOS_DB_PATH"):
             self.db_path = os.environ.get("MYTHOS_DB_PATH")
         else:
-            # Get the project root directory (two levels up from server directory)
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            project_root = os.path.dirname(module_dir)
-            self.db_path = os.path.join(project_root, "data", "players", "players.db")
+            raise ValueError(
+                "MYTHOS_DB_PATH environment variable must be set. See server/env.example for configuration template."
+            )
 
         # Use absolute path for log file to avoid working directory issues
         if log_path:

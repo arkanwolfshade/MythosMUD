@@ -19,7 +19,7 @@ def test_load_test_config_and_validate():
     config = config_loader.get_config(TEST_CONFIG_PATH)
     assert config_loader.validate_config(config)
     assert config["log_level"] == "DEBUG"
-    assert config["db_path"].endswith("test_players.db")
+    assert config["db_path"].endswith("players/test_players.db")
     assert config["log_path"].endswith("persistence_test.log")
 
 

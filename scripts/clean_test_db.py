@@ -7,14 +7,25 @@ clean test data is essential for reproducible test results and preventing
 the corruption of temporal signatures between test runs.
 """
 
+import os
 import sqlite3
 from pathlib import Path
 
 
 def clean_test_database():
     """Clean the test database by deleting all rows from the players table."""
-    # Path to the test database
-    test_db_path = Path("server/tests/data/players/test_players.db")
+    # Use environment variable for test database path - require it to be set
+    test_db_url = os.getenv("TEST_DATABASE_URL")
+    if not test_db_url:
+        raise ValueError(
+            "TEST_DATABASE_URL environment variable must be set. "
+            "See server/env.example for configuration template."
+        )
+
+    if test_db_url.startswith("sqlite+aiosqlite:///"):
+        test_db_path = Path(test_db_url.replace("sqlite+aiosqlite:///", ""))
+    else:
+        raise ValueError(f"Unsupported database URL format: {test_db_url}")
 
     if not test_db_path.exists():
         print(f"⚠️  Test database not found at {test_db_path}")

@@ -5,6 +5,7 @@ This module configures FastAPI Users with SQLAlchemy backend
 for user authentication and management.
 """
 
+import os
 import uuid
 
 from fastapi import Depends, Request
@@ -29,8 +30,9 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     user creation and validation logic.
     """
 
-    reset_password_token_secret = "SECRET"  # TODO: Move to env vars
-    verification_token_secret = "SECRET"  # TODO: Move to env vars
+    # Use environment variables for all secrets - CRITICAL: Must be set in production
+    reset_password_token_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret")
+    verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
 
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
@@ -63,8 +65,10 @@ def get_auth_backend() -> AuthenticationBackend:
 
     # JWT strategy - return a function that creates the strategy
     def get_jwt_strategy() -> JWTStrategy:
+        # Use environment variable for JWT secret - CRITICAL: Must be set in production
+        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
         return JWTStrategy(
-            secret="SECRET",  # TODO: Move to env vars
+            secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],
         )

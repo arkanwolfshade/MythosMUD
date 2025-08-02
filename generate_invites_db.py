@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent / "server"))
 
 from server.database import async_session_maker
 from server.models.invite import Invite
+
 MYTHOS_WORDS = [
     "Cthulhu", "Nyarlathotep", "Azathoth", "YogSothoth", "ShubNiggurath",
     "Dagon", "Hastur", "Yig", "Tsathoggua", "Nodens", "Bokrug", "Glaaki",

@@ -10,26 +10,45 @@ import sys
 from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
+# Load test environment variables from test.env file
+TEST_ENV_PATH = Path(__file__).parent / "test.env"
+if TEST_ENV_PATH.exists():
+    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
+    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
+else:
+    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
+    print("Using default test environment variables")
+
 
 def pytest_configure(config):
-    """Configure pytest with environment variables for tests."""
-    # Set required environment variables for tests
-    os.environ.setdefault("MYTHOSMUD_SECRET_KEY", "test-secret-key-for-development")
-    os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///data/players/players.db")
-    os.environ.setdefault("TEST_DATABASE_URL", "sqlite+aiosqlite:///server/tests/data/test_players.db")
+    """Configure pytest with test environment variables."""
+    # Set required test environment variables, overriding any existing values
+    # These are test-specific defaults that should only be used if test.env is not loaded
+    os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
+    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
+    os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
+    os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
 
 
 @pytest.fixture(scope="session")
 def test_env_vars():
     """Provide test environment variables."""
     return {
-        "MYTHOSMUD_SECRET_KEY": "test-secret-key-for-development",
-        "DATABASE_URL": "sqlite+aiosqlite:///data/players/players.db",
-        "TEST_DATABASE_URL": ("sqlite+aiosqlite:///server/tests/data/test_players.db"),
+        "MYTHOSMUD_SECRET_KEY": os.getenv("MYTHOSMUD_SECRET_KEY", "test-secret-key-for-development"),
+        "DATABASE_URL": os.getenv("DATABASE_URL", "sqlite+aiosqlite:///server/tests/data/players/test_players.db"),
+        "MYTHOSMUD_JWT_SECRET": os.getenv("MYTHOSMUD_JWT_SECRET", "test-jwt-secret-for-development"),
+        "MYTHOSMUD_RESET_TOKEN_SECRET": os.getenv(
+            "MYTHOSMUD_RESET_TOKEN_SECRET", "test-reset-token-secret-for-development"
+        ),
+        "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": os.getenv(
+            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "test-verification-token-secret-for-development"
+        ),
     }
 
 
@@ -41,8 +60,12 @@ def test_database():
     # Initialize the test database
     init_test_database()
 
-    # Return the database path for tests that need it
-    return "server/tests/data/test_players.db"
+    # Return the database path from environment variable
+    test_db_url = os.getenv("DATABASE_URL")
+    if test_db_url.startswith("sqlite+aiosqlite:///"):
+        return test_db_url.replace("sqlite+aiosqlite:///", "")
+    else:
+        raise ValueError(f"Unsupported database URL format: {test_db_url}")
 
 
 @pytest.fixture(autouse=True)
