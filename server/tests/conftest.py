@@ -33,7 +33,8 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///E:/projects/GitHub/MythosMUD/server/tests/data/players/test_players.db"
+    os.environ["MYTHOS_PERSIST_LOG"] = "E:/projects/GitHub/MythosMUD/server/tests/logs/test_persistence.log"
 
 
 @pytest.fixture(scope="session")
