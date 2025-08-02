@@ -6,6 +6,11 @@
     }
   ],
   "settings": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
     "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
     "python.terminal.activateEnvironment": true,
     "python.linting.enabled": true,
@@ -13,12 +18,15 @@
     "python.formatting.provider": "ruff",
     "python.formatting.ruffArgs": ["--line-length=120"],
     "python.linting.ruffArgs": ["--line-length=120"],
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
-    },
     "editor.rulers": [120],
+    "editor.wordWrapColumn": 120,
+    "eslint.enable": true,
+    "eslint.validate": ["javascript", "typescript"],
+    "prettier.requireConfig": true,
+    "prettier.printWidth": 120,
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.suggest.autoImports": true,
+    "makefile.configureOnOpen": false,
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     "git.autofetch": true,
@@ -27,16 +35,54 @@
       "VIRTUAL_ENV": "${workspaceFolder}/.venv",
       "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}"
     },
-    "makefile.configureOnOpen": false
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[markdown]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.rulers": [120]
+    },
+    "[python]": {
+      "editor.rulers": [120],
+      "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "[yaml]": {
+      "editor.rulers": [120]
+    },
+    "[toml]": {
+      "editor.rulers": [120]
+    }
   },
   "extensions": {
     "recommendations": [
       "ms-python.python",
-      "ms-python.ruff",
-      "ms-vscode.vscode-json",
+      "charliermarsh.ruff",
       "esbenp.prettier-vscode",
       "ms-vscode.vscode-typescript-next",
-      "ms-vscode.makefile-tools"
+      "bradlc.vscode-tailwindcss",
+      "ms-vscode.vscode-json"
     ]
   }
 }

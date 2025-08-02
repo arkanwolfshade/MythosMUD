@@ -210,4 +210,12 @@ __marimo__/
 # Local development files
 TASKS.local.md
 
+# Environment files (CRITICAL: Never commit actual .env files)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+
 server/logs/

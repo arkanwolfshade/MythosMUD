@@ -2,15 +2,27 @@
 """
 Initialize test database with schema and test player data.
 
-This script creates a SQLite database in server/tests/data/ with the same schema
-as the production database and populates it with test player data.
+This script creates a SQLite database using the TEST_DATABASE_URL environment variable
+with the same schema as the production database and populates it with test player data.
 """
 
+import os
 import sqlite3
 from pathlib import Path
 
-# Test database path
-TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
+# Get test database path from environment variable
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./tests/data/test_players.db")
+
+# Extract file path from SQLite URL
+if TEST_DATABASE_URL.startswith("sqlite+aiosqlite:///"):
+    db_path = TEST_DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+    # Handle relative paths
+    if db_path.startswith("./"):
+        db_path = db_path[2:]  # Remove "./"
+    TEST_DB_PATH = Path(db_path)
+else:
+    # Fallback to default location
+    TEST_DB_PATH = Path(__file__).parent / "data" / "test_players.db"
 
 # Load the production schema
 SCHEMA_PATH = Path(__file__).parent.parent / "sql" / "schema.sql"

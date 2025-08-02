@@ -1,36 +1,36 @@
-import { useState } from "react";
-import "./App.css";
-import { GameTerminal } from "./components/GameTerminal";
-import { logger } from "./utils/logger";
+import { useState } from 'react';
+import './App.css';
+import { GameTerminal } from './components/GameTerminal';
+import { logger } from './utils/logger';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [playerId, setPlayerId] = useState("");
-  const [authToken, setAuthToken] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [playerId, setPlayerId] = useState('');
+  const [authToken, setAuthToken] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [showRegistration, setShowRegistration] = useState(false);
-  const [inviteCode, setInviteCode] = useState("");
-  const [playerName, setPlayerName] = useState("");
+  const [inviteCode, setInviteCode] = useState('');
+  const [playerName, setPlayerName] = useState('');
 
-  const baseUrl = import.meta.env.VITE_API_URL || "/api";
+  const baseUrl = import.meta.env.VITE_API_URL || '/api';
 
-  logger.info("App", "Component initialized", { baseUrl });
+  logger.info('App', 'Component initialized', { baseUrl });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError('');
 
-    logger.info("App", "Login attempt started", { username, baseUrl });
+    logger.info('App', 'Login attempt started', { username, baseUrl });
 
     try {
       const response = await fetch(`${baseUrl}/auth/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           username,
@@ -38,7 +38,7 @@ function App() {
         }),
       });
 
-      logger.info("App", "Login response received", {
+      logger.info('App', 'Login response received', {
         status: response.status,
         statusText: response.statusText,
         url: response.url,
@@ -46,7 +46,7 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
-        logger.info("App", "Login successful", {
+        logger.info('App', 'Login successful', {
           playerId: data.player_id,
           hasToken: !!data.access_token,
         });
@@ -57,15 +57,15 @@ function App() {
         setIsAuthenticated(true);
       } else {
         const errorData = await response.json();
-        logger.error("App", "Login failed", {
+        logger.error('App', 'Login failed', {
           status: response.status,
           error: errorData.detail,
         });
-        setError(errorData.detail || "Login failed");
+        setError(errorData.detail || 'Login failed');
       }
     } catch (error) {
-      logger.error("App", "Login network error", { error: error instanceof Error ? error.message : String(error) });
-      setError("Failed to connect to server");
+      logger.error('App', 'Login network error', { error: error instanceof Error ? error.message : String(error) });
+      setError('Failed to connect to server');
     } finally {
       setIsLoading(false);
     }
@@ -74,15 +74,15 @@ function App() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError('');
 
-    logger.info("App", "Registration attempt started", { username, inviteCode, baseUrl });
+    logger.info('App', 'Registration attempt started', { username, inviteCode, baseUrl });
 
     try {
       const response = await fetch(`${baseUrl}/auth/register`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           username,
@@ -91,7 +91,7 @@ function App() {
         }),
       });
 
-      logger.info("App", "Registration response received", {
+      logger.info('App', 'Registration response received', {
         status: response.status,
         statusText: response.statusText,
         url: response.url,
@@ -99,32 +99,32 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
-        logger.info("App", "Registration successful", { data });
-        setError("");
+        logger.info('App', 'Registration successful', { data });
+        setError('');
         setShowRegistration(false);
-        setInviteCode("");
+        setInviteCode('');
         // Show success message and switch to login
-        alert("Registration successful! You may now log in.");
+        alert('Registration successful! You may now log in.');
       } else {
         const errorData = await response.json();
-        logger.error("App", "Registration failed", {
+        logger.error('App', 'Registration failed', {
           status: response.status,
           error: errorData.detail,
         });
-        setError(errorData.detail || "Registration failed");
+        setError(errorData.detail || 'Registration failed');
       }
     } catch (error) {
-      logger.error("App", "Registration network error", {
+      logger.error('App', 'Registration network error', {
         error: error instanceof Error ? error.message : String(error),
       });
-      setError("Failed to connect to server");
+      setError('Failed to connect to server');
     } finally {
       setIsLoading(false);
     }
   };
 
   if (isAuthenticated) {
-    logger.info("App", "Rendering authenticated view", { playerId, hasToken: !!authToken });
+    logger.info('App', 'Rendering authenticated view', { playerId, hasToken: !!authToken });
     return (
       <div className="app">
         <GameTerminal playerId={playerId} playerName={playerName} authToken={authToken} />
@@ -132,7 +132,7 @@ function App() {
     );
   }
 
-  logger.info("App", "Rendering login/registration view", { showRegistration });
+  logger.info('App', 'Rendering login/registration view', { showRegistration });
 
   return (
     <div className="app">
@@ -149,7 +149,7 @@ function App() {
                   id="username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={e => setUsername(e.target.value)}
                   required
                   placeholder="Enter your username"
                 />
@@ -161,7 +161,7 @@ function App() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   required
                   placeholder="Enter your password"
                 />
@@ -170,7 +170,7 @@ function App() {
               {error && <div className="error-message">{error}</div>}
 
               <button type="submit" disabled={isLoading} className="login-button">
-                {isLoading ? "Connecting..." : "Enter the MUD"}
+                {isLoading ? 'Connecting...' : 'Enter the MUD'}
               </button>
             </form>
 
@@ -190,7 +190,7 @@ function App() {
                   id="reg-username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={e => setUsername(e.target.value)}
                   required
                   placeholder="Choose a username"
                 />
@@ -202,7 +202,7 @@ function App() {
                   id="reg-password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   required
                   placeholder="Choose a password"
                 />
@@ -214,7 +214,7 @@ function App() {
                   id="invite-code"
                   type="text"
                   value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value)}
+                  onChange={e => setInviteCode(e.target.value)}
                   required
                   placeholder="Enter your invite code"
                 />
@@ -223,7 +223,7 @@ function App() {
               {error && <div className="error-message">{error}</div>}
 
               <button type="submit" disabled={isLoading} className="login-button">
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
 

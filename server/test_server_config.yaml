@@ -46,7 +46,7 @@ quests:
   - server/tests/data/quests/test_quest.json
 
 # --- Admin/Console/Telnet ---
-admin_password: testadmin
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
 admin_port: 5999
 enable_remote_console: false
 

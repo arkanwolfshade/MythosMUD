@@ -51,7 +51,7 @@ quests:
   - ./data/quests/tutorial.json
 
 # --- Admin/Console/Telnet ---
-admin_password: changeme
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
 admin_port: 5001
 enable_remote_console: false
 

@@ -6,8 +6,12 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Use environment variable for secret key, with fallback for development
-SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY", "mythosmud-dev-secret-key-change-in-production")
+# Use environment variable for secret key - CRITICAL: Must be set in production
+SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError(
+        "MYTHOSMUD_SECRET_KEY environment variable must be set. Generate a secure random key for production deployment."
+    )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

@@ -264,7 +264,7 @@ def get_room(room_id: str):
 
 # Player management endpoints
 @app.post("/players", response_model=PlayerRead)
-def create_player(name: str, starting_room_id: str = "arkham_001"):
+def create_player(name: str, starting_room_id: str = "arkham_001", current_user: dict = Depends(get_current_user)):
     """Create a new player character."""
     existing_player = app.state.persistence.get_player_by_name(name)
     if existing_player:
@@ -301,7 +301,7 @@ def create_player(name: str, starting_room_id: str = "arkham_001"):
 
 
 @app.get("/players", response_model=list[PlayerRead])
-def list_players():
+def list_players(current_user: dict = Depends(get_current_user)):
     """Get a list of all players."""
     players = app.state.persistence.list_players()
     result = []
@@ -342,7 +342,7 @@ def list_players():
 
 
 @app.get("/players/{player_id}", response_model=PlayerRead)
-def get_player(player_id: str):
+def get_player(player_id: str, current_user: dict = Depends(get_current_user)):
     """Get a specific player by ID."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -379,7 +379,7 @@ def get_player(player_id: str):
 
 
 @app.get("/players/name/{player_name}", response_model=PlayerRead)
-def get_player_by_name(player_name: str):
+def get_player_by_name(player_name: str, current_user: dict = Depends(get_current_user)):
     """Get a specific player by name."""
     player = app.state.persistence.get_player_by_name(player_name)
     if not player:
@@ -416,7 +416,7 @@ def get_player_by_name(player_name: str):
 
 
 @app.delete("/players/{player_id}")
-def delete_player(player_id: str):
+def delete_player(player_id: str, current_user: dict = Depends(get_current_user)):
     """Delete a player character."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -438,7 +438,9 @@ def delete_player(player_id: str):
 
 # Player stats and effects endpoints
 @app.post("/players/{player_id}/sanity-loss")
-def apply_sanity_loss(player_id: str, amount: int, source: str = "unknown"):
+def apply_sanity_loss(
+    player_id: str, amount: int, source: str = "unknown", current_user: dict = Depends(get_current_user)
+):
     """Apply sanity loss to a player."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -449,7 +451,7 @@ def apply_sanity_loss(player_id: str, amount: int, source: str = "unknown"):
 
 
 @app.post("/players/{player_id}/fear")
-def apply_fear(player_id: str, amount: int, source: str = "unknown"):
+def apply_fear(player_id: str, amount: int, source: str = "unknown", current_user: dict = Depends(get_current_user)):
     """Apply fear to a player."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -460,7 +462,9 @@ def apply_fear(player_id: str, amount: int, source: str = "unknown"):
 
 
 @app.post("/players/{player_id}/corruption")
-def apply_corruption(player_id: str, amount: int, source: str = "unknown"):
+def apply_corruption(
+    player_id: str, amount: int, source: str = "unknown", current_user: dict = Depends(get_current_user)
+):
     """Apply corruption to a player."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -471,7 +475,9 @@ def apply_corruption(player_id: str, amount: int, source: str = "unknown"):
 
 
 @app.post("/players/{player_id}/occult-knowledge")
-def gain_occult_knowledge(player_id: str, amount: int, source: str = "unknown"):
+def gain_occult_knowledge(
+    player_id: str, amount: int, source: str = "unknown", current_user: dict = Depends(get_current_user)
+):
     """Gain occult knowledge (with sanity loss)."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -482,7 +488,7 @@ def gain_occult_knowledge(player_id: str, amount: int, source: str = "unknown"):
 
 
 @app.post("/players/{player_id}/heal")
-def heal_player(player_id: str, amount: int):
+def heal_player(player_id: str, amount: int, current_user: dict = Depends(get_current_user)):
     """Heal a player's health."""
     player = app.state.persistence.get_player(player_id)
     if not player:
@@ -493,7 +499,9 @@ def heal_player(player_id: str, amount: int):
 
 
 @app.post("/players/{player_id}/damage")
-def damage_player(player_id: str, amount: int, damage_type: str = "physical"):
+def damage_player(
+    player_id: str, amount: int, damage_type: str = "physical", current_user: dict = Depends(get_current_user)
+):
     """Damage a player's health."""
     player = app.state.persistence.get_player(player_id)
     if not player:

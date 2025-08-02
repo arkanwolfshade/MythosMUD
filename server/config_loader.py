@@ -74,7 +74,7 @@ _DEFAULTS = {
     "areas": ["./data/rooms/arkham/"],
     "npcs": ["./data/npcs/guards.json"],
     "quests": ["./data/quests/tutorial.json"],
-    "admin_password": "changeme",
+    "admin_password": None,  # Must be set via MYTHOSMUD_ADMIN_PASSWORD env var
     "admin_port": 5001,
     "enable_remote_console": False,
     "xp_multiplier": 1.0,
@@ -165,6 +165,12 @@ def get_config(config_path: str = None):
                 config[k] = _DEFAULTS[k]
         else:
             config[k] = _DEFAULTS[k]
+    # Handle environment variables for sensitive data
+    if "admin_password" in config and config["admin_password"] is None:
+        config["admin_password"] = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
+        if not config["admin_password"]:
+            raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
+
     _config = config
     return _config
 
@@ -178,6 +184,6 @@ def validate_config(config: dict) -> bool:
         assert k in config, f"Missing config key: {k}"
         if typ is list:
             assert isinstance(config[k], list), f"Config key {k} should be a list"
-        else:
-            assert isinstance(config[k], typ), f"Config key {k} should be {typ.__name__}"
+    else:
+        assert isinstance(config[k], typ), f"Config key {k} should be {typ.__name__}"
     return True

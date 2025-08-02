@@ -18,9 +18,18 @@ from sqlalchemy.pool import StaticPool
 
 from .metadata import metadata
 
-# Database URL configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///../../data/players/players.db")
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./tests/data/test_players.db")
+# Database URL configuration - read from environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+    )
+
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+if not TEST_DATABASE_URL:
+    raise ValueError(
+        "TEST_DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+    )
 
 # Create async engine
 engine = create_async_engine(
