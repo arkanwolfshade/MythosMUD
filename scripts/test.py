@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 print("🧹 Cleaning test database...")
 clean_cmd = ["python", "scripts/clean_test_db.py"]
@@ -8,7 +9,9 @@ clean_cmd = ["python", "scripts/clean_test_db.py"]
 # Set the required environment variables for the subprocess
 env = os.environ.copy()
 env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-env["MYTHOS_PERSIST_LOG"] = "server/tests/logs/test_persistence.log"
+# Get the project root (one level up from scripts directory)
+project_root = Path(__file__).parent.parent
+env["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
 env["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 clean_result = subprocess.run(clean_cmd, env=env)

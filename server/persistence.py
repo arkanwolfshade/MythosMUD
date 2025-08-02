@@ -41,6 +41,13 @@ def get_persistence() -> "PersistenceLayer":
         return _persistence_instance
 
 
+def reset_persistence():
+    """Reset the persistence singleton instance."""
+    global _persistence_instance
+    with _persistence_lock:
+        _persistence_instance = None
+
+
 # --- PersistenceLayer Class ---
 class PersistenceLayer:
     """
@@ -67,8 +74,8 @@ class PersistenceLayer:
         # Use absolute path for log file to avoid working directory issues
         if log_path:
             self.log_path = log_path
-        elif os.environ.get("MYTHOS_PERSIST_LOG"):
-            self.log_path = os.environ.get("MYTHOS_PERSIST_LOG")
+        elif os.environ.get("PERSIST_LOG"):
+            self.log_path = os.environ.get("PERSIST_LOG")
         else:
             # Get the directory where this module is located
             module_dir = os.path.dirname(os.path.abspath(__file__))
@@ -84,6 +91,17 @@ class PersistenceLayer:
         logger.setLevel(logging.INFO)
 
         # Create log directory if it doesn't exist
+        # Resolve path relative to project root if it's a relative path
+        if not os.path.isabs(self.log_path):
+            # Get the project root (two levels up from server directory)
+            server_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(server_dir)
+            # Ensure the path is relative to project root, not current working directory
+            if self.log_path.startswith("tests/"):
+                self.log_path = os.path.join(project_root, self.log_path)
+            else:
+                self.log_path = os.path.join(project_root, self.log_path)
+
         log_dir = os.path.dirname(self.log_path)
         if log_dir and not os.path.exists(log_dir):
             os.makedirs(log_dir, exist_ok=True)

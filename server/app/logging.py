@@ -17,13 +17,19 @@ def setup_logging():
     This function configures logging with both file and console output,
     including log file rotation and uvicorn logging integration.
     """
-    # Create logs directory if it doesn't exist
-    # Use server directory for logs, not project root
-    logs_dir = Path(__file__).parent.parent / "logs"
-    logs_dir.mkdir(exist_ok=True)
+    # Get server log path from environment variable or use default
+    import os
 
-    # Rotate existing server.log if it exists
-    server_log_path = logs_dir / "server.log"
+    server_log_path = os.environ.get("SERVER_LOG")
+    if server_log_path:
+        server_log_path = Path(server_log_path)
+        # Create parent directory if it doesn't exist
+        server_log_path.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        # Default to server/logs/server.log
+        logs_dir = Path(__file__).parent.parent / "logs"
+        logs_dir.mkdir(exist_ok=True)
+        server_log_path = logs_dir / "server.log"
     if server_log_path.exists():
         # Generate timestamp for the rotated log file
         timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")

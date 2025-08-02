@@ -1,17 +1,13 @@
 """
 Real-time communication API endpoints for MythosMUD server.
 
-This module handles WebSocket connections, Server-Sent Events,
-and real-time game status endpoints.
+This module handles WebSocket connections and Server-Sent Events
+for real-time game communication.
 """
 
-import datetime
-
-from fastapi import APIRouter, Depends, Request, WebSocket
+from fastapi import APIRouter, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
-from ..auth.users import get_current_user
-from ..realtime.connection_manager import connection_manager
 from ..realtime.sse_handler import game_event_stream
 from ..realtime.websocket_handler import handle_websocket_connection
 
@@ -44,22 +40,3 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     """
     # TODO: Add authentication and player validation as needed
     await handle_websocket_connection(websocket, player_id)
-
-
-@realtime_router.get("/game/status")
-def get_game_status():
-    """Get current game status and connection information."""
-    return {
-        "active_connections": connection_manager.get_active_connection_count(),
-        "active_players": len(connection_manager.player_websockets),
-        "room_subscriptions": len(connection_manager.room_subscriptions),
-        "server_time": datetime.datetime.utcnow().isoformat(),
-    }
-
-
-@realtime_router.post("/game/broadcast")
-def broadcast_message(message: str, current_user: dict = Depends(get_current_user)):
-    """Broadcast a message to all connected players (admin only)."""
-    # TODO: Add admin role checking
-    # For now, allow any authenticated user
-    return {"message": f"Broadcast message: {message}"}

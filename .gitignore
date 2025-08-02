@@ -219,3 +219,4 @@ TASKS.local.md
 *.env
 
 server/logs/
+server/tests/logs

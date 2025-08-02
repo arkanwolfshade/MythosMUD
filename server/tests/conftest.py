@@ -9,6 +9,9 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
+from dotenv import load_dotenv
+
 # Set environment variables BEFORE any imports to prevent module-level instantiations
 # from using the wrong paths
 os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
@@ -16,11 +19,10 @@ os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-os.environ["MYTHOS_PERSIST_LOG"] = "server/tests/logs/test_persistence.log"
+# Get the project root (two levels up from this file)
+project_root = Path(__file__).parent.parent.parent
+os.environ["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
 os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
-
-import pytest
-from dotenv import load_dotenv
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -44,7 +46,9 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
     os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-    os.environ["MYTHOS_PERSIST_LOG"] = "server/tests/logs/test_persistence.log"
+    # Get the project root (two levels up from this file)
+    project_root = Path(__file__).parent.parent.parent
+    os.environ["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
     os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 
@@ -85,4 +89,8 @@ def ensure_test_db_ready(test_database):
     """Ensure test database is ready for each test."""
     # This fixture runs automatically for each test
     # The test_database fixture ensures the database is initialized
+    # Reset persistence to ensure fresh instance with new environment variables
+    from ..persistence import reset_persistence
+
+    reset_persistence()
     pass

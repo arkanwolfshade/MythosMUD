@@ -92,3 +92,111 @@ def delete_player(
         raise HTTPException(status_code=404, detail=message)
 
     return {"message": message}
+
+
+# Player stats and effects endpoints
+@player_router.post("/{player_id}/sanity-loss")
+def apply_sanity_loss(
+    player_id: str,
+    amount: int,
+    source: str = "unknown",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Apply sanity loss to a player."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.apply_sanity_loss(player, amount, source)
+    return {"message": f"Applied {amount} sanity loss to {player.name}"}
+
+
+@player_router.post("/{player_id}/fear")
+def apply_fear(
+    player_id: str,
+    amount: int,
+    source: str = "unknown",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Apply fear to a player."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.apply_fear(player, amount, source)
+    return {"message": f"Applied {amount} fear to {player.name}"}
+
+
+@player_router.post("/{player_id}/corruption")
+def apply_corruption(
+    player_id: str,
+    amount: int,
+    source: str = "unknown",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Apply corruption to a player."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.apply_corruption(player, amount, source)
+    return {"message": f"Applied {amount} corruption to {player.name}"}
+
+
+@player_router.post("/{player_id}/occult-knowledge")
+def gain_occult_knowledge(
+    player_id: str,
+    amount: int,
+    source: str = "unknown",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Gain occult knowledge (with sanity loss)."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.gain_occult_knowledge(player, amount, source)
+    return {"message": f"Gained {amount} occult knowledge for {player.name}"}
+
+
+@player_router.post("/{player_id}/heal")
+def heal_player(
+    player_id: str,
+    amount: int,
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Heal a player's health."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.heal_player(player, amount)
+    return {"message": f"Healed {player.name} for {amount} health"}
+
+
+@player_router.post("/{player_id}/damage")
+def damage_player(
+    player_id: str,
+    amount: int,
+    damage_type: str = "physical",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """Damage a player's health."""
+    persistence = request.app.state.persistence
+    player = persistence.get_player(player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    persistence.damage_player(player, amount, damage_type)
+    return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
