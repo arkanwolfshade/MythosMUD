@@ -276,8 +276,10 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                         json.dumps(
                             {
                                 "event_type": "command_response",
-                                "command": "look",
-                                "result": f"You are in a mysterious room. Player ID: {player_id}",
+                                "data": {
+                                    "command": "look",
+                                    "result": f"You are in a mysterious room. Player ID: {player_id}"
+                                },
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
                         )
@@ -289,8 +291,10 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                         json.dumps(
                             {
                                 "event_type": "command_response",
-                                "command": "say",
-                                "result": f"You say: {message_text}",
+                                "data": {
+                                    "command": "say",
+                                    "result": f"You say: {message_text}"
+                                },
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
                         )
@@ -301,8 +305,10 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                         json.dumps(
                             {
                                 "event_type": "command_response",
-                                "command": command,
-                                "result": f"Unknown command: {command}",
+                                "data": {
+                                    "command": command,
+                                    "result": f"Unknown command: {command}"
+                                },
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
                         )
