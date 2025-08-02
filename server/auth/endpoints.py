@@ -8,7 +8,6 @@ custom invite code validation.
 
 from typing import Any
 
-from faker import Faker
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_users import InvalidPasswordException
 from fastapi_users.exceptions import UserAlreadyExists
@@ -25,8 +24,6 @@ from .invites import InviteManager, get_invite_manager
 from .users import UserManager, get_user_manager
 
 logger = get_logger(__name__)
-
-fake = Faker()
 
 # Create router for auth endpoints
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
