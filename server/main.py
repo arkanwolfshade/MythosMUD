@@ -278,7 +278,7 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                                 "event_type": "command_response",
                                 "data": {
                                     "command": "look",
-                                    "result": f"You are in a mysterious room. Player ID: {player_id}"
+                                    "result": f"You are in a mysterious room. Player ID: {player_id}",
                                 },
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
@@ -291,10 +291,7 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                         json.dumps(
                             {
                                 "event_type": "command_response",
-                                "data": {
-                                    "command": "say",
-                                    "result": f"You say: {message_text}"
-                                },
+                                "data": {"command": "say", "result": f"You say: {message_text}"},
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
                         )
@@ -305,10 +302,7 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                         json.dumps(
                             {
                                 "event_type": "command_response",
-                                "data": {
-                                    "command": command,
-                                    "result": f"Unknown command: {command}"
-                                },
+                                "data": {"command": command, "result": f"Unknown command: {command}"},
                                 "timestamp": datetime.datetime.now().isoformat(),
                             }
                         )
@@ -332,7 +326,11 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
                 logger.error(f"Error processing WebSocket message from {player_id}: {e}")
                 await websocket.send_text(
                     json.dumps(
-                        {"event_type": "error", "error": str(e), "timestamp": datetime.datetime.now().isoformat()}
+                        {
+                            "event_type": "error",
+                            "error": "An internal error occurred",
+                            "timestamp": datetime.datetime.now().isoformat(),
+                        }
                     )
                 )
 
@@ -403,7 +401,7 @@ async def game_events_legacy(player_id: str, request: Request = None):
             pass
         except Exception as e:
             logger.error(f"Error in event generator for player {player_id}: {e}")
-            yield f"data: {json.dumps({'event_type': 'error', 'error': str(e), 'timestamp': datetime.datetime.now().isoformat()})}\n\n"
+            yield f"data: {json.dumps({'event_type': 'error', 'error': 'An internal error occurred', 'timestamp': datetime.datetime.now().isoformat()})}\n\n"
 
     return StreamingResponse(
         event_generator(),
