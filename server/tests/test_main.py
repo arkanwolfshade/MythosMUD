@@ -479,18 +479,13 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {"token": "invalid_token"}
 
         # Import the function directly
-        from fastapi import WebSocketDisconnect
-
         from ..main import websocket_handler
-
-        # Mock the receive_text to raise a WebSocketDisconnect exception to break the infinite loop
-        mock_websocket.receive_text.side_effect = WebSocketDisconnect()
 
         await websocket_handler(mock_websocket, "testplayer")
 
-        # The actual behavior is to accept any token and establish connection
-        mock_websocket.accept.assert_called_once()
-        mock_websocket.send_text.assert_called()
+        # The new behavior is to reject invalid tokens
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        mock_websocket.accept.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -499,18 +494,13 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {"token": "valid_token"}
 
         # Import the function directly
-        from fastapi import WebSocketDisconnect
-
         from ..main import websocket_handler
-
-        # Mock the receive_text to raise a WebSocketDisconnect exception to break the infinite loop
-        mock_websocket.receive_text.side_effect = WebSocketDisconnect()
 
         await websocket_handler(mock_websocket, "testplayer")
 
-        # The actual behavior is to accept any token and establish connection
-        mock_websocket.accept.assert_called_once()
-        mock_websocket.send_text.assert_called()
+        # The new behavior is to reject invalid tokens
+        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
+        mock_websocket.accept.assert_not_called()
 
 
 class TestSSEEndpoints:

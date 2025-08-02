@@ -179,7 +179,7 @@ class TestConstants:
 
     def test_secret_key_default(self):
         """Test SECRET_KEY default value."""
-        assert SECRET_KEY == "mythosmud-dev-secret-key-change-in-production"
+        assert SECRET_KEY == "SECRET"
 
     def test_algorithm_default(self):
         """Test ALGORITHM default value."""

@@ -206,6 +206,8 @@ async def game_status():
 @app.websocket("/ws/{player_id}")
 async def websocket_handler(websocket: WebSocket, player_id: str):
     """Handle WebSocket connections for real-time game communication."""
+    from .auth_utils import decode_access_token
+
     # Check for token parameter
     token = websocket.query_params.get("token") if websocket.query_params else None
 
@@ -213,9 +215,27 @@ async def websocket_handler(websocket: WebSocket, player_id: str):
         await websocket.close(code=4001, reason="Authentication token required")
         return
 
-    # TODO: Implement proper token validation
-    # For now, accept any token to allow connection testing
-    # This should be updated to validate the JWT token properly
+    # Validate JWT token
+    try:
+        payload = decode_access_token(token)
+        if not payload:
+            await websocket.close(code=4001, reason="Invalid authentication token")
+            return
+
+        # Extract user ID from token payload
+        user_id = payload.get("sub")
+        if not user_id:
+            await websocket.close(code=4001, reason="Invalid token format")
+            return
+
+        # TODO: Verify that the user_id matches the player_id or that the user
+        # has permission to access this player's WebSocket
+        # For now, we'll accept any valid token
+
+    except Exception as e:
+        logger.error(f"Token validation error: {e}")
+        await websocket.close(code=4001, reason="Invalid authentication token")
+        return
 
     try:
         await websocket.accept()
@@ -334,17 +354,32 @@ async def game_events():
 @app.get("/events/{player_id}")
 async def game_events_legacy(player_id: str, request: Request = None):
     """Legacy Server-Sent Events endpoint for game events."""
+    from .auth_utils import decode_access_token
+
     # Check for token parameter
     token = request.query_params.get("token") if request else None
 
     if not token:
         raise HTTPException(status_code=401, detail="Authentication token required")
 
-    # TODO: Implement proper token validation
-    # For now, reject invalid tokens to match test expectations
-    # This should be updated to validate the JWT token properly
-    if token != "valid":
-        raise HTTPException(status_code=401, detail="Invalid authentication token")
+    # Validate JWT token
+    try:
+        payload = decode_access_token(token)
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+
+        # Extract user ID from token payload
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token format")
+
+        # TODO: Verify that the user_id matches the player_id or that the user
+        # has permission to access this player's events
+        # For now, we'll accept any valid token
+
+    except Exception as e:
+        logger.error(f"Token validation error: {e}")
+        raise HTTPException(status_code=401, detail="Invalid authentication token") from None
 
     # Only define the generator if the token is valid
     async def event_generator():
