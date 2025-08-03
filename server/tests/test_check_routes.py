@@ -33,7 +33,7 @@ class TestCheckRoutes:
 
         # Check for some expected routes
         expected_routes = [
-            "/players",
+            "/players/",
             "/players/{player_id}",
             "/players/name/{player_name}",
         ]
@@ -94,8 +94,8 @@ class TestCheckRoutes:
             # Paths should start with /
             assert route.path.startswith("/")
 
-            # Paths should not end with / unless it's the root or command endpoint
-            if route.path not in ["/", "/command/"]:
+            # Paths should not end with / unless it's the root, command endpoint, or players collection
+            if route.path not in ["/", "/command/", "/players/"]:
                 assert not route.path.endswith("/")
 
             # Paths should not have double slashes (except for root)

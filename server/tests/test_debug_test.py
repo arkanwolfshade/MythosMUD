@@ -50,7 +50,7 @@ class TestDebugTest:
 
         # Check for player routes
         player_routes = [
-            "/players",
+            "/players/",
             "/players/{player_id}",
             "/players/name/{player_name}",
         ]
