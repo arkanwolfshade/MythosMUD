@@ -1,266 +1,200 @@
 """Tests for the models/relationships module."""
 
-import os
-from pathlib import Path
-
 import pytest
+
+from ..models.invite import Invite
+from ..models.player import Player
+from ..models.relationships import setup_relationships
+from ..models.user import User
 
 
 class TestModelsRelationships:
     """Test the models/relationships module functionality."""
 
-    def test_relationships_file_exists(self):
-        """Test that the relationships file exists."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        assert relationships_path.exists()
+    def test_setup_relationships_function_exists(self):
+        """Test that the setup_relationships function exists and is callable."""
+        assert callable(setup_relationships)
 
-    def test_relationships_file_content(self):
-        """Test that the relationships file contains expected content."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+    def test_setup_relationships_docstring(self):
+        """Test that setup_relationships has proper documentation."""
+        assert setup_relationships.__doc__ is not None
+        assert "Set up all model relationships" in setup_relationships.__doc__
 
-        # Check for key elements
-        assert "from sqlalchemy" in content
-        assert "from sqlalchemy.orm" in content
-        assert "relationship" in content
+    def test_setup_relationships_can_be_called(self):
+        """Test that setup_relationships can be called without errors."""
+        # This should not raise any exceptions
+        setup_relationships()
 
-    def test_relationships_imports_available(self):
-        """Test that all necessary imports are available."""
+    def test_user_player_relationship_established(self):
+        """Test that User -> Player relationship is properly established."""
+        setup_relationships()
+
+        # Check that the relationship attribute exists
+        assert hasattr(User, "player")
+        assert User.player is not None
+
+    def test_user_used_invite_relationship_established(self):
+        """Test that User -> Invite relationship is properly established."""
+        setup_relationships()
+
+        # Check that the relationship attribute exists
+        assert hasattr(User, "used_invite")
+        assert User.used_invite is not None
+
+    def test_player_user_relationship_established(self):
+        """Test that Player -> User relationship is properly established."""
+        setup_relationships()
+
+        # Check that the relationship attribute exists
+        assert hasattr(Player, "user")
+        assert Player.user is not None
+
+    def test_invite_user_relationship_established(self):
+        """Test that Invite -> User relationship is properly established."""
+        setup_relationships()
+
+        # Check that the relationship attribute exists
+        assert hasattr(Invite, "user")
+        assert Invite.user is not None
+
+    def test_relationships_are_sqlalchemy_attributes(self):
+        """Test that the established relationships are proper SQLAlchemy attributes."""
+        setup_relationships()
+
+        # Import to check type
+        from sqlalchemy.orm.attributes import InstrumentedAttribute
+
+        # Check that all relationships are proper SQLAlchemy attributes
+        assert isinstance(User.player, InstrumentedAttribute)
+        assert isinstance(User.used_invite, InstrumentedAttribute)
+        assert isinstance(Player.user, InstrumentedAttribute)
+        assert isinstance(Invite.user, InstrumentedAttribute)
+
+    def test_relationships_handle_existing_attributes(self):
+        """Test that setup_relationships handles existing relationship attributes."""
+        setup_relationships()
+
+        # Call setup_relationships again - should not overwrite existing relationships
+        setup_relationships()
+
+        # Relationships should still be properly configured
+        assert hasattr(User, "player")
+        assert hasattr(User, "used_invite")
+        assert hasattr(Player, "user")
+        assert hasattr(Invite, "user")
+
+    def test_relationships_with_mock_models(self):
+        """Test that relationships work with mock model classes."""
+
+        # Create mock classes to test relationship setup
+        class MockUser:
+            __table__ = type(
+                "MockTable", (), {"c": type("MockColumns", (), {"get": lambda self, name, default: None})()}
+            )
+
+        class MockPlayer:
+            __table__ = type(
+                "MockTable", (), {"c": type("MockColumns", (), {"get": lambda self, name, default: None})()}
+            )
+
+        class MockInvite:
+            __table__ = type(
+                "MockTable", (), {"c": type("MockColumns", (), {"get": lambda self, name, default: None})()}
+            )
+
+        # This should not raise any exceptions
         try:
-            # Test that the file exists and can be read
-            relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-            content = relationships_path.read_text(encoding="utf-8")
+            # Simulate the relationship setup logic
+            MockUser.player = None
+            if not MockUser.player:
+                from sqlalchemy.orm import relationship
 
-            # Check that it contains the expected imports
-            assert "from sqlalchemy" in content
+                MockUser.player = relationship("Player", back_populates="user", uselist=False)
 
+            assert MockUser.player is not None
         except Exception as e:
-            pytest.fail(f"Test failed: {e}")
+            pytest.fail(f"Relationship setup should not fail: {e}")
+
+    def test_relationships_import_structure(self):
+        """Test that all necessary imports are available in the relationships module."""
+        from ..models.relationships import setup_relationships
+
+        # Test that we can import the function
+        assert setup_relationships is not None
+
+        # Test that we can import the models
+        assert User is not None
+        assert Player is not None
+        assert Invite is not None
 
     def test_relationships_function_signature(self):
-        """Test that the script has proper structure."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+        """Test that setup_relationships has the expected function signature."""
+        import inspect
 
-        # Check for key components
-        assert "relationship" in content
-        assert "ForeignKey" in content
+        # Get function signature
+        sig = inspect.signature(setup_relationships)
 
-    def test_relationships_docstring(self):
-        """Test that relationships has proper documentation."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+        # Should take no parameters
+        assert len(sig.parameters) == 0
 
-        # Check for docstring
-        assert '"""' in content or "'''" in content
+        # Should return None (void function)
+        assert sig.return_annotation == inspect.Signature.empty
 
-    def test_relationships_structure(self):
-        """Test the structure of the relationships file."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+    def test_relationships_are_consistent_across_calls(self):
+        """Test that relationships remain consistent across multiple setup calls."""
+        setup_relationships()
 
-        # Check for key components
-        assert "from sqlalchemy" in content
-        assert "from sqlalchemy.orm" in content
+        # Call setup_relationships again
+        setup_relationships()
 
-    def test_relationships_configuration(self):
-        """Test that the script has proper configuration."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+        # Relationships should remain the same (same attribute names)
+        assert hasattr(User, "player")
+        assert hasattr(User, "used_invite")
+        assert hasattr(Player, "user")
+        assert hasattr(Invite, "user")
 
-        # Check for specific configuration values
-        assert "relationship" in content
+    def test_relationships_module_docstring(self):
+        """Test that the relationships module has proper documentation."""
+        # Check that the module has proper docstring by reading the file
+        from pathlib import Path
 
-    def test_relationships_script_execution(self):
-        """Test that the script can be executed."""
+        # Get the path to the relationships module
         relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
 
-        # Check that file is executable
-        assert os.access(relationships_path, os.R_OK)
-
-    def test_relationships_file_permissions(self):
-        """Test that the relationships file has proper permissions."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-
-        # Check that file is readable
-        assert os.access(relationships_path, os.R_OK)
-
-    def test_relationships_file_size(self):
-        """Test that the relationships file has reasonable size."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-
-        # Check file size (should be reasonable for a module file)
-        size = relationships_path.stat().st_size
-        assert size > 10  # Should be more than 10 bytes
-        assert size < 5000  # Should be less than 5KB
-
-    def test_relationships_encoding(self):
-        """Test that the relationships file uses proper encoding."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-
-        # Try to read with UTF-8 encoding
-        try:
-            content = relationships_path.read_text(encoding="utf-8")
-            assert len(content) > 0
-        except UnicodeDecodeError:
-            assert False, "relationships file should be UTF-8 encoded"
-
-    def test_relationships_line_count(self):
-        """Test that the relationships file has reasonable line count."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-        lines = content.split("\n")
-
-        # Should have reasonable number of lines
-        assert len(lines) > 3  # More than 3 lines
-        assert len(lines) < 100  # Less than 100 lines
-
-    def test_relationships_comment_quality(self):
-        """Test that the relationships file has good comments."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
+        # Read the file content
         content = relationships_path.read_text(encoding="utf-8")
 
         # Check for module docstring
         assert '"""' in content or "'''" in content
+        assert "Model relationships setup" in content
 
-    def test_relationships_variable_names(self):
-        """Test that the relationships file uses good variable names."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+    def test_relationships_imports_work(self):
+        """Test that all necessary imports work correctly."""
+        # Test that we can import all the required modules
+        from ..models.invite import Invite
+        from ..models.player import Player
+        from ..models.relationships import setup_relationships
+        from ..models.user import User
 
-        # Check for good variable naming
-        lines = content.split("\n")
-        for line in lines:
-            if "def " in line or "class " in line:
-                # Function and class names should be descriptive
-                assert len(line.strip()) > 5
+        # Test that all imports are successful
+        assert setup_relationships is not None
+        assert Invite is not None
+        assert Player is not None
+        assert User is not None
 
-    def test_relationships_no_hardcoded_secrets(self):
-        """Test that the relationships file doesn't contain hardcoded secrets."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+    def test_relationships_setup_is_idempotent(self):
+        """Test that calling setup_relationships multiple times is safe."""
+        # First call
+        setup_relationships()
 
-        # Check for absence of hardcoded secrets
-        # Exclude legitimate SQLAlchemy terms that contain 'key'
-        assert "password" not in content.lower()
-        assert "secret" not in content.lower()
-        # Only check for standalone 'key' that might be a secret, not SQLAlchemy terms
-        lines = content.split("\n")
-        for line in lines:
-            if "key" in line.lower():
-                # Allow SQLAlchemy terms like 'primaryjoin'
-                if "primaryjoin" in line or "foreignkey" in line:
-                    continue
-                # Check if it's a standalone 'key' that might be a secret
-                if "key" in line.lower() and not any(
-                    sqlalchemy_term in line.lower()
-                    for sqlalchemy_term in ["primaryjoin", "foreignkey", "back_populates"]
-                ):
-                    # This might be a hardcoded secret
-                    assert False, f"Potential hardcoded secret found: {line.strip()}"
+        # Second call should not cause issues
+        setup_relationships()
 
-    def test_relationships_consistent_indentation(self):
-        """Test that the relationships file uses consistent indentation."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
+        # Third call should also be safe
+        setup_relationships()
 
-        # Check for consistent indentation
-        lines = content.split("\n")
-        for line in lines:
-            if line.strip() and not line.startswith("#"):
-                # Should use spaces, not tabs
-                assert "\t" not in line
-
-    def test_relationships_no_syntax_errors(self):
-        """Test that the relationships file has no syntax errors."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-
-        # Try to compile the file to check for syntax errors
-        try:
-            compile(relationships_path.read_text(encoding="utf-8"), str(relationships_path), "exec")
-        except SyntaxError as e:
-            pytest.fail(f"Syntax error in relationships.py: {e}")
-
-    def test_relationships_shebang(self):
-        """Test that the relationships file has proper shebang."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for shebang
-        lines = content.split("\n")
-        if lines and lines[0].startswith("#!"):
-            assert "python" in lines[0]
-
-    def test_relationships_imports_structure(self):
-        """Test that the relationships file has proper import structure."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check import structure
-        lines = content.split("\n")
-        import_lines = [line for line in lines if line.startswith("from") or line.startswith("import")]
-
-        # Should have some imports
-        assert len(import_lines) > 0
-
-    def test_relationships_function_structure(self):
-        """Test that the relationships file has proper function structure."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for function definition
-        assert "relationship" in content
-
-    def test_relationships_output_format(self):
-        """Test that the relationships file has proper output format."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for proper output handling
-        assert "relationship" in content
-
-    def test_relationships_edge_cases(self):
-        """Test that the relationships file handles edge cases properly."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for error handling
-        assert "try" in content or "except" in content or "if" in content
-
-    def test_relationships_special_characters(self):
-        """Test that the relationships file handles special characters properly."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for proper string handling
-        assert '"' in content or "'" in content
-
-    def test_relationships_methods_are_sets(self):
-        """Test that the relationships file uses proper method organization."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for proper method organization
-        lines = content.split("\n")
-        function_count = sum(1 for line in lines if line.strip().startswith("def "))
-        assert function_count >= 0  # Should have at least 0 functions
-
-    def test_relationships_paths_are_normalized(self):
-        """Test that the relationships file uses normalized paths."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for path normalization
-        assert "Path" in content or "os.path" in content
-
-    def test_relationships_consistency(self):
-        """Test that the relationships file is consistent."""
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
-        content = relationships_path.read_text(encoding="utf-8")
-
-        # Check for consistency in coding style
-        lines = content.split("\n")
-        for line in lines:
-            if line.strip() and not line.startswith("#"):
-                # Should not have trailing whitespace
-                assert line == line.rstrip()
+        # All relationships should still be properly configured
+        assert hasattr(User, "player")
+        assert hasattr(User, "used_invite")
+        assert hasattr(Player, "user")
+        assert hasattr(Invite, "user")

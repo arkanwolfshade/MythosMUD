@@ -9,14 +9,14 @@ from pathlib import Path  # noqa: F401
 
 from sqlalchemy.orm import relationship
 
-# Foreign references used in model definitions
-from .invite import Invite
-from .player import Player
-from .user import User
-
 
 def setup_relationships():
     """Set up all model relationships."""
+
+    # Import models here to avoid circular imports
+    from .invite import Invite
+    from .player import Player
+    from .user import User
 
     # ForeignKey
     # User -> Player (one-to-one)
