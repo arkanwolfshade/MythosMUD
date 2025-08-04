@@ -216,3 +216,4 @@ TASKS.local.md
 server/logs/
 server/tests/logs
 server/tests/data/players/test_players.db
+server\tests\data\players\test_players.db
