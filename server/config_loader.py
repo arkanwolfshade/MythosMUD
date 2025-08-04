@@ -51,12 +51,13 @@ _DEFAULTS = {
     "host": "127.0.0.1",
     "port": 54731,
     "log_level": "INFO",
-    # Remove hardcoded database_url - must come from environment
+    # Environment-based fields - these will be set from environment variables
+    "database_url": None,  # Will be set from DATABASE_URL environment variable
     "admin_password": None,  # Must be set via environment variable
     "invite_codes_file": "invites.json",
     "motd_file": "data/motd.html",
-    # Remove hardcoded aliases_dir - must come from environment
-    # Remove hardcoded persistence_log - must come from environment
+    "aliases_dir": None,  # Will be set from ALIASES_DIR environment variable
+    "persistence_log": None,  # Will be set from PERSIST_LOG environment variable
     "max_connections_per_player": 3,
     "rate_limit_window": 60,
     "rate_limit_max_requests": 100,
@@ -91,12 +92,12 @@ _FIELD_TYPES = {
     "host": str,
     "port": int,
     "log_level": str,
-    # Remove database_url from field types - handled by environment
+    "database_url": str,
     "admin_password": str,
     "invite_codes_file": str,
     "motd_file": str,
-    # Remove aliases_dir from field types - handled by environment
-    # Remove persistence_log from field types - handled by environment
+    "aliases_dir": str,
+    "persistence_log": str,
     "max_connections_per_player": int,
     "rate_limit_window": int,
     "rate_limit_max_requests": int,
@@ -125,6 +126,12 @@ def _get_config_path() -> str:
     return _CONFIG_PATH
 
 
+def reset_config():
+    """Reset the config cache for testing purposes."""
+    global _config
+    _config = None
+
+
 def get_config(config_path: str = None):
     """
     Load and return the server config as a dict (singleton).
@@ -149,6 +156,23 @@ def get_config(config_path: str = None):
     # Merge with defaults
     config = dict(_DEFAULTS)
     config.update({k: v for k, v in (data or {}).items() if v is not None})
+
+    # Map YAML field names to expected config keys
+    if "db_path" in config and config["database_url"] is None:
+        config["database_url"] = config.pop("db_path")
+
+    if "log_path" in config and config["persistence_log"] is None:
+        config["persistence_log"] = config.pop("log_path")
+
+    # Handle environment variables for path configuration (prioritize over YAML)
+    if os.getenv("DATABASE_URL"):
+        config["database_url"] = os.getenv("DATABASE_URL")
+
+    if os.getenv("PERSIST_LOG"):
+        config["persistence_log"] = os.getenv("PERSIST_LOG")
+
+    if os.getenv("ALIASES_DIR"):
+        config["aliases_dir"] = os.getenv("ALIASES_DIR")
 
     # Validate types
     for k, typ in _FIELD_TYPES.items():
@@ -177,6 +201,23 @@ def get_config(config_path: str = None):
         config["admin_password"] = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
         if not config["admin_password"]:
             raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
+
+    # Handle environment variables for path configuration
+    if "database_url" in config and config["database_url"] is None:
+        config["database_url"] = os.getenv("DATABASE_URL")
+        if not config["database_url"]:
+            raise ValueError("DATABASE_URL environment variable must be set")
+
+    if "aliases_dir" in config and config["aliases_dir"] is None:
+        config["aliases_dir"] = os.getenv("ALIASES_DIR")
+        if not config["aliases_dir"]:
+            raise ValueError("ALIASES_DIR environment variable must be set")
+
+    if "persistence_log" in config and config["persistence_log"] is None:
+        config["persistence_log"] = os.getenv("PERSIST_LOG")
+        if not config["persistence_log"]:
+            raise ValueError("PERSIST_LOG environment variable must be set")
+
     _config = config
     return _config
 
