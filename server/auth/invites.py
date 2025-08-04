@@ -29,7 +29,7 @@ class InviteManager:
     async def create_invite(self, expires_in_days: int = 30) -> Invite:
         """Create a new invite."""
 
-        invite_code = Invite.generate_code()
+        invite_code = Invite._generate_invite_code()
         expires_at = datetime.utcnow() + timedelta(days=expires_in_days)
 
         invite = Invite(invite_code=invite_code, used=False, expires_at=expires_at)
@@ -39,6 +39,11 @@ class InviteManager:
         await self.session.refresh(invite)
 
         return invite
+
+    async def list_invites(self) -> list[Invite]:
+        """Get all invites."""
+        result = await self.session.execute(select(Invite))
+        return result.scalars().all()
 
     async def validate_invite(self, invite_code: str) -> Invite:
         """Validate an invite code."""

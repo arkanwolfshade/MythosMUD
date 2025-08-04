@@ -6,7 +6,7 @@ login, and user management endpoints.
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -162,39 +162,48 @@ class TestRegistrationEndpoints:
 class TestLoginEndpoints:
     """Test login endpoint functionality."""
 
-    @patch("server.auth.endpoints.get_async_session")
-    @patch("server.auth.endpoints.get_user_manager")
-    @patch("fastapi_users.jwt.generate_jwt")
-    def test_successful_login(self, mock_generate_jwt, mock_get_user, mock_get_session, test_client):
-        """Test successful user login."""
-        mock_generate_jwt.return_value = "test-jwt-token"
-
-        # Mock session
-        mock_session = AsyncMock()
-        mock_get_session.return_value = mock_session
-
-        # Mock user lookup
+    def test_successful_login(self, test_client):
+        """Test successful login with valid credentials."""
+        # Create mock user
         mock_user = MagicMock()
         mock_user.user_id = uuid.uuid4()
         mock_user.email = "testuser@wolfshade.org"
         mock_user.username = "testuser"
 
+        # Create mock session with proper user lookup
+        mock_session = AsyncMock()
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = mock_user
         mock_session.execute.return_value = mock_result
 
-        # Mock user manager authentication
+        # Create mock user manager
         mock_manager = AsyncMock()
         mock_manager.authenticate.return_value = mock_user
-        mock_get_user.return_value = mock_manager
 
-        response = test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+        # Override the dependencies at the app level
+        from server.auth.endpoints import get_async_session, get_user_manager
 
-        assert response.status_code == 200
-        data = response.json()
-        assert "access_token" in data
-        assert "user_id" in data
-        assert data["token_type"] == "bearer"
+        async def mock_get_async_session():
+            return mock_session
+
+        async def mock_get_user_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_async_session] = mock_get_async_session
+        test_client.app.dependency_overrides[get_user_manager] = mock_get_user_manager
+
+        try:
+            response = test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+
+            assert response.status_code == 200
+            data = response.json()
+            assert "access_token" in data
+            assert "user_id" in data
+            assert data["token_type"] == "bearer"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_async_session")
     def test_login_user_not_found(self, mock_get_session, test_client):
@@ -246,16 +255,27 @@ class TestUserInfoEndpoints:
         mock_user.username = "admin"
         mock_user.is_superuser = True
 
-        mock_get_current.return_value = mock_user
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
 
-        response = test_client.get("/auth/me")
+        async def mock_get_current_superuser():
+            return mock_user
 
-        assert response.status_code == 200
-        data = response.json()
-        assert data["id"] == str(mock_user.user_id)
-        assert data["email"] == mock_user.email
-        assert data["username"] == mock_user.username
-        assert data["is_superuser"] is True
+        # Override the dependency in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+
+        try:
+            response = test_client.get("/auth/me")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["id"] == str(mock_user.user_id)
+            assert data["email"] == mock_user.email
+            assert data["username"] == mock_user.username
+            assert data["is_superuser"] is True
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_current_superuser")
     def test_get_current_user_info_regular_user(self, mock_get_current, test_client):
@@ -266,16 +286,27 @@ class TestUserInfoEndpoints:
         mock_user.username = "user"
         mock_user.is_superuser = False
 
-        mock_get_current.return_value = mock_user
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
 
-        response = test_client.get("/auth/me")
+        async def mock_get_current_superuser():
+            return mock_user
 
-        assert response.status_code == 200
-        data = response.json()
-        assert data["id"] == str(mock_user.user_id)
-        assert data["email"] == mock_user.email
-        assert data["username"] == mock_user.username
-        assert data["is_superuser"] is False
+        # Override the dependency in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+
+        try:
+            response = test_client.get("/auth/me")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["id"] == str(mock_user.user_id)
+            assert data["email"] == mock_user.email
+            assert data["username"] == mock_user.username
+            assert data["is_superuser"] is False
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
 
 class TestInviteManagementEndpoints:
@@ -289,21 +320,53 @@ class TestInviteManagementEndpoints:
         mock_user.is_superuser = True
         mock_get_current.return_value = mock_user
 
-        mock_invite = MagicMock()
-        mock_invite.invite_code = "TEST123"
-        mock_invite.is_used = False
-        mock_invite.created_at = datetime.utcnow()
+        # Create mock invites with proper UUIDs and data types
+        mock_invite1 = MagicMock()
+        mock_invite1.id = str(uuid.uuid4())
+        mock_invite1.invite_code = "TEST123"
+        mock_invite1.is_used = False
+        mock_invite1.used_by_user_id = None  # Not used yet
+        mock_invite1.created_at = datetime.utcnow()
+        mock_invite1.expires_at = datetime.utcnow() + timedelta(days=30)
+
+        mock_invite2 = MagicMock()
+        mock_invite2.id = str(uuid.uuid4())
+        mock_invite2.invite_code = "TEST456"
+        mock_invite2.is_used = False
+        mock_invite2.used_by_user_id = None  # Not used yet
+        mock_invite2.created_at = datetime.utcnow()
+        mock_invite2.expires_at = datetime.utcnow() + timedelta(days=30)
 
         mock_manager = AsyncMock()
-        mock_manager.list_invites.return_value = [mock_invite]
+        mock_manager.list_invites.return_value = [mock_invite1, mock_invite2]
         mock_get_invite.return_value = mock_manager
 
-        response = test_client.get("/auth/invites")
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+        from server.auth.invites import get_invite_manager
 
-        assert response.status_code == 200
-        data = response.json()
-        assert len(data) == 1
-        assert data[0]["invite_code"] == "TEST123"
+        # Create a mock dependency that returns our mock user
+        async def mock_get_current_superuser():
+            return mock_user
+
+        async def mock_get_invite_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
+
+        try:
+            response = test_client.get("/auth/invites")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data) == 2
+            assert data[0]["invite_code"] == "TEST123"
+            assert data[1]["invite_code"] == "TEST456"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_current_superuser")
     @patch("server.auth.endpoints.get_invite_manager")
@@ -313,27 +376,50 @@ class TestInviteManagementEndpoints:
         mock_user.is_superuser = True
         mock_get_current.return_value = mock_user
 
+        # Create a mock invite with a specific code and proper data types
         mock_invite = MagicMock()
+        mock_invite.id = str(uuid.uuid4())
         mock_invite.invite_code = "NEW123"
         mock_invite.is_used = False
+        mock_invite.used_by_user_id = None  # Not used yet
         mock_invite.created_at = datetime.utcnow()
+        mock_invite.expires_at = datetime.utcnow() + timedelta(days=30)
 
         mock_manager = AsyncMock()
         mock_manager.create_invite.return_value = mock_invite
         mock_get_invite.return_value = mock_manager
 
-        response = test_client.post("/auth/invites")
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+        from server.auth.invites import get_invite_manager
 
-        assert response.status_code == 200
-        data = response.json()
-        assert data["invite_code"] == "NEW123"
+        # Create a mock dependency that returns our mock user
+        async def mock_get_current_superuser():
+            return mock_user
+
+        async def mock_get_invite_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
+
+        try:
+            response = test_client.post("/auth/invites")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["invite_code"] == "NEW123"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
     def test_database_connection(self, test_client):
         """Test that the database connection and invite table work."""
         import sqlite3
 
         # Check if we can access the test database
-        db_path = "tests/data/players/test_players.db"
+        db_path = "server/tests/data/players/test_players.db"
         with sqlite3.connect(db_path) as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM invites")
             count = cursor.fetchone()[0]
