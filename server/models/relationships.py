@@ -22,14 +22,30 @@ def setup_relationships():
     if not hasattr(User, "player") or User.player is None:
         User.player = relationship("Player", back_populates="user", uselist=False)
 
+    # User -> Invite (one-to-many for created invites)
+    if not hasattr(User, "created_invites") or User.created_invites is None:
+        User.created_invites = relationship(
+            "Invite", back_populates="created_by_user", foreign_keys="[Invite.created_by_user_id]"
+        )
+
     # User -> Invite (one-to-one for used invite)
     if not hasattr(User, "used_invite") or User.used_invite is None:
-        User.used_invite = relationship("Invite", back_populates="user", uselist=False)
+        User.used_invite = relationship(
+            "Invite", back_populates="used_by_user", uselist=False, foreign_keys="[Invite.used_by_user_id]"
+        )
 
     # Player -> User (many-to-one)
     if not hasattr(Player, "user") or Player.user is None:
         Player.user = relationship("User", back_populates="player", lazy="joined")
 
-    # Invite -> User (many-to-one for user)
-    if not hasattr(Invite, "user") or Invite.user is None:
-        Invite.user = relationship("User", back_populates="used_invite")
+    # Invite -> User (many-to-one for created_by_user)
+    if not hasattr(Invite, "created_by_user") or Invite.created_by_user is None:
+        Invite.created_by_user = relationship(
+            "User", back_populates="created_invites", foreign_keys="[Invite.created_by_user_id]"
+        )
+
+    # Invite -> User (many-to-one for used_by_user)
+    if not hasattr(Invite, "used_by_user") or Invite.used_by_user is None:
+        Invite.used_by_user = relationship(
+            "User", back_populates="used_invite", foreign_keys="[Invite.used_by_user_id]"
+        )

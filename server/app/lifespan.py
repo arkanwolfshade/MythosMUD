@@ -13,6 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from ..database import init_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import ConnectionManager
 from ..realtime.sse_handler import broadcast_game_event
@@ -40,6 +41,10 @@ async def lifespan(app: FastAPI):
     """
     # Startup logic
     logger.info("Starting MythosMUD server...")
+
+    # Initialize database and set up relationships
+    await init_db()
+
     app.state.persistence = get_persistence()
 
     # Set persistence reference in connection manager

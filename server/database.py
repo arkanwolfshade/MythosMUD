@@ -74,7 +74,12 @@ async def init_db():
     # Import all models to ensure they're registered with metadata
     from server.models.invite import Invite  # noqa: F401
     from server.models.player import Player  # noqa: F401
+
+    # Set up relationships after all models are imported
+    from server.models.relationships import setup_relationships
     from server.models.user import User  # noqa: F401
+
+    setup_relationships()
 
     async with engine.begin() as conn:
         await conn.run_sync(metadata.create_all)
