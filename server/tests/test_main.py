@@ -453,7 +453,7 @@ class TestGameTickLoop:
         with patch("server.main.get_tick_interval") as mock_get_interval:
             mock_get_interval.return_value = 1.0
 
-            with patch("server.main.broadcast_game_tick"):
+            with patch("server.main.broadcast_game_event"):
                 with patch("server.main.connection_manager") as mock_connection_manager:
                     mock_connection_manager.player_websockets = {}
 

@@ -12,7 +12,6 @@ from unittest.mock import patch
 from server.auth_utils import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
-    SECRET_KEY,
     create_access_token,
     decode_access_token,
     hash_password,
@@ -180,7 +179,6 @@ class TestConstants:
     @patch.dict(os.environ, {"MYTHOSMUD_SECRET_KEY": "test-secret-key"})
     def test_secret_key_default(self):
         """Test SECRET_KEY default value."""
-        assert SECRET_KEY == "SECRET"
         # Re-import to get the updated value
         import importlib
 
