@@ -39,6 +39,17 @@ class UserCreate(BaseUserCreate):
     # Override email to make it optional
     email: str | None = None
 
+    # Add password validation to reject empty passwords
+    from pydantic import field_validator
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_not_empty(cls, v: str) -> str:
+        """Validate that password is not empty."""
+        if not v or not v.strip():
+            raise ValueError("Password cannot be empty")
+        return v
+
 
 # Define login request schema
 class LoginRequest(BaseModel):

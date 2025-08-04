@@ -136,7 +136,7 @@ class TestRegistrationEndpoints:
         assert "Username already exists" in response.json()["detail"]
 
     def test_registration_with_empty_password(self, test_client):
-        """Test registration with empty password (currently accepted by system)."""
+        """Test registration with empty password should be rejected for security."""
         # Use a unique username to avoid conflicts
         import uuid
 
@@ -151,12 +151,46 @@ class TestRegistrationEndpoints:
         print(f"Response status: {response.status_code}")
         print(f"Response body: {response.text}")
 
-        # For now, let's just check that the registration succeeds
-        # since the password validation might be handled differently
-        assert response.status_code == 200
+        # Empty passwords should be rejected for security
+        assert response.status_code == 422  # Unprocessable Entity for validation errors
         data = response.json()
-        assert "access_token" in data
-        assert "user_id" in data
+        assert "detail" in data
+        # The error message should indicate password validation failure
+        # For validation errors, detail is a list of error objects
+        error_detail = data["detail"]
+        assert isinstance(error_detail, list)
+        assert len(error_detail) > 0
+        # Check that the error message contains password-related keywords
+        error_msg = error_detail[0].get("msg", "").lower()
+        assert any(keyword in error_msg for keyword in ["password", "empty"])
+
+    def test_registration_with_whitespace_password(self, test_client):
+        """Test registration with whitespace-only password should be rejected."""
+        # Use a unique username to avoid conflicts
+        import uuid
+
+        unique_username = f"whitespaceuser_{uuid.uuid4().hex[:8]}"
+
+        # Test with a whitespace-only password which should fail validation
+        response = test_client.post(
+            "/auth/register", json={"username": unique_username, "password": "   ", "invite_code": "TEST456"}
+        )
+
+        # Debug: Print response details
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        # Whitespace-only passwords should be rejected for security
+        assert response.status_code == 422  # Unprocessable Entity for validation errors
+        data = response.json()
+        assert "detail" in data
+        # For validation errors, detail is a list of error objects
+        error_detail = data["detail"]
+        assert isinstance(error_detail, list)
+        assert len(error_detail) > 0
+        # Check that the error message contains password-related keywords
+        error_msg = error_detail[0].get("msg", "").lower()
+        assert any(keyword in error_msg for keyword in ["password", "empty"])
 
 
 class TestLoginEndpoints:
