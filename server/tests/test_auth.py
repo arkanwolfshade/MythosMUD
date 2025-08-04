@@ -128,12 +128,29 @@ class TestRegistrationEndpoints:
         mock_manager.create.side_effect = UserAlreadyExists()
         mock_get_user.return_value = mock_manager
 
-        response = test_client.post(
-            "/auth/register", json={"username": "existinguser", "password": "testpass123", "invite_code": "TEST456"}
-        )
+        # Override the dependency at the app level
+        from server.auth.users import get_user_manager
+        from server.main import app
 
-        assert response.status_code == 400
-        assert "Username already exists" in response.json()["detail"]
+        def override_get_user_manager():
+            return mock_manager
+
+        app.dependency_overrides[get_user_manager] = override_get_user_manager
+
+        try:
+            response = test_client.post(
+                "/auth/register", json={"username": "existinguser", "password": "testpass123", "invite_code": "TEST456"}
+            )
+
+            # Debug output
+            print(f"Response status: {response.status_code}")
+            print(f"Response body: {response.text}")
+
+            assert response.status_code == 400
+            assert "Username already exists" in response.json()["detail"]
+        finally:
+            # Clean up the dependency override
+            app.dependency_overrides.clear()
 
     def test_registration_with_empty_password(self, test_client):
         """Test registration with empty password should be rejected for security."""
