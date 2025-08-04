@@ -18,7 +18,7 @@ def temp_db_path(tmp_path):
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             user_id TEXT PRIMARY KEY NOT NULL,
-            email TEXT UNIQUE NOT NULL,
+            username TEXT UNIQUE NOT NULL,
             hashed_password TEXT NOT NULL,
             is_active BOOLEAN NOT NULL DEFAULT 1,
             is_superuser BOOLEAN NOT NULL DEFAULT 0,

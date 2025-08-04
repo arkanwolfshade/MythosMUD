@@ -1,4 +1,3 @@
-import logging
 import os
 import sqlite3
 import threading
@@ -87,31 +86,10 @@ class PersistenceLayer:
         self._load_room_cache()
 
     def _setup_logger(self):
-        logger = logging.getLogger("PersistenceLayer")
-        logger.setLevel(logging.INFO)
+        # Use centralized logging configuration
+        from .logging_config import get_logger
 
-        # Create log directory if it doesn't exist
-        # Resolve path relative to project root if it's a relative path
-        if not os.path.isabs(self.log_path):
-            # Get the project root (two levels up from server directory)
-            server_dir = os.path.dirname(os.path.abspath(__file__))
-            project_root = os.path.dirname(server_dir)
-            # Ensure the path is relative to project root, not current working directory
-            if self.log_path.startswith("tests/"):
-                self.log_path = os.path.join(project_root, self.log_path)
-            else:
-                self.log_path = os.path.join(project_root, self.log_path)
-
-        log_dir = os.path.dirname(self.log_path)
-        if log_dir and not os.path.exists(log_dir):
-            os.makedirs(log_dir, exist_ok=True)
-
-        fh = logging.FileHandler(self.log_path)
-        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-        fh.setFormatter(formatter)
-        if not logger.handlers:
-            logger.addHandler(fh)
-        return logger
+        return get_logger("PersistenceLayer")
 
     def _log(self, msg: str):
         self._logger.info(msg)

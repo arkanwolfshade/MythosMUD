@@ -71,5 +71,9 @@
   },
   "[toml]": {
     "editor.rulers": [120]
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  }
   }
 }
