@@ -72,12 +72,17 @@ async def init_db():
     Creates all tables defined in the metadata.
     """
     # Import all models to ensure they're registered with metadata
+    # Configure all mappers before setting up relationships
+    from sqlalchemy.orm import configure_mappers
+
     from server.models.invite import Invite  # noqa: F401
     from server.models.player import Player  # noqa: F401
-
-    # Set up relationships after all models are imported
-    from server.models.relationships import setup_relationships
     from server.models.user import User  # noqa: F401
+
+    configure_mappers()
+
+    # Set up relationships after all models are imported and configured
+    from server.models.relationships import setup_relationships
 
     setup_relationships()
 
