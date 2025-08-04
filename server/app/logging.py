@@ -7,6 +7,7 @@ console output, and uvicorn logging configuration.
 
 import datetime
 import logging
+import sys
 from pathlib import Path
 
 
@@ -38,9 +39,9 @@ def setup_logging():
         # Rename the existing log file
         try:
             server_log_path.rename(rotated_log_path)
-            print(f"Rotated log file: {rotated_log_path}")
+            sys.stderr.write(f"Rotated log file: {rotated_log_path}\n")
         except Exception as e:
-            print(f"Warning: Could not rotate log file: {e}")
+            sys.stderr.write(f"Warning: Could not rotate log file: {e}\n")
 
     # Configure logging
     logging.basicConfig(

@@ -1,15 +1,11 @@
 """
-Centralized logging configuration for MythosMUD server.
+Logging configuration for MythosMUD server.
 
-This module provides a unified logging setup that ensures all loggers
-are properly configured with appropriate levels and handlers. As noted
-in the Pnakotic Manuscripts, proper organization of knowledge requires
-systematic documentation - even of the most mundane operational details.
+This module handles all logging setup, including file rotation,
+console output, and uvicorn logging configuration.
 """
 
 import logging
-import logging.handlers
-import os
 import sys
 from pathlib import Path
 
@@ -35,9 +31,9 @@ def setup_logging(
     # Determine log file path
     if log_file is None:
         # Get the project root directory (two levels up from server directory)
-        module_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(module_dir)
-        log_file = os.path.join(project_root, "server", "logs", "server.log")
+        module_dir = Path(__file__).parent
+        project_root = module_dir.parent
+        log_file = project_root / "server" / "logs" / "server.log"
 
     # Determine log level
     if log_level is None:
@@ -67,8 +63,8 @@ def setup_logging(
             log_path.rename(rotated_log)
         except (OSError, PermissionError) as e:
             # Log the error but don't fail - the new log file will be created anyway
-            # Use print for this error since logger might not be set up yet
-            print(f"Warning: Could not rotate log file {log_path}: {e}")
+            # Use stderr for this error since logger might not be set up yet
+            sys.stderr.write(f"Warning: Could not rotate log file {log_path}: {e}\n")
             # Continue without rotation - the new log file will be created anyway
 
     # Create formatter
