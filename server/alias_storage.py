@@ -29,9 +29,9 @@ class AliasStorage:
         elif os.environ.get("ALIASES_DIR"):
             self.storage_dir = Path(os.environ.get("ALIASES_DIR"))
         else:
-            # Fallback to project root data directory
-            project_root = Path(__file__).parent.parent.parent
-            self.storage_dir = project_root / "data" / "players" / "aliases"
+            raise ValueError(
+                "ALIASES_DIR environment variable must be set. See server/env.example for configuration template."
+            )
 
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 

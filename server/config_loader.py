@@ -51,12 +51,12 @@ _DEFAULTS = {
     "host": "127.0.0.1",
     "port": 54731,
     "log_level": "INFO",
-    "database_url": "sqlite+aiosqlite:///data/players/players.db",
+    # Remove hardcoded database_url - must come from environment
     "admin_password": None,  # Must be set via environment variable
     "invite_codes_file": "invites.json",
     "motd_file": "data/motd.html",
-    "aliases_dir": "data/players/aliases",
-    "persistence_log": "logs/persistence.log",
+    # Remove hardcoded aliases_dir - must come from environment
+    # Remove hardcoded persistence_log - must come from environment
     "max_connections_per_player": 3,
     "rate_limit_window": 60,
     "rate_limit_max_requests": 100,
@@ -91,12 +91,12 @@ _FIELD_TYPES = {
     "host": str,
     "port": int,
     "log_level": str,
-    "database_url": str,
+    # Remove database_url from field types - handled by environment
     "admin_password": str,
     "invite_codes_file": str,
     "motd_file": str,
-    "aliases_dir": str,
-    "persistence_log": str,
+    # Remove aliases_dir from field types - handled by environment
+    # Remove persistence_log from field types - handled by environment
     "max_connections_per_player": int,
     "rate_limit_window": int,
     "rate_limit_max_requests": int,

@@ -18,7 +18,7 @@ def setup_logging():
     This function configures logging with both file and console output,
     including log file rotation and uvicorn logging integration.
     """
-    # Get server log path from environment variable or use default
+    # Get server log path from environment variable - require it to be set
     import os
 
     server_log_path = os.environ.get("SERVER_LOG")
@@ -28,10 +28,9 @@ def setup_logging():
         server_log_path.parent.mkdir(parents=True, exist_ok=True)
         logs_dir = server_log_path.parent
     else:
-        # Default to server/logs/server.log
-        logs_dir = Path(__file__).parent.parent / "logs"
-        logs_dir.mkdir(exist_ok=True)
-        server_log_path = logs_dir / "server.log"
+        raise ValueError(
+            "SERVER_LOG environment variable must be set. See server/env.example for configuration template."
+        )
 
     if server_log_path.exists():
         # Generate timestamp for the rotated log file

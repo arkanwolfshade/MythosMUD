@@ -70,15 +70,15 @@ class PersistenceLayer:
                 "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
             )
 
-        # Use absolute path for log file to avoid working directory issues
+        # Use environment variable for log path - require it to be set
         if log_path:
             self.log_path = log_path
         elif os.environ.get("PERSIST_LOG"):
             self.log_path = os.environ.get("PERSIST_LOG")
         else:
-            # Get the directory where this module is located
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            self.log_path = os.path.join(module_dir, "logs", "persistence.log")
+            raise ValueError(
+                "PERSIST_LOG environment variable must be set. See server/env.example for configuration template."
+            )
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
