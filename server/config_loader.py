@@ -45,12 +45,14 @@ import os
 import yaml
 
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
+_TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "test_server_config.yaml")
 _config = None
 
 _DEFAULTS = {
     "db_path": None,  # Must be set via environment variable or config file
     "log_path": "logs/persistence.log",  # Relative to server directory
     "log_level": "INFO",
+    "disable_logging": False,
     "host": "0.0.0.0",
     "port": 54731,
     "max_connections": 100,
@@ -89,6 +91,7 @@ _FIELD_TYPES = {
     "db_path": str,
     "log_path": str,
     "log_level": str,
+    "disable_logging": bool,
     "host": str,
     "port": int,
     "max_connections": int,
@@ -124,6 +127,29 @@ _FIELD_TYPES = {
 }
 
 
+def _get_config_path() -> str:
+    """
+    Determine the appropriate config file path based on environment.
+
+    Returns:
+        Path to the appropriate config file (test or production)
+    """
+    # Check if we're running under pytest
+    import sys
+
+    if "pytest" in sys.modules:
+        if os.path.exists(_TEST_CONFIG_PATH):
+            return _TEST_CONFIG_PATH
+
+    # Check for explicit test mode environment variable
+    if os.environ.get("MYTHOSMUD_TEST_MODE"):
+        if os.path.exists(_TEST_CONFIG_PATH):
+            return _TEST_CONFIG_PATH
+
+    # Default to production config
+    return _CONFIG_PATH
+
+
 def get_config(config_path: str = None):
     """
     Load and return the server config as a dict (singleton).
@@ -132,17 +158,23 @@ def get_config(config_path: str = None):
     global _config
     if _config is not None and (config_path is None or config_path == _CONFIG_PATH):
         return _config
-    path = config_path or _CONFIG_PATH
+
+    # Use environment-based path if no specific path provided
+    if config_path is None:
+        config_path = _get_config_path()
+
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(config_path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
             if not isinstance(data, dict):
                 data = {}
     except Exception:
         data = {}
+
     # Merge with defaults
     config = dict(_DEFAULTS)
     config.update({k: v for k, v in (data or {}).items() if v is not None})
+
     # Validate types
     for k, typ in _FIELD_TYPES.items():
         if k in config:
@@ -170,7 +202,6 @@ def get_config(config_path: str = None):
         config["admin_password"] = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
         if not config["admin_password"]:
             raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
-
     _config = config
     return _config
 

@@ -3,6 +3,12 @@ import './App.css';
 import { GameTerminal } from './components/GameTerminal';
 import { logger } from './utils/logger';
 
+// TypeScript interfaces for error handling
+interface ValidationError {
+  msg?: string;
+  message?: string;
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [playerId, setPlayerId] = useState('');
@@ -52,7 +58,7 @@ function App() {
         });
 
         setAuthToken(data.access_token);
-        setPlayerId(data.player_id); // Use the actual player ID from the server
+        setPlayerId(data.user_id); // Use user_id from the server response
         setPlayerName(username); // Store the username for SSE connection
         setIsAuthenticated(true);
       } else {
@@ -61,7 +67,19 @@ function App() {
           status: response.status,
           error: errorData.detail,
         });
-        setError(errorData.detail || 'Login failed');
+        // Handle validation errors properly
+        let errorMessage = 'Login failed';
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            // Format validation errors
+            errorMessage = errorData.detail
+              .map((err: ValidationError) => err.msg || err.message || 'Validation error')
+              .join(', ');
+          } else {
+            errorMessage = errorData.detail;
+          }
+        }
+        setError(errorMessage);
       }
     } catch (error) {
       logger.error('App', 'Login network error', { error: error instanceof Error ? error.message : String(error) });
@@ -111,7 +129,19 @@ function App() {
           status: response.status,
           error: errorData.detail,
         });
-        setError(errorData.detail || 'Registration failed');
+        // Handle validation errors properly
+        let errorMessage = 'Registration failed';
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            // Format validation errors
+            errorMessage = errorData.detail
+              .map((err: ValidationError) => err.msg || err.message || 'Validation error')
+              .join(', ');
+          } else {
+            errorMessage = errorData.detail;
+          }
+        }
+        setError(errorMessage);
       }
     } catch (error) {
       logger.error('App', 'Registration network error', {

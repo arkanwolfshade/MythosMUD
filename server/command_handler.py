@@ -324,7 +324,7 @@ Perhaps it exists in dimensions yet undiscovered, or perhaps it was never meant 
     return help_html
 
 
-@router.post("/", status_code=status.HTTP_200_OK)
+@router.post("", status_code=status.HTTP_200_OK)
 def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),

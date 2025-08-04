@@ -6,12 +6,16 @@ NOTE: All real-time connection, WebSocket, and SSE logic has been migrated to
 required by other modules.
 """
 
+import asyncio
+import json
 import logging
 import os
 
 from .config_loader import get_config
+from .logging_config import get_logger
+from .models import Player
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def load_motd() -> str:

@@ -8,13 +8,13 @@ and updating operations.
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
     """Base user schema with common fields."""
 
-    email: EmailStr = Field(..., description="User's email address")
+    username: str = Field(..., description="User's username")
     is_active: bool = Field(default=True, description="Whether user is active")
     is_superuser: bool = Field(default=False, description="Whether user is superuser")
 
@@ -29,7 +29,7 @@ class UserCreate(UserBase):
 
         json_schema_extra = {
             "example": {
-                "email": "user@example.com",
+                "username": "user",
                 "password": "securepassword123",
                 "is_active": True,
                 "is_superuser": False,
@@ -52,7 +52,7 @@ class UserRead(UserBase):
         json_schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
-                "email": "user@example.com",
+                "username": "user",
                 "is_active": True,
                 "is_superuser": False,
                 "is_verified": False,
@@ -65,7 +65,7 @@ class UserRead(UserBase):
 class UserUpdate(BaseModel):
     """Schema for updating user data."""
 
-    email: EmailStr | None = Field(None, description="User's email address")
+    username: str | None = Field(None, description="User's username")
     password: str | None = Field(None, min_length=8, description="User's password")
     is_active: bool | None = Field(None, description="Whether user is active")
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
@@ -75,7 +75,7 @@ class UserUpdate(BaseModel):
 
         json_schema_extra = {
             "example": {
-                "email": "newemail@example.com",
+                "username": "neweuser",
                 "password": "newsecurepassword123",
                 "is_active": True,
                 "is_superuser": False,

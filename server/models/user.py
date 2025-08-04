@@ -34,7 +34,8 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
     user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     # User authentication fields
-    email = Column(String(length=255), unique=True, nullable=False, index=True)
+    email = Column(String(length=320), unique=True, nullable=False, index=True)
+    username = Column(String(length=255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(length=255), nullable=False)
 
     # User status fields
@@ -47,7 +48,12 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
 
     def __repr__(self) -> str:
         """String representation of the user."""
-        return f"<User(user_id={self.user_id}, email={self.email}, is_active={self.is_active})>"
+        return f"<User(user_id={self.user_id}, username={self.username}, is_active={self.is_active})>"
+
+    @property
+    def id(self) -> uuid.UUID:
+        """Get the user ID for FastAPI Users compatibility."""
+        return self.user_id
 
     @property
     def is_authenticated(self) -> bool:
@@ -56,4 +62,4 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
 
     def get_display_name(self) -> str:
         """Get display name for the user."""
-        return self.email.split("@")[0] if self.email else str(self.user_id)
+        return self.username if self.username else str(self.user_id)
