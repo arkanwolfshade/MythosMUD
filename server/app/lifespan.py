@@ -1,9 +1,7 @@
-"""
-Application lifecycle management for MythosMUD server.
+"""Application lifecycle management for MythosMUD server.
 
 This module handles application startup and shutdown logic,
-including the game tick loop and persistence layer initialization.
-"""
+including the game tick loop and persistence layer initialization."""
 
 import asyncio
 import datetime
@@ -20,40 +18,27 @@ from ..realtime.sse_handler import broadcast_game_event
 
 # Global connection manager instance
 connection_manager = ConnectionManager()
-
 logger = logging.getLogger(__name__)
-
-# Game tick configuration
 TICK_INTERVAL = 1.0  # seconds
 
 # Ensure log directory exists
-log_dir = Path("logs")
-log_dir.mkdir(exist_ok=True)
+Path("logs").mkdir(exist_ok=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Application lifespan manager.
+    """Application lifespan manager.
 
     Handles startup and shutdown logic for the FastAPI application,
-    including persistence layer initialization and game tick loop.
-    """
-    # Startup logic
+    including persistence layer initialization and game tick loop."""
     logger.info("Starting MythosMUD server...")
-
-    # Initialize database and set up relationships
     await init_db()
-
     app.state.persistence = get_persistence()
-
-    # Set persistence reference in connection manager
     connection_manager.persistence = app.state.persistence
 
     # Start the game tick loop
     tick_task = asyncio.create_task(game_tick_loop(app))
     app.state.tick_task = tick_task
-
     logger.info("MythosMUD server started successfully")
     yield
 
@@ -69,12 +54,10 @@ async def lifespan(app: FastAPI):
 
 
 async def game_tick_loop(app: FastAPI):
-    """
-    Main game tick loop.
+    """Main game tick loop.
 
     This function runs continuously and handles periodic game updates,
-    including broadcasting tick information to connected players.
-    """
+    including broadcasting tick information to connected players."""
     tick_count = 0
     logger.info("Game tick loop started")
 
@@ -90,10 +73,8 @@ async def game_tick_loop(app: FastAPI):
                 "active_players": len(connection_manager.player_websockets),
             }
             await broadcast_game_event("game_tick", tick_data)
-
             tick_count += 1
             await asyncio.sleep(TICK_INTERVAL)
-
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
             break
