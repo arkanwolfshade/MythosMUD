@@ -30,10 +30,7 @@ class TestAliasModel:
     def test_create_alias_with_custom_timestamps(self):
         """Test creating an alias with custom timestamps."""
         custom_time = datetime(2024, 1, 1, 12, 0, 0)
-        alias = Alias(
-            name="test", command="look",
-            created_at=custom_time, updated_at=custom_time
-        )
+        alias = Alias(name="test", command="look", created_at=custom_time, updated_at=custom_time)
 
         assert alias.created_at == custom_time
         assert alias.updated_at == custom_time
@@ -95,12 +92,10 @@ class TestAliasModel:
         custom_id = str(uuid.uuid4())
         custom_timestamp = datetime.utcnow()
         alias1 = Alias(
-            id=custom_id, name="test", command="look",
-            created_at=custom_timestamp, updated_at=custom_timestamp
+            id=custom_id, name="test", command="look", created_at=custom_timestamp, updated_at=custom_timestamp
         )
         alias2 = Alias(
-            id=custom_id, name="test", command="look",
-            created_at=custom_timestamp, updated_at=custom_timestamp
+            id=custom_id, name="test", command="look", created_at=custom_timestamp, updated_at=custom_timestamp
         )
         alias3 = Alias(name="different", command="look")
 
