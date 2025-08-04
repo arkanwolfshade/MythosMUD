@@ -160,8 +160,7 @@ class TestAppLifespan:
 
         # Try to compile the file to check for syntax errors
         try:
-            compile(lifespan_path.read_text(encoding="utf-8"), str(lifespan_path),
-                    "exec")
+            compile(lifespan_path.read_text(encoding="utf-8"), str(lifespan_path), "exec")
         except SyntaxError as e:
             pytest.fail(f"Syntax error in lifespan.py: {e}")
 
@@ -182,8 +181,7 @@ class TestAppLifespan:
 
         # Check import structure
         lines = content.split("\n")
-        import_lines = [line for line in lines if line.startswith("from") or
-                        line.startswith("import")]
+        import_lines = [line for line in lines if line.startswith("from") or line.startswith("import")]
 
         # Should have some imports
         assert len(import_lines) > 0
@@ -227,8 +225,7 @@ class TestAppLifespan:
 
         # Check for proper method organization
         lines = content.split("\n")
-        function_count = sum(1 for line in lines
-                           if line.strip().startswith("def "))
+        function_count = sum(1 for line in lines if line.strip().startswith("def "))
         assert function_count >= 0  # Should have at least 0 functions
 
     def test_lifespan_paths_are_normalized(self):

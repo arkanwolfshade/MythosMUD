@@ -26,11 +26,13 @@ def setup_logging():
         server_log_path = Path(server_log_path)
         # Create parent directory if it doesn't exist
         server_log_path.parent.mkdir(parents=True, exist_ok=True)
+        logs_dir = server_log_path.parent
     else:
         # Default to server/logs/server.log
         logs_dir = Path(__file__).parent.parent / "logs"
         logs_dir.mkdir(exist_ok=True)
         server_log_path = logs_dir / "server.log"
+
     if server_log_path.exists():
         # Generate timestamp for the rotated log file
         timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")

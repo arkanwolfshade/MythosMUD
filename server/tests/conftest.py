@@ -21,7 +21,11 @@ os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-sec
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
 # Get the project root (two levels up from this file)
 project_root = Path(__file__).parent.parent.parent
-os.environ["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
+# Ensure we're using the correct path for test logs
+test_logs_dir = project_root / "server" / "tests" / "logs"
+test_logs_dir.mkdir(parents=True, exist_ok=True)
+os.environ["PERSIST_LOG"] = str(test_logs_dir / "test_persistence.log")
+os.environ["SERVER_LOG"] = str(test_logs_dir / "test_server.log")
 os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 # Add the server directory to the path for imports
@@ -48,7 +52,11 @@ def pytest_configure(config):
     os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
-    os.environ["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
+    # Ensure we're using the correct path for test logs
+    test_logs_dir = project_root / "server" / "tests" / "logs"
+    test_logs_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["PERSIST_LOG"] = str(test_logs_dir / "test_persistence.log")
+    os.environ["SERVER_LOG"] = str(test_logs_dir / "test_server.log")
     os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 

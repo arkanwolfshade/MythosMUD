@@ -11,7 +11,11 @@ env = os.environ.copy()
 env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
 # Get the project root (one level up from scripts directory)
 project_root = Path(__file__).parent.parent
-env["PERSIST_LOG"] = str(project_root / "server" / "tests" / "logs" / "test_persistence.log")
+# Ensure we're using the correct path for test logs
+test_logs_dir = project_root / "server" / "tests" / "logs"
+test_logs_dir.mkdir(parents=True, exist_ok=True)
+env["PERSIST_LOG"] = str(test_logs_dir / "test_persistence.log")
+env["SERVER_LOG"] = str(test_logs_dir / "test_server.log")
 env["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 clean_result = subprocess.run(clean_cmd, env=env)

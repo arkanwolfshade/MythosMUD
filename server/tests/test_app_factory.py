@@ -32,6 +32,7 @@ class TestAppFactory:
         try:
             from fastapi import FastAPI
             from fastapi.middleware.cors import CORSMiddleware
+
             assert FastAPI is not None
             assert CORSMiddleware is not None
         except ImportError as e:
@@ -120,16 +121,14 @@ class TestAppFactory:
 
         # Check import structure
         lines = content.split("\n")
-        import_lines = [line for line in lines if line.startswith("from") or
-                       line.startswith("import")]
+        import_lines = [line for line in lines if line.startswith("from") or line.startswith("import")]
 
         # Should have imports
         assert len(import_lines) > 0
 
         # Check for specific imports
         assert any("from fastapi import FastAPI" in line for line in import_lines)
-        assert any("from fastapi.middleware.cors import CORSMiddleware" in line
-                  for line in import_lines)
+        assert any("from fastapi.middleware.cors import CORSMiddleware" in line for line in import_lines)
 
     def test_factory_function_structure(self):
         """Test that the create_app function has proper structure."""
@@ -163,8 +162,7 @@ class TestAppFactory:
 
         # Try to compile the file to check for syntax errors
         try:
-            compile(factory_path.read_text(encoding="utf-8"), str(factory_path),
-                   "exec")
+            compile(factory_path.read_text(encoding="utf-8"), str(factory_path), "exec")
         except SyntaxError as e:
             assert False, f"Syntax error in factory.py: {e}"
 
@@ -226,7 +224,7 @@ class TestAppFactory:
         if func_line is not None:
             # Check next few lines for docstring
             docstring_found = False
-            for line in lines[func_line + 1:func_line + 5]:
+            for line in lines[func_line + 1 : func_line + 5]:
                 if '"""' in line or "'''" in line:
                     docstring_found = True
                     break

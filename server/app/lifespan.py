@@ -9,16 +9,25 @@ import asyncio
 import datetime
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
 from ..persistence import get_persistence
-from ..real_time import broadcast_game_tick, connection_manager
+from ..realtime.connection_manager import ConnectionManager
+from ..realtime.sse_handler import broadcast_game_event
+
+# Global connection manager instance
+connection_manager = ConnectionManager()
 
 logger = logging.getLogger(__name__)
 
 # Game tick configuration
 TICK_INTERVAL = 1.0  # seconds
+
+# Ensure log directory exists
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
 
 
 @asynccontextmanager
@@ -75,7 +84,7 @@ async def game_tick_loop(app: FastAPI):
                 "timestamp": datetime.datetime.utcnow().isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
-            await broadcast_game_tick(tick_data)
+            await broadcast_game_event("game_tick", tick_data)
 
             tick_count += 1
             await asyncio.sleep(TICK_INTERVAL)
