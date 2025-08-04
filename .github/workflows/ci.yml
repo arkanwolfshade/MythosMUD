@@ -43,26 +43,11 @@ jobs:
       - name: Initialize test database
         run: |
           source .venv/bin/activate
-          # Set test environment variables
-          export DATABASE_URL="sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-development"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-development"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-development"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-development"
-          export PERSIST_LOG="server/tests/logs/test_persistence.log"
-          export ALIASES_DIR="server/tests/data/players/aliases"
+          # Load test environment variables from .env.test file
+          source .env.test
           python tests/init_test_db.py
       - name: Verify test database
         run: |
-          source .venv/bin/activate
-          # Set test environment variables
-          export DATABASE_URL="sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-development"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-development"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-development"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-development"
-          export PERSIST_LOG="server/tests/logs/test_persistence.log"
-          export ALIASES_DIR="server/tests/data/players/aliases"
           python tests/verify_test_db.py
       - name: Lint with ruff
         run: |
@@ -70,15 +55,6 @@ jobs:
           python -m ruff check --line-length=120 .
       - name: Run tests with coverage
         run: |
-          source .venv/bin/activate
-          # Set test environment variables
-          export DATABASE_URL="sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-development"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-development"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-development"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-development"
-          export PERSIST_LOG="server/tests/logs/test_persistence.log"
-          export ALIASES_DIR="server/tests/data/players/aliases"
           python -m pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
