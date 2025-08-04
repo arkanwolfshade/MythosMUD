@@ -28,7 +28,7 @@ os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 sys.path.append(str(Path(__file__).parent.parent))
 
 # Load test environment variables from .env.test file
-TEST_ENV_PATH = Path(__file__).parent / ".env.test"
+TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
 if TEST_ENV_PATH.exists():
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
     print(f"✓ Loaded test environment from {TEST_ENV_PATH}")

@@ -43,10 +43,14 @@ jobs:
       - name: Initialize test database
         run: |
           source .venv/bin/activate
+          # Load environment from .env.test file
+          export $(cat .env.test | xargs)
           python tests/init_test_db.py
       - name: Verify test database
         run: |
           source .venv/bin/activate
+          # Load environment from .env.test file
+          export $(cat .env.test | xargs)
           python tests/verify_test_db.py
       - name: Lint with ruff
         run: |
@@ -55,6 +59,8 @@ jobs:
       - name: Run tests with coverage
         run: |
           source .venv/bin/activate
+          # Load environment from .env.test file
+          export $(cat .env.test | xargs)
           python -m pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

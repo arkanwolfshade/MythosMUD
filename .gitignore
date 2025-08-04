@@ -211,11 +211,8 @@ __marimo__/
 TASKS.local.md
 
 # Environment files (CRITICAL: Never commit actual .env files)
-.env
 .env.local
-.env.development
-.env.production
-*.env
 
 server/logs/
 server/tests/logs
+server/tests/data/players/test_players.db
