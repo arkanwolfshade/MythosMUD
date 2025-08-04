@@ -16,17 +16,6 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
-      DATABASE_URL: sqlite+aiosqlite:///tests/data/players/test_players.db
-      MYTHOSMUD_SECRET_KEY: test-secret-key-for-ci
-      MYTHOSMUD_JWT_SECRET: test-jwt-secret-for-ci
-      MYTHOSMUD_RESET_TOKEN_SECRET: test-reset-token-secret-for-ci
-      MYTHOSMUD_VERIFICATION_TOKEN_SECRET: test-verification-token-secret-for-ci
-      MYTHOSMUD_ADMIN_PASSWORD: test-admin-password-for-ci
-      PERSIST_LOG: logs/persistence.log
-      SERVER_LOG: logs/server.log
-      ALIASES_DIR: tests/data/players/aliases
-      DEBUG: true
-      LOG_LEVEL: DEBUG
     defaults:
       run:
         working-directory: server
