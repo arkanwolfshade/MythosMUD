@@ -32,7 +32,7 @@ class InviteManager:
         invite_code = Invite.generate_code()
         expires_at = datetime.utcnow() + timedelta(days=expires_in_days)
 
-        invite = Invite(invite_code=invite_code, is_used=False, expires_at=expires_at)
+        invite = Invite(invite_code=invite_code, used=False, expires_at=expires_at)
 
         self.session.add(invite)
         await self.session.commit()
@@ -75,7 +75,7 @@ class InviteManager:
     async def get_unused_invites(self) -> list[Invite]:
         """Get all unused invites."""
 
-        result = await self.session.execute(select(Invite).where(Invite.is_used.is_(False)))
+        result = await self.session.execute(select(Invite).where(Invite.used.is_(False)))
         return result.scalars().all()
 
     async def cleanup_expired_invites(self) -> int:
