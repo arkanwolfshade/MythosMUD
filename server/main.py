@@ -18,16 +18,6 @@ import warnings
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-# Fix bcrypt warning by monkey patching before importing passlib
-try:
-    import bcrypt
-
-    if not hasattr(bcrypt, "__about__"):
-        bcrypt.__about__ = type("About", (), {"__version__": "4.3.0"})()
-
-except ImportError:
-    pass
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
@@ -79,17 +69,7 @@ def _ensure_logging_initialized():
     """Ensure logging is initialized only once."""
     global _logging_initialized
     if not _logging_initialized:
-        # Get config to determine logging settings
-        config = get_config()
-
-        # Check if we should disable logging (for tests)
-        disable_logging = config.get("disable_logging", False)
-
-        if disable_logging:
-            setup_logging(disable_logging=True)
-        else:
-            setup_logging()
-
+        setup_logging()
         _logging_initialized = True
 
 

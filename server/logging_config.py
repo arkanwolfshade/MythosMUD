@@ -20,7 +20,6 @@ def setup_logging(
     log_file: str | None = None,
     log_level: str | None = None,
     rotate_logs: bool = False,  # Disable rotation by default to avoid permission issues
-    disable_logging: bool = False,  # Allow disabling logging entirely for tests
 ) -> None:
     """
     Configure centralized logging for the MythosMUD server.
@@ -29,12 +28,7 @@ def setup_logging(
         log_file: Path to log file (defaults to server/logs/server.log)
         log_level: Logging level (defaults to config value or DEBUG)
         rotate_logs: Whether to rotate existing log files
-        disable_logging: Whether to disable logging entirely (for tests)
     """
-    # Early return if logging is disabled (for tests)
-    if disable_logging:
-        return
-
     # Get configuration
     config = get_config()
 
