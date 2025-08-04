@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 import sys
@@ -44,5 +43,5 @@ for i, step in enumerate(steps):
 
 print("✅ Installation completed successfully!")
 print("\nNext steps:")
-print("1. Start the server: uv run --active uvicorn main:app --reload")
+print("1. Start the server: scripts/start_server.ps1")
 print("2. Start the client: cd client && npm start")

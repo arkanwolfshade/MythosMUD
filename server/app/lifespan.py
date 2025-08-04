@@ -7,7 +7,6 @@ import asyncio
 import datetime
 import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 
@@ -21,8 +20,7 @@ connection_manager = ConnectionManager()
 logger = logging.getLogger(__name__)
 TICK_INTERVAL = 1.0  # seconds
 
-# Ensure log directory exists
-Path("logs").mkdir(exist_ok=True)
+# Log directory creation is now handled by logging_config.py
 
 
 @asynccontextmanager

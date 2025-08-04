@@ -5,7 +5,9 @@ This module handles all logging setup, including file rotation,
 console output, and uvicorn logging configuration.
 """
 
+import datetime
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -15,29 +17,37 @@ from .config_loader import get_config
 def setup_logging(
     log_file: str | None = None,
     log_level: str | None = None,
-    rotate_logs: bool = False,  # Disable rotation by default to avoid permission issues
+    rotate_logs: bool = True,  # Enable rotation by default
 ) -> None:
     """
     Configure centralized logging for the MythosMUD server.
 
+    This function configures logging with both file and console output,
+    including log file rotation and uvicorn logging integration.
+
     Args:
-        log_file: Path to log file (defaults to server/logs/server.log)
+        log_file: Path to log file (defaults to environment variable or
+        server/logs/server.log)
         log_level: Logging level (defaults to config value or DEBUG)
         rotate_logs: Whether to rotate existing log files
     """
     # Get configuration
     config = get_config()
 
-    # Determine log file path
+    # Determine log file path - prioritize environment variable
     if log_file is None:
-        # Get the project root directory (two levels up from server directory)
-        module_dir = Path(__file__).parent
-        project_root = module_dir.parent
-        log_file = project_root / "server" / "logs" / "server.log"
+        server_log_path = os.environ.get("SERVER_LOG")
+        if server_log_path:
+            log_file = server_log_path
+        else:
+            # Fallback to default path relative to project root
+            module_dir = Path(__file__).parent
+            project_root = module_dir.parent
+            log_file = str(project_root / "server" / "logs" / "server.log")
 
     # Determine log level
     if log_level is None:
-        log_level = config.get("log_level", "DEBUG")
+        log_level = config.get("log_level", "INFO")
 
     # Convert string level to logging constant
     level_map = {
@@ -47,7 +57,7 @@ def setup_logging(
         "ERROR": logging.ERROR,
         "CRITICAL": logging.CRITICAL,
     }
-    numeric_level = level_map.get(log_level.upper(), logging.DEBUG)
+    numeric_level = level_map.get(log_level.upper(), logging.INFO)
 
     # Create log directory if it doesn't exist
     log_path = Path(log_file)
@@ -55,17 +65,14 @@ def setup_logging(
 
     # Rotate existing log file if requested
     if rotate_logs and log_path.exists():
-        import datetime
-
         try:
             timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")
             rotated_log = log_path.with_name(f"server.log.{timestamp}")
             log_path.rename(rotated_log)
+            sys.stderr.write(f"Rotated log file: {rotated_log}\n")
         except (OSError, PermissionError) as e:
             # Log the error but don't fail - the new log file will be created anyway
-            # Use stderr for this error since logger might not be set up yet
             sys.stderr.write(f"Warning: Could not rotate log file {log_path}: {e}\n")
-            # Continue without rotation - the new log file will be created anyway
 
     # Create formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
@@ -112,6 +119,7 @@ def _configure_uvicorn_logging(log_file: str, level: int, formatter: logging.For
     for handler in uvicorn_access.handlers[:]:
         uvicorn_access.removeHandler(handler)
     uvicorn_access.addHandler(file_handler)
+    uvicorn_access.addHandler(logging.StreamHandler(sys.stdout))
 
     # Configure uvicorn error logging
     uvicorn_error = logging.getLogger("uvicorn.error")
@@ -119,6 +127,7 @@ def _configure_uvicorn_logging(log_file: str, level: int, formatter: logging.For
     for handler in uvicorn_error.handlers[:]:
         uvicorn_error.removeHandler(handler)
     uvicorn_error.addHandler(file_handler)
+    uvicorn_error.addHandler(logging.StreamHandler(sys.stdout))
 
 
 def get_logger(name: str) -> logging.Logger:
