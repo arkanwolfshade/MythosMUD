@@ -30,12 +30,7 @@ class TestAliasModel:
     def test_create_alias_with_custom_timestamps(self):
         """Test creating an alias with custom timestamps."""
         custom_time = datetime(2024, 1, 1, 12, 0, 0)
-        alias = Alias(
-            name="test",
-            command="look",
-            created_at=custom_time,
-            updated_at=custom_time
-        )
+        alias = Alias(name="test", command="look", created_at=custom_time, updated_at=custom_time)
 
         assert alias.created_at == custom_time
         assert alias.updated_at == custom_time
@@ -215,12 +210,9 @@ class TestAliasModel:
 
         # Check that timestamps are valid ISO format
         from datetime import datetime
-        datetime.fromisoformat(
-            dump_data["created_at"].replace("Z", "+00:00")
-        )
-        datetime.fromisoformat(
-            dump_data["updated_at"].replace("Z", "+00:00")
-        )
+
+        datetime.fromisoformat(dump_data["created_at"].replace("Z", "+00:00"))
+        datetime.fromisoformat(dump_data["updated_at"].replace("Z", "+00:00"))
 
 
 class TestAliasIntegration:
