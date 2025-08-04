@@ -44,7 +44,7 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for database initialization
-          export DATABASE_URL="sqlite+aiosqlite:///./tests/data/players/test_players.db"
+          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/test_players.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
@@ -55,7 +55,7 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for database verification
-          export DATABASE_URL="sqlite+aiosqlite:///./tests/data/players/test_players.db"
+          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/test_players.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
@@ -70,7 +70,7 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for pytest
-          export DATABASE_URL="sqlite+aiosqlite:///./tests/data/players/test_players.db"
+          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/test_players.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
