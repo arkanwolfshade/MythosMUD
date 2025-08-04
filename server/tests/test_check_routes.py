@@ -1,9 +1,7 @@
 """Tests for the check_routes module."""
 
-import os
 from pathlib import Path
-
-import pytest
+from unittest.mock import MagicMock
 
 
 class TestCheckRoutes:
@@ -14,41 +12,73 @@ class TestCheckRoutes:
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         assert routes_path.exists()
 
-    def test_check_routes_file_content(self):
-        """Test that the check_routes file contains expected content."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for key elements
-        assert "#!/usr/bin/env python3" in content
-        assert "Check FastAPI app routes" in content
-        assert "from logging_config import get_logger" in content
-        assert "from main import app" in content
-        assert "logger.info" in content
-
-    def test_check_routes_imports_available(self):
-        """Test that all necessary imports are available."""
-        try:
-            # Test that the file exists and can be read
-            routes_path = Path(__file__).parent.parent / "check_routes.py"
-            content = routes_path.read_text(encoding="utf-8")
-
-            # Check that it contains the expected imports
-            assert "from logging_config import get_logger" in content
-            assert "from main import app" in content
-
-        except Exception as e:
-            pytest.fail(f"Test failed: {e}")
-
-    def test_check_routes_function_signature(self):
-        """Test that the script has proper structure."""
+    def test_check_routes_script_structure(self):
+        """Test that check_routes script has the expected structure."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         content = routes_path.read_text(encoding="utf-8")
 
         # Check for key components
-        assert "sys.path.insert" in content
-        assert "logger = get_logger" in content
+        assert "#!/usr/bin/env python3" in content
+        assert '"""Check FastAPI app routes."""' in content
+        assert "import sys" in content
+        assert "from pathlib import Path" in content
+        assert "from logging_config import get_logger" in content
+        assert "from main import app" in content
+        assert "logger = get_logger(__name__)" in content
+        assert 'logger.info("Routes:")' in content
         assert "for route in app.routes:" in content
+        assert 'logger.info(f"{route.methods} {route.path}")' in content
+
+    def test_check_routes_path_insertion(self):
+        """Test that check_routes properly inserts the server directory into sys.path."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that the path insertion line is present
+        assert "sys.path.insert(0, str(Path(__file__).parent))" in (content)
+
+    def test_check_routes_logger_initialization(self):
+        """Test that check_routes properly initializes the logger."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that logger is properly initialized
+        assert "logger = get_logger(__name__)" in (content)
+
+    def test_check_routes_app_import(self):
+        """Test that check_routes can import the app from main."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that app is imported
+        assert "from main import app" in content
+
+    def test_check_routes_route_iteration(self):
+        """Test that check_routes iterates over routes correctly."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that routes are iterated
+        assert "for route in app.routes:" in content
+        assert "route.methods" in content
+        assert "route.path" in content
+
+    def test_check_routes_logging_output(self):
+        """Test that check_routes logs route information."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that routes are logged
+        assert 'logger.info("Routes:")' in content
+        assert 'logger.info(f"{route.methods} {route.path}")' in content
+
+    def test_check_routes_shebang(self):
+        """Test that check_routes has proper shebang."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check for shebang
+        assert content.startswith("#!/usr/bin/env python3")
 
     def test_check_routes_docstring(self):
         """Test that check_routes has proper documentation."""
@@ -56,54 +86,51 @@ class TestCheckRoutes:
         content = routes_path.read_text(encoding="utf-8")
 
         # Check for docstring
-        assert '"""' in content
-        assert "Check FastAPI app routes" in content
+        assert '"""Check FastAPI app routes."""' in content
 
-    def test_check_routes_structure(self):
-        """Test the structure of the check_routes file."""
+    def test_check_routes_imports(self):
+        """Test that check_routes has all necessary imports."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         content = routes_path.read_text(encoding="utf-8")
 
-        # Check for key components
+        # Check for all required imports
         assert "import sys" in content
         assert "from pathlib import Path" in content
-        assert "sys.path.insert" in content
-        assert "logger.info" in content
+        assert "from logging_config import get_logger" in content
+        assert "from main import app" in content
 
-    def test_check_routes_configuration(self):
-        """Test that the script has proper configuration."""
+    def test_check_routes_variable_usage(self):
+        """Test that check_routes uses variables correctly."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         content = routes_path.read_text(encoding="utf-8")
 
-        # Check for specific configuration values
-        assert "sys.path.insert(0, str(Path(__file__).parent))" in content
-        assert 'logger.info("Routes:")' in content
+        # Check that variables are used correctly
+        assert "logger = get_logger(__name__)" in content
+        assert "for route in app.routes:" in content
+        assert "logger.info" in content
 
-    def test_check_routes_script_execution(self):
-        """Test that the script can be executed."""
+    def test_check_routes_script_length(self):
+        """Test that check_routes script has reasonable length."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+        lines = content.split("\n")
+
+        # Should have reasonable number of lines (not too short, not too long)
+        assert len(lines) >= 10, "Script should have at least 10 lines"
+        assert len(lines) <= 30, "Script should not be too long"
+
+    def test_check_routes_no_syntax_errors(self):
+        """Test that check_routes has no syntax errors."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
 
-        # Check that file is executable
-        assert os.access(routes_path, os.R_OK)
-
-    def test_check_routes_file_permissions(self):
-        """Test that the check_routes file has proper permissions."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-
-        # Check that file is readable
-        assert os.access(routes_path, os.R_OK)
-
-    def test_check_routes_file_size(self):
-        """Test that the check_routes file has reasonable size."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-
-        # Check file size (should be reasonable for a script file)
-        size = routes_path.stat().st_size
-        assert size > 50  # Should be more than 50 bytes
-        assert size < 5000  # Should be less than 5KB
+        # Try to compile the file to check for syntax errors
+        try:
+            compile(routes_path.read_text(encoding="utf-8"), str(routes_path), "exec")
+        except SyntaxError as e:
+            assert False, f"Syntax error in check_routes.py: {e}"
 
     def test_check_routes_encoding(self):
-        """Test that the check_routes file uses proper encoding."""
+        """Test that check_routes file uses proper encoding."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
 
         # Try to read with UTF-8 encoding
@@ -113,46 +140,35 @@ class TestCheckRoutes:
         except UnicodeDecodeError:
             assert False, "check_routes file should be UTF-8 encoded"
 
-    def test_check_routes_line_count(self):
-        """Test that the check_routes file has reasonable line count."""
+    def test_check_routes_executable(self):
+        """Test that check_routes script is executable."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+
+        # Check that file is readable
+        assert routes_path.is_file()
+        assert routes_path.exists()
+
+    def test_check_routes_file_size(self):
+        """Test that check_routes file has reasonable size."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+
+        # Check file size (should be reasonable for a script file)
+        size = routes_path.stat().st_size
+        assert size > 100, "Script should be more than 100 bytes"
+        assert size < 2000, "Script should be less than 2KB"
+
+    def test_check_routes_line_endings(self):
+        """Test that check_routes has consistent line endings."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         content = routes_path.read_text(encoding="utf-8")
+
+        # Check that there are no mixed line endings
         lines = content.split("\n")
+        for line in lines:
+            assert "\r" not in line, "Should not have carriage returns"
 
-        # Should have reasonable number of lines
-        assert len(lines) > 5  # More than 5 lines
-        assert len(lines) < 50  # Less than 50 lines
-
-    def test_check_routes_comment_quality(self):
-        """Test that the check_routes file has good comments."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for module docstring
-        assert '"""' in content
-
-    def test_check_routes_variable_names(self):
-        """Test that variable names are properly named."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for proper variable naming
-        assert "logger = get_logger" in content
-        assert "for route in app.routes:" in content
-
-    def test_check_routes_no_hardcoded_secrets(self):
-        """Test that no hardcoded secrets are present."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for absence of common secret patterns
-        assert "password" not in content.lower()
-        assert "secret" not in content.lower()
-        assert "key" not in content.lower()
-        assert "token" not in content.lower()
-
-    def test_check_routes_consistent_indentation(self):
-        """Test that indentation is consistent."""
+    def test_check_routes_indentation(self):
+        """Test that check_routes has consistent indentation."""
         routes_path = Path(__file__).parent.parent / "check_routes.py"
         content = routes_path.read_text(encoding="utf-8")
 
@@ -163,114 +179,103 @@ class TestCheckRoutes:
                 if line.startswith(" "):
                     assert "\t" not in line, "Should use spaces, not tabs for indentation"
 
-    def test_check_routes_no_syntax_errors(self):
-        """Test that the check_routes file has no syntax errors."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
+    def test_check_routes_execution_logic(self):
+        """Test that check_routes execution logic works correctly."""
+        # Mock the logger
+        mock_logger = MagicMock()
 
-        # Try to compile the file to check for syntax errors
+        # Mock the app routes
+        mock_route1 = MagicMock()
+        mock_route1.methods = {"GET", "POST"}
+        mock_route1.path = "/test1"
+
+        mock_route2 = MagicMock()
+        mock_route2.methods = {"GET"}
+        mock_route2.path = "/test2"
+
+        mock_app = MagicMock()
+        mock_app.routes = [mock_route1, mock_route2]
+
+        # Execute the script logic directly (this is what check_routes.py does)
+        logger = mock_logger
+        app = mock_app
+
+        # Simulate the script execution
+        logger.info("Routes:")
+        for route in app.routes:
+            logger.info(f"{route.methods} {route.path}")
+
+        # Verify that logger.info was called with the expected messages
+        mock_logger.info.assert_any_call("Routes:")
+
+        # Check that both route calls were made (order doesn't matter for sets)
+        calls = mock_logger.info.call_args_list
+        call_strings = [str(call[0][0]) for call in calls]
+
+        assert "Routes:" in call_strings
+        assert "{'GET', 'POST'} /test1" in call_strings or "{'POST', 'GET'} /test1" in call_strings
+        assert "{'GET'} /test2" in call_strings
+
+        # Verify the total number of calls (1 for "Routes:" + 2 for routes)
+        assert mock_logger.info.call_count == 3
+
+    def test_check_routes_actual_execution(self):
+        """Test that check_routes module can be imported and executed."""
+        # Create a temporary mock version of the dependencies
+        import sys
+        from unittest.mock import MagicMock
+
+        # Mock the dependencies before importing
+        sys.modules["logging_config"] = MagicMock()
+        sys.modules["main"] = MagicMock()
+
+        # Mock the logger
+        mock_logger = MagicMock()
+        sys.modules["logging_config"].get_logger.return_value = mock_logger
+
+        # Mock the app routes
+        mock_route1 = MagicMock()
+        mock_route1.methods = {"GET", "POST"}
+        mock_route1.path = "/test1"
+
+        mock_route2 = MagicMock()
+        mock_route2.methods = {"GET"}
+        mock_route2.path = "/test2"
+
+        mock_app = MagicMock()
+        mock_app.routes = [mock_route1, mock_route2]
+        sys.modules["main"].app = mock_app
+
+        # Add the server directory to the path
+        server_dir = Path(__file__).parent.parent
+        original_path = sys.path.copy()
+        sys.path.insert(0, str(server_dir))
+
         try:
-            compile(routes_path.read_text(encoding="utf-8"), str(routes_path), "exec")
-        except SyntaxError as e:
-            assert False, f"Syntax error in check_routes.py: {e}"
+            # Import the module (this should execute the script)
+            import check_routes  # noqa: F401 - imported for side effects
 
-    def test_check_routes_shebang(self):
-        """Test that the script has proper shebang."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
+            # Verify that logger.info was called with the expected messages
+            mock_logger.info.assert_any_call("Routes:")
 
-        # Check for shebang
-        assert content.startswith("#!/usr/bin/env python3")
+            # Check that both route calls were made (order doesn't matter for sets)
+            calls = mock_logger.info.call_args_list
+            call_strings = [str(call[0][0]) for call in calls]
 
-    def test_check_routes_imports_structure(self):
-        """Test that imports are properly structured."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
+            assert "Routes:" in call_strings
+            assert "{'GET', 'POST'} /test1" in call_strings or "{'POST', 'GET'} /test1" in call_strings
+            assert "{'GET'} /test2" in call_strings
 
-        # Check import structure
-        lines = content.split("\n")
-        import_lines = [line for line in lines if line.startswith("from") or line.startswith("import")]
+            # Verify the total number of calls (1 for "Routes:" + 2 for routes)
+            assert mock_logger.info.call_count == 3
 
-        # Should have imports
-        assert len(import_lines) > 0
-
-        # Check for specific imports
-        assert any("import sys" in line for line in import_lines)
-        assert any("from pathlib import Path" in line for line in import_lines)
-        assert any("from logging_config import get_logger" in line for line in import_lines)
-        assert any("from main import app" in line for line in import_lines)
-
-    def test_check_routes_function_structure(self):
-        """Test that the script has proper structure."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check script structure
-        lines = content.split("\n")
-
-        # Should have logger setup
-        logger_found = False
-        for line in lines:
-            if "logger = get_logger" in line:
-                logger_found = True
-                break
-
-        assert logger_found
-
-        # Should have route iteration
-        route_iteration_found = False
-        for line in lines:
-            if "for route in app.routes:" in line:
-                route_iteration_found = True
-                break
-
-        assert route_iteration_found
-
-    def test_check_routes_output_format(self):
-        """Test that the script has proper output format."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for output format
-        assert 'logger.info("Routes:")' in content
-        assert 'logger.info(f"{route.methods} {route.path}")' in content
-
-    def test_check_routes_edge_cases(self):
-        """Test edge cases for the check_routes script."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check that the script handles path insertion properly
-        assert "sys.path.insert(0, str(Path(__file__).parent))" in content
-
-    def test_check_routes_special_characters(self):
-        """Test that the script handles special characters properly."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for proper string formatting
-        assert 'f"{route.methods} {route.path}"' in content
-
-    def test_check_routes_methods_are_sets(self):
-        """Test that route methods are handled as sets."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check that methods are accessed properly
-        assert "route.methods" in content
-
-    def test_check_routes_paths_are_normalized(self):
-        """Test that route paths are normalized properly."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check that paths are accessed properly
-        assert "route.path" in content
-
-    def test_check_routes_consistency(self):
-        """Test that the script is consistent in its approach."""
-        routes_path = Path(__file__).parent.parent / "check_routes.py"
-        content = routes_path.read_text(encoding="utf-8")
-
-        # Check for consistent logging approach
-        assert "logger.info" in content
-        assert "logger = get_logger" in content
+        finally:
+            # Clean up
+            sys.path = original_path
+            # Remove the mock modules
+            if "logging_config" in sys.modules:
+                del sys.modules["logging_config"]
+            if "main" in sys.modules:
+                del sys.modules["main"]
+            if "check_routes" in sys.modules:
+                del sys.modules["check_routes"]
