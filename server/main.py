@@ -18,13 +18,12 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
-from .logging_config import get_logger, setup_logging
+from .logging_config import get_logger
 
 # Suppress passlib deprecation warning about pkg_resources
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
-# Initialize logging
-setup_logging()
+# Get logger
 logger = get_logger(__name__)
 
 
