@@ -149,6 +149,28 @@ SAMPLE_PLAYERS = [
     },
 ]
 
+# Sample test invite data
+SAMPLE_INVITES = [
+    {
+        "id": "test-invite-1",
+        "invite_code": "TEST123",
+        "created_by_user_id": "test-user-1",
+        "used_by_user_id": None,
+        "used": False,
+        "expires_at": "2025-12-31 23:59:59",
+        "created_at": "2024-01-01 00:00:00",
+    },
+    {
+        "id": "test-invite-2",
+        "invite_code": "TEST456",
+        "created_by_user_id": "test-user-1",
+        "used_by_user_id": None,
+        "used": False,
+        "expires_at": "2025-12-31 23:59:59",
+        "created_at": "2024-01-01 00:00:00",
+    },
+]
+
 
 def init_test_database():
     """Initialize the test database with schema and test data."""
@@ -209,6 +231,30 @@ def init_test_database():
 
     print(f"✓ Loaded {len(SAMPLE_PLAYERS)} sample test players")
 
+    # Insert sample test invites into database
+    with sqlite3.connect(TEST_DB_PATH) as conn:
+        for invite_data in SAMPLE_INVITES:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO invites (
+                    id, invite_code, created_by_user_id, used_by_user_id, used, expires_at, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+                (
+                    invite_data["id"],
+                    invite_data["invite_code"],
+                    invite_data["created_by_user_id"],
+                    invite_data["used_by_user_id"],
+                    invite_data["used"],
+                    invite_data["expires_at"],
+                    invite_data["created_at"],
+                ),
+            )
+
+        conn.commit()
+
+    print(f"✓ Loaded {len(SAMPLE_INVITES)} sample test invites")
+
     # Verify the database was created successfully
     with sqlite3.connect(TEST_DB_PATH) as conn:
         cursor = conn.execute("SELECT COUNT(*) FROM users")
@@ -218,6 +264,10 @@ def init_test_database():
         cursor = conn.execute("SELECT COUNT(*) FROM players")
         player_count = cursor.fetchone()[0]
         print(f"✓ Test database contains {player_count} players")
+
+        cursor = conn.execute("SELECT COUNT(*) FROM invites")
+        invite_count = cursor.fetchone()[0]
+        print(f"✓ Test database contains {invite_count} invites")
 
     print("✓ Test database initialization complete!")
 

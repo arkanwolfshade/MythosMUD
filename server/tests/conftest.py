@@ -92,7 +92,7 @@ def test_database():
         raise ValueError(f"Unsupported database URL format: {test_db_url}")
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True)  # Enable automatic use for all tests
 def ensure_test_db_ready(test_database):
     """Ensure test database is ready for each test."""
     # This fixture runs automatically for each test
