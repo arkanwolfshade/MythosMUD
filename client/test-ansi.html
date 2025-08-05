@@ -6,7 +6,7 @@
     <title>ANSI Converter Test</title>
     <style>
       body {
-        font-family: "Courier New", monospace;
+        font-family: 'Courier New', monospace;
         background: #0a0a0a;
         color: #00ff00;
         padding: 20px;
@@ -48,39 +48,39 @@
     <script type="module">
       // ANSI to HTML converter (simplified version for testing)
       const ANSI_COLORS = {
-        30: "#000000",
-        31: "#ff0000",
-        32: "#00ff00",
-        33: "#ffff00",
-        34: "#0000ff",
-        35: "#ff00ff",
-        36: "#00ffff",
-        37: "#ffffff",
-        90: "#808080",
-        91: "#ff8080",
-        92: "#80ff80",
-        93: "#ffff80",
-        94: "#8080ff",
-        95: "#ff80ff",
-        96: "#80ffff",
-        97: "#ffffff",
+        30: '#000000',
+        31: '#ff0000',
+        32: '#00ff00',
+        33: '#ffff00',
+        34: '#0000ff',
+        35: '#ff00ff',
+        36: '#00ffff',
+        37: '#ffffff',
+        90: '#808080',
+        91: '#ff8080',
+        92: '#80ff80',
+        93: '#ffff80',
+        94: '#8080ff',
+        95: '#ff80ff',
+        96: '#80ffff',
+        97: '#ffffff',
       };
 
       function ansiToHtml(text) {
         const state = { bold: false, dim: false, italic: false, fgColor: null, bgColor: null };
         const segments = [];
-        let currentText = "";
+        let currentText = '';
         let i = 0;
 
         while (i < text.length) {
-          if (text[i] === "\x1b" && text[i + 1] === "[") {
+          if (text[i] === '\x1b' && text[i + 1] === '[') {
             if (currentText) {
               segments.push(wrapText(currentText, state));
-              currentText = "";
+              currentText = '';
             }
 
             let j = i + 2;
-            while (j < text.length && text[j] !== "m") j++;
+            while (j < text.length && text[j] !== 'm') j++;
 
             if (j < text.length) {
               const code = text.substring(i + 2, j);
@@ -100,11 +100,11 @@
           segments.push(wrapText(currentText, state));
         }
 
-        return segments.join("");
+        return segments.join('');
       }
 
       function updateState(state, code) {
-        const codes = code.split(";");
+        const codes = code.split(';');
         for (const c of codes) {
           const num = parseInt(c, 10);
           switch (num) {
@@ -141,35 +141,35 @@
         }
 
         const styles = [];
-        if (state.bold) styles.push("font-weight: bold");
-        if (state.dim) styles.push("opacity: 0.7");
-        if (state.italic) styles.push("font-style: italic");
+        if (state.bold) styles.push('font-weight: bold');
+        if (state.dim) styles.push('opacity: 0.7');
+        if (state.italic) styles.push('font-style: italic');
         if (state.fgColor) styles.push(`color: ${state.fgColor}`);
         if (state.bgColor) styles.push(`background-color: ${state.bgColor}`);
 
-        return styles.length > 0 ? `<span style="${styles.join("; ")}">${text}</span>` : text;
+        return styles.length > 0 ? `<span style="${styles.join('; ')}">${text}</span>` : text;
       }
 
       function ansiToHtmlWithBreaks(text) {
         return text
-          .split("\n")
-          .map((line) => ansiToHtml(line))
-          .join("<br>");
+          .split('\n')
+          .map(line => ansiToHtml(line))
+          .join('<br>');
       }
 
       // Test cases
-      const test1 = "\x1b[33mYellow text\x1b[0m and \x1b[31mred text\x1b[0m and \x1b[32mgreen text\x1b[0m";
+      const test1 = '\x1b[33mYellow text\x1b[0m and \x1b[31mred text\x1b[0m and \x1b[32mgreen text\x1b[0m';
       const test2 =
-        "\x1b[33m\n                                     .....:::::::::::....\n                             ...::-=+*#*+=----------=++**=-...\x1b[0m";
+        '\x1b[33m\n                                     .....:::::::::::....\n                             ...::-=+*#*+=----------=++**=-...\x1b[0m';
       const test3 =
-        "\x1b[1m\x1b[35mBold magenta\x1b[0m and \x1b[2m\x1b[36mDim cyan\x1b[0m and \x1b[3m\x1b[33mItalic yellow\x1b[0m";
+        '\x1b[1m\x1b[35mBold magenta\x1b[0m and \x1b[2m\x1b[36mDim cyan\x1b[0m and \x1b[3m\x1b[33mItalic yellow\x1b[0m';
 
       // Run tests
-      document.getElementById("test1").innerHTML = ansiToHtml(test1);
-      document.getElementById("test2").innerHTML = ansiToHtmlWithBreaks(test2);
-      document.getElementById("test3").innerHTML = ansiToHtml(test3);
+      document.getElementById('test1').innerHTML = ansiToHtml(test1);
+      document.getElementById('test2').innerHTML = ansiToHtmlWithBreaks(test2);
+      document.getElementById('test3').innerHTML = ansiToHtml(test3);
 
-      console.log("ANSI converter tests completed!");
+      console.log('ANSI converter tests completed!');
     </script>
   </body>
 </html>

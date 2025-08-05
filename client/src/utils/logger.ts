@@ -3,7 +3,7 @@
 
 interface LogEntry {
   timestamp: string;
-  level: "DEBUG" | "INFO" | "WARN" | "ERROR";
+  level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
   component: string;
   message: string;
   data?: unknown;
@@ -35,7 +35,7 @@ class ClientLogger {
       // But we can prepare for file download
       this.isInitialized = true;
     } catch (error) {
-      console.error("Failed to initialize logging:", error);
+      console.error('Failed to initialize logging:', error);
     }
 
     // Set up periodic log flushing
@@ -44,14 +44,14 @@ class ClientLogger {
     }, 5000); // Flush every 5 seconds
 
     // Set up beforeunload handler to flush logs
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener('beforeunload', () => {
       this.flushLogs();
     });
 
-    this.info("Logger", "Client logging initialized");
+    this.info('Logger', 'Client logging initialized');
   }
 
-  private createLogEntry(level: LogEntry["level"], component: string, message: string, data?: unknown): LogEntry {
+  private createLogEntry(level: LogEntry['level'], component: string, message: string, data?: unknown): LogEntry {
     return {
       timestamp: new Date().toISOString(),
       level,
@@ -71,28 +71,28 @@ class ClientLogger {
 
     // Also log to console for immediate feedback
     const consoleMethod =
-      entry.level === "ERROR" ? "error" : entry.level === "WARN" ? "warn" : entry.level === "DEBUG" ? "debug" : "log";
+      entry.level === 'ERROR' ? 'error' : entry.level === 'WARN' ? 'warn' : entry.level === 'DEBUG' ? 'debug' : 'log';
 
     console[consoleMethod](
       `[${entry.timestamp}] [${entry.level}] [${entry.component}] ${entry.message}`,
-      entry.data || "",
+      entry.data || ''
     );
   }
 
   debug(component: string, message: string, data?: unknown) {
-    this.addToBuffer(this.createLogEntry("DEBUG", component, message, data));
+    this.addToBuffer(this.createLogEntry('DEBUG', component, message, data));
   }
 
   info(component: string, message: string, data?: unknown) {
-    this.addToBuffer(this.createLogEntry("INFO", component, message, data));
+    this.addToBuffer(this.createLogEntry('INFO', component, message, data));
   }
 
   warn(component: string, message: string, data?: unknown) {
-    this.addToBuffer(this.createLogEntry("WARN", component, message, data));
+    this.addToBuffer(this.createLogEntry('WARN', component, message, data));
   }
 
   error(component: string, message: string, data?: unknown) {
-    this.addToBuffer(this.createLogEntry("ERROR", component, message, data));
+    this.addToBuffer(this.createLogEntry('ERROR', component, message, data));
   }
 
   private flushLogs() {
@@ -101,13 +101,13 @@ class ClientLogger {
     try {
       const logContent = this.logBuffer
         .map(
-          (entry) =>
-            `${entry.timestamp} [${entry.level}] [${entry.component}] ${entry.message}${entry.data ? ` | Data: ${JSON.stringify(entry.data)}` : ""}`,
+          entry =>
+            `${entry.timestamp} [${entry.level}] [${entry.component}] ${entry.message}${entry.data ? ` | Data: ${JSON.stringify(entry.data)}` : ''}`
         )
-        .join("\n");
+        .join('\n');
 
       // Create a blob and download link
-      const blob = new Blob([logContent], { type: "text/plain" });
+      const blob = new Blob([logContent], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
 
       // Store the URL for later download
@@ -116,23 +116,23 @@ class ClientLogger {
       // Clear the buffer after successful flush
       this.logBuffer = [];
 
-      this.info("Logger", "Logs flushed successfully");
+      this.info('Logger', 'Logs flushed successfully');
     } catch (error) {
-      console.error("Failed to flush logs:", error);
+      console.error('Failed to flush logs:', error);
     }
   }
 
   // Method to manually download logs
   downloadLogs() {
     if (window.mythosMudLogUrl) {
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = window.mythosMudLogUrl;
-      link.download = `mythosmud-client-${new Date().toISOString().replace(/[:.]/g, "-")}.log`;
+      link.download = `mythosmud-client-${new Date().toISOString().replace(/[:.]/g, '-')}.log`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } else {
-      this.warn("Logger", "No logs available for download");
+      this.warn('Logger', 'No logs available for download');
     }
   }
 
@@ -144,7 +144,7 @@ class ClientLogger {
   // Method to clear log buffer
   clearLogs() {
     this.logBuffer = [];
-    this.info("Logger", "Log buffer cleared");
+    this.info('Logger', 'Log buffer cleared');
   }
 }
 

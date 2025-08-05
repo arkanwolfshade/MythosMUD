@@ -40,6 +40,13 @@ def get_persistence() -> "PersistenceLayer":
         return _persistence_instance
 
 
+def reset_persistence():
+    """Reset the persistence singleton instance."""
+    global _persistence_instance
+    with _persistence_lock:
+        _persistence_instance = None
+
+
 # --- PersistenceLayer Class ---
 class PersistenceLayer:
     """
@@ -50,26 +57,22 @@ class PersistenceLayer:
     _hooks: dict[str, list[Callable]] = {}
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
-        # Default to the main production database in the project root
+        # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
-        elif os.environ.get("MYTHOS_DB_PATH"):
-            self.db_path = os.environ.get("MYTHOS_DB_PATH")
-        else:
-            # Get the project root directory (two levels up from server directory)
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            project_root = os.path.dirname(module_dir)
-            self.db_path = os.path.join(project_root, "data", "players", "players.db")
+        elif os.environ.get("DATABASE_URL"):
+            # Derive database path from DATABASE_URL
+            from .database import get_database_path
 
-        # Use absolute path for log file to avoid working directory issues
-        if log_path:
-            self.log_path = log_path
-        elif os.environ.get("MYTHOS_PERSIST_LOG"):
-            self.log_path = os.environ.get("MYTHOS_PERSIST_LOG")
+            self.db_path = str(get_database_path())
         else:
-            # Get the directory where this module is located
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            self.log_path = os.path.join(module_dir, "logs", "persistence.log")
+            raise ValueError(
+                "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+            )
+
+        # Logging is now handled by the centralized logging system
+        # The log_path parameter is kept for backward compatibility but not used
+        self.log_path = None  # No longer needed with centralized logging
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()

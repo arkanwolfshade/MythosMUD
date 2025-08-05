@@ -1,131 +1,485 @@
-import pytest
-from fastapi.testclient import TestClient
+"""
+Tests for authentication endpoints.
 
-from server.main import app
-
-# Database schema for tests
-TEST_SCHEMA = """
-CREATE TABLE IF NOT EXISTS users (
-    user_id TEXT PRIMARY KEY NOT NULL,
-    username TEXT UNIQUE NOT NULL,
-    hashed_password TEXT NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT 1,
-    is_superuser BOOLEAN NOT NULL DEFAULT 0,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS players (
-    player_id TEXT PRIMARY KEY NOT NULL,
-    user_id TEXT NOT NULL UNIQUE,
-    name TEXT UNIQUE NOT NULL,
-    stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
-    inventory TEXT NOT NULL DEFAULT '[]',
-    status_effects TEXT NOT NULL DEFAULT '[]',
-    current_room_id TEXT NOT NULL DEFAULT 'arkham_001',
-    experience_points INTEGER NOT NULL DEFAULT 0,
-    level INTEGER NOT NULL DEFAULT 1,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS invites (
-    id TEXT PRIMARY KEY NOT NULL,
-    invite_code TEXT UNIQUE NOT NULL,
-    used_by_user_id TEXT,
-    is_used BOOLEAN NOT NULL DEFAULT 0,
-    expires_at DATETIME,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL
-);
+This module tests the authentication system including registration,
+login, and user management endpoints.
 """
 
+import uuid
+from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, patch
 
-@pytest.fixture
-def temp_db_path(tmp_path):
-    """Create a temporary database path."""
-    db_path = tmp_path / "test_auth.db"
-    # Initialize the database with schema
-    import sqlite3
+import pytest
+from fastapi import HTTPException
+from fastapi.testclient import TestClient
+from fastapi_users.exceptions import UserAlreadyExists
 
-    conn = sqlite3.connect(str(db_path))
-    conn.executescript(TEST_SCHEMA)
-    conn.commit()
-    conn.close()
-    return str(db_path)
-
-
-@pytest.fixture(autouse=True)
-def patch_persistence_layer(monkeypatch, temp_db_path):
-    """Patch the PersistenceLayer class to use the test database."""
-    from server.persistence import PersistenceLayer
-
-    def mock_init(self, db_path=None, log_path=None):
-        # Use our test database instead of the default
-        super(PersistenceLayer, self).__init__(db_path=temp_db_path, log_path=log_path)
-
-    monkeypatch.setattr(PersistenceLayer, "__init__", mock_init)
+from server.auth.endpoints import LoginRequest, LoginResponse, UserCreate
+from server.main import app
 
 
 @pytest.fixture
 def test_client():
     """Create a test client for the FastAPI app."""
+    # Don't use the real database for auth tests
     return TestClient(app)
 
 
-def test_successful_registration(test_client):
-    """Test successful user registration with valid invite."""
-    # For now, skip this test since we need proper admin authentication
-    # The auth system is working but we need to set up proper admin tokens
-    pytest.skip("Auth system working but needs admin token setup")
+class TestSchemaValidation:
+    """Test Pydantic schema validation."""
+
+    def test_user_create_schema(self):
+        """Test UserCreate schema validation."""
+        # Test with all fields
+        user_data = {
+            "username": "testuser",
+            "password": "testpass123",
+            "email": "test@example.com",
+            "invite_code": "TEST123",
+        }
+        user_create = UserCreate(**user_data)
+        assert user_create.username == "testuser"
+        assert user_create.password == "testpass123"
+        assert user_create.email == "test@example.com"
+        assert user_create.invite_code == "TEST123"
+
+    def test_user_create_schema_optional_fields(self):
+        """Test UserCreate schema with optional fields."""
+        # Test without email and invite_code
+        user_data = {"username": "testuser", "password": "testpass123"}
+        user_create = UserCreate(**user_data)
+        assert user_create.username == "testuser"
+        assert user_create.password == "testpass123"
+        assert user_create.email is None
+        assert user_create.invite_code is None
+
+    def test_login_request_schema(self):
+        """Test LoginRequest schema validation."""
+        login_data = {"username": "testuser", "password": "testpass123"}
+        login_request = LoginRequest(**login_data)
+        assert login_request.username == "testuser"
+        assert login_request.password == "testpass123"
+
+    def test_login_response_schema(self):
+        """Test LoginResponse schema validation."""
+        response_data = {"access_token": "test-token", "token_type": "bearer", "user_id": "test-user-id"}
+        login_response = LoginResponse(**response_data)
+        assert login_response.access_token == "test-token"
+        assert login_response.token_type == "bearer"
+        assert login_response.user_id == "test-user-id"
+
+    def test_login_response_schema_default_token_type(self):
+        """Test LoginResponse schema with default token type."""
+        response_data = {"access_token": "test-token", "user_id": "test-user-id"}
+        login_response = LoginResponse(**response_data)
+        assert login_response.access_token == "test-token"
+        assert login_response.token_type == "bearer"  # Default value
+        assert login_response.user_id == "test-user-id"
 
 
-def test_duplicate_username(test_client):
-    """Test registration with duplicate username."""
-    pytest.skip("Auth system working but needs admin token setup")
+class TestRegistrationEndpoints:
+    """Test registration endpoint functionality."""
+
+    def test_successful_registration(self, test_client):
+        """Test successful user registration with valid invite."""
+        # This test uses the real database with proper setup
+        # The test database should have the TEST123 invite already inserted
+
+        # Use a unique username to avoid conflicts with previous test runs
+        import uuid
+
+        unique_username = f"newuser_{uuid.uuid4().hex[:8]}"
+
+        # Test registration
+        response = test_client.post(
+            "/auth/register",
+            json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"},
+        )
+
+        # Debug: Print response details
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert "access_token" in data
+        assert "user_id" in data
+        assert data["token_type"] == "bearer"
+
+    @patch("server.auth.endpoints.get_invite_manager")
+    def test_registration_invalid_invite_code(self, mock_get_invite, test_client):
+        """Test registration with invalid invite code."""
+        mock_manager = AsyncMock()
+        mock_manager.validate_invite.side_effect = HTTPException(status_code=400, detail="Invalid invite code")
+        mock_get_invite.return_value = mock_manager
+
+        response = test_client.post(
+            "/auth/register", json={"username": "newuser", "password": "testpass123", "invite_code": "INVALID"}
+        )
+
+        assert response.status_code == 400
+        assert "Invalid invite code" in response.json()["detail"]
+
+    @patch("server.auth.endpoints.get_user_manager")
+    def test_registration_duplicate_username(self, mock_get_user, test_client):
+        """Test registration with duplicate username."""
+        # Use real invite manager but mock user manager to simulate duplicate username
+        mock_manager = AsyncMock()
+        mock_manager.create.side_effect = UserAlreadyExists()
+        mock_get_user.return_value = mock_manager
+
+        # Override the dependency at the app level
+        from server.auth.users import get_user_manager
+        from server.main import app
+
+        def override_get_user_manager():
+            return mock_manager
+
+        app.dependency_overrides[get_user_manager] = override_get_user_manager
+
+        try:
+            response = test_client.post(
+                "/auth/register", json={"username": "existinguser", "password": "testpass123", "invite_code": "TEST456"}
+            )
+
+            # Debug output
+            print(f"Response status: {response.status_code}")
+            print(f"Response body: {response.text}")
+
+            assert response.status_code == 400
+            assert "Username already exists" in response.json()["detail"]
+        finally:
+            # Clean up the dependency override
+            app.dependency_overrides.clear()
+
+    def test_registration_with_empty_password(self, test_client):
+        """Test registration with empty password should be rejected for security."""
+        # Use a unique username to avoid conflicts
+        import uuid
+
+        unique_username = f"weakuser_{uuid.uuid4().hex[:8]}"
+
+        # Test with an empty password which should fail validation
+        response = test_client.post(
+            "/auth/register", json={"username": unique_username, "password": "", "invite_code": "TEST456"}
+        )
+
+        # Debug: Print response details
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        # Empty passwords should be rejected for security
+        assert response.status_code == 422  # Unprocessable Entity for validation errors
+        data = response.json()
+        assert "detail" in data
+        # The error message should indicate password validation failure
+        # For validation errors, detail is a list of error objects
+        error_detail = data["detail"]
+        assert isinstance(error_detail, list)
+        assert len(error_detail) > 0
+        # Check that the error message contains password-related keywords
+        error_msg = error_detail[0].get("msg", "").lower()
+        assert any(keyword in error_msg for keyword in ["password", "empty"])
+
+    def test_registration_with_whitespace_password(self, test_client):
+        """Test registration with whitespace-only password should be rejected."""
+        # Use a unique username to avoid conflicts
+        import uuid
+
+        unique_username = f"whitespaceuser_{uuid.uuid4().hex[:8]}"
+
+        # Test with a whitespace-only password which should fail validation
+        response = test_client.post(
+            "/auth/register", json={"username": unique_username, "password": "   ", "invite_code": "TEST456"}
+        )
+
+        # Debug: Print response details
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        # Whitespace-only passwords should be rejected for security
+        assert response.status_code == 422  # Unprocessable Entity for validation errors
+        data = response.json()
+        assert "detail" in data
+        # For validation errors, detail is a list of error objects
+        error_detail = data["detail"]
+        assert isinstance(error_detail, list)
+        assert len(error_detail) > 0
+        # Check that the error message contains password-related keywords
+        error_msg = error_detail[0].get("msg", "").lower()
+        assert any(keyword in error_msg for keyword in ["password", "empty"])
 
 
-def test_invalid_invite_code(test_client):
-    """Test registration with invalid invite code."""
-    pytest.skip("Auth system working but needs admin token setup")
+class TestLoginEndpoints:
+    """Test login endpoint functionality."""
+
+    def test_successful_login(self, test_client):
+        """Test successful login with valid credentials."""
+        # Create mock user
+        mock_user = MagicMock()
+        mock_user.user_id = uuid.uuid4()
+        mock_user.email = "testuser@wolfshade.org"
+        mock_user.username = "testuser"
+
+        # Create mock session with proper user lookup
+        mock_session = AsyncMock()
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = mock_user
+        mock_session.execute.return_value = mock_result
+
+        # Create mock user manager
+        mock_manager = AsyncMock()
+        mock_manager.authenticate.return_value = mock_user
+
+        # Override the dependencies at the app level
+        from server.auth.endpoints import get_async_session, get_user_manager
+
+        async def mock_get_async_session():
+            return mock_session
+
+        async def mock_get_user_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_async_session] = mock_get_async_session
+        test_client.app.dependency_overrides[get_user_manager] = mock_get_user_manager
+
+        try:
+            response = test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+
+            assert response.status_code == 200
+            data = response.json()
+            assert "access_token" in data
+            assert "user_id" in data
+            assert data["token_type"] == "bearer"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
+
+    @patch("server.auth.endpoints.get_async_session")
+    def test_login_user_not_found(self, mock_get_session, test_client):
+        """Test login with nonexistent user."""
+        mock_session = AsyncMock()
+        mock_get_session.return_value = mock_session
+
+        # Mock empty user lookup
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = None
+        mock_session.execute.return_value = mock_result
+
+        response = test_client.post("/auth/login", json={"username": "nonexistent", "password": "testpass123"})
+
+        assert response.status_code == 401
+        assert "Invalid credentials" in response.json()["detail"]
+
+    @patch("server.auth.endpoints.get_async_session")
+    def test_login_user_no_email(self, mock_get_session, test_client):
+        """Test login with user that has no email."""
+        mock_session = AsyncMock()
+        mock_get_session.return_value = mock_session
+
+        # Mock user lookup with no email
+        mock_user = MagicMock()
+        mock_user.user_id = uuid.uuid4()
+        mock_user.email = None
+        mock_user.username = "testuser"
+
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = mock_user
+        mock_session.execute.return_value = mock_result
+
+        response = test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+
+        assert response.status_code == 401
+        assert "Invalid credentials" in response.json()["detail"]
 
 
-def test_used_invite_code(test_client):
-    """Test registration with already used invite code."""
-    pytest.skip("Auth system working but needs admin token setup")
+class TestUserInfoEndpoints:
+    """Test user information endpoint functionality."""
+
+    @patch("server.auth.endpoints.get_current_superuser")
+    def test_get_current_user_info_superuser(self, mock_get_current, test_client):
+        """Test /auth/me endpoint with superuser."""
+        mock_user = MagicMock()
+        mock_user.user_id = uuid.uuid4()
+        mock_user.email = "admin@wolfshade.org"
+        mock_user.username = "admin"
+        mock_user.is_superuser = True
+
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+
+        async def mock_get_current_superuser():
+            return mock_user
+
+        # Override the dependency in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+
+        try:
+            response = test_client.get("/auth/me")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["id"] == str(mock_user.user_id)
+            assert data["email"] == mock_user.email
+            assert data["username"] == mock_user.username
+            assert data["is_superuser"] is True
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
+
+    @patch("server.auth.endpoints.get_current_superuser")
+    def test_get_current_user_info_regular_user(self, mock_get_current, test_client):
+        """Test /auth/me endpoint with regular user."""
+        mock_user = MagicMock()
+        mock_user.user_id = uuid.uuid4()
+        mock_user.email = "user@wolfshade.org"
+        mock_user.username = "user"
+        mock_user.is_superuser = False
+
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+
+        async def mock_get_current_superuser():
+            return mock_user
+
+        # Override the dependency in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+
+        try:
+            response = test_client.get("/auth/me")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["id"] == str(mock_user.user_id)
+            assert data["email"] == mock_user.email
+            assert data["username"] == mock_user.username
+            assert data["is_superuser"] is False
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
 
-def test_successful_login(test_client):
-    """Test successful user login."""
-    pytest.skip("Auth system working but needs admin token setup")
+class TestInviteManagementEndpoints:
+    """Test invite management endpoint functionality."""
 
+    @patch("server.auth.endpoints.get_current_superuser")
+    @patch("server.auth.endpoints.get_invite_manager")
+    def test_list_invites(self, mock_get_invite, mock_get_current, test_client):
+        """Test listing all invite codes."""
+        mock_user = MagicMock()
+        mock_user.is_superuser = True
+        mock_get_current.return_value = mock_user
 
-def test_login_wrong_password(test_client):
-    """Test login with wrong password."""
-    pytest.skip("Auth system working but needs admin token setup")
+        # Create mock invites with proper UUIDs and data types
+        mock_invite1 = MagicMock()
+        mock_invite1.id = str(uuid.uuid4())
+        mock_invite1.invite_code = "TEST123"
+        mock_invite1.is_used = False
+        mock_invite1.used_by_user_id = None  # Not used yet
+        mock_invite1.created_at = datetime.utcnow()
+        mock_invite1.expires_at = datetime.utcnow() + timedelta(days=30)
 
+        mock_invite2 = MagicMock()
+        mock_invite2.id = str(uuid.uuid4())
+        mock_invite2.invite_code = "TEST456"
+        mock_invite2.is_used = False
+        mock_invite2.used_by_user_id = None  # Not used yet
+        mock_invite2.created_at = datetime.utcnow()
+        mock_invite2.expires_at = datetime.utcnow() + timedelta(days=30)
 
-def test_login_nonexistent_user(test_client):
-    """Test login with nonexistent user."""
-    pytest.skip("Auth system working but needs admin token setup")
+        mock_manager = AsyncMock()
+        mock_manager.list_invites.return_value = [mock_invite1, mock_invite2]
+        mock_get_invite.return_value = mock_manager
 
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+        from server.auth.invites import get_invite_manager
 
-def test_me_valid_token(test_client):
-    """Test /auth/me endpoint with valid token."""
-    pytest.skip("Auth system working but needs admin token setup")
+        # Create a mock dependency that returns our mock user
+        async def mock_get_current_superuser():
+            return mock_user
 
+        async def mock_get_invite_manager():
+            return mock_manager
 
-def test_me_missing_token(test_client):
-    """Test /auth/me endpoint without token."""
-    pytest.skip("Auth system working but needs admin token setup")
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
 
+        try:
+            response = test_client.get("/auth/invites")
 
-def test_me_invalid_token(test_client):
-    """Test /auth/me endpoint with invalid token."""
-    pytest.skip("Auth system working but needs admin token setup")
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data) == 2
+            assert data[0]["invite_code"] == "TEST123"
+            assert data[1]["invite_code"] == "TEST456"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
 
+    @patch("server.auth.endpoints.get_current_superuser")
+    @patch("server.auth.endpoints.get_invite_manager")
+    def test_create_invite(self, mock_get_invite, mock_get_current, test_client):
+        """Test creating a new invite code."""
+        mock_user = MagicMock()
+        mock_user.is_superuser = True
+        mock_get_current.return_value = mock_user
 
-def test_successful_registration_direct(test_client):
-    """Test direct registration without invite (if enabled)."""
-    pytest.skip("Auth system working but needs admin token setup")
+        # Create a mock invite with a specific code and proper data types
+        mock_invite = MagicMock()
+        mock_invite.id = str(uuid.uuid4())
+        mock_invite.invite_code = "NEW123"
+        mock_invite.is_used = False
+        mock_invite.used_by_user_id = None  # Not used yet
+        mock_invite.created_at = datetime.utcnow()
+        mock_invite.expires_at = datetime.utcnow() + timedelta(days=30)
+
+        mock_manager = AsyncMock()
+        mock_manager.create_invite.return_value = mock_invite
+        mock_get_invite.return_value = mock_manager
+
+        # Override the dependency at the app level
+        from server.auth.dependencies import get_current_superuser
+        from server.auth.invites import get_invite_manager
+
+        # Create a mock dependency that returns our mock user
+        async def mock_get_current_superuser():
+            return mock_user
+
+        async def mock_get_invite_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
+
+        try:
+            response = test_client.post("/auth/invites")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["invite_code"] == "NEW123"
+        finally:
+            # Clean up the override
+            test_client.app.dependency_overrides.clear()
+
+    def test_database_connection(self, test_client):
+        """Test that the database connection and invite table work."""
+        import sqlite3
+
+        # Check if we can access the test database
+        # Use absolute path for test database
+        project_root = Path(__file__).parent.parent.parent
+        db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.execute("SELECT COUNT(*) FROM invites")
+            count = cursor.fetchone()[0]
+            assert count >= 0  # Should have at least 0 invites
+
+            # Check if TEST123 invite exists
+            cursor = conn.execute("SELECT * FROM invites WHERE invite_code = 'TEST123'")
+            invite = cursor.fetchone()
+            assert invite is not None, "TEST123 invite should exist in test database"

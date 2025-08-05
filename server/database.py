@@ -18,9 +18,12 @@ from sqlalchemy.pool import StaticPool
 
 from .metadata import metadata
 
-# Database URL configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///data/players/players.db")
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./tests/data/test_players.db")
+# Database URL configuration - read from environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+    )
 
 # Create async engine
 engine = create_async_engine(
@@ -69,9 +72,19 @@ async def init_db():
     Creates all tables defined in the metadata.
     """
     # Import all models to ensure they're registered with metadata
+    # Configure all mappers before setting up relationships
+    from sqlalchemy.orm import configure_mappers
+
     from server.models.invite import Invite  # noqa: F401
     from server.models.player import Player  # noqa: F401
     from server.models.user import User  # noqa: F401
+
+    configure_mappers()
+
+    # Set up relationships after all models are imported and configured
+    from server.models.relationships import setup_relationships
+
+    setup_relationships()
 
     async with engine.begin() as conn:
         await conn.run_sync(metadata.create_all)

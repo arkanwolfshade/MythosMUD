@@ -1,11 +1,27 @@
 #!/usr/bin/env python3
 """
-Generate 100 unique Mythos-themed invite codes for testing.
+Generate Mythos-themed invite codes for testing using the database.
+
+This script generates unique Mythos-themed invite codes and stores them
+in the database using the new FastAPI Users migration structure.
 """
 
-import json
+import asyncio
 import random
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
+
+# Add server directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent / "server"))
+
+# Now import server modules
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+
+from server.config_loader import get_config
+from server.models.invite import Invite
 
 # Mythos-themed words and concepts for invite codes
 MYTHOS_WORDS = [
@@ -136,63 +152,67 @@ def generate_invite_code():
         return f"{prefix}{suffix}"
 
 
-def generate_unique_codes(count=100):
-    """Generate a list of unique invite codes."""
-    codes = set()
-    attempts = 0
-    max_attempts = count * 10  # Prevent infinite loops
+async def generate_unique_codes(count=100, expires_in_days: int = 30):
+    """Generate a list of unique invite codes and store them in the database."""
+    config = get_config()
+    engine = create_async_engine(config["database_url"])
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-    while len(codes) < count and attempts < max_attempts:
-        code = generate_invite_code()
-        if code not in codes:
-            codes.add(code)
-        attempts += 1
+    async with async_session() as session:
+        # Get existing codes to avoid duplicates
+        result = await session.execute(text("SELECT invite_code FROM invites"))
+        existing_codes = {row[0] for row in result.fetchall()}
 
-    return list(codes)
+        codes = set()
+        attempts = 0
+        max_attempts = count * 10  # Prevent infinite loops
+
+        while len(codes) < count and attempts < max_attempts:
+            code = generate_invite_code()
+            if code not in existing_codes and code not in codes:
+                codes.add(code)
+            attempts += 1
+
+        if not codes:
+            return []
+
+        # Create invite records
+        invites = []
+        for code in codes:
+            invite = Invite(
+                invite_code=code,
+                expires_at=datetime.utcnow() + timedelta(days=expires_in_days),
+            )
+            invites.append(invite)
+
+        # Add all invites to session
+        session.add_all(invites)
+        await session.commit()
+
+        return list(codes)
 
 
-def main():
-    """Generate 100 invite codes and update the invites.json file."""
+async def main():
+    """Generate 100 invite codes and store them in the database."""
     print("Generating 100 unique Mythos-themed invite codes...")
 
-    # Generate new codes
-    new_codes = generate_unique_codes(100)
+    # Generate new codes and store them
+    new_codes = await generate_unique_codes(100)
 
-    # Load existing invites
-    invites_file = Path("server/invites.json")
-    if invites_file.exists():
-        with open(invites_file) as f:
-            existing_invites = json.load(f)
-    else:
-        existing_invites = []
+    if not new_codes:
+        print("❌ Failed to generate unique codes (may already exist)")
+        return
 
-    # Get existing codes to avoid duplicates
-    existing_codes = {invite["code"] for invite in existing_invites}
-
-    # Filter out any duplicates
-    unique_new_codes = [code for code in new_codes if code not in existing_codes]
-
-    # Create new invite entries
-    new_invites = [{"code": code, "used": False} for code in unique_new_codes]
-
-    # Combine existing and new invites
-    all_invites = existing_invites + new_invites
-
-    # Save updated invites file
-    with open(invites_file, "w") as f:
-        json.dump(all_invites, f, indent=2)
-
-    print(f"✓ Generated {len(unique_new_codes)} new invite codes")
-    print(f"✓ Total invite codes available: {len(all_invites)}")
-    print(f"✓ Used codes: {sum(1 for invite in all_invites if invite['used'])}")
-    print(f"✓ Available codes: {sum(1 for invite in all_invites if not invite['used'])}")
+    print(f"✓ Generated and stored {len(new_codes)} new invite codes in database")
 
     # Show some examples
     print("\nExample invite codes:")
-    for i, invite in enumerate(all_invites[-10:], 1):  # Show last 10
-        status = "USED" if invite["used"] else "AVAILABLE"
-        print(f"  {i:2d}. {invite['code']:<20} [{status}]")
+    for i, code in enumerate(new_codes[:10], 1):
+        print(f"  {i:2d}. {code}")
+
+    if len(new_codes) > 10:
+        print(f"  ... and {len(new_codes) - 10} more")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

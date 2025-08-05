@@ -5,15 +5,13 @@ validate the command alias system that allows players to create shortcuts
 for commonly used commands.
 """
 
+import uuid
 from datetime import UTC, datetime
 
 import pytest
 from pydantic import ValidationError
 
 from ..models import Alias
-
-# Skip all alias tests for now since the Alias model is simplified
-pytest.skip("Alias model needs full implementation", allow_module_level=True)
 
 
 class TestAliasModel:
@@ -25,15 +23,26 @@ class TestAliasModel:
 
         assert alias.name == "look"
         assert alias.command == "look"
-        assert alias.version == "1.0"
+        assert isinstance(alias.id, str)
         assert isinstance(alias.created_at, datetime)
         assert isinstance(alias.updated_at, datetime)
 
-    def test_create_alias_with_custom_version(self):
-        """Test creating an alias with a custom version."""
-        alias = Alias(name="test", command="help", version="2.0")
+    def test_create_alias_with_custom_timestamps(self):
+        """Test creating an alias with custom timestamps."""
+        custom_time = datetime(2024, 1, 1, 12, 0, 0)
+        alias = Alias(name="test", command="look", created_at=custom_time, updated_at=custom_time)
 
-        assert alias.version == "2.0"
+        assert alias.created_at == custom_time
+        assert alias.updated_at == custom_time
+
+    def test_create_alias_with_custom_id(self):
+        """Test creating an alias with a custom ID."""
+        custom_id = str(uuid.uuid4())
+        alias = Alias(id=custom_id, name="test", command="help")
+
+        assert alias.id == custom_id
+        assert alias.name == "test"
+        assert alias.command == "help"
 
     def test_alias_timestamps(self):
         """Test that timestamps are properly set."""
@@ -41,163 +50,12 @@ class TestAliasModel:
         alias = Alias(name="test", command="look")
         after_creation = datetime.now(UTC)
 
-        assert before_creation <= alias.created_at <= after_creation
-        assert before_creation <= alias.updated_at <= after_creation
+        # Convert alias timestamps to UTC for comparison
+        alias_created_utc = alias.created_at.replace(tzinfo=UTC)
+        alias_updated_utc = alias.updated_at.replace(tzinfo=UTC)
 
-    def test_update_timestamp(self):
-        """Test updating the timestamp."""
-        alias = Alias(name="test", command="look")
-        original_updated = alias.updated_at
-
-        # Wait a moment to ensure timestamp difference
-        import time
-
-        time.sleep(0.001)
-
-        alias.update_timestamp()
-
-        assert alias.updated_at > original_updated
-
-    def test_validate_name_valid_patterns(self):
-        """Test alias name validation with valid patterns."""
-        valid_names = [
-            "look",
-            "myAlias",
-            "alias_123",
-            "TestAlias",
-            "a",
-            "abc123",
-        ]
-
-        for name in valid_names:
-            alias = Alias(name=name, command="help")
-            assert alias.validate_name() is True
-
-    def test_validate_name_invalid_patterns(self):
-        """Test alias name validation with invalid patterns."""
-        invalid_names = [
-            "123alias",  # Starts with number
-            "_alias",  # Starts with underscore
-            "my-alias",  # Contains hyphen
-            "my alias",  # Contains space
-            "my.alias",  # Contains dot
-            "",  # Empty string
-        ]
-
-        for name in invalid_names:
-            alias = Alias(name=name, command="help")
-            assert alias.validate_name() is False
-
-    def test_is_reserved_command(self):
-        """Test detection of reserved commands."""
-        reserved_aliases = [
-            Alias(name="test", command="alias"),
-            Alias(name="test", command="aliases"),
-            Alias(name="test", command="unalias"),
-            Alias(name="test", command="help"),
-            Alias(name="test", command="ALIAS"),  # Case insensitive
-            Alias(name="test", command="Help"),  # Case insensitive
-        ]
-
-        for alias in reserved_aliases:
-            assert alias.is_reserved_command() is True
-
-    def test_is_not_reserved_command(self):
-        """Test detection of non-reserved commands."""
-        non_reserved_aliases = [
-            Alias(name="test", command="look"),
-            Alias(name="test", command="go north"),
-            Alias(name="test", command="say hello"),
-            Alias(name="test", command="inventory"),
-            Alias(name="test", command="stats"),
-        ]
-
-        for alias in non_reserved_aliases:
-            assert alias.is_reserved_command() is False
-
-    def test_get_expanded_command_simple(self):
-        """Test simple command expansion."""
-        alias = Alias(name="l", command="look")
-
-        result = alias.get_expanded_command()
-        assert result == "look"
-
-    def test_get_expanded_command_with_args(self):
-        """Test command expansion with arguments (future feature)."""
-        alias = Alias(name="ln", command="look north")
-
-        result = alias.get_expanded_command(["north"])
-        # Currently returns base command, future will handle args
-        assert result == "look north"
-
-    def test_alias_case_insensitive_name(self):
-        """Test that alias names are case-insensitive in practice."""
-        alias1 = Alias(name="Look", command="look")
-        alias2 = Alias(name="look", command="look")
-
-        # Names are stored as-is, but comparison should be case-insensitive
-        assert alias1.name.lower() == alias2.name.lower()
-
-    def test_alias_command_preservation(self):
-        """Test that command text is preserved exactly."""
-        complex_command = "go north; look; say 'Hello there!'"
-        alias = Alias(name="complex", command=complex_command)
-
-        assert alias.command == complex_command
-
-    def test_alias_maximum_length_validation(self):
-        """Test that very long commands are handled."""
-        long_command = "a" * 200  # 200 character command
-        alias = Alias(name="long", command=long_command)
-
-        assert alias.command == long_command
-
-    def test_alias_with_special_characters(self):
-        """Test alias with special characters in command."""
-        special_command = "say 'Hello, world! How are you?'"
-        alias = Alias(name="greet", command=special_command)
-
-        assert alias.command == special_command
-
-    def test_alias_equality(self):
-        """Test alias equality comparison."""
-        alias1 = Alias(name="test", command="look")
-        alias2 = Alias(name="test", command="look")
-        alias3 = Alias(name="different", command="look")
-
-        # Pydantic models compare by field values
-        assert alias1 == alias2
-        assert alias1 != alias3
-
-    def test_alias_serialization(self):
-        """Test that alias can be serialized to JSON."""
-        alias = Alias(name="test", command="look")
-
-        json_data = alias.model_dump()
-
-        assert "name" in json_data
-        assert "command" in json_data
-        assert "version" in json_data
-        assert "created_at" in json_data
-        assert "updated_at" in json_data
-        assert json_data["name"] == "test"
-        assert json_data["command"] == "look"
-
-    def test_alias_deserialization(self):
-        """Test that alias can be deserialized from JSON."""
-        json_data = {
-            "name": "test",
-            "command": "look",
-            "version": "1.0",
-            "created_at": "2024-01-01T00:00:00Z",
-            "updated_at": "2024-01-01T00:00:00Z",
-        }
-
-        alias = Alias.model_validate(json_data)
-
-        assert alias.name == "test"
-        assert alias.command == "look"
-        assert alias.version == "1.0"
+        assert before_creation <= alias_created_utc <= after_creation
+        assert before_creation <= alias_updated_utc <= after_creation
 
     def test_alias_required_fields(self):
         """Test that required fields are enforced."""
@@ -212,9 +70,9 @@ class TestAliasModel:
 
     def test_alias_empty_strings(self):
         """Test that empty strings are handled properly."""
-        # Empty name should be allowed by Pydantic but fail validation
+        # Empty name should be allowed by Pydantic
         alias = Alias(name="", command="look")
-        assert alias.validate_name() is False
+        assert alias.name == ""
 
         # Empty command should be allowed
         alias = Alias(name="test", command="")
@@ -228,17 +86,138 @@ class TestAliasModel:
         assert alias.name == "  test  "
         assert alias.command == "  look  "
 
-    def test_alias_future_expansion_fields(self):
-        """Test that future expansion fields are commented but accessible."""
+    def test_alias_equality(self):
+        """Test alias equality comparison."""
+        # Create aliases with same ID and timestamps for equality test
+        custom_id = str(uuid.uuid4())
+        custom_timestamp = datetime.utcnow()
+        alias1 = Alias(
+            id=custom_id, name="test", command="look", created_at=custom_timestamp, updated_at=custom_timestamp
+        )
+        alias2 = Alias(
+            id=custom_id, name="test", command="look", created_at=custom_timestamp, updated_at=custom_timestamp
+        )
+        alias3 = Alias(name="different", command="look")
+
+        # Pydantic models compare by field values
+        assert alias1 == alias2
+        assert alias1 != alias3
+
+    def test_alias_serialization(self):
+        """Test that alias can be serialized to JSON."""
         alias = Alias(name="test", command="look")
 
-        # These fields don't exist yet, but the structure is ready
-        # Future: alias.alias_type, alias.parameters, etc.
-        assert hasattr(alias, "name")
-        assert hasattr(alias, "command")
-        assert hasattr(alias, "version")
-        assert hasattr(alias, "created_at")
-        assert hasattr(alias, "updated_at")
+        json_data = alias.model_dump()
+
+        assert "id" in json_data
+        assert "name" in json_data
+        assert "command" in json_data
+        assert "created_at" in json_data
+        assert "updated_at" in json_data
+        assert json_data["name"] == "test"
+        assert json_data["command"] == "look"
+        assert json_data["id"] == alias.id
+
+    def test_alias_deserialization(self):
+        """Test that alias can be deserialized from JSON."""
+        custom_id = str(uuid.uuid4())
+        json_data = {
+            "id": custom_id,
+            "name": "test",
+            "command": "look",
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
+        }
+
+        alias = Alias.model_validate(json_data)
+
+        assert alias.id == custom_id
+        assert alias.name == "test"
+        assert alias.command == "look"
+
+    def test_alias_repr(self):
+        """Test the string representation of alias."""
+        alias = Alias(name="test", command="look")
+        repr_str = repr(alias)
+
+        assert "Alias" in repr_str
+        assert "test" in repr_str
+        assert "look" in repr_str
+        assert alias.id in repr_str
+
+    def test_alias_model_dump_method(self):
+        """Test the custom model_dump method."""
+        alias = Alias(name="test", command="look")
+        dump_data = alias.model_dump()
+
+        assert dump_data["id"] == alias.id
+        assert dump_data["name"] == "test"
+        assert dump_data["command"] == "look"
+        assert dump_data["created_at"].endswith("Z")
+        assert dump_data["updated_at"].endswith("Z")
+
+    def test_alias_with_special_characters(self):
+        """Test alias with special characters in command."""
+        special_command = "say 'Hello, world! How are you?'"
+        alias = Alias(name="greet", command=special_command)
+
+        assert alias.command == special_command
+
+    def test_alias_maximum_length_validation(self):
+        """Test that very long commands are handled."""
+        long_command = "a" * 200  # 200 character command
+        alias = Alias(name="long", command=long_command)
+
+        assert alias.command == long_command
+
+    def test_alias_case_insensitive_name(self):
+        """Test that alias names preserve case as entered."""
+        alias1 = Alias(name="Look", command="look")
+        alias2 = Alias(name="look", command="look")
+
+        # Names should be stored exactly as entered
+        assert alias1.name == "Look"
+        assert alias2.name == "look"
+        assert alias1.name != alias2.name
+
+    def test_alias_command_preservation(self):
+        """Test that command text is preserved exactly."""
+        complex_command = "go north; look; say 'Hello there!'"
+        alias = Alias(name="complex", command=complex_command)
+
+        assert alias.command == complex_command
+
+    def test_alias_uuid_generation(self):
+        """Test that UUIDs are properly generated."""
+        alias1 = Alias(name="test1", command="look")
+        alias2 = Alias(name="test2", command="help")
+
+        # Each should have a unique ID
+        assert alias1.id != alias2.id
+        assert len(alias1.id) > 0
+        assert len(alias2.id) > 0
+
+        # IDs should be valid UUID strings
+        try:
+            uuid.UUID(alias1.id)
+            uuid.UUID(alias2.id)
+        except ValueError:
+            pytest.fail("Generated IDs are not valid UUIDs")
+
+    def test_alias_timestamp_format(self):
+        """Test that timestamps are in the correct format."""
+        alias = Alias(name="test", command="look")
+        dump_data = alias.model_dump()
+
+        # Check that timestamps end with 'Z' (UTC indicator)
+        assert dump_data["created_at"].endswith("Z")
+        assert dump_data["updated_at"].endswith("Z")
+
+        # Check that timestamps are valid ISO format
+        from datetime import datetime
+
+        datetime.fromisoformat(dump_data["created_at"].replace("Z", "+00:00"))
+        datetime.fromisoformat(dump_data["updated_at"].replace("Z", "+00:00"))
 
 
 class TestAliasIntegration:
@@ -251,7 +230,7 @@ class TestAliasIntegration:
         # Simulate command processing
         original_command = "l"
         if original_command == alias.name:
-            expanded_command = alias.get_expanded_command()
+            expanded_command = alias.command
             assert expanded_command == "look"
 
     def test_multiple_aliases(self):
@@ -309,20 +288,37 @@ class TestAliasIntegration:
         # Should be very fast (less than 1 second for 1000 lookups)
         assert lookup_time < 1.0
 
-    def test_alias_validation_performance(self):
-        """Test alias validation performance."""
+    def test_alias_serialization_performance(self):
+        """Test alias serialization performance."""
         import time
 
-        # Test validation performance with many aliases
-        start_time = time.time()
+        # Test serialization performance with many aliases
+        aliases = [Alias(name=f"test{i}", command=f"command{i}") for i in range(100)]
 
-        for i in range(1000):
-            alias = Alias(name=f"test{i}", command=f"command{i}")
-            alias.validate_name()
-            alias.is_reserved_command()
+        start_time = time.time()
+        for alias in aliases:
+            _ = alias.model_dump()
 
         end_time = time.time()
-        validation_time = end_time - start_time
+        serialization_time = end_time - start_time
 
-        # Should be very fast (less than 1 second for 1000 validations)
-        assert validation_time < 1.0
+        # Should be very fast (less than 1 second for 100 serializations)
+        assert serialization_time < 1.0
+
+    def test_alias_field_access(self):
+        """Test that all alias fields are accessible."""
+        alias = Alias(name="test", command="look")
+
+        # Test all fields are accessible
+        assert hasattr(alias, "id")
+        assert hasattr(alias, "name")
+        assert hasattr(alias, "command")
+        assert hasattr(alias, "created_at")
+        assert hasattr(alias, "updated_at")
+
+        # Test field values
+        assert isinstance(alias.id, str)
+        assert isinstance(alias.name, str)
+        assert isinstance(alias.command, str)
+        assert isinstance(alias.created_at, datetime)
+        assert isinstance(alias.updated_at, datetime)

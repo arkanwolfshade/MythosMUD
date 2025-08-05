@@ -5,75 +5,16 @@ Tests the real-time communication functionality including WebSocket connections,
 Server-Sent Events, and game event broadcasting.
 """
 
-import json
 import os
 import tempfile
 import time
-from datetime import datetime
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from fastapi import WebSocket
 
-from ..real_time import (
-    ConnectionManager,
-    GameEvent,
-    broadcast_game_tick,
-    broadcast_room_event,
-    connection_manager,
-    get_room_data,
-    load_motd,
-)
-
-
-class TestGameEvent:
-    """Test GameEvent model."""
-
-    def test_game_event_creation(self):
-        """Test creating a basic GameEvent."""
-        event = GameEvent(
-            event_type="test_event",
-            sequence_number=1,
-            player_id="test_player",
-            room_id="test_room",
-            data={"key": "value"},
-        )
-
-        assert event.event_type == "test_event"
-        assert event.sequence_number == 1
-        assert event.player_id == "test_player"
-        assert event.room_id == "test_room"
-        assert event.data == {"key": "value"}
-        assert isinstance(event.timestamp, datetime)
-
-    def test_game_event_defaults(self):
-        """Test GameEvent with default values."""
-        event = GameEvent(event_type="test", sequence_number=1)
-
-        assert event.event_type == "test"
-        assert event.sequence_number == 1
-        assert event.player_id is None
-        assert event.room_id is None
-        assert event.data == {}
-        assert isinstance(event.timestamp, datetime)
-
-    def test_game_event_json_serialization(self):
-        """Test GameEvent JSON serialization."""
-        event = GameEvent(
-            event_type="test_event",
-            sequence_number=1,
-            player_id="test_player",
-            data={"key": "value"},
-        )
-
-        json_str = event.json()
-        data = json.loads(json_str)
-
-        assert data["event_type"] == "test_event"
-        assert data["sequence_number"] == 1
-        assert data["player_id"] == "test_player"
-        assert data["data"] == {"key": "value"}
-        assert "timestamp" in data
+from ..real_time import load_motd
+from ..realtime.connection_manager import connection_manager
 
 
 class TestLoadMotd:
@@ -140,7 +81,17 @@ class TestConnectionManager:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.manager = ConnectionManager()
+        self.manager = connection_manager
+        # Reset the connection manager state between tests
+        self.manager.active_websockets.clear()
+        self.manager.player_websockets.clear()
+        self.manager.active_sse_connections.clear()
+        self.manager.room_subscriptions.clear()
+        self.manager.sequence_counter = 0
+        self.manager.pending_messages.clear()
+        self.manager.connection_attempts.clear()
+        self.manager.persistence = None
+
         self.mock_websocket = AsyncMock(spec=WebSocket)
         self.player_id = "test_player"
         self.room_id = "test_room"
@@ -286,7 +237,7 @@ class TestConnectionManager:
 
     def test_get_pending_messages(self):
         """Test getting pending messages."""
-        event = GameEvent(event_type="test", sequence_number=1)
+        event = {"type": "test", "sequence": 1}
         self.manager.pending_messages[self.player_id] = [event]
 
         messages = self.manager.get_pending_messages(self.player_id)
@@ -329,85 +280,3 @@ class TestConnectionManager:
         result = self.manager._get_player(self.player_id)
 
         assert result is None
-
-
-class TestGetRoomData:
-    """Test get_room_data function."""
-
-    def test_get_room_data_with_persistence(self):
-        """Test getting room data with persistence layer."""
-        mock_room = {"id": "test_room", "name": "Test Room", "description": "A test room"}
-        connection_manager.persistence = Mock()
-        connection_manager.persistence.get_room.return_value = mock_room
-
-        result = get_room_data("test_room")
-
-        assert result == mock_room
-        connection_manager.persistence.get_room.assert_called_once_with("test_room")
-
-    def test_get_room_data_no_persistence(self):
-        """Test getting room data without persistence layer."""
-        connection_manager.persistence = None
-
-        result = get_room_data("test_room")
-
-        assert result["id"] == "test_room"
-        assert result["name"] == "Unknown Room"
-        assert "mysterious place" in result["description"]
-
-    def test_get_room_data_persistence_returns_none(self):
-        """Test getting room data when persistence returns None."""
-        connection_manager.persistence = Mock()
-        connection_manager.persistence.get_room.return_value = None
-
-        result = get_room_data("test_room")
-
-        assert result["id"] == "test_room"
-        assert result["name"] == "Unknown Room"
-
-
-class TestBroadcastFunctions:
-    """Test broadcast functions."""
-
-    @pytest.mark.asyncio
-    async def test_broadcast_game_tick(self):
-        """Test broadcasting game tick."""
-        tick_data = {"tick": 123, "time": "2024-01-01T00:00:00Z"}
-
-        with patch.object(connection_manager, "broadcast_global") as mock_broadcast:
-            await broadcast_game_tick(tick_data)
-
-            mock_broadcast.assert_called_once()
-            event = mock_broadcast.call_args[0][0]
-            assert event.event_type == "game_tick"
-            assert event.data == tick_data
-
-    @pytest.mark.asyncio
-    async def test_broadcast_room_event(self):
-        """Test broadcasting room event."""
-        event_type = "player_entered"
-        event_data = {"player": "test_player", "direction": "north"}
-
-        with patch.object(connection_manager, "broadcast_to_room") as mock_broadcast:
-            await broadcast_room_event("test_room", event_type, event_data)
-
-            mock_broadcast.assert_called_once()
-            event = mock_broadcast.call_args[0][1]
-            assert event.event_type == event_type
-            assert event.room_id == "test_room"
-            assert event.data == event_data
-
-    @pytest.mark.asyncio
-    async def test_broadcast_room_event_with_exclude(self):
-        """Test broadcasting room event with excluded player."""
-        event_type = "player_entered"
-        event_data = {"player": "test_player"}
-        exclude_player = "other_player"
-
-        with patch.object(connection_manager, "broadcast_to_room") as mock_broadcast:
-            await broadcast_room_event("test_room", event_type, event_data, exclude_player)
-
-            mock_broadcast.assert_called_once()
-            call_args = mock_broadcast.call_args
-            assert call_args[0][0] == "test_room"  # room_id
-            assert call_args[0][2] == exclude_player  # exclude_player

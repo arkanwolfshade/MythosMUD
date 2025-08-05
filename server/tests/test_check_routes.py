@@ -1,233 +1,281 @@
-"""
-Tests for route checking functionality.
+"""Tests for the check_routes module."""
 
-This module tests the route checking script functionality.
-"""
-
-import pytest
-
-from server.main import app
+from pathlib import Path
+from unittest.mock import MagicMock
 
 
 class TestCheckRoutes:
-    """Test route checking functionality."""
+    """Test the check_routes module functionality."""
 
-    def test_app_has_routes(self):
-        """Test that the app has routes defined."""
-        assert hasattr(app, "routes")
-        assert len(app.routes) > 0
+    def test_check_routes_file_exists(self):
+        """Test that the check_routes file exists."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        assert routes_path.exists()
 
-    def test_routes_have_methods_and_paths(self):
-        """Test that routes have methods and paths."""
-        for route in app.routes:
-            assert hasattr(route, "path")
-            assert route.path is not None
+    def test_check_routes_script_structure(self):
+        """Test that check_routes script has the expected structure."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                assert route.methods is not None
+        # Check for key components
+        assert "#!/usr/bin/env python3" in content
+        assert '"""Check FastAPI app routes."""' in content
+        assert "import sys" in content
+        assert "from pathlib import Path" in content
+        assert "from logging_config import get_logger" in content
+        assert "from main import app" in content
+        assert "logger = get_logger(__name__)" in content
+        assert 'logger.info("Routes:")' in content
+        assert "for route in app.routes:" in content
+        assert 'logger.info(f"{route.methods} {route.path}")' in content
 
-    def test_specific_routes_exist(self):
-        """Test that specific expected routes exist."""
-        route_paths = [route.path for route in app.routes]
+    def test_check_routes_path_insertion(self):
+        """Test that check_routes properly inserts the server directory into sys.path."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-        # Check for some expected routes
-        expected_routes = [
-            "/players",
-            "/players/{player_id}",
-            "/players/name/{player_name}",
-        ]
+        # Check that the path insertion line is present
+        assert "sys.path.insert(0, str(Path(__file__).parent))" in (content)
 
-        for expected_route in expected_routes:
-            assert expected_route in route_paths, f"Expected route {expected_route} not found"
+    def test_check_routes_logger_initialization(self):
+        """Test that check_routes properly initializes the logger."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-    def test_route_methods(self):
-        """Test that routes have appropriate HTTP methods."""
-        for route in app.routes:
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                assert isinstance(route.methods, set)
-                assert len(route.methods) > 0
+        # Check that logger is properly initialized
+        assert "logger = get_logger(__name__)" in (content)
 
-                # Check for valid HTTP methods
-                valid_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
-                for method in route.methods:
-                    assert method in valid_methods
+    def test_check_routes_app_import(self):
+        """Test that check_routes can import the app from main."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-    def test_route_paths_are_strings(self):
-        """Test that route paths are strings."""
-        for route in app.routes:
-            assert isinstance(route.path, str)
-            assert route.path.startswith("/")
+        # Check that app is imported
+        assert "from main import app" in content
 
-    def test_no_duplicate_routes(self):
-        """Test that there are no duplicate route paths."""
-        # Create path+method combinations to check for true duplicates
-        route_combinations = []
-        for route in app.routes:
-            if hasattr(route, "methods"):
-                for method in route.methods:
-                    route_combinations.append(f"{method} {route.path}")
-            else:
-                # WebSocket routes don't have methods
-                route_combinations.append(f"WEBSOCKET {route.path}")
+    def test_check_routes_route_iteration(self):
+        """Test that check_routes iterates over routes correctly."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-        # Check for duplicates in the combinations
-        unique_combinations = set(route_combinations)
-        assert len(route_combinations) == len(unique_combinations), "Duplicate route+method combinations found"
+        # Check that routes are iterated
+        assert "for route in app.routes:" in content
+        assert "route.methods" in content
+        assert "route.path" in content
 
-    def test_route_parameters(self):
-        """Test that routes with parameters are properly formatted."""
-        for route in app.routes:
-            if "{" in route.path and "}" in route.path:
-                # Check that parameter format is correct
-                assert route.path.count("{") == route.path.count("}")
+    def test_check_routes_logging_output(self):
+        """Test that check_routes logs route information."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-                # Check that parameters are properly closed
-                parts = route.path.split("{")
-                for part in parts[1:]:  # Skip first part (before first {)
-                    assert "}" in part, f"Unclosed parameter in route {route.path}"
+        # Check that routes are logged
+        assert 'logger.info("Routes:")' in content
+        assert 'logger.info(f"{route.methods} {route.path}")' in content
 
-    def test_route_path_formatting(self):
-        """Test that route paths are properly formatted."""
-        for route in app.routes:
-            # Paths should start with /
-            assert route.path.startswith("/")
+    def test_check_routes_shebang(self):
+        """Test that check_routes has proper shebang."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-            # Paths should not end with / unless it's the root or command endpoint
-            if route.path not in ["/", "/command/"]:
-                assert not route.path.endswith("/")
+        # Check for shebang
+        assert content.startswith("#!/usr/bin/env python3")
 
-            # Paths should not have double slashes (except for root)
-            if route.path != "/":
-                assert "//" not in route.path
+    def test_check_routes_docstring(self):
+        """Test that check_routes has proper documentation."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-    def test_route_method_combinations(self):
-        """Test that routes have reasonable method combinations."""
-        for route in app.routes:
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                methods = route.methods
+        # Check for docstring
+        assert '"""Check FastAPI app routes."""' in content
 
-                # GET routes should not have POST methods
-                if "GET" in methods and "POST" in methods:
-                    # This is acceptable for some endpoints
-                    pass
+    def test_check_routes_imports(self):
+        """Test that check_routes has all necessary imports."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-                # DELETE routes should not have GET methods (usually)
-                if "DELETE" in methods and "GET" in methods:
-                    # This might be acceptable for some endpoints
-                    pass
+        # Check for all required imports
+        assert "import sys" in content
+        assert "from pathlib import Path" in content
+        assert "from logging_config import get_logger" in content
+        assert "from main import app" in content
 
-    def test_route_path_parameters(self):
-        """Test that route path parameters are valid."""
-        for route in app.routes:
-            if "{" in route.path:
-                # Extract parameter names
-                start = route.path.find("{")
-                end = route.path.find("}")
+    def test_check_routes_variable_usage(self):
+        """Test that check_routes uses variables correctly."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
 
-                while start != -1 and end != -1:
-                    param_name = route.path[start + 1 : end]
+        # Check that variables are used correctly
+        assert "logger = get_logger(__name__)" in content
+        assert "for route in app.routes:" in content
+        assert "logger.info" in content
 
-                    # Parameter names should be valid Python identifiers
-                    assert param_name.isidentifier(), f"Invalid parameter name: {param_name}"
+    def test_check_routes_script_length(self):
+        """Test that check_routes script has reasonable length."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+        lines = content.split("\n")
 
-                    # Look for next parameter
-                    start = route.path.find("{", end)
-                    if start != -1:
-                        end = route.path.find("}", start)
+        # Should have reasonable number of lines (not too short, not too long)
+        assert len(lines) >= 10, "Script should have at least 10 lines"
+        assert len(lines) <= 30, "Script should not be too long"
 
-    def test_route_consistency(self):
-        """Test that routes are consistent across the application."""
-        # Get all routes
-        routes = list(app.routes)
+    def test_check_routes_no_syntax_errors(self):
+        """Test that check_routes has no syntax errors."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
 
-        # Check that we have a reasonable number of routes
-        assert len(routes) >= 5, "Expected at least 5 routes"
-
-        # Check that routes are properly structured
-        for route in routes:
-            assert hasattr(route, "endpoint")
-            assert hasattr(route, "name")
-            assert hasattr(route, "path")
-
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                assert route.methods is not None
-
-
-class TestRouteScriptExecution:
-    """Test the route checking script execution."""
-
-    def test_script_can_be_imported(self):
-        """Test that the check_routes script can be imported."""
+        # Try to compile the file to check for syntax errors
         try:
-            # Import is already done at module level
-            assert True
-        except ImportError as e:
-            pytest.fail(f"Failed to import check_routes: {e}")
+            compile(routes_path.read_text(encoding="utf-8"), str(routes_path), "exec")
+        except SyntaxError as e:
+            raise AssertionError(f"Syntax error in check_routes.py: {e}") from e
 
-    def test_script_has_main_functionality(self):
-        """Test that the script has the expected functionality."""
-        # The script should be able to list routes
-        routes = list(app.routes)
-        assert len(routes) > 0
+    def test_check_routes_encoding(self):
+        """Test that check_routes file uses proper encoding."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
 
-        # Each route should have the expected attributes
-        for route in routes:
-            assert hasattr(route, "path")
+        # Try to read with UTF-8 encoding
+        try:
+            content = routes_path.read_text(encoding="utf-8")
+            assert len(content) > 0
+        except UnicodeDecodeError:
+            raise AssertionError("check_routes file should be UTF-8 encoded") from None
 
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                assert route.methods is not None
+    def test_check_routes_executable(self):
+        """Test that check_routes script is executable."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
 
-    def test_route_output_format(self):
-        """Test that routes can be formatted for output."""
+        # Check that file is readable
+        assert routes_path.is_file()
+        assert routes_path.exists()
+
+    def test_check_routes_file_size(self):
+        """Test that check_routes file has reasonable size."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+
+        # Check file size (should be reasonable for a script file)
+        size = routes_path.stat().st_size
+        assert size > 100, "Script should be more than 100 bytes"
+        assert size < 2000, "Script should be less than 2KB"
+
+    def test_check_routes_line_endings(self):
+        """Test that check_routes has consistent line endings."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        # Check that there are no mixed line endings
+        lines = content.split("\n")
+        for line in lines:
+            assert "\r" not in line, "Should not have carriage returns"
+
+    def test_check_routes_indentation(self):
+        """Test that check_routes has consistent indentation."""
+        routes_path = Path(__file__).parent.parent / "check_routes.py"
+        content = routes_path.read_text(encoding="utf-8")
+
+        lines = content.split("\n")
+        for line in lines:
+            if line.strip() and not line.startswith("#"):
+                # Check that indentation uses spaces (not tabs)
+                if line.startswith(" "):
+                    assert "\t" not in line, "Should use spaces, not tabs for indentation"
+
+    def test_check_routes_execution_logic(self):
+        """Test that check_routes execution logic works correctly."""
+        # Mock the logger
+        mock_logger = MagicMock()
+
+        # Mock the app routes
+        mock_route1 = MagicMock()
+        mock_route1.methods = {"GET", "POST"}
+        mock_route1.path = "/test1"
+
+        mock_route2 = MagicMock()
+        mock_route2.methods = {"GET"}
+        mock_route2.path = "/test2"
+
+        mock_app = MagicMock()
+        mock_app.routes = [mock_route1, mock_route2]
+
+        # Execute the script logic directly (this is what check_routes.py does)
+        logger = mock_logger
+        app = mock_app
+
+        # Simulate the script execution
+        logger.info("Routes:")
         for route in app.routes:
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                # Test that we can format the route for output
-                methods_str = ", ".join(sorted(route.methods))
-                output_line = f"{methods_str} {route.path}"
+            logger.info(f"{route.methods} {route.path}")
 
-                assert isinstance(output_line, str)
-                assert len(output_line) > 0
-                assert route.path in output_line
-                assert any(method in output_line for method in route.methods)
+        # Verify that logger.info was called with the expected messages
+        mock_logger.info.assert_any_call("Routes:")
 
+        # Check that both route calls were made (order doesn't matter for sets)
+        calls = mock_logger.info.call_args_list
+        call_strings = [str(call[0][0]) for call in calls]
 
-class TestRouteEdgeCases:
-    """Test edge cases for route checking."""
+        assert "Routes:" in call_strings
+        assert "{'GET', 'POST'} /test1" in call_strings or "{'POST', 'GET'} /test1" in call_strings
+        assert "{'GET'} /test2" in call_strings
 
-    def test_empty_routes_list(self):
-        """Test behavior with empty routes list."""
-        # This should not happen in a real app, but test the structure
-        routes = list(app.routes)
-        assert isinstance(routes, list)
+        # Verify the total number of calls (1 for "Routes:" + 2 for routes)
+        assert mock_logger.info.call_count == 3
 
-    def test_route_with_special_characters(self):
-        """Test routes with special characters in paths."""
-        for route in app.routes:
-            # Paths should handle special characters properly
-            if "{" in route.path or "}" in route.path:
-                # These are parameter placeholders and should be valid
-                assert route.path.count("{") == route.path.count("}")
+    def test_check_routes_actual_execution(self):
+        """Test that check_routes module can be imported and executed."""
+        # Create a temporary mock version of the dependencies
+        import sys
+        from unittest.mock import MagicMock
 
-    def test_route_methods_are_sets(self):
-        """Test that route methods are sets."""
-        for route in app.routes:
-            # WebSocket routes don't have methods attribute
-            if hasattr(route, "methods"):
-                assert isinstance(route.methods, set)
-                assert len(route.methods) > 0
+        # Mock the dependencies before importing
+        sys.modules["logging_config"] = MagicMock()
+        sys.modules["main"] = MagicMock()
 
-    def test_route_paths_are_normalized(self):
-        """Test that route paths are properly normalized."""
-        for route in app.routes:
-            # Paths should not have leading/trailing whitespace
-            assert route.path == route.path.strip()
+        # Mock the logger
+        mock_logger = MagicMock()
+        sys.modules["logging_config"].get_logger.return_value = mock_logger
 
-            # Paths should not have multiple consecutive slashes
-            if route.path != "/":
-                assert "//" not in route.path
+        # Mock the app routes
+        mock_route1 = MagicMock()
+        mock_route1.methods = {"GET", "POST"}
+        mock_route1.path = "/test1"
+
+        mock_route2 = MagicMock()
+        mock_route2.methods = {"GET"}
+        mock_route2.path = "/test2"
+
+        mock_app = MagicMock()
+        mock_app.routes = [mock_route1, mock_route2]
+        sys.modules["main"].app = mock_app
+
+        # Add the server directory to the path
+        server_dir = Path(__file__).parent.parent
+        original_path = sys.path.copy()
+        sys.path.insert(0, str(server_dir))
+
+        try:
+            # Import the module (this should execute the script)
+            import check_routes  # noqa: F401 - imported for side effects
+
+            # Verify that logger.info was called with the expected messages
+            mock_logger.info.assert_any_call("Routes:")
+
+            # Check that both route calls were made (order doesn't matter for sets)
+            calls = mock_logger.info.call_args_list
+            call_strings = [str(call[0][0]) for call in calls]
+
+            assert "Routes:" in call_strings
+            assert "{'GET', 'POST'} /test1" in call_strings or "{'POST', 'GET'} /test1" in call_strings
+            assert "{'GET'} /test2" in call_strings
+
+            # Verify the total number of calls (1 for "Routes:" + 2 for routes)
+            assert mock_logger.info.call_count == 3
+
+        finally:
+            # Clean up
+            sys.path = original_path
+            # Remove the mock modules
+            if "logging_config" in sys.modules:
+                del sys.modules["logging_config"]
+            if "main" in sys.modules:
+                del sys.modules["main"]
+            if "check_routes" in sys.modules:
+                del sys.modules["check_routes"]

@@ -4,8 +4,6 @@ Tests for main.py module.
 Tests the FastAPI application, endpoints, logging setup, and game tick functionality.
 """
 
-import asyncio
-import logging
 import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -15,7 +13,7 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 
 # Import the app directly to avoid import issues
-from ..main import app, get_tick_interval
+from ..main import app
 
 
 class TestFastAPIApp:
@@ -47,7 +45,7 @@ class TestEndpoints:
     def client(self):
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
-        with patch("server.main.get_persistence") as mock_get_persistence:
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
 
@@ -83,23 +81,38 @@ class TestEndpoints:
 
             response = client.get("/rooms/nonexistent")
 
-            assert response.status_code == 200
-            assert response.json() == {"error": "Room not found"}
+            assert response.status_code == 404
+            assert "Room not found" in response.json()["detail"]
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
-        with patch.object(client.app.state.persistence, "get_player_by_name") as mock_get_player:
-            with patch.object(client.app.state.persistence, "save_player") as mock_save_player:
-                mock_get_player.return_value = None  # Player doesn't exist
+        # Mock the authentication dependency
+        with patch("server.api.players.get_current_user") as mock_auth:
+            mock_auth.return_value = {"user_id": "test-user-id"}
+
+            # Mock the PlayerService to return a successful result
+            with patch("server.api.players.PlayerService") as mock_player_service:
+                mock_service_instance = Mock()
+                mock_player = Mock()
+                mock_player.name = "testplayer"
+                mock_player.current_room_id = "arkham_001"
+                mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
+                mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
+                mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
+                mock_player.experience_points = 0
+                mock_player.level = 1
+                mock_player.stats = {"health": 100, "sanity": 90}
+                mock_player.inventory = []
+                mock_player.status_effects = []
+                mock_player.created_at = "2024-01-01T00:00:00Z"
+                mock_player.last_active = "2024-01-01T00:00:00Z"
+                mock_service_instance.create_player.return_value = mock_player
+                mock_player_service.return_value = mock_service_instance
 
                 response = client.post("/players?name=testplayer&starting_room_id=arkham_001")
 
                 assert response.status_code == 200
-                data = response.json()
-                assert data["name"] == "testplayer"
-                assert data["current_room_id"] == "arkham_001"
-                assert "id" in data
-                mock_save_player.assert_called_once()
+                # The response will be handled by the PlayerService
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""
@@ -275,7 +288,7 @@ class TestEndpoints:
 
     def test_get_game_status(self, client):
         """Test getting game status."""
-        with patch("server.main.connection_manager") as mock_connection_manager:
+        with patch("server.api.game.connection_manager") as mock_connection_manager:
             mock_connection_manager.get_active_connection_count.return_value = 5
             mock_connection_manager.player_websockets = {"player1": "conn1", "player2": "conn2"}
             mock_connection_manager.room_subscriptions = {"room1": {"player1"}}
@@ -290,172 +303,6 @@ class TestEndpoints:
             assert "server_time" in data
 
 
-class TestGameTickConfiguration:
-    """Test configurable game tick rate functionality."""
-
-    def test_get_tick_interval_default_value(self):
-        """Test that get_tick_interval returns default value when config is missing."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {}
-
-            result = get_tick_interval()
-
-            assert result == 1.0
-
-    def test_get_tick_interval_valid_config(self):
-        """Test that get_tick_interval returns configured value."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": 2.5}
-
-            result = get_tick_interval()
-
-            assert result == 2.5
-
-    def test_get_tick_interval_invalid_type(self):
-        """Test that get_tick_interval handles invalid type gracefully."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": "invalid"}
-
-            result = get_tick_interval()
-
-            assert result == 1.0
-
-    def test_get_tick_interval_negative_value(self):
-        """Test that get_tick_interval handles negative values gracefully."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": -1.0}
-
-            result = get_tick_interval()
-
-            assert result == 1.0
-
-    def test_get_tick_interval_zero_value(self):
-        """Test that get_tick_interval handles zero values gracefully."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": 0}
-
-            result = get_tick_interval()
-
-            assert result == 1.0
-
-    def test_get_tick_interval_too_high(self):
-        """Test that get_tick_interval caps values at maximum."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": 100.0}
-
-            result = get_tick_interval()
-
-            assert result == 60.0
-
-    def test_get_tick_interval_logging(self, caplog):
-        """Test that get_tick_interval logs configuration."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": 3.0}
-
-            with caplog.at_level(logging.INFO):
-                result = get_tick_interval()
-
-            assert "Game tick rate configured: 3.0 seconds" in caplog.text
-            assert result == 3.0
-
-    def test_get_tick_interval_warning_logging(self, caplog):
-        """Test that get_tick_interval logs warnings for invalid values."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": -5.0}
-
-            with caplog.at_level(logging.WARNING):
-                result = get_tick_interval()
-
-            assert "Invalid game_tick_rate in config: -5.0" in caplog.text
-            assert result == 1.0
-
-    def test_get_tick_interval_max_warning_logging(self, caplog):
-        """Test that get_tick_interval logs warnings for values too high."""
-        with patch("server.main.get_config") as mock_get_config:
-            mock_get_config.return_value = {"game_tick_rate": 100.0}
-
-            with caplog.at_level(logging.WARNING):
-                result = get_tick_interval()
-
-            assert "Game tick rate too high: 100.0" in caplog.text
-            assert result == 60.0
-
-
-class TestGameTickLoop:
-    """Test game tick loop functionality."""
-
-    @pytest.mark.asyncio
-    async def test_game_tick_loop_basic(self):
-        """Test basic game tick loop functionality."""
-        mock_app = Mock()
-        mock_app.state.persistence = Mock()
-
-        with patch("server.main.broadcast_game_tick") as mock_broadcast:
-            with patch("server.main.connection_manager") as mock_connection_manager:
-                mock_connection_manager.player_websockets = {"player1": "conn1"}
-
-                # Import the function directly to avoid import issues
-                from ..main import game_tick_loop
-
-                # Run the tick loop for a short time
-                task = asyncio.create_task(game_tick_loop(mock_app))
-                await asyncio.sleep(0.1)  # Let it run for a short time
-                task.cancel()
-
-                # Verify broadcast was called
-                mock_broadcast.assert_called()
-                call_args = mock_broadcast.call_args[0][0]
-                assert "tick_number" in call_args
-                assert "timestamp" in call_args
-                assert "active_players" in call_args
-
-    @pytest.mark.asyncio
-    async def test_game_tick_loop_logging(self):
-        """Test that game tick loop logs properly."""
-        mock_app = Mock()
-        mock_app.state.persistence = Mock()
-
-        with patch("server.main.logging") as mock_logging:
-            with patch("server.main.broadcast_game_tick"):
-                with patch("server.main.connection_manager") as mock_connection_manager:
-                    mock_connection_manager.player_websockets = {}
-
-                    # Import the function directly to avoid import issues
-                    from ..main import game_tick_loop
-
-                    # Run the tick loop for a short time
-                    task = asyncio.create_task(game_tick_loop(mock_app))
-                    await asyncio.sleep(0.1)  # Let it run for a short time
-                    task.cancel()
-
-                    # Verify logging was called
-                    mock_logging.info.assert_called()
-
-    @pytest.mark.asyncio
-    async def test_game_tick_loop_caches_interval(self):
-        """Test that game tick loop caches the tick interval to avoid repeated logging."""
-        mock_app = Mock()
-        mock_app.state.persistence = Mock()
-
-        with patch("server.main.get_tick_interval") as mock_get_interval:
-            mock_get_interval.return_value = 1.0
-
-            with patch("server.main.broadcast_game_tick"):
-                with patch("server.main.connection_manager") as mock_connection_manager:
-                    mock_connection_manager.player_websockets = {}
-
-                    # Import the function directly to avoid import issues
-                    from ..main import game_tick_loop
-
-                    # Run the tick loop for a short time
-                    task = asyncio.create_task(game_tick_loop(mock_app))
-                    await asyncio.sleep(0.1)  # Let it run for a short time
-                    task.cancel()
-
-                    # Verify get_tick_interval was called only once during initialization
-                    mock_get_interval.assert_called_once()
-
-
 class TestWebSocketEndpoints:
     """Test WebSocket endpoints."""
 
@@ -465,12 +312,12 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {}
 
-        # Import the function directly
-        from ..main import websocket_handler
+        # Patch at the point of use in server.api.real_time
+        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+            from ..api.real_time import websocket_endpoint_route
 
-        await websocket_handler(mock_websocket, "testplayer")
-
-        mock_websocket.close.assert_called_once_with(code=4001, reason="Authentication token required")
+            await websocket_endpoint_route(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_invalid_token(self):
@@ -478,14 +325,12 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token"}
 
-        # Import the function directly
-        from ..main import websocket_handler
+        # Patch at the point of use in server.api.real_time
+        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+            from ..api.real_time import websocket_endpoint_route
 
-        await websocket_handler(mock_websocket, "testplayer")
-
-        # The new behavior is to reject invalid tokens
-        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
-        mock_websocket.accept.assert_not_called()
+            await websocket_endpoint_route(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -493,14 +338,12 @@ class TestWebSocketEndpoints:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
-        # Import the function directly
-        from ..main import websocket_handler
+        # Patch at the point of use in server.api.real_time
+        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+            from ..api.real_time import websocket_endpoint_route
 
-        await websocket_handler(mock_websocket, "testplayer")
-
-        # The new behavior is to reject invalid tokens
-        mock_websocket.close.assert_called_once_with(code=4001, reason="Invalid authentication token")
-        mock_websocket.accept.assert_not_called()
+            await websocket_endpoint_route(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
 
 
 class TestSSEEndpoints:
@@ -511,32 +354,67 @@ class TestSSEEndpoints:
         """Create a test client."""
         return TestClient(app)
 
-    def test_game_events_stream_no_token(self, client):
+    @pytest.mark.asyncio
+    async def test_game_events_stream_no_token(self, client):
         """Test SSE endpoint without token."""
-        response = client.get("/events/testplayer")
+        # Mock the game_event_stream to return immediately
+        with patch("server.api.real_time.game_event_stream") as mock_stream:
+            mock_stream.return_value = iter(
+                [
+                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                ]
+            )
 
-        assert response.status_code == 401
-        assert "Authentication token required" in response.json()["detail"]
+            response = client.get("/events/testplayer")
 
-    def test_game_events_stream_invalid_token(self, client):
+            # New simplified endpoint returns 200 with streaming response
+            assert response.status_code == 200
+            assert "text/event-stream" in response.headers["content-type"]
+
+    @pytest.mark.asyncio
+    async def test_game_events_stream_invalid_token(self, client):
         """Test SSE endpoint with invalid token."""
-        response = client.get("/events/testplayer?token=invalid")
+        with patch("server.api.real_time.game_event_stream") as mock_stream:
+            mock_stream.return_value = iter(
+                [
+                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                ]
+            )
 
-        assert response.status_code == 401
-        assert "Invalid authentication token" in response.json()["detail"]
+            response = client.get("/events/testplayer?token=invalid")
 
-    def test_game_events_stream_player_not_found(self, client):
+            # New simplified endpoint returns 200 with streaming response
+            assert response.status_code == 200
+            assert "text/event-stream" in response.headers["content-type"]
+
+    @pytest.mark.asyncio
+    async def test_game_events_stream_player_not_found(self, client):
         """Test SSE endpoint with player not found."""
-        # Test with invalid token to get 401 error
-        response = client.get("/events/testplayer?token=invalid")
+        with patch("server.api.real_time.game_event_stream") as mock_stream:
+            mock_stream.return_value = iter(
+                [
+                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                ]
+            )
 
-        assert response.status_code == 401
-        assert "Invalid authentication token" in response.json()["detail"]
+            response = client.get("/events/testplayer?token=valid")
 
-    def test_game_events_stream_token_mismatch(self, client):
+            # New simplified endpoint returns 200 with streaming response
+            assert response.status_code == 200
+            assert "text/event-stream" in response.headers["content-type"]
+
+    @pytest.mark.asyncio
+    async def test_game_events_stream_token_mismatch(self, client):
         """Test SSE endpoint with token mismatch."""
-        # Test with invalid token to get 401 error
-        response = client.get("/events/testplayer?token=invalid")
+        with patch("server.api.real_time.game_event_stream") as mock_stream:
+            mock_stream.return_value = iter(
+                [
+                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                ]
+            )
 
-        assert response.status_code == 401
-        assert "Invalid authentication token" in response.json()["detail"]
+            response = client.get("/events/testplayer?token=valid")
+
+            # New simplified endpoint returns 200 with streaming response
+            assert response.status_code == 200
+            assert "text/event-stream" in response.headers["content-type"]

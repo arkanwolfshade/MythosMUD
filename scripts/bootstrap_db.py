@@ -1,8 +1,19 @@
 import os
 import sqlite3
 
-# Main production database location
-DB_PATH = os.path.join("data", "players", "players.db")
+# Use environment variables for database paths - require it to be set
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. "
+        "See server/env.example for configuration template."
+    )
+
+# Extract the file path from the SQLite URL
+if DATABASE_URL.startswith("sqlite+aiosqlite:///"):
+    DB_PATH = DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+else:
+    raise ValueError(f"Unsupported database URL format: {DATABASE_URL}")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS players (
@@ -37,10 +48,13 @@ CREATE TABLE IF NOT EXISTS rooms (
 
 
 def main():
+    # Ensure the directory exists
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
     with sqlite3.connect(DB_PATH) as conn:
         conn.executescript(SCHEMA)
         conn.commit()
+
     print(f"Production database bootstrapped at {DB_PATH}")
     print("Note: Tests use temporary databases created during test execution")
 

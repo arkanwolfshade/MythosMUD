@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
 """Verify the test database was created correctly."""
 
+import os
 import sqlite3
 from pathlib import Path
 
-TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
+# Use environment variable for test database path - require it to be set
+TEST_DATABASE_URL = os.getenv("DATABASE_URL")
+if not TEST_DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+    )
+
+if TEST_DATABASE_URL.startswith("sqlite+aiosqlite:///"):
+    TEST_DB_PATH = Path(TEST_DATABASE_URL.replace("sqlite+aiosqlite:///", ""))
+else:
+    raise ValueError(f"Unsupported database URL format: {TEST_DATABASE_URL}")
 
 
 def verify_test_database():

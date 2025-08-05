@@ -23,7 +23,7 @@ from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, get_user_manager
 
-logger = get_logger(__name__)
+logger = get_logger("auth.endpoints")
 
 # Create router for auth endpoints
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -38,6 +38,17 @@ class UserCreate(BaseUserCreate):
 
     # Override email to make it optional
     email: str | None = None
+
+    # Add password validation to reject empty passwords
+    from pydantic import field_validator
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_not_empty(cls, v: str) -> str:
+        """Validate that password is not empty."""
+        if not v or not v.strip():
+            raise ValueError("Password cannot be empty")
+        return v
 
 
 # Define login request schema
@@ -183,9 +194,6 @@ async def login_user(
     This endpoint validates user credentials and returns a JWT token
     for authenticated requests.
     """
-    from ..logging_config import get_logger
-
-    logger = get_logger(__name__)
     logger.info(f"Login attempt for username: {request.username}")
 
     from sqlalchemy import select
