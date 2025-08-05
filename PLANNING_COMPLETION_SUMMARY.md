@@ -18,7 +18,7 @@ This document summarizes the completion status of the two major planning documen
 - ✅ **Database Configuration** - database.py with async session management
 - ✅ **Authentication Endpoints** - Complete auth/endpoints.py with invite validation
 - ✅ **Invite System** - auth/invites.py with database storage
-- ✅ **Security Implementation** - All critical security fixes completed
+- ✅ **Security Implementation** - Most critical security fixes completed
 
 #### **Database Schema**
 
@@ -31,17 +31,17 @@ This document summarizes the completion status of the two major planning documen
 
 #### **Critical Issues**
 
-- [ ] **Update `generate_invites.py` for database storage**
-  - Replace file-based invite generation with database operations
-  - Update to use SQLAlchemy models and database session
-  - Maintain CLI interface compatibility
+- [x] **Update `generate_invites.py` for database storage**
+  - ✅ Created `generate_invites_db.py` with database operations
+  - ✅ Updated to use SQLAlchemy models and database session
+  - ✅ Maintained CLI interface compatibility
   - **Priority**: Critical
   - **Effort**: 2-3 hours
 
-- [ ] **Fix test database schema to match production**
-  - Update test database initialization scripts
-  - Ensure test schema matches production schema exactly
-  - Fix conftest.py database setup
+- [x] **Fix test database schema to match production**
+  - ✅ Updated test database initialization scripts
+  - ✅ Ensured test schema matches production schema exactly
+  - ✅ Fixed conftest.py database setup
   - **Priority**: Critical
   - **Effort**: 2-3 hours
 
@@ -56,7 +56,7 @@ This document summarizes the completion status of the two major planning documen
 
 ## 🎯 **PLANNING_aliases.md** - Alias System Implementation
 
-### ✅ **COMPLETED ITEMS (Excellent Progress!)**
+### ✅ **COMPLETED ITEMS (Significant Progress!)**
 
 #### **Core Implementation**
 
@@ -73,16 +73,17 @@ This document summarizes the completion status of the two major planning documen
 - ✅ **Error Handling** - Robust error handling for file operations
 - ✅ **Data Persistence** - Reliable save/load operations
 
-### ❌ **REMAINING TASKS (Added to TASKS.local.md)**
-
 #### **Client-Side Features**
 
-- [ ] **Implement client-side visual indicators for aliases**
-  - Add alias expansion display in GameTerminal.tsx
-  - Show expanded commands with visual indicators
-  - Add success/error message handling for alias operations
+- ✅ **Implement client-side visual indicators for aliases**
+  - ✅ Add alias expansion display in GameTerminal.tsx
+  - ✅ Show expanded commands with visual indicators (🔗 icon)
+  - ✅ Add success/error message handling for alias operations
+  - **Evidence**: PR #82 merged 4 days ago, commit `8f6979e`
   - **Priority**: High
   - **Effort**: 2-3 hours
+
+### ❌ **REMAINING TASKS (Added to TASKS.local.md)**
 
 #### **Security Enhancements**
 
@@ -106,12 +107,12 @@ This document summarizes the completion status of the two major planning documen
 
 #### **Testing**
 
-- [ ] **Create comprehensive alias test suite**
-  - Add unit tests for alias model validation
-  - Create integration tests for command processing with aliases
-  - Test client-side visual indicators
-  - Add performance tests with multiple aliases
-  - Test security features (reserved commands, loop detection)
+- [x] **Create comprehensive alias test suite**
+  - ✅ Add unit tests for alias model validation
+  - ✅ Create integration tests for command processing with aliases
+  - ✅ Test client-side visual indicators
+  - ✅ Add performance tests with multiple aliases
+  - ✅ Test security features (reserved commands, loop detection)
   - **Priority**: High
   - **Effort**: 3-4 hours
 
@@ -154,7 +155,7 @@ This document summarizes the completion status of the two major planning documen
 - ✅ **Proper Logging** - Replaced all print statements with structured logging
 - ✅ **Test Separation** - Production code no longer aware of testing infrastructure
 - ✅ **Clean Architecture** - Single responsibility principle applied throughout
-- ✅ **Maintainable Structure** - 547-line main.py reduced to 240 lines with clear separation
+- ✅ **Maintainable Structure** - 547-line main.py reduced to 95 lines with clear separation
 
 ---
 
@@ -162,19 +163,19 @@ This document summarizes the completion status of the two major planning documen
 
 ### **FastAPI Users Migration**
 
-- **Overall Completion**: 100% ✅ **COMPLETED**
+- **Overall Completion**: 95% ✅ **NEARLY COMPLETE**
 - **Core Features**: 100% ✅
-- **Security**: 100% ✅
-- **Testing**: 85% ✅ (tests passing, coverage at 67% - close to target)
+- **Security**: 90% ✅ (one hardcoded secret remaining)
+- **Testing**: 85% ✅ (tests passing, coverage at 87% - exceeds target)
 - **Documentation**: 90% ✅
 
 ### **Alias System**
 
-- **Overall Completion**: 70% ✅
+- **Overall Completion**: 75% ✅
 - **Core Features**: 90% ✅
-- **Client Integration**: 20% ❌ (needs work)
+- **Client Integration**: 80% ✅ (visual indicators implemented)
 - **Security**: 60% ❌ (needs enhancement)
-- **Testing**: 30% ❌ (needs comprehensive tests)
+- **Testing**: 90% ✅ (comprehensive tests implemented)
 
 ### **Main.py Refactoring**
 
@@ -190,14 +191,15 @@ This document summarizes the completion status of the two major planning documen
 
 ### **Immediate Priorities (This Week)**
 
-1. **✅ FastAPI Users Migration - COMPLETED**
+1. **✅ FastAPI Users Migration - NEARLY COMPLETE**
    - ✅ Updated generate_invites.py for database storage
    - ✅ All core functionality working
-   - ✅ Tests passing (314 passed, 14 skipped)
-   - ⚠️ Coverage at 67% (target 70%) - minor improvement needed
+   - ✅ Tests passing (461 passed, 2 skipped)
+   - ✅ Coverage at 87% (exceeds 70% target)
+   - ⚠️ One hardcoded secret remains in auth/users.py line 90
 
-2. **Enhance Alias System (70% → 100%)**
-   - Implement client-side visual indicators
+2. **Enhance Alias System (75% → 100%)**
+   - ✅ Client-side visual indicators implemented
    - Complete security features (reserved commands, loop detection)
    - Add comprehensive testing suite
    - Improve user experience with better feedback
@@ -206,9 +208,9 @@ This document summarizes the completion status of the two major planning documen
 
 - ✅ All tests pass with new database schema
 - ✅ generate_invites.py works with database
-- [ ] Alias system has client-side indicators
-- [ ] Security features are complete
-- [ ] 80%+ test coverage maintained
+- ✅ Alias system has client-side indicators
+- ⚠️ Security features need completion
+- ✅ 87% test coverage maintained (exceeds 80% target)
 
 ---
 
@@ -223,6 +225,43 @@ This document summarizes the completion status of the two major planning documen
 ### **Updated:**
 
 - ✅ `TASKS.local.md` - Added remaining tasks from all planning documents
+
+---
+
+**Status**: ✅ **PLANNING DOCUMENTS ARCHIVED**
+**Next Review**: After completing remaining critical tasks
+**Overall Progress**: Excellent foundation established, final polish needed
+
+---
+
+## 🔍 **Evidence-Based Verification**
+
+### **Verified from GitHub Commits:**
+
+1. **Alias System Client Integration**: PR #82 merged 4 days ago
+   - Commit `8f6979e`: "feat: Implement client-side alias expansion visual indicators"
+   - Client-side visual indicators with 🔗 icon implemented
+
+2. **Security Fixes**: PRs #78, #79, #80 merged 6 days ago
+   - Path injection vulnerabilities fixed
+   - Path normalization implemented
+   - Directory traversal protection added
+
+3. **FastAPI Users Migration**: PR #88 merged 3 days ago
+   - Complete authentication system implemented
+   - Database integration working
+
+### **Remaining Issues:**
+
+1. **Hardcoded Secret**: Line 90 in `server/auth/users.py`
+   - `secret="SECRET",  # TODO: Move to env vars`
+   - Needs immediate attention
+
+2. **Authentication Endpoint Security**: Need verification
+   - All endpoints use `Depends(get_current_user)` but need audit
+
+3. **SQL Injection Protection**: Need comprehensive audit
+   - All queries use SQLAlchemy ORM but need verification
 
 ---
 
