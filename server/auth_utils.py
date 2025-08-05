@@ -2,9 +2,10 @@ import os
 from datetime import UTC, datetime, timedelta
 
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Import our Argon2 implementation
+from server.auth.argon2_utils import hash_password as argon2_hash_password
+from server.auth.argon2_utils import verify_password as argon2_verify_password
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY")
@@ -17,13 +18,24 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 def hash_password(password: str) -> str:
-    """Hash a plaintext password using bcrypt."""
-    return pwd_context.hash(password)
+    """
+    Hash a plaintext password using Argon2id.
+
+    This function provides superior security compared to bcrypt,
+    implementing the gold standard for password hashing as documented
+    in the restricted archives of Miskatonic University.
+    """
+    return argon2_hash_password(password)
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    """Verify a plaintext password against a hash."""
-    return pwd_context.verify(password, password_hash)
+    """
+    Verify a plaintext password against a hash.
+
+    This function safely handles both Argon2 and legacy bcrypt hashes,
+    ensuring backward compatibility during the transition period.
+    """
+    return argon2_verify_password(password, password_hash)
 
 
 def create_access_token(
