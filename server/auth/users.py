@@ -35,12 +35,8 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     """
 
     # Use environment variables for all secrets - CRITICAL: Must be set in production
-    reset_password_token_secret = os.getenv(
-        "MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret"
-    )
-    verification_token_secret = os.getenv(
-        "MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret"
-    )
+    reset_password_token_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret")
+    verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
 
     def _hash_password(self, password: str) -> str:
         """Hash password using Argon2 instead of bcrypt."""
@@ -54,22 +50,13 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
         """Handle post-registration logic."""
         logger.info(f"User {user.username} has registered.")
 
-    async def on_after_forgot_password(
-        self, user: User, token: str, request: Request | None = None
-    ):
+    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
-        logger.info(
-            f"User {user.username} has forgot their password. Reset token: {token}"
-        )
+        logger.info(f"User {user.username} has forgot their password. Reset token: {token}")
 
-    async def on_after_request_verify(
-        self, user: User, token: str, request: Request | None = None
-    ):
+    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
         """Handle username verification logic."""
-        logger.info(
-            f"Verification requested for user {user.username}. "
-            f"Verification token: {token}"
-        )
+        logger.info(f"Verification requested for user {user.username}. Verification token: {token}")
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
