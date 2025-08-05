@@ -70,15 +70,9 @@ class PersistenceLayer:
                 "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
             )
 
-        # Use environment variable for log path - require it to be set
-        if log_path:
-            self.log_path = log_path
-        elif os.environ.get("PERSIST_LOG"):
-            self.log_path = os.environ.get("PERSIST_LOG")
-        else:
-            raise ValueError(
-                "PERSIST_LOG environment variable must be set. See server/env.example for configuration template."
-            )
+        # Logging is now handled by the centralized logging system
+        # The log_path parameter is kept for backward compatibility but not used
+        self.log_path = None  # No longer needed with centralized logging
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()

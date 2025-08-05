@@ -183,8 +183,7 @@ def get_config(config_path: str = None):
     if os.getenv("DATABASE_URL"):
         config["database_url"] = os.getenv("DATABASE_URL")
 
-    if os.getenv("PERSIST_LOG"):
-        config["persistence_log"] = os.getenv("PERSIST_LOG")
+    # Legacy PERSIST_LOG handling removed - now using centralized logging
 
     if os.getenv("ALIASES_DIR"):
         config["aliases_dir"] = os.getenv("ALIASES_DIR")

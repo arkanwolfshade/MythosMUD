@@ -24,8 +24,7 @@ project_root = Path(__file__).parent.parent.parent
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
-os.environ["PERSIST_LOG"] = str(test_logs_dir / "test_persistence.log")
-os.environ["SERVER_LOG"] = str(test_logs_dir / "test_server.log")
+# Legacy logging environment variables no longer needed - logging is handled by centralized system
 os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 # Add the server directory to the path for imports
@@ -55,9 +54,10 @@ def pytest_configure(config):
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    os.environ["PERSIST_LOG"] = str(test_logs_dir / "test_persistence.log")
-    os.environ["SERVER_LOG"] = str(test_logs_dir / "test_server.log")
-    os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    # Legacy logging environment variables no longer needed - logging is handled by centralized system
+
+
+os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
 
 @pytest.fixture(scope="session")
