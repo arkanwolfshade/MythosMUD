@@ -139,7 +139,9 @@
       "titleBar.activeBackground": "#1a1a2e",
       "titleBar.activeForeground": "#ffffff",
       "statusBar.background": "#16213e",
-      "statusBar.foreground": "#ffffff"
+      "statusBar.foreground": "#ffffff",
+      "statusBar.debuggingBackground": "#ff6b6b",
+      "statusBar.debuggingForeground": "#ffffff"
     },
     "workbench.iconTheme": "material-icon-theme",
     "material-icon-theme.folders.associations": {
@@ -153,7 +155,23 @@
       "*.yaml": "yaml",
       "*.yml": "yaml"
     },
-    "powershell.cwd": "🐍 Server (Python/Backend)"
+    "powershell.cwd": "🐍 Server (Python/Backend)",
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
+    "window.titleBarStyle": "custom",
+    "statusBar.items": {
+      "worktree": {
+        "alignment": "left",
+        "priority": 100
+      },
+      "git": {
+        "alignment": "left",
+        "priority": 90
+      },
+      "python": {
+        "alignment": "left",
+        "priority": 80
+      }
+    }
   },
   "extensions": {
     "recommendations": [
