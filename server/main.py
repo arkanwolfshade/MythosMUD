@@ -18,7 +18,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
-from .logging_config import get_logger
+from .config_loader import get_config
+from .logging_config import get_logger, setup_logging
 
 # Suppress passlib deprecation warning about pkg_resources
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
@@ -35,13 +36,19 @@ class ErrorLoggingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except Exception as e:
-            logger.error(f"Unhandled exception in {request.url.path}: {str(e)}", exc_info=True)
+            logger.error("Unhandled exception in request", path=request.url.path, error=str(e), exc_info=True)
             # Re-raise the exception to maintain the error handling chain
             raise e
 
 
 def main():
     """Main entry point for the MythosMUD server."""
+    from .config_loader import get_config
+
+    # Set up logging based on configuration
+    config = get_config()
+    setup_logging(config)
+
     logger.info("Starting MythosMUD server...")
     app = create_app()
 
@@ -52,7 +59,10 @@ def main():
     return app
 
 
-# Create the FastAPI application
+# Initialize logging and create the FastAPI application
+config = get_config()
+setup_logging(config)
+
 app = create_app()
 
 # Add error logging middleware

@@ -18,6 +18,7 @@ dependencies = [
     "aiosqlite==0.20.0",
     "alembic==1.13.1",
     "setuptools>=80.9.0",
+    "structlog>=24.1.0",
 ]
 
 [project.optional-dependencies]

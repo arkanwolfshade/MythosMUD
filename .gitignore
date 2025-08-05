@@ -213,7 +213,11 @@ TASKS.local.md
 # Environment files (CRITICAL: Never commit actual .env files)
 .env.local
 
-server/logs/
-server/tests/logs
+# Logging files (CRITICAL: Never commit log files)
+logs/
+server/tests/logs/
+
+# Database files (CRITICAL: Never commit database files)
 server/tests/data/players/test_players.db
 server\tests\data\players\test_players.db
+data/players/players.db

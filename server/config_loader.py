@@ -50,14 +50,22 @@ _config = None
 _DEFAULTS = {
     "host": "127.0.0.1",
     "port": 54731,
-    "log_level": "INFO",
     # Environment-based fields - these will be set from environment variables
     "database_url": None,  # Will be set from DATABASE_URL environment variable
     "admin_password": None,  # Must be set via environment variable
     "invite_codes_file": "invites.json",
     "motd_file": "data/motd.html",
     "aliases_dir": None,  # Will be set from ALIASES_DIR environment variable
-    "persistence_log": None,  # Will be set from PERSIST_LOG environment variable
+    # New logging configuration
+    "logging": {
+        "environment": "development",
+        "level": "DEBUG",  # Most verbose logging level
+        "format": "colored",  # json, human, colored
+        "log_base": "logs",
+        "rotation": {"max_size": "100MB", "backup_count": 5},
+        "compression": True,
+        "disable_logging": False,
+    },
     "max_connections_per_player": 3,
     "rate_limit_window": 60,
     "rate_limit_max_requests": 100,
@@ -91,13 +99,12 @@ _DEFAULTS = {
 _FIELD_TYPES = {
     "host": str,
     "port": int,
-    "log_level": str,
+    "logging": dict,
     "database_url": str,
     "admin_password": str,
     "invite_codes_file": str,
     "motd_file": str,
     "aliases_dir": str,
-    "persistence_log": str,
     "max_connections_per_player": int,
     "rate_limit_window": int,
     "rate_limit_max_requests": int,
@@ -161,8 +168,16 @@ def get_config(config_path: str = None):
     if "db_path" in config and config["database_url"] is None:
         config["database_url"] = config.pop("db_path")
 
-    if "log_path" in config and config["persistence_log"] is None:
-        config["persistence_log"] = config.pop("log_path")
+    # Handle legacy logging configuration
+    if "log_level" in config:
+        if "logging" not in config:
+            config["logging"] = {}
+        config["logging"]["level"] = config.pop("log_level")
+
+    if "log_path" in config:
+        if "logging" not in config:
+            config["logging"] = {}
+        config["logging"]["log_base"] = config.pop("log_path")
 
     # Handle environment variables for path configuration (prioritize over YAML)
     if os.getenv("DATABASE_URL"):
@@ -213,10 +228,7 @@ def get_config(config_path: str = None):
         if not config["aliases_dir"]:
             raise ValueError("ALIASES_DIR environment variable must be set")
 
-    if "persistence_log" in config and config["persistence_log"] is None:
-        config["persistence_log"] = os.getenv("PERSIST_LOG")
-        if not config["persistence_log"]:
-            raise ValueError("PERSIST_LOG environment variable must be set")
+    # Remove legacy persistence_log handling since we now use structured logging
 
     _config = config
     return _config

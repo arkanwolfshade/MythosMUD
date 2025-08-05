@@ -65,16 +65,17 @@ def test_no_log_files_outside_approved_locations():
     Test that no .log files exist outside of approved locations.
 
     Approved locations:
-    - /logs/ (project root logs)
-    - /server/tests/logs/ (test logs)
+    - /logs/ (project root logs - all environment subdirectories)
+    - /server/tests/logs/ (test logs - all environment subdirectories)
     - /client/logs/ (client logs)
     - /room_validator/ (room validator logs)
-    - /server/logs/ (server logs)
+    - /server/logs/ (server logs - all environment subdirectories)
     """
     # Get the project root directory
     project_root = Path(__file__).parent.parent.parent
 
     # Define approved log locations (relative to project root)
+    # These are the base directories - all subdirectories within them are approved
     approved_log_locations = [
         project_root / "logs",
         project_root / "server" / "tests" / "logs",
@@ -94,6 +95,8 @@ def test_no_log_files_outside_approved_locations():
         is_approved = False
         for approved_location in approved_log_locations:
             try:
+                # Check if the log file is within the approved location
+                # This allows for subdirectories like logs/development/, etc.
                 log_file.relative_to(approved_location)
                 is_approved = True
                 break

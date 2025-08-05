@@ -11,17 +11,21 @@ def test_load_main_config_and_validate():
     # Spot check a few fields
     assert isinstance(config["database_url"], str)
     assert isinstance(config["default_player_stats"], dict)
-    assert config["log_level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
+    # Check new logging configuration structure
+    assert "logging" in config
+    assert config["logging"]["level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
 
 
 def test_load_test_config_and_validate():
     # Since we removed test-specific config logic, this test should use the main config
     config = config_loader.get_config(CONFIG_PATH)
     assert config_loader.validate_config(config)
-    # Check that log_level is a valid logging level
-    assert config["log_level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
+    # Check new logging configuration structure
+    assert "logging" in config
+    assert config["logging"]["level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
     assert isinstance(config["database_url"], str)
-    assert isinstance(config["persistence_log"], str)
+    # Check that log_base is configured
+    assert isinstance(config["logging"]["log_base"], str)
 
 
 def test_environment_based_config_selection():
