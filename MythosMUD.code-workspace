@@ -152,7 +152,8 @@
       "*.ps1": "powershell",
       "*.yaml": "yaml",
       "*.yml": "yaml"
-    }
+    },
+    "powershell.cwd": "🐍 Server (Python/Backend)"
   },
   "extensions": {
     "recommendations": [
