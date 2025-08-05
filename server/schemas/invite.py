@@ -8,7 +8,7 @@ and updating operations.
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class InviteBase(BaseModel):
@@ -23,12 +23,11 @@ class InviteCreate(InviteBase):
 
     expires_at: datetime | None = Field(None, description="When the invite expires")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {"invite_code": "ABC123DEF456", "is_used": False, "expires_at": "2024-12-31T23:59:59Z"}
         }
+    )
 
 
 class InviteRead(InviteBase):
@@ -39,11 +38,9 @@ class InviteRead(InviteBase):
     expires_at: datetime | None = Field(None, description="When the invite expires")
     created_at: datetime = Field(..., description="Invite creation timestamp")
 
-    class Config:
-        """Pydantic configuration."""
-
-        from_attributes = True
-        json_schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "invite_code": "ABC123DEF456",
@@ -52,7 +49,8 @@ class InviteRead(InviteBase):
                 "expires_at": "2024-12-31T23:59:59Z",
                 "created_at": "2024-01-01T00:00:00Z",
             }
-        }
+        },
+    )
 
 
 class InviteUpdate(BaseModel):
@@ -63,10 +61,8 @@ class InviteUpdate(BaseModel):
     used_by_user_id: uuid.UUID | None = Field(None, description="User who used the invite")
     expires_at: datetime | None = Field(None, description="When the invite expires")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "invite_code": "NEW123CODE456",
                 "is_used": True,
@@ -74,3 +70,4 @@ class InviteUpdate(BaseModel):
                 "expires_at": "2024-12-31T23:59:59Z",
             }
         }
+    )

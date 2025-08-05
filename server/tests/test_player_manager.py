@@ -107,7 +107,8 @@ class TestPlayerManager:
     def test_player_manager_not_implemented_error_message(self):
         """Test that PlayerManager raises NotImplementedError with correct message."""
         with pytest.raises(NotImplementedError) as exc_info:
-            PlayerManager()
+            with pytest.warns(UserWarning, match="PlayerManager is deprecated"):
+                PlayerManager()
 
         assert "PlayerManager is deprecated" in str(exc_info.value)
 
