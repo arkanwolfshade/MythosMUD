@@ -16,9 +16,6 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
-    defaults:
-      run:
-        working-directory: server
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
@@ -50,7 +47,7 @@ jobs:
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
           export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
           export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
-          python tests/init_test_db.py
+          python server/tests/init_test_db.py
       - name: Verify test database
         run: |
           source .venv/bin/activate
@@ -61,11 +58,11 @@ jobs:
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
           export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
           export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
-          python tests/verify_test_db.py
+          python server/tests/verify_test_db.py
       - name: Lint with ruff
         run: |
           source .venv/bin/activate
-          python -m ruff check --line-length=120 .
+          python -m ruff check --line-length=120 server/
       - name: Run tests with coverage
         run: |
           source .venv/bin/activate
@@ -76,7 +73,7 @@ jobs:
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
           export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
           export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
-          python -m pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
+          python -m pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
