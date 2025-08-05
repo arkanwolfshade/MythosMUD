@@ -5,19 +5,19 @@ including the game tick loop and persistence layer initialization."""
 
 import asyncio
 import datetime
-import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
 from ..database import init_db
+from ..logging_config import get_logger
 from ..persistence import get_persistence
 from ..realtime.connection_manager import ConnectionManager
 from ..realtime.sse_handler import broadcast_game_event
 
 # Global connection manager instance
 connection_manager = ConnectionManager()
-logger = logging.getLogger(__name__)
+logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
 
 # Log directory creation is now handled by logging_config.py

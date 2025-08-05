@@ -9,6 +9,7 @@ proper categorization of knowledge is essential for its preservation.
 
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -55,6 +56,45 @@ def _resolve_log_base(log_base: str) -> Path:
         return current_dir / log_path
 
 
+def _rotate_log_files(env_log_dir: Path) -> None:
+    """
+    Rotate existing log files by renaming them with timestamps.
+
+    This function implements the startup-time log rotation as described in the
+    restricted archives. When the server starts, existing log files are renamed
+    with timestamps before new log files are created, ensuring clean separation
+    between server sessions.
+
+    Args:
+        env_log_dir: Path to the environment-specific log directory
+    """
+    if not env_log_dir.exists():
+        return
+
+    # Generate timestamp for rotation
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H%M%S")
+
+    # Get all log files in the directory
+    log_files = list(env_log_dir.glob("*.log"))
+
+    if not log_files:
+        return
+
+    # Rotate each log file by renaming with timestamp
+    for log_file in log_files:
+        # Only rotate non-empty files
+        if log_file.exists() and log_file.stat().st_size > 0:
+            rotated_name = f"{log_file.stem}.log.{timestamp}"
+            rotated_path = log_file.parent / rotated_name
+
+            try:
+                log_file.rename(rotated_path)
+                # Log the rotation (this will go to the new log file)
+                print(f"Rotated log file: {log_file.name} -> {rotated_name}")
+            except OSError as e:
+                print(f"Warning: Could not rotate {log_file.name}: {e}")
+
+
 class MultiFileHandler:
     """
     Handler that routes logs to different files based on logger name.
@@ -76,6 +116,9 @@ class MultiFileHandler:
 
         # Create environment-specific log directory
         env_log_dir.mkdir(parents=True, exist_ok=True)
+
+        # Rotate existing log files before creating new ones
+        _rotate_log_files(env_log_dir)
 
         # Create all log file directories
         for log_type in self._get_log_types():
@@ -208,14 +251,36 @@ def configure_structlog(
 def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
     """Set up file logging handlers for different log categories."""
     import logging
+    from logging.handlers import RotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
     env_log_dir.mkdir(parents=True, exist_ok=True)
 
+    # Rotate existing log files before setting up new handlers
+    _rotate_log_files(env_log_dir)
+
     # Configure root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
+
+    # Get rotation settings from config
+    rotation_config = log_config.get("rotation", {})
+    max_size_str = rotation_config.get("max_size", "10MB")
+    backup_count = rotation_config.get("backup_count", 5)  # Keep 5 backups
+
+    # Convert max_size string to bytes
+    if isinstance(max_size_str, str):
+        if max_size_str.endswith("MB"):
+            max_bytes = int(max_size_str[:-2]) * 1024 * 1024
+        elif max_size_str.endswith("KB"):
+            max_bytes = int(max_size_str[:-2]) * 1024
+        elif max_size_str.endswith("B"):
+            max_bytes = int(max_size_str[:-1])
+        else:
+            max_bytes = int(max_size_str)
+    else:
+        max_bytes = max_size_str
 
     # Create handlers for different log categories
     log_categories = {
@@ -232,8 +297,8 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create file handler
-        handler = logging.FileHandler(log_path, encoding="utf-8")
+        # Create rotating file handler for continuous rotation
+        handler = RotatingFileHandler(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
         handler.setLevel(logging.DEBUG)
 
         # Create formatter
@@ -248,6 +313,25 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
             logger.addHandler(handler)
             logger.setLevel(logging.DEBUG)
             logger.propagate = False  # Prevent duplicate logs
+
+    # Configure Structlog to use standard library logging
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
 
 
 def get_logger(name: str) -> BoundLogger:
