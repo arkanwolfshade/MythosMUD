@@ -1,8 +1,24 @@
 {
   "folders": [
     {
-      "name": "MythosMUD",
+      "name": "📁 Main (Integration)",
       "path": "."
+    },
+    {
+      "name": "⚛️ Client (React/UI)",
+      "path": "../MythosMUD-client"
+    },
+    {
+      "name": "🐍 Server (Python/Backend)",
+      "path": "../MythosMUD-server"
+    },
+    {
+      "name": "📚 Documentation",
+      "path": "../MythosMUD-docs"
+    },
+    {
+      "name": "🧪 Testing & Debug",
+      "path": "../MythosMUD-testing"
     }
   ],
   "settings": {
@@ -73,6 +89,69 @@
     },
     "[toml]": {
       "editor.rulers": [120]
+    },
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/.ruff_cache": true,
+      "**/htmlcov": true,
+      "**/.coverage": true,
+      "**/mythosmud.egg-info": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/.ruff_cache": true,
+      "**/htmlcov": true,
+      "**/.coverage": true,
+      "**/mythosmud.egg-info": true
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+      "*.ts": "${capture}.js",
+      "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+      "*.jsx": "${capture}.js",
+      "*.tsx": "${capture}.ts",
+      "tsconfig.json": "tsconfig.*.json",
+      "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb",
+      "requirements.txt": "requirements*.txt, setup.py, setup.cfg, pyproject.toml",
+      "pyproject.toml": "poetry.lock, Pipfile, Pipfile.lock",
+      "*.py": "${capture}.pyc, ${capture}.pyo, ${capture}.pyd",
+      "Dockerfile": "docker-compose*.yml, .dockerignore, Dockerfile*",
+      ".env": "*.env, .envrc, .flaskenv",
+      "README.md": "README*, CHANGELOG*, LICENSE*, CONTRIBUTING*"
+    },
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#1a1a2e",
+      "activityBar.foreground": "#ffffff",
+      "activityBar.activeBorder": "#ff6b6b",
+      "activityBarBadge.background": "#ff6b6b",
+      "activityBarBadge.foreground": "#ffffff",
+      "titleBar.activeBackground": "#1a1a2e",
+      "titleBar.activeForeground": "#ffffff",
+      "statusBar.background": "#16213e",
+      "statusBar.foreground": "#ffffff"
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.folders.associations": {
+      "client": "react",
+      "server": "python",
+      "docs": "docs",
+      "testing": "test"
+    },
+    "material-icon-theme.files.associations": {
+      "*.ps1": "powershell",
+      "*.yaml": "yaml",
+      "*.yml": "yaml"
     }
   },
   "extensions": {
@@ -82,7 +161,116 @@
       "esbenp.prettier-vscode",
       "ms-vscode.vscode-typescript-next",
       "bradlc.vscode-tailwindcss",
-      "ms-vscode.vscode-json"
+      "ms-vscode.vscode-json",
+      "pkief.material-icon-theme",
+      "ms-vscode.powershell",
+      "ms-vscode.vscode-markdownlint",
+      "redhat.vscode-yaml",
+      "ms-vscode.vscode-json",
+      "ms-vscode.vscode-toml",
+      "ms-vscode.vscode-docker",
+      "ms-vscode.vscode-github",
+      "ms-vscode.vscode-git-graph",
+      "eamodio.gitlens",
+      "ms-vscode.vscode-test-explorer",
+      "littlefoxteam.vscode-python-test-adapter",
+      "ms-vscode.vscode-coverage-gutters"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "🔄 Switch to Main Worktree",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "⚛️ Switch to Client Worktree",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD-client"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "🐍 Switch to Server Worktree",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD-server"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "📚 Switch to Docs Worktree",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD-docs"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "🧪 Switch to Testing Worktree",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD-testing"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "📊 Show Worktree Status",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD; .\\scripts\\worktree-manager.ps1 -Action status"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "🧹 Cleanup Legacy Branches",
+        "type": "shell",
+        "command": "powershell",
+        "args": ["-Command", "cd E:/projects/GitHub/MythosMUD; .\\scripts\\worktree-manager.ps1 -Action cleanup"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      }
     ]
   }
 }
