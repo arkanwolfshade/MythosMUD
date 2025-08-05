@@ -8,7 +8,7 @@ and updating operations.
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class UserBase(BaseModel):
@@ -24,10 +24,8 @@ class UserCreate(UserBase):
 
     password: str = Field(..., min_length=8, description="User's password")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "username": "user",
                 "password": "securepassword123",
@@ -36,6 +34,7 @@ class UserCreate(UserBase):
                 "is_verified": False,
             }
         }
+    )
 
 
 class UserRead(UserBase):
@@ -45,11 +44,9 @@ class UserRead(UserBase):
     created_at: datetime = Field(..., description="User creation timestamp")
     updated_at: datetime = Field(..., description="User last update timestamp")
 
-    class Config:
-        """Pydantic configuration."""
-
-        from_attributes = True
-        json_schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "username": "user",
@@ -59,7 +56,8 @@ class UserRead(UserBase):
                 "created_at": "2024-01-01T00:00:00Z",
                 "updated_at": "2024-01-01T00:00:00Z",
             }
-        }
+        },
+    )
 
 
 class UserUpdate(BaseModel):
@@ -70,10 +68,8 @@ class UserUpdate(BaseModel):
     is_active: bool | None = Field(None, description="Whether user is active")
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "username": "neweuser",
                 "password": "newsecurepassword123",
@@ -82,3 +78,4 @@ class UserUpdate(BaseModel):
                 "is_verified": True,
             }
         }
+    )
