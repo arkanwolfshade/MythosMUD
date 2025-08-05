@@ -127,7 +127,7 @@ class TestCheckRoutes:
         try:
             compile(routes_path.read_text(encoding="utf-8"), str(routes_path), "exec")
         except SyntaxError as e:
-            assert False, f"Syntax error in check_routes.py: {e}"
+            raise AssertionError(f"Syntax error in check_routes.py: {e}") from e
 
     def test_check_routes_encoding(self):
         """Test that check_routes file uses proper encoding."""
@@ -138,7 +138,7 @@ class TestCheckRoutes:
             content = routes_path.read_text(encoding="utf-8")
             assert len(content) > 0
         except UnicodeDecodeError:
-            assert False, "check_routes file should be UTF-8 encoded"
+            raise AssertionError("check_routes file should be UTF-8 encoded") from None
 
     def test_check_routes_executable(self):
         """Test that check_routes script is executable."""

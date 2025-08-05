@@ -100,7 +100,7 @@ class TestAppLifespan:
             content = lifespan_path.read_text(encoding="utf-8")
             assert len(content) > 0
         except UnicodeDecodeError:
-            assert False, "lifespan file should be UTF-8 encoded"
+            raise AssertionError("lifespan file should be UTF-8 encoded") from None
 
     def test_lifespan_line_count(self):
         """Test that the lifespan file has reasonable line count."""

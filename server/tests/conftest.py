@@ -18,9 +18,12 @@ os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
 os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
 # Get the project root (two levels up from this file)
 project_root = Path(__file__).parent.parent.parent
+# Use absolute path to ensure database is created in the correct location
+test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+test_db_path.parent.mkdir(parents=True, exist_ok=True)
+os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -48,9 +51,12 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
+    # Use absolute path to ensure database is created in the correct location
+    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -65,7 +71,7 @@ def test_env_vars():
     """Provide test environment variables."""
     return {
         "MYTHOSMUD_SECRET_KEY": os.getenv("MYTHOSMUD_SECRET_KEY", "test-secret-key-for-development"),
-        "DATABASE_URL": os.getenv("DATABASE_URL", "sqlite+aiosqlite:///server/tests/data/players/test_players.db"),
+        "DATABASE_URL": os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{test_db_path}"),
         "MYTHOSMUD_JWT_SECRET": os.getenv("MYTHOSMUD_JWT_SECRET", "test-jwt-secret-for-development"),
         "MYTHOSMUD_RESET_TOKEN_SECRET": os.getenv(
             "MYTHOSMUD_RESET_TOKEN_SECRET", "test-reset-token-secret-for-development"

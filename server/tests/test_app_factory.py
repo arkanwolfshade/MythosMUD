@@ -164,7 +164,7 @@ class TestAppFactory:
         try:
             compile(factory_path.read_text(encoding="utf-8"), str(factory_path), "exec")
         except SyntaxError as e:
-            assert False, f"Syntax error in factory.py: {e}"
+            raise AssertionError(f"Syntax error in factory.py: {e}") from e
 
     def test_factory_file_permissions(self):
         """Test that the factory file has proper permissions."""
@@ -191,7 +191,7 @@ class TestAppFactory:
             content = factory_path.read_text(encoding="utf-8")
             assert len(content) > 0
         except UnicodeDecodeError:
-            assert False, "Factory file should be UTF-8 encoded"
+            raise AssertionError("Factory file should be UTF-8 encoded") from None
 
     def test_factory_line_count(self):
         """Test that the factory file has reasonable line count."""

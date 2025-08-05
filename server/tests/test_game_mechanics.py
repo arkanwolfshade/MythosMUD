@@ -100,7 +100,7 @@ class TestGameMechanics:
             content = mechanics_path.read_text(encoding="utf-8")
             assert len(content) > 0
         except UnicodeDecodeError:
-            assert False, "mechanics file should be UTF-8 encoded"
+            raise AssertionError("mechanics file should be UTF-8 encoded") from None
 
     def test_mechanics_line_count(self):
         """Test that the mechanics file has reasonable line count."""

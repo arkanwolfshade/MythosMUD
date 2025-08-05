@@ -7,6 +7,7 @@ login, and user management endpoints.
 
 import uuid
 from datetime import datetime, timedelta
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -470,7 +471,9 @@ class TestInviteManagementEndpoints:
         import sqlite3
 
         # Check if we can access the test database
-        db_path = "server/tests/data/players/test_players.db"
+        # Use absolute path for test database
+        project_root = Path(__file__).parent.parent.parent
+        db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
         with sqlite3.connect(db_path) as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM invites")
             count = cursor.fetchone()[0]

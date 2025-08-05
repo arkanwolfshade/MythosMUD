@@ -11,7 +11,7 @@ from datetime import datetime
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 from ..metadata import metadata
 
