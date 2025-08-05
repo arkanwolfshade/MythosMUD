@@ -9,18 +9,21 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🎯 Key Benefits of Worktree + Cursor Integration
 
 ### 1. **Multi-Folder Workspace Organization**
+
 - **Visual Separation**: Each worktree appears as a distinct folder in the explorer
 - **Focused Development**: Work on specific domains without distraction
 - **Parallel Development**: Multiple worktrees open simultaneously
 - **Context Switching**: Easy navigation between different development areas
 
 ### 2. **Enhanced IDE Features**
+
 - **IntelliSense**: Language-specific suggestions for each worktree
 - **Debugging**: Separate debug configurations per worktree
 - **Testing**: Focused test runners for each domain
 - **Git Integration**: Branch-aware features for each worktree
 
 ### 3. **Productivity Boosters**
+
 - **Quick Tasks**: Pre-configured tasks for worktree switching
 - **File Nesting**: Organized file structure with intelligent grouping
 - **Search**: Cross-worktree search with domain filtering
@@ -49,11 +52,13 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🎨 Visual Enhancements
 
 ### Color Theme
+
 - **Dark Theme**: Mythos-inspired color scheme
 - **Activity Bar**: Distinct colors for each worktree
 - **Status Bar**: Worktree-aware status information
 
 ### Icons & Organization
+
 - **Material Icons**: Domain-specific folder icons
 - **File Nesting**: Intelligent file grouping
 - **Explorer**: Clean, organized file structure
@@ -61,6 +66,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## ⚡ Quick Actions
 
 ### Task Palette (Ctrl+Shift+P)
+
 ```
 🔄 Switch to Main Worktree
 ⚛️ Switch to Client Worktree
@@ -72,6 +78,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 ### Keyboard Shortcuts
+
 - **Ctrl+Shift+P**: Open command palette
 - **Ctrl+Shift+E**: Focus explorer
 - **Ctrl+Shift+G**: Focus source control
@@ -82,6 +89,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ### Language-Specific Settings
 
 #### Python (Server Worktree)
+
 ```json
 {
   "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
@@ -91,6 +99,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 #### TypeScript/React (Client Worktree)
+
 ```json
 {
   "typescript.preferences.includePackageJsonAutoImports": "on",
@@ -100,6 +109,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 ### File Exclusions
+
 - **Build artifacts**: `node_modules`, `__pycache__`, `.venv`
 - **Test artifacts**: `.pytest_cache`, `htmlcov`, `.coverage`
 - **Git artifacts**: `.git`, temporary files
@@ -107,6 +117,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🎯 Development Workflows
 
 ### 1. **Client Development Workflow**
+
 ```
 1. Focus on "⚛️ Client (React/UI)" folder
 2. Make React/TypeScript changes
@@ -116,6 +127,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 ### 2. **Server Development Workflow**
+
 ```
 1. Focus on "🐍 Server (Python/Backend)" folder
 2. Make Python/FastAPI changes
@@ -126,6 +138,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 ### 3. **Documentation Workflow**
+
 ```
 1. Focus on "📚 Documentation" folder
 2. Edit Markdown files
@@ -135,6 +148,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ```
 
 ### 4. **Testing Workflow**
+
 ```
 1. Focus on "🧪 Testing & Debug" folder
 2. Write/run tests
@@ -147,11 +161,13 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🔍 Search & Navigation
 
 ### Cross-Worktree Search
+
 - **Ctrl+Shift+F**: Search across all worktrees
 - **Filter by folder**: Focus search on specific worktrees
 - **File type filtering**: Search specific file types
 
 ### Navigation Features
+
 - **Go to File**: Ctrl+P for quick file navigation
 - **Go to Symbol**: Ctrl+Shift+O for symbol navigation
 - **Go to Line**: Ctrl+G for line navigation
@@ -160,12 +176,14 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🧪 Testing Integration
 
 ### Test Explorer
+
 - **Unit Tests**: Python tests in server worktree
 - **Integration Tests**: Cross-worktree tests
 - **Client Tests**: React component tests
 - **Coverage**: Integrated coverage reporting
 
 ### Debug Configurations
+
 ```json
 {
   "name": "Debug Server",
@@ -179,12 +197,14 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 🔄 Git Integration
 
 ### Source Control Features
+
 - **Branch Awareness**: Each worktree shows its branch
 - **Diff View**: Side-by-side diff comparisons
 - **Blame**: Line-by-line commit history
 - **Graph**: Visual branch history
 
 ### GitLens Integration
+
 - **Inline Blame**: See commit info inline
 - **File History**: Complete file change history
 - **Branch Comparison**: Compare branches visually
@@ -193,12 +213,14 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ## 📊 Monitoring & Status
 
 ### Worktree Status
+
 - **Branch Information**: Current branch per worktree
 - **File Changes**: Modified files per worktree
 - **Sync Status**: Push/pull status
 - **Conflicts**: Merge conflict indicators
 
 ### Performance Monitoring
+
 - **CPU Usage**: Per-worktree resource usage
 - **Memory Usage**: Memory consumption tracking
 - **Extension Impact**: Extension performance per worktree
@@ -208,6 +230,7 @@ This guide explains how to maximize the value of our Git worktree setup within C
 ### Common Issues
 
 #### Worktree Not Visible
+
 ```powershell
 # Check worktree status
 git worktree list
@@ -217,16 +240,19 @@ git worktree add ../MythosMUD-client client
 ```
 
 #### Extension Conflicts
+
 - **Disable conflicting extensions** per worktree
 - **Use workspace-specific settings**
 - **Check extension compatibility**
 
 #### Performance Issues
+
 - **Exclude large folders** from search
 - **Limit file watchers** per worktree
 - **Use workspace-specific settings**
 
 ### Debug Commands
+
 ```powershell
 # Check worktree paths
 .\scripts\worktree-manager.ps1 -Action status
@@ -241,21 +267,25 @@ python --version
 ## 🎯 Best Practices
 
 ### 1. **Stay Focused**
+
 - Work in the appropriate worktree for your task
 - Use folder-specific settings when needed
 - Avoid cross-worktree file editing
 
 ### 2. **Regular Integration**
+
 - Merge worktree branches to main regularly
 - Keep worktrees in sync with main
 - Resolve conflicts in main worktree
 
 ### 3. **Extension Management**
+
 - Install domain-specific extensions per worktree
 - Use workspace-specific extension recommendations
 - Disable unnecessary extensions per worktree
 
 ### 4. **Performance Optimization**
+
 - Exclude build artifacts from search
 - Use file nesting for better organization
 - Limit file watchers in large worktrees
@@ -263,6 +293,7 @@ python --version
 ## 🚀 Advanced Features
 
 ### Custom Tasks
+
 ```json
 {
   "label": "🧪 Run All Tests",
@@ -272,6 +303,7 @@ python --version
 ```
 
 ### Debug Configurations
+
 ```json
 {
   "name": "Debug Full Stack",
@@ -286,6 +318,7 @@ python --version
 ```
 
 ### Snippets
+
 ```json
 {
   "React Component": {
@@ -312,12 +345,14 @@ python --version
 ## 📈 Productivity Metrics
 
 ### Tracking Improvements
+
 - **Development Velocity**: Faster feature development
 - **Context Switching**: Reduced time between tasks
 - **Code Quality**: Better organization leads to better code
 - **Team Collaboration**: Clearer separation of concerns
 
 ### Success Indicators
+
 - **Reduced Merge Conflicts**: Better branch management
 - **Faster Debugging**: Focused debugging environments
 - **Improved Code Reviews**: Clearer change boundaries
