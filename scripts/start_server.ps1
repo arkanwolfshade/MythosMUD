@@ -213,8 +213,8 @@ function Start-MythosMUDServer {
     $reloadFlag = if ($Reload) { "--reload" } else { "" }
 
     # Run uvicorn from project root with proper module path
-    # Use environment-specific logging configuration
-    $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag --log-config server/uvicorn_logging_config.py"
+    # Use uvicorn's default logging with access log enabled
+    $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag --access-log"
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 

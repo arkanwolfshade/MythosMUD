@@ -21,6 +21,19 @@ def get_logger(name: str) -> logging.Logger:
         name: Logger name (typically __name__)
 
     Returns:
-        Configured logger instance
+        Configured logger instance that works with uvicorn's logging
     """
-    return logging.getLogger(name)
+    logger = logging.getLogger(name)
+
+    # Ensure the logger has a handler (uvicorn will configure this)
+    if not logger.handlers:
+        # Add a console handler if none exists
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+
+    return logger

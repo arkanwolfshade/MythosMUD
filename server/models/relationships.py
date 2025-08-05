@@ -40,21 +40,17 @@ def setup_relationships():
 
     # Player -> User (many-to-one)
     if not hasattr(Player, "user") or Player.user is None:
-        Player.user = relationship(User, lazy="joined")
+        Player.user = relationship(User, lazy="joined", overlaps="player")
 
     # Invite -> User (many-to-one for created_by_user)
     if not hasattr(Invite, "created_by_user") or Invite.created_by_user is None:
         Invite.created_by_user = relationship(
-            User,
-            foreign_keys=[Invite.created_by_user_id],
+            User, foreign_keys=[Invite.created_by_user_id], overlaps="created_invites"
         )
 
     # Invite -> User (many-to-one for used_by_user)
     if not hasattr(Invite, "used_by_user") or Invite.used_by_user is None:
-        Invite.used_by_user = relationship(
-            User,
-            foreign_keys=[Invite.used_by_user_id],
-        )
+        Invite.used_by_user = relationship(User, foreign_keys=[Invite.used_by_user_id], overlaps="used_invite")
 
     # Configure mappers to ensure all relationships are properly set up
     from sqlalchemy.orm import configure_mappers
