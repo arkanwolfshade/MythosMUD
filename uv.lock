@@ -664,17 +664,12 @@ name = "mythosmud"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "aiosqlite" },
     { name = "argon2-cffi" },
     { name = "faker" },
     { name = "fastapi" },
     { name = "fastapi-users", extra = ["sqlalchemy"] },
     { name = "httpx" },
-    { name = "pre-commit" },
     { name = "pydantic" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
     { name = "python-dotenv" },
     { name = "python-jose" },
     { name = "requests" },
@@ -702,7 +697,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "aiosqlite", marker = "extra == 'dev'", specifier = ">=0.21.0" },
     { name = "argon2-cffi", specifier = ">=23.1.0" },
     { name = "debugpy", marker = "extra == 'dev'", specifier = "==1.8.15" },
@@ -710,14 +704,10 @@ requires-dist = [
     { name = "fastapi", specifier = "==0.116.1" },
     { name = "fastapi-users", extras = ["sqlalchemy"], specifier = ">=14.0.0" },
     { name = "httpx", specifier = "==0.28.1" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.2.0" },
     { name = "pydantic", specifier = "==2.11.7" },
-    { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.4.1" },
-    { name = "pytest-asyncio", specifier = ">=0.24.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = "==0.24.0" },
-    { name = "pytest-cov", specifier = ">=6.2.1" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = "==6.2.1" },
     { name = "python-dotenv", specifier = "==1.0.0" },
     { name = "python-jose", specifier = "==3.5.0" },
