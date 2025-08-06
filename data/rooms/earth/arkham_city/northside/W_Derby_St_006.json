@@ -1,7 +1,7 @@
 {
-  "id": "earth_arkham_city_northside_Derby_St_001",
+  "id": "earth_arkham_city_northside_Derby_St_006",
   "name": "W. Derby Street",
-  "description": "The western end of W. Derby Street, a quiet residential street that runs perpendicular to N. High Street.",
+  "description": "W. Derby Street 006",
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "northside",
@@ -9,8 +9,8 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": null,
-    "west": "earth_arkham_city_intersection_Derby_High",
+    "east": "earth_arkham_city_northside_Derby_St_007",
+    "west": "earth_arkham_city_northside_Derby_St_005",
     "up": null,
     "down": null
   }

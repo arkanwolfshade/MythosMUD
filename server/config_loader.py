@@ -77,7 +77,7 @@ _DEFAULTS = {
     "max_alias_depth": 10,
     "max_alias_length": 500,
     "max_aliases_per_player": 50,
-    "default_player_room": "earth_arkham_city_downtown_Main_St_001",
+    "default_player_room": "earth_arkham_city_intersection_Derby_High",
     "default_player_stats": {
         "strength": 10,
         "dexterity": 10,
