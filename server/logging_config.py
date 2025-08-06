@@ -314,7 +314,7 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
             logger = logging.getLogger(prefix)
             logger.addHandler(handler)
             logger.setLevel(logging.DEBUG)
-            # Keep propagate=True so logs also go to console.log
+            logger.propagate = False  # Prevent duplicate logs - specific logs go to their files only
 
     # Also capture all console output to a general log file
     console_log_path = env_log_dir / "console.log"
