@@ -18,6 +18,7 @@ from ..api.real_time import realtime_router
 from ..api.rooms import room_router
 from ..auth.endpoints import auth_router
 from ..command_handler import router as command_router
+from ..error_handlers import register_error_handlers
 from ..logging_config import get_logger
 from .lifespan import lifespan
 
@@ -86,6 +87,9 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Register error handlers
+    register_error_handlers(app)
 
     # Include routers
     app.include_router(auth_router)

@@ -90,7 +90,9 @@ class PlayerService:
             logger.debug("Player not found by ID", player_id=player_id)
             return None
 
-        logger.debug("Player found by ID", player_id=player_id, name=player.name)
+        # Safely get player name for logging
+        player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
+        logger.debug("Player found by ID", player_id=player_id, name=player_name)
         return self._convert_player_to_schema(player)
 
     def get_player_by_name(self, player_name: str) -> PlayerRead | None:
@@ -110,7 +112,9 @@ class PlayerService:
             logger.debug("Player not found by name", player_name=player_name)
             return None
 
-        logger.debug("Player found by name", player_name=player_name, player_id=player.player_id)
+        # Safely get player ID for logging
+        player_id = player.player_id if hasattr(player, "player_id") else player.get("player_id", "unknown")
+        logger.debug("Player found by name", player_name=player_name, player_id=player_id)
         return self._convert_player_to_schema(player)
 
     def list_players(self) -> list[PlayerRead]:
@@ -150,14 +154,16 @@ class PlayerService:
             logger.error("Failed to delete player from persistence", player_id=player_id)
             return False, "Failed to delete player"
 
-        logger.info("Player deleted successfully", player_id=player_id, name=player.name)
+        # Safely get player name for logging
+        player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
+        logger.info("Player deleted successfully", player_id=player_id, name=player_name)
 
         # Delete player aliases if they exist
         alias_storage = AliasStorage()
-        alias_storage.delete_player_aliases(player.name)
-        logger.debug("Player aliases deleted", player_id=player_id, name=player.name)
+        alias_storage.delete_player_aliases(player_name)
+        logger.debug("Player aliases deleted", player_id=player_id, name=player_name)
 
-        return True, f"Player {player.name} has been deleted"
+        return True, f"Player {player_name} has been deleted"
 
     def _convert_player_to_schema(self, player) -> PlayerRead:
         """
