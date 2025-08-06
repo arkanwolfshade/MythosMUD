@@ -54,52 +54,50 @@ _config = None
 _DEFAULTS = {
     "host": "127.0.0.1",
     "port": 54731,
-    "max_connections": 100,
-    "connection_timeout": 60,
-    "data_dir": "./data/",
-    "player_dir": "./data/players/",
-    "log_dir": "./logs/",
-    "motd_file": "./data/motd.txt",
-    "start_room": "earth_arkham_city_campus_W_College_St_003",
-    "starting_level": 1,
-    "allow_multiplay": False,
-    "max_players": 100,
-    "enable_combat": True,
-    "enable_weather": True,
-    "enable_pvp": False,
-    "enable_stack_traces": True,
-    "auth_backend": "sqlite",
-    "auth_db_file": "./data/users.db",
-    "registration_enabled": True,
-    "allow_guest_login": False,
-    "areas": ["./data/rooms/arkham/"],
-    "npcs": ["./data/npcs/guards.json"],
-    "quests": ["./data/quests/tutorial.json"],
-    "admin_password": "changeme",
-    "admin_port": 5001,
-    "enable_remote_console": False,
-    "xp_multiplier": 1.0,
-    "hp_regen_rate": 5,
-    "combat_tick_interval": 2,
-    "game_tick_rate": 1.0,
-    "weather_update_interval": 300,
-    "save_interval": 60,
-    # Additional defaults for fields expected by _FIELD_TYPES
-    "database_url": None,
-    "invite_codes_file": "./data/invites.json",
-    "aliases_dir": "./data/players/aliases/",
+    # Environment-based fields - these will be set from environment variables
+    "database_url": None,  # Will be set from DATABASE_URL environment variable
+    "admin_password": None,  # Must be set via environment variable
+    "invite_codes_file": "invites.json",
+    "motd_file": "data/motd.html",
+    "aliases_dir": None,  # Will be set from ALIASES_DIR environment variable
+    # New logging configuration
+    "logging": {
+        "environment": "development",
+        "level": "DEBUG",  # Most verbose logging level
+        "format": "colored",  # json, human, colored
+        "log_base": "logs",
+        "rotation": {"max_size": "100MB", "backup_count": 5},
+        "compression": True,
+        "disable_logging": False,
+    },
     "max_connections_per_player": 3,
     "rate_limit_window": 60,
     "rate_limit_max_requests": 100,
     "max_command_length": 1000,
     "max_alias_depth": 10,
-    "max_alias_length": 100,
+    "max_alias_length": 500,
     "max_aliases_per_player": 50,
-    "default_player_room": "arkham_001",
-    "default_player_stats": {"hp": 100, "mp": 50, "level": 1},
-    "logging": {"environment": "development", "level": "INFO", "format": "human", "log_base": "./logs"},
-    "db_path": "./data/players/players.db",
-    "log_path": "./logs/persistence.log",
+    "default_player_room": "earth_arkham_city_downtown_Main_St_001",
+    "default_player_stats": {
+        "strength": 10,
+        "dexterity": 10,
+        "constitution": 10,
+        "intelligence": 10,
+        "wisdom": 10,
+        "charisma": 10,
+        "max_health": 100,
+        "max_sanity": 100,
+        "health": 100,
+        "sanity": 100,
+        "fear": 0,
+        "corruption": 0,
+        "occult_knowledge": 0,
+    },
+    "hp_regen_rate": 1,
+    "combat_tick_interval": 6,
+    "game_tick_rate": 1.0,
+    "weather_update_interval": 300,
+    "save_interval": 60,
 }
 
 _FIELD_TYPES = {
@@ -179,14 +177,8 @@ def get_config(config_path: str = None):
     config.update({k: v for k, v in (data or {}).items() if v is not None})
     logger.debug("Config merged with defaults")
 
-    # Handle db_path and log_path from YAML even if not in defaults
-    if data and "db_path" in data and data["db_path"] is not None:
-        config["db_path"] = data["db_path"]
-    if data and "log_path" in data and data["log_path"] is not None:
-        config["log_path"] = data["log_path"]
-
     # Map YAML field names to expected config keys
-    if "db_path" in config:
+    if "db_path" in config and config["database_url"] is None:
         config["database_url"] = config.pop("db_path")
 
     # Handle legacy logging configuration
@@ -234,7 +226,7 @@ def get_config(config_path: str = None):
         else:
             config[k] = _DEFAULTS[k]
     # Handle environment variables for sensitive data
-    if "admin_password" not in config or config["admin_password"] is None:
+    if "admin_password" in config and config["admin_password"] is None:
         admin_password = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
         if admin_password:
             logger.debug("Using MYTHOSMUD_ADMIN_PASSWORD from environment")
@@ -244,7 +236,7 @@ def get_config(config_path: str = None):
             raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
 
     # Handle environment variables for path configuration
-    if "database_url" not in config or config["database_url"] is None:
+    if "database_url" in config and config["database_url"] is None:
         database_url = os.getenv("DATABASE_URL")
         if database_url:
             logger.debug("Using DATABASE_URL from environment")
@@ -253,7 +245,7 @@ def get_config(config_path: str = None):
             logger.error("DATABASE_URL environment variable not set")
             raise ValueError("DATABASE_URL environment variable must be set")
 
-    if "aliases_dir" not in config or config["aliases_dir"] is None:
+    if "aliases_dir" in config and config["aliases_dir"] is None:
         aliases_dir = os.getenv("ALIASES_DIR")
         if aliases_dir:
             logger.debug("Using ALIASES_DIR from environment")

@@ -221,6 +221,9 @@ def load_rooms() -> dict[str, Any]:
 
 
 if __name__ == "__main__":
+    from .logging_config import get_logger
+
+    logger = get_logger(__name__)
     world_data = load_hierarchical_world()
     logger.info(f"Loaded {len(world_data['rooms'])} rooms:")
     for room_id, room in world_data["rooms"].items():
