@@ -66,8 +66,8 @@ export function useGameConnection({
     }
 
     try {
-      // WebSocket endpoint is at /ws/{player_name} on port 54731 (server expects username, not UUID)
-      const wsUrl = `ws://localhost:54731/ws/${playerName}?token=${encodeURIComponent(authToken)}`;
+      // WebSocket endpoint is at /api/ws/{player_id} on port 54731 (server expects player ID, not username)
+      const wsUrl = `ws://localhost:54731/api/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
       const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;
@@ -121,8 +121,10 @@ export function useGameConnection({
       }
 
       // Create new EventSource with authentication token as query parameter
-      // Use playerName for SSE connection (server expects username, not UUID)
-      const eventSource = new EventSource(`/api/events/${playerName}?token=${encodeURIComponent(authToken)}`);
+      // Use playerId for SSE connection (server expects player ID, not username)
+      const eventSource = new EventSource(
+        `http://localhost:54731/api/events/${playerId}?token=${encodeURIComponent(authToken)}`
+      );
 
       eventSourceRef.current = eventSource;
 
@@ -174,7 +176,7 @@ export function useGameConnection({
       }));
       onError?.('Failed to connect');
     }
-  }, [playerName, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
+  }, [playerName, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, playerId]);
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
@@ -208,8 +210,11 @@ export function useGameConnection({
 
     try {
       const commandData = {
-        command,
-        args,
+        type: 'command',
+        data: {
+          command,
+          args,
+        },
       };
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command, args });

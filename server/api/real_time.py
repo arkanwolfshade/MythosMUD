@@ -12,7 +12,7 @@ from ..realtime.sse_handler import game_event_stream
 from ..realtime.websocket_handler import handle_websocket_connection
 
 # Create real-time router
-realtime_router = APIRouter(tags=["realtime"])
+realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
 @realtime_router.get("/events/{player_id}")
@@ -38,5 +38,14 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     """
     WebSocket endpoint for interactive commands and chat.
     """
-    # TODO: Add authentication and player validation as needed
-    await handle_websocket_connection(websocket, player_id)
+    from ..logging_config import get_logger
+
+    logger = get_logger(__name__)
+    logger.info(f"WebSocket connection attempt for player {player_id}")
+
+    try:
+        # TODO: Add authentication and player validation as needed
+        await handle_websocket_connection(websocket, player_id)
+    except Exception as e:
+        logger.error(f"Error in WebSocket endpoint for player {player_id}: {e}", exc_info=True)
+        raise

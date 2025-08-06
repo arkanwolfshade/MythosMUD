@@ -5,8 +5,12 @@ This module handles FastAPI app creation, middleware configuration,
 and router registration.
 """
 
-from fastapi import FastAPI
+import time
+from collections.abc import Callable
+
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..api.game import game_router
 from ..api.players import player_router
@@ -14,7 +18,45 @@ from ..api.real_time import realtime_router
 from ..api.rooms import room_router
 from ..auth.endpoints import auth_router
 from ..command_handler import router as command_router
+from ..error_handlers import register_error_handlers
+from ..logging_config import get_logger
 from .lifespan import lifespan
+
+logger = get_logger(__name__)
+
+
+class AccessLoggingMiddleware(BaseHTTPMiddleware):
+    """Middleware to log all HTTP requests and responses."""
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        start_time = time.time()
+
+        # Log the incoming request
+        logger.info(
+            "HTTP request started",
+            method=request.method,
+            url=str(request.url),
+            client_ip=request.client.host if request.client else "unknown",
+            user_agent=request.headers.get("user-agent", "unknown"),
+        )
+
+        # Process the request
+        response = await call_next(request)
+
+        # Calculate processing time
+        process_time = time.time() - start_time
+
+        # Log the response
+        logger.info(
+            "HTTP request completed",
+            method=request.method,
+            url=str(request.url),
+            status_code=response.status_code,
+            process_time=process_time,
+            client_ip=request.client.host if request.client else "unknown",
+        )
+
+        return response
 
 
 def create_app() -> FastAPI:
@@ -34,6 +76,9 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # Add access logging middleware (add first to capture all requests)
+    app.add_middleware(AccessLoggingMiddleware)
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -42,6 +87,9 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Register error handlers
+    register_error_handlers(app)
 
     # Include routers
     app.include_router(auth_router)

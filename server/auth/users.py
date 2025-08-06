@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_async_session
 from ..logging_config import get_logger
 from ..models.user import User
+from .argon2_utils import hash_password, verify_password
 
 logger = get_logger(__name__)
 
@@ -30,12 +31,20 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     Custom user manager for MythosMUD.
 
     Extends FastAPI Users BaseUserManager to provide custom
-    user creation and validation logic.
+    user creation and validation logic with Argon2 password hashing.
     """
 
     # Use environment variables for all secrets - CRITICAL: Must be set in production
     reset_password_token_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret")
     verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
+
+    def _hash_password(self, password: str) -> str:
+        """Hash password using Argon2 instead of bcrypt."""
+        return hash_password(password)
+
+    def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        """Verify password using Argon2 instead of bcrypt."""
+        return verify_password(plain_password, hashed_password)
 
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""

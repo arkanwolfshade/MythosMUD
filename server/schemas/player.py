@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PlayerBase(BaseModel):
@@ -29,10 +29,8 @@ class PlayerCreate(PlayerBase):
     inventory: list[dict[str, Any]] = Field(default=[], description="Player inventory")
     status_effects: list[dict[str, Any]] = Field(default=[], description="Player status effects")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
@@ -44,6 +42,7 @@ class PlayerCreate(PlayerBase):
                 "status_effects": [],
             }
         }
+    )
 
 
 class PlayerRead(PlayerBase):
@@ -57,12 +56,10 @@ class PlayerRead(PlayerBase):
     created_at: datetime = Field(..., description="Player creation timestamp")
     last_active: datetime = Field(..., description="Player last active timestamp")
 
-    class Config:
-        """Pydantic configuration."""
-
-        from_attributes = True
-        populate_by_name = True
-        json_schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        json_schema_extra={
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -76,7 +73,8 @@ class PlayerRead(PlayerBase):
                 "created_at": "2024-01-01T00:00:00Z",
                 "last_active": "2024-01-01T12:00:00Z",
             }
-        }
+        },
+    )
 
 
 class PlayerUpdate(BaseModel):
@@ -90,10 +88,8 @@ class PlayerUpdate(BaseModel):
     inventory: list[dict[str, Any]] | None = Field(None, description="Player inventory")
     status_effects: list[dict[str, Any]] | None = Field(None, description="Player status effects")
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "name": "NewPlayerName",
                 "current_room_id": "arkham_002",
@@ -104,3 +100,4 @@ class PlayerUpdate(BaseModel):
                 "status_effects": [],
             }
         }
+    )

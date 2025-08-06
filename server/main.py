@@ -59,10 +59,13 @@ def main():
     return app
 
 
-# Initialize logging and create the FastAPI application
+# Set up logging when module is imported
 config = get_config()
+logger.info("Setting up logging with config", config=config)
 setup_logging(config)
+logger.info("Logging setup completed")
 
+# Create the FastAPI application
 app = create_app()
 
 # Add error logging middleware
@@ -82,13 +85,13 @@ async def read_root():
 if __name__ == "__main__":
     import uvicorn
 
-    from .config_loader import get_config
-
     config = get_config()
     uvicorn.run(
-        "main:app",
+        "server.main:app",  # Use the correct module path from project root
         host=config["host"],
         port=config["port"],
         reload=True,
-        log_config=None,  # Disable uvicorn's default logging
+        # Use our StructLog system for all logging
+        access_log=True,
+        use_colors=False,  # Disable colors for structured logging
     )
