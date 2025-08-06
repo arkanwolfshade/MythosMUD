@@ -44,6 +44,10 @@ import os
 
 import yaml
 
+from .logging_config import get_logger
+
+logger = get_logger(__name__)
+
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
 _config = None
 
@@ -130,12 +134,14 @@ def _get_config_path() -> str:
         Path to the production config file
     """
     # Production always uses the main config file
+    logger.debug("Getting config path", config_path=_CONFIG_PATH)
     return _CONFIG_PATH
 
 
 def reset_config():
     """Reset the config cache for testing purposes."""
     global _config
+    logger.debug("Resetting config cache")
     _config = None
 
 
@@ -146,23 +152,30 @@ def get_config(config_path: str = None):
     """
     global _config
     if _config is not None and (config_path is None or config_path == _CONFIG_PATH):
+        logger.debug("Returning cached config")
         return _config
 
     # Use environment-based path if no specific path provided
     if config_path is None:
         config_path = _get_config_path()
 
+    logger.info("Loading configuration", config_path=config_path)
+
     try:
         with open(config_path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
             if not isinstance(data, dict):
+                logger.warning("Config file is not a dictionary, using empty dict")
                 data = {}
-    except Exception:
+        logger.debug("Config file loaded successfully", config_path=config_path)
+    except Exception as e:
+        logger.warning("Failed to load config file, using defaults", config_path=config_path, error=str(e))
         data = {}
 
     # Merge with defaults
     config = dict(_DEFAULTS)
     config.update({k: v for k, v in (data or {}).items() if v is not None})
+    logger.debug("Config merged with defaults")
 
     # Map YAML field names to expected config keys
     if "db_path" in config and config["database_url"] is None:
@@ -181,11 +194,13 @@ def get_config(config_path: str = None):
 
     # Handle environment variables for path configuration (prioritize over YAML)
     if os.getenv("DATABASE_URL"):
+        logger.debug("Using DATABASE_URL from environment")
         config["database_url"] = os.getenv("DATABASE_URL")
 
     # Legacy PERSIST_LOG handling removed - now using centralized logging
 
     if os.getenv("ALIASES_DIR"):
+        logger.debug("Using ALIASES_DIR from environment")
         config["aliases_dir"] = os.getenv("ALIASES_DIR")
 
     # Validate types
@@ -212,24 +227,42 @@ def get_config(config_path: str = None):
             config[k] = _DEFAULTS[k]
     # Handle environment variables for sensitive data
     if "admin_password" in config and config["admin_password"] is None:
-        config["admin_password"] = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
-        if not config["admin_password"]:
+        admin_password = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
+        if admin_password:
+            logger.debug("Using MYTHOSMUD_ADMIN_PASSWORD from environment")
+            config["admin_password"] = admin_password
+        else:
+            logger.warning("MYTHOSMUD_ADMIN_PASSWORD environment variable not set")
             raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
 
     # Handle environment variables for path configuration
     if "database_url" in config and config["database_url"] is None:
-        config["database_url"] = os.getenv("DATABASE_URL")
-        if not config["database_url"]:
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            logger.debug("Using DATABASE_URL from environment")
+            config["database_url"] = database_url
+        else:
+            logger.error("DATABASE_URL environment variable not set")
             raise ValueError("DATABASE_URL environment variable must be set")
 
     if "aliases_dir" in config and config["aliases_dir"] is None:
-        config["aliases_dir"] = os.getenv("ALIASES_DIR")
-        if not config["aliases_dir"]:
+        aliases_dir = os.getenv("ALIASES_DIR")
+        if aliases_dir:
+            logger.debug("Using ALIASES_DIR from environment")
+            config["aliases_dir"] = aliases_dir
+        else:
+            logger.warning("ALIASES_DIR environment variable not set")
             raise ValueError("ALIASES_DIR environment variable must be set")
 
     # Remove legacy persistence_log handling since we now use structured logging
 
     _config = config
+    logger.info(
+        "Configuration loaded successfully",
+        host=config.get("host"),
+        port=config.get("port"),
+        environment=config.get("logging", {}).get("environment", "unknown"),
+    )
     return _config
 
 

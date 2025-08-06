@@ -11,11 +11,23 @@ from typing import Any
 from argon2 import PasswordHasher, exceptions
 from argon2.exceptions import HashingError, VerificationError
 
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Default Argon2 parameters - optimized for security vs performance
 TIME_COST = 3  # Number of iterations
 MEMORY_COST = 65536  # Memory usage in KiB (64MB)
 PARALLELISM = 1  # Number of parallel threads
 HASH_LENGTH = 32  # Length of the hash in bytes
+
+logger.info(
+    "Argon2 utilities initialized",
+    time_cost=TIME_COST,
+    memory_cost=MEMORY_COST,
+    parallelism=PARALLELISM,
+    hash_length=HASH_LENGTH,
+)
 
 # Create default hasher instance
 _default_hasher = PasswordHasher(
@@ -33,6 +45,14 @@ def create_hasher_with_params(
     hash_len: int = HASH_LENGTH,
 ) -> PasswordHasher:
     """Create a PasswordHasher with custom parameters."""
+    logger.debug(
+        "Creating custom Argon2 hasher",
+        time_cost=time_cost,
+        memory_cost=memory_cost,
+        parallelism=parallelism,
+        hash_len=hash_len,
+    )
+
     return PasswordHasher(
         time_cost=time_cost,
         memory_cost=memory_cost,
@@ -50,11 +70,16 @@ def hash_password(password: str) -> str:
     in the restricted archives of Miskatonic University.
     """
     if not isinstance(password, str):
+        logger.error("Password hashing failed - invalid type", password_type=type(password))
         raise TypeError("Password must be a string")
 
+    logger.debug("Hashing password with Argon2id")
     try:
-        return _default_hasher.hash(password)
+        hashed = _default_hasher.hash(password)
+        logger.debug("Password hashed successfully")
+        return hashed
     except Exception as e:
+        logger.error("Password hashing failed", error=str(e))
         raise HashingError(f"Failed to hash password: {e}") from e
 
 
@@ -66,34 +91,46 @@ def verify_password(password: str, hashed: str) -> bool:
     ensuring backward compatibility during the transition period.
     """
     if not isinstance(password, str) or not isinstance(hashed, str):
+        logger.warning(
+            "Password verification failed - invalid types", password_type=type(password), hash_type=type(hashed)
+        )
         return False
 
     if not hashed:
+        logger.warning("Password verification failed - empty hash")
         return False
 
+    logger.debug("Verifying password")
     try:
         # Try Argon2 verification first
         if is_argon2_hash(hashed):
             _default_hasher.verify(hashed, password)
+            logger.debug("Password verification successful (Argon2)")
             return True
         else:
             # For backward compatibility, we could add bcrypt verification here
             # But since we're fully converting to Argon2, we'll return False for
             # non-Argon2 hashes
+            logger.warning("Password verification failed - non-Argon2 hash")
             return False
-    except (VerificationError, exceptions.InvalidHash):
+    except (VerificationError, exceptions.InvalidHash) as e:
+        logger.warning("Password verification failed - invalid hash", error=str(e))
         return False
-    except Exception:
+    except Exception as e:
         # Any other exception means verification failed
+        logger.error("Password verification error", error=str(e))
         return False
 
 
 def is_argon2_hash(hash_value: str | None) -> bool:
     """Check if a given string is an Argon2 hash."""
     if not isinstance(hash_value, str):
+        logger.debug("Hash check failed - not a string", hash_type=type(hash_value))
         return False
 
-    return hash_value.startswith("$argon2")
+    is_argon2 = hash_value.startswith("$argon2")
+    logger.debug("Hash type check", is_argon2=is_argon2)
+    return is_argon2
 
 
 def needs_rehash(hashed: str) -> bool:

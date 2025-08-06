@@ -7,13 +7,13 @@ and real-time game updates for clients.
 
 import asyncio
 import json
-import logging
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 
+from ..logging_config import get_logger
 from .connection_manager import connection_manager
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:

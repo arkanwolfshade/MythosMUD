@@ -9,8 +9,11 @@ import datetime
 import uuid
 
 from ..alias_storage import AliasStorage
+from ..logging_config import get_logger
 from ..models.player import Player
 from ..schemas.player import PlayerRead
+
+logger = get_logger(__name__)
 
 
 class PlayerService:
@@ -19,6 +22,7 @@ class PlayerService:
     def __init__(self, persistence):
         """Initialize the player service with a persistence layer."""
         self.persistence = persistence
+        logger.info("PlayerService initialized")
 
     def create_player(
         self, name: str, starting_room_id: str = "arkham_001", user_id: uuid.UUID | None = None
@@ -37,14 +41,18 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
+        logger.info("Creating new player", name=name, starting_room_id=starting_room_id, user_id=user_id)
+
         # Check if player already exists
         existing_player = self.persistence.get_player_by_name(name)
         if existing_player:
+            logger.warning("Player creation failed - name already exists", name=name)
             raise ValueError("Player name already exists")
 
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
+            logger.debug("Generated user_id for new player", name=name, user_id=user_id)
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -60,6 +68,7 @@ class PlayerService:
 
         # Save player to persistence
         self.persistence.save_player(player)
+        logger.info("Player created successfully", name=name, player_id=player.player_id, user_id=user_id)
 
         # Convert to schema format
         return self._convert_player_to_schema(player)
@@ -74,10 +83,14 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
+        logger.debug("Getting player by ID", player_id=player_id)
+
         player = self.persistence.get_player(player_id)
         if not player:
+            logger.debug("Player not found by ID", player_id=player_id)
             return None
 
+        logger.debug("Player found by ID", player_id=player_id, name=player.name)
         return self._convert_player_to_schema(player)
 
     def get_player_by_name(self, player_name: str) -> PlayerRead | None:
@@ -90,10 +103,14 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
+        logger.debug("Getting player by name", player_name=player_name)
+
         player = self.persistence.get_player_by_name(player_name)
         if not player:
+            logger.debug("Player not found by name", player_name=player_name)
             return None
 
+        logger.debug("Player found by name", player_name=player_name, player_id=player.player_id)
         return self._convert_player_to_schema(player)
 
     def list_players(self) -> list[PlayerRead]:
@@ -103,10 +120,12 @@ class PlayerService:
         Returns:
             List[PlayerRead]: List of all players
         """
+        logger.debug("Listing all players")
         players = self.persistence.list_players()
         result = []
         for player in players:
             result.append(self._convert_player_to_schema(player))
+        logger.debug("Finished listing all players")
         return result
 
     def delete_player(self, player_id: str) -> tuple[bool, str]:
@@ -119,18 +138,24 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (success, message)
         """
+        logger.debug("Attempting to delete player", player_id=player_id)
         player = self.persistence.get_player(player_id)
         if not player:
+            logger.warning("Player not found for deletion", player_id=player_id)
             return False, "Player not found"
 
         # Delete the player from the database
         success = self.persistence.delete_player(player_id)
         if not success:
+            logger.error("Failed to delete player from persistence", player_id=player_id)
             return False, "Failed to delete player"
+
+        logger.info("Player deleted successfully", player_id=player_id, name=player.name)
 
         # Delete player aliases if they exist
         alias_storage = AliasStorage()
         alias_storage.delete_player_aliases(player.name)
+        logger.debug("Player aliases deleted", player_id=player_id, name=player.name)
 
         return True, f"Player {player.name} has been deleted"
 

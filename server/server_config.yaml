@@ -8,7 +8,7 @@ logging:
   environment: development
   level: DEBUG  # Most verbose logging level
   format: colored  # json, human, colored (colored = human-readable with colors)
-  log_base: ../logs  # Always relative to project root
+  log_base: ./logs  # Always relative to project root
   rotation:
     max_size: 100MB
     backup_count: 5
