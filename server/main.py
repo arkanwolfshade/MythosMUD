@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     config = get_config()
     uvicorn.run(
-        "main:app",
+        "server.main:app",  # Use the correct module path from project root
         host=config["host"],
         port=config["port"],
         reload=True,
