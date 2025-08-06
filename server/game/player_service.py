@@ -25,7 +25,10 @@ class PlayerService:
         logger.info("PlayerService initialized")
 
     def create_player(
-        self, name: str, starting_room_id: str = "arkham_001", user_id: uuid.UUID | None = None
+        self,
+        name: str,
+        starting_room_id: str = "earth_arkham_city_intersection_Derby_High",
+        user_id: uuid.UUID | None = None,
     ) -> PlayerRead:
         """
         Create a new player character.

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS players (
     stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
-    current_room_id TEXT NOT NULL DEFAULT 'arkham_001',
+    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_Derby_High',
     experience_points INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Brown_Derby",
+  "name": "Brown and Derby Street Intersection",
+  "description": "The intersection where Brown Street meets Derby Street",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

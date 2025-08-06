@@ -73,7 +73,7 @@ SCHEMA = (
     '    stats TEXT NOT NULL DEFAULT \'{"health": 100, "sanity": 100, "strength": 10}\',\n'
     "    inventory TEXT NOT NULL DEFAULT '[]',\n"
     "    status_effects TEXT NOT NULL DEFAULT '[]',\n"
-    "    current_room_id TEXT NOT NULL DEFAULT 'arkham_001',\n"
+    "    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_Derby_High',\n"
     "    experience_points INTEGER NOT NULL DEFAULT 0,\n"
     "    level INTEGER NOT NULL DEFAULT 1,\n"
     "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
@@ -134,7 +134,7 @@ SAMPLE_PLAYERS = [
         "stats": '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}',
         "inventory": "[]",
         "status_effects": "[]",
-        "current_room_id": "arkham_001",
+        "current_room_id": "earth_arkham_city_intersection_Derby_High",
         "experience_points": 0,
         "level": 1,
     },
