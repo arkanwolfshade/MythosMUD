@@ -90,9 +90,11 @@ def _rotate_log_files(env_log_dir: Path) -> None:
             try:
                 log_file.rename(rotated_path)
                 # Log the rotation (this will go to the new log file)
-                print(f"Rotated log file: {log_file.name} -> {rotated_name}")
+                logger = get_logger("server.logging")
+                logger.info(f"Rotated log file: {log_file.name} -> {rotated_name}")
             except OSError as e:
-                print(f"Warning: Could not rotate {log_file.name}: {e}")
+                logger = get_logger("server.logging")
+                logger.warning(f"Could not rotate {log_file.name}: {e}")
 
 
 class MultiFileHandler:
@@ -284,7 +286,7 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
 
     # Create handlers for different log categories
     log_categories = {
-        "server": ["server"],
+        "server": ["server", "uvicorn"],
         "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
         "authentication": ["auth"],
         "world": ["world"],
@@ -312,7 +314,7 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
             logger = logging.getLogger(prefix)
             logger.addHandler(handler)
             logger.setLevel(logging.DEBUG)
-            logger.propagate = False  # Prevent duplicate logs
+            # Keep propagate=True so logs also go to console.log
 
     # Also capture all console output to a general log file
     console_log_path = env_log_dir / "console.log"
@@ -409,16 +411,19 @@ def _configure_uvicorn_logging() -> None:
     uvicorn_access_logger = logging.getLogger("uvicorn.access")
     uvicorn_access_logger.handlers = []  # Remove default handlers
     uvicorn_access_logger.propagate = True  # Let it propagate to our system
+    uvicorn_access_logger.setLevel(logging.DEBUG)
 
     # Configure uvicorn's error logger
     uvicorn_error_logger = logging.getLogger("uvicorn.error")
     uvicorn_error_logger.handlers = []
     uvicorn_error_logger.propagate = True
+    uvicorn_error_logger.setLevel(logging.DEBUG)
 
-    # Configure uvicorn's access logger
-    uvicorn_access_logger = logging.getLogger("uvicorn.access")
-    uvicorn_access_logger.handlers = []
-    uvicorn_access_logger.propagate = True
+    # Configure uvicorn's main logger
+    uvicorn_logger = logging.getLogger("uvicorn")
+    uvicorn_logger.handlers = []
+    uvicorn_logger.propagate = True
+    uvicorn_logger.setLevel(logging.DEBUG)
 
     logger.info("Uvicorn logging configured to use StructLog system")
 
