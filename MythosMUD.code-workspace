@@ -155,6 +155,9 @@
         "alignment": "left",
         "priority": 80
       }
+    },
+    "[sql]": {
+      "editor.defaultFormatter": "mtxr.sqltools"
     }
   },
   "extensions": {

@@ -126,9 +126,8 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Send the result back to the player
         response = {
-            "type": "command_result",
-            "command": command,
-            "result": result,
+            "event_type": "command_response",
+            "data": result,
         }
         await websocket.send_json(response)
 
