@@ -9,8 +9,8 @@ import json
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from .connection_manager import connection_manager
 from ..logging_config import get_logger
+from .connection_manager import connection_manager
 
 logger = get_logger(__name__)
 

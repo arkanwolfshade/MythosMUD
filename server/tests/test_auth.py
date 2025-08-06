@@ -119,7 +119,7 @@ class TestRegistrationEndpoints:
         )
 
         assert response.status_code == 400
-        assert "Invalid invite code" in response.json()["detail"]
+        assert "Invalid invite code" in response.json()["error"]["message"]
 
     @patch("server.auth.endpoints.get_user_manager")
     def test_registration_duplicate_username(self, mock_get_user, test_client):
@@ -148,7 +148,7 @@ class TestRegistrationEndpoints:
             print(f"Response body: {response.text}")
 
             assert response.status_code == 400
-            assert "Username already exists" in response.json()["detail"]
+            assert "Username already exists" in response.json()["error"]["message"]
         finally:
             # Clean up the dependency override
             app.dependency_overrides.clear()
@@ -271,7 +271,7 @@ class TestLoginEndpoints:
         response = test_client.post("/auth/login", json={"username": "nonexistent", "password": "testpass123"})
 
         assert response.status_code == 401
-        assert "Invalid credentials" in response.json()["detail"]
+        assert "Invalid credentials" in response.json()["error"]["message"]
 
     @patch("server.auth.endpoints.get_async_session")
     def test_login_user_no_email(self, mock_get_session, test_client):
@@ -292,7 +292,7 @@ class TestLoginEndpoints:
         response = test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
 
         assert response.status_code == 401
-        assert "Invalid credentials" in response.json()["detail"]
+        assert "Invalid credentials" in response.json()["error"]["message"]
 
 
 class TestUserInfoEndpoints:

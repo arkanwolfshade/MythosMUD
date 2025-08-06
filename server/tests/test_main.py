@@ -82,7 +82,7 @@ class TestEndpoints:
             response = client.get("/rooms/nonexistent")
 
             assert response.status_code == 404
-            assert "Room not found" in response.json()["detail"]
+            assert "Room not found" in response.json()["error"]["message"]
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
@@ -122,7 +122,7 @@ class TestEndpoints:
             response = client.post("/players?name=testplayer")
 
             assert response.status_code == 400
-            assert "already exists" in response.json()["detail"]
+            assert "already exists" in response.json()["error"]["message"]
 
     def test_list_players(self, client):
         """Test listing all players."""
@@ -211,7 +211,7 @@ class TestEndpoints:
             response = client.get("/players/nonexistent")
 
             assert response.status_code == 404
-            assert "not found" in response.json()["detail"]
+            assert "not found" in response.json()["error"]["message"]
 
     def test_get_player_by_name_success(self, client):
         """Test getting a player by name."""
@@ -250,7 +250,7 @@ class TestEndpoints:
             response = client.get("/players/name/nonexistent")
 
             assert response.status_code == 404
-            assert "not found" in response.json()["detail"]
+            assert "not found" in response.json()["error"]["message"]
 
     def test_delete_player_not_found(self, client):
         """Test that delete player endpoint returns 404 for non-existent player."""
@@ -365,7 +365,7 @@ class TestSSEEndpoints:
                 ]
             )
 
-            response = client.get("/events/testplayer")
+            response = client.get("/api/events/testplayer")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -381,7 +381,7 @@ class TestSSEEndpoints:
                 ]
             )
 
-            response = client.get("/events/testplayer?token=invalid")
+            response = client.get("/api/events/testplayer?token=invalid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -397,7 +397,7 @@ class TestSSEEndpoints:
                 ]
             )
 
-            response = client.get("/events/testplayer?token=valid")
+            response = client.get("/api/events/testplayer?token=valid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -413,7 +413,7 @@ class TestSSEEndpoints:
                 ]
             )
 
-            response = client.get("/events/testplayer?token=valid")
+            response = client.get("/api/events/testplayer?token=valid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200

@@ -8,6 +8,8 @@ from .models import Player  # Assume Room model exists or will be added
 
 
 # --- Custom Exceptions ---
+# Note: These are kept for backward compatibility
+# New code should use the comprehensive exception system in exceptions.py
 class PersistenceError(Exception):
     pass
 
