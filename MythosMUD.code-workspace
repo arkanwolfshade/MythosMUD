@@ -3,22 +3,6 @@
     {
       "name": "📁 Main (Integration)",
       "path": "."
-    },
-    {
-      "name": "⚛️ Client (React/UI)",
-      "path": "../MythosMUD-client"
-    },
-    {
-      "name": "🐍 Server (Python/Backend)",
-      "path": "../MythosMUD-server"
-    },
-    {
-      "name": "📚 Documentation",
-      "path": "../MythosMUD-docs"
-    },
-    {
-      "name": "🧪 Testing & Debug",
-      "path": "../MythosMUD-testing"
     }
   ],
   "settings": {
