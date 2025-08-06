@@ -12,9 +12,6 @@ and chaos in our digital realm.
 """
 
 import datetime
-
-# Import from the old auth.py file since these functions haven't been moved to the new auth package
-import os
 import uuid
 import warnings
 
@@ -26,7 +23,7 @@ from starlette.responses import StreamingResponse
 from starlette.websockets import WebSocket
 
 from .app.factory import create_app
-from .auth.users import get_current_user
+from .auth.dependencies import get_current_user
 from .auth_utils import decode_access_token
 from .config_loader import get_config
 from .logging_config import get_logger, setup_logging
@@ -42,49 +39,30 @@ logger = get_logger(__name__)
 
 
 # Auth functions needed for SSE and WebSocket endpoints
-def get_users_file() -> str:
-    """Get the secure path to the users file."""
-    import os
-
-    server_dir = os.path.dirname(__file__)
-    return os.path.join(server_dir, "users.json")
 
 
 def validate_sse_token(token: str, users_file: str = None) -> dict:
     """
     Validate JWT token for SSE and WebSocket connections.
+
+    This function validates tokens for real-time connections that can't use
+    FastAPI dependency injection. It uses the same JWT validation as the
+    main auth system but without database lookups for performance.
     """
     if not token:
         raise HTTPException(status_code=401, detail="No authentication token provided")
 
-    # Decode and validate the token
+    # Decode and validate the token using the same method as the auth system
     payload = decode_access_token(token)
     if not payload or "sub" not in payload:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     username = payload["sub"]
 
-    # Additional validation: check if user exists in our system
-    if users_file:
-        try:
-            import json
-
-            if os.path.exists(users_file):
-                with open(users_file, encoding="utf-8") as f:
-                    users = json.load(f)
-                user = next((u for u in users if u["username"] == username), None)
-                if not user:
-                    raise HTTPException(status_code=404, detail="User not found")
-                # Exclude password_hash from response
-                user_info = {k: v for k, v in user.items() if k != "password_hash"}
-                return user_info
-        except Exception as e:
-            # Log the error but don't expose it to users
-            logger.warning(f"Could not validate user in SSE auth: {e}")
-            raise HTTPException(status_code=500, detail="Authentication service unavailable") from e
-
-    # Return basic user info if no users file provided
-    return {"username": username}
+    # For SSE/WebSocket connections, we'll trust the JWT token
+    # since it's already been validated by the auth system
+    # The token contains the user ID and username
+    return {"username": username, "user_id": payload.get("sub")}
 
 
 def get_sse_auth_headers() -> dict:
@@ -159,7 +137,7 @@ async def read_root():
 
 # Real-time communication endpoints
 @app.get("/events/{player_id}")
-async def game_events_stream(player_id: str, request: Request, users_file: str = Depends(get_users_file)):
+async def game_events_stream(player_id: str, request: Request):
     """
     Server-Sent Events stream for real-time game updates.
 
@@ -180,7 +158,7 @@ async def game_events_stream(player_id: str, request: Request, users_file: str =
 
         # Validate the token and get user information
     try:
-        user_info = validate_sse_token(token, users_file)
+        user_info = validate_sse_token(token)
         authenticated_username = user_info["username"]
     except HTTPException:
         raise
