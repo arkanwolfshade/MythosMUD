@@ -5,15 +5,15 @@ This module handles WebSocket and SSE connection management,
 including connection tracking, rate limiting, and room subscriptions.
 """
 
-import logging
 import time
 import uuid
 
 from fastapi import WebSocket
 
+from ..logging_config import get_logger
 from ..models import Player
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ConnectionManager:
@@ -53,7 +53,10 @@ class ConnectionManager:
             bool: True if connection successful, False otherwise
         """
         try:
+            logger.info(f"Attempting to accept WebSocket for player {player_id}")
             await websocket.accept()
+            logger.info(f"WebSocket accepted for player {player_id}")
+
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
             self.player_websockets[player_id] = connection_id
@@ -66,7 +69,7 @@ class ConnectionManager:
             logger.info(f"WebSocket connected for player {player_id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to connect WebSocket for player {player_id}: {e}")
+            logger.error(f"Failed to connect WebSocket for player {player_id}: {e}", exc_info=True)
             # Clean up any partial state in case of failure
             if player_id in self.player_websockets:
                 connection_id = self.player_websockets[player_id]

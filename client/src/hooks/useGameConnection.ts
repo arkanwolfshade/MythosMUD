@@ -208,8 +208,11 @@ export function useGameConnection({
 
     try {
       const commandData = {
-        command,
-        args,
+        type: 'command',
+        data: {
+          command,
+          args,
+        },
       };
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command, args });

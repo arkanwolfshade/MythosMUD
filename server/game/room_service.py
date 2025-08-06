@@ -7,6 +7,10 @@ room information retrieval and room state management.
 
 from typing import Any
 
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 class RoomService:
     """Service class for room-related operations."""
@@ -14,6 +18,7 @@ class RoomService:
     def __init__(self, persistence):
         """Initialize the room service with a persistence layer."""
         self.persistence = persistence
+        logger.info("RoomService initialized")
 
     def get_room(self, room_id: str) -> dict[str, Any] | None:
         """
@@ -25,9 +30,14 @@ class RoomService:
         Returns:
             Dict[str, Any]: The room data, or None if not found
         """
+        logger.debug("Getting room by ID", room_id=room_id)
+
         room = self.persistence.get_room(room_id)
         if not room:
+            logger.debug("Room not found by ID", room_id=room_id)
             return None
+
+        logger.debug("Room found by ID", room_id=room_id, room_name=room.get("name", "Unknown"))
         return room
 
     def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
@@ -40,8 +50,11 @@ class RoomService:
         Returns:
             Dict[str, Any]: The room data, or None if not found
         """
+        logger.debug("Getting room by name", room_name=room_name)
+
         # This would need to be implemented in the persistence layer
         # For now, we'll return None as this functionality isn't available
+        logger.debug("Room lookup by name not implemented", room_name=room_name)
         return None
 
     def list_rooms_in_zone(self, zone_id: str) -> list[dict[str, Any]]:
@@ -54,8 +67,11 @@ class RoomService:
         Returns:
             list[Dict[str, Any]]: List of rooms in the zone
         """
+        logger.debug("Listing rooms in zone", zone_id=zone_id)
+
         # This would need to be implemented in the persistence layer
         # For now, we'll return an empty list
+        logger.debug("Zone room listing not implemented", zone_id=zone_id)
         return []
 
     def get_adjacent_rooms(self, room_id: str) -> list[dict[str, Any]]:
@@ -68,6 +84,9 @@ class RoomService:
         Returns:
             list[Dict[str, Any]]: List of adjacent rooms
         """
+        logger.debug("Getting adjacent rooms", room_id=room_id)
+
         # This would need to be implemented in the persistence layer
         # For now, we'll return an empty list
+        logger.debug("Adjacent room lookup not implemented", room_id=room_id)
         return []

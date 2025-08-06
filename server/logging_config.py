@@ -285,13 +285,13 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
     # Create handlers for different log categories
     log_categories = {
         "server": ["server"],
-        "persistence": ["persistence"],
+        "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
         "authentication": ["auth"],
         "world": ["world"],
         "communications": ["realtime", "communications"],
         "commands": ["commands"],
         "errors": ["errors"],
-        "access": ["access"],
+        "access": ["access", "server.app.factory"],
     }
 
     for log_file, prefixes in log_categories.items():
@@ -314,6 +314,17 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
             logger.setLevel(logging.DEBUG)
             logger.propagate = False  # Prevent duplicate logs
 
+    # Also capture all console output to a general log file
+    console_log_path = env_log_dir / "console.log"
+    console_handler = RotatingFileHandler(
+        console_log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
+    )
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(formatter)
+
+    # Add console handler to root logger to capture all output
+    root_logger.addHandler(console_handler)
+
     # Configure Structlog to use standard library logging
     structlog.configure(
         processors=[
@@ -332,6 +343,9 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
+
+    # Ensure root logger also gets the console handler for any unhandled logs
+    root_logger.setLevel(logging.DEBUG)
 
 
 def get_logger(name: str) -> BoundLogger:
@@ -366,6 +380,9 @@ def setup_logging(config: dict[str, Any]) -> None:
     # Configure Structlog
     configure_structlog(environment, log_level, logging_config)
 
+    # Configure uvicorn to use our StructLog system
+    _configure_uvicorn_logging()
+
     # Log the setup
     logger = get_logger("server.logging")
     logger.info(
@@ -374,6 +391,36 @@ def setup_logging(config: dict[str, Any]) -> None:
         log_level=log_level,
         log_base=logging_config.get("log_base", "logs"),
     )
+
+
+def _configure_uvicorn_logging() -> None:
+    """
+    Configure uvicorn to use our StructLog system.
+
+    This ensures that all uvicorn logs (access logs, error logs, etc.)
+    go through our StructLog system and are properly categorized.
+    """
+    import logging
+
+    # Get our StructLog logger
+    logger = get_logger("uvicorn")
+
+    # Configure uvicorn's access logger to use our system
+    uvicorn_access_logger = logging.getLogger("uvicorn.access")
+    uvicorn_access_logger.handlers = []  # Remove default handlers
+    uvicorn_access_logger.propagate = True  # Let it propagate to our system
+
+    # Configure uvicorn's error logger
+    uvicorn_error_logger = logging.getLogger("uvicorn.error")
+    uvicorn_error_logger.handlers = []
+    uvicorn_error_logger.propagate = True
+
+    # Configure uvicorn's access logger
+    uvicorn_access_logger = logging.getLogger("uvicorn.access")
+    uvicorn_access_logger.handlers = []
+    uvicorn_access_logger.propagate = True
+
+    logger.info("Uvicorn logging configured to use StructLog system")
 
 
 # Initialize logging when module is imported
