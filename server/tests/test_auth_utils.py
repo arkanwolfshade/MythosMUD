@@ -176,7 +176,7 @@ class TestJWTTokenDecoding:
 class TestConstants:
     """Test module constants."""
 
-    @patch.dict(os.environ, {"MYTHOSMUD_SECRET_KEY": "test-secret-key"})
+    @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
     def test_secret_key_default(self):
         """Test SECRET_KEY default value."""
         # Re-import to get the updated value
@@ -198,7 +198,7 @@ class TestConstants:
         """Test ACCESS_TOKEN_EXPIRE_MINUTES default value."""
         assert ACCESS_TOKEN_EXPIRE_MINUTES == 60
 
-    @patch.dict(os.environ, {"MYTHOSMUD_SECRET_KEY": "test-secret-key"})
+    @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
     def test_secret_key_from_env(self):
         """Test SECRET_KEY from environment variable."""
         # Re-import to get the updated value
