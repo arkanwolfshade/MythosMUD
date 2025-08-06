@@ -335,21 +335,12 @@ Perhaps it exists in dimensions yet undiscovered, or perhaps it was never meant 
 @router.post("", status_code=status.HTTP_200_OK)
 def handle_command(
     req: CommandRequest,
-    current_user=Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
     request: Request = None,
 ):
     """Handle incoming command requests with comprehensive logging."""
     command_line = req.command
-
-    # Handle both old dict format and new User object format
-    if current_user is None:
-        raise HTTPException(status_code=401, detail="Authentication required")
-
-    if isinstance(current_user, dict):
-        player_name = current_user["username"]
-    else:
-        # New FastAPI Users format
-        player_name = current_user.username
+    player_name = current_user["username"]
 
     logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
 
@@ -412,7 +403,7 @@ def handle_command(
 
 def handle_expanded_command(
     command_line: str,
-    current_user,
+    current_user: dict,
     request: Request,
     alias_storage: AliasStorage,
     player_name: str,
@@ -475,7 +466,7 @@ def handle_expanded_command(
 
 
 def process_command(
-    cmd: str, args: list, current_user, request: Request, alias_storage: AliasStorage, player_name: str
+    cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
     logger.info("Processing command", player=player_name, command=cmd, args=args)
@@ -510,9 +501,7 @@ def process_command(
         if not persistence:
             logger.warning("Look command failed - no persistence layer", player=player_name)
             return {"result": "You see nothing special."}
-        # Get username from current_user (handle both dict and User object)
-        username = current_user["username"] if isinstance(current_user, dict) else current_user.username
-        player = persistence.get_player_by_name(username)
+        player = persistence.get_player_by_name(current_user["username"])
         if not player:
             logger.warning("Look command failed - player not found", player=player_name)
             return {"result": "You see nothing special."}
@@ -558,9 +547,7 @@ def process_command(
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
         logger.debug("Player attempting to move", player=player_name, direction=direction)
-        # Get username from current_user (handle both dict and User object)
-        username = current_user["username"] if isinstance(current_user, dict) else current_user.username
-        player = persistence.get_player_by_name(username)
+        player = persistence.get_player_by_name(current_user["username"])
         if not player:
             logger.warning("Go command failed - player not found", player=player_name)
             return {"result": "You can't go that way"}
