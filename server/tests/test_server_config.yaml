@@ -1,15 +1,15 @@
 # MythosMUD Test Server Configuration
 
 # --- Database & Persistence ---
-db_path: server/tests/data/players/test_players.db # Test DB
-log_path: server/tests/logs/test_persistence.log # Test log file
+db_path: server/tests/data/players/test_players.db  # Test DB
+
 
 # --- Logging Configuration ---
 logging:
   environment: test
-  level: DEBUG # Most verbose logging level
-  format: colored # json, human, colored (colored = human-readable with colors)
-  log_base: server/tests/logs # Test logs stay in test directory
+  level: DEBUG  # Most verbose logging level
+  format: colored  # json, human, colored (colored = human-readable with colors)
+  log_base: server/tests/logs  # Test logs stay in test directory
   rotation:
     max_size: 10MB
     backup_count: 2
@@ -17,10 +17,10 @@ logging:
   disable_logging: true
 
 # --- Network ---
-host: 127.0.0.1 # Test server bind address
-port: 4999 # Test game port
+host: 127.0.0.1  # Test server bind address
+port: 4999       # Test game port
 max_connections: 10
-connection_timeout: 10 # seconds
+connection_timeout: 10  # seconds
 
 # --- File Paths & Directories ---
 data_dir: server/tests/data/
@@ -64,12 +64,13 @@ enable_remote_console: false
 # --- Game Balance & Mechanics ---
 xp_multiplier: 1.0
 hp_regen_rate: 10
-combat_tick_interval: 1 # seconds
+combat_tick_interval: 1  # seconds
 
 # --- Runtime/Scheduler ---
-game_tick_rate: 0.5 # seconds
+game_tick_rate: 0.5  # seconds
 weather_update_interval: 5
 save_interval: 10
+
 # --- Future/Advanced ---
 # plugin_dir: ../tests/plugins/
 # scripting_engine: python
