@@ -20,7 +20,6 @@ dependencies = [
     "python-dotenv==1.0.0",
     "sqlalchemy>=2.0.42",
     "structlog>=25.4.0",
-<<<<<<< HEAD
     "fastapi-users[sqlalchemy]>=14.0.0",
     "setuptools<81",
     "pre-commit>=4.2.0",
@@ -28,7 +27,6 @@ dependencies = [
     "pytest-cov>=6.2.1",
     "aiosqlite>=0.21.0",
     "pytest-asyncio>=0.24.0",
->>>>>>> a26167d (Update dependencies in `pyproject.toml` and `uv.lock` for improved compatibility and functionality)
 ]
 
 [project.optional-dependencies]
