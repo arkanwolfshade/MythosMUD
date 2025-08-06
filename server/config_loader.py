@@ -84,6 +84,22 @@ _DEFAULTS = {
     "game_tick_rate": 1.0,
     "weather_update_interval": 300,
     "save_interval": 60,
+    # Additional defaults for fields expected by _FIELD_TYPES
+    "database_url": None,
+    "invite_codes_file": "./data/invites.json",
+    "aliases_dir": "./data/players/aliases/",
+    "max_connections_per_player": 3,
+    "rate_limit_window": 60,
+    "rate_limit_max_requests": 100,
+    "max_command_length": 1000,
+    "max_alias_depth": 10,
+    "max_alias_length": 100,
+    "max_aliases_per_player": 50,
+    "default_player_room": "arkham_001",
+    "default_player_stats": {"hp": 100, "mp": 50, "level": 1},
+    "logging": {"environment": "development", "level": "INFO", "format": "human", "log_base": "./logs"},
+    "db_path": "./data/players/players.db",
+    "log_path": "./logs/persistence.log",
 }
 
 _FIELD_TYPES = {
@@ -163,8 +179,14 @@ def get_config(config_path: str = None):
     config.update({k: v for k, v in (data or {}).items() if v is not None})
     logger.debug("Config merged with defaults")
 
+    # Handle db_path and log_path from YAML even if not in defaults
+    if data and "db_path" in data and data["db_path"] is not None:
+        config["db_path"] = data["db_path"]
+    if data and "log_path" in data and data["log_path"] is not None:
+        config["log_path"] = data["log_path"]
+
     # Map YAML field names to expected config keys
-    if "db_path" in config and config["database_url"] is None:
+    if "db_path" in config:
         config["database_url"] = config.pop("db_path")
 
     # Handle legacy logging configuration
@@ -212,7 +234,7 @@ def get_config(config_path: str = None):
         else:
             config[k] = _DEFAULTS[k]
     # Handle environment variables for sensitive data
-    if "admin_password" in config and config["admin_password"] is None:
+    if "admin_password" not in config or config["admin_password"] is None:
         admin_password = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
         if admin_password:
             logger.debug("Using MYTHOSMUD_ADMIN_PASSWORD from environment")
@@ -222,7 +244,7 @@ def get_config(config_path: str = None):
             raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
 
     # Handle environment variables for path configuration
-    if "database_url" in config and config["database_url"] is None:
+    if "database_url" not in config or config["database_url"] is None:
         database_url = os.getenv("DATABASE_URL")
         if database_url:
             logger.debug("Using DATABASE_URL from environment")
@@ -231,7 +253,7 @@ def get_config(config_path: str = None):
             logger.error("DATABASE_URL environment variable not set")
             raise ValueError("DATABASE_URL environment variable must be set")
 
-    if "aliases_dir" in config and config["aliases_dir"] is None:
+    if "aliases_dir" not in config or config["aliases_dir"] is None:
         aliases_dir = os.getenv("ALIASES_DIR")
         if aliases_dir:
             logger.debug("Using ALIASES_DIR from environment")

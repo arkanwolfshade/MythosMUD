@@ -21,12 +21,32 @@ from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
 from .invites import InviteManager, get_invite_manager
-from .users import UserManager, get_user_manager
+from .users import UserManager, auth_backend, fastapi_users, get_user_manager
 
 logger = get_logger("auth.endpoints")
 
 # Create router for auth endpoints
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+# Define user schemas
+class UserRead(BaseModel):
+    """Schema for user read operations."""
+
+    id: str
+    username: str
+    email: str | None = None
+    is_active: bool = True
+    is_superuser: bool = False
+    is_verified: bool = False
+
+
+class UserUpdate(BaseModel):
+    """Schema for user update operations."""
+
+    username: str | None = None
+    email: str | None = None
+    password: str | None = None
 
 
 # Define user creation schema
@@ -166,13 +186,16 @@ async def register_user(
     persistence._log(f"Created player {player_name} ({player_id}) for user {user_id}")
 
     # Generate access token using FastAPI Users approach
+    import os
+
     from fastapi_users.jwt import generate_jwt
 
     # Create JWT token manually
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(
         data,
-        "SECRET",  # TODO: Move to env vars
+        jwt_secret,
         lifetime_seconds=3600,  # 1 hour
     )
 
@@ -244,13 +267,16 @@ async def login_user(
         raise HTTPException(status_code=401, detail="Invalid credentials") from None
 
     # Generate access token using FastAPI Users approach
+    import os
+
     from fastapi_users.jwt import generate_jwt
 
     # Create JWT token manually
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(
         data,
-        "SECRET",  # TODO: Move to env vars
+        jwt_secret,
         lifetime_seconds=3600,  # 1 hour
     )
 
@@ -301,3 +327,9 @@ async def create_invite(
     This endpoint creates a new invite code for user registration.
     """
     return await invite_manager.create_invite()
+
+
+# Include FastAPI Users authentication endpoints
+auth_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/jwt", tags=["auth"])
+auth_router.include_router(fastapi_users.get_register_router(UserRead, UserCreate), prefix="/jwt", tags=["auth"])
+auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])

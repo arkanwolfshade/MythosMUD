@@ -1,9 +1,23 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 
-from server.auth import get_invites_file, get_users_file
 from server.auth_utils import decode_access_token
 from server.main import app
+
+
+# Define the functions locally since they're not available in the new auth package
+def get_users_file() -> str:
+    """Get the secure path to the users file."""
+    server_dir = os.path.dirname(os.path.dirname(__file__))
+    return os.path.join(server_dir, "users.json")
+
+
+def get_invites_file() -> str:
+    """Get the secure path to the invites file."""
+    server_dir = os.path.dirname(os.path.dirname(__file__))
+    return os.path.join(server_dir, "invites.json")
 
 
 # Patch the PersistenceLayer class to use the test database
@@ -16,14 +30,21 @@ def patch_persistence_layer(monkeypatch):
     from server.config_loader import get_config
 
     # Load test configuration
-    test_config_path = Path(__file__).parent.parent / "test_server_config.yaml"
+    test_config_path = Path(__file__).parent / "test_server_config.yaml"
     config = get_config(str(test_config_path))
 
     # Resolve paths relative to the project root (server directory)
     project_root = Path(__file__).parent.parent
+    # The config loader maps db_path to database_url, so we need to use database_url
+    # and convert it back to a file path
+    database_url = config["database_url"]
+    if database_url.startswith("sqlite+aiosqlite:///"):
+        db_path = database_url.replace("sqlite+aiosqlite:///", "")
+    else:
+        db_path = database_url
     # Remove the "server/" prefix from the config paths since we're already in the server directory
-    db_path = config["db_path"].replace("server/", "")
-    log_path = config["log_path"].replace("server/", "")
+    db_path = db_path.replace("server/", "")
+    log_path = config["logging"]["log_base"].replace("server/", "")
     test_db_path = project_root / db_path
     test_log_path = project_root / log_path
 
@@ -113,7 +134,8 @@ def patch_get_current_user(monkeypatch):
 
     print("[patch_get_current_user] Setting up mocks...")
     monkeypatch.setattr("server.auth.get_current_user", get_current_user_mock)
-    monkeypatch.setattr("server.auth.bearer_scheme", mock_bearer_scheme)
+    # Note: bearer_scheme doesn't exist in the new auth package structure
+    # monkeypatch.setattr("server.auth.bearer_scheme", mock_bearer_scheme)
     # Also mock it in the command_handler module where it's imported
     monkeypatch.setattr("server.command_handler.get_current_user", get_current_user_mock)
     print("[patch_get_current_user] Mocks set up successfully")
@@ -135,7 +157,7 @@ def temp_files():
     with open(invites_path, "w", encoding="utf-8") as f:
         json.dump(
             [
-                {"code": "ARKHAM_ACCESS", "used": False},
+                {"code": "TEST123", "used": False},
                 {"code": "USEDINVITE", "used": True},
             ],
             f,
@@ -210,14 +232,14 @@ def auth_token(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
+            "invite_code": "TEST123",  # Use the invite code that exists in test setup
         },
     )
     print(f"[auth_token] Registration response status: {reg_resp.status_code}")
     print(f"[auth_token] Registration response: {reg_resp.json()}")
 
-    # Registration should succeed
-    assert reg_resp.status_code == 201, f"Registration failed: {reg_resp.json()}"
+    # Registration should succeed (new endpoint returns 200 with access token)
+    assert reg_resp.status_code == 200, f"Registration failed: {reg_resp.json()}"
 
     persistence = test_client.app.state.persistence
     player = persistence.get_player_by_name(unique_username)
@@ -226,19 +248,8 @@ def auth_token(test_client):
     else:
         print("[auth_token] After registration: player not found in persistence")
 
-    resp = test_client.post("/auth/login", json={"username": unique_username, "password": "testpass"})
-    print(f"[auth_token] Login response status: {resp.status_code}")
-    print(f"[auth_token] Login response: {resp.json()}")
-
-    player = persistence.get_player_by_name(unique_username)
-    if player:
-        print(f"[auth_token] After login: {player.current_room_id}")
-    else:
-        print("[auth_token] After login: player not found in persistence")
-
-    # Login should succeed
-    assert resp.status_code == 200, f"Login failed: {resp.json()}"
-    return resp.json()["access_token"]
+    # New endpoint returns access token directly, no need for separate login
+    return reg_resp.json()["access_token"]
 
 
 def post_command(client, token, command):
@@ -267,7 +278,7 @@ def test_look_command_with_mock_auth(test_client):
         json={
             "username": unique_username,
             "password": "testpass",
-            "invite_code": "ARKHAM_ACCESS",  # Use the invite code that exists in test setup
+            "invite_code": "TEST123",  # Use the invite code that exists in test setup
         },
     )
     print(f"Register response: {register_resp.status_code} - {register_resp.json()}")
@@ -296,6 +307,8 @@ def test_empty_command(auth_token, test_client):
 
 def test_look_command(auth_token, test_client):
     resp = post_command(test_client, auth_token, "look")
+    print(f"[test] Command response status: {resp.status_code}")
+    print(f"[test] Command response: {resp.json()}")
     assert resp.status_code == 200
     result = resp.json()["result"]
     assert result.startswith("Arkham Town Square")

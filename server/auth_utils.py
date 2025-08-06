@@ -11,11 +11,12 @@ from server.logging_config import get_logger
 logger = get_logger(__name__)
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
-SECRET_KEY = os.getenv("MYTHOSMUD_SECRET_KEY")
+# Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system
+SECRET_KEY = os.getenv("MYTHOSMUD_JWT_SECRET")
 if not SECRET_KEY:
-    logger.error("MYTHOSMUD_SECRET_KEY environment variable not set")
+    logger.error("MYTHOSMUD_JWT_SECRET environment variable not set")
     raise ValueError(
-        "MYTHOSMUD_SECRET_KEY environment variable must be set. Generate a secure random key for production deployment."
+        "MYTHOSMUD_JWT_SECRET environment variable must be set. Generate a secure random key for production deployment."
     )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60

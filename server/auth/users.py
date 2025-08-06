@@ -7,6 +7,7 @@ for user authentication and management.
 
 import os
 import uuid
+from typing import Any
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
@@ -16,6 +17,7 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users.exceptions import InvalidID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
@@ -57,6 +59,15 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
         """Handle username verification logic."""
         logger.info(f"Verification requested for user {user.username}. Verification token: {token}")
+
+    def parse_id(self, value: Any) -> uuid.UUID:
+        """Parse a value into a UUID instance."""
+        if isinstance(value, uuid.UUID):
+            return value
+        try:
+            return uuid.UUID(value)
+        except (ValueError, TypeError) as err:
+            raise InvalidID() from err
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
