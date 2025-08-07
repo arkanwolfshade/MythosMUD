@@ -129,9 +129,8 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         break;
 
       case 'game_tick':
-        // Optional: Show tick updates for debugging
-        if ((event.data.tick_number as number) % 60 === 0) {
-          // Every minute
+        // Show tick updates every 10th tick for debugging
+        if ((event.data.tick_number as number) % 10 === 0) {
           addMessage(`[TICK] Game tick ${event.data.tick_number as number}`);
         }
         break;
@@ -149,7 +148,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         break;
 
       default:
-        addMessage(`[EVENT] ${event.event_type}: ${JSON.stringify(event.data)}`);
+        // Log unknown event types for debugging but don't display to user
+        console.log('Unknown event type:', event.event_type, event.data);
+        break;
     }
   }
 

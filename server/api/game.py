@@ -30,7 +30,7 @@ def get_game_status(request: Request = None):
         "active_connections": connection_manager.get_active_connection_count(),
         "active_players": len(connection_manager.player_websockets),
         "room_subscriptions": len(connection_manager.room_subscriptions),
-        "server_time": datetime.datetime.utcnow().isoformat(),
+        "server_time": datetime.datetime.now(datetime.UTC).isoformat(),
     }
 
     logger.debug(

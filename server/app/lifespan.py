@@ -65,7 +65,7 @@ async def game_tick_loop(app: FastAPI):
             # Broadcast game tick to all connected players
             tick_data = {
                 "tick_number": tick_count,
-                "timestamp": datetime.datetime.utcnow().isoformat(),
+                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
             await broadcast_game_event("game_tick", tick_data)

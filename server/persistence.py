@@ -156,6 +156,22 @@ class PersistenceLayer:
         """Save or update a player."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
+                # Handle datetime fields that might be strings
+                created_at = None
+                last_active = None
+
+                if player.created_at:
+                    if isinstance(player.created_at, str):
+                        created_at = player.created_at
+                    else:
+                        created_at = player.created_at.isoformat()
+
+                if player.last_active:
+                    if isinstance(player.last_active, str):
+                        last_active = player.last_active
+                    else:
+                        last_active = player.last_active.isoformat()
+
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
@@ -173,8 +189,8 @@ class PersistenceLayer:
                         player.current_room_id,
                         player.experience_points,
                         player.level,
-                        player.created_at.isoformat() if player.created_at else None,
-                        player.last_active.isoformat() if player.last_active else None,
+                        created_at,
+                        last_active,
                     ),
                 )
                 conn.commit()
@@ -196,6 +212,22 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
                 for player in players:
+                    # Handle datetime fields that might be strings
+                    created_at = None
+                    last_active = None
+
+                    if player.created_at:
+                        if isinstance(player.created_at, str):
+                            created_at = player.created_at
+                        else:
+                            created_at = player.created_at.isoformat()
+
+                    if player.last_active:
+                        if isinstance(player.last_active, str):
+                            last_active = player.last_active
+                        else:
+                            last_active = player.last_active.isoformat()
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
@@ -213,8 +245,8 @@ class PersistenceLayer:
                             player.current_room_id,
                             player.experience_points,
                             player.level,
-                            player.created_at.isoformat() if player.created_at else None,
-                            player.last_active.isoformat() if player.last_active else None,
+                            created_at,
+                            last_active,
                         ),
                     )
                 conn.commit()

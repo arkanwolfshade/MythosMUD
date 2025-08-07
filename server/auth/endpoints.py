@@ -135,8 +135,8 @@ async def register_user(
     await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
 
     # Create player record for the new user
+    import datetime
     import uuid
-    from datetime import datetime
 
     from ..persistence import get_persistence
 
@@ -153,8 +153,8 @@ async def register_user(
     current_room_id = "earth_arkham_city_intersection_Derby_High"
     experience_points = 0
     level = 1
-    created_at = user.created_at.isoformat() if user.created_at else datetime.utcnow().isoformat()
-    last_active = user.created_at.isoformat() if user.created_at else datetime.utcnow().isoformat()
+    created_at = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
+    last_active = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
 
     # Insert player directly into database
     import sqlite3
