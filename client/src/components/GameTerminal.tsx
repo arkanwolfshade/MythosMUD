@@ -3,6 +3,7 @@ import { useGameConnection } from '../hooks/useGameConnection';
 import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
 import { logger } from '../utils/logger';
 import './GameTerminal.css';
+import { RoomInfoPanel } from './RoomInfoPanel';
 
 interface GameTerminalProps {
   playerId: string;
@@ -20,8 +21,14 @@ interface Player {
 }
 
 interface Room {
+  id: string;
   name: string;
   description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
+  exits?: Record<string, string | null>;
 }
 
 interface Entity {
@@ -102,6 +109,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         break;
 
       case 'room_update':
+        console.log('Room update received:', event.data);
         setGameState(prev => ({
           ...prev,
           room: event.data.room as Room,
@@ -326,6 +334,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             </button>
           </div>
 
+          {/* Room Information Panel */}
+          <RoomInfoPanel room={gameState.room} />
+
           {/* Game State Display */}
           {gameState.player && (
             <div className="player-info">
@@ -333,33 +344,41 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
               <div className="stats">
                 <span>Level: {gameState.player.level || 1}</span>
                 {gameState.player.stats && (
-                  <ul className="stats-list">
-                    {Object.entries(gameState.player.stats).map(([key, value]) => (
-                      <li key={key}>
-                        <strong>{key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="stats-grid">
+                    {(() => {
+                      let statsObj = gameState.player.stats;
+
+                      // If stats is a string, try to parse it as JSON
+                      if (typeof statsObj === 'string') {
+                        try {
+                          statsObj = JSON.parse(statsObj);
+                        } catch (e) {
+                          console.error('Failed to parse stats JSON:', e);
+                        }
+                      }
+
+                      // If we have a valid object, display the stats
+                      if (typeof statsObj === 'object' && statsObj !== null) {
+                        return Object.entries(statsObj).map(([key, value]) => (
+                          <div key={key} className="stat-item">
+                            <span className="stat-label">
+                              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                            </span>
+                            <span className="stat-value">{value}</span>
+                          </div>
+                        ));
+                      } else {
+                        return (
+                          <div className="stat-item">
+                            <span className="stat-label">Stats:</span>
+                            <span className="stat-value">Loading...</span>
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* Room Information */}
-          {gameState.room && (
-            <div className="room-info">
-              <h4>{gameState.room.name}</h4>
-              <p>{gameState.room.description}</p>
-              {gameState.entities.length > 0 && (
-                <div className="entities">
-                  <strong>Entities in room:</strong>
-                  <ul>
-                    {gameState.entities.map((entity, index) => (
-                      <li key={index}>{entity.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           )}
         </div>

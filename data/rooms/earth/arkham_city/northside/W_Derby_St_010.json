@@ -8,8 +8,8 @@
   "environment": "outdoors",
   "exits": {
     "north": null,
-    "south": null,
-    "east": null,
+    "south": "earth_arkham_city_intersection_Derby_Jenkins",
+    "east": "earth_arkham_city_northside_Derby_St_011",
     "west": "earth_arkham_city_northside_Derby_St_009",
     "up": null,
     "down": null

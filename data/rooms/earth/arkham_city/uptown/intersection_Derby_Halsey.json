@@ -4,7 +4,7 @@
   "description": "The intersection where E. Derby Street meets Halsey Street",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "intersections",
+  "sub_zone": "uptown",
   "environment": "outdoors",
   "exits": {
     "north": null,

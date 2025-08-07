@@ -4,7 +4,7 @@
   "description": "The intersection where E. Derby Street meets N. Peabody Street",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "intersections",
+  "sub_zone": "downtown",
   "environment": "outdoors",
   "exits": {
     "north": null,

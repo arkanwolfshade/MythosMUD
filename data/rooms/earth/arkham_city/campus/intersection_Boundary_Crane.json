@@ -4,7 +4,7 @@
   "description": "The intersection where Boundary Street meets Crane Street",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "intersections",
+  "sub_zone": "campus",
   "environment": "outdoors",
   "exits": {
     "north": "earth_arkham_city_campus_Boundary_St_001",
