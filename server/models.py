@@ -1,3 +1,4 @@
+import random
 import uuid
 from datetime import UTC, datetime
 from enum import Enum
@@ -126,14 +127,14 @@ class Stats(BaseModel):
     """Core character statistics with Lovecraftian horror elements."""
 
     # Physical Attributes
-    strength: int = Field(ge=1, le=20, default=10, description="Physical power and combat damage")
-    dexterity: int = Field(ge=1, le=20, default=10, description="Agility, reflexes, and speed")
-    constitution: int = Field(ge=1, le=20, default=10, description="Health, stamina, and resistance")
+    strength: int = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
+    dexterity: int = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
+    constitution: int = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
 
     # Mental Attributes
-    intelligence: int = Field(ge=1, le=20, default=10, description="Problem-solving and magical aptitude")
-    wisdom: int = Field(ge=1, le=20, default=10, description="Perception, common sense, and willpower")
-    charisma: int = Field(ge=1, le=20, default=10, description="Social skills and influence")
+    intelligence: int = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
+    wisdom: int = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
+    charisma: int = Field(ge=1, le=20, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
     sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
@@ -146,6 +147,15 @@ class Stats(BaseModel):
 
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
+
+    def __init__(self, **data):
+        data.setdefault("strength", random.randint(3, 18))
+        data.setdefault("dexterity", random.randint(3, 18))
+        data.setdefault("constitution", random.randint(3, 18))
+        data.setdefault("intelligence", random.randint(3, 18))
+        data.setdefault("wisdom", random.randint(3, 18))
+        data.setdefault("charisma", random.randint(3, 18))
+        super().__init__(**data)
 
     # Derived stats - computed fields
     @computed_field
