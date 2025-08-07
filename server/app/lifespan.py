@@ -12,11 +12,9 @@ from fastapi import FastAPI
 from ..database import init_db
 from ..logging_config import get_logger
 from ..persistence import get_persistence
-from ..realtime.connection_manager import ConnectionManager
+from ..realtime.connection_manager import connection_manager
 from ..realtime.sse_handler import broadcast_game_event
 
-# Global connection manager instance
-connection_manager = ConnectionManager()
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
 
@@ -67,7 +65,7 @@ async def game_tick_loop(app: FastAPI):
             # Broadcast game tick to all connected players
             tick_data = {
                 "tick_number": tick_count,
-                "timestamp": datetime.datetime.utcnow().isoformat(),
+                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
             await broadcast_game_event("game_tick", tick_data)

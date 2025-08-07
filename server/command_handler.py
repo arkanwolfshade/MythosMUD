@@ -340,6 +340,11 @@ def handle_command(
 ):
     """Handle incoming command requests with comprehensive logging."""
     command_line = req.command
+
+    # Check if user is authenticated
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
     player_name = current_user["username"]
 
     logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
@@ -367,14 +372,20 @@ def handle_command(
         return {"result": ""}
 
     # Initialize alias storage
-    alias_storage = AliasStorage()
+    try:
+        alias_storage = AliasStorage()
+        logger.debug("AliasStorage initialized successfully", player=player_name)
+    except Exception as e:
+        logger.error("Failed to initialize AliasStorage", player=player_name, error=str(e))
+        # Continue without alias storage
+        alias_storage = None
 
     # Check for alias expansion before command processing
     parts = command_line.split()
     cmd = parts[0].lower()
     args = parts[1:]
 
-    logger.debug("Command parsed", player=player_name, command=cmd, args=args)
+    logger.debug("Command parsed", player=player_name, command=cmd, args=args, original_command=command_line)
 
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
@@ -538,12 +549,14 @@ def process_command(
         logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "go":
-        logger.debug("Processing go command", player=player_name, args=args)
+        logger.debug("Processing go command", player=player_name, args=args, args_length=len(args))
         if not persistence:
             logger.warning("Go command failed - no persistence layer", player=player_name)
             return {"result": "You can't go that way"}
         if not args:
-            logger.warning("Go command failed - no direction specified", player=player_name)
+            logger.warning(
+                "Go command failed - no direction specified", player=player_name, args=args, args_type=type(args)
+            )
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
         logger.debug("Player attempting to move", player=player_name, direction=direction)

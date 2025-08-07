@@ -1,0 +1,11 @@
+{
+  "environment": "outdoors",
+  "description": "The affluent residential district where the city's elite reside in stately mansions with manicured gardens. Behind the facade of respectability, however, lurks a decadence that would shock even the most jaded observer. The parties here are legendary, and the guests are... unusual.",
+  "special_rules": {
+    "sanity_drain_rate": 0.07,
+    "npc_spawn_modifier": 0.9,
+    "combat_modifier": 0.8,
+    "exploration_bonus": 0.6,
+    "access_requirements": ["formal_attire", "social_standing"]
+  }
+}

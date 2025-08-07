@@ -310,12 +310,18 @@ class ConnectionManager:
             Player | None: The player object or None if not found
         """
         if self.persistence is None:
+            logger.warning(f"Persistence layer not initialized for player lookup: {player_id}")
             return None
 
         player = self.persistence.get_player(player_id)
         if player is None:
             # Fallback to get_player_by_name
+            logger.info(f"Player not found by ID, trying by name: {player_id}")
             player = self.persistence.get_player_by_name(player_id)
+            if player:
+                logger.info(f"Player found by name: {player_id}")
+            else:
+                logger.warning(f"Player not found by name: {player_id}")
         return player
 
 

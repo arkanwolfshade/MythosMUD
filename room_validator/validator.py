@@ -8,6 +8,7 @@ described in the Pnakotic Manuscripts.
 """
 
 import sys
+from datetime import datetime
 
 import click
 from core.fixer import RoomFixer
@@ -15,29 +16,36 @@ from core.path_validator import PathValidator
 from core.reporter import Reporter
 from core.room_loader import RoomLoader
 from core.schema_validator import SchemaValidator
+from core.minimap_renderer import MinimapRenderer
 
 
 @click.command()
 @click.option("--zone", help="Validate specific zone only")
 @click.option("--verbose", "-v", is_flag=True, help="Detailed output")
 @click.option("--schema-only", is_flag=True, help="Only validate JSON schema")
+@click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
 @click.option("--ignore", help="Comma-separated list of rule types to ignore")
 @click.option("--output-format", type=click.Choice(["console", "json"]), default="console")
 @click.option("--base-path", default="./data/rooms", help="Base directory for room files")
 @click.option("--no-colors", is_flag=True, help="Disable colored output")
 @click.option("--fix", is_flag=True, help="Automatically fix issues (use with caution)")
 @click.option("--backup", is_flag=True, help="Create backup files before fixing")
+@click.option("--minimap", is_flag=True, help="Generate mini-map visualization")
+@click.option("--minimap-depth", default=3, help="Maximum depth for mini-map (default: 3)")
 # pylint: disable=too-many-arguments
 def main(
     zone: str | None,
     verbose: bool,
     schema_only: bool,
+    validate_configs: bool,
     ignore: str | None,
     output_format: str,
     base_path: str,
     no_colors: bool,
     fix: bool,
     backup: bool,
+    minimap: bool,
+    minimap_depth: int,
 ):
     """
     Validate room connectivity and structure in the MythosMUD world.
@@ -115,8 +123,8 @@ def main(
                     {
                         "type": "unreachable",
                         "room_id": room_id,
-                        "message": "No path from starting room arkham_001",
-                        "suggestion": "Add connection from arkham_001 or another reachable room",
+                        "message": "No path from starting room earth_arkham_city_campus_W_College_St_003",
+                        "suggestion": "Add connection from earth_arkham_city_campus_W_College_St_003 or another reachable room",
                     }
                 )
 
@@ -188,21 +196,110 @@ def main(
                 for failed_fix in fix_summary["failed_fixes"]:
                     print(f"  ⚠️  {failed_fix}")
 
+        # Validate configuration files if requested
+        if validate_configs:
+            reporter.print_progress("Validating configuration files...")
+            config_files = room_loader.discover_config_files(base_path)
+
+            # Validate sub-zone configurations
+            for config_path in config_files["subzone_config"]:
+                config_data = room_loader.load_config_file(config_path)
+                if config_data:
+                    config_errors = schema_validator.validate_subzone_config(
+                        config_data, str(config_path)
+                    )
+                    for error_msg in config_errors:
+                        errors.append({
+                            "type": "config_schema",
+                            "room_id": str(config_path),
+                            "message": error_msg,
+                            "suggestion": "Check sub-zone configuration schema",
+                        })
+                else:
+                    errors.append({
+                        "type": "config_parse",
+                        "room_id": str(config_path),
+                        "message": "Failed to parse sub-zone configuration",
+                        "suggestion": "Check JSON syntax and structure",
+                    })
+
+            # Validate zone configurations
+            for config_path in config_files["zone_config"]:
+                config_data = room_loader.load_config_file(config_path)
+                if config_data:
+                    config_errors = schema_validator.validate_zone_config(
+                        config_data, str(config_path)
+                    )
+                    for error_msg in config_errors:
+                        errors.append({
+                            "type": "config_schema",
+                            "room_id": str(config_path),
+                            "message": error_msg,
+                            "suggestion": "Check zone configuration schema",
+                        })
+                else:
+                    errors.append({
+                        "type": "config_parse",
+                        "room_id": str(config_path),
+                        "message": "Failed to parse zone configuration",
+                        "suggestion": "Check JSON syntax and structure",
+                    })
+
+        # Generate mini-map if requested
+        if minimap:
+            reporter.print_progress("Generating mini-map visualization...")
+            minimap_data = path_validator.generate_minimap_graph(room_database, minimap_depth)
+            minimap_renderer = MinimapRenderer()
+
+            print("\n" + "="*80)
+            print("🗺️  MINI-MAP VISUALIZATION")
+            print("="*80)
+
+            # Render ASCII map
+            ascii_map = minimap_renderer.render_ascii_map(minimap_data)
+            print(ascii_map)
+
+            # Render connectivity stats
+            stats_map = minimap_renderer.render_connectivity_stats(minimap_data)
+            print("\n" + stats_map)
+
+            print("="*80)
+
         # Generate statistics
+        subzones = room_loader.get_subzones()
+        config_subzones = room_loader.count_config_subzones(base_path)
+
         stats = {
             "zones": len(zones),
+            "subzones": len(subzones),
+            "config_subzones": config_subzones,
             "rooms": len(room_database),
             "errors": len(errors),
             "warnings": len(warnings),
             "success": len(errors) == 0,
         }
 
+        # Log errors to file if any exist
+        if errors:
+            error_log_path = "error.log"
+            with open(error_log_path, "w", encoding="utf-8") as f:
+                f.write(f"Room Validator Error Log - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write("="*80 + "\n\n")
+                for error in errors:
+                    f.write(f"🏠 {error['room_id']}\n")
+                    f.write(f"  ❌ {error['type'].title()}: {error['message']}\n")
+                    f.write(f"     💡 Suggestion: {error['suggestion']}\n\n")
+            print(f"📝 Errors logged to {error_log_path}")
+
         # Reporting phase
         if output_format == "json":
             json_output = reporter.generate_json_output(stats, errors, warnings)
             print(json_output)
         else:
-            reporter.print_validation_errors(errors)
+            if errors:
+                print(f"❌ {len(errors)} errors found (see error.log for details)")
+            else:
+                reporter.print_success()
             reporter.print_validation_warnings(warnings)
             reporter.print_summary(stats)
 

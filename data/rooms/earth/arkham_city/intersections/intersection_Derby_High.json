@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Derby_High",
+  "name": "W. Derby and High Lane Intersection",
+  "description": "The intersection where W. Derby Street meets High Lane",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_Derby_St_001",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

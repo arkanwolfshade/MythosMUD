@@ -60,14 +60,14 @@ export function useGameConnection({
 
   // Connect WebSocket for commands after SSE connection is established
   const connectWebSocket = useCallback(() => {
-    if (!authToken || !playerId) {
-      logger.error('GameConnection', 'Missing auth token or player ID for WebSocket');
+    if (!authToken || !playerName) {
+      logger.error('GameConnection', 'Missing auth token or player name for WebSocket');
       return;
     }
 
     try {
-      // WebSocket endpoint is at /api/ws/{player_id} on port 54731 (server expects player ID, not username)
-      const wsUrl = `ws://localhost:54731/api/ws/${playerId}?token=${encodeURIComponent(authToken)}`;
+      // WebSocket endpoint is at /api/ws/{player_name} on port 54731 (server expects username, not user_id)
+      const wsUrl = `ws://localhost:54731/api/ws/${playerName}?token=${encodeURIComponent(authToken)}`;
       const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;
@@ -100,7 +100,7 @@ export function useGameConnection({
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
     }
-  }, [authToken, playerId, playerName, onEvent]);
+  }, [authToken, playerName, onEvent]);
 
   const connect = useCallback(async () => {
     if (isConnectingRef.current || state.isConnected) {

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_Derby_St_004",
+  "name": "W. Derby Street",
+  "description": "W. Derby Street 004",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_Derby_St_005",
+    "west": "earth_arkham_city_intersection_Apple_Derby",
+    "up": null,
+    "down": null
+  }
+}

@@ -26,10 +26,11 @@ data_dir: ./data/
 player_dir: ./data/players/
 log_dir: ./logs/
 motd_file: ./data/motd.html
+aliases_dir: ./data/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---
-start_room: arkham_001
+start_room: earth_arkham_city_intersection_Derby_High
 starting_level: 1
 allow_multiplay: false
 max_players: 100

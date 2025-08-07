@@ -16,11 +16,13 @@ A comprehensive validation tool for room connectivity and structure in the Mytho
 ## Installation
 
 1. Install dependencies:
+
 ```bash
 uv pip install -r requirements.txt
 ```
 
 2. Run the validator:
+
 ```bash
 python validator.py --base-path ../data/rooms
 ```
@@ -28,6 +30,7 @@ python validator.py --base-path ../data/rooms
 ## Usage
 
 ### Basic Validation
+
 ```bash
 # Validate all rooms in the default location
 python validator.py
@@ -37,12 +40,14 @@ python validator.py --base-path ./my_rooms/
 ```
 
 ### Zone-specific Validation
+
 ```bash
 # Validate only the arkham zone
 python validator.py --zone arkham
 ```
 
 ### Output Formats
+
 ```bash
 # Console output with colors (default)
 python validator.py
@@ -55,18 +60,21 @@ python validator.py --no-colors
 ```
 
 ### Verbose Mode
+
 ```bash
 # Show detailed progress and processing information
 python validator.py --verbose
 ```
 
 ### Schema-only Validation
+
 ```bash
 # Only validate JSON schema, skip connectivity checks
 python validator.py --schema-only
 ```
 
 ### Automatic Fixing
+
 ```bash
 # Automatically fix common issues (use with caution)
 python validator.py --fix
@@ -83,6 +91,7 @@ python validator.py --zone arkham --fix --backup
 The validator supports both legacy string format and new object format for exits:
 
 ### Legacy Format
+
 ```json
 {
   "exits": {
@@ -93,6 +102,7 @@ The validator supports both legacy string format and new object format for exits
 ```
 
 ### New Format (with flags)
+
 ```json
 {
   "exits": {
@@ -109,17 +119,20 @@ The validator supports both legacy string format and new object format for exits
 ```
 
 ### Supported Exit Flags
+
 - `"one_way"`: Exit doesn't require bidirectional return path
 - `"self_reference"`: Allow room to reference itself (for teleporters, etc.)
 
 ## Validation Rules
 
 ### Structure Rules
+
 - **Schema Validation**: Ensures rooms conform to JSON schema
 - **Duplicate ID Detection**: Checks for duplicate room IDs across zones
 - **Exit Reference Validation**: Verifies all exit targets exist
 
 ### Connectivity Rules
+
 - **Bidirectional Connections**: Ensures room A → room B implies room B → room A
 - **Unreachable Room Detection**: Finds rooms that cannot be reached from starting point
 - **Dead End Detection**: Identifies rooms with no exits (true dead ends)
@@ -128,6 +141,7 @@ The validator supports both legacy string format and new object format for exits
 ## Sample Output
 
 ### Console Output
+
 ```
 🔍 Room Validator v1.0
 📁 Scanning ../data/rooms...
@@ -139,8 +153,8 @@ The validator supports both legacy string format and new object format for exits
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → arkham_001, but arkham_001 has no 'north' return
-     💡 Suggestion: Add "north": "arkham_002" to arkham_001 or flag as one_way
+  ❌ Bidirectional: Exit 'south' → earth_arkham_city_intersection_Derby_High, but earth_arkham_city_intersection_Derby_High has no 'north' return
+     💡 Suggestion: Add "north": "arkham_002" to earth_arkham_city_intersection_Derby_High or flag as one_way
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
@@ -156,6 +170,7 @@ The validator supports both legacy string format and new object format for exits
 ```
 
 ### JSON Output
+
 ```json
 {
   "summary": {
@@ -169,8 +184,8 @@ The validator supports both legacy string format and new object format for exits
     {
       "type": "bidirectional",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → arkham_001, but arkham_001 has no 'north' return",
-      "suggestion": "Add \"north\": \"arkham_002\" to arkham_001 or flag as one_way"
+      "message": "Exit 'south' → earth_arkham_city_intersection_Derby_High, but earth_arkham_city_intersection_Derby_High has no 'north' return",
+      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkham_city_intersection_Derby_High or flag as one_way"
     }
   ],
   "warnings": [
@@ -200,19 +215,23 @@ The validator is organized into several modules:
 The validator can automatically fix the following issues:
 
 ### Schema Issues
+
 - **Missing Required Fields**: Add missing `exits`, `field1`, `field2`, `field3` fields
 - **Empty Exit Objects**: Initialize empty exit objects with proper structure
 
 ### Connectivity Issues
+
 - **Missing Return Paths**: Add bidirectional connections automatically
 - **Self-Reference Flags**: Add `self_reference` flags to self-referencing exits
 
 ### Safety Features
+
 - **Backup Creation**: Create timestamped backups before making changes
 - **Selective Fixing**: Only fix issues that can be safely resolved
 - **Error Reporting**: Report any fixes that fail to apply
 
 ### Usage Examples
+
 ```bash
 # Fix all issues with backups
 python validator.py --fix --backup

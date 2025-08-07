@@ -134,7 +134,10 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
             if row:
-                return Player(**dict(row))
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
             return None
 
     def get_player(self, player_id: str) -> Player | None:
@@ -143,13 +146,32 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
             if row:
-                return Player(**dict(row))
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
             return None
 
     def save_player(self, player: Player):
         """Save or update a player."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
+                # Handle datetime fields that might be strings
+                created_at = None
+                last_active = None
+
+                if player.created_at:
+                    if isinstance(player.created_at, str):
+                        created_at = player.created_at
+                    else:
+                        created_at = player.created_at.isoformat()
+
+                if player.last_active:
+                    if isinstance(player.last_active, str):
+                        last_active = player.last_active
+                    else:
+                        last_active = player.last_active.isoformat()
+
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
@@ -167,8 +189,8 @@ class PersistenceLayer:
                         player.current_room_id,
                         player.experience_points,
                         player.level,
-                        player.created_at.isoformat() if player.created_at else None,
-                        player.last_active.isoformat() if player.last_active else None,
+                        created_at,
+                        last_active,
                     ),
                 )
                 conn.commit()
@@ -190,6 +212,22 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
                 for player in players:
+                    # Handle datetime fields that might be strings
+                    created_at = None
+                    last_active = None
+
+                    if player.created_at:
+                        if isinstance(player.created_at, str):
+                            created_at = player.created_at
+                        else:
+                            created_at = player.created_at.isoformat()
+
+                    if player.last_active:
+                        if isinstance(player.last_active, str):
+                            last_active = player.last_active
+                        else:
+                            last_active = player.last_active.isoformat()
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
@@ -207,8 +245,8 @@ class PersistenceLayer:
                             player.current_room_id,
                             player.experience_points,
                             player.level,
-                            player.created_at.isoformat() if player.created_at else None,
-                            player.last_active.isoformat() if player.last_active else None,
+                            created_at,
+                            last_active,
                         ),
                     )
                 conn.commit()
@@ -294,5 +332,26 @@ class PersistenceLayer:
     # def get_inventory(self, ...): ...
     # def save_inventory(self, ...): ...
     # def list_inventory(self, ...): ...
+
+    def validate_and_fix_player_room(self, player: Player) -> bool:
+        """
+        Validate that a player's current room exists, and fix if necessary.
+
+        Args:
+            player: The player to validate
+
+        Returns:
+            True if the room was valid or successfully fixed, False otherwise
+        """
+        # Check if the player's current room exists
+        if self.get_room(player.current_room_id) is not None:
+            return True  # Room exists, no fix needed
+
+        # Room doesn't exist, move player to starting room
+        old_room = player.current_room_id
+        player.current_room_id = "earth_arkham_city_campus_W_College_St_003"
+
+        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
+        return True
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Apple_High",
+  "name": "Apple and High Street Intersection",
+  "description": "The intersection where Apple Lane meets High Street",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

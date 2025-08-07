@@ -92,6 +92,8 @@ class Reporter:
             stats: Dictionary containing validation statistics
         """
         zones = stats.get("zones", 0)
+        subzones = stats.get("subzones", 0)
+        config_subzones = stats.get("config_subzones", 0)
         rooms = stats.get("rooms", 0)
         errors = stats.get("errors", 0)
         warnings = stats.get("warnings", 0)
@@ -99,6 +101,8 @@ class Reporter:
 
         print("\n📊 SUMMARY:")
         print(f"  Zones: {zones}")
+        print(f"  Sub-zones: {subzones} "
+              f"(with {config_subzones} config files)")
         print(f"  Rooms: {rooms} total")
         print(f"  Errors: {errors} 🔴")
         print(f"  Warnings: {warnings} 🟡")

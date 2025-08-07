@@ -81,7 +81,8 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         if message_type == "command":
             # Handle game command
             command = data.get("command", "")
-            await handle_game_command(websocket, player_id, command)
+            args = data.get("args", [])
+            await handle_game_command(websocket, player_id, command, args)
 
         elif message_type == "chat":
             # Handle chat message
@@ -102,7 +103,7 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await websocket.send_json({"type": "error", "message": "Error processing message"})
 
 
-async def handle_game_command(websocket: WebSocket, player_id: str, command: str):
+async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list = None):
     """
     Handle a game command from a player.
 
@@ -110,25 +111,28 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         websocket: The WebSocket connection
         player_id: The player's ID
         command: The command string
+        args: Command arguments (optional, will parse from command if not provided)
     """
     try:
-        # Parse command and arguments
-        parts = command.strip().split()
-        if not parts:
-            await websocket.send_json({"type": "error", "message": "Empty command"})
-            return
+        # Parse command and arguments if args not provided
+        if args is None:
+            parts = command.strip().split()
+            if not parts:
+                await websocket.send_json({"type": "error", "message": "Empty command"})
+                return
 
-        cmd = parts[0].lower()
-        args = parts[1:] if len(parts) > 1 else []
+            cmd = parts[0].lower()
+            args = parts[1:] if len(parts) > 1 else []
+        else:
+            cmd = command.lower()
 
         # Simple command processing for WebSocket
         result = await process_websocket_command(cmd, args, player_id)
 
         # Send the result back to the player
         response = {
-            "type": "command_result",
-            "command": command,
-            "result": result,
+            "event_type": "command_response",
+            "data": result,
         }
         await websocket.send_json(response)
 
@@ -158,14 +162,25 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
+    logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
+
     # Get player from connection manager
+    logger.debug(f"Getting player for ID: {player_id} (type: {type(player_id)})")
     player = connection_manager._get_player(player_id)
+    logger.debug(f"Player object: {player} (type: {type(player)})")
     if not player:
+        logger.warning(f"Player not found: {player_id}")
         return {"result": "Player not found"}
+
+    # Check if player is actually a Player object
+    if not hasattr(player, "current_room_id"):
+        logger.error(f"Player object is not a Player instance: {type(player)}")
+        return {"result": "Player data error"}
 
     # Get persistence from connection manager
     persistence = connection_manager.persistence
     if not persistence:
+        logger.warning("Persistence layer not available")
         return {"result": "Game system unavailable"}
 
     # Handle basic commands
@@ -195,13 +210,18 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
 
     elif cmd == "go":
+        logger.debug(f"Processing go command with args: {args}")
         if not args:
+            logger.warning("Go command called without arguments")
             return {"result": "Go where? Usage: go <direction>"}
 
         direction = args[0].lower()
+        logger.debug(f"Direction: {direction}")
         room_id = player.current_room_id
+        logger.debug(f"Current room ID: {room_id}")
         room = persistence.get_room(room_id)
         if not room:
+            logger.warning(f"Room not found: {room_id}")
             return {"result": "You can't go that way"}
 
         exits = room.get("exits", {})

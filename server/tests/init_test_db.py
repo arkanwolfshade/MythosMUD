@@ -34,6 +34,12 @@ else:
 # Load the production schema
 SCHEMA_PATH = Path(__file__).parent.parent / "sql" / "schema.sql"
 
+# Test database path
+TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
+
+# Room data paths
+ROOMS_DIR = Path(__file__).parent / "data" / "rooms"
+
 
 def load_schema():
     """Load the production database schema."""
@@ -41,56 +47,60 @@ def load_schema():
         return SCHEMA_PATH.read_text()
     else:
         # Fallback schema if the file doesn't exist
-        return """
--- Users table for authentication
-CREATE TABLE IF NOT EXISTS users (
-    user_id TEXT PRIMARY KEY NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    username TEXT UNIQUE NOT NULL,
-    hashed_password TEXT NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT 1,
-    is_superuser BOOLEAN NOT NULL DEFAULT 0,
-    is_verified BOOLEAN NOT NULL DEFAULT 0,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+        return SCHEMA
 
--- Players table for game data
-CREATE TABLE IF NOT EXISTS players (
-    player_id TEXT PRIMARY KEY NOT NULL,
-    user_id TEXT NOT NULL UNIQUE,
-    name TEXT UNIQUE NOT NULL,
-    stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
-    inventory TEXT NOT NULL DEFAULT '[]',
-    status_effects TEXT NOT NULL DEFAULT '[]',
-    current_room_id TEXT NOT NULL DEFAULT 'arkham_001',
-    experience_points INTEGER NOT NULL DEFAULT 0,
-    level INTEGER NOT NULL DEFAULT 1,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
 
--- Invites table for invite-only registration
-CREATE TABLE IF NOT EXISTS invites (
-    id TEXT PRIMARY KEY NOT NULL,
-    invite_code TEXT UNIQUE NOT NULL,
-    created_by_user_id TEXT,
-    used_by_user_id TEXT,
-    used BOOLEAN NOT NULL DEFAULT 0,
-    expires_at DATETIME,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL,
-    FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL
-);
-
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
-CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
-CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
-CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
-CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
-"""
+# Database schema (same as production)
+SCHEMA = (
+    "-- Users table for authentication\n"
+    "CREATE TABLE IF NOT EXISTS users (\n"
+    "    user_id TEXT PRIMARY KEY NOT NULL,\n"
+    "    email TEXT UNIQUE NOT NULL,\n"
+    "    username TEXT UNIQUE NOT NULL,\n"
+    "    hashed_password TEXT NOT NULL,\n"
+    "    is_active BOOLEAN NOT NULL DEFAULT 1,\n"
+    "    is_superuser BOOLEAN NOT NULL DEFAULT 0,\n"
+    "    is_verified BOOLEAN NOT NULL DEFAULT 0,\n"
+    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+    "    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n"
+    ");\n"
+    "\n"
+    "-- Players table for game data\n"
+    "CREATE TABLE IF NOT EXISTS players (\n"
+    "    player_id TEXT PRIMARY KEY NOT NULL,\n"
+    "    user_id TEXT NOT NULL UNIQUE,\n"
+    "    name TEXT UNIQUE NOT NULL,\n"
+    '    stats TEXT NOT NULL DEFAULT \'{"health": 100, "sanity": 100, "strength": 10}\',\n'
+    "    inventory TEXT NOT NULL DEFAULT '[]',\n"
+    "    status_effects TEXT NOT NULL DEFAULT '[]',\n"
+    "    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_Derby_High',\n"
+    "    experience_points INTEGER NOT NULL DEFAULT 0,\n"
+    "    level INTEGER NOT NULL DEFAULT 1,\n"
+    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+    "    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+    "    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE\n"
+    ");\n"
+    "\n"
+    "-- Invites table for invite-only registration\n"
+    "CREATE TABLE IF NOT EXISTS invites (\n"
+    "    id TEXT PRIMARY KEY NOT NULL,\n"
+    "    invite_code TEXT UNIQUE NOT NULL,\n"
+    "    created_by_user_id TEXT,\n"
+    "    used_by_user_id TEXT,\n"
+    "    used BOOLEAN NOT NULL DEFAULT 0,\n"
+    "    expires_at DATETIME,\n"
+    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+    "    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL,\n"
+    "    FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL\n"
+    ");\n"
+    "\n"
+    "-- Create indexes for better performance\n"
+    "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);\n"
+    "CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);\n"
+    "CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);\n"
+    "CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);\n"
+    "CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);\n"
+)
 
 
 # Sample test user data
@@ -121,14 +131,10 @@ SAMPLE_PLAYERS = [
         "player_id": "test-player-1",
         "user_id": "test-user-1",
         "name": "TestPlayer1",
-        "stats": (
-            '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, '
-            '"constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, '
-            '"occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
-        ),
+        "stats": '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}',
         "inventory": "[]",
         "status_effects": "[]",
-        "current_room_id": "arkham_001",
+        "current_room_id": "earth_arkham_city_intersection_Derby_High",
         "experience_points": 0,
         "level": 1,
     },
@@ -136,11 +142,7 @@ SAMPLE_PLAYERS = [
         "player_id": "test-player-2",
         "user_id": "test-user-2",
         "name": "TestPlayer2",
-        "stats": (
-            '{"health": 100, "sanity": 85, "strength": 10, "dexterity": 12, '
-            '"constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, '
-            '"occult_knowledge": 5, "fear": 15, "corruption": 0, "cult_affiliation": 0}'
-        ),
+        "stats": '{"health": 100, "sanity": 85, "strength": 10, "dexterity": 12, "constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, "occult_knowledge": 5, "fear": 15, "corruption": 0, "cult_affiliation": 0}',
         "inventory": "[]",
         "status_effects": "[]",
         "current_room_id": "arkham_002",
