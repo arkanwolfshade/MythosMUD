@@ -330,9 +330,16 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             <div className="player-info">
               <h3>{gameState.player.name}</h3>
               <div className="stats">
-                <span>HP: {gameState.player.stats?.current_health || 0}</span>
-                <span>Sanity: {gameState.player.stats?.sanity || 0}</span>
                 <span>Level: {gameState.player.level || 1}</span>
+                {gameState.player.stats && (
+                  <ul className="stats-list">
+                    {Object.entries(gameState.player.stats).map(([key, value]) => (
+                      <li key={key}>
+                        <strong>{key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           )}
