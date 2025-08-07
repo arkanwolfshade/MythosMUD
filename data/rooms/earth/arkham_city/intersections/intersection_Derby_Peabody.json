@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Derby_Peabody",
+  "name": "Derby and Peabody Street Intersection",
+  "description": "The intersection where E. Derby Street meets N. Peabody Street",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

@@ -39,7 +39,8 @@ class RoomLoader:
             base_path: Optional override for base path
 
         Returns:
-            List of Path objects for discovered JSON files
+            List of Path objects for discovered room JSON files
+            (excludes config files)
         """
         search_path = Path(base_path) if base_path else self.base_path
 
@@ -49,6 +50,10 @@ class RoomLoader:
         json_files = []
         for file_path in search_path.rglob("*.json"):
             if file_path.is_file():
+                # Skip configuration files - they are not room files
+                config_files = ["subzone_config.json", "zone_config.json"]
+                if file_path.name in config_files:
+                    continue
                 json_files.append(file_path)
 
         return sorted(json_files)
@@ -87,7 +92,9 @@ class RoomLoader:
             self.parsing_errors.append((str(file_path), error_msg))
             return None
 
-    def build_room_database(self, base_path: str | None = None, show_progress: bool = True) -> dict[str, dict]:
+    def build_room_database(
+        self, base_path: str | None = None, show_progress: bool = True
+    ) -> dict[str, dict]:
         """
         Create complete room index from all discovered files.
 
@@ -124,7 +131,56 @@ class RoomLoader:
                 else:
                     self.parsing_errors.append((str(file_path), "Missing room ID"))
 
+        # Load referenced intersection files
+        self._load_referenced_intersections(base_path)
+
         return self.room_database
+
+    def _load_referenced_intersections(self, base_path: str | None = None):
+        """
+        Load intersection files that are referenced by rooms in the database.
+
+        Args:
+            base_path: Optional override for base path
+        """
+        search_path = Path(base_path) if base_path else self.base_path
+
+        # Find intersection directory
+        intersection_dir = search_path / "intersections"
+        if not intersection_dir.exists():
+            return
+
+        # Get all referenced room IDs from current database
+        referenced_rooms = set()
+        for room_data in self.room_database.values():
+            exits = room_data.get("exits", {})
+            for direction, target_room in exits.items():
+                if target_room and isinstance(target_room, str):
+                    referenced_rooms.add(target_room)
+
+        # Load intersection files that reference rooms in our database
+        for intersection_file in intersection_dir.glob("*.json"):
+            if intersection_file.name in ["subzone_config.json", "zone_config.json"]:
+                continue
+
+            intersection_data = self.load_room_data(intersection_file)
+            if not intersection_data:
+                continue
+
+            # Check if this intersection references any rooms in our database
+            exits = intersection_data.get("exits", {})
+            references_our_rooms = False
+            for direction, target_room in exits.items():
+                if target_room and isinstance(target_room, str):
+                    if target_room in self.room_database:
+                        references_our_rooms = True
+                        break
+
+            # If intersection references our rooms, add it to database
+            if references_our_rooms:
+                room_id = intersection_data.get("id")
+                if room_id:
+                    self.room_database[room_id] = intersection_data
 
     def get_zones(self) -> list[str]:
         """
@@ -139,6 +195,33 @@ class RoomLoader:
             if zone:
                 zones.add(zone)
         return sorted(zones)
+
+    def get_subzones(self) -> list[str]:
+        """
+        Return list of discovered sub-zones.
+
+        Returns:
+            List of unique sub-zone identifiers
+        """
+        subzones = set()
+        for room_data in self.room_database.values():
+            sub_zone = room_data.get("sub_zone")
+            if sub_zone:
+                subzones.add(sub_zone)
+        return sorted(subzones)
+
+    def count_config_subzones(self, base_path: str | None = None) -> int:
+        """
+        Count the number of sub-zone configuration files.
+
+        Args:
+            base_path: Optional override for base path
+
+        Returns:
+            Number of sub-zone configuration files found
+        """
+        config_files = self.discover_config_files(base_path)
+        return len(config_files["subzone_config"])
 
     def get_rooms_by_zone(self, zone: str) -> dict[str, dict]:
         """
@@ -184,6 +267,67 @@ class RoomLoader:
             # Check if file is in appropriate zone directory
             zone_dir = file_path.parent.name
             if zone_dir == "rooms":
-                warnings.append(f"Room file not in zone directory: {file_path}")
+                warnings.append(
+                    f"Room file not in zone directory: {file_path}"
+                )
 
         return warnings
+
+    def discover_config_files(self, base_path: str | None = None) -> dict[str, list[Path]]:
+        """
+        Discover configuration files (subzone_config.json, zone_config.json).
+
+        Args:
+            base_path: Optional override for base path
+
+        Returns:
+            Dictionary mapping config types to lists of file paths
+        """
+        search_path = Path(base_path) if base_path else self.base_path
+        config_files = {
+            "subzone_config": [],
+            "zone_config": []
+        }
+
+        if not search_path.exists():
+            return config_files
+
+        for file_path in search_path.rglob("*.json"):
+            if file_path.is_file():
+                if file_path.name == "subzone_config.json":
+                    config_files["subzone_config"].append(file_path)
+                elif file_path.name == "zone_config.json":
+                    config_files["zone_config"].append(file_path)
+
+        return config_files
+
+    def load_config_file(self, file_path: Path) -> dict | None:
+        """
+        Load a configuration file with error handling.
+
+        Args:
+            file_path: Path to the configuration JSON file
+
+        Returns:
+            Parsed configuration data or None if parsing failed
+        """
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                config_data = json.load(f)
+
+            # Validate basic structure
+            if not isinstance(config_data, dict):
+                raise ValueError(
+                    "Configuration data must be a JSON object"
+                )
+
+            return config_data
+
+        except json.JSONDecodeError as e:
+            error_msg = f"Invalid JSON: {e}"
+            self.parsing_errors.append((str(file_path), error_msg))
+            return None
+        except Exception as e:
+            error_msg = f"Error loading config: {e}"
+            self.parsing_errors.append((str(file_path), error_msg))
+            return None

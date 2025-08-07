@@ -2,6 +2,9 @@
 
 .PHONY: help clean lint format test coverage build install run
 
+# Determine project root for worktree contexts
+PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
+
 help:
 	@echo "Available targets:"
 	@echo "  clean     - Remove build, dist, and cache files"
@@ -10,27 +13,33 @@ help:
 	@echo "  test      - Run Python and Node tests (includes test DB cleanup)"
 	@echo "  coverage  - Run Python tests with coverage"
 	@echo "  build     - Build the client (Node)"
+	@echo "  install   - Install dependencies (worktree-aware)"
 
 clean:
-	python scripts/clean.py
+	cd $(PROJECT_ROOT) && python scripts/clean.py
 
 lint:
-	python scripts/lint.py
+	cd $(PROJECT_ROOT) && python scripts/lint.py
 
 format:
-	python scripts/format.py
+	cd $(PROJECT_ROOT) && python scripts/format.py
 
 test:
-	python scripts/test.py
+	cd $(PROJECT_ROOT) && python scripts/test.py
 
 coverage:
-	python scripts/coverage.py
+	cd $(PROJECT_ROOT) && python scripts/coverage.py
 
 build:
-	python scripts/build.py
+	cd $(PROJECT_ROOT) && python scripts/build.py
 
 install:
-	python scripts/install.py
+	cd $(PROJECT_ROOT) && python scripts/install.py
 
 run:
-	python scripts/run.py
+	cd $(PROJECT_ROOT) && python scripts/run.py
+
+all:
+	cd $(PROJECT_ROOT) && make format
+	cd $(PROJECT_ROOT) && make lint
+	cd $(PROJECT_ROOT) && make test

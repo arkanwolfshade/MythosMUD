@@ -210,4 +210,14 @@ __marimo__/
 # Local development files
 TASKS.local.md
 
-server/logs/
+# Environment files (CRITICAL: Never commit actual .env files)
+.env.local
+
+# Logging files (CRITICAL: Never commit log files)
+logs/
+server/tests/logs/
+
+# Database files (CRITICAL: Never commit database files)
+server/tests/data/players/test_players.db
+server\tests\data\players\test_players.db
+data/players/players.db

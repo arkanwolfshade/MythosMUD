@@ -4,7 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
-from .auth import get_current_user
+from .auth.users import get_current_user
+from .logging_config import get_logger
+
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/command", tags=["command"])
 
@@ -23,15 +26,20 @@ INJECTION_PATTERNS = [
 
 
 def is_suspicious_input(command: str) -> bool:
+    """Check if command contains suspicious patterns that might indicate injection attempts."""
     for pat in INJECTION_PATTERNS:
         if re.search(pat, command, re.IGNORECASE):
+            logger.warning("Suspicious command pattern detected", pattern=pat, command=command)
             return True
     return False
 
 
 def clean_command_input(command: str) -> str:
-    # Collapse multiple spaces, strip
-    return re.sub(r"\s+", " ", command).strip()
+    """Clean and normalize command input by collapsing multiple spaces and stripping whitespace."""
+    cleaned = re.sub(r"\s+", " ", command).strip()
+    if cleaned != command:
+        logger.debug("Command input cleaned", original=command, cleaned=cleaned)
+    return cleaned
 
 
 MAX_COMMAND_LENGTH = 50
@@ -324,40 +332,70 @@ Perhaps it exists in dimensions yet undiscovered, or perhaps it was never meant 
     return help_html
 
 
-@router.post("/", status_code=status.HTTP_200_OK)
+@router.post("", status_code=status.HTTP_200_OK)
 def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
 ):
+    """Handle incoming command requests with comprehensive logging."""
     command_line = req.command
+
+    # Check if user is authenticated
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    player_name = current_user["username"]
+
+    logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
+
     if len(command_line) > MAX_COMMAND_LENGTH:
+        logger.warning(
+            "Command too long rejected",
+            player=player_name,
+            command=command_line,
+            length=len(command_line),
+            max_length=MAX_COMMAND_LENGTH,
+        )
         raise HTTPException(
             status_code=400,
             detail=f"Command too long (max {MAX_COMMAND_LENGTH} characters)",
         )
+
     if is_suspicious_input(command_line):
+        logger.warning("Suspicious command rejected", player=player_name, command=command_line)
         raise HTTPException(status_code=400, detail="Invalid characters or suspicious input detected")
+
     command_line = clean_command_input(command_line)
     if not command_line:
+        logger.debug("Empty command after cleaning", player=player_name)
         return {"result": ""}
 
     # Initialize alias storage
-    alias_storage = AliasStorage()
-    player_name = current_user["username"]
+    try:
+        alias_storage = AliasStorage()
+        logger.debug("AliasStorage initialized successfully", player=player_name)
+    except Exception as e:
+        logger.error("Failed to initialize AliasStorage", player=player_name, error=str(e))
+        # Continue without alias storage
+        alias_storage = None
 
     # Check for alias expansion before command processing
     parts = command_line.split()
     cmd = parts[0].lower()
     args = parts[1:]
 
+    logger.debug("Command parsed", player=player_name, command=cmd, args=args, original_command=command_line)
+
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
+        logger.debug("Processing alias management command", player=player_name, command=cmd)
         return process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check if this is an alias
     alias = alias_storage.get_alias(player_name, cmd)
     if alias:
+        logger.debug("Alias found, expanding", player=player_name, alias_name=alias.name, original_command=cmd)
         # Expand the alias
         expanded_command = alias.get_expanded_command(args)
         # Recursively process the expanded command (with depth limit to prevent loops)
@@ -370,6 +408,7 @@ def handle_command(
         return result
 
     # Process command normally
+    logger.debug("Processing standard command", player=player_name, command=cmd)
     return process_command(cmd, args, current_user, request, alias_storage, player_name)
 
 
@@ -383,8 +422,11 @@ def handle_expanded_command(
     alias_chain: list[dict] = None,
 ) -> dict:
     """Handle command processing with alias expansion and loop detection."""
+    logger.debug("Handling expanded command", player=player_name, command=command_line, depth=depth)
+
     # Prevent infinite loops
     if depth > 10:
+        logger.error("Alias loop detected", player=player_name, depth=depth, command=command_line)
         return {"result": "Error: Alias loop detected. Maximum recursion depth exceeded."}
 
     # Initialize alias chain if not provided
@@ -397,11 +439,13 @@ def handle_expanded_command(
     args = parts[1:]
 
     if cmd in ["alias", "aliases", "unalias"]:
+        logger.debug("Processing alias management command in expanded context", player=player_name, command=cmd)
         return process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check for alias expansion
     alias = alias_storage.get_alias(player_name, cmd)
     if alias:
+        logger.debug("Alias expansion in recursive call", player=player_name, alias_name=alias.name, depth=depth)
         # Track alias usage for client display
         alias_info = {
             "original": cmd,
@@ -436,38 +480,50 @@ def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
+    logger.info("Processing command", player=player_name, command=cmd, args=args)
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     # Handle help command first
     if cmd == "help":
+        logger.debug("Processing help command", player=player_name, args=args)
         if len(args) > 1:
+            logger.warning("Help command with too many arguments", player=player_name, args=args)
             return {"result": "Too many arguments. Usage: help [command]"}
         command_name = args[0] if args else None
         return {"result": get_help_content(command_name)}
 
     # Handle alias management commands
     if cmd == "alias":
+        logger.debug("Processing alias command", player=player_name, args=args)
         return handle_alias_command(args, alias_storage, player_name)
 
     if cmd == "aliases":
+        logger.debug("Processing aliases command", player=player_name)
         return handle_aliases_command(alias_storage, player_name)
 
     if cmd == "unalias":
+        logger.debug("Processing unalias command", player=player_name, args=args)
         return handle_unalias_command(args, alias_storage, player_name)
 
     if cmd == "look":
+        logger.debug("Processing look command", player=player_name, args=args)
         if not persistence:
+            logger.warning("Look command failed - no persistence layer", player=player_name)
             return {"result": "You see nothing special."}
         player = persistence.get_player_by_name(current_user["username"])
         if not player:
+            logger.warning("Look command failed - player not found", player=player_name)
             return {"result": "You see nothing special."}
         room_id = player.current_room_id
         room = persistence.get_room(room_id)
         if not room:
+            logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
             return {"result": "You see nothing special."}
         if args:
             direction = args[0].lower()
+            logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
             exits = room.get("exits", {})
             target_room_id = exits.get(direction)
             if target_room_id:
@@ -475,7 +531,14 @@ def process_command(
                 if target_room:
                     name = target_room.get("name", "")
                     desc = target_room.get("description", "You see nothing special.")
+                    logger.debug(
+                        "Looked at room in direction",
+                        player=player_name,
+                        direction=direction,
+                        target_room_id=target_room_id,
+                    )
                     return {"result": f"{name}\n{desc}"}
+            logger.debug("No valid exit in direction", player=player_name, direction=direction, room_id=room_id)
             return {"result": "You see nothing special that way."}
         name = room.get("name", "")
         desc = room.get("description", "You see nothing special.")
@@ -483,28 +546,42 @@ def process_command(
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
+        logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "go":
+        logger.debug("Processing go command", player=player_name, args=args, args_length=len(args))
         if not persistence:
+            logger.warning("Go command failed - no persistence layer", player=player_name)
             return {"result": "You can't go that way"}
         if not args:
+            logger.warning(
+                "Go command failed - no direction specified", player=player_name, args=args, args_type=type(args)
+            )
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
+        logger.debug("Player attempting to move", player=player_name, direction=direction)
         player = persistence.get_player_by_name(current_user["username"])
         if not player:
+            logger.warning("Go command failed - player not found", player=player_name)
             return {"result": "You can't go that way"}
         room_id = player.current_room_id
         room = persistence.get_room(room_id)
         if not room:
+            logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
             return {"result": "You can't go that way"}
         exits = room.get("exits", {})
         target_room_id = exits.get(direction)
         if not target_room_id:
+            logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
             return {"result": "You can't go that way"}
         target_room = persistence.get_room(target_room_id)
         if not target_room:
+            logger.warning(
+                "Go command failed - target room not found", player=player_name, target_room_id=target_room_id
+            )
             return {"result": "You can't go that way"}
         # Move the player: update and persist current_room_id
+        logger.info("Player moved", player=player_name, from_room=room_id, to_room=target_room_id, direction=direction)
         player.current_room_id = target_room_id
         persistence.save_player(player)
         current_user["current_room_id"] = target_room_id
@@ -526,51 +603,67 @@ def process_command(
 
 def handle_alias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the alias command for creating and viewing aliases."""
+    logger.debug("Processing alias command", player=player_name, args=args)
+
     if not args:
+        logger.warning("Alias command with no arguments", player=player_name)
         return {"result": "Usage: alias <name> <command> or alias <name> to view"}
 
     alias_name = args[0]
 
     # If only one argument, show the alias details
     if len(args) == 1:
+        logger.debug("Viewing alias", player=player_name, alias_name=alias_name)
         alias = alias_storage.get_alias(player_name, alias_name)
         if alias:
+            logger.debug("Alias found", player=player_name, alias_name=alias_name, command=alias.command)
             return {"result": f"Alias '{alias_name}' -> '{alias.command}'"}
         else:
+            logger.debug("Alias not found", player=player_name, alias_name=alias_name)
             return {"result": f"No alias found with name '{alias_name}'"}
 
     # Create or update alias
     command = " ".join(args[1:])
+    logger.debug("Creating/updating alias", player=player_name, alias_name=alias_name, command=command)
 
     # Validate alias name
     if not alias_storage.validate_alias_name(alias_name):
+        logger.warning("Invalid alias name", player=player_name, alias_name=alias_name)
         return {
             "result": "Invalid alias name. Must start with a letter and contain only alphanumeric characters and underscores."
         }
 
     # Validate command
     if not alias_storage.validate_alias_command(command):
+        logger.warning("Invalid alias command", player=player_name, alias_name=alias_name, command=command)
         return {"result": "Invalid command. Cannot alias reserved commands or empty commands."}
 
     # Check alias count limit
     if alias_storage.get_alias_count(player_name) >= 50:
         existing_alias = alias_storage.get_alias(player_name, alias_name)
         if not existing_alias:
+            logger.warning(
+                "Alias limit reached", player=player_name, alias_count=alias_storage.get_alias_count(player_name)
+            )
             return {"result": "Maximum number of aliases (50) reached. Remove some aliases before creating new ones."}
 
     # Create the alias
     alias = alias_storage.create_alias(player_name, alias_name, command)
     if alias:
+        logger.info("Alias created", player=player_name, alias_name=alias_name, command=command)
         return {"result": f"Alias '{alias_name}' created: '{command}'"}
     else:
+        logger.error("Failed to create alias", player=player_name, alias_name=alias_name, command=command)
         return {"result": "Failed to create alias. Please check your input."}
 
 
 def handle_aliases_command(alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the aliases command for listing all aliases."""
+    logger.debug("Listing aliases", player=player_name)
     aliases = alias_storage.get_player_aliases(player_name)
 
     if not aliases:
+        logger.debug("No aliases found", player=player_name)
         return {"result": "You have no aliases defined."}
 
     # Format alias list
@@ -579,23 +672,31 @@ def handle_aliases_command(alias_storage: AliasStorage, player_name: str) -> dic
         alias_list.append(f"  {alias.name} -> {alias.command}")
 
     result = f"You have {len(aliases)} alias(es):\n" + "\n".join(alias_list)
+    logger.debug("Aliases listed", player=player_name, alias_count=len(aliases))
     return {"result": result}
 
 
 def handle_unalias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the unalias command for removing aliases."""
+    logger.debug("Processing unalias command", player=player_name, args=args)
+
     if not args:
+        logger.warning("Unalias command with no arguments", player=player_name)
         return {"result": "Usage: unalias <name>"}
 
     alias_name = args[0]
+    logger.debug("Removing alias", player=player_name, alias_name=alias_name)
 
     # Check if alias exists
     existing_alias = alias_storage.get_alias(player_name, alias_name)
     if not existing_alias:
+        logger.debug("Alias not found for removal", player=player_name, alias_name=alias_name)
         return {"result": f"No alias found with name '{alias_name}'"}
 
     # Remove the alias
     if alias_storage.remove_alias(player_name, alias_name):
+        logger.info("Alias removed", player=player_name, alias_name=alias_name)
         return {"result": f"Alias '{alias_name}' removed."}
     else:
+        logger.error("Failed to remove alias", player=player_name, alias_name=alias_name)
         return {"result": f"Failed to remove alias '{alias_name}'."}

@@ -1,0 +1,11 @@
+{
+  "environment": "outdoors",
+  "description": "The bustling commercial district where merchants hawk their wares from storefronts that seem to change location when one isn't looking directly at them. The market square is always crowded, but the faces blur together in a way that suggests they might not all be entirely human.",
+  "special_rules": {
+    "sanity_drain_rate": 0.09,
+    "npc_spawn_modifier": 2.2,
+    "combat_modifier": 1.2,
+    "exploration_bonus": 1.1,
+    "access_requirements": ["coin_purse"]
+  }
+}

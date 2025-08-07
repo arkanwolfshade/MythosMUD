@@ -2,8 +2,19 @@
 
 # --- Database & Persistence ---
 db_path: server/tests/data/players/test_players.db  # Test DB
-log_path: server/tests/data/persistence_test.log   # Test log file
-log_level: DEBUG                  # Verbose logging for tests
+
+
+# --- Logging Configuration ---
+logging:
+  environment: test
+  level: DEBUG  # Most verbose logging level
+  format: colored  # json, human, colored (colored = human-readable with colors)
+  log_base: server/tests/logs  # Test logs stay in test directory
+  rotation:
+    max_size: 10MB
+    backup_count: 2
+  compression: false
+  disable_logging: true
 
 # --- Network ---
 host: 127.0.0.1  # Test server bind address
@@ -28,7 +39,7 @@ enable_combat: true
 enable_weather: false
 enable_pvp: false
 
-# --- Logging & Debug ---
+# --- Debug ---
 enable_stack_traces: true
 
 # --- Authentication/Accounts ---
@@ -46,7 +57,7 @@ quests:
   - server/tests/data/quests/test_quest.json
 
 # --- Admin/Console/Telnet ---
-admin_password: testadmin
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
 admin_port: 5999
 enable_remote_console: false
 

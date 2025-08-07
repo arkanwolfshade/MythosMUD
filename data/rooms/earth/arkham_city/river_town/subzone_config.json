@@ -1,0 +1,11 @@
+{
+  "environment": "outdoors",
+  "description": "The waterfront district where the Miskatonic River meets the city. The air is thick with the smell of fish and brine, and the locals have a peculiar way of walking that suggests they're not entirely comfortable on dry land. The river flows dark and deep, carrying secrets from places best left unvisited.",
+  "special_rules": {
+    "sanity_drain_rate": 0.15,
+    "npc_spawn_modifier": 1.4,
+    "combat_modifier": 1.4,
+    "exploration_bonus": 0.9,
+    "access_requirements": ["fishing_license"]
+  }
+}

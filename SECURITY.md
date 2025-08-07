@@ -2,15 +2,22 @@
 
 ## Critical Security Issues and Fixes
 
-### 1. Hardcoded Secret Key (FIXED)
+### 1. Hardcoded Secret Keys (FIXED)
 
-**Issue**: JWT secret key was hardcoded in source code
-**Fix**: Now uses environment variable `MYTHOSMUD_SECRET_KEY`
-**Action Required**: Set environment variable in production:
+**Issue**: Multiple secret keys were hardcoded in source code
+**Fix**: Now uses environment variables for all secrets
+**Action Required**: Set environment variables in production:
 
 ```bash
-export MYTHOSMUD_SECRET_KEY="your-secure-random-key-here"
+export MYTHOSMUD_SECRET_KEY="your-super-secret-key-here"
+export MYTHOSMUD_JWT_SECRET="your-jwt-secret-key-here"
+export MYTHOSMUD_RESET_TOKEN_SECRET="your-reset-token-secret-here"
+export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="your-verification-token-secret-here"
 ```
+
+**Files Updated**:
+- `server/auth_utils.py` - Uses `MYTHOSMUD_SECRET_KEY` for JWT operations
+- `server/auth/users.py` - Uses environment variables for FastAPI Users secrets
 
 ### 2. Path Injection Vulnerabilities (FIXED)
 
@@ -53,6 +60,11 @@ export MYTHOSMUD_SECRET_KEY="your-secure-random-key-here"
 - **Never hardcode secrets** in source code
 - Use environment variables for all sensitive configuration
 - Provide secure defaults for development
+- **Required Environment Variables**:
+  - `MYTHOSMUD_SECRET_KEY` - Main application secret
+  - `MYTHOSMUD_JWT_SECRET` - JWT token signing secret
+  - `MYTHOSMUD_RESET_TOKEN_SECRET` - Password reset token secret
+  - `MYTHOSMUD_VERIFICATION_TOKEN_SECRET` - Email verification token secret
 
 ### Path Validation
 
@@ -76,7 +88,7 @@ export MYTHOSMUD_SECRET_KEY="your-secure-random-key-here"
 
 ### Before Production Deployment
 
-- [ ] Set secure `MYTHOSMUD_SECRET_KEY` environment variable
+- [x] Set secure environment variables for all secrets
 - [ ] Migrate user storage from JSON files to database
 - [ ] Implement rate limiting for auth endpoints
 - [ ] Add HTTPS/SSL configuration

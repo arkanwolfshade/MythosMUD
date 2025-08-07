@@ -1,9 +1,11 @@
 # Room Pathing Validator Implementation Instructions
 
 ## Project Overview
+
 Create a Python-based room pathing validator for a text-based game world. The validator checks room connectivity, validates JSON structure, and ensures proper pathing between game rooms organized in zones.
 
 ## Project Structure
+
 Create the following directory structure:
 
 ```
@@ -26,6 +28,7 @@ room_validator/
 ```
 
 ## Requirements File (requirements.txt)
+
 ```
 jsonschema>=4.17.0
 colorama>=0.4.6
@@ -36,9 +39,11 @@ click>=8.1.0
 ## JSON Schema Design (schemas/room_schema.json)
 
 ### Enhanced Exit Format
+
 The validator must support both legacy string format and new object format for exits:
 
 **Legacy Format (backward compatible):**
+
 ```json
 {
   "exits": {
@@ -49,6 +54,7 @@ The validator must support both legacy string format and new object format for e
 ```
 
 **New Format (with flags):**
+
 ```json
 {
   "exits": {
@@ -65,11 +71,14 @@ The validator must support both legacy string format and new object format for e
 ```
 
 **Supported Exit Flags:**
+
 - `"one_way"` - Exit doesn't require bidirectional return path
 - `"self_reference"` - Allow room to reference itself (for teleporters, etc.)
 
 ### Complete JSON Schema
+
 Create a JSON schema that validates:
+
 - Required fields: `id`, `name`, `description`, `zone`, `exits`
 - Optional fields: `field1`, `field2`, `field3` (ignore these)
 - Exit directions: `north`, `south`, `east`, `west`, `up`, `down`
@@ -79,7 +88,9 @@ Create a JSON schema that validates:
 ## Core Implementation Requirements
 
 ### 1. Room Loader (core/room_loader.py)
+
 **Functionality:**
+
 - Recursively scan `./data/rooms/` directory for all `.json` files
 - Parse JSON files with error handling for malformed files
 - Build room database indexed by room ID
@@ -87,45 +98,55 @@ Create a JSON schema that validates:
 - Log parsing errors but continue processing other files
 
 **Key Methods:**
+
 - `discover_room_files(base_path)` - Find all JSON files in subdirectories
 - `load_room_data(file_path)` - Parse single room file with error handling
 - `build_room_database(base_path)` - Create complete room index
 - `get_zones()` - Return list of discovered zones
 
 ### 2. Schema Validator (core/schema_validator.py)
+
 **Functionality:**
+
 - Load and cache JSON schema
 - Validate individual room files against schema
 - Support both legacy and new exit formats
 - Provide detailed validation error messages
 
 **Key Methods:**
+
 - `load_schema()` - Load room schema from file
 - `validate_room(room_data, file_path)` - Validate single room
 - `normalize_exits(room_data)` - Convert legacy format to new format internally
 
 ### 3. Path Validator (core/path_validator.py)
+
 **Functionality:**
+
 - Build room connectivity graph
 - Perform graph traversal algorithms
 - Check bidirectional connections (respecting one_way flags)
-- Find unreachable rooms from starting point (arkham_001)
+- Find unreachable rooms from starting point (earth_arkham_city_intersection_Derby_High)
 - Detect dead ends (rooms with no exits)
 
 **Key Methods:**
+
 - `build_graph(room_database)` - Create adjacency graph
 - `find_unreachable_rooms(start_room_id)` - BFS/DFS from starting room
 - `check_bidirectional_connections(room_database)` - Verify return paths
 - `find_dead_ends(room_database)` - Identify rooms with no exits
 
 ### 4. Reporter (core/reporter.py)
+
 **Functionality:**
+
 - Format validation results with colors
 - Generate actionable error messages with suggestions
 - Provide summary statistics
 - Support multiple output formats (console, JSON)
 
 **Key Methods:**
+
 - `format_error(error_type, room_id, message, suggestion)` - Format single error
 - `format_warning(warning_type, room_id, message)` - Format warning
 - `print_summary(stats)` - Display validation summary
@@ -134,7 +155,9 @@ Create a JSON schema that validates:
 ## Validation Rules Implementation
 
 ### Base Rule Class (rules/base_rule.py)
+
 Create abstract base class for all validation rules:
+
 ```python
 from abc import ABC, abstractmethod
 
@@ -152,26 +175,28 @@ class ValidationRule(ABC):
 ### Validation Rules to Implement
 
 #### Structure Rules (rules/structure_rules.py)
+
 1. **Schema Validation Rule**
    - Validate each room against JSON schema
    - Report file path and specific schema violations
 
 2. **Duplicate ID Rule**
    - Check for duplicate room IDs across zones
-   - Flag naming convention violations (e.g., `arkham_001` in `dungeon` zone)
+   - Flag naming convention violations (e.g., `earth_arkham_city_intersection_Derby_High` in `dungeon` zone)
 
 3. **Exit Reference Rule**
    - Verify all exit targets exist or are null
    - Handle both string and object exit formats
 
 #### Connectivity Rules (rules/connectivity_rules.py)
+
 1. **Bidirectional Connection Rule**
    - Check that room A → room B implies room B → room A
    - Respect `one_way` flag to skip bidirectional check
    - Provide suggestions for adding missing return paths
 
 2. **Unreachable Room Rule**
-   - Use graph traversal from `arkham_001` as starting point
+   - Use graph traversal from `earth_arkham_city_intersection_Derby_High` as starting point
    - Report rooms that cannot be reached
    - Suggest connection points
 
@@ -187,6 +212,7 @@ class ValidationRule(ABC):
 ## Command Line Interface (validator.py)
 
 ### CLI Arguments
+
 Use Click framework for command-line interface:
 
 ```python
@@ -202,6 +228,7 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ```
 
 ### Validation Flow
+
 1. **Discovery Phase**
    - Scan directory structure
    - Report zones found
@@ -225,6 +252,7 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ## Sample Output Format
 
 ### Console Output
+
 ```
 🔍 Room Validator v1.0
 📁 Scanning ./data/rooms/...
@@ -237,12 +265,12 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → arkham_001, but arkham_001 has no 'north' return
-     💡 Suggestion: Add "north": "arkham_002" to arkham_001 or flag as one_way
+  ❌ Bidirectional: Exit 'south' → earth_arkham_city_intersection_Derby_High, but earth_arkham_city_intersection_Derby_High has no 'north' return
+     💡 Suggestion: Add "north": "arkham_002" to earth_arkham_city_intersection_Derby_High or flag as one_way
 
 🏠 arkham_006.json (Clock Tower)
-  ❌ Unreachable: No path from starting room arkham_001
-     💡 Suggestion: Add connection from arkham_001 or another reachable room
+  ❌ Unreachable: No path from starting room earth_arkham_city_intersection_Derby_High
+     💡 Suggestion: Add connection from earth_arkham_city_intersection_Derby_High or another reachable room
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
@@ -258,6 +286,7 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ```
 
 ### JSON Output Format
+
 ```json
 {
   "summary": {
@@ -272,8 +301,8 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
       "type": "bidirectional",
       "file": "arkham_002.json",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → arkham_001, but arkham_001 has no 'north' return",
-      "suggestion": "Add \"north\": \"arkham_002\" to arkham_001 or flag as one_way"
+      "message": "Exit 'south' → earth_arkham_city_intersection_Derby_High, but earth_arkham_city_intersection_Derby_High has no 'north' return",
+      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkham_city_intersection_Derby_High or flag as one_way"
     }
   ],
   "warnings": [
@@ -290,25 +319,30 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ## Implementation Notes
 
 ### Error Handling
+
 - Continue processing after malformed JSON files
 - Provide specific file paths in all error messages
 - Use try-catch blocks around file operations
 - Log but don't crash on unexpected errors
 
 ### Performance Considerations
+
 - Use progress bars for operations > 1 second
 - Lazy load room data when possible
 - Efficient graph algorithms (BFS/DFS)
 - Cache schema validation results
 
 ### Extensibility Design
+
 - Plugin-style rule system
 - Easy to add new validation rules
 - Support for zone-specific rules in future
 - Configuration file support for ignored rules
 
 ### Testing Strategy
+
 Create test cases for:
+
 - Valid room configurations
 - Various error conditions
 - Edge cases (empty zones, self-references, cycles)
@@ -316,4 +350,5 @@ Create test cases for:
 - Large dataset performance
 
 ## Migration Support
+
 The validator must support gradual migration from legacy string exits to new object exits with flags. Always maintain backward compatibility while encouraging adoption of the new format in suggestions.

@@ -47,9 +47,42 @@ param(
     [Parameter(HelpMessage = "Enable auto-reload for development")]
     [switch]$Reload = $true,
 
+    [Parameter(HelpMessage = "Environment to run in (local, test, production)")]
+    [ValidateSet("local", "test", "production")]
+    [string]$Environment = "local",
+
     [Parameter(HelpMessage = "Show help information")]
     [switch]$Help
 )
+
+# Function to load environment variables
+function Load-EnvironmentConfig {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Environment
+    )
+
+    $envFile = switch ($Environment) {
+        "local" { ".env.local" }
+        "test" { ".env.test" }
+        "production" { ".env.production" }
+        default { ".env.local" }
+    }
+
+    if (Test-Path $envFile) {
+        Write-Host "Loading environment from $envFile" -ForegroundColor Cyan
+        Get-Content $envFile | ForEach-Object {
+            if ($_ -match "^([^#][^=]+)=(.*)$") {
+                $name = $matches[1].Trim()
+                $value = $matches[2].Trim()
+                [Environment]::SetEnvironmentVariable($name, $value, "Process")
+            }
+        }
+    } else {
+        Write-Host "Warning: Environment file $envFile not found" -ForegroundColor Yellow
+    }
+}
 
 # Function to read server configuration
 function Get-ServerConfig {
@@ -180,6 +213,7 @@ function Start-MythosMUDServer {
     $reloadFlag = if ($Reload) { "--reload" } else { "" }
 
     # Run uvicorn from project root with proper module path
+    # Use our StructLog system for all logging
     $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag"
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
@@ -226,7 +260,10 @@ function Start-MythosMUDServer {
 try {
     Write-Host "Starting MythosMUD Server..." -ForegroundColor Green
 
-    # Step 1: Stop existing processes
+    # Step 1: Load environment configuration
+    Load-EnvironmentConfig -Environment $Environment
+
+    # Step 2: Stop existing processes
     Stop-ServerProcesses
 
     # Step 2: Check if port is free

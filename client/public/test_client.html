@@ -6,7 +6,7 @@
     <title>MythosMUD Client Test</title>
     <style>
       body {
-        font-family: "Courier New", monospace;
+        font-family: 'Courier New', monospace;
         background: #0a0a0a;
         color: #00ff00;
         padding: 20px;
@@ -107,18 +107,18 @@
     </div>
 
     <script>
-      const baseUrl = "/api";
+      const baseUrl = '/api';
       let authToken = null;
       let playerId = null;
       let eventSource = null;
       let websocket = null;
 
-      function log(message, type = "info") {
-        const output = document.getElementById("output");
+      function log(message, type = 'info') {
+        const output = document.getElementById('output');
         const timestamp = new Date().toLocaleTimeString();
 
         // Create a new div element and set its content safely
-        const logEntry = document.createElement("div");
+        const logEntry = document.createElement('div');
         logEntry.className = type;
         logEntry.textContent = `[${timestamp}] ${message}`;
 
@@ -128,31 +128,31 @@
       }
 
       async function testServerConnection() {
-        const status = document.getElementById("server-status");
+        const status = document.getElementById('server-status');
         try {
           const response = await fetch(`${baseUrl}/`);
           const data = await response.json();
           status.textContent = `✓ Server connected: ${data.message}`;
-          status.className = "success";
-          log("Server connection test: SUCCESS", "success");
+          status.className = 'success';
+          log('Server connection test: SUCCESS', 'success');
         } catch (error) {
           status.textContent = `✗ Server connection failed: ${error.message}`;
-          status.className = "error";
-          log(`Server connection test: FAILED - ${error.message}`, "error");
+          status.className = 'error';
+          log(`Server connection test: FAILED - ${error.message}`, 'error');
         }
       }
 
       async function testRegistration() {
-        const status = document.getElementById("reg-status");
-        const username = document.getElementById("reg-username").value;
-        const password = document.getElementById("reg-password").value;
-        const inviteCode = document.getElementById("invite-code").value;
+        const status = document.getElementById('reg-status');
+        const username = document.getElementById('reg-username').value;
+        const password = document.getElementById('reg-password').value;
+        const inviteCode = document.getElementById('invite-code').value;
 
         try {
           const response = await fetch(`${baseUrl}/auth/register`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               username,
@@ -164,31 +164,31 @@
           if (response.ok) {
             const data = await response.json();
             status.textContent = `✓ Registration successful: ${data.message}`;
-            status.className = "success";
-            log("Registration test: SUCCESS", "success");
+            status.className = 'success';
+            log('Registration test: SUCCESS', 'success');
           } else {
             const errorData = await response.json();
             status.textContent = `✗ Registration failed: ${errorData.detail}`;
-            status.className = "error";
-            log(`Registration test: FAILED - ${errorData.detail}`, "error");
+            status.className = 'error';
+            log(`Registration test: FAILED - ${errorData.detail}`, 'error');
           }
         } catch (error) {
           status.textContent = `✗ Registration failed: ${error.message}`;
-          status.className = "error";
-          log(`Registration test: FAILED - ${error.message}`, "error");
+          status.className = 'error';
+          log(`Registration test: FAILED - ${error.message}`, 'error');
         }
       }
 
       async function testAuthentication() {
-        const status = document.getElementById("auth-status");
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+        const status = document.getElementById('auth-status');
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
         try {
           const response = await fetch(`${baseUrl}/auth/login`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({ username, password }),
           });
@@ -197,28 +197,28 @@
             const data = await response.json();
             authToken = data.access_token;
             playerId = username;
-            status.textContent = "✓ Authentication successful";
-            status.className = "success";
-            log("Authentication test: SUCCESS", "success");
+            status.textContent = '✓ Authentication successful';
+            status.className = 'success';
+            log('Authentication test: SUCCESS', 'success');
           } else {
             const errorData = await response.json();
             status.textContent = `✗ Authentication failed: ${errorData.detail}`;
-            status.className = "error";
-            log(`Authentication test: FAILED - ${errorData.detail}`, "error");
+            status.className = 'error';
+            log(`Authentication test: FAILED - ${errorData.detail}`, 'error');
           }
         } catch (error) {
           status.textContent = `✗ Authentication failed: ${error.message}`;
-          status.className = "error";
-          log(`Authentication test: FAILED - ${error.message}`, "error");
+          status.className = 'error';
+          log(`Authentication test: FAILED - ${error.message}`, 'error');
         }
       }
 
       function testSSEConnection() {
-        const status = document.getElementById("sse-status");
+        const status = document.getElementById('sse-status');
 
         if (!authToken || !playerId) {
-          status.textContent = "✗ Please authenticate first";
-          status.className = "error";
+          status.textContent = '✗ Please authenticate first';
+          status.className = 'error';
           return;
         }
 
@@ -230,38 +230,38 @@
           eventSource = new EventSource(`/events/${playerId}?token=${encodeURIComponent(authToken)}`);
 
           eventSource.onopen = () => {
-            status.textContent = "✓ SSE connection established";
-            status.className = "success";
-            log("SSE connection: ESTABLISHED", "success");
+            status.textContent = '✓ SSE connection established';
+            status.className = 'success';
+            log('SSE connection: ESTABLISHED', 'success');
           };
 
-          eventSource.onmessage = (event) => {
+          eventSource.onmessage = event => {
             try {
               const gameEvent = JSON.parse(event.data);
-              log(`SSE Event: ${gameEvent.event_type}`, "info");
+              log(`SSE Event: ${gameEvent.event_type}`, 'info');
             } catch (error) {
-              log(`SSE parse error: ${error.message}`, "error");
+              log(`SSE parse error: ${error.message}`, 'error');
             }
           };
 
-          eventSource.onerror = (error) => {
-            status.textContent = "✗ SSE connection failed";
-            status.className = "error";
-            log(`SSE connection: FAILED - ${error}`, "error");
+          eventSource.onerror = error => {
+            status.textContent = '✗ SSE connection failed';
+            status.className = 'error';
+            log(`SSE connection: FAILED - ${error}`, 'error');
           };
         } catch (error) {
           status.textContent = `✗ SSE connection failed: ${error.message}`;
-          status.className = "error";
-          log(`SSE connection: FAILED - ${error.message}`, "error");
+          status.className = 'error';
+          log(`SSE connection: FAILED - ${error.message}`, 'error');
         }
       }
 
       function testWebSocketConnection() {
-        const status = document.getElementById("ws-status");
+        const status = document.getElementById('ws-status');
 
         if (!playerId) {
-          status.textContent = "✗ Please authenticate first";
-          status.className = "error";
+          status.textContent = '✗ Please authenticate first';
+          status.className = 'error';
           return;
         }
 
@@ -274,45 +274,45 @@
           websocket = new WebSocket(wsUrl);
 
           websocket.onopen = () => {
-            status.textContent = "✓ WebSocket connection established";
-            status.className = "success";
-            log("WebSocket connection: ESTABLISHED", "success");
+            status.textContent = '✓ WebSocket connection established';
+            status.className = 'success';
+            log('WebSocket connection: ESTABLISHED', 'success');
           };
 
-          websocket.onmessage = (event) => {
+          websocket.onmessage = event => {
             try {
               const gameEvent = JSON.parse(event.data);
-              log(`WebSocket Event: ${gameEvent.event_type}`, "info");
+              log(`WebSocket Event: ${gameEvent.event_type}`, 'info');
             } catch (error) {
-              log(`WebSocket parse error: ${error.message}`, "error");
+              log(`WebSocket parse error: ${error.message}`, 'error');
             }
           };
 
-          websocket.onerror = (error) => {
-            status.textContent = "✗ WebSocket connection failed";
-            status.className = "error";
-            log(`WebSocket connection: FAILED - ${error}`, "error");
+          websocket.onerror = error => {
+            status.textContent = '✗ WebSocket connection failed';
+            status.className = 'error';
+            log(`WebSocket connection: FAILED - ${error}`, 'error');
           };
 
           websocket.onclose = () => {
-            status.textContent = "WebSocket connection closed";
-            status.className = "info";
-            log("WebSocket connection: CLOSED", "info");
+            status.textContent = 'WebSocket connection closed';
+            status.className = 'info';
+            log('WebSocket connection: CLOSED', 'info');
           };
         } catch (error) {
           status.textContent = `✗ WebSocket connection failed: ${error.message}`;
-          status.className = "error";
-          log(`WebSocket connection: FAILED - ${error.message}`, "error");
+          status.className = 'error';
+          log(`WebSocket connection: FAILED - ${error.message}`, 'error');
         }
       }
 
       async function testCommand() {
-        const status = document.getElementById("command-status");
-        const command = document.getElementById("command").value;
+        const status = document.getElementById('command-status');
+        const command = document.getElementById('command').value;
 
         if (!websocket || websocket.readyState !== WebSocket.OPEN) {
-          status.textContent = "✗ WebSocket not connected";
-          status.className = "error";
+          status.textContent = '✗ WebSocket not connected';
+          status.className = 'error';
           return;
         }
 
@@ -324,19 +324,19 @@
           };
 
           websocket.send(JSON.stringify(message));
-          status.textContent = "✓ Command sent";
-          status.className = "success";
-          log(`Command sent: ${command}`, "success");
+          status.textContent = '✓ Command sent';
+          status.className = 'success';
+          log(`Command sent: ${command}`, 'success');
         } catch (error) {
           status.textContent = `✗ Command failed: ${error.message}`;
-          status.className = "error";
-          log(`Command failed: ${error.message}`, "error");
+          status.className = 'error';
+          log(`Command failed: ${error.message}`, 'error');
         }
       }
 
       // Auto-test on page load
       window.onload = function () {
-        log("MythosMUD Client Test Page Loaded", "info");
+        log('MythosMUD Client Test Page Loaded', 'info');
         testServerConnection();
       };
     </script>

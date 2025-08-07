@@ -7,8 +7,11 @@ from pathlib import Path
 # Add the server directory to the path
 sys.path.insert(0, str(Path(__file__).parent))
 
+from logging_config import get_logger
 from main import app
 
-print("Routes:")
+logger = get_logger(__name__)
+
+logger.info("Routes:")
 for route in app.routes:
-    print(f"{route.methods} {route.path}")
+    logger.info(f"{route.methods} {route.path}")

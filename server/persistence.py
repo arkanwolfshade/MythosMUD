@@ -1,4 +1,3 @@
-import logging
 import os
 import sqlite3
 import threading
@@ -9,6 +8,8 @@ from .models import Player  # Assume Room model exists or will be added
 
 
 # --- Custom Exceptions ---
+# Note: These are kept for backward compatibility
+# New code should use the comprehensive exception system in exceptions.py
 class PersistenceError(Exception):
     pass
 
@@ -41,6 +42,13 @@ def get_persistence() -> "PersistenceLayer":
         return _persistence_instance
 
 
+def reset_persistence():
+    """Reset the persistence singleton instance."""
+    global _persistence_instance
+    with _persistence_lock:
+        _persistence_instance = None
+
+
 # --- PersistenceLayer Class ---
 class PersistenceLayer:
     """
@@ -51,26 +59,22 @@ class PersistenceLayer:
     _hooks: dict[str, list[Callable]] = {}
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None):
-        # Default to the main production database in the project root
+        # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
-        elif os.environ.get("MYTHOS_DB_PATH"):
-            self.db_path = os.environ.get("MYTHOS_DB_PATH")
-        else:
-            # Get the project root directory (two levels up from server directory)
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            project_root = os.path.dirname(module_dir)
-            self.db_path = os.path.join(project_root, "data", "players", "players.db")
+        elif os.environ.get("DATABASE_URL"):
+            # Derive database path from DATABASE_URL
+            from .database import get_database_path
 
-        # Use absolute path for log file to avoid working directory issues
-        if log_path:
-            self.log_path = log_path
-        elif os.environ.get("MYTHOS_PERSIST_LOG"):
-            self.log_path = os.environ.get("MYTHOS_PERSIST_LOG")
+            self.db_path = str(get_database_path())
         else:
-            # Get the directory where this module is located
-            module_dir = os.path.dirname(os.path.abspath(__file__))
-            self.log_path = os.path.join(module_dir, "logs", "persistence.log")
+            raise ValueError(
+                "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+            )
+
+        # Logging is now handled by the centralized logging system
+        # The log_path parameter is kept for backward compatibility but not used
+        self.log_path = None  # No longer needed with centralized logging
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
@@ -78,20 +82,10 @@ class PersistenceLayer:
         self._load_room_cache()
 
     def _setup_logger(self):
-        logger = logging.getLogger("PersistenceLayer")
-        logger.setLevel(logging.INFO)
+        # Use centralized logging configuration
+        from .logging_config import get_logger
 
-        # Create log directory if it doesn't exist
-        log_dir = os.path.dirname(self.log_path)
-        if log_dir and not os.path.exists(log_dir):
-            os.makedirs(log_dir, exist_ok=True)
-
-        fh = logging.FileHandler(self.log_path)
-        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-        fh.setFormatter(formatter)
-        if not logger.handlers:
-            logger.addHandler(fh)
-        return logger
+        return get_logger("PersistenceLayer")
 
     def _log(self, msg: str):
         self._logger.info(msg)
@@ -140,53 +134,67 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
             if row:
-                return Player(**dict(row))
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
             return None
 
     def get_player(self, player_id: str) -> Player | None:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE id = ?", (player_id,)).fetchone()
+            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
             if row:
-                return Player(**dict(row))
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
             return None
 
     def save_player(self, player: Player):
         """Save or update a player."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
+                # Handle datetime fields that might be strings
+                created_at = None
+                last_active = None
+
+                if player.created_at:
+                    if isinstance(player.created_at, str):
+                        created_at = player.created_at
+                    else:
+                        created_at = player.created_at.isoformat()
+
+                if player.last_active:
+                    if isinstance(player.last_active, str):
+                        last_active = player.last_active
+                    else:
+                        last_active = player.last_active.isoformat()
+
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
-                        id, name, strength, dexterity, constitution, intelligence, wisdom, charisma,
-                        sanity, occult_knowledge, fear, corruption, cult_affiliation,
-                        current_room_id, created_at, last_active, experience_points, level
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        player_id, user_id, name, stats, inventory, status_effects,
+                        current_room_id, experience_points, level, created_at, last_active
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        player.id,
+                        player.player_id,
+                        player.user_id,
                         player.name,
-                        player.stats.strength,
-                        player.stats.dexterity,
-                        player.stats.constitution,
-                        player.stats.intelligence,
-                        player.stats.wisdom,
-                        player.stats.charisma,
-                        player.stats.sanity,
-                        player.stats.occult_knowledge,
-                        player.stats.fear,
-                        player.stats.corruption,
-                        player.stats.cult_affiliation,
+                        player.stats,
+                        player.inventory,
+                        player.status_effects,
                         player.current_room_id,
-                        player.created_at.isoformat(),
-                        player.last_active.isoformat(),
                         player.experience_points,
                         player.level,
+                        created_at,
+                        last_active,
                     ),
                 )
                 conn.commit()
-                self._log(f"Saved player {player.name} ({player.id})")
+                self._log(f"Saved player {player.name} ({player.player_id})")
                 self._run_hooks("after_save_player", player)
             except sqlite3.IntegrityError as e:
                 self._log(f"Unique constraint error saving player: {e}")
@@ -204,33 +212,41 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             try:
                 for player in players:
+                    # Handle datetime fields that might be strings
+                    created_at = None
+                    last_active = None
+
+                    if player.created_at:
+                        if isinstance(player.created_at, str):
+                            created_at = player.created_at
+                        else:
+                            created_at = player.created_at.isoformat()
+
+                    if player.last_active:
+                        if isinstance(player.last_active, str):
+                            last_active = player.last_active
+                        else:
+                            last_active = player.last_active.isoformat()
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
-                            id, name, strength, dexterity, constitution, intelligence, wisdom, charisma,
-                            sanity, occult_knowledge, fear, corruption, cult_affiliation,
-                            current_room_id, created_at, last_active, experience_points, level
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            player_id, user_id, name, stats, inventory, status_effects,
+                            current_room_id, experience_points, level, created_at, last_active
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
-                            player.id,
+                            player.player_id,
+                            player.user_id,
                             player.name,
-                            player.stats.strength,
-                            player.stats.dexterity,
-                            player.stats.constitution,
-                            player.stats.intelligence,
-                            player.stats.wisdom,
-                            player.stats.charisma,
-                            player.stats.sanity,
-                            player.stats.occult_knowledge,
-                            player.stats.fear,
-                            player.stats.corruption,
-                            player.stats.cult_affiliation,
+                            player.stats,
+                            player.inventory,
+                            player.status_effects,
                             player.current_room_id,
-                            player.created_at.isoformat(),
-                            player.last_active.isoformat(),
                             player.experience_points,
                             player.level,
+                            created_at,
+                            last_active,
                         ),
                     )
                 conn.commit()
@@ -239,6 +255,43 @@ class PersistenceLayer:
             except sqlite3.IntegrityError as e:
                 self._log(f"Batch unique constraint error: {e}")
                 raise UniqueConstraintError(str(e)) from e
+
+    def delete_player(self, player_id: str) -> bool:
+        """
+        Delete a player from the database.
+
+        Args:
+            player_id: The unique identifier of the player to delete
+
+        Returns:
+            bool: True if player was deleted, False if player didn't exist
+
+        Raises:
+            PersistenceError: If deletion fails due to database constraints or errors
+        """
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            try:
+                # First check if player exists
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
+                if not cursor.fetchone():
+                    self._log(f"Delete attempted for non-existent player: {player_id}")
+                    return False
+
+                # Delete the player (foreign key constraints will handle related data)
+                cursor = conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
+                conn.commit()
+
+                if cursor.rowcount > 0:
+                    self._log(f"Successfully deleted player {player_id}")
+                    self._run_hooks("after_delete_player", player_id)
+                    return True
+                else:
+                    self._log(f"No rows affected when deleting player {player_id}")
+                    return False
+
+            except sqlite3.Error as e:
+                self._log(f"Database error deleting player {player_id}: {e}")
+                raise PersistenceError(f"Failed to delete player {player_id}: {e}") from e
 
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> dict[str, Any] | None:
@@ -279,5 +332,26 @@ class PersistenceLayer:
     # def get_inventory(self, ...): ...
     # def save_inventory(self, ...): ...
     # def list_inventory(self, ...): ...
+
+    def validate_and_fix_player_room(self, player: Player) -> bool:
+        """
+        Validate that a player's current room exists, and fix if necessary.
+
+        Args:
+            player: The player to validate
+
+        Returns:
+            True if the room was valid or successfully fixed, False otherwise
+        """
+        # Check if the player's current room exists
+        if self.get_room(player.current_room_id) is not None:
+            return True  # Room exists, no fix needed
+
+        # Room doesn't exist, move player to starting room
+        old_room = player.current_room_id
+        player.current_room_id = "earth_arkham_city_campus_W_College_St_003"
+
+        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
+        return True
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

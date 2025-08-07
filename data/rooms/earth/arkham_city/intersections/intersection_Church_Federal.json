@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Church_Federal",
+  "name": "Church and Federal Intersection",
+  "description": "The intersection where Church Street meets Federal Street, creating another important downtown hub. This intersection serves as a major crossing point between the religious and governmental districts of Arkham. The architecture here is a mix of Gothic church buildings and classical government structures.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "intersections",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_downtown_Church_St_003",
+    "south": "earth_arkham_city_downtown_Church_St_004",
+    "east": "earth_arkham_city_downtown_Federal_St_004",
+    "west": "earth_arkham_city_downtown_Federal_St_005",
+    "up": "earth_arkham_city_intersection_Boundary_Curwen",
+    "down": "earth_arkham_city_intersection_Main_Church"
+  }
+}

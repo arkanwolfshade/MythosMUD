@@ -85,6 +85,7 @@ If a decision is pending, it is marked as **TODO**.
 ## Recent Completed Work (Latest Session)
 
 ### Core Infrastructure ✅
+
 - WebSocket real-time communication system
 - Client terminal interface with React + TypeScript
 - Basic command parser and handler (look, go, say, help)
@@ -95,6 +96,7 @@ If a decision is pending, it is marked as **TODO**.
 - Room pathing validator utility
 
 ### Game Systems ✅
+
 - Alias system for command shortcuts
 - Help system with comprehensive command documentation
 - Player connection handling with username integration
@@ -103,6 +105,7 @@ If a decision is pending, it is marked as **TODO**.
 - Security improvements and automated testing
 
 ### Development Tools ✅
+
 - Enhanced testing infrastructure with mock persistence layer
 - Development startup scripts (start/stop server)
 - Pre-commit hooks with ruff linting
@@ -116,6 +119,7 @@ If a decision is pending, it is marked as **TODO**.
 **MVP Core Functionality: COMPLETE** ✅
 
 The basic MUD functionality is now working:
+
 - Server starts without errors
 - Client connects to server via WebSocket
 - Players can authenticate and create/load characters
@@ -129,8 +133,102 @@ The basic MUD functionality is now working:
 
 ---
 
+## 🏛️ Comprehensive Codebase Analysis
+
+*As noted in the Pnakotic Manuscripts, a thorough examination of our eldritch artifacts has revealed both strengths and areas requiring immediate attention.*
+
+### **Architectural Assessment: 7/10**
+
+**Strengths:**
+- Well-structured layered architecture with clear separation of concerns
+- Excellent real-time communication design (SSE + WebSocket hybrid)
+- Proper use of FastAPI dependency injection
+- Good data persistence patterns with SQLAlchemy ORM
+- Comprehensive test coverage (78% - above 70% requirement)
+
+**Critical Issues:**
+1. **Database Schema Mismatch** - Tests failing due to missing columns (`user_id`, `used_by_user_id`)
+2. **Hardcoded Secrets** - JWT secrets in source code (partially addressed)
+3. **Authentication System Inconsistencies** - Multiple auth implementations causing conflicts
+4. **Missing Error Handling** - Incomplete exception handling in real-time connections
+5. **Configuration Management** - Environment-specific logic embedded in code
+
+### **Security Analysis**
+
+**Critical Vulnerabilities:**
+- Hardcoded secrets in `server/auth/users.py` (partially addressed)
+- Database schema inconsistencies causing test failures
+- Input validation gaps in command processing
+- Overly permissive CORS configuration for production
+
+**Medium Risk Issues:**
+- Missing rate limiting on authentication endpoints
+- Error information disclosure in some endpoints
+- Incomplete input sanitization
+
+### **Code Quality Metrics**
+
+**Positive Indicators:**
+- Test Coverage: 78% ✅
+- Line Length Compliance: 120 chars max ✅
+- Good documentation and README files
+- Proper logging implementation
+
+**Areas for Improvement:**
+- Some functions exceed recommended complexity limits
+- Code duplication in player data conversion
+- Long files (main.py: 524 lines, command_handler.py: 602 lines)
+- Missing type hints in some functions
+
+### **Technical Debt Assessment**
+
+**Immediate Actions Required:**
+1. Fix database schema alignment issues
+2. Move remaining hardcoded secrets to environment variables
+3. Resolve authentication system inconsistencies
+4. Fix failing test suite
+
+**Short-term Improvements (1-2 weeks):**
+1. Refactor large files into smaller, focused modules
+2. Implement comprehensive error handling
+3. Add rate limiting middleware
+4. Improve input validation
+
+**Long-term Refactoring (1-2 months):**
+1. Implement proper service layer architecture
+2. Add comprehensive security headers
+3. Optimize database queries and add caching
+4. Implement proper dependency injection patterns
+
+### **Complexity Hotspots**
+
+**High Complexity Functions:**
+- `main.py` (524 lines) - Multiple responsibilities
+- `command_handler.py` (602 lines) - Complex command processing
+- `real_time.py` (455 lines) - Connection management complexity
+
+**Recommended Refactoring:**
+- Split main.py into focused route modules
+- Extract command processing logic into separate services
+- Create dedicated connection management classes
+
+---
+
 ## Next Phase Priorities
 
+### **Phase 1: Critical Fixes (Immediate - This Week)**
+1. **Database Schema Alignment** - Fix schema inconsistencies causing test failures
+2. **Security Hardening** - Move remaining secrets to environment variables
+3. **Test Suite Repair** - Fix failing tests and ensure 80% coverage
+4. **Authentication Consolidation** - Standardize on single auth approach
+
+### **Phase 2: Code Quality (1-2 Weeks)**
+1. **Architecture Refactoring** - Split large files into focused modules
+2. **Error Handling** - Implement comprehensive exception handling
+3. **Input Validation** - Enhance security validation patterns
+4. **Rate Limiting** - Add protection against abuse
+
+### **Phase 3: Feature Development (1-2 Months)**
 1. **Content Creation** - Add more hand-authored zones and content
 2. **Admin Tools** - Implement admin/moderator commands and tools
 3. **UI/UX Polish** - Improve accessibility and user experience

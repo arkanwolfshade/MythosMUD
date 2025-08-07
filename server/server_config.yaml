@@ -2,8 +2,18 @@
 
 # --- Database & Persistence ---
 db_path: ../data/players/players.db
-log_path: ./logs/persistence.log
-log_level: INFO
+
+# --- Logging Configuration ---
+logging:
+  environment: development
+  level: DEBUG  # Most verbose logging level
+  format: colored  # json, human, colored (colored = human-readable with colors)
+  log_base: ./logs  # Always relative to project root
+  rotation:
+    max_size: 100MB
+    backup_count: 5
+  compression: true
+  disable_logging: false
 
 # --- Network ---
 host: 0.0.0.0  # Server bind address
@@ -16,10 +26,11 @@ data_dir: ./data/
 player_dir: ./data/players/
 log_dir: ./logs/
 motd_file: ./data/motd.html
+aliases_dir: ./data/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---
-start_room: arkham_001
+start_room: earth_arkham_city_intersection_Derby_High
 starting_level: 1
 allow_multiplay: false
 max_players: 100
@@ -30,11 +41,8 @@ enable_weather: true
 enable_pvp: false
 # enable_plugins: false  # For future plugin system
 
-# --- Logging & Debug ---
+# --- Debug ---
 enable_stack_traces: true
-# log_npc: false
-# log_combat: false
-# log_player_input: false
 
 # --- Authentication/Accounts ---
 auth_backend: sqlite
@@ -51,7 +59,7 @@ quests:
   - ./data/quests/tutorial.json
 
 # --- Admin/Console/Telnet ---
-admin_password: changeme
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
 admin_port: 5001
 enable_remote_console: false
 

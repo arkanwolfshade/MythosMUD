@@ -1,47 +1,18 @@
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
+  "workbench.statusBar.items": {
+    "worktree": {
+      "alignment": "left",
+      "priority": 100
+    },
+    "git": {
+      "alignment": "left",
+      "priority": 90
+    },
+    "python": {
+      "alignment": "left",
+      "priority": 80
+    }
   },
-  "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
-  "python.terminal.activateEnvironment": true,
-  "python.linting.enabled": true,
-  "python.linting.ruffEnabled": true,
-  "python.formatting.provider": "ruff",
-  "python.formatting.ruffArgs": ["--line-length=120"],
-  "python.linting.ruffArgs": ["--line-length=120"],
-  "editor.rulers": [120],
-  "eslint.enable": true,
-  "eslint.validate": ["javascript", "typescript"],
-  "prettier.requireConfig": true,
-  "prettier.printWidth": 120,
-  "makefile.configureOnOpen": false,
-  "git.enableSmartCommit": true,
-  "git.confirmSync": false,
-  "git.autofetch": true,
-  "git.allowNoVerifyCommit": false,
-  "terminal.integrated.env.windows": {
-    "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-    "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
+  "window.titleBarStyle": "custom"
 }

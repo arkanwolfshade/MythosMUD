@@ -3,24 +3,43 @@ import os
 from server import config_loader
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../server_config.yaml")
-TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../test_server_config.yaml")
 
 
 def test_load_main_config_and_validate():
     config = config_loader.get_config(CONFIG_PATH)
     assert config_loader.validate_config(config)
     # Spot check a few fields
-    assert isinstance(config["db_path"], str)
-    assert isinstance(config["areas"], list)
-    assert config["log_level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
+    assert isinstance(config["database_url"], str)
+    assert isinstance(config["default_player_stats"], dict)
+    # Check new logging configuration structure
+    assert "logging" in config
+    assert config["logging"]["level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
 
 
 def test_load_test_config_and_validate():
-    config = config_loader.get_config(TEST_CONFIG_PATH)
+    # Since we removed test-specific config logic, this test should use the main config
+    config = config_loader.get_config(CONFIG_PATH)
     assert config_loader.validate_config(config)
-    assert config["log_level"] == "DEBUG"
-    assert config["db_path"].endswith("test_players.db")
-    assert config["log_path"].endswith("persistence_test.log")
+    # Check new logging configuration structure
+    assert "logging" in config
+    assert config["logging"]["level"] in ("DEBUG", "INFO", "WARNING", "ERROR")
+    assert isinstance(config["database_url"], str)
+    # Check that log_base is configured
+    assert isinstance(config["logging"]["log_base"], str)
+
+
+def test_environment_based_config_selection():
+    """Test that environment-based config selection works correctly."""
+    # Since we removed test-specific config logic, this should always use production config
+    config_loader._config = None  # Reset config cache
+    config = config_loader.get_config()
+    # The actual port from the current config (may vary based on environment)
+    assert isinstance(config["port"], int)
+    # The host may vary based on environment, just check it's a valid host
+    assert isinstance(config["host"], str)
+    # Check that we have the expected production fields
+    assert "database_url" in config
+    assert "default_player_stats" in config
 
 
 def test_fallback_to_defaults(monkeypatch):
@@ -37,23 +56,21 @@ def test_type_coercion_and_bool_handling(tmp_path):
     config_path = tmp_path / "coerce.yaml"
     config_path.write_text(
         """
-        allow_multiplay: "true"
         port: "1234"
-        max_connections: "42"
-        areas: test_area
-        enable_combat: "false"
+        max_connections_per_player: "3"
+        default_player_room: test_room
+        game_tick_rate: "2.5"
         """
     )
     config = config_loader.get_config(str(config_path))
-    assert isinstance(config["allow_multiplay"], bool)
-    assert config["allow_multiplay"] is True
     assert isinstance(config["port"], int)
     assert config["port"] == 1234
-    assert isinstance(config["max_connections"], int)
-    assert config["max_connections"] == 42
-    assert isinstance(config["areas"], list)
-    assert config["areas"] == ["test_area"]
-    assert config["enable_combat"] is False
+    assert isinstance(config["max_connections_per_player"], int)
+    assert config["max_connections_per_player"] == 3
+    assert isinstance(config["default_player_room"], str)
+    assert config["default_player_room"] == "test_room"
+    assert isinstance(config["game_tick_rate"], float)
+    assert config["game_tick_rate"] == 2.5
 
 
 def test_invalid_types_fallback_to_default(tmp_path):
@@ -61,15 +78,15 @@ def test_invalid_types_fallback_to_default(tmp_path):
     config_path.write_text(
         """
         port: not_a_number
-        max_connections: [1,2,3]
-        enable_combat: 123
+        max_connections_per_player: [1,2,3]
+        game_tick_rate: "invalid"
         """
     )
     config = config_loader.get_config(str(config_path))
     # Should fallback to default types
     assert isinstance(config["port"], int)
     assert config["port"] == config_loader._DEFAULTS["port"]
-    assert isinstance(config["max_connections"], int)
-    assert config["max_connections"] == config_loader._DEFAULTS["max_connections"]
-    assert isinstance(config["enable_combat"], bool)
-    assert config["enable_combat"] == config_loader._DEFAULTS["enable_combat"]
+    assert isinstance(config["max_connections_per_player"], int)
+    assert config["max_connections_per_player"] == config_loader._DEFAULTS["max_connections_per_player"]
+    assert isinstance(config["game_tick_rate"], float)
+    assert config["game_tick_rate"] == config_loader._DEFAULTS["game_tick_rate"]

@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 import sys
@@ -17,13 +16,42 @@ except (subprocess.CalledProcessError, FileNotFoundError):
     sys.exit(1)
 
 
+def get_project_root():
+    """Determine the project root based on current working directory"""
+    current_dir = os.getcwd()
+
+    # Check if we're in a worktree
+    if "MythosMUD-server" in current_dir:
+        # We're in the server worktree, need to go up to main project
+        return os.path.dirname(current_dir)
+    elif "MythosMUD-client" in current_dir:
+        # We're in the client worktree, need to go up to main project
+        return os.path.dirname(current_dir)
+    elif "MythosMUD-docs" in current_dir:
+        # We're in the docs worktree, need to go up to main project
+        return os.path.dirname(current_dir)
+    elif "MythosMUD-testing" in current_dir:
+        # We're in the testing worktree, need to go up to main project
+        return os.path.dirname(current_dir)
+    else:
+        # We're in the main project directory
+        return current_dir
+
+
+project_root = get_project_root()
+print(f"📁 Project root: {project_root}")
+
+# Determine if we're in a worktree context
+is_worktree = project_root != os.getcwd()
+if is_worktree:
+    print(f"🔄 Worktree context detected: {os.path.basename(os.getcwd())}")
+
 steps = [
     ["uv", "sync", "--project", "server"],
     ["uv", "run", "--active", "pre-commit", "install", "-f"],
     ["npx.cmd" if is_windows else "npx", "--version"],
     ["npm.cmd" if is_windows else "npm", "install"],
 ]
-
 
 print("PYTHON ENV PATH:", os.environ["PATH"])
 print("Installing server and client dependencies...")
@@ -32,9 +60,12 @@ for i, step in enumerate(steps):
     print(f"Running: {' '.join(step)}")
 
     if i == 3:  # npm install in client
-        result = subprocess.run(step, cwd="client")
+        # Always run npm install from the main project's client directory
+        client_path = os.path.join(project_root, "client")
+        result = subprocess.run(step, cwd=client_path)
     else:
-        result = subprocess.run(step)
+        # For other steps, run from the project root
+        result = subprocess.run(step, cwd=project_root)
 
     if result.returncode != 0:
         print(f"❌ Step failed: {' '.join(str(s) for s in step)}")
@@ -44,5 +75,10 @@ for i, step in enumerate(steps):
 
 print("✅ Installation completed successfully!")
 print("\nNext steps:")
-print("1. Start the server: uv run --active uvicorn main:app --reload")
+print("1. Start the server: scripts/start_server.ps1")
 print("2. Start the client: cd client && npm start")
+
+if is_worktree:
+    worktree_name = os.path.basename(os.getcwd())
+    print(f"\n💡 Note: You're currently in the {worktree_name} worktree.")
+    print("   Consider switching to the main worktree for integration tasks.")
