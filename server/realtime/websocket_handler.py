@@ -30,11 +30,37 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
         return
 
     try:
+        # Send initial game state
+        player = connection_manager._get_player(player_id)
+        if player and hasattr(player, "current_room_id"):
+            persistence = connection_manager.persistence
+            if persistence:
+                room = persistence.get_room(player.current_room_id)
+                if room:
+                    game_state_event = {
+                        "event_type": "game_state",
+                        "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
+                        "sequence_number": 1,
+                        "player_id": player_id,
+                        "room_id": player.current_room_id,
+                        "data": {
+                            "player": {
+                                "name": player.name,
+                                "level": getattr(player, "level", 1),
+                                "stats": getattr(player, "stats", {}),
+                            },
+                            "room": room,
+                        },
+                    }
+                    await websocket.send_json(game_state_event)
+
         # Send welcome message
         welcome_event = {
-            "type": "welcome",
+            "event_type": "welcome",
+            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
+            "sequence_number": 2,
             "player_id": player_id,
-            "message": "Connected to MythosMUD",
+            "data": {"message": "Connected to MythosMUD"},
         }
         await websocket.send_json(welcome_event)
 
@@ -132,13 +158,27 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         # Send the result back to the player
         response = {
             "event_type": "command_response",
+            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
+            "sequence_number": 3,
+            "player_id": player_id,
             "data": result,
         }
         await websocket.send_json(response)
 
         # Broadcast room updates if the command affected the room
+        logger.debug(f"Command result: {result}")
         if result.get("room_changed"):
+            logger.debug(f"Room changed detected, broadcasting update for room: {result.get('room_id')}")
             await broadcast_room_update(player_id, result.get("room_id"))
+        elif cmd == "go" and result.get("result"):
+            # Send room update after movement
+            logger.debug(f"Go command detected, broadcasting update for player: {player_id}")
+            player = connection_manager._get_player(player_id)
+            if player and hasattr(player, "current_room_id"):
+                logger.debug(f"Broadcasting room update for room: {player.current_room_id}")
+                await broadcast_room_update(player_id, player.current_room_id)
+            else:
+                logger.warning(f"Player not found or missing current_room_id for: {player_id}")
 
     except Exception as e:
         logger.error(f"Error processing command '{command}' for {player_id}: {e}")
@@ -242,7 +282,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         exits = target_room.get("exits", {})
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
+        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
 
     elif cmd == "say":
         message = " ".join(args).strip()
@@ -317,17 +357,53 @@ async def broadcast_room_update(player_id: str, room_id: str):
         player_id: The player who triggered the update
         room_id: The room's ID
     """
+    logger.debug(f"broadcast_room_update called with player_id: {player_id}, room_id: {room_id}")
     try:
+        # Get room data
+        persistence = connection_manager.persistence
+        if not persistence:
+            logger.warning("Persistence layer not available for room update")
+            return
+
+        room = persistence.get_room(room_id)
+        if not room:
+            logger.warning(f"Room not found for update: {room_id}")
+            return
+
         # Create room update event
         update_event = {
-            "type": "room_update",
-            "room_id": room_id,
-            "triggered_by": player_id,
+            "event_type": "room_update",
             "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
+            "sequence_number": 4,
+            "player_id": player_id,
+            "room_id": room_id,
+            "data": {
+                "room": room,
+                "entities": [],  # TODO: Add actual entities
+            },
         }
 
+        logger.debug(f"Room update event created: {update_event}")
+
+        # Update player's room subscription
+        player = connection_manager._get_player(player_id)
+        if player:
+            # Unsubscribe from old room
+            if hasattr(player, "current_room_id") and player.current_room_id and player.current_room_id != room_id:
+                await connection_manager.unsubscribe_from_room(player_id, player.current_room_id)
+                logger.debug(f"Player {player_id} unsubscribed from old room {player.current_room_id}")
+
+            # Subscribe to new room
+            await connection_manager.subscribe_to_room(player_id, room_id)
+            logger.debug(f"Player {player_id} subscribed to new room {room_id}")
+
+            # Update player's current room
+            player.current_room_id = room_id
+
         # Broadcast to room
+        logger.debug(f"Broadcasting room update to room: {room_id}")
         await connection_manager.broadcast_to_room(room_id, update_event)
+        logger.debug(f"Room update broadcast completed for room: {room_id}")
 
     except Exception as e:
         logger.error(f"Error broadcasting room update for room {room_id}: {e}")

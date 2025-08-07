@@ -1,0 +1,6 @@
+---
+name: serverstart
+alwaysApply: true
+---
+
+The server should only be started using the start_dev.ps1 script, run from the project root

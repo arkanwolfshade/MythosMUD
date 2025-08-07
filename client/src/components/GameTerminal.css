@@ -28,6 +28,7 @@
   gap: 15px;
   width: 300px;
   flex-shrink: 0;
+  min-height: 0;
 }
 
 /* Right terminal area */
@@ -168,70 +169,62 @@
   padding: 15px;
   border-radius: 5px;
   border-left: 3px solid #00ff00;
+  margin-bottom: 15px;
+  height: 480px;
+  overflow-y: auto;
 }
 
 .player-info h3 {
   margin: 0 0 10px 0;
   color: #00ffff;
+  font-size: 16px;
+  text-align: center;
 }
 
 .stats {
+  font-size: 12px;
+}
+
+.stats-grid {
   display: flex;
-  gap: 20px;
-  font-size: 14px;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
 }
 
-.stats span {
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 8px;
   background-color: #2a2a2a;
-  padding: 5px 10px;
   border-radius: 3px;
+  border: 1px solid #333;
 }
 
-.room-info {
-  background-color: #1a1a1a;
-  padding: 15px;
-  border-radius: 5px;
-  border-left: 3px solid #ffff00;
+.stat-label {
+  color: #00aa00;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
-.room-info h4 {
-  margin: 0 0 10px 0;
-  color: #ffff00;
-}
-
-.room-info p {
-  margin: 0 0 10px 0;
-  line-height: 1.4;
-  max-width: 80ch; /* Limit to 80 characters per line */
-  word-wrap: break-word;
-  word-break: break-word;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-}
-
-.entities {
-  margin-top: 10px;
-}
-
-.entities ul {
-  margin: 5px 0;
-  padding-left: 20px;
-}
-
-.entities li {
-  color: #ffaa00;
+.stat-value {
+  color: #00ff00;
+  font-weight: 500;
+  font-size: 11px;
 }
 
 .message-log {
-  height: 500px !important; /* Fixed height following industry standards - force override */
-  max-height: 500px !important; /* Ensure it doesn't grow beyond this */
+  height: 1000px !important; /* Doubled height - force override */
+  max-height: 1000px !important; /* Ensure it doesn't grow beyond this */
   background-color: #1a1a1a;
   padding: 15px;
   border-radius: 5px;
   overflow-y: auto !important; /* Force scrollbars */
   overflow-x: hidden; /* Prevent horizontal scroll for long lines */
   border: 1px solid #333;
-  min-height: 500px; /* Ensure minimum height */
+  min-height: 1000px; /* Ensure minimum height */
   grid-row: 1; /* Take up the first grid row */
 }
 

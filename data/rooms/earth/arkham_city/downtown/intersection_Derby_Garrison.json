@@ -4,7 +4,7 @@
   "description": "The intersection where Derby Street meets N. Garrison Street",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "intersections",
+  "sub_zone": "downtown",
   "environment": "outdoors",
   "exits": {
     "north": "earth_arkham_city_northside_Garrison_St_002",

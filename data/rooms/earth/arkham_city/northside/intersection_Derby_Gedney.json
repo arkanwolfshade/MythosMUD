@@ -4,7 +4,7 @@
   "description": "The intersection where Derby Street meets Gedney Street",
   "plane": "earth",
   "zone": "arkham_city",
-  "sub_zone": "intersections",
+  "sub_zone": "northside",
   "environment": "outdoors",
   "exits": {
     "north": null,
