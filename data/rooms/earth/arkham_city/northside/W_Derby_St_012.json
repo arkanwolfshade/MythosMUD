@@ -9,7 +9,7 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": "earth_arkham_city_intersection_Derby_Gedney",
+    "east": "earth_arkham_city_northside_Derby_Gedney",
     "west": "earth_arkham_city_northside_Derby_St_011",
     "up": null,
     "down": null
