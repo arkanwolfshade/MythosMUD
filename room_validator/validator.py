@@ -12,11 +12,11 @@ from datetime import datetime
 
 import click
 from core.fixer import RoomFixer
+from core.minimap_renderer import MinimapRenderer
 from core.path_validator import PathValidator
 from core.reporter import Reporter
 from core.room_loader import RoomLoader
 from core.schema_validator import SchemaValidator
-from core.minimap_renderer import MinimapRenderer
 
 
 @click.command()
@@ -130,12 +130,23 @@ def main(
 
             # Check bidirectional connections
             missing_returns = path_validator.check_bidirectional_connections(room_database)
-            for room_a, direction_a, room_b, direction_b in missing_returns:
+            for room_a, direction_a, room_b, direction_b, is_zone_transition in missing_returns:
+                error_type = "zone_transition" if is_zone_transition else "bidirectional"
+                zone_a = room_database[room_a].get("sub_zone", "unknown")
+                zone_b = room_database[room_b].get("sub_zone", "unknown")
+                message = (
+                    (
+                        f"Zone Transition: Exit '{direction_a}' → {room_b} ({zone_a} → {zone_b}), "
+                        f"but {room_b} has no '{direction_b}' return"
+                    )
+                    if is_zone_transition
+                    else (f"Exit '{direction_a}' → {room_b}, but {room_b} has no '{direction_b}' return")
+                )
                 errors.append(
                     {
-                        "type": "bidirectional",
+                        "type": error_type,
                         "room_id": room_a,
-                        "message": f"Exit '{direction_a}' → {room_b}, but {room_b} has no '{direction_b}' return",
+                        "message": message,
                         "suggestion": f'Add "{direction_b}": "{room_a}" to {room_b} or flag as one_way',
                     }
                 )
@@ -205,45 +216,49 @@ def main(
             for config_path in config_files["subzone_config"]:
                 config_data = room_loader.load_config_file(config_path)
                 if config_data:
-                    config_errors = schema_validator.validate_subzone_config(
-                        config_data, str(config_path)
-                    )
+                    config_errors = schema_validator.validate_subzone_config(config_data, str(config_path))
                     for error_msg in config_errors:
-                        errors.append({
-                            "type": "config_schema",
-                            "room_id": str(config_path),
-                            "message": error_msg,
-                            "suggestion": "Check sub-zone configuration schema",
-                        })
+                        errors.append(
+                            {
+                                "type": "config_schema",
+                                "room_id": str(config_path),
+                                "message": error_msg,
+                                "suggestion": "Check sub-zone configuration schema",
+                            }
+                        )
                 else:
-                    errors.append({
-                        "type": "config_parse",
-                        "room_id": str(config_path),
-                        "message": "Failed to parse sub-zone configuration",
-                        "suggestion": "Check JSON syntax and structure",
-                    })
+                    errors.append(
+                        {
+                            "type": "config_parse",
+                            "room_id": str(config_path),
+                            "message": "Failed to parse sub-zone configuration",
+                            "suggestion": "Check JSON syntax and structure",
+                        }
+                    )
 
             # Validate zone configurations
             for config_path in config_files["zone_config"]:
                 config_data = room_loader.load_config_file(config_path)
                 if config_data:
-                    config_errors = schema_validator.validate_zone_config(
-                        config_data, str(config_path)
-                    )
+                    config_errors = schema_validator.validate_zone_config(config_data, str(config_path))
                     for error_msg in config_errors:
-                        errors.append({
-                            "type": "config_schema",
-                            "room_id": str(config_path),
-                            "message": error_msg,
-                            "suggestion": "Check zone configuration schema",
-                        })
+                        errors.append(
+                            {
+                                "type": "config_schema",
+                                "room_id": str(config_path),
+                                "message": error_msg,
+                                "suggestion": "Check zone configuration schema",
+                            }
+                        )
                 else:
-                    errors.append({
-                        "type": "config_parse",
-                        "room_id": str(config_path),
-                        "message": "Failed to parse zone configuration",
-                        "suggestion": "Check JSON syntax and structure",
-                    })
+                    errors.append(
+                        {
+                            "type": "config_parse",
+                            "room_id": str(config_path),
+                            "message": "Failed to parse zone configuration",
+                            "suggestion": "Check JSON syntax and structure",
+                        }
+                    )
 
         # Generate mini-map if requested
         if minimap:
@@ -251,9 +266,9 @@ def main(
             minimap_data = path_validator.generate_minimap_graph(room_database, minimap_depth)
             minimap_renderer = MinimapRenderer()
 
-            print("\n" + "="*80)
+            print("\n" + "=" * 80)
             print("🗺️  MINI-MAP VISUALIZATION")
-            print("="*80)
+            print("=" * 80)
 
             # Render ASCII map
             ascii_map = minimap_renderer.render_ascii_map(minimap_data)
@@ -263,7 +278,7 @@ def main(
             stats_map = minimap_renderer.render_connectivity_stats(minimap_data)
             print("\n" + stats_map)
 
-            print("="*80)
+            print("=" * 80)
 
         # Generate statistics
         subzones = room_loader.get_subzones()
@@ -284,7 +299,7 @@ def main(
             error_log_path = "error.log"
             with open(error_log_path, "w", encoding="utf-8") as f:
                 f.write(f"Room Validator Error Log - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write("="*80 + "\n\n")
+                f.write("=" * 80 + "\n\n")
                 for error in errors:
                     f.write(f"🏠 {error['room_id']}\n")
                     f.write(f"  ❌ {error['type'].title()}: {error['message']}\n")
