@@ -128,7 +128,7 @@ class MovementMonitor:
 
         # Check for orphaned players (players not in any room)
         orphaned_players = set()
-        for room_id, room in rooms.items():
+        for _room_id, room in rooms.items():
             if hasattr(room, "get_players"):
                 for player_id in room.get_players():
                     orphaned_players.discard(player_id)

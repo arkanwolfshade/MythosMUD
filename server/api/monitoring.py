@@ -78,7 +78,7 @@ async def get_movement_metrics():
 
         return MetricsResponse(**metrics)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}") from e
 
 
 @router.get("/integrity", response_model=IntegrityResponse)
@@ -100,7 +100,7 @@ async def validate_room_integrity():
 
         return IntegrityResponse(**result)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error validating integrity: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error validating integrity: {str(e)}") from e
 
 
 @router.get("/alerts", response_model=AlertsResponse)
@@ -116,7 +116,7 @@ async def get_system_alerts():
             timestamp=get_movement_monitor().get_metrics()["timestamp"].isoformat(),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}") from e
 
 
 @router.post("/reset")
@@ -128,7 +128,7 @@ async def reset_metrics():
         reset_movement_monitor()
         return {"message": "Metrics reset successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}") from e
 
 
 @router.get("/performance-summary")
@@ -156,4 +156,4 @@ async def get_performance_summary():
 
         return summary
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}") from e

@@ -13,6 +13,8 @@ import threading
 import time
 from unittest.mock import Mock, patch
 
+import pytest
+
 from server.events import EventBus
 from server.game.movement_service import MovementService
 from server.models.room import Room
@@ -480,7 +482,3 @@ class TestComprehensiveMovement:
             # Verify player moved successfully even though events failed
             assert "player1" not in room1.get_players()
             assert "player1" in room2.get_players()
-
-
-# Import pytest for the test that uses it
-import pytest
