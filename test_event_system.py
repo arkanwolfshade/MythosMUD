@@ -19,6 +19,7 @@ os.environ["DEBUG"] = "true"
 # Add the server directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "server"))
 
+# Import after path setup
 from server.events import EventBus
 from server.events.event_types import PlayerEnteredRoom
 from server.game.movement_service import MovementService
