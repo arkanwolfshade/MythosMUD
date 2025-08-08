@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Derby_St_009",
+  "name": "E. Derby Street",
+  "description": "The eastern portion of Derby Street bustles with activity. Banks and businesses line the street, their facades an odd mix of welcoming and forbidding. The sound of commerce mingles with whispers that seem to come from nowhere.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Derby_St_010",
+    "west": "earth_arkham_city_downtown_Derby_Dyer",
+    "up": null,
+    "down": null
+  }
+}

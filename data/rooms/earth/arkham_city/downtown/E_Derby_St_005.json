@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Derby_St_005",
+  "name": "E. Derby Street",
+  "description": "The architecture along this portion of E. Derby Street shows a curious mix of styles, some buildings seeming far older than they should be. The street is busy with trade, though the shopkeepers sometimes cast nervous glances at the deepening shadows.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Derby_St_006",
+    "west": "earth_arkham_city_downtown_Derby_St_004",
+    "up": null,
+    "down": null
+  }
+}
