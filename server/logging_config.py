@@ -285,9 +285,7 @@ def _setup_file_logging(
 
     # Configure root logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(
-        getattr(logging, str(log_level).upper(), logging.INFO)
-    )
+    root_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Get rotation settings from config
     rotation_config = log_config.get("rotation", {})
@@ -356,9 +354,7 @@ def _setup_file_logging(
         backupCount=backup_count,
         encoding="utf-8",
     )
-    console_handler.setLevel(
-        getattr(logging, str(log_level).upper(), logging.INFO)
-    )
+    console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
     console_handler.setFormatter(formatter)
 
     # Add console handler to root logger to capture all output
