@@ -16,7 +16,7 @@ class PlayerBase(BaseModel):
     """Base player schema with common fields."""
 
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
-    current_room_id: str = Field(default="earth_arkham_city_intersection_Derby_High", description="Current room ID")
+    current_room_id: str = Field(default="earth_arkham_city_northside_Derby_High", description="Current room ID")
     experience_points: int = Field(default=0, ge=0, description="Experience points")
     level: int = Field(default=1, ge=1, description="Player level")
 
@@ -34,7 +34,7 @@ class PlayerCreate(PlayerBase):
             "example": {
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
-                "current_room_id": "earth_arkham_city_intersection_Derby_High",
+                "current_room_id": "earth_arkham_city_northside_Derby_High",
                 "experience_points": 0,
                 "level": 1,
                 "stats": {"health": 100, "sanity": 100, "strength": 10},
@@ -64,7 +64,7 @@ class PlayerRead(PlayerBase):
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
-                "current_room_id": "earth_arkham_city_intersection_Derby_High",
+                "current_room_id": "earth_arkham_city_northside_Derby_High",
                 "experience_points": 150,
                 "level": 2,
                 "stats": {"health": 95, "sanity": 88, "strength": 12},

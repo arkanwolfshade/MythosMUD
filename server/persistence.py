@@ -349,7 +349,7 @@ class PersistenceLayer:
 
         # Room doesn't exist, move player to starting room
         old_room = player.current_room_id
-        player.current_room_id = "earth_arkham_city_campus_W_College_St_003"
+        player.current_room_id = "earth_arkham_city_northside_Derby_High"
 
         self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
         return True
