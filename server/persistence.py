@@ -213,6 +213,13 @@ class PersistenceLayer:
             rows = conn.execute("SELECT * FROM players").fetchall()
             return [Player(**dict(row)) for row in rows]
 
+    def get_players_in_room(self, room_id: str) -> list[Player]:
+        """Get all players currently in a specific room."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
+            return [Player(**dict(row)) for row in rows]
+
     def save_players(self, players: list[Player]):
         """Batch save players atomically."""
         with self._lock, sqlite3.connect(self.db_path) as conn:

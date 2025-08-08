@@ -45,6 +45,19 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     # Get room occupants
                     room_occupants = connection_manager.get_room_occupants(player.current_room_id)
 
+                    # Transform to list of player names for client (UI expects string[])
+                    occupant_names = []
+                    try:
+                        for occ in room_occupants or []:
+                            if isinstance(occ, dict):
+                                name = occ.get("player_name") or occ.get("name")
+                                if name:
+                                    occupant_names.append(name)
+                            elif isinstance(occ, str):
+                                occupant_names.append(occ)
+                    except Exception as e:
+                        logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
+
                     game_state_event = {
                         "event_type": "game_state",
                         "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
@@ -58,8 +71,8 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                                 "stats": getattr(player, "stats", {}),
                             },
                             "room": (room.to_dict() if hasattr(room, "to_dict") else room),
-                            "occupants": room_occupants,
-                            "occupant_count": len(room_occupants),
+                            "occupants": occupant_names,
+                            "occupant_count": len(occupant_names),
                         },
                     }
                     await websocket.send_json(game_state_event)
@@ -402,6 +415,22 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.warning(f"Room not found for update: {room_id}")
             return
 
+        # Get room occupants (server-side structs)
+        room_occupants = connection_manager.get_room_occupants(room_id)
+
+        # Transform to list of player names for client (UI expects string[])
+        occupant_names = []
+        try:
+            for occ in room_occupants or []:
+                if isinstance(occ, dict):
+                    name = occ.get("player_name") or occ.get("name")
+                    if name:
+                        occupant_names.append(name)
+                elif isinstance(occ, str):
+                    occupant_names.append(occ)
+        except Exception as e:
+            logger.error(f"Error transforming room occupants for room {room_id}: {e}")
+
         # Create room update event
         update_event = {
             "event_type": "room_update",
@@ -412,6 +441,8 @@ async def broadcast_room_update(player_id: str, room_id: str):
             "data": {
                 "room": room.to_dict() if hasattr(room, "to_dict") else room,
                 "entities": [],  # TODO: Add actual entities
+                "occupants": occupant_names,
+                "occupant_count": len(occupant_names),
             },
         }
 

@@ -30,13 +30,21 @@ async def lifespan(app: FastAPI):
     including persistence layer initialization and game tick loop."""
     logger.info("Starting MythosMUD server...")
     await init_db()
-    app.state.persistence = get_persistence()
-    connection_manager.persistence = app.state.persistence
-
-    # Initialize the real-time event handler after persistence is set
+    # Initialize real-time event handler first to obtain its EventBus
     app.state.event_handler = get_real_time_event_handler()
-    # Ensure the event handler has access to the initialized connection manager
+    # Ensure the event handler has access to the connection manager
     app.state.event_handler.connection_manager = connection_manager
+
+    # Initialize persistence with the same EventBus so Rooms publish to it
+    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
+    connection_manager.persistence = app.state.persistence
+    # Ensure connection manager exposes the same EventBus for command handlers
+    connection_manager._event_bus = app.state.event_handler.event_bus
+
+    # Set the main event loop for the EventBus to handle async event handlers
+    main_loop = asyncio.get_running_loop()
+    app.state.event_handler.event_bus.set_main_loop(main_loop)
+
     logger.info("Real-time event handler initialized")
 
     # Start the game tick loop

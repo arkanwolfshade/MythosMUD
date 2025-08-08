@@ -407,8 +407,9 @@ class ConnectionManager:
         Returns:
             list[dict]: List of occupant information
         """
-        occupants = []
+        occupants: list[dict] = []
 
+        # Only include online players currently tracked in this room
         if room_id in self.room_occupants:
             for player_id in self.room_occupants[room_id]:
                 if player_id in self.online_players:

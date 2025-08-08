@@ -183,7 +183,17 @@ class RealTimeEventHandler:
         """
         try:
             # Get room occupants
-            occupants = self._get_room_occupants(room_id)
+            occupants_info = self._get_room_occupants(room_id)
+
+            # Transform to list of names for client UI consistency
+            occupant_names: list[str] = []
+            for occ in occupants_info or []:
+                if isinstance(occ, dict):
+                    name = occ.get("player_name") or occ.get("name")
+                    if name:
+                        occupant_names.append(name)
+                elif isinstance(occ, str):
+                    occupant_names.append(occ)
 
             # Create occupants update message
             message = {
@@ -191,7 +201,7 @@ class RealTimeEventHandler:
                 "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "sequence_number": self._get_next_sequence(),
                 "room_id": room_id,
-                "data": {"occupants": occupants, "count": len(occupants)},
+                "data": {"occupants": occupant_names, "count": len(occupant_names)},
             }
 
             # Send to room occupants
