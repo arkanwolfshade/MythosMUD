@@ -154,25 +154,55 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
       }
 
       case 'player_entered': {
-        const name = getStringProp(event.data, 'player_name');
+        const name = (event.data as any)?.player_name as string;
         if (name && name !== playerName) {
           addMessage(`${name} entered the room.`);
+          // Optimistically add to occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = Array.from(new Set([...current, name]));
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              roomOccupants: next,
+            };
+          });
         }
         break;
       }
 
       case 'player_left': {
-        const name = getStringProp(event.data, 'player_name');
+        const name = (event.data as any)?.player_name as string;
         if (name && name !== playerName) {
           addMessage(`${name} left the room.`);
+          // Optimistically remove from occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = current.filter(n => n !== name);
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              roomOccupants: next,
+            };
+          });
         }
         break;
       }
 
       case 'player_left_game': {
-        const name = getStringProp(event.data, 'player_name');
+        const name = (event.data as any)?.player_name as string;
         if (name && name !== playerName) {
           addMessage(`${name} left the game.`);
+          // Optimistically remove from occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = current.filter(n => n !== name);
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              roomOccupants: next,
+            };
+          });
         }
         break;
       }

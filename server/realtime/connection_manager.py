@@ -37,8 +37,10 @@ class ConnectionManager:
         self.persistence = None
 
         # Player presence tracking
-        self.online_players: dict[str, dict] = {}  # player_id -> player_info
-        self.room_occupants: dict[str, set[str]] = {}  # room_id -> set of player_ids
+        # player_id -> player_info
+        self.online_players: dict[str, dict] = {}
+        # room_id -> set of player_ids
+        self.room_occupants: dict[str, set[str]] = {}
 
         # Rate limiting for connections
         self.connection_attempts: dict[str, list[float]] = {}
@@ -65,10 +67,15 @@ class ConnectionManager:
             self.active_websockets[connection_id] = websocket
             self.player_websockets[player_id] = connection_id
 
-            # Subscribe to player's current room
+            # Subscribe to player's current room (canonical room id)
             player = self._get_player(player_id)
             if player:
-                await self.subscribe_to_room(player_id, player.current_room_id)
+                canonical_room_id = None
+                if self.persistence:
+                    room = self.persistence.get_room(player.current_room_id)
+                    if room:
+                        canonical_room_id = getattr(room, "id", None) or player.current_room_id
+                await self.subscribe_to_room(player_id, canonical_room_id or player.current_room_id)
 
                 # Track player presence
                 await self._track_player_connected(player_id, player)
@@ -76,7 +83,10 @@ class ConnectionManager:
             logger.info(f"WebSocket connected for player {player_id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to connect WebSocket for player {player_id}: {e}", exc_info=True)
+            logger.error(
+                f"Failed to connect WebSocket for player {player_id}: {e}",
+                exc_info=True,
+            )
             # Clean up any partial state in case of failure
             if player_id in self.player_websockets:
                 connection_id = self.player_websockets[player_id]
@@ -134,8 +144,15 @@ class ConnectionManager:
         """
         if player_id in self.active_sse_connections:
             del self.active_sse_connections[player_id]
-        # On SSE disconnect, also reconcile presence (in case WS is closed too)
-        self._prune_player_from_all_rooms(player_id)
+
+        # Delegate to unified disconnect logic
+        try:
+            import asyncio
+
+            asyncio.create_task(self._track_player_disconnected(player_id))
+        except Exception:
+            pass
+
         logger.info(f"SSE disconnected for player {player_id}")
 
     def _prune_player_from_all_rooms(self, player_id: str):
@@ -222,10 +239,11 @@ class ConnectionManager:
             player_id: The player's ID
             room_id: The room's ID
         """
-        if room_id not in self.room_subscriptions:
-            self.room_subscriptions[room_id] = set()
-        self.room_subscriptions[room_id].add(player_id)
-        logger.debug(f"Player {player_id} subscribed to room {room_id}")
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        if canonical_id not in self.room_subscriptions:
+            self.room_subscriptions[canonical_id] = set()
+        self.room_subscriptions[canonical_id].add(player_id)
+        logger.debug(f"Player {player_id} subscribed to room {canonical_id}")
 
     async def unsubscribe_from_room(self, player_id: str, room_id: str):
         """
@@ -235,11 +253,12 @@ class ConnectionManager:
             player_id: The player's ID
             room_id: The room's ID
         """
-        if room_id in self.room_subscriptions:
-            self.room_subscriptions[room_id].discard(player_id)
-            if not self.room_subscriptions[room_id]:
-                del self.room_subscriptions[room_id]
-        logger.debug(f"Player {player_id} unsubscribed from room {room_id}")
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        if canonical_id in self.room_subscriptions:
+            self.room_subscriptions[canonical_id].discard(player_id)
+            if not self.room_subscriptions[canonical_id]:
+                del self.room_subscriptions[canonical_id]
+        logger.debug(f"Player {player_id} unsubscribed from room {canonical_id}")
 
     def _get_next_sequence(self) -> int:
         """
@@ -250,6 +269,19 @@ class ConnectionManager:
         """
         self.sequence_counter += 1
         return self.sequence_counter
+
+    def _canonical_room_id(self, room_id: str | None) -> str | None:
+        """Resolve a room id to the canonical Room.id value, when possible."""
+        try:
+            if not room_id:
+                return room_id
+            if self.persistence is not None:
+                room = self.persistence.get_room(room_id)
+                if room is not None and getattr(room, "id", None):
+                    return room.id
+        except Exception as e:
+            logger.error(f"Error resolving canonical room id for {room_id}: {e}")
+        return room_id
 
     async def send_personal_message(self, player_id: str, event: dict) -> bool:
         """
@@ -290,10 +322,15 @@ class ConnectionManager:
             event: The event data to send
             exclude_player: Player ID to exclude from broadcast
         """
-        if room_id in self.room_subscriptions:
-            for player_id in self.room_subscriptions[room_id]:
-                if player_id != exclude_player:
-                    await self.send_personal_message(player_id, event)
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        targets: set[str] = set()
+        if canonical_id in self.room_subscriptions:
+            targets.update(self.room_subscriptions[canonical_id])
+        if room_id != canonical_id and room_id in self.room_subscriptions:
+            targets.update(self.room_subscriptions[room_id])
+        for pid in targets:
+            if pid != exclude_player:
+                await self.send_personal_message(pid, event)
 
     async def broadcast_global(self, event: dict, exclude_player: str = None):
         """
@@ -366,8 +403,12 @@ class ConnectionManager:
 
             self.online_players[player_id] = player_info
 
-            # Update room occupants
+            # Update room occupants using canonical room id
             room_id = getattr(player, "current_room_id", None)
+            if self.persistence and room_id:
+                room = self.persistence.get_room(room_id)
+                if room and getattr(room, "id", None):
+                    room_id = room.id
             if room_id:
                 if room_id not in self.room_occupants:
                     self.room_occupants[room_id] = set()
@@ -389,20 +430,25 @@ class ConnectionManager:
             player_id: The player's ID
         """
         try:
-            # Capture last known room and name from persistence
-            room_id: str | None = None
-            player_name: str | None = None
-            if self.persistence is not None:
-                pl = self.persistence.get_player(player_id)
-                if pl is not None:
-                    room_id = getattr(pl, "current_room_id", None)
-                    player_name = getattr(pl, "name", None)
+            # Resolve player using flexible lookup (ID or name)
+            pl = self._get_player(player_id)
+            room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
+            player_name: str | None = getattr(pl, "name", None) if pl else None
 
             # Remove from online and room presence
-            if player_id in self.online_players:
-                del self.online_players[player_id]
+            # Remove possible variants (provided id, canonical id, and name)
+            keys_to_remove = {player_id}
+            if pl is not None:
+                canonical_id = getattr(pl, "player_id", None) or getattr(pl, "user_id", None)
+                if canonical_id:
+                    keys_to_remove.add(str(canonical_id))
+                if player_name:
+                    keys_to_remove.add(player_name)
 
-            self._prune_player_from_all_rooms(player_id)
+            for key in list(keys_to_remove):
+                if key in self.online_players:
+                    del self.online_players[key]
+                self._prune_player_from_all_rooms(key)
 
             # Notify current room that player left the game and refresh occupants
             if room_id:
@@ -461,7 +507,8 @@ class ConnectionManager:
         """
         occupants: list[dict] = []
 
-        # If we have no tracked occupants set for this room, treat as empty
+        # Resolve to canonical id and check set presence
+        room_id = self._canonical_room_id(room_id) or room_id
         if room_id not in self.room_occupants:
             return occupants
 

@@ -37,13 +37,18 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
             if persistence:
                 room = persistence.get_room(player.current_room_id)
                 if room:
-                    # Ensure player is added to their current room
+                    # Ensure player is added to their current room and track if we actually added them
+                    added_to_room = False
                     if not room.has_player(player_id):
                         logger.info(f"Adding player {player_id} to room {player.current_room_id}")
                         room.player_entered(player_id)
+                        added_to_room = True
+
+                    # Use canonical room id for subscriptions and broadcasts
+                    canonical_room_id = getattr(room, "id", None) or player.current_room_id
 
                     # Get room occupants
-                    room_occupants = connection_manager.get_room_occupants(player.current_room_id)
+                    room_occupants = connection_manager.get_room_occupants(canonical_room_id)
 
                     # Transform to list of player names for client (UI expects string[])
                     occupant_names = []
@@ -63,7 +68,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                         "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
                         "sequence_number": 1,
                         "player_id": player_id,
-                        "room_id": player.current_room_id,
+                        "room_id": canonical_room_id,
                         "data": {
                             "player": {
                                 "name": player.name,
@@ -79,9 +84,30 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
 
                     # Proactively broadcast a room update so existing occupants see the new player
                     try:
-                        await broadcast_room_update(player_id, player.current_room_id)
+                        await broadcast_room_update(player_id, canonical_room_id)
                     except Exception as e:
                         logger.error(f"Error broadcasting initial room update for {player_id}: {e}")
+
+                    # If player was already present (reconnect without a leave event),
+                    # explicitly notify other occupants they (re)entered to surface the event in UI
+                    if not added_to_room:
+                        try:
+                            synthetic_event = {
+                                "event_type": "player_entered",
+                                "timestamp": "2024-01-01T00:00:00Z",
+                                "sequence_number": 5,
+                                "room_id": canonical_room_id,
+                                "data": {
+                                    "player_id": player_id,
+                                    "player_name": getattr(player, "name", player_id),
+                                    "message": f"{getattr(player, 'name', player_id)} entered the room.",
+                                },
+                            }
+                            await connection_manager.broadcast_to_room(
+                                canonical_room_id, synthetic_event, exclude_player=player_id
+                            )
+                        except Exception as e:
+                            logger.error(f"Error sending synthetic player_entered for {player_id}: {e}")
 
         # Send welcome message
         welcome_event = {
