@@ -37,6 +37,11 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
             if persistence:
                 room = persistence.get_room(player.current_room_id)
                 if room:
+                    # Ensure player is added to their current room
+                    if not room.has_player(player_id):
+                        logger.info(f"Adding player {player_id} to room {player.current_room_id}")
+                        room.player_entered(player_id)
+
                     # Get room occupants
                     room_occupants = connection_manager.get_room_occupants(player.current_room_id)
 
