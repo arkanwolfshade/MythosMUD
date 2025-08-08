@@ -33,8 +33,10 @@ async def lifespan(app: FastAPI):
     app.state.persistence = get_persistence()
     connection_manager.persistence = app.state.persistence
 
-    # Initialize the real-time event handler
+    # Initialize the real-time event handler after persistence is set
     app.state.event_handler = get_real_time_event_handler()
+    # Ensure the event handler has access to the initialized connection manager
+    app.state.event_handler.connection_manager = connection_manager
     logger.info("Real-time event handler initialized")
 
     # Start the game tick loop
