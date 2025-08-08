@@ -11,11 +11,13 @@ that dimensional shifts are properly recorded.
 """
 
 import threading
+import time
 
 from ..events import EventBus
 from ..logging_config import get_logger
 from ..models.room import Room
 from ..persistence import get_persistence
+from .movement_monitor import get_movement_monitor
 
 
 class MovementService:
@@ -80,10 +82,15 @@ class MovementService:
             self._logger.warning(f"Player {player_id} attempted to move to same room {from_room_id}")
             return False
 
+        start_time = time.time()
+        monitor = get_movement_monitor()
+
         with self._lock:
             try:
                 # Step 1: Validate the move
                 if not self._validate_movement(player_id, from_room_id, to_room_id):
+                    duration_ms = (time.time() - start_time) * 1000
+                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
                 # Step 2: Get the rooms
@@ -92,15 +99,21 @@ class MovementService:
 
                 if not from_room:
                     self._logger.error(f"From room {from_room_id} not found")
+                    duration_ms = (time.time() - start_time) * 1000
+                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
                 if not to_room:
                     self._logger.error(f"To room {to_room_id} not found")
+                    duration_ms = (time.time() - start_time) * 1000
+                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
                 # Step 3: Verify player is in the from_room
                 if not from_room.has_player(player_id):
                     self._logger.error(f"Player {player_id} not in room {from_room_id}")
+                    duration_ms = (time.time() - start_time) * 1000
+                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
                 # Step 4: Perform the atomic move
@@ -118,11 +131,17 @@ class MovementService:
                     player.current_room_id = to_room_id
                     self._persistence.save_player(player)
 
+                # Record successful movement
+                duration_ms = (time.time() - start_time) * 1000
+                monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
+
                 self._logger.info(f"Successfully moved player {player_id} to {to_room_id}")
                 return True
 
             except Exception as e:
                 self._logger.error(f"Error moving player {player_id}: {e}")
+                duration_ms = (time.time() - start_time) * 1000
+                monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                 return False
 
     def _validate_movement(self, player_id: str, from_room_id: str, to_room_id: str) -> bool:
