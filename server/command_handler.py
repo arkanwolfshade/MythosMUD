@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
+from .game.movement_service import MovementService
 from .logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -524,13 +525,13 @@ def process_command(
         if args:
             direction = args[0].lower()
             logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
-            exits = room.get("exits", {})
+            exits = room.exits
             target_room_id = exits.get(direction)
             if target_room_id:
                 target_room = persistence.get_room(target_room_id)
                 if target_room:
-                    name = target_room.get("name", "")
-                    desc = target_room.get("description", "You see nothing special.")
+                    name = target_room.name
+                    desc = target_room.description
                     logger.debug(
                         "Looked at room in direction",
                         player=player_name,
@@ -540,9 +541,9 @@ def process_command(
                     return {"result": f"{name}\n{desc}"}
             logger.debug("No valid exit in direction", player=player_name, direction=direction, room_id=room_id)
             return {"result": "You see nothing special that way."}
-        name = room.get("name", "")
-        desc = room.get("description", "You see nothing special.")
-        exits = room.get("exits", {})
+        name = room.name
+        desc = room.description
+        exits = room.exits
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
@@ -569,7 +570,7 @@ def process_command(
         if not room:
             logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
             return {"result": "You can't go that way"}
-        exits = room.get("exits", {})
+        exits = room.exits
         target_room_id = exits.get(direction)
         if not target_room_id:
             logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
@@ -580,14 +581,21 @@ def process_command(
                 "Go command failed - target room not found", player=player_name, target_room_id=target_room_id
             )
             return {"result": "You can't go that way"}
-        # Move the player: update and persist current_room_id
-        logger.info("Player moved", player=player_name, from_room=room_id, to_room=target_room_id, direction=direction)
-        player.current_room_id = target_room_id
-        persistence.save_player(player)
+
+        # Use MovementService for atomic movement
+        movement_service = MovementService()
+        success = movement_service.move_player(player.player_id, room_id, target_room_id)
+        if not success:
+            logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)
+            return {"result": "You can't go that way"}
+
+        # Update current user's room ID
         current_user["current_room_id"] = target_room_id
-        name = target_room.get("name", "")
-        desc = target_room.get("description", "You see nothing special.")
-        exits = target_room.get("exits", {})
+
+        # Return room description
+        name = target_room.name
+        desc = target_room.description
+        exits = target_room.exits
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"

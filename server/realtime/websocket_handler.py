@@ -49,7 +49,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                                 "level": getattr(player, "level", 1),
                                 "stats": getattr(player, "stats", {}),
                             },
-                            "room": room,
+                            "room": (room.to_dict() if hasattr(room, "to_dict") else room),
                         },
                     }
                     await websocket.send_json(game_state_event)
@@ -232,19 +232,19 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
         if args:
             direction = args[0].lower()
-            exits = room.get("exits", {})
+            exits = room.exits if hasattr(room, "exits") else {}
             target_room_id = exits.get(direction)
             if target_room_id:
                 target_room = persistence.get_room(target_room_id)
                 if target_room:
-                    name = target_room.get("name", "")
-                    desc = target_room.get("description", "You see nothing special.")
+                    name = getattr(target_room, "name", "")
+                    desc = getattr(target_room, "description", "You see nothing special.")
                     return {"result": f"{name}\n{desc}"}
             return {"result": "You see nothing special that way."}
 
-        name = room.get("name", "")
-        desc = room.get("description", "You see nothing special.")
-        exits = room.get("exits", {})
+        name = getattr(room, "name", "")
+        desc = getattr(room, "description", "You see nothing special.")
+        exits = room.exits if hasattr(room, "exits") else {}
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
@@ -264,7 +264,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             logger.warning(f"Room not found: {room_id}")
             return {"result": "You can't go that way"}
 
-        exits = room.get("exits", {})
+        exits = room.exits if hasattr(room, "exits") else {}
         target_room_id = exits.get(direction)
         if not target_room_id:
             return {"result": "You can't go that way"}
@@ -277,9 +277,9 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         player.current_room_id = target_room_id
         persistence.save_player(player)
 
-        name = target_room.get("name", "")
-        desc = target_room.get("description", "You see nothing special.")
-        exits = target_room.get("exits", {})
+        name = getattr(target_room, "name", "")
+        desc = getattr(target_room, "description", "You see nothing special.")
+        exits = target_room.exits if hasattr(target_room, "exits") else {}
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
@@ -378,7 +378,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
             "player_id": player_id,
             "room_id": room_id,
             "data": {
-                "room": room,
+                "room": room.to_dict() if hasattr(room, "to_dict") else room,
                 "entities": [],  # TODO: Add actual entities
             },
         }
