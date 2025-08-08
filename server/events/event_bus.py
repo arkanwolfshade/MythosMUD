@@ -108,7 +108,7 @@ class EventBus:
                 if inspect.iscoroutinefunction(subscriber):
                     # Try to create task for async subscriber
                     try:
-                        loop = asyncio.get_running_loop()
+                        asyncio.get_running_loop()
                         asyncio.create_task(subscriber(event))
                     except RuntimeError:
                         # No running event loop, run in new event loop

@@ -279,26 +279,26 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             return {"result": "You can't go that way"}
 
         # Use MovementService to move the player (this will trigger events)
-        from ..game.movement_service import MovementService
         from ..events import EventBus
-        
+        from ..game.movement_service import MovementService
+
         # Get the event bus from the app state or create a new one
-        event_bus = getattr(connection_manager, '_event_bus', None)
+        event_bus = getattr(connection_manager, "_event_bus", None)
         if not event_bus:
             event_bus = EventBus()
-        
+
         movement_service = MovementService(event_bus)
-        
+
         # Get the player's current room before moving
         from_room_id = player.current_room_id
-        
+
         logger.debug(f"Moving player {player_id} from {from_room_id} to {target_room_id}")
-        
+
         # Move the player using the movement service
         success = movement_service.move_player(player_id, from_room_id, target_room_id)
-        
+
         logger.debug(f"Movement result: {success}")
-        
+
         if not success:
             return {"result": "You can't go that way"}
 
