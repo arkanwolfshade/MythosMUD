@@ -7,6 +7,7 @@ for different categories of events. As the Pnakotic Manuscripts teach us,
 proper categorization of knowledge is essential for its preservation.
 """
 
+import logging
 import os
 import sys
 from datetime import datetime
@@ -14,12 +15,8 @@ from pathlib import Path
 from typing import Any
 
 import structlog
-from structlog.dev import ConsoleRenderer, set_exc_info
-from structlog.processors import (
-    JSONRenderer,
-    TimeStamper,
-    add_log_level,
-)
+
+# Using fully-qualified names (structlog.processors.*) below; no direct imports
 from structlog.stdlib import BoundLogger, LoggerFactory
 
 
@@ -91,10 +88,18 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                 log_file.rename(rotated_path)
                 # Log the rotation (this will go to the new log file)
                 logger = get_logger("server.logging")
-                logger.info(f"Rotated log file: {log_file.name} -> {rotated_name}")
+                logger.info(
+                    "Rotated log file",
+                    old_name=log_file.name,
+                    new_name=rotated_name,
+                )
             except OSError as e:
                 logger = get_logger("server.logging")
-                logger.warning(f"Could not rotate {log_file.name}: {e}")
+                logger.warning(
+                    "Could not rotate log file",
+                    name=log_file.name,
+                    error=str(e),
+                )
 
 
 class MultiFileHandler:
@@ -129,7 +134,16 @@ class MultiFileHandler:
 
     def _get_log_types(self) -> list[str]:
         """Get list of all log file types."""
-        return ["server", "persistence", "authentication", "world", "communications", "commands", "errors", "access"]
+        return [
+            "server",
+            "persistence",
+            "authentication",
+            "world",
+            "communications",
+            "commands",
+            "errors",
+            "access",
+        ]
 
     def get_log_file_path(self, logger_name: str) -> Path:
         """
@@ -137,7 +151,7 @@ class MultiFileHandler:
 
         Args:
             logger_name: Name of the logger (e.g., "server.main",
-                        "persistence.layer")
+                "persistence.layer")
 
         Returns:
             Path to the appropriate log file
@@ -193,8 +207,21 @@ def detect_environment() -> str:
     return "development"
 
 
+def _event_only_renderer(_logger: Any, _name: str, event_dict: dict[str, Any]) -> str:
+    """
+    Render only the core event/message string for file logs.
+
+    This ensures file logs contain simple messages without ANSI or
+    additional structlog fields.
+    """
+    event = event_dict.get("event")
+    return "" if event is None else str(event)
+
+
 def configure_structlog(
-    environment: str | None = None, log_level: str = "INFO", log_config: dict[str, Any] | None = None
+    environment: str | None = None,
+    log_level: str = "INFO",
+    log_config: dict[str, Any] | None = None,
 ) -> None:
     """
     Configure Structlog based on environment.
@@ -207,52 +234,46 @@ def configure_structlog(
     if environment is None:
         environment = detect_environment()
 
-    # Base processors for all environments
+    # When writing to stdlib logging handlers (for file logs), configure
+    # structlog to defer final rendering to logging.Formatter via
+    # ProcessorFormatter.wrap_for_formatter. This prevents ANSI codes from
+    # ConsoleRenderer from appearing in file logs.
     processors = [
-        add_log_level,
-        TimeStamper(fmt="iso"),
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        # Final renderer ensures only the message text is rendered to stdlib
+        # and thus to file handlers.
+        _event_only_renderer,
     ]
-
-    # Environment-specific processors
-    if environment == "production":
-        processors.append(JSONRenderer())
-    else:
-        # Check format configuration
-        log_format = log_config.get("format", "colored") if log_config else "colored"
-
-        if log_format == "json":
-            processors.append(JSONRenderer())
-        elif log_format == "human":
-            processors.extend(
-                [
-                    ConsoleRenderer(colors=False),
-                    set_exc_info,
-                ]
-            )
-        else:  # colored (default)
-            processors.extend(
-                [
-                    ConsoleRenderer(colors=True),
-                    set_exc_info,
-                ]
-            )
 
     # Configure standard library logging for file output
     if log_config and not log_config.get("disable_logging", False):
-        _setup_file_logging(environment, log_config)
+        _setup_file_logging(environment, log_config, log_level)
 
     structlog.configure(
         processors=processors,
         context_class=dict,
         logger_factory=LoggerFactory(),
         wrapper_class=BoundLogger,
-        cache_logger_on_first_use=True,
+        # Disable caching so that later configuration (e.g., file logging
+        # setup) applies to all existing loggers. This prevents early colored
+        # renderers from leaking ANSI codes into file logs.
+        cache_logger_on_first_use=False,
     )
 
 
-def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
+def _setup_file_logging(
+    environment: str,
+    log_config: dict[str, Any],
+    log_level: str,
+) -> None:
     """Set up file logging handlers for different log categories."""
-    import logging
     from logging.handlers import RotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
@@ -264,12 +285,15 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
 
     # Configure root logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    root_logger.setLevel(
+        getattr(logging, str(log_level).upper(), logging.INFO)
+    )
 
     # Get rotation settings from config
     rotation_config = log_config.get("rotation", {})
     max_size_str = rotation_config.get("max_size", "10MB")
-    backup_count = rotation_config.get("backup_count", 5)  # Keep 5 backups
+    # Keep 5 backups
+    backup_count = rotation_config.get("backup_count", 5)
 
     # Convert max_size string to bytes
     if isinstance(max_size_str, str):
@@ -300,12 +324,18 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
         log_path = env_log_dir / f"{log_file}.log"
 
         # Create rotating file handler for continuous rotation
-        handler = RotatingFileHandler(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
+        handler = RotatingFileHandler(
+            log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
         handler.setLevel(logging.DEBUG)
 
         # Create formatter
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
         handler.setFormatter(formatter)
 
@@ -313,38 +343,41 @@ def _setup_file_logging(environment: str, log_config: dict[str, Any]) -> None:
         for prefix in prefixes:
             logger = logging.getLogger(prefix)
             logger.addHandler(handler)
-            logger.setLevel(logging.DEBUG)
-            logger.propagate = False  # Prevent duplicate logs - specific logs go to their files only
+            logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+            # Allow propagation so the root logger can also capture WARN+ into
+            # errors.log while category files still receive their logs.
+            logger.propagate = True
 
     # Also capture all console output to a general log file
     console_log_path = env_log_dir / "console.log"
     console_handler = RotatingFileHandler(
-        console_log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
+        console_log_path,
+        maxBytes=max_bytes,
+        backupCount=backup_count,
+        encoding="utf-8",
     )
-    console_handler.setLevel(logging.DEBUG)
+    console_handler.setLevel(
+        getattr(logging, str(log_level).upper(), logging.INFO)
+    )
     console_handler.setFormatter(formatter)
 
     # Add console handler to root logger to capture all output
     root_logger.addHandler(console_handler)
 
-    # Configure Structlog to use standard library logging
-    structlog.configure(
-        processors=[
-            structlog.stdlib.filter_by_level,
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.UnicodeDecoder(),
-            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-        ],
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
+    # Global errors handler that captures WARNING and above for all loggers
+    errors_log_path = env_log_dir / "errors.log"
+    errors_handler = RotatingFileHandler(
+        errors_log_path,
+        maxBytes=max_bytes,
+        backupCount=backup_count,
+        encoding="utf-8",
     )
+    errors_handler.setLevel(logging.WARNING)
+    errors_handler.setFormatter(formatter)
+    root_logger.addHandler(errors_handler)
+
+    # Nothing else to do here; structlog is already configured in
+    # configure_structlog to defer formatting to stdlib handlers
 
     # Ensure root logger also gets the console handler for any unhandled logs
     root_logger.setLevel(logging.DEBUG)
@@ -402,7 +435,7 @@ def _configure_uvicorn_logging() -> None:
     This ensures that all uvicorn logs (access logs, error logs, etc.)
     go through our StructLog system and are properly categorized.
     """
-    import logging
+    # use outer-scope logging import
 
     # Get our StructLog logger
     logger = get_logger("uvicorn")
@@ -428,7 +461,7 @@ def _configure_uvicorn_logging() -> None:
     logger.info("Uvicorn logging configured to use StructLog system")
 
 
-# Initialize logging when module is imported
-if __name__ != "__main__":
-    # Basic configuration for import-time usage
-    configure_structlog()
+# Note: We intentionally avoid configuring Structlog at import time to prevent
+# early logger instances from caching a colored console renderer that would
+# leak ANSI sequences into file logs. The application calls setup_logging()
+# early in startup to configure logging properly based on runtime config.

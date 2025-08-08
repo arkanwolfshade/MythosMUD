@@ -77,6 +77,12 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     }
                     await websocket.send_json(game_state_event)
 
+                    # Proactively broadcast a room update so existing occupants see the new player
+                    try:
+                        await broadcast_room_update(player_id, player.current_room_id)
+                    except Exception as e:
+                        logger.error(f"Error broadcasting initial room update for {player_id}: {e}")
+
         # Send welcome message
         welcome_event = {
             "event_type": "welcome",

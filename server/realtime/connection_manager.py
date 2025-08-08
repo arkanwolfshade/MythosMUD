@@ -118,7 +118,7 @@ class ConnectionManager:
             player_id: The player's ID
 
         Returns:
-            str: The connection ID
+            str: The SSE connection ID
         """
         connection_id = str(uuid.uuid4())
         self.active_sse_connections[player_id] = connection_id
@@ -134,7 +134,20 @@ class ConnectionManager:
         """
         if player_id in self.active_sse_connections:
             del self.active_sse_connections[player_id]
-            logger.info(f"SSE disconnected for player {player_id}")
+        # On SSE disconnect, also reconcile presence (in case WS is closed too)
+        self._prune_player_from_all_rooms(player_id)
+        logger.info(f"SSE disconnected for player {player_id}")
+
+    def _prune_player_from_all_rooms(self, player_id: str):
+        """Remove a player from all in-memory room occupant sets."""
+        try:
+            for room_id in list(self.room_occupants.keys()):
+                if player_id in self.room_occupants[room_id]:
+                    self.room_occupants[room_id].discard(player_id)
+                    if not self.room_occupants[room_id]:
+                        del self.room_occupants[room_id]
+        except Exception as e:
+            logger.error(f"Error pruning player {player_id} from rooms: {e}")
 
     def get_active_connection_count(self) -> int:
         """
@@ -360,6 +373,9 @@ class ConnectionManager:
                     self.room_occupants[room_id] = set()
                 self.room_occupants[room_id].add(player_id)
 
+                # Prune any stale occupant ids not currently online
+                self._reconcile_room_presence(room_id)
+
             logger.info(f"Player {player_id} presence tracked as connected")
 
         except Exception as e:
@@ -373,15 +389,51 @@ class ConnectionManager:
             player_id: The player's ID
         """
         try:
+            # Capture last known room and name from persistence
+            room_id: str | None = None
+            player_name: str | None = None
+            if self.persistence is not None:
+                pl = self.persistence.get_player(player_id)
+                if pl is not None:
+                    room_id = getattr(pl, "current_room_id", None)
+                    player_name = getattr(pl, "name", None)
+
+            # Remove from online and room presence
             if player_id in self.online_players:
                 del self.online_players[player_id]
 
-            # Remove from all room occupants
-            for room_id in list(self.room_occupants.keys()):
-                if player_id in self.room_occupants[room_id]:
-                    self.room_occupants[room_id].discard(player_id)
-                    if not self.room_occupants[room_id]:
-                        del self.room_occupants[room_id]
+            self._prune_player_from_all_rooms(player_id)
+
+            # Notify current room that player left the game and refresh occupants
+            if room_id:
+                # 1) left-game notification
+                left_event = {
+                    "event_type": "player_left_game",
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                    "sequence_number": self._get_next_sequence(),
+                    "room_id": room_id,
+                    "data": {
+                        "player_id": player_id,
+                        "player_name": player_name or player_id,
+                    },
+                }
+                await self.broadcast_to_room(room_id, left_event)
+
+                # 2) occupants update (names only)
+                occ_infos = self.get_room_occupants(room_id)
+                names: list[str] = []
+                for occ in occ_infos:
+                    name = occ.get("player_name") if isinstance(occ, dict) else None
+                    if name:
+                        names.append(name)
+                occ_event = {
+                    "event_type": "room_occupants",
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                    "sequence_number": self._get_next_sequence(),
+                    "room_id": room_id,
+                    "data": {"occupants": names, "count": len(names)},
+                }
+                await self.broadcast_to_room(room_id, occ_event)
 
             logger.info(f"Player {player_id} presence tracked as disconnected")
 
@@ -409,13 +461,26 @@ class ConnectionManager:
         """
         occupants: list[dict] = []
 
+        # If we have no tracked occupants set for this room, treat as empty
+        if room_id not in self.room_occupants:
+            return occupants
+
         # Only include online players currently tracked in this room
-        if room_id in self.room_occupants:
-            for player_id in self.room_occupants[room_id]:
-                if player_id in self.online_players:
-                    occupants.append(self.online_players[player_id])
+        for player_id in self.room_occupants[room_id]:
+            if player_id in self.online_players:
+                occupants.append(self.online_players[player_id])
 
         return occupants
+
+    def _reconcile_room_presence(self, room_id: str):
+        """Ensure room_occupants only contains currently online players."""
+        try:
+            if room_id in self.room_occupants:
+                current = self.room_occupants[room_id]
+                pruned = {pid for pid in current if pid in self.online_players}
+                self.room_occupants[room_id] = pruned
+        except Exception as e:
+            logger.error(f"Error reconciling room presence for {room_id}: {e}")
 
 
 # Global connection manager instance
