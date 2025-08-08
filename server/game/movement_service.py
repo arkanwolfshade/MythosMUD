@@ -41,7 +41,7 @@ class MovementService:
             event_bus: Optional EventBus instance for movement events
         """
         self._event_bus = event_bus
-        self._persistence = get_persistence()
+        self._persistence = get_persistence(event_bus)
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
 

@@ -34,11 +34,11 @@ _persistence_instance = None
 _persistence_lock = threading.Lock()
 
 
-def get_persistence() -> "PersistenceLayer":
+def get_persistence(event_bus=None) -> "PersistenceLayer":
     global _persistence_instance
     with _persistence_lock:
         if _persistence_instance is None:
-            _persistence_instance = PersistenceLayer()
+            _persistence_instance = PersistenceLayer(event_bus=event_bus)
         return _persistence_instance
 
 
@@ -58,7 +58,7 @@ class PersistenceLayer:
 
     _hooks: dict[str, list[Callable]] = {}
 
-    def __init__(self, db_path: str | None = None, log_path: str | None = None):
+    def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
@@ -78,6 +78,7 @@ class PersistenceLayer:
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
+        self._event_bus = event_bus
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -125,7 +126,7 @@ class PersistenceLayer:
 
             # Convert dictionary data to Room objects
             for room_id, room_data_dict in room_data.items():
-                self._room_cache[room_id] = Room(room_data_dict)
+                self._room_cache[room_id] = Room(room_data_dict, self._event_bus)
 
             self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
             self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")

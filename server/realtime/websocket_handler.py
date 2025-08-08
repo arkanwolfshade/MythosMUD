@@ -37,6 +37,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
             if persistence:
                 room = persistence.get_room(player.current_room_id)
                 if room:
+                    # Get room occupants
+                    room_occupants = connection_manager.get_room_occupants(player.current_room_id)
+
                     game_state_event = {
                         "event_type": "game_state",
                         "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
@@ -50,6 +53,8 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                                 "stats": getattr(player, "stats", {}),
                             },
                             "room": (room.to_dict() if hasattr(room, "to_dict") else room),
+                            "occupants": room_occupants,
+                            "occupant_count": len(room_occupants),
                         },
                     }
                     await websocket.send_json(game_state_event)
@@ -88,7 +93,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
 
     finally:
         # Clean up connection
-        connection_manager.disconnect_websocket(player_id)
+        await connection_manager.disconnect_websocket(player_id)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
@@ -273,13 +278,35 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         if not target_room:
             return {"result": "You can't go that way"}
 
-        # Move the player
-        player.current_room_id = target_room_id
-        persistence.save_player(player)
+        # Use MovementService to move the player (this will trigger events)
+        from ..game.movement_service import MovementService
+        from ..events import EventBus
+        
+        # Get the event bus from the app state or create a new one
+        event_bus = getattr(connection_manager, '_event_bus', None)
+        if not event_bus:
+            event_bus = EventBus()
+        
+        movement_service = MovementService(event_bus)
+        
+        # Get the player's current room before moving
+        from_room_id = player.current_room_id
+        
+        logger.debug(f"Moving player {player_id} from {from_room_id} to {target_room_id}")
+        
+        # Move the player using the movement service
+        success = movement_service.move_player(player_id, from_room_id, target_room_id)
+        
+        logger.debug(f"Movement result: {success}")
+        
+        if not success:
+            return {"result": "You can't go that way"}
 
-        name = getattr(target_room, "name", "")
-        desc = getattr(target_room, "description", "You see nothing special.")
-        exits = target_room.exits if hasattr(target_room, "exits") else {}
+        # Get updated room info
+        updated_room = persistence.get_room(target_room_id)
+        name = getattr(updated_room, "name", "")
+        desc = getattr(updated_room, "description", "You see nothing special.")
+        exits = updated_room.exits if hasattr(updated_room, "exits") else {}
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}

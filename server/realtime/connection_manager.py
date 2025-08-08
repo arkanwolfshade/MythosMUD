@@ -36,6 +36,10 @@ class ConnectionManager:
         # Reference to persistence layer (set during app startup)
         self.persistence = None
 
+        # Player presence tracking
+        self.online_players: dict[str, dict] = {}  # player_id -> player_info
+        self.room_occupants: dict[str, set[str]] = {}  # room_id -> set of player_ids
+
         # Rate limiting for connections
         self.connection_attempts: dict[str, list[float]] = {}
         self.max_connection_attempts = 5  # Max attempts per minute
@@ -66,6 +70,9 @@ class ConnectionManager:
             if player:
                 await self.subscribe_to_room(player_id, player.current_room_id)
 
+                # Track player presence
+                await self._track_player_connected(player_id, player)
+
             logger.info(f"WebSocket connected for player {player_id}")
             return True
         except Exception as e:
@@ -78,7 +85,7 @@ class ConnectionManager:
                 del self.player_websockets[player_id]
             return False
 
-    def disconnect_websocket(self, player_id: str):
+    async def disconnect_websocket(self, player_id: str):
         """
         Disconnect a WebSocket for a player.
 
@@ -90,6 +97,9 @@ class ConnectionManager:
             if connection_id in self.active_websockets:
                 del self.active_websockets[connection_id]
             del self.player_websockets[player_id]
+
+            # Track player disconnection
+            await self._track_player_disconnected(player_id)
 
             # Unsubscribe from all rooms
             for room_id in list(self.room_subscriptions.keys()):
@@ -323,6 +333,88 @@ class ConnectionManager:
             else:
                 logger.warning(f"Player not found by name: {player_id}")
         return player
+
+    async def _track_player_connected(self, player_id: str, player: Player):
+        """
+        Track when a player connects.
+
+        Args:
+            player_id: The player's ID
+            player: The player object
+        """
+        try:
+            player_info = {
+                "player_id": player_id,
+                "player_name": getattr(player, "name", player_id),
+                "level": getattr(player, "level", 1),
+                "current_room_id": getattr(player, "current_room_id", None),
+                "connected_at": time.time(),
+            }
+
+            self.online_players[player_id] = player_info
+
+            # Update room occupants
+            room_id = getattr(player, "current_room_id", None)
+            if room_id:
+                if room_id not in self.room_occupants:
+                    self.room_occupants[room_id] = set()
+                self.room_occupants[room_id].add(player_id)
+
+            logger.info(f"Player {player_id} presence tracked as connected")
+
+        except Exception as e:
+            logger.error(f"Error tracking player connection: {e}", exc_info=True)
+
+    async def _track_player_disconnected(self, player_id: str):
+        """
+        Track when a player disconnects.
+
+        Args:
+            player_id: The player's ID
+        """
+        try:
+            if player_id in self.online_players:
+                del self.online_players[player_id]
+
+            # Remove from all room occupants
+            for room_id in list(self.room_occupants.keys()):
+                if player_id in self.room_occupants[room_id]:
+                    self.room_occupants[room_id].discard(player_id)
+                    if not self.room_occupants[room_id]:
+                        del self.room_occupants[room_id]
+
+            logger.info(f"Player {player_id} presence tracked as disconnected")
+
+        except Exception as e:
+            logger.error(f"Error tracking player disconnection: {e}", exc_info=True)
+
+    def get_online_players(self) -> list[dict]:
+        """
+        Get list of online players.
+
+        Returns:
+            list[dict]: List of online player information
+        """
+        return list(self.online_players.values())
+
+    def get_room_occupants(self, room_id: str) -> list[dict]:
+        """
+        Get list of occupants in a room.
+
+        Args:
+            room_id: The room ID
+
+        Returns:
+            list[dict]: List of occupant information
+        """
+        occupants = []
+
+        if room_id in self.room_occupants:
+            for player_id in self.room_occupants[room_id]:
+                if player_id in self.online_players:
+                    occupants.append(self.online_players[player_id])
+
+        return occupants
 
 
 # Global connection manager instance

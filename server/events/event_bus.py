@@ -101,7 +101,21 @@ class EventBus:
 
         for subscriber in subscribers:
             try:
-                subscriber(event)
+                import asyncio
+                import inspect
+
+                # Check if subscriber is async
+                if inspect.iscoroutinefunction(subscriber):
+                    # Try to create task for async subscriber
+                    try:
+                        loop = asyncio.get_running_loop()
+                        asyncio.create_task(subscriber(event))
+                    except RuntimeError:
+                        # No running event loop, run in new event loop
+                        asyncio.run(subscriber(event))
+                else:
+                    # Call sync subscriber directly
+                    subscriber(event)
             except Exception as e:
                 self._logger.error(f"Error in event subscriber {subscriber.__name__}: {e}")
 

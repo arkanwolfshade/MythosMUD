@@ -13,6 +13,7 @@ from ..database import init_db
 from ..logging_config import get_logger
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
+from ..realtime.event_handler import get_real_time_event_handler
 from ..realtime.sse_handler import broadcast_game_event
 
 logger = get_logger("server.lifespan")
@@ -31,6 +32,10 @@ async def lifespan(app: FastAPI):
     await init_db()
     app.state.persistence = get_persistence()
     connection_manager.persistence = app.state.persistence
+
+    # Initialize the real-time event handler
+    app.state.event_handler = get_real_time_event_handler()
+    logger.info("Real-time event handler initialized")
 
     # Start the game tick loop
     tick_task = asyncio.create_task(game_tick_loop(app))
