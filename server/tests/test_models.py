@@ -34,12 +34,13 @@ class TestStats:
         """Test that Stats has correct default values."""
         stats = Stats()
 
-        assert stats.strength == 10
-        assert stats.dexterity == 10
-        assert stats.constitution == 10
-        assert stats.intelligence == 10
-        assert stats.wisdom == 10
-        assert stats.charisma == 10
+        # Attributes are randomly generated between 3-18, so we check the range
+        assert 3 <= stats.strength <= 18
+        assert 3 <= stats.dexterity <= 18
+        assert 3 <= stats.constitution <= 18
+        assert 3 <= stats.intelligence <= 18
+        assert 3 <= stats.wisdom <= 18
+        assert 3 <= stats.charisma <= 18
         assert stats.sanity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0

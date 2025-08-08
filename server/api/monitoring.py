@@ -90,10 +90,9 @@ async def validate_room_integrity():
 
         # Get all rooms from persistence
         rooms = {}
-        for room_id in persistence.list_room_ids():
-            room = persistence.get_room(room_id)
-            if room:
-                rooms[room_id] = room
+        room_list = persistence.list_rooms()
+        for room in room_list:
+            rooms[room.id] = room
 
         result = monitor.validate_room_integrity(rooms)
         result["timestamp"] = result["timestamp"].isoformat()

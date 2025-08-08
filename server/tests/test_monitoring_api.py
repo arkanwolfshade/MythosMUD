@@ -195,8 +195,7 @@ class TestMonitoringAPI:
         # Mock persistence to return our test rooms
         with patch("server.api.monitoring.get_persistence") as mock_get_persistence:
             mock_persistence = Mock()
-            mock_persistence.list_room_ids.return_value = ["room1", "room2"]
-            mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+            mock_persistence.list_rooms.return_value = [room1, room2]
             mock_get_persistence.return_value = mock_persistence
 
             response = self.client.get("/monitoring/integrity")
@@ -211,15 +210,15 @@ class TestMonitoringAPI:
     def test_error_handling(self):
         """Test error handling in monitoring endpoints."""
         # Test with mocked error
-        with patch("server.game.movement_monitor.get_movement_monitor") as mock_get_monitor:
+        with patch("server.api.monitoring.get_movement_monitor") as mock_get_monitor:
             mock_get_monitor.side_effect = Exception("Test error")
 
             response = self.client.get("/monitoring/metrics")
 
             assert response.status_code == 500
             data = response.json()
-            assert "detail" in data
-            assert "Error retrieving metrics" in data["detail"]
+            assert "error" in data
+            assert "Error retrieving metrics" in data["error"]["message"]
 
     def test_performance_summary_formatting(self):
         """Test that performance summary formats values correctly."""
