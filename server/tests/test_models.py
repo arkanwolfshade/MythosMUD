@@ -34,12 +34,12 @@ class TestStats:
         """Test that Stats has correct default values."""
         stats = Stats()
 
-        assert stats.strength == 10
-        assert stats.dexterity == 10
-        assert stats.constitution == 10
-        assert stats.intelligence == 10
-        assert stats.wisdom == 10
-        assert stats.charisma == 10
+        assert stats.strength is None
+        assert stats.dexterity is None
+        assert stats.constitution is None
+        assert stats.intelligence is None
+        assert stats.wisdom is None
+        assert stats.charisma is None
         assert stats.sanity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0

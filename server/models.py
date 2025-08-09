@@ -148,14 +148,16 @@ class Stats(BaseModel):
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
 
-    def __init__(self, **data):
-        data.setdefault("strength", random.randint(3, 18))
-        data.setdefault("dexterity", random.randint(3, 18))
-        data.setdefault("constitution", random.randint(3, 18))
-        data.setdefault("intelligence", random.randint(3, 18))
-        data.setdefault("wisdom", random.randint(3, 18))
-        data.setdefault("charisma", random.randint(3, 18))
-        super().__init__(**data)
+    @staticmethod
+    def random_stats():
+        return Stats(
+            strength=random.randint(3, 18),
+            dexterity=random.randint(3, 18),
+            constitution=random.randint(3, 18),
+            intelligence=random.randint(3, 18),
+            wisdom=random.randint(3, 18),
+            charisma=random.randint(3, 18),
+        )
 
     # Derived stats - computed fields
     @computed_field
@@ -223,7 +225,7 @@ class Player(BaseModel):
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str = Field(min_length=1, max_length=50)
-    stats: Stats = Field(default_factory=Stats)
+    stats: Stats = Field(default_factory=Stats.random_stats)
     inventory: list[InventoryItem] = Field(default_factory=list)
     status_effects: list[StatusEffect] = Field(default_factory=list)
     current_room_id: str = Field(default="earth_arkham_city_campus_W_College_St_003")
@@ -294,7 +296,7 @@ class NPC(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     description: str
-    stats: Stats = Field(default_factory=Stats)
+    stats: Stats = Field(default_factory=Stats.random_stats)
     current_room_id: str
     npc_type: str = Field(default="civilian")  # civilian, merchant, enemy, etc.
     is_hostile: bool = Field(default=False)

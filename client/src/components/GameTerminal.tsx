@@ -336,7 +336,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
                   <ul className="stats-list">
                     {Object.entries(gameState.player.stats).map(([key, value]) => (
                       <li key={key}>
-                        <strong>{key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
+                        <strong>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong> {value}
                       </li>
                     ))}
                   </ul>
