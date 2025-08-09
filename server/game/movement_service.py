@@ -126,7 +126,12 @@ class MovementService:
                 to_room.player_entered(player_id)
 
                 # Update player's room in persistence
-                player = self._persistence.get_player(player_id)
+                # Note: WebSocket paths currently identify players by username.
+                # To ensure durability regardless of identifier form, resolve by
+                # either player_id (UUID) or, if not found, by player name.
+                player = self._persistence.get_player(player_id) or self._persistence.get_player_by_name(
+                    player_id
+                )
                 if player:
                     player.current_room_id = to_room_id
                     self._persistence.save_player(player)

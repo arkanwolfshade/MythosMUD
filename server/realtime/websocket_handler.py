@@ -280,7 +280,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Handle basic commands
     if cmd == "look":
-        room_id = player.current_room_id
+        # Prefer the connection manager's tracked room (real-time canonical)
+        room_id = getattr(player, "current_room_id", None)
         room = persistence.get_room(room_id)
         if not room:
             return {"result": "You see nothing special."}
@@ -312,7 +313,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
         direction = args[0].lower()
         logger.debug(f"Direction: {direction}")
-        room_id = player.current_room_id
+        # Use the connection manager's view of the player's current room
+        room_id = getattr(player, "current_room_id", None)
         logger.debug(f"Current room ID: {room_id}")
         room = persistence.get_room(room_id)
         if not room:
