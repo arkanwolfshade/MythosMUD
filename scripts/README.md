@@ -5,19 +5,23 @@ This directory contains utility scripts for managing the MythosMUD development e
 ## PowerShell Scripts
 
 ### `start_server.ps1`
+
 Starts the MythosMUD FastAPI server with optional process cleanup.
 
 **Usage:**
+
 ```powershell
 .\start_server.ps1 [-ServerHost <string>] [-Port <int>] [-Reload]
 ```
 
 **Parameters:**
+
 - `-ServerHost`: Host address to bind server to (default: "127.0.0.1")
 - `-Port`: Port number to bind server to (default: 54731)
 - `-Reload`: Enable auto-reload for development (default: true)
 
 **Examples:**
+
 ```powershell
 # Start with default settings
 .\start_server.ps1
@@ -27,18 +31,22 @@ Starts the MythosMUD FastAPI server with optional process cleanup.
 ```
 
 ### `stop_server.ps1`
+
 Stops MythosMUD server processes using multiple detection methods.
 
 **Usage:**
+
 ```powershell
 .\stop_server.ps1 [-Force] [-Verbose]
 ```
 
 **Parameters:**
+
 - `-Force`: Force termination of all Python processes regardless of command line
 - `-Verbose`: Provide detailed output (automatically available due to CmdletBinding)
 
 **Examples:**
+
 ```powershell
 # Stop server processes gracefully
 .\stop_server.ps1
@@ -48,14 +56,17 @@ Stops MythosMUD server processes using multiple detection methods.
 ```
 
 ### `start_dev.ps1`
+
 Starts the complete MythosMUD development environment (both FastAPI server and React client).
 
 **Usage:**
+
 ```powershell
 .\start_dev.ps1
 ```
 
 **Features:**
+
 - Starts the FastAPI server using `start_server.ps1`
 - Starts the React development server
 - Provides URLs for all development services
@@ -63,30 +74,39 @@ Starts the complete MythosMUD development environment (both FastAPI server and R
 ## Python Scripts
 
 ### `run.py`
+
 Runs the MythosMUD server using uvicorn.
 
 ### `test.py`
+
 Runs the test suite using pytest.
 
 ### `lint.py`
+
 Runs code linting using ruff.
 
 ### `format.py`
+
 Formats code using ruff.
 
 ### `install.py`
+
 Installs project dependencies.
 
 ### `bootstrap_db.py`
+
 Bootstraps the database with initial data.
 
 ### `build.py`
+
 Builds the project for production.
 
 ### `coverage.py`
+
 Runs test coverage analysis.
 
 ### `clean.py`
+
 Cleans build artifacts and temporary files.
 
 ## Requirements
