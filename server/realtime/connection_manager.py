@@ -490,16 +490,12 @@ class ConnectionManager:
             # Notify current room that player left the game and refresh occupants
             if room_id:
                 # 1) left-game notification
-                left_event = {
-                    "event_type": "player_left_game",
-                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                    "sequence_number": self._get_next_sequence(),
-                    "room_id": room_id,
-                    "data": {
-                        "player_id": player_id,
-                        "player_name": player_name or player_id,
-                    },
-                }
+                from .envelope import build_event
+                left_event = build_event(
+                    "player_left_game",
+                    {"player_id": player_id, "player_name": player_name or player_id},
+                    room_id=room_id,
+                )
                 await self.broadcast_to_room(room_id, left_event)
 
                 # 2) occupants update (names only)
@@ -509,13 +505,11 @@ class ConnectionManager:
                     name = occ.get("player_name") if isinstance(occ, dict) else None
                     if name:
                         names.append(name)
-                occ_event = {
-                    "event_type": "room_occupants",
-                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                    "sequence_number": self._get_next_sequence(),
-                    "room_id": room_id,
-                    "data": {"occupants": names, "count": len(names)},
-                }
+                occ_event = build_event(
+                    "room_occupants",
+                    {"occupants": names, "count": len(names)},
+                    room_id=room_id,
+                )
                 await self.broadcast_to_room(room_id, occ_event)
 
             logger.info(f"Player {player_id} presence tracked as disconnected")

@@ -6,12 +6,11 @@ and real-time game updates for clients.
 """
 
 import asyncio
-import json
 from collections.abc import AsyncGenerator
-from datetime import UTC, datetime
 
 from ..logging_config import get_logger
 from .connection_manager import connection_manager
+from .envelope import build_event, sse_line
 
 logger = get_logger(__name__)
 
@@ -31,19 +30,19 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
 
     try:
         # Send initial connection event
-        yield format_sse_event("connected", {"player_id": player_id})
+        yield sse_line(build_event("connected", {"player_id": player_id}, player_id=player_id))
 
         # Send pending messages
         pending_messages = connection_manager.get_pending_messages(player_id)
         for message in pending_messages:
-            yield format_sse_event("pending_message", message)
+            yield sse_line(build_event("pending_message", message, player_id=player_id))
 
         # Main event loop
         while True:
             try:
                 # Send heartbeat every 30 seconds
                 await asyncio.sleep(30)
-                yield format_sse_event("heartbeat", {"timestamp": datetime.now(UTC).isoformat()})
+                yield sse_line(build_event("heartbeat", {}, player_id=player_id))
 
             except asyncio.CancelledError:
                 logger.info(f"SSE stream cancelled for player {player_id}")
@@ -51,7 +50,7 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
 
             except Exception as e:
                 logger.error(f"Error in SSE stream for player {player_id}: {e}")
-                yield format_sse_event("error", {"message": "Stream error occurred"})
+                yield sse_line(build_event("error", {"message": "Stream error occurred"}, player_id=player_id))
                 break
 
     finally:
@@ -59,24 +58,9 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
         connection_manager.disconnect_sse(player_id)
 
 
-def format_sse_event(event_type: str, data: dict) -> str:
-    """
-    Format an SSE event.
-
-    Args:
-        event_type: The type of event
-        data: The event data
-
-    Returns:
-        str: Formatted SSE event string
-    """
-    event_data = {
-        "type": event_type,
-        "data": data,
-        "timestamp": datetime.now(UTC).isoformat(),
-    }
-
-    return f"data: {json.dumps(event_data)}\n\n"
+def format_sse_event(event_type: str, data: dict) -> str:  # Backward compat shim
+    """Deprecated: use sse_line(build_event(...))."""
+    return sse_line(build_event(event_type, data))
 
 
 async def send_game_event(player_id: str, event_type: str, data: dict):
@@ -89,13 +73,9 @@ async def send_game_event(player_id: str, event_type: str, data: dict):
         data: The event data
     """
     try:
-        event = {
-            "type": event_type,
-            "data": data,
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
-
-        await connection_manager.send_personal_message(player_id, event)
+        await connection_manager.send_personal_message(
+            player_id, build_event(event_type, data, player_id=player_id)
+        )
 
     except Exception as e:
         logger.error(f"Error sending game event to {player_id}: {e}")
@@ -111,13 +91,9 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         exclude_player: Player ID to exclude from broadcast
     """
     try:
-        event = {
-            "type": event_type,
-            "data": data,
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
-
-        await connection_manager.broadcast_global(event, exclude_player)
+        await connection_manager.broadcast_global(
+            build_event(event_type, data), exclude_player
+        )
 
     except Exception as e:
         logger.error(f"Error broadcasting game event: {e}")
@@ -134,13 +110,9 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         exclude_player: Player ID to exclude from broadcast
     """
     try:
-        event = {
-            "type": event_type,
-            "data": data,
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
-
-        await connection_manager.broadcast_to_room(room_id, event, exclude_player)
+        await connection_manager.broadcast_to_room(
+            room_id, build_event(event_type, data, room_id=room_id), exclude_player
+        )
 
     except Exception as e:
         logger.error(f"Error sending room event to room {room_id}: {e}")

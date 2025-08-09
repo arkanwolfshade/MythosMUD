@@ -11,6 +11,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 from ..logging_config import get_logger
 from .connection_manager import connection_manager
+from .envelope import build_event
 
 logger = get_logger(__name__)
 
@@ -63,13 +64,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     except Exception as e:
                         logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
 
-                    game_state_event = {
-                        "event_type": "game_state",
-                        "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
-                        "sequence_number": 1,
-                        "player_id": player_id,
-                        "room_id": canonical_room_id,
-                        "data": {
+                    game_state_event = build_event(
+                        "game_state",
+                        {
                             "player": {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
@@ -79,7 +76,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),
                         },
-                    }
+                        player_id=player_id,
+                        room_id=canonical_room_id,
+                    )
                     await websocket.send_json(game_state_event)
 
                     # Proactively broadcast a room update so existing occupants see the new player
@@ -92,17 +91,15 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     # explicitly notify other occupants they (re)entered to surface the event in UI
                     if not added_to_room:
                         try:
-                            synthetic_event = {
-                                "event_type": "player_entered",
-                                "timestamp": "2024-01-01T00:00:00Z",
-                                "sequence_number": 5,
-                                "room_id": canonical_room_id,
-                                "data": {
+                            synthetic_event = build_event(
+                                "player_entered",
+                                {
                                     "player_id": player_id,
                                     "player_name": getattr(player, "name", player_id),
                                     "message": f"{getattr(player, 'name', player_id)} entered the room.",
                                 },
-                            }
+                                room_id=canonical_room_id,
+                            )
                             await connection_manager.broadcast_to_room(
                                 canonical_room_id, synthetic_event, exclude_player=player_id
                             )
@@ -110,13 +107,11 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             logger.error(f"Error sending synthetic player_entered for {player_id}: {e}")
 
         # Send welcome message
-        welcome_event = {
-            "event_type": "welcome",
-            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
-            "sequence_number": 2,
-            "player_id": player_id,
-            "data": {"message": "Connected to MythosMUD"},
-        }
+        welcome_event = build_event(
+            "welcome",
+            {"message": "Connected to MythosMUD"},
+            player_id=player_id,
+        )
         await websocket.send_json(welcome_event)
 
         # Main message loop
@@ -211,14 +206,9 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         result = await process_websocket_command(cmd, args, player_id)
 
         # Send the result back to the player
-        response = {
-            "event_type": "command_response",
-            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
-            "sequence_number": 3,
-            "player_id": player_id,
-            "data": result,
-        }
-        await websocket.send_json(response)
+        await websocket.send_json(
+            build_event("command_response", result, player_id=player_id)
+        )
 
         # Broadcast room updates if the command affected the room
         logger.debug(f"Command result: {result}")
@@ -408,12 +398,11 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
     """
     try:
         # Create chat event
-        chat_event = {
-            "type": "chat",
-            "player_id": player_id,
-            "message": message,
-            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
-        }
+        chat_event = build_event(
+            "chat",
+            {"player_id": player_id, "message": message},
+            player_id=player_id,
+        )
 
         # Broadcast to room
         player = connection_manager._get_player(player_id)
@@ -466,19 +455,17 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.error(f"Error transforming room occupants for room {room_id}: {e}")
 
         # Create room update event
-        update_event = {
-            "event_type": "room_update",
-            "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
-            "sequence_number": 4,
-            "player_id": player_id,
-            "room_id": room_id,
-            "data": {
+        update_event = build_event(
+            "room_update",
+            {
                 "room": room.to_dict() if hasattr(room, "to_dict") else room,
-                "entities": [],  # TODO: Add actual entities
+                "entities": [],
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),
             },
-        }
+            player_id=player_id,
+            room_id=room_id,
+        )
 
         logger.debug(f"Room update event created: {update_event}")
 
