@@ -84,7 +84,9 @@ export function RoomInfoPanel({ room }: RoomInfoPanelProps) {
 
         {/* Room Occupants */}
         <div className="room-occupants">
-          <span className="occupants-label">Occupants:</span>
+          <span className="occupants-label">
+            Occupants{typeof room.occupant_count === 'number' ? ` (${room.occupant_count})` : ''}:
+          </span>
           <p className="occupants-text">
             {room.occupants && room.occupants.length > 0 ? room.occupants.join(', ') : 'None'}
           </p>

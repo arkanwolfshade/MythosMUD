@@ -117,7 +117,13 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
       case 'game_state': {
         const roomFromEvent = (event.data.room as Room) || null;
         const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
-        const roomWithOccupants = roomFromEvent ? { ...roomFromEvent, occupants: occupantsFromEvent } : null;
+        const roomWithOccupants = roomFromEvent
+          ? {
+              ...roomFromEvent,
+              occupants: occupantsFromEvent,
+              occupant_count: occupantsFromEvent.length,
+            }
+          : null;
 
         setGameState(prev => ({
           ...prev,
@@ -141,7 +147,13 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         console.log('Room update received:', event.data);
         const roomFromEvent = (event.data.room as Room) || null;
         const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
-        const roomWithOccupants = roomFromEvent ? { ...roomFromEvent, occupants: occupantsFromEvent } : null;
+        const roomWithOccupants = roomFromEvent
+          ? {
+              ...roomFromEvent,
+              occupants: occupantsFromEvent,
+              occupant_count: occupantsFromEvent.length,
+            }
+          : null;
 
         setGameState(prev => ({
           ...prev,
@@ -163,7 +175,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             const next = Array.from(new Set([...current, name]));
             return {
               ...prev,
-              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
               roomOccupants: next,
             };
           });
@@ -181,7 +193,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             const next = current.filter(n => n !== name);
             return {
               ...prev,
-              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
               roomOccupants: next,
             };
           });
@@ -211,7 +223,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         const occupants = filterAndDedupe(getStringArrayProp(event.data, 'occupants'));
         setGameState(prev => ({
           ...prev,
-          room: prev.room ? { ...prev.room, occupants } : prev.room,
+          room: prev.room ? { ...prev.room, occupants, occupant_count: occupants.length } : prev.room,
           roomOccupants: occupants,
         }));
         break;
