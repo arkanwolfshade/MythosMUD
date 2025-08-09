@@ -50,8 +50,8 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
    Or manually:
    ```sh
    # Backend
-   cd server
-   pyenv local 3.11.8  # or your preferred Python 3.11+ version
+    cd server
+    pyenv local 3.12.11  # or your preferred Python 3.12+ version
    uv sync
    uv run uvicorn main:app --reload
 
