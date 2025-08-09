@@ -145,13 +145,18 @@ class ConnectionManager:
         if player_id in self.active_sse_connections:
             del self.active_sse_connections[player_id]
 
-        # Delegate to unified disconnect logic
+        # Delegate to unified disconnect logic. If no running loop, run synchronously.
         try:
             import asyncio
 
-            asyncio.create_task(self._track_player_disconnected(player_id))
-        except Exception:
-            pass
+            try:
+                loop = asyncio.get_running_loop()
+                loop.create_task(self._track_player_disconnected(player_id))
+            except RuntimeError:
+                # No running loop in this thread; execute synchronously
+                asyncio.run(self._track_player_disconnected(player_id))
+        except Exception as e:
+            logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
 
         logger.info(f"SSE disconnected for player {player_id}")
 

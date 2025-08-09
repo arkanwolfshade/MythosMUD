@@ -154,7 +154,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
       }
 
       case 'player_entered': {
-        const name = (event.data as any)?.player_name as string;
+        const name = getStringProp(event.data, 'player_name');
         if (name && name !== playerName) {
           addMessage(`${name} entered the room.`);
           // Optimistically add to occupants
@@ -172,7 +172,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
       }
 
       case 'player_left': {
-        const name = (event.data as any)?.player_name as string;
+        const name = getStringProp(event.data, 'player_name');
         if (name && name !== playerName) {
           addMessage(`${name} left the room.`);
           // Optimistically remove from occupants
@@ -190,7 +190,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
       }
 
       case 'player_left_game': {
-        const name = (event.data as any)?.player_name as string;
+        const name = getStringProp(event.data, 'player_name');
         if (name && name !== playerName) {
           addMessage(`${name} left the game.`);
           // Optimistically remove from occupants
