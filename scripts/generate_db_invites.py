@@ -10,7 +10,7 @@ the MythosMUD authentication system.
 import asyncio
 import random
 import sys
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add the server directory to the Python path
@@ -196,7 +196,7 @@ async def create_invites_in_db(count: int = 100) -> None:
 
         # Create new invite entries
         invites_created = 0
-        expires_at = datetime.utcnow() + timedelta(days=365)  # 1 year expiration
+        expires_at = datetime.now(UTC) + timedelta(days=365)  # 1 year expiration
 
         for code in unique_new_codes:
             invite = Invite(

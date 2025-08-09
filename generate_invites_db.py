@@ -10,7 +10,7 @@ import asyncio
 import os
 import random
 import sys
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add the server directory to the path so we can import models
@@ -178,8 +178,9 @@ async def create_invite_in_db(invite_code: str, expires_in_days: int = 30):
         invite = Invite(
             invite_code=invite_code,
             used=False,
-            expires_at=datetime.utcnow() + timedelta(days=expires_in_days),
-            created_at=datetime.utcnow(),
+            # Persist naive UTC to DB for SQLite compatibility
+            expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
+            created_at=datetime.now(UTC).replace(tzinfo=None),
         )
 
         session.add(invite)

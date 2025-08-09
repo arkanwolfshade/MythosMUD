@@ -10,7 +10,7 @@ the MythosMUD authentication system.
 import random
 import sqlite3
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Mythos-themed words and concepts for invite codes
@@ -109,14 +109,14 @@ def create_invites_in_db(count: int = 100) -> None:
 
         # Create new invite entries
         invites_created = 0
-        expires_at = datetime.utcnow() + timedelta(days=365)  # 1 year expiration
+        expires_at = (datetime.now(UTC) + timedelta(days=365)).replace(tzinfo=None)  # 1 year expiration
 
         cursor = conn.cursor()
         for code in unique_new_codes:
             invite_id = str(uuid.uuid4())
             cursor.execute(
                 "INSERT INTO invites (id, invite_code, used, expires_at, created_at) VALUES (?, ?, ?, ?, ?)",
-                (invite_id, code, False, expires_at.isoformat(), datetime.utcnow().isoformat())
+                (invite_id, code, False, expires_at.isoformat(), datetime.now(UTC).replace(tzinfo=None).isoformat())
             )
             invites_created += 1
 
