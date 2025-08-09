@@ -327,10 +327,19 @@ function handleGameEvent(event: GameEvent) {
 ## 📝 Newly Identified Work
 
 - [ ] Migrate all server timestamps to timezone-aware datetime (`datetime.now(datetime.UTC)`) to remove Python 3.12
-      deprecations and ensure consistent event times.
+      deprecations and ensure consistent event times. (See issue #118)
 - [ ] Normalize real-time event timestamps (replace placeholder timestamps in WebSocket events with real values).
+      (See issue #119)
 - [ ] Room occupants panel in `RoomInfoPanel.tsx` to show the same occupants list already available in
-      `GameTerminal.tsx` for parity with planning.
+      `GameTerminal.tsx` for parity with planning. (See issue #120)
+
+---
+
+## 📌 Issue Checklist
+
+- [ ] #118 Replace utcnow with timezone-aware datetimes across server (Python 3.12)
+- [ ] #119 Normalize real-time event timestamps (use real, timezone-aware times)
+- [ ] #120 Add RoomInfoPanel occupants list to match server events
 
 ### **Performance Requirements**
 
