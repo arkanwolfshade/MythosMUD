@@ -52,11 +52,31 @@
 
 ---
 
+## ✅ Current Status (post Python 3.12 upgrade)
+
+- [x] Real-time bridge implemented: `server/realtime/event_handler.py` subscribes to `PlayerEnteredRoom` and
+  `PlayerLeftRoom` and broadcasts room messages and occupant lists via `ConnectionManager`.
+- [x] Presence tracking: `ConnectionManager` maintains `online_players` and `room_occupants`, reconciles on
+  connect/disconnect, and emits `player_left_game` + `room_occupants` updates.
+- [x] Room subscription lifecycle: on WebSocket connect we subscribe the player to their canonical room; movement
+  triggers subscription updates and room broadcasts.
+- [x] Client event handling: `GameTerminal.tsx` handles `game_state`, `room_update`, `player_entered`, `player_left`,
+  `player_left_game`, and `room_occupants`, updating the visible occupants list.
+- [x] Tests cover event bridge and connection manager behaviors (see `server/tests/test_real_time.py`,
+  `server/tests/test_multiplayer_integration.py`).
+
+Notes and follow-ups discovered:
+- [ ] Replace uses of `datetime.utcnow()` with timezone-aware `datetime.now(datetime.UTC)` across server code to
+  address deprecations in Python 3.12 (warnings observed in test runs).
+- [ ] Normalize timestamps in real-time events to a consistent, timezone-aware format.
+
+---
+
 ## 🚨 Critical Gaps Identified
 
 ### **1. Missing Event-to-Real-Time Bridge**
 
-**Problem**: Events are published to the EventBus but never reach connected clients.
+**Status**: Implemented via `RealTimeEventHandler` → `ConnectionManager` broadcast path.
 
 **Current Flow**:
 
@@ -74,7 +94,7 @@ EventBus → Real-Time Bridge → ConnectionManager → WebSocket Broadcast
 
 ### **2. No Event Bus Subscribers for Real-Time Communication**
 
-**Problem**: No component subscribes to `PlayerEnteredRoom` and `PlayerLeftRoom` events.
+**Status**: Implemented in `RealTimeEventHandler._subscribe_to_events()`.
 
 **Missing Implementation**:
 
@@ -84,23 +104,16 @@ EventBus → Real-Time Bridge → ConnectionManager → WebSocket Broadcast
 
 ### **3. Incomplete Room Subscription Management**
 
-**Problem**: Players aren't properly subscribed to their current room when connecting.
+**Status**: Largely implemented.
 
-**Current Issues**:
-
-- WebSocket handler doesn't subscribe players to their room on connection
-- No automatic subscription updates when players move
-- Missing "who's in the room" functionality
+- WebSocket handler subscribes players on connection and broadcasts initial `game_state`
+- Movement flow triggers `room_update` and subscription changes
+- Occupants are tracked and broadcast via `room_occupants` events; client displays them
 
 ### **4. No Player Presence Tracking**
 
-**Problem**: No way to track which players are online or in specific rooms.
-
-**Missing Features**:
-
-- Online player tracking
-- Room occupancy lists
-- Player connection/disconnection notifications
+**Status**: Implemented. `ConnectionManager` maintains `online_players` and `room_occupants`, and emits
+`player_left_game` notifications and occupancy updates on disconnect.
 
 ---
 
@@ -108,7 +121,7 @@ EventBus → Real-Time Bridge → ConnectionManager → WebSocket Broadcast
 
 ### **Phase 1: Event-to-Real-Time Bridge**
 
-#### **1.1 Create Real-Time Event Handler**
+#### **1.1 Create Real-Time Event Handler** (Done)
 
 **File**: `server/realtime/event_handler.py`
 
@@ -139,7 +152,7 @@ class RealTimeEventHandler:
         # Update room subscriptions
 ```
 
-#### **1.2 Event-to-Message Conversion**
+#### **1.2 Event-to-Message Conversion** (Done)
 
 **Message Format**:
 
@@ -159,7 +172,7 @@ class RealTimeEventHandler:
 
 ### **Phase 2: Enhanced Connection Management**
 
-#### **2.1 Room Subscription Integration**
+#### **2.1 Room Subscription Integration** (Done)
 
 **Update**: `server/realtime/websocket_handler.py`
 
@@ -176,7 +189,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
         await send_room_occupants(websocket, player.current_room_id)
 ```
 
-#### **2.2 Player Presence Tracking**
+#### **2.2 Player Presence Tracking** (Done)
 
 **Add to**: `server/realtime/connection_manager.py`
 
@@ -203,7 +216,7 @@ class ConnectionManager:
 
 #### **3.1 Room Occupancy Display**
 
-**Update**: `client/src/components/RoomInfoPanel.tsx`
+**Update**: `client/src/components/RoomInfoPanel.tsx` (Partially addressed via `GameTerminal.tsx` occupants list)
 
 ```typescript
 interface RoomOccupants {
@@ -220,7 +233,7 @@ const [roomOccupants, setRoomOccupants] = useState<RoomOccupants>({
 
 #### **3.2 Enhanced Event Handling**
 
-**Update**: `client/src/components/GameTerminal.tsx`
+**Update**: `client/src/components/GameTerminal.tsx` (Done for current events)
 
 ```typescript
 function handleGameEvent(event: GameEvent) {
@@ -246,7 +259,7 @@ function handleGameEvent(event: GameEvent) {
 
 ## 🔧 Implementation Steps
 
-### **Step 1: Create Event Handler (2-3 hours)**
+### **Step 1: Create Event Handler (Done)**
 
 1. Create `server/realtime/event_handler.py`
 2. Implement `RealTimeEventHandler` class
@@ -254,21 +267,21 @@ function handleGameEvent(event: GameEvent) {
 4. Create event-to-message conversion methods
 5. Add integration with `ConnectionManager`
 
-### **Step 2: Update Connection Management (2-3 hours)**
+### **Step 2: Update Connection Management (Done)**
 
 1. Enhance `ConnectionManager` with presence tracking
 2. Update WebSocket handler for room subscriptions
 3. Add player connection/disconnection notifications
 4. Implement room occupant tracking
 
-### **Step 3: Client-Side Updates (1-2 hours)**
+### **Step 3: Client-Side Updates (In progress)**
 
 1. Update `GameTerminal.tsx` for new event types
 2. Add room occupancy display to `RoomInfoPanel.tsx`
 3. Enhance event handling for presence updates
 4. Add visual indicators for online players
 
-### **Step 4: Testing and Integration (2-3 hours)**
+### **Step 4: Testing and Integration (Ongoing)**
 
 1. Create comprehensive test suite for multiplayer functionality
 2. Test multiple client connections
@@ -301,13 +314,23 @@ function handleGameEvent(event: GameEvent) {
 
 ## 📊 Success Metrics
 
-### **Functional Requirements**
+### **Functional Requirements** (Updated status)
 
-- [ ] Players can see each other in the same room
-- [ ] Players receive notifications when others enter/leave their room
-- [ ] Room occupancy is displayed correctly
-- [ ] Movement updates are broadcast in real-time
-- [ ] Disconnections are handled gracefully
+- [x] Players can see each other in the same room
+- [x] Players receive notifications when others enter/leave their room
+- [x] Room occupancy is displayed correctly
+- [x] Movement updates are broadcast in real-time
+- [x] Disconnections are handled gracefully
+
+---
+
+## 📝 Newly Identified Work
+
+- [ ] Migrate all server timestamps to timezone-aware datetime (`datetime.now(datetime.UTC)`) to remove Python 3.12
+      deprecations and ensure consistent event times.
+- [ ] Normalize real-time event timestamps (replace placeholder timestamps in WebSocket events with real values).
+- [ ] Room occupants panel in `RoomInfoPanel.tsx` to show the same occupants list already available in
+      `GameTerminal.tsx` for parity with planning.
 
 ### **Performance Requirements**
 
