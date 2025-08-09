@@ -78,14 +78,36 @@ class RealTimeEventHandler:
             # Create real-time message
             message = self._create_player_entered_message(event, player_name)
 
-            # Subscribe player to the room
+            # Subscribe player to the room so they will receive subsequent broadcasts
             await self.connection_manager.subscribe_to_room(event.player_id, event.room_id)
 
             # Broadcast to room occupants (excluding the entering player)
             await self.connection_manager.broadcast_to_room(event.room_id, message, exclude_player=event.player_id)
 
-            # Send room occupants update to the entering player
-            await self._send_room_occupants_update(event.room_id, event.player_id)
+            # Send room occupants update to the entering player as a personal message
+            # so they immediately see who is present on joining
+            await self._send_room_occupants_update(event.room_id)
+            try:
+                # Also send a direct occupants snapshot to the entering player
+                occupants_info = self._get_room_occupants(event.room_id)
+                names: list[str] = []
+                for occ in occupants_info or []:
+                    if isinstance(occ, dict):
+                        n = occ.get("player_name") or occ.get("name")
+                        if n:
+                            names.append(n)
+                    elif isinstance(occ, str):
+                        names.append(occ)
+                personal = {
+                    "event_type": "room_occupants",
+                    "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                    "sequence_number": self._get_next_sequence(),
+                    "room_id": event.room_id,
+                    "data": {"occupants": names, "count": len(names)},
+                }
+                await self.connection_manager.send_personal_message(event.player_id, personal)
+            except Exception as e:
+                self._logger.error(f"Error sending personal occupants update: {e}")
 
             self._logger.info(f"Player {player_name} entered room {event.room_id}")
 

@@ -133,6 +133,38 @@ class ConnectionManager:
         connection_id = str(uuid.uuid4())
         self.active_sse_connections[player_id] = connection_id
         logger.info(f"SSE connected for player {player_id}")
+
+        # Track presence on SSE as well so occupants reflect players who have only SSE connected
+        try:
+            player = self._get_player(player_id)
+            if player:
+                # Resolve canonical room id
+                room_id = getattr(player, "current_room_id", None)
+                if self.persistence and room_id:
+                    try:
+                        room = self.persistence.get_room(room_id)
+                        if room and getattr(room, "id", None):
+                            room_id = room.id
+                    except Exception as e:
+                        logger.error(f"Error resolving canonical room for SSE connect {player_id}: {e}")
+
+                # Schedule async presence updates
+                import asyncio
+
+                try:
+                    loop = asyncio.get_running_loop()
+                    # Subscribe to room first so subsequent broadcasts reach this player
+                    if room_id:
+                        loop.create_task(self.subscribe_to_room(player_id, room_id))
+                    loop.create_task(self._track_player_connected(player_id, player))
+                except RuntimeError:
+                    # No running loop; run synchronously
+                    if room_id:
+                        asyncio.run(self.subscribe_to_room(player_id, room_id))
+                    asyncio.run(self._track_player_connected(player_id, player))
+        except Exception as e:
+            logger.error(f"Error tracking SSE connect for {player_id}: {e}", exc_info=True)
+
         return connection_id
 
     def disconnect_sse(self, player_id: str):
