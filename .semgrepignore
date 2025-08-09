@@ -1,0 +1,32 @@
+# Ignore common build and dependency directories
+node_modules/
+client/build/
+client/.next/
+dist/
+build/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+
+# Logs and coverage
+logs/
+coverage/
+.coverage*
+
+# Git and editor
+.git/
+.vscode/
+.idea/
+
+# Test data directories (explicitly allowed DB locations retained)
+server/tests/data/
+
+# Generated assets
+client/public/
+
+# Ignore large data
+data/**
+
+# Allowlist: keep migration/DDL scripts scanned if any appear later
+!server/scripts/

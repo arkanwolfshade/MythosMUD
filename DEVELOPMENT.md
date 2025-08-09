@@ -68,6 +68,12 @@ uv sync
 uv run pre-commit install -f
 ```
 
+Semgrep is included in the pre-commit hooks. You can also run it manually:
+
+```sh
+make semgrep
+```
+
 ### d. Run the Server
 
 ```sh
