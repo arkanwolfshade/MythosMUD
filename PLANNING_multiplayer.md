@@ -69,7 +69,7 @@ Notes and follow-ups discovered:
 
 - [x] Replace uses of `datetime.utcnow()` with timezone-aware `datetime.now(datetime.UTC)` across server code to
   address deprecations in Python 3.12 (warnings observed in test runs). All tests green.
-- [ ] Normalize timestamps in real-time events to a consistent, timezone-aware format.
+- [x] Normalize timestamps in real-time events to a consistent, timezone-aware format.
 
 ---
 
@@ -339,7 +339,7 @@ function handleGameEvent(event: GameEvent) {
 ## 📌 Issue Checklist
 
 - [x] #118 Replace utcnow with timezone-aware datetimes across server (Python 3.12)
-- [ ] #119 Normalize real-time event timestamps (use real, timezone-aware times)
+- [x] #119 Normalize real-time event timestamps (use real, timezone-aware times)
 - [ ] #120 Add RoomInfoPanel occupants list to match server events
 
 ### **Performance Requirements**
