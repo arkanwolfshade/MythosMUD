@@ -158,6 +158,18 @@ class PersistenceLayer:
                 return player
             return None
 
+    def get_player_by_user_id(self, user_id: str) -> Player | None:
+        """Get a player by the owning user's ID."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
+            if row:
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
+            return None
+
     def save_player(self, player: Player):
         """Save or update a player."""
         with self._lock, sqlite3.connect(self.db_path) as conn:

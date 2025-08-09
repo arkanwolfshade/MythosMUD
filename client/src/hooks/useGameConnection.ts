@@ -66,8 +66,8 @@ export function useGameConnection({
     }
 
     try {
-      // WebSocket endpoint is at /api/ws/{player_name} on port 54731 (server expects username, not user_id)
-      const wsUrl = `ws://localhost:54731/api/ws/${playerName}?token=${encodeURIComponent(authToken)}`;
+      // WebSocket endpoint uses JWT token; server resolves user_id -> player_id
+      const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}`;
       const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;

@@ -270,7 +270,7 @@
         }
 
         try {
-          const wsUrl = `ws://${window.location.host}/ws/${playerId}`;
+          const wsUrl = `ws://${window.location.host}/ws?token=${encodeURIComponent(authToken)}`;
           websocket = new WebSocket(wsUrl);
 
           websocket.onopen = () => {
