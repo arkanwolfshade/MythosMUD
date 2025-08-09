@@ -1,5 +1,5 @@
 {
-  "id": "earth_arkham_city_northside_W_Derby_St_014",
+  "id": "earth_arkham_city_northside_Derby_St_014",
   "name": "W. Derby Street",
   "description": "The eastern end of W. Derby Street, where the residential district gives way to darker mysteries. Victorian houses with steep gables and narrow windows line both sides, their dark facades broken only by the occasional flicker of candlelight behind drawn curtains.",
   "plane": "earth",
@@ -10,7 +10,7 @@
     "north": null,
     "south": null,
     "east": "earth_arkham_city_downtown_Derby_Garrison",
-    "west": "earth_arkham_city_northside_W_Derby_St_013",
+    "west": "earth_arkham_city_northside_Derby_St_013",
     "up": null,
     "down": null
   }
