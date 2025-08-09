@@ -120,11 +120,8 @@ export function useGameConnection({
         eventSourceRef.current = null;
       }
 
-      // Create new EventSource with authentication token as query parameter
-      // Use playerId for SSE connection (server expects player ID, not username)
-      const eventSource = new EventSource(
-        `http://localhost:54731/api/events/${playerId}?token=${encodeURIComponent(authToken)}`
-      );
+      // Prefer token-authenticated SSE endpoint; server resolves token -> user_id -> player_id
+      const eventSource = new EventSource(`http://localhost:54731/api/events?token=${encodeURIComponent(authToken)}`);
 
       eventSourceRef.current = eventSource;
 

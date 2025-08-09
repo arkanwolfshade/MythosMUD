@@ -35,6 +35,38 @@ async def sse_events(player_id: str, request: Request):
     )
 
 
+@realtime_router.get("/events")
+async def sse_events_token(request: Request):
+    """
+    Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
+    """
+    from ..logging_config import get_logger
+
+    logger = get_logger(__name__)
+    token = request.query_params.get("token")
+    payload = decode_access_token(token)
+    if not payload or "sub" not in payload:
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
+    user_id = str(payload["sub"]).strip()
+    persistence = get_persistence()
+    player = persistence.get_player_by_user_id(user_id)
+    if not player:
+        raise HTTPException(status_code=401, detail="User has no player record")
+    player_id = player.player_id
+    logger.info(f"SSE connection attempt for player {player_id}")
+
+    return StreamingResponse(
+        game_event_stream(player_id),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Cache-Control",
+        },
+    )
+
+
 @realtime_router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """
