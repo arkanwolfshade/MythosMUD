@@ -9,7 +9,7 @@ for maintaining awareness of the dimensional shifts that occur throughout our
 eldritch architecture.
 """
 
-import time
+from datetime import UTC, datetime
 
 from ..events import EventBus
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
@@ -140,7 +140,7 @@ class RealTimeEventHandler:
         """
         return {
             "event_type": "player_entered",
-            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
             "sequence_number": self._get_next_sequence(),
             "room_id": event.room_id,
             "data": {
@@ -163,7 +163,7 @@ class RealTimeEventHandler:
         """
         return {
             "event_type": "player_left",
-            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
             "sequence_number": self._get_next_sequence(),
             "room_id": event.room_id,
             "data": {
@@ -198,7 +198,7 @@ class RealTimeEventHandler:
             # Create occupants update message
             message = {
                 "event_type": "room_occupants",
-                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
                 "room_id": room_id,
                 "data": {"occupants": occupant_names, "count": len(occupant_names)},
