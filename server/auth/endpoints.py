@@ -271,7 +271,7 @@ async def login_user(
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually
+    # Create JWT token manually using the same secret as the auth backend
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(

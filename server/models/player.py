@@ -7,7 +7,7 @@ for each user, including stats, inventory, and current location.
 
 import json
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
@@ -49,9 +49,9 @@ class Player(Base):
     experience_points = Column(Integer(), default=0, nullable=False)
     level = Column(Integer(), default=1, nullable=False)
 
-    # Timestamps
-    created_at = Column(DateTime(), default=datetime.utcnow, nullable=False)
-    last_active = Column(DateTime(), default=datetime.utcnow, nullable=False)
+    # Timestamps (persist naive UTC)
+    created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+    last_active = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
 
     def __repr__(self) -> str:
         """String representation of the player."""

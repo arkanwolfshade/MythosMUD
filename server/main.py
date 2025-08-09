@@ -13,11 +13,13 @@ and chaos in our digital realm.
 
 import warnings
 
+from fastapi import Depends
 from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
+from .auth.users import get_current_user
 from .config_loader import get_config
 from .logging_config import get_logger, setup_logging
 
@@ -80,6 +82,16 @@ security = HTTPBearer()
 async def read_root():
     """Root endpoint providing basic server information."""
     return {"message": "Welcome to MythosMUD!"}
+
+
+# Test endpoint for JWT validation
+@app.get("/test-auth")
+async def test_auth(current_user: dict = Depends(get_current_user)):
+    """Test endpoint to verify JWT authentication is working."""
+    if current_user:
+        return {"message": "Authentication successful", "user": current_user}
+    else:
+        return {"message": "No user found"}
 
 
 if __name__ == "__main__":

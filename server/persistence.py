@@ -34,11 +34,11 @@ _persistence_instance = None
 _persistence_lock = threading.Lock()
 
 
-def get_persistence() -> "PersistenceLayer":
+def get_persistence(event_bus=None) -> "PersistenceLayer":
     global _persistence_instance
     with _persistence_lock:
         if _persistence_instance is None:
-            _persistence_instance = PersistenceLayer()
+            _persistence_instance = PersistenceLayer(event_bus=event_bus)
         return _persistence_instance
 
 
@@ -58,7 +58,7 @@ class PersistenceLayer:
 
     _hooks: dict[str, list[Callable]] = {}
 
-    def __init__(self, db_path: str | None = None, log_path: str | None = None):
+    def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
@@ -78,6 +78,7 @@ class PersistenceLayer:
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
+        self._event_bus = event_bus
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -125,7 +126,7 @@ class PersistenceLayer:
 
             # Convert dictionary data to Room objects
             for room_id, room_data_dict in room_data.items():
-                self._room_cache[room_id] = Room(room_data_dict)
+                self._room_cache[room_id] = Room(room_data_dict, self._event_bus)
 
             self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
             self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
@@ -150,6 +151,18 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+            if row:
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
+            return None
+
+    def get_player_by_user_id(self, user_id: str) -> Player | None:
+        """Get a player by the owning user's ID."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
             if row:
                 player = Player(**dict(row))
                 # Validate and fix room placement if needed
@@ -210,6 +223,13 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players").fetchall()
+            return [Player(**dict(row)) for row in rows]
+
+    def get_players_in_room(self, room_id: str) -> list[Player]:
+        """Get all players currently in a specific room."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
             return [Player(**dict(row)) for row in rows]
 
     def save_players(self, players: list[Player]):

@@ -41,7 +41,7 @@ class MovementService:
             event_bus: Optional EventBus instance for movement events
         """
         self._event_bus = event_bus
-        self._persistence = get_persistence()
+        self._persistence = get_persistence(event_bus)
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
 
@@ -126,7 +126,10 @@ class MovementService:
                 to_room.player_entered(player_id)
 
                 # Update player's room in persistence
-                player = self._persistence.get_player(player_id)
+                # Note: WebSocket paths currently identify players by username.
+                # To ensure durability regardless of identifier form, resolve by
+                # either player_id (UUID) or, if not found, by player name.
+                player = self._persistence.get_player(player_id) or self._persistence.get_player_by_name(player_id)
                 if player:
                     player.current_room_id = to_room_id
                     self._persistence.save_player(player)
@@ -170,7 +173,7 @@ class MovementService:
 
         # Check if player is in the from_room
         if not from_room.has_player(player_id):
-            self._logger.error(f"Player {player_id} is not in room {from_room_id}")
+            self._logger.error(f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid")
             return False
 
         # Check if player is already in the to_room (shouldn't happen, but safety check)

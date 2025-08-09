@@ -221,3 +221,5 @@ server/tests/logs/
 server/tests/data/players/test_players.db
 server\tests\data\players\test_players.db
 data/players/players.db
+client/playwright-report
+client/test-results

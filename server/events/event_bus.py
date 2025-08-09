@@ -11,6 +11,8 @@ essential for maintaining awareness of the dimensional shifts that
 occur throughout our eldritch architecture.
 """
 
+import asyncio
+import queue
 import threading
 from collections import defaultdict
 from collections.abc import Callable
@@ -40,9 +42,15 @@ class EventBus:
         self._running: bool = False
         self._lock = threading.RLock()
         self._logger = get_logger("EventBus")
+        self._main_loop: asyncio.AbstractEventLoop | None = None
 
         # Start the event processing thread
         self._start_processing()
+
+    def set_main_loop(self, loop: asyncio.AbstractEventLoop):
+        """Set the main event loop for async event handling."""
+        self._main_loop = loop
+        self._logger.info("Main event loop set for EventBus")
 
     def _start_processing(self):
         """Start the background event processing thread."""
@@ -82,8 +90,11 @@ class EventBus:
                 # Process the event
                 self._handle_event(event)
 
+            except queue.Empty:
+                # Timeout is expected when no events are available
+                continue
             except Exception as e:
-                self._logger.error(f"Error processing event: {e}")
+                self._logger.error(f"Error processing event: {e}", exc_info=True)
                 continue
 
         self._logger.info("EventBus processing thread stopped")
@@ -101,9 +112,37 @@ class EventBus:
 
         for subscriber in subscribers:
             try:
-                subscriber(event)
+                import inspect
+
+                # Check if subscriber is async
+                if inspect.iscoroutinefunction(subscriber):
+                    # Handle async subscriber
+                    self._handle_async_subscriber(subscriber, event)
+                else:
+                    # Call sync subscriber directly
+                    subscriber(event)
             except Exception as e:
                 self._logger.error(f"Error in event subscriber {subscriber.__name__}: {e}")
+
+    def _handle_async_subscriber(self, subscriber: Callable, event: BaseEvent):
+        """Handle async event subscribers properly."""
+        try:
+            # Try to get the main event loop
+            if self._main_loop and self._main_loop.is_running():
+                # Use the main loop to schedule the coroutine
+                asyncio.run_coroutine_threadsafe(subscriber(event), self._main_loop)
+                # We don't wait for the result to avoid blocking
+                self._logger.debug(f"Scheduled async subscriber {subscriber.__name__} in main loop")
+            else:
+                # Fallback: try to get the current running loop
+                try:
+                    asyncio.create_task(subscriber(event))
+                    self._logger.debug(f"Created task for async subscriber {subscriber.__name__}")
+                except RuntimeError:
+                    # No running loop, log warning and skip
+                    self._logger.warning(f"No event loop available for async subscriber {subscriber.__name__}")
+        except Exception as e:
+            self._logger.error(f"Error handling async subscriber {subscriber.__name__}: {e}")
 
     def publish(self, event: BaseEvent) -> None:
         """

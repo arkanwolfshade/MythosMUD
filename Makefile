@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run
+.PHONY: help clean lint format test coverage build install run semgrep
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -14,6 +14,7 @@ help:
 	@echo "  coverage  - Run Python tests with coverage"
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
+	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
 
 clean:
 	cd $(PROJECT_ROOT) && python scripts/clean.py
@@ -35,6 +36,9 @@ build:
 
 install:
 	cd $(PROJECT_ROOT) && python scripts/install.py
+
+semgrep:
+	cd $(PROJECT_ROOT) && python scripts/semgrep.py
 
 run:
 	cd $(PROJECT_ROOT) && python scripts/run.py

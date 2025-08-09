@@ -9,6 +9,8 @@ interface Room {
   sub_zone?: string;
   environment?: string;
   exits?: Record<string, string | null>;
+  occupants?: string[];
+  occupant_count?: number;
 }
 
 interface RoomInfoPanelProps {
@@ -77,6 +79,16 @@ export function RoomInfoPanel({ room }: RoomInfoPanelProps) {
                   .map(([direction, _]) => direction.charAt(0).toUpperCase() + direction.slice(1))
                   .join(', ') || 'None'
               : 'None'}
+          </p>
+        </div>
+
+        {/* Room Occupants */}
+        <div className="room-occupants">
+          <span className="occupants-label">
+            Occupants{typeof room.occupant_count === 'number' ? ` (${room.occupant_count})` : ''}:
+          </span>
+          <p className="occupants-text">
+            {room.occupants && room.occupants.length > 0 ? room.occupants.join(', ') : 'None'}
           </p>
         </div>
       </div>

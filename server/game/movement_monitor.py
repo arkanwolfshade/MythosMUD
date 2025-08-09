@@ -10,7 +10,7 @@ systems is essential for maintaining the integrity of our eldritch architecture.
 
 import threading
 from collections import defaultdict
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from ..logging_config import get_logger
@@ -48,7 +48,7 @@ class MovementMonitor:
         self._last_validation_time = None
 
         # Performance tracking
-        self._start_time = datetime.utcnow()
+        self._start_time = datetime.now(UTC)
         self._last_movement_time = None
 
         # Alert thresholds
@@ -72,7 +72,7 @@ class MovementMonitor:
 
             self._movement_times.append(duration_ms)
             self._player_movements[player_id] += 1
-            self._last_movement_time = datetime.utcnow()
+            self._last_movement_time = datetime.now(UTC)
 
             # Update room occupancy
             if success:
@@ -100,7 +100,7 @@ class MovementMonitor:
             self._integrity_checks += 1
             if violation_found:
                 self._integrity_violations += 1
-            self._last_validation_time = datetime.utcnow()
+            self._last_validation_time = datetime.now(UTC)
 
     def validate_room_integrity(self, rooms: dict[str, Any]) -> dict[str, Any]:
         """
@@ -149,7 +149,7 @@ class MovementMonitor:
             "total_players": total_players,
             "avg_occupancy": avg_occupancy,
             "max_occupancy": max_occupancy,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(UTC),
         }
 
         self.record_integrity_check(len(violations) > 0)
@@ -172,7 +172,7 @@ class MovementMonitor:
             max_movement_time = max(self._movement_times) if self._movement_times else 0
             min_movement_time = min(self._movement_times) if self._movement_times else 0
 
-            uptime = (datetime.utcnow() - self._start_time).total_seconds()
+            uptime = (datetime.now(UTC) - self._start_time).total_seconds()
             movements_per_second = total_movements / uptime if uptime > 0 else 0
 
             integrity_rate = (
@@ -201,7 +201,7 @@ class MovementMonitor:
                 "last_validation_time": self._last_validation_time,
                 "room_occupancy": dict(self._room_occupancy),
                 "player_movement_counts": dict(self._player_movements),
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(UTC),
             }
 
     def get_alerts(self) -> list[str]:
@@ -241,7 +241,7 @@ class MovementMonitor:
             self._player_movements.clear()
             self._integrity_checks = 0
             self._integrity_violations = 0
-            self._start_time = datetime.utcnow()
+            self._start_time = datetime.now(UTC)
             self._last_movement_time = None
             self._last_validation_time = None
             self._logger.info("Movement metrics reset")

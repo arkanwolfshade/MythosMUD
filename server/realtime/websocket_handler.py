@@ -37,12 +37,38 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
             if persistence:
                 room = persistence.get_room(player.current_room_id)
                 if room:
+                    # Ensure player is added to their current room and track if we actually added them
+                    added_to_room = False
+                    if not room.has_player(player_id):
+                        logger.info(f"Adding player {player_id} to room {player.current_room_id}")
+                        room.player_entered(player_id)
+                        added_to_room = True
+
+                    # Use canonical room id for subscriptions and broadcasts
+                    canonical_room_id = getattr(room, "id", None) or player.current_room_id
+
+                    # Get room occupants
+                    room_occupants = connection_manager.get_room_occupants(canonical_room_id)
+
+                    # Transform to list of player names for client (UI expects string[])
+                    occupant_names = []
+                    try:
+                        for occ in room_occupants or []:
+                            if isinstance(occ, dict):
+                                name = occ.get("player_name") or occ.get("name")
+                                if name:
+                                    occupant_names.append(name)
+                            elif isinstance(occ, str):
+                                occupant_names.append(occ)
+                    except Exception as e:
+                        logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
+
                     game_state_event = {
                         "event_type": "game_state",
                         "timestamp": "2024-01-01T00:00:00Z",  # TODO: Use real timestamp
                         "sequence_number": 1,
                         "player_id": player_id,
-                        "room_id": player.current_room_id,
+                        "room_id": canonical_room_id,
                         "data": {
                             "player": {
                                 "name": player.name,
@@ -50,9 +76,38 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                                 "stats": getattr(player, "stats", {}),
                             },
                             "room": (room.to_dict() if hasattr(room, "to_dict") else room),
+                            "occupants": occupant_names,
+                            "occupant_count": len(occupant_names),
                         },
                     }
                     await websocket.send_json(game_state_event)
+
+                    # Proactively broadcast a room update so existing occupants see the new player
+                    try:
+                        await broadcast_room_update(player_id, canonical_room_id)
+                    except Exception as e:
+                        logger.error(f"Error broadcasting initial room update for {player_id}: {e}")
+
+                    # If player was already present (reconnect without a leave event),
+                    # explicitly notify other occupants they (re)entered to surface the event in UI
+                    if not added_to_room:
+                        try:
+                            synthetic_event = {
+                                "event_type": "player_entered",
+                                "timestamp": "2024-01-01T00:00:00Z",
+                                "sequence_number": 5,
+                                "room_id": canonical_room_id,
+                                "data": {
+                                    "player_id": player_id,
+                                    "player_name": getattr(player, "name", player_id),
+                                    "message": f"{getattr(player, 'name', player_id)} entered the room.",
+                                },
+                            }
+                            await connection_manager.broadcast_to_room(
+                                canonical_room_id, synthetic_event, exclude_player=player_id
+                            )
+                        except Exception as e:
+                            logger.error(f"Error sending synthetic player_entered for {player_id}: {e}")
 
         # Send welcome message
         welcome_event = {
@@ -88,7 +143,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
 
     finally:
         # Clean up connection
-        connection_manager.disconnect_websocket(player_id)
+        await connection_manager.disconnect_websocket(player_id)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
@@ -225,7 +280,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Handle basic commands
     if cmd == "look":
-        room_id = player.current_room_id
+        # Prefer the connection manager's tracked room (real-time canonical)
+        room_id = getattr(player, "current_room_id", None)
         room = persistence.get_room(room_id)
         if not room:
             return {"result": "You see nothing special."}
@@ -257,7 +313,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
         direction = args[0].lower()
         logger.debug(f"Direction: {direction}")
-        room_id = player.current_room_id
+        # Use the connection manager's view of the player's current room
+        room_id = getattr(player, "current_room_id", None)
         logger.debug(f"Current room ID: {room_id}")
         room = persistence.get_room(room_id)
         if not room:
@@ -273,13 +330,35 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         if not target_room:
             return {"result": "You can't go that way"}
 
-        # Move the player
-        player.current_room_id = target_room_id
-        persistence.save_player(player)
+        # Use MovementService to move the player (this will trigger events)
+        from ..events import EventBus
+        from ..game.movement_service import MovementService
 
-        name = getattr(target_room, "name", "")
-        desc = getattr(target_room, "description", "You see nothing special.")
-        exits = target_room.exits if hasattr(target_room, "exits") else {}
+        # Get the event bus from the app state or create a new one
+        event_bus = getattr(connection_manager, "_event_bus", None)
+        if not event_bus:
+            event_bus = EventBus()
+
+        movement_service = MovementService(event_bus)
+
+        # Get the player's current room before moving
+        from_room_id = player.current_room_id
+
+        logger.debug(f"Moving player {player_id} from {from_room_id} to {target_room_id}")
+
+        # Move the player using the movement service
+        success = movement_service.move_player(player_id, from_room_id, target_room_id)
+
+        logger.debug(f"Movement result: {success}")
+
+        if not success:
+            return {"result": "You can't go that way"}
+
+        # Get updated room info
+        updated_room = persistence.get_room(target_room_id)
+        name = getattr(updated_room, "name", "")
+        desc = getattr(updated_room, "description", "You see nothing special.")
+        exits = updated_room.exits if hasattr(updated_room, "exits") else {}
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
@@ -370,6 +449,22 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.warning(f"Room not found for update: {room_id}")
             return
 
+        # Get room occupants (server-side structs)
+        room_occupants = connection_manager.get_room_occupants(room_id)
+
+        # Transform to list of player names for client (UI expects string[])
+        occupant_names = []
+        try:
+            for occ in room_occupants or []:
+                if isinstance(occ, dict):
+                    name = occ.get("player_name") or occ.get("name")
+                    if name:
+                        occupant_names.append(name)
+                elif isinstance(occ, str):
+                    occupant_names.append(occ)
+        except Exception as e:
+            logger.error(f"Error transforming room occupants for room {room_id}: {e}")
+
         # Create room update event
         update_event = {
             "event_type": "room_update",
@@ -380,6 +475,8 @@ async def broadcast_room_update(player_id: str, room_id: str):
             "data": {
                 "room": room.to_dict() if hasattr(room, "to_dict") else room,
                 "entities": [],  # TODO: Add actual entities
+                "occupants": occupant_names,
+                "occupant_count": len(occupant_names),
             },
         }
 
