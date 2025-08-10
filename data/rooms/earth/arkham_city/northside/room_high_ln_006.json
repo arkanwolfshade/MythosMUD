@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_high_ln_006",
+  "name": "High Lane - Near Curwen Intersection",
+  "description": "A section of High Lane where the street begins to widen as it approaches the intersection with W. Curwen Street. The cobblestones here are well-maintained, though still bearing the marks of age. The ancient oaks stand back from the street slightly, creating a more open feeling. The houses here seem to lean away from the approaching intersection, their windows reflecting the dim light in patterns that suggest movement within. An air of anticipation builds as the crossroads draws near.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_northside_room_high_ln_005",
+    "south": "earth_arkham_city_northside_room_high_ln_007",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

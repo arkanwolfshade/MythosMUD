@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_high_ln_002",
+  "name": "High Lane - Near Derby Intersection",
+  "description": "A section of High Lane where the street widens slightly as it approaches the intersection with W. Derby Street. The cobblestones here are worn smooth by countless footsteps, and the ancient oaks stand like silent sentinels. The houses lean together conspiratorially, their windows reflecting the dim light in ways that suggest movement within. A weathered stone marker stands at the corner, its surface bearing faint, indecipherable markings.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": "earth_arkham_city_northside_room_high_ln_001",
+    "south": "earth_arkham_city_northside_room_high_ln_003",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}
