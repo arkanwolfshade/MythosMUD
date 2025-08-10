@@ -1,5 +1,5 @@
 {
-  "id": "earth_arkham_city_northside_Curwen_High",
+  "id": "earth_arkham_city_intersection_curwen_high",
   "name": "W. Curwen and High Lane Intersection",
   "description": "The intersection where W. Curwen Street meets High Lane.",
   "plane": "earth",
@@ -7,9 +7,9 @@
   "sub_zone": "northside",
   "environment": "outdoors",
   "exits": {
-    "north": "earth_arkham_city_northside_High_Ln_007",
-    "south": "earth_arkham_city_northside_High_Ln_008",
-    "east": "earth_arkham_city_northside_Curwen_St_001",
+    "north": "earth_arkham_city_northside_high_ln_007",
+    "south": "earth_arkham_city_northside_high_ln_008",
+    "east": "earth_arkham_city_northside_curwen_st_001",
     "west": null,
     "up": null,
     "down": null

@@ -22,31 +22,31 @@ class TestPathValidator:
     def zone_transition_rooms(self):
         """Sample rooms with zone transitions."""
         return {
-            "earth_arkham_city_northside_Derby_St_014": {
-                "id": "earth_arkham_city_northside_Derby_St_014",
+            "earth_arkham_city_northside_derby_st_014": {
+                "id": "earth_arkham_city_northside_derby_st_014",
                 "zone": "arkham_city",
                 "sub_zone": "northside",
                 "exits": {
-                    "east": "earth_arkham_city_downtown_Derby_Garrison",
-                    "west": "earth_arkham_city_northside_Derby_St_013",
+                    "east": "earth_arkham_city_intersection_derby_garrison",
+                    "west": "earth_arkham_city_northside_derby_st_013",
                 },
             },
-            "earth_arkham_city_downtown_Derby_Garrison": {
-                "id": "earth_arkham_city_downtown_Derby_Garrison",
+            "earth_arkham_city_intersection_derby_garrison": {
+                "id": "earth_arkham_city_intersection_derby_garrison",
                 "zone": "arkham_city",
                 "sub_zone": "downtown",
                 "exits": {
-                    "west": "earth_arkham_city_northside_Derby_St_014",
-                    "east": "earth_arkham_city_downtown_Derby_St_001",
+                    "west": "earth_arkham_city_northside_derby_st_014",
+                    "east": "earth_arkham_city_downtown_derby_st_001",
                 },
             },
-            "earth_arkham_city_downtown_Derby_St_001": {
-                "id": "earth_arkham_city_downtown_Derby_St_001",
+            "earth_arkham_city_downtown_derby_st_001": {
+                "id": "earth_arkham_city_downtown_derby_st_001",
                 "zone": "arkham_city",
                 "sub_zone": "downtown",
                 "exits": {
-                    "west": "earth_arkham_city_downtown_Derby_Garrison",
-                    "east": "earth_arkham_city_downtown_Derby_St_002",
+                    "west": "earth_arkham_city_intersection_derby_garrison",
+                    "east": "earth_arkham_city_downtown_derby_st_002",
                 },
             },
         }
@@ -60,20 +60,20 @@ class TestPathValidator:
         """Test detection of broken zone transitions."""
         # Break the return path
         broken_rooms = zone_transition_rooms.copy()
-        broken_rooms["earth_arkham_city_downtown_Derby_Garrison"]["exits"]["west"] = None
+        broken_rooms["earth_arkham_city_intersection_derby_garrison"]["exits"]["west"] = None
 
         missing_returns = validator.check_bidirectional_connections(broken_rooms)
         assert len(missing_returns) == 1
         room_a, dir_a, room_b, dir_b, is_zone_transition = missing_returns[0]
         assert is_zone_transition
-        assert room_a == "earth_arkham_city_northside_Derby_St_014"
+        assert room_a == "earth_arkham_city_northside_derby_st_014"
         assert dir_a == "east"
-        assert room_b == "earth_arkham_city_downtown_Derby_Garrison"
+        assert room_b == "earth_arkham_city_intersection_derby_garrison"
         assert dir_b == "west"
 
     def test_get_room_zone(self, validator, zone_transition_rooms):
         """Test extraction of zone information from room data."""
-        room_id = "earth_arkham_city_northside_Derby_St_014"
+        room_id = "earth_arkham_city_northside_derby_st_014"
         zone, subzone = validator._get_room_zone(room_id, zone_transition_rooms)
         assert zone == "arkham_city"
         assert subzone == "northside"
@@ -95,8 +95,8 @@ class TestPathValidator:
     def test_one_way_zone_transition(self, validator, zone_transition_rooms):
         """Test one-way exits across zone boundaries."""
         one_way_rooms = zone_transition_rooms.copy()
-        one_way_rooms["earth_arkham_city_northside_Derby_St_014"]["exits"]["east"] = {
-            "target": "earth_arkham_city_downtown_Derby_Garrison",
+        one_way_rooms["earth_arkham_city_northside_derby_st_014"]["exits"]["east"] = {
+            "target": "earth_arkham_city_intersection_derby_garrison",
             "flags": ["one_way"],
         }
 
@@ -106,11 +106,11 @@ class TestPathValidator:
     def test_mismatched_return_path(self, validator, zone_transition_rooms):
         """Test detection of mismatched return paths across zones."""
         mismatched_rooms = zone_transition_rooms.copy()
-        mismatched_rooms["earth_arkham_city_downtown_Derby_Garrison"]["exits"]["west"] = "wrong_room_id"
+        mismatched_rooms["earth_arkham_city_intersection_derby_garrison"]["exits"]["west"] = "wrong_room_id"
 
         missing_returns = validator.check_bidirectional_connections(mismatched_rooms)
         assert len(missing_returns) == 1
         room_a, dir_a, room_b, dir_b, is_zone_transition = missing_returns[0]
         assert is_zone_transition
-        assert room_a == "earth_arkham_city_northside_Derby_St_014"
-        assert room_b == "earth_arkham_city_downtown_Derby_Garrison"
+        assert room_a == "earth_arkham_city_northside_derby_st_014"
+        assert room_b == "earth_arkham_city_intersection_derby_garrison"

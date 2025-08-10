@@ -45,9 +45,9 @@ class SchemaValidator:
             try:
                 # Convert relative path to absolute if needed
                 if not self.schema_path.is_absolute():
-                    # Try to resolve relative to project root
-                    project_root = Path(__file__).parent.parent.parent
-                    self.schema_path = project_root / self.schema_path
+                    # Try to resolve relative to room_validator directory
+                    room_validator_root = Path(__file__).parent.parent
+                    self.schema_path = room_validator_root / self.schema_path
 
                 self._shared_validator = SharedSchemaValidator(str(self.schema_path))
                 self._use_shared = True

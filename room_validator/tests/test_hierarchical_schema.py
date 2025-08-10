@@ -136,7 +136,7 @@ class TestHierarchicalSchema(unittest.TestCase):
         """Test that room IDs follow the correct pattern."""
         valid_ids = [
             "earth_arkham_city_french_hill_S_Garrison_St_001",
-            "yeng_katmandu_palace_palace_Ground_001",
+            "yeng_katmandu_palace_palace_ground_001",
         ]
 
         invalid_ids = [

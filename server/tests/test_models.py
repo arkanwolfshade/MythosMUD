@@ -293,10 +293,10 @@ class TestPlayer:
 
     def test_player_creation(self):
         """Test creating a Player."""
-        player = Player(name="TestPlayer", current_room_id="earth_arkham_city_northside_Derby_High")
+        player = Player(name="TestPlayer", current_room_id="earth_arkham_city_intersection_derby_high")
 
         assert player.name == "TestPlayer"
-        assert player.current_room_id == "earth_arkham_city_northside_Derby_High"
+        assert player.current_room_id == "earth_arkham_city_intersection_derby_high"
         assert player.experience_points == 0
         assert player.level == 1
         assert isinstance(player.id, str)

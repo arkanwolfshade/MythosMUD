@@ -114,7 +114,7 @@ class RoomLoader:
         """
         if parsed_filename["type"] == "room":
             if parsed_filename.get("legacy"):
-                # Legacy format: earth_arkham_city_northside_Derby_St_001
+                # Legacy format: earth_arkham_city_northside_derby_st_001
                 street_name = parsed_filename["street"].replace("_", " ")
                 return f"{plane}_{zone}_{sub_zone}_{street_name}_{parsed_filename['number']:03d}"
             else:

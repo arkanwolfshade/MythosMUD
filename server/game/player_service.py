@@ -27,7 +27,7 @@ class PlayerService:
     def create_player(
         self,
         name: str,
-        starting_room_id: str = "earth_arkham_city_northside_Derby_High",
+        starting_room_id: str = "earth_arkham_city_intersection_derby_high",
         user_id: uuid.UUID | None = None,
     ) -> PlayerRead:
         """

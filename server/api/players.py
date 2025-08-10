@@ -18,7 +18,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 def create_player(
     name: str,
-    starting_room_id: str = "earth_arkham_city_northside_Derby_High",
+    starting_room_id: str = "earth_arkham_city_intersection_derby_high",
     current_user: dict = Depends(get_current_user),
     request: Request = None,
 ):

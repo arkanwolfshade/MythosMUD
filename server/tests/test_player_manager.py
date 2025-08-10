@@ -35,7 +35,7 @@ def temp_db_path(tmp_path):
             stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
             inventory TEXT NOT NULL DEFAULT '[]',
             status_effects TEXT NOT NULL DEFAULT '[]',
-            current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_northside_Derby_High',
+            current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',
             experience_points INTEGER NOT NULL DEFAULT 0,
             level INTEGER NOT NULL DEFAULT 1,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -138,7 +138,7 @@ class TestPersistenceLayer:
                 mock_player = Mock()
                 mock_player.player_id = "testid"
                 mock_player.name = "TestPlayer"
-                mock_player.current_room_id = "earth_arkham_city_northside_Derby_High"
+                mock_player.current_room_id = "earth_arkham_city_intersection_derby_high"
 
                 mock_save_player.return_value = None
                 mock_get_player.return_value = mock_player
@@ -150,7 +150,7 @@ class TestPersistenceLayer:
                 loaded = persistence.get_player("testid")
                 assert loaded is not None
                 assert loaded.name == "TestPlayer"
-                assert loaded.current_room_id == "earth_arkham_city_northside_Derby_High"
+                assert loaded.current_room_id == "earth_arkham_city_intersection_derby_high"
 
     def test_create_player_custom_room(self, persistence):
         with patch.object(persistence, "save_player") as mock_save_player:

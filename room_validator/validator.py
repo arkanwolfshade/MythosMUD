@@ -80,11 +80,6 @@ def main(
             reporter.print_error("No valid rooms found")
             sys.exit(1)
 
-        # Print parsing errors if any
-        parsing_errors = room_loader.get_parsing_errors()
-        if parsing_errors:
-            reporter.print_parsing_errors(parsing_errors)
-
         # Filter by zone if specified
         if zone:
             if zone not in zones:
@@ -96,6 +91,18 @@ def main(
         # Validation phase
         errors = []
         warnings = []
+
+        # Convert parsing errors to validation errors
+        parsing_errors = room_loader.get_parsing_errors()
+        for file_path, error_msg in parsing_errors:
+            errors.append(
+                {
+                    "type": "parse_error",
+                    "room_id": file_path,
+                    "message": error_msg,
+                    "suggestion": "Fix the room file format or naming convention",
+                }
+            )
 
         if not schema_only:
             # Schema validation
@@ -314,7 +321,7 @@ def main(
             if errors:
                 print(f"❌ {len(errors)} errors found (see error.log for details)")
             else:
-                reporter.print_success()
+                reporter.print_success("All validations passed!")
             reporter.print_validation_warnings(warnings)
             reporter.print_summary(stats)
 

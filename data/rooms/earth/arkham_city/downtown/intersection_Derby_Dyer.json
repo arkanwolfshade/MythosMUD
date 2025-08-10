@@ -1,5 +1,5 @@
 {
-  "id": "earth_arkham_city_downtown_Derby_Dyer",
+  "id": "earth_arkham_city_intersection_derby_dyer",
   "name": "Derby and Dyer Street Intersection",
   "description": "The intersection where Derby Street meets Dyer Street",
   "plane": "earth",
@@ -9,8 +9,8 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": "earth_arkham_city_downtown_Derby_St_009",
-    "west": "earth_arkham_city_downtown_Derby_St_008",
+    "east": "earth_arkham_city_downtown_derby_st_009",
+    "west": "earth_arkham_city_downtown_derby_st_008",
     "up": null,
     "down": null
   }

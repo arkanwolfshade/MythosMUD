@@ -126,7 +126,7 @@ Create a JSON schema that validates:
 - Build room connectivity graph
 - Perform graph traversal algorithms
 - Check bidirectional connections (respecting one_way flags)
-- Find unreachable rooms from starting point (earth_arkham_city_northside_Derby_High)
+- Find unreachable rooms from starting point (earth_arkham_city_intersection_derby_high)
 - Detect dead ends (rooms with no exits)
 
 **Key Methods:**
@@ -182,7 +182,7 @@ class ValidationRule(ABC):
 
 2. **Duplicate ID Rule**
    - Check for duplicate room IDs across zones
-   - Flag naming convention violations (e.g., `earth_arkham_city_northside_Derby_High` in `dungeon` zone)
+   - Flag naming convention violations (e.g., `earth_arkham_city_intersection_derby_high` in `dungeon` zone)
 
 3. **Exit Reference Rule**
    - Verify all exit targets exist or are null
@@ -196,7 +196,7 @@ class ValidationRule(ABC):
    - Provide suggestions for adding missing return paths
 
 2. **Unreachable Room Rule**
-   - Use graph traversal from `earth_arkham_city_northside_Derby_High` as starting point
+   - Use graph traversal from `earth_arkham_city_intersection_derby_high` as starting point
    - Report rooms that cannot be reached
    - Suggest connection points
 
@@ -265,12 +265,12 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → earth_arkham_city_northside_Derby_High, but earth_arkham_city_northside_Derby_High has no 'north' return
-     💡 Suggestion: Add "north": "arkham_002" to earth_arkham_city_northside_Derby_High or flag as one_way
+  ❌ Bidirectional: Exit 'south' → earth_arkham_city_intersection_derby_high, but earth_arkham_city_intersection_derby_high has no 'north' return
+     💡 Suggestion: Add "north": "arkham_002" to earth_arkham_city_intersection_derby_high or flag as one_way
 
 🏠 arkham_006.json (Clock Tower)
-  ❌ Unreachable: No path from starting room earth_arkham_city_northside_Derby_High
-     💡 Suggestion: Add connection from earth_arkham_city_northside_Derby_High or another reachable room
+  ❌ Unreachable: No path from starting room earth_arkham_city_intersection_derby_high
+     💡 Suggestion: Add connection from earth_arkham_city_intersection_derby_high or another reachable room
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
@@ -301,8 +301,8 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
       "type": "bidirectional",
       "file": "arkham_002.json",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → earth_arkham_city_northside_Derby_High, but earth_arkham_city_northside_Derby_High has no 'north' return",
-      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkham_city_northside_Derby_High or flag as one_way"
+      "message": "Exit 'south' → earth_arkham_city_intersection_derby_high, but earth_arkham_city_intersection_derby_high has no 'north' return",
+      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkham_city_intersection_derby_high or flag as one_way"
     }
   ],
   "warnings": [

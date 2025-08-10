@@ -20,9 +20,9 @@ class Reporter:
         """
         self.use_colors = use_colors
 
-    def print_header(self):
+    def print_header(self, title: str = "Room Validator v1.0"):
         """Print validator header."""
-        print("\n🔍 Room Validator v1.0")
+        print(f"\n🔍 {title}")
         print("=" * 40)
 
     def print_room_header(self, room_id: str):
@@ -43,7 +43,7 @@ class Reporter:
 
     def print_progress(self, message: str):
         """Print progress message."""
-        print(f"⏳ {message}")
+        print(f"🔄 {message}")
 
     def print_suggestion(self, message: str):
         """Print suggestion."""
@@ -80,12 +80,11 @@ class Reporter:
 
             self.print_suggestion(f'Add "{dir_b}": "{room_a}" to {room_b} or flag as one_way')
 
-    def print_parsing_errors(self, errors: dict[str, list[str]]):
+    def print_parsing_errors(self, errors: list[tuple[str, str]]):
         """Print JSON parsing errors."""
-        for file_path, error_list in errors.items():
+        for file_path, error in errors:
             self.print_room_header(file_path)
-            for error in error_list:
-                self.print_error(f"Parse Error: {error}")
+            self.print_error(f"Parse Error: {error}")
 
     def print_zone_discovery(self, zones: list[str]):
         """Print discovered zones."""
@@ -96,9 +95,42 @@ class Reporter:
     def print_validation_warnings(self, warnings: list[dict]):
         """Print validation warnings."""
         if warnings:
-            print("\n⚠️  Warnings:")
+            print("\n⚠️  WARNINGS:")
             for warning in warnings:
-                print(f"  - {warning['message']}")
+                self.print_warning(warning.get("message", "Unknown warning"))
+
+    def format_error(self, error_type: str, room_id: str, message: str, suggestion: str = None) -> str:
+        """Format an error message."""
+        formatted = f"{error_type.upper()}: {room_id} - {message}"
+        if suggestion:
+            formatted += f" (Suggestion: {suggestion})"
+        return formatted
+
+    def format_warning(self, warning_type: str, room_id: str, message: str) -> str:
+        """Format a warning message."""
+        return f"{warning_type.upper()}: {room_id} - {message}"
+
+    def colorize_output(self, text: str, color: str) -> str:
+        """Colorize output text."""
+        if not self.use_colors:
+            return text
+
+        colors = {"red": "\033[91m", "green": "\033[92m", "yellow": "\033[93m", "blue": "\033[94m", "reset": "\033[0m"}
+
+        return f"{colors.get(color, '')}{text}{colors['reset']}"
+
+    def print_validation_errors(self, errors: list[dict]):
+        """Print validation errors."""
+        if errors:
+            print("\n❌ Errors:")
+            for error in errors:
+                error_msg = self.format_error(
+                    error.get("type", "ERROR"),
+                    error.get("room_id", "UNKNOWN"),
+                    error.get("message", "Unknown error"),
+                    error.get("suggestion"),
+                )
+                self.print_error(error_msg)
 
     def generate_json_output(self, stats: dict, errors: list[dict], warnings: list[dict]) -> str:
         """Generate JSON output for machine consumption."""
@@ -109,13 +141,13 @@ class Reporter:
     def print_summary(self, stats: dict):
         """Print validation summary with statistics."""
         print("\n=== Validation Summary ===")
-        print(f"Zones: {stats['zones']}")
-        print(f"Subzones: {stats['subzones']} (configured: {stats['config_subzones']})")
-        print(f"Rooms: {stats['rooms']}")
-        print(f"Errors: {stats['errors']}")
-        print(f"Warnings: {stats['warnings']}")
+        print(f"Zones: {stats.get('zones', 0)}")
+        print(f"Subzones: {stats.get('subzones', 0)} (configured: {stats.get('config_subzones', 0)})")
+        print(f"Rooms: {stats.get('rooms', 0)}")
+        print(f"Errors: {stats.get('errors', 0)}")
+        print(f"Warnings: {stats.get('warnings', 0)}")
 
-        if stats["success"]:
+        if stats.get("success", False):
             self.print_success("All validations passed!")
         else:
             self.print_error("Validation completed with issues.")

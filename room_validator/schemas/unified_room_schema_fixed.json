@@ -49,14 +49,14 @@
         "north": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -79,14 +79,14 @@
         "south": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -109,14 +109,14 @@
         "east": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -139,14 +139,14 @@
         "west": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -169,14 +169,14 @@
         "up": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -199,14 +199,14 @@
         "down": {
           "oneOf": [
             {"type": "null"},
-            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"},
             {
               "type": "object",
               "required": ["target"],
               "properties": {
                 "target": {
                   "type": "string",
-                  "pattern": "^[a-z0-9_]+$",
+                  "pattern": "^[a-zA-Z0-9_]+$",
                   "description": "Target room ID (full room ID format)"
                 },
                 "flags": {
@@ -239,31 +239,5 @@
       "description": "Optional field for future extensibility (NPCs, items, effects)"
     }
   },
-  "additionalProperties": false,
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "id": {
-            "pattern": "^[a-z0-9_]+_room_[a-z0-9_]+_[0-9]{3}$"
-          }
-        }
-      },
-      "then": {
-        "description": "Regular room validation"
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "id": {
-            "pattern": "^[a-z0-9_]+_intersection_[a-z0-9_]+_[a-z0-9_]+$"
-          }
-        }
-      },
-      "then": {
-        "description": "Intersection room validation"
-      }
-    }
-  ]
+  "additionalProperties": false
 }

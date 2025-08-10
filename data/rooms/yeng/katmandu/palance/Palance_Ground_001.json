@@ -1,5 +1,5 @@
 {
-  "id": "yeng_katmandu_palace_palace_Ground_001",
+  "id": "yeng_katmandu_palace_palace_ground_001",
   "name": "palace Grounds",
   "description": "The grounds of the ancient palace in Katmandu. Reality itself seems to bend and shift here, with impossible geometries that make your head spin. The air shimmers with eldritch energy, and distant sounds echo from directions that shouldn't exist.",
   "plane": "yeng",
@@ -9,9 +9,9 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": "yeng_katmandu_palace_palace_Ground_002",
+    "east": "yeng_katmandu_palace_palace_ground_002",
     "west": null,
-    "up": "yeng_katmandu_palace_palace_Upper_001",
+    "up": "yeng_katmandu_palace_palace_upper_001",
     "down": null
   }
 }
