@@ -66,8 +66,8 @@ export function useGameConnection({
     }
 
     try {
-      // WebSocket endpoint is at /api/ws/{player_name} on port 54731 (server expects username, not user_id)
-      const wsUrl = `ws://localhost:54731/api/ws/${playerName}?token=${encodeURIComponent(authToken)}`;
+      // WebSocket endpoint uses JWT token; server resolves user_id -> player_id
+      const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}`;
       const websocket = new WebSocket(wsUrl);
 
       websocketRef.current = websocket;
@@ -120,11 +120,8 @@ export function useGameConnection({
         eventSourceRef.current = null;
       }
 
-      // Create new EventSource with authentication token as query parameter
-      // Use playerId for SSE connection (server expects player ID, not username)
-      const eventSource = new EventSource(
-        `http://localhost:54731/api/events/${playerId}?token=${encodeURIComponent(authToken)}`
-      );
+      // Prefer token-authenticated SSE endpoint; server resolves token -> user_id -> player_id
+      const eventSource = new EventSource(`http://localhost:54731/api/events?token=${encodeURIComponent(authToken)}`);
 
       eventSourceRef.current = eventSource;
 
@@ -176,7 +173,7 @@ export function useGameConnection({
       }));
       onError?.('Failed to connect');
     }
-  }, [playerName, authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, playerId]);
+  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, playerId]);
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');

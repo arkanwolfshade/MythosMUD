@@ -3,6 +3,7 @@ import { useGameConnection } from '../hooks/useGameConnection';
 import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
 import { logger } from '../utils/logger';
 import './GameTerminal.css';
+import { RoomInfoPanel } from './RoomInfoPanel';
 
 interface GameTerminalProps {
   playerId: string;
@@ -20,8 +21,16 @@ interface Player {
 }
 
 interface Room {
+  id: string;
   name: string;
   description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
+  exits?: Record<string, string | null>;
+  occupants?: string[];
+  occupant_count?: number;
 }
 
 interface Entity {
@@ -42,6 +51,7 @@ interface GameState {
   player: Player | null;
   room: Room | null;
   entities: Entity[];
+  roomOccupants: string[];
   messages: Array<{
     text: string;
     timestamp: string;
@@ -60,6 +70,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     player: null,
     room: null,
     entities: [],
+    roomOccupants: [],
     messages: [],
   });
 
@@ -83,15 +94,46 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
   function handleGameEvent(event: GameEvent) {
     console.log('Game event received:', event);
 
+    const filterAndDedupe = (names: string[]): string[] => {
+      const filtered = (names || []).filter(n => !!n && n !== playerName);
+      return Array.from(new Set(filtered));
+    };
+
+    // Safely extract strongly-typed properties from generic event payloads
+    const getStringProp = (data: Record<string, unknown>, key: string): string | undefined => {
+      const value = data[key];
+      return typeof value === 'string' ? value : undefined;
+    };
+
+    const getStringArrayProp = (data: Record<string, unknown>, key: string): string[] => {
+      const value = data[key];
+      if (Array.isArray(value)) {
+        return value.filter((v): v is string => typeof v === 'string');
+      }
+      return [];
+    };
+
     switch (event.event_type) {
-      case 'game_state':
+      case 'game_state': {
+        const roomFromEvent = (event.data.room as Room) || null;
+        const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
+        const roomWithOccupants = roomFromEvent
+          ? {
+              ...roomFromEvent,
+              occupants: occupantsFromEvent,
+              occupant_count: occupantsFromEvent.length,
+            }
+          : null;
+
         setGameState(prev => ({
           ...prev,
           player: event.data.player as Player,
-          room: event.data.room as Room,
+          room: roomWithOccupants,
+          roomOccupants: occupantsFromEvent,
         }));
-        addMessage(`Welcome to ${(event.data.room as Room)?.name || 'Unknown Room'}`);
+        addMessage(`Welcome to ${(roomFromEvent as Room)?.name || 'Unknown Room'}`);
         break;
+      }
 
       case 'motd':
         // Display the Message of the Day
@@ -101,22 +143,91 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         addMessage(event.data.message as string);
         break;
 
-      case 'room_update':
+      case 'room_update': {
+        console.log('Room update received:', event.data);
+        const roomFromEvent = (event.data.room as Room) || null;
+        const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
+        const roomWithOccupants = roomFromEvent
+          ? {
+              ...roomFromEvent,
+              occupants: occupantsFromEvent,
+              occupant_count: occupantsFromEvent.length,
+            }
+          : null;
+
         setGameState(prev => ({
           ...prev,
-          room: event.data.room as Room,
+          room: roomWithOccupants,
           entities: (event.data.entities as Entity[]) || [],
+          roomOccupants: occupantsFromEvent,
         }));
-        addMessage(`Room updated: ${(event.data.room as Room)?.name}`);
+        addMessage(`Room updated: ${(roomFromEvent as Room)?.name}`);
         break;
+      }
 
-      case 'player_entered':
-        addMessage(`${event.data.player_name as string} enters the room.`);
+      case 'player_entered': {
+        const name = getStringProp(event.data, 'player_name');
+        if (name && name !== playerName) {
+          addMessage(`${name} entered the room.`);
+          // Optimistically add to occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = Array.from(new Set([...current, name]));
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
+              roomOccupants: next,
+            };
+          });
+        }
         break;
+      }
 
-      case 'player_left':
-        addMessage(`${event.data.player_name as string} leaves the room.`);
+      case 'player_left': {
+        const name = getStringProp(event.data, 'player_name');
+        if (name && name !== playerName) {
+          addMessage(`${name} left the room.`);
+          // Optimistically remove from occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = current.filter(n => n !== name);
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
+              roomOccupants: next,
+            };
+          });
+        }
         break;
+      }
+
+      case 'player_left_game': {
+        const name = getStringProp(event.data, 'player_name');
+        if (name && name !== playerName) {
+          addMessage(`${name} left the game.`);
+          // Optimistically remove from occupants
+          setGameState(prev => {
+            const current = prev.room?.occupants || [];
+            const next = current.filter(n => n !== name);
+            return {
+              ...prev,
+              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
+              roomOccupants: next,
+            };
+          });
+        }
+        break;
+      }
+
+      case 'room_occupants': {
+        const occupants = filterAndDedupe(getStringArrayProp(event.data, 'occupants'));
+        setGameState(prev => ({
+          ...prev,
+          room: prev.room ? { ...prev.room, occupants, occupant_count: occupants.length } : prev.room,
+          roomOccupants: occupants,
+        }));
+        break;
+      }
 
       case 'combat_event':
         addMessage(`[COMBAT] ${event.data.message as string}`);
@@ -326,6 +437,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             </button>
           </div>
 
+          {/* Room Information Panel */}
+          <RoomInfoPanel room={gameState.room} />
+
           {/* Game State Display */}
           {gameState.player && (
             <div className="player-info">
@@ -333,33 +447,41 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
               <div className="stats">
                 <span>Level: {gameState.player.level || 1}</span>
                 {gameState.player.stats && (
-                  <ul className="stats-list">
-                    {Object.entries(gameState.player.stats).map(([key, value]) => (
-                      <li key={key}>
-                        <strong>{key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="stats-grid">
+                    {(() => {
+                      let statsObj = gameState.player.stats;
+
+                      // If stats is a string, try to parse it as JSON
+                      if (typeof statsObj === 'string') {
+                        try {
+                          statsObj = JSON.parse(statsObj);
+                        } catch (e) {
+                          console.error('Failed to parse stats JSON:', e);
+                        }
+                      }
+
+                      // If we have a valid object, display the stats
+                      if (typeof statsObj === 'object' && statsObj !== null) {
+                        return Object.entries(statsObj).map(([key, value]) => (
+                          <div key={key} className="stat-item">
+                            <span className="stat-label">
+                              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                            </span>
+                            <span className="stat-value">{value}</span>
+                          </div>
+                        ));
+                      } else {
+                        return (
+                          <div className="stat-item">
+                            <span className="stat-label">Stats:</span>
+                            <span className="stat-value">Loading...</span>
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* Room Information */}
-          {gameState.room && (
-            <div className="room-info">
-              <h4>{gameState.room.name}</h4>
-              <p>{gameState.room.description}</p>
-              {gameState.entities.length > 0 && (
-                <div className="entities">
-                  <strong>Entities in room:</strong>
-                  <ul>
-                    {gameState.entities.map((entity, index) => (
-                      <li key={index}>{entity.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           )}
         </div>

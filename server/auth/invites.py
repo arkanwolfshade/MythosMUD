@@ -6,7 +6,7 @@ including invite creation, validation, and tracking.
 """
 
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from fastapi import Depends, HTTPException
 from sqlalchemy import select
@@ -35,7 +35,8 @@ class InviteManager:
         logger.info("Creating new invite", expires_in_days=expires_in_days)
 
         invite_code = Invite._generate_invite_code()
-        expires_at = datetime.utcnow() + timedelta(days=expires_in_days)
+        # Persist naive UTC timestamps
+        expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
 
         invite = Invite(invite_code=invite_code, used=False, expires_at=expires_at)
 
@@ -118,7 +119,10 @@ class InviteManager:
         logger.info("Cleaning up expired invites")
 
         # Find expired invites
-        result = await self.session.execute(select(Invite).where(Invite.expires_at < datetime.utcnow()))
+        # Compare using naive UTC to match SQLite stored values
+        result = await self.session.execute(
+            select(Invite).where(Invite.expires_at < datetime.now(UTC).replace(tzinfo=None))
+        )
         expired_invites = result.scalars().all()
 
         # Remove expired invites

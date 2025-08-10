@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_Derby_St_003",
+  "name": "E. Derby Street",
+  "description": "This stretch of E. Derby Street features an array of shop windows displaying their wares. The glass panes seem to reflect more shadows than they should, and occasionally glimpses of things that aren't quite there catch the corner of your eye.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_downtown_Derby_St_004",
+    "west": "earth_arkham_city_downtown_Derby_St_002",
+    "up": null,
+    "down": null
+  }
+}

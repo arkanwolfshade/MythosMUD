@@ -3,17 +3,24 @@
 A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulhu Mythos.
 
 ---
+
 [![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
 ---
 
 ## Table of Contents
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Development](#development)
 
-- [Documentation](#documentation)
-- [License](#license)
+- [🐙 MythosMUD](#-mythosmud)
+  - [](#)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Getting Started](#getting-started)
+    - [Quickstart](#quickstart)
+  - [Project Structure](#project-structure)
+  - [Development](#development)
+    - [Utility Scripts](#utility-scripts)
+    - [Development Tools](#development-tools)
+  - [Documentation](#documentation)
+  - [License](#license)
 
 ---
 
@@ -37,21 +44,25 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 ### Quickstart
 
 1. **Clone the repository:**
+
    ```sh
    git clone <your-repo-url>
    cd MythosMUD
    ```
+
 2. **Start the development environment:**
+
    ```powershell
    # Windows PowerShell
    .\scripts\start_dev.ps1
    ```
 
    Or manually:
+
    ```sh
    # Backend
-   cd server
-   pyenv local 3.11.8  # or your preferred Python 3.11+ version
+    cd server
+    pyenv local 3.12.11  # or your preferred Python 3.12+ version
    uv sync
    uv run uvicorn main:app --reload
 
@@ -60,9 +71,10 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
    npm install
    npm run dev
    ```
+
 3. **Visit:**
-   - Backend: http://localhost:54731
-   - Frontend: http://localhost:5173
+   - Backend: <http://localhost:54731>
+   - Frontend: <http://localhost:5173>
 
 ---
 
@@ -89,11 +101,13 @@ MythosMUD/
 The `scripts/` directory contains PowerShell and Python utility scripts for managing the development environment:
 
 **PowerShell Scripts:**
+
 - `scripts/start_server.ps1` - Start the FastAPI server
 - `scripts/stop_server.ps1` - Stop server processes
 - `scripts/start_dev.ps1` - Start complete development environment
 
 **Python Scripts:**
+
 - `scripts/run.py` - Run the server
 - `scripts/test.py` - Run tests
 - `scripts/lint.py` - Lint code
@@ -107,15 +121,13 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - Python: `ruff check .` and `ruff format .` in `/server`
   - JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
 - **Pre-commit hooks:**
-  - Installed in `/server` to catch linting/formatting issues before commit
+  - Installed at the repository root to catch linting/formatting issues before commit
 - **CI:**
   - Automated with GitHub Actions for both backend and frontend
 - **AI Agents:**
   - See [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
 
 ---
-
-
 
 ---
 

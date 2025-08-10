@@ -127,7 +127,8 @@ class TestConnectionManager:
         assert len(self.manager.active_websockets) == 0
         assert self.player_id not in self.manager.player_websockets
 
-    def test_disconnect_websocket(self):
+    @pytest.mark.asyncio
+    async def test_disconnect_websocket(self):
         """Test WebSocket disconnection."""
         # First connect
         self.manager.active_websockets["conn1"] = self.mock_websocket
@@ -135,7 +136,7 @@ class TestConnectionManager:
         self.manager.room_subscriptions[self.room_id] = {self.player_id}
 
         # Then disconnect
-        self.manager.disconnect_websocket(self.player_id)
+        await self.manager.disconnect_websocket(self.player_id)
 
         assert len(self.manager.active_websockets) == 0
         assert self.player_id not in self.manager.player_websockets

@@ -6,7 +6,7 @@ for authentication and user management.
 """
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy import Boolean, Column, DateTime, String
@@ -42,9 +42,14 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
     is_active = Column(Boolean(), default=True, nullable=False)
     is_superuser = Column(Boolean(), default=False, nullable=False)
 
-    # Timestamps
-    created_at = Column(DateTime(), default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    # Timestamps (persist naive UTC for SQLite)
+    created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+    updated_at = Column(
+        DateTime(),
+        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
+        nullable=False,
+    )
 
     def __repr__(self) -> str:
         """String representation of the user."""

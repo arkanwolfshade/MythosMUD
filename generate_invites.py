@@ -9,7 +9,7 @@ in the database using the new FastAPI Users migration structure.
 import asyncio
 import random
 import sys
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add server directory to path for imports
@@ -181,7 +181,8 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
         for code in codes:
             invite = Invite(
                 invite_code=code,
-                expires_at=datetime.utcnow() + timedelta(days=expires_in_days),
+                # Persist naive UTC for DB
+                expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
             )
             invites.append(invite)
 

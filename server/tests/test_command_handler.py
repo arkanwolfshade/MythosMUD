@@ -19,6 +19,7 @@ from ..command_handler import (
     is_suspicious_input,
     process_command,
 )
+from ..models.room import Room
 
 # Import models.py directly to avoid package conflicts
 spec = importlib.util.spec_from_file_location(
@@ -173,11 +174,16 @@ class TestCommandExpansion:
         mock_player.current_room_id = "test_room"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = {
-            "name": "Test Room",
-            "description": "A mysterious room.",
-            "exits": {"north": "room_2", "south": None},
-        }
+        from server.models.room import Room
+
+        mock_room = Room(
+            {
+                "id": "test_room",
+                "name": "Test Room",
+                "description": "A mysterious room.",
+                "exits": {"north": "room_2", "south": None},
+            }
+        )
         mock_persistence.get_room.return_value = mock_room
 
         current_user = {"username": "testplayer"}
@@ -209,7 +215,9 @@ class TestCommandExpansion:
         mock_player.current_room_id = "test_room"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = {"name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
+        mock_room = Room(
+            {"id": "test_room", "name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
+        )
         mock_persistence.get_room.return_value = mock_room
 
         current_user = {"username": "testplayer"}
@@ -251,7 +259,9 @@ class TestCommandExpansion:
         mock_player.current_room_id = "test_room"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = {"name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
+        mock_room = Room(
+            {"id": "test_room", "name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
+        )
         mock_persistence.get_room.return_value = mock_room
 
         current_user = {"username": "testplayer"}
@@ -342,11 +352,14 @@ class TestCommandProcessing:
         mock_player.current_room_id = "test_room"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = {
-            "name": "Test Room",
-            "description": "A mysterious room.",
-            "exits": {"north": "room_2", "south": None},
-        }
+        mock_room = Room(
+            {
+                "id": "test_room",
+                "name": "Test Room",
+                "description": "A mysterious room.",
+                "exits": {"north": "room_2", "south": None},
+            }
+        )
         mock_persistence.get_room.return_value = mock_room
 
         current_user = {"username": "testplayer"}
@@ -373,20 +386,42 @@ class TestCommandProcessing:
 
         mock_player = Mock()
         mock_player.current_room_id = "test_room"
+        mock_player.player_id = "testplayer"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = {"name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
-        mock_persistence.get_room.return_value = mock_room
+        mock_room = Room(
+            {"id": "test_room", "name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
+        )
 
-        # Mock the target room
-        mock_target_room = {"name": "North Room", "description": "A northern chamber.", "exits": {"south": "test_room"}}
-        mock_persistence.get_room.side_effect = [mock_room, mock_target_room]
+        mock_target_room = Room(
+            {
+                "id": "room_2",
+                "name": "North Room",
+                "description": "A northern chamber.",
+                "exits": {"south": "test_room"},
+            }
+        )
+
+        # Add player to the starting room
+        mock_room.player_entered("testplayer")
+
+        # Mock get_room to return the appropriate room based on room_id
+        def mock_get_room(room_id):
+            if room_id == "test_room":
+                return mock_room
+            elif room_id == "room_2":
+                return mock_target_room
+            return None
+
+        mock_persistence.get_room.side_effect = mock_get_room
 
         current_user = {"username": "testplayer"}
         request = Mock()
         request.app = mock_app
 
-        result = process_command("go", ["north"], current_user, request, mock_storage, "testplayer")
+        # Mock the global get_persistence function
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            result = process_command("go", ["north"], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "North Room" in result["result"]

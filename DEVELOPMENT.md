@@ -7,7 +7,7 @@ This guide will help you bootstrap your workspace for developing MythosMUD.
 ## Prerequisites
 
 - **Git**
-- **Python 3.11+** (managed via [pyenv-win](https://github.com/pyenv-win/pyenv-win) recommended)
+- **Python 3.12+** (managed via [pyenv-win](https://github.com/pyenv-win/pyenv-win) recommended)
 - **Node.js 18+** and **npm** (for client)
 - **[uv](https://github.com/astral-sh/uv)** (for Python dependency management - **required**)
 - **VSCode** or Cursor.ai (recommended editor)
@@ -51,8 +51,8 @@ cd MythosMUD
 ### a. Set Python Version (if using pyenv-win)
 
 ```sh
-pyenv install 3.11.8  # if not already installed
-pyenv local 3.11.8
+pyenv install 3.12.11  # if not already installed
+pyenv local 3.12.11
 ```
 
 ### b. Install Dependencies
@@ -66,6 +66,12 @@ uv sync
 
 ```sh
 uv run pre-commit install -f
+```
+
+Semgrep is included in the pre-commit hooks. You can also run it manually:
+
+```sh
+make semgrep
 ```
 
 ### d. Run the Server
@@ -204,11 +210,11 @@ npm run build
 ### **Python version issues:**
 
 ```sh
-# Ensure you have Python 3.11+ installed
+# Ensure you have Python 3.12+ installed
 python --version
 
 # If using pyenv, set the local version
-pyenv local 3.11.8
+pyenv local 3.12.11
 ```
 
 ### **Dependency conflicts:**

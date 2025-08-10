@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_intersection_Derby_Noyes",
+  "name": "Derby and Noyes Street Intersection",
+  "description": "The intersection where E. Derby Street meets Noyes Street",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "east_town",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

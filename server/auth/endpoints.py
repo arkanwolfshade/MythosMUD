@@ -150,7 +150,7 @@ async def register_user(
     stats = '{"health": 100, "sanity": 100, "strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
     inventory = "[]"
     status_effects = "[]"
-    current_room_id = "earth_arkham_city_intersection_Derby_High"
+    current_room_id = "earth_arkham_city_northside_Derby_High"
     experience_points = 0
     level = 1
     created_at = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
@@ -271,7 +271,7 @@ async def login_user(
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually
+    # Create JWT token manually using the same secret as the auth backend
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(

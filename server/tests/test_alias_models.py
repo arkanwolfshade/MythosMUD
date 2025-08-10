@@ -90,7 +90,7 @@ class TestAliasModel:
         """Test alias equality comparison."""
         # Create aliases with same ID and timestamps for equality test
         custom_id = str(uuid.uuid4())
-        custom_timestamp = datetime.utcnow()
+        custom_timestamp = datetime.now(UTC)
         alias1 = Alias(
             id=custom_id, name="test", command="look", created_at=custom_timestamp, updated_at=custom_timestamp
         )

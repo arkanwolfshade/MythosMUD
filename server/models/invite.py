@@ -7,7 +7,7 @@ can create accounts.
 """
 
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
 from sqlalchemy.orm import declarative_base
@@ -28,14 +28,21 @@ class Invite(Base):
     used_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
     used = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    # Store datetimes in database as naive UTC to keep SQLite comparisons simple.
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
 
     def __repr__(self) -> str:
         return f"<Invite(id='{self.id}', code='{self.invite_code}', used={self.used})>"
 
     def is_expired(self) -> bool:
-        """Check if the invite has expired."""
-        return datetime.utcnow() > self.expires_at
+        """Check if the invite has expired. Handles naive timestamps as UTC."""
+        now_utc = datetime.now(UTC)
+        expires_at_utc = (
+            self.expires_at
+            if getattr(self.expires_at, "tzinfo", None) is not None
+            else self.expires_at.replace(tzinfo=UTC)
+        )
+        return now_utc > expires_at_utc
 
     def is_valid(self) -> bool:
         """Check if the invite is valid (not used and not expired)."""
@@ -52,7 +59,8 @@ class Invite(Base):
         return cls(
             invite_code=cls._generate_invite_code(),
             created_by_user_id=created_by_user_id,
-            expires_at=datetime.utcnow() + timedelta(days=expires_in_days),
+            # Persist naive UTC in DB
+            expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
         )
 
     @staticmethod

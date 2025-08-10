@@ -137,96 +137,118 @@ The basic MUD functionality is now working:
 
 *As noted in the Pnakotic Manuscripts, a thorough examination of our eldritch artifacts has revealed both strengths and areas requiring immediate attention.*
 
-### **Architectural Assessment: 7/10**
+### **Architectural Assessment: 7.5/10** ✅
 
 **Strengths:**
 - Well-structured layered architecture with clear separation of concerns
 - Excellent real-time communication design (SSE + WebSocket hybrid)
 - Proper use of FastAPI dependency injection
 - Good data persistence patterns with SQLAlchemy ORM
-- Comprehensive test coverage (78% - above 70% requirement)
+- Comprehensive test coverage (88% - exceeds 70% requirement)
+- Thread-safe singleton pattern for persistence layer
+- Event-driven architecture with proper pub/sub system
 
 **Critical Issues:**
-1. **Database Schema Mismatch** - Tests failing due to missing columns (`user_id`, `used_by_user_id`)
-2. **Hardcoded Secrets** - JWT secrets in source code (partially addressed)
-3. **Authentication System Inconsistencies** - Multiple auth implementations causing conflicts
-4. **Missing Error Handling** - Incomplete exception handling in real-time connections
-5. **Configuration Management** - Environment-specific logic embedded in code
+1. **Single Responsibility Principle Violations** - Large files with multiple responsibilities
+2. **Security Vulnerabilities** - Hardcoded secrets and missing rate limiting
+3. **Architectural Inconsistencies** - Mixed abstraction levels in API endpoints
+4. **Performance Concerns** - Memory usage in EventBus and database connection pooling
+5. **Code Quality Issues** - Some functions exceed complexity limits
 
 ### **Security Analysis**
 
 **Critical Vulnerabilities:**
-- Hardcoded secrets in `server/auth/users.py` (partially addressed)
-- Database schema inconsistencies causing test failures
-- Input validation gaps in command processing
+- Hardcoded secrets in `server/auth/users.py` (line 90)
+- Missing rate limiting on authentication endpoints
 - Overly permissive CORS configuration for production
+- Authentication tokens logged in plain text
 
 **Medium Risk Issues:**
-- Missing rate limiting on authentication endpoints
 - Error information disclosure in some endpoints
 - Incomplete input sanitization
+- Missing security headers (CSP, HSTS, X-Frame-Options)
 
 ### **Code Quality Metrics**
 
 **Positive Indicators:**
-- Test Coverage: 78% ✅
+- Test Coverage: 88% ✅ (Excellent)
 - Line Length Compliance: 120 chars max ✅
 - Good documentation and README files
 - Proper logging implementation
+- Comprehensive test suite (669 passed, 3 skipped)
 
 **Areas for Improvement:**
 - Some functions exceed recommended complexity limits
 - Code duplication in player data conversion
-- Long files (main.py: 524 lines, command_handler.py: 602 lines)
+- Long files (command_handler.py: 711 lines, persistence.py: 364 lines)
 - Missing type hints in some functions
 
 ### **Technical Debt Assessment**
 
 **Immediate Actions Required:**
-1. Fix database schema alignment issues
-2. Move remaining hardcoded secrets to environment variables
-3. Resolve authentication system inconsistencies
-4. Fix failing test suite
+1. **Security Hardening** - Move hardcoded secrets to environment variables
+2. **Architecture Refactoring** - Split large files into focused modules
+3. **Rate Limiting Implementation** - Add protection against abuse
+4. **Error Handling Standardization** - Implement consistent patterns
 
 **Short-term Improvements (1-2 weeks):**
-1. Refactor large files into smaller, focused modules
-2. Implement comprehensive error handling
-3. Add rate limiting middleware
-4. Improve input validation
+1. **Service Layer Enhancement** - Create dedicated service classes
+2. **API Consistency** - Standardize response formats and error handling
+3. **Input Validation** - Enhance security validation patterns
+4. **Performance Optimization** - Add database connection pooling
 
 **Long-term Refactoring (1-2 months):**
-1. Implement proper service layer architecture
-2. Add comprehensive security headers
-3. Optimize database queries and add caching
-4. Implement proper dependency injection patterns
+1. **Microservices Preparation** - Prepare for future scaling
+2. **Event Sourcing Implementation** - Use events for state changes
+3. **CQRS Pattern** - Separate read/write operations
+4. **Advanced Monitoring** - Implement comprehensive metrics
 
 ### **Complexity Hotspots**
 
 **High Complexity Functions:**
-- `main.py` (524 lines) - Multiple responsibilities
-- `command_handler.py` (602 lines) - Complex command processing
-- `real_time.py` (455 lines) - Connection management complexity
+- `command_handler.py` (711 lines) - Multiple responsibilities
+- `persistence.py` (364 lines) - Too many responsibilities
+- `main.py` - Mixed concerns (app creation + route definitions)
 
 **Recommended Refactoring:**
-- Split main.py into focused route modules
-- Extract command processing logic into separate services
-- Create dedicated connection management classes
+- Split command_handler.py into focused modules (commands/, services/)
+- Extract persistence logic into domain-specific repositories
+- Create dedicated service layer for business logic
+- Implement proper dependency injection patterns
+
+### **Performance & Scalability Analysis**
+
+**Current Performance Metrics:**
+- **Test Coverage**: 88% ✅ (Excellent)
+- **Code Quality**: Good with ruff linting
+- **Database**: SQLite for MVP (appropriate)
+
+**Scalability Concerns:**
+1. **Memory Usage**: EventBus keeps all events in memory
+2. **Database**: SQLite will become bottleneck with concurrent users
+3. **Connection Management**: No connection pooling for database
+
+**Recommended Improvements:**
+1. Implement database connection pooling
+2. Add Redis for session management
+3. Consider PostgreSQL for production
+4. Implement caching layer for room data
 
 ---
 
 ## Next Phase Priorities
 
 ### **Phase 1: Critical Fixes (Immediate - This Week)**
-1. **Database Schema Alignment** - Fix schema inconsistencies causing test failures
-2. **Security Hardening** - Move remaining secrets to environment variables
-3. **Test Suite Repair** - Fix failing tests and ensure 80% coverage
-4. **Authentication Consolidation** - Standardize on single auth approach
+1. **Security Hardening** - Move remaining secrets to environment variables
+2. **Architecture Refactoring** - Split large files into focused modules
+3. **Rate Limiting Implementation** - Add protection against abuse
+4. **Error Handling Standardization** - Implement consistent patterns
 
 ### **Phase 2: Code Quality (1-2 Weeks)**
-1. **Architecture Refactoring** - Split large files into focused modules
-2. **Error Handling** - Implement comprehensive exception handling
+1. **Service Layer Enhancement** - Create dedicated service classes
+2. **API Consistency** - Standardize response formats and error handling
 3. **Input Validation** - Enhance security validation patterns
-4. **Rate Limiting** - Add protection against abuse
+4. **Performance Optimization** - Add database connection pooling
 
 ### **Phase 3: Feature Development (1-2 Months)**
 1. **Content Creation** - Add more hand-authored zones and content
@@ -242,6 +264,30 @@ The basic MUD functionality is now working:
 All development tasks and priorities are now tracked through [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues). This provides better collaboration, tracking, and integration with GitHub's project management features.
 
 For current development priorities and task status, please refer to the [Issues page](https://github.com/arkanwolfshade/MythosMUD/issues).
+
+---
+
+## 🎯 Long-Term Architectural Vision
+
+### **Target Architecture**
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Client Layer  │    │   API Gateway   │    │  Service Layer  │
+│   (React/TS)    │◄──►│   (FastAPI)     │◄──►│  (Game Services)│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │                        │
+                                ▼                        ▼
+                       ┌─────────────────┐    ┌─────────────────┐
+                       │  Event Bus      │    │  Data Layer     │
+                       │  (Redis/PubSub) │    │  (PostgreSQL)   │
+                       └─────────────────┘    └─────────────────┘
+```
+
+### **Key Principles**
+1. **Domain-Driven Design** - Organize by game domains
+2. **Event Sourcing** - Use events for state changes
+3. **CQRS Pattern** - Separate read/write operations
+4. **Microservices Ready** - Prepare for future scaling
 
 ---
 

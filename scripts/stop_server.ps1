@@ -11,6 +11,8 @@
     - Terminating processes by command line patterns
     - Force killing all Python processes if Force flag is set
     - Verifying port is free after shutdown
+    - Terminating PowerShell processes that spawned the server
+    - Cleaning up orphaned terminal windows
 
 .PARAMETER Force
     When specified, forces termination of all Python processes regardless of command line.
@@ -28,7 +30,7 @@
 
 .NOTES
     Author: MythosMUD Development Team
-    Version: 2.0
+    Version: 3.0
     Requires: PowerShell 5.1 or higher
 #>
 
@@ -37,6 +39,32 @@ param(
     [Parameter(HelpMessage = "Force termination of all Python processes")]
     [switch]$Force
 )
+
+# Function to kill entire process trees
+function Stop-ProcessTree {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$ProcessId
+    )
+
+    try {
+        # Get child processes
+        $children = Get-WmiObject -Class Win32_Process | Where-Object { $_.ParentProcessId -eq $ProcessId }
+
+        # Kill children first
+        foreach ($child in $children) {
+            Stop-ProcessTree -ProcessId $child.ProcessId
+        }
+
+        # Kill the parent
+        Stop-Process -Id $ProcessId -Force
+        Write-Host "Terminated process tree for PID: $ProcessId" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "Could not terminate process tree for PID: $ProcessId" -ForegroundColor Yellow
+    }
+}
 
 # Function to kill processes by port
 function Stop-ProcessesByPort {
@@ -57,8 +85,7 @@ function Stop-ProcessesByPort {
                     $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
                     if ($process) {
                         Write-Host "Found process using port ${Port}: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                        Stop-Process -Id $process.Id -Force
-                        Write-Host "Terminated process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Green
+                        Stop-ProcessTree -ProcessId $process.Id
                     }
                 }
                 catch {
@@ -92,8 +119,7 @@ function Stop-ProcessesByName {
             foreach ($process in $processes) {
                 Write-Host "Found process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                 try {
-                    Stop-Process -Id $process.Id -Force
-                    Write-Host "Terminated process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Green
+                    Stop-ProcessTree -ProcessId $process.Id
                 }
                 catch {
                     Write-Host "Could not terminate process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
@@ -127,8 +153,7 @@ function Stop-ProcessesByCommandLine {
                 $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 if ($commandLine -and $commandLine -like "*$CommandPattern*") {
                     Write-Host "Found process with command line '$CommandPattern': $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                    Stop-Process -Id $process.Id -Force
-                    Write-Host "Terminated process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Green
+                    Stop-ProcessTree -ProcessId $process.Id
                 }
             }
             catch {
@@ -142,6 +167,61 @@ function Stop-ProcessesByCommandLine {
     }
 }
 
+# Function to kill PowerShell processes that spawned the server
+function Stop-PowerShellServerProcesses {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "Checking for PowerShell processes running server..." -ForegroundColor Cyan
+
+    try {
+        $powerShellProcesses = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" }
+        foreach ($process in $powerShellProcesses) {
+            try {
+                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*")) {
+                    Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Stop-ProcessTree -ProcessId $process.Id
+                }
+            }
+            catch {
+                Write-Verbose "Could not get command line for PowerShell process $($process.Id)"
+            }
+        }
+    }
+    catch {
+        Write-Host "Error checking PowerShell processes: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+}
+
+# Function to close orphaned terminal windows
+function Close-OrphanedTerminalWindows {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "Checking for orphaned terminal windows..." -ForegroundColor Cyan
+
+    try {
+        # This is more complex on Windows, but we can try to identify windows by title
+        $processes = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" -or $_.ProcessName -like "*cmd*" }
+        foreach ($process in $processes) {
+            try {
+                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*server*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*")) {
+                    Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Stop-ProcessTree -ProcessId $process.Id
+                }
+            }
+            catch {
+                Write-Verbose "Could not check terminal process $($process.Id)"
+            }
+        }
+    }
+    catch {
+        Write-Host "Error checking terminal windows: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+}
+
 # Function to wait and verify port is free
 function Wait-ForPortFree {
     [CmdletBinding()]
@@ -152,7 +232,7 @@ function Wait-ForPortFree {
 
         [Parameter()]
         [ValidateRange(1, 60)]
-        [int]$MaxWaitSeconds = 10
+        [int]$MaxWaitSeconds = 15
     )
 
     Write-Host "Waiting for port ${Port} to be free..." -ForegroundColor Yellow
@@ -177,26 +257,33 @@ function Wait-ForPortFree {
 try {
     Write-Host "Starting robust server shutdown process..." -ForegroundColor Green
 
-    # Method 1: Kill processes by port
+    # Method 1: Kill PowerShell processes that spawned the server
+    Stop-PowerShellServerProcesses
+
+    # Method 2: Kill processes by port
     Stop-ProcessesByPort -Port 54731
 
-    # Method 2: Kill processes by name patterns
+    # Method 3: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
     Stop-ProcessesByName -NamePattern "*python*"
 
-    # Method 3: Kill processes by command line patterns
+    # Method 4: Kill processes by command line patterns
     Stop-ProcessesByCommandLine -CommandPattern "uvicorn"
     Stop-ProcessesByCommandLine -CommandPattern "main:app"
+    Stop-ProcessesByCommandLine -CommandPattern "start_server.ps1"
+    Stop-ProcessesByCommandLine -CommandPattern "uv run"
 
-    # Method 4: Force kill all Python processes if Force flag is set
+    # Method 5: Close orphaned terminal windows
+    Close-OrphanedTerminalWindows
+
+    # Method 6: Force kill all Python processes if Force flag is set
     if ($Force) {
         Write-Host "Force mode: Terminating all Python processes..." -ForegroundColor Red
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
             Write-Host "Force terminating: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
             try {
-                Stop-Process -Id $process.Id -Force
-                Write-Host "Force terminated: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Green
+                Stop-ProcessTree -ProcessId $process.Id
             }
             catch {
                 Write-Host "Could not force terminate: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
@@ -206,10 +293,23 @@ try {
 
     # Wait for processes to fully terminate
     Write-Host "Waiting for processes to fully terminate..." -ForegroundColor Yellow
-    Start-Sleep -Seconds 3
+    Start-Sleep -Seconds 5
 
-    # Verify port is free
-    $portFree = Wait-ForPortFree -Port 54731 -MaxWaitSeconds 10
+    # Add multiple verification attempts
+    $maxRetries = 3
+    $retryCount = 0
+    $portFree = $false
+
+    while (-not $portFree -and $retryCount -lt $maxRetries) {
+        $portFree = Wait-ForPortFree -Port 54731 -MaxWaitSeconds 15
+        if (-not $portFree) {
+            $retryCount++
+            Write-Host "Port still in use, retrying... (Attempt $retryCount/$maxRetries)" -ForegroundColor Yellow
+            # Force kill any remaining processes
+            Stop-ProcessesByPort -Port 54731
+            Start-Sleep -Seconds 2
+        }
+    }
 
     if ($portFree) {
         Write-Host "`n🎉 MythosMUD Server shutdown complete!" -ForegroundColor Green

@@ -2,9 +2,9 @@ import os
 import sqlite3
 import threading
 from collections.abc import Callable
-from typing import Any
 
-from .models import Player  # Assume Room model exists or will be added
+from .models import Player
+from .models.room import Room
 
 
 # --- Custom Exceptions ---
@@ -34,11 +34,11 @@ _persistence_instance = None
 _persistence_lock = threading.Lock()
 
 
-def get_persistence() -> "PersistenceLayer":
+def get_persistence(event_bus=None) -> "PersistenceLayer":
     global _persistence_instance
     with _persistence_lock:
         if _persistence_instance is None:
-            _persistence_instance = PersistenceLayer()
+            _persistence_instance = PersistenceLayer(event_bus=event_bus)
         return _persistence_instance
 
 
@@ -58,7 +58,7 @@ class PersistenceLayer:
 
     _hooks: dict[str, list[Callable]] = {}
 
-    def __init__(self, db_path: str | None = None, log_path: str | None = None):
+    def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
@@ -78,6 +78,7 @@ class PersistenceLayer:
 
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
+        self._event_bus = event_bus
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -112,7 +113,7 @@ class PersistenceLayer:
 
     # --- Room Cache (Loaded at Startup) ---
     def _load_room_cache(self):
-        """Load rooms from JSON files using world_loader instead of SQLite."""
+        """Load rooms from JSON files using world_loader and convert to Room objects."""
         self._room_cache = {}
         self._room_mappings = {}
         try:
@@ -120,8 +121,13 @@ class PersistenceLayer:
             from .world_loader import load_hierarchical_world
 
             world_data = load_hierarchical_world()
-            self._room_cache = world_data["rooms"]
+            room_data = world_data["rooms"]
             self._room_mappings = world_data["room_mappings"]
+
+            # Convert dictionary data to Room objects
+            for room_id, room_data_dict in room_data.items():
+                self._room_cache[room_id] = Room(room_data_dict, self._event_bus)
+
             self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
             self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
         except Exception as e:
@@ -145,6 +151,18 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+            if row:
+                player = Player(**dict(row))
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                return player
+            return None
+
+    def get_player_by_user_id(self, user_id: str) -> Player | None:
+        """Get a player by the owning user's ID."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
             if row:
                 player = Player(**dict(row))
                 # Validate and fix room placement if needed
@@ -205,6 +223,13 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players").fetchall()
+            return [Player(**dict(row)) for row in rows]
+
+    def get_players_in_room(self, room_id: str) -> list[Player]:
+        """Get all players currently in a specific room."""
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
             return [Player(**dict(row)) for row in rows]
 
     def save_players(self, players: list[Player]):
@@ -294,7 +319,7 @@ class PersistenceLayer:
                 raise PersistenceError(f"Failed to delete player {player_id}: {e}") from e
 
     # --- CRUD for Rooms ---
-    def get_room(self, room_id: str) -> dict[str, Any] | None:
+    def get_room(self, room_id: str) -> Room | None:
         """Get a room by ID from the cache."""
         # First try direct lookup
         if room_id in self._room_cache:
@@ -307,24 +332,24 @@ class PersistenceLayer:
 
         return None
 
-    def save_room(self, room: dict[str, Any]):
+    def save_room(self, room: Room):
         """Save or update a room. Currently read-only - rooms are stored as JSON files."""
         # TODO: Implement JSON file saving for rooms
         # For now, just update the cache
-        self._room_cache[room["id"]] = room
-        self._log(f"Updated room {room['id']} in cache (JSON file saving not implemented)")
+        self._room_cache[room.id] = room
+        self._log(f"Updated room {room.id} in cache (JSON file saving not implemented)")
         self._run_hooks("after_save_room", room)
 
-    def list_rooms(self) -> list[dict[str, Any]]:
+    def list_rooms(self) -> list[Room]:
         """List all rooms from the cache."""
         return list(self._room_cache.values())
 
-    def save_rooms(self, rooms: list[dict[str, Any]]):
+    def save_rooms(self, rooms: list[Room]):
         """Batch save rooms. Currently read-only - rooms are stored as JSON files."""
         # TODO: Implement JSON file saving for rooms
         # For now, just update the cache
         for room in rooms:
-            self._room_cache[room["id"]] = room
+            self._room_cache[room.id] = room
         self._log(f"Updated {len(rooms)} rooms in cache (JSON file saving not implemented)")
         self._run_hooks("after_save_rooms", rooms)
 
@@ -349,7 +374,7 @@ class PersistenceLayer:
 
         # Room doesn't exist, move player to starting room
         old_room = player.current_room_id
-        player.current_room_id = "earth_arkham_city_campus_W_College_St_003"
+        player.current_room_id = "earth_arkham_city_northside_Derby_High"
 
         self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
         return True
