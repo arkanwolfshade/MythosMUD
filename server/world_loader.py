@@ -8,6 +8,15 @@ logger = get_logger(__name__)
 
 ROOMS_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "rooms"))
 
+# Try to import the shared schema validator
+try:
+    from schemas.validator import SchemaValidator, create_validator
+
+    SCHEMA_VALIDATION_AVAILABLE = True
+except ImportError:
+    SCHEMA_VALIDATION_AVAILABLE = False
+    logger.warning("Schema validation not available - schemas package not found")
+
 
 def load_zone_config(zone_path: str) -> dict[str, Any] | None:
     """
@@ -100,9 +109,50 @@ def get_room_environment(
     return "outdoors"
 
 
-def load_hierarchical_world() -> dict[str, Any]:
+def validate_room_data(
+    room_data: dict[str, Any], file_path: str, validator: SchemaValidator | None = None, strict_validation: bool = False
+) -> list[str]:
+    """
+    Validate room data against schema if validation is available.
+
+    Args:
+        room_data: Room data to validate
+        file_path: Path to the room file for error reporting
+        validator: Schema validator instance (creates one if None)
+        strict_validation: If True, raises exceptions on validation errors
+
+    Returns:
+        List of validation error messages (empty if valid)
+    """
+    if not SCHEMA_VALIDATION_AVAILABLE:
+        return []
+
+    if validator is None:
+        try:
+            validator = create_validator("unified")
+        except Exception as e:
+            logger.warning(f"Could not create schema validator: {e}")
+            return []
+
+    try:
+        errors = validator.validate_room(room_data, file_path)
+        if errors and strict_validation:
+            raise ValueError(f"Room validation failed: {'; '.join(errors)}")
+        return errors
+    except Exception as e:
+        if strict_validation:
+            raise
+        logger.warning(f"Schema validation error for {file_path}: {e}")
+        return [f"Validation error: {e}"]
+
+
+def load_hierarchical_world(strict_validation: bool = False, enable_schema_validation: bool = True) -> dict[str, Any]:
     """
     Load the complete hierarchical world structure including zones, sub-zones, and rooms.
+
+    Args:
+        strict_validation: If True, raises exceptions on validation errors
+        enable_schema_validation: If True, validates room data against schema
 
     Returns:
         Dictionary containing all world data with hierarchical structure
@@ -112,10 +162,19 @@ def load_hierarchical_world() -> dict[str, Any]:
         "zone_configs": {},
         "subzone_configs": {},
         "room_mappings": {},  # Maps old room IDs to new hierarchical IDs
+        "validation_errors": {},  # Track validation errors by room ID
     }
 
     if not os.path.exists(ROOMS_BASE_PATH):
         return world_data
+
+    # Create schema validator if validation is enabled
+    validator = None
+    if enable_schema_validation and SCHEMA_VALIDATION_AVAILABLE:
+        try:
+            validator = create_validator("unified")
+        except Exception as e:
+            logger.warning(f"Could not create schema validator: {e}")
 
     try:
         for plane in os.listdir(ROOMS_BASE_PATH):
@@ -163,6 +222,16 @@ def load_hierarchical_world() -> dict[str, Any]:
                                         room_data, subzone_config, zone_config
                                     )
 
+                                    # Validate room data if schema validation is enabled
+                                    if enable_schema_validation:
+                                        validation_errors = validate_room_data(
+                                            room_data, file_path, validator, strict_validation
+                                        )
+                                        if validation_errors:
+                                            world_data["validation_errors"][new_room_id] = validation_errors
+                                            if strict_validation:
+                                                continue  # Skip invalid rooms in strict mode
+
                                     world_data["rooms"][new_room_id] = room_data
 
                                     old_room_id = room_data.get("id")
@@ -206,17 +275,30 @@ def resolve_room_reference(room_id: str, world_data: dict[str, Any] | None = Non
     return None
 
 
-def load_rooms() -> dict[str, Any]:
+def load_rooms(strict_validation: bool = False, enable_schema_validation: bool = True) -> dict[str, Any]:
     """
     Load all rooms from the world structure.
 
     This function maintains backward compatibility with the original flat structure
     while also supporting the new hierarchical structure.
 
+    Args:
+        strict_validation: If True, raises exceptions on validation errors
+        enable_schema_validation: If True, validates room data against schema
+
     Returns:
         Dictionary mapping room IDs to room data
     """
-    world_data = load_hierarchical_world()
+    world_data = load_hierarchical_world(strict_validation, enable_schema_validation)
+
+    # Log validation errors if any
+    if world_data.get("validation_errors"):
+        error_count = len(world_data["validation_errors"])
+        logger.warning(f"Found {error_count} rooms with validation errors")
+        for room_id, errors in world_data["validation_errors"].items():
+            for error in errors:
+                logger.warning(f"Room {room_id}: {error}")
+
     return world_data["rooms"]
 
 
@@ -233,3 +315,6 @@ if __name__ == "__main__":
     logger.info(f"Zone configurations: {len(world_data['zone_configs'])}")
     logger.info(f"Sub-zone configurations: {len(world_data['subzone_configs'])}")
     logger.info(f"Room mappings: {len(world_data['room_mappings'])}")
+
+    if world_data.get("validation_errors"):
+        logger.warning(f"Validation errors: {len(world_data['validation_errors'])}")

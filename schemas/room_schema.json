@@ -1,0 +1,244 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Room Schema",
+  "description": "Schema for validating regular room definitions in the MythosMUD world",
+  "type": "object",
+  "required": ["id", "name", "description", "plane", "zone", "sub_zone", "exits"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+_room_[a-z0-9_]+_[0-9]{3}$",
+      "description": "Room identifier following the pattern: {plane}_{zone}_{sub_zone}_room_{street}_{number:03d}"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable room name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 2000,
+      "description": "Room description shown to players"
+    },
+    "plane": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Plane identifier this room belongs to"
+    },
+    "zone": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Zone identifier this room belongs to"
+    },
+    "sub_zone": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Sub-zone identifier this room belongs to"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["indoors", "outdoors", "underwater"],
+      "default": "outdoors",
+      "description": "Environmental classification for this room"
+    },
+    "exits": {
+      "type": "object",
+      "description": "Room exits to other locations",
+      "properties": {
+        "north": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "south": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "east": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "west": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "up": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "down": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-z0-9_]+$"},
+            {
+              "type": "object",
+              "required": ["target"],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "Target room ID"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["one_way", "self_reference", "hidden", "locked"]
+                  },
+                  "description": "Exit behavior flags"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Custom exit description"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "field1": {
+      "description": "Optional field for future extensibility (NPCs, items, effects)"
+    },
+    "field2": {
+      "description": "Optional field for future extensibility (NPCs, items, effects)"
+    },
+    "field3": {
+      "description": "Optional field for future extensibility (NPCs, items, effects)"
+    }
+  },
+  "additionalProperties": false
+}
