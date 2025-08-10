@@ -19,9 +19,7 @@ class SchemaValidator:
     as documented in the restricted archives of dimensional mapping.
     """
 
-    def __init__(
-        self, schema_path: str = "./schemas/room_hierarchy_schema.json"
-    ):
+    def __init__(self, schema_path: str = "./schemas/unified_room_schema.json"):
         """
         Initialize the schema validator.
 
@@ -38,9 +36,7 @@ class SchemaValidator:
             with open(self.schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
         except FileNotFoundError as exc:
-            raise FileNotFoundError(
-                f"Schema file not found: {self.schema_path}"
-            ) from exc
+            raise FileNotFoundError(f"Schema file not found: {self.schema_path}") from exc
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid schema file: {e}") from e
 
@@ -62,9 +58,7 @@ class SchemaValidator:
         except ValidationError as e:
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
-            error_msg = (
-                f"Schema validation failed at {path}: {e.message}"
-            )
+            error_msg = f"Schema validation failed at {path}: {e.message}"
             if file_path:
                 error_msg = f"{file_path}: {error_msg}"
             errors.append(error_msg)

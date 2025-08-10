@@ -1,14 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Room Schema",
-  "description": "Schema for validating regular room definitions in the MythosMUD world",
+  "title": "Unified Room Schema",
+  "description": "Schema for validating room definitions in the MythosMUD world with unified naming schema support",
   "type": "object",
   "required": ["id", "name", "description", "plane", "zone", "sub_zone", "exits"],
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9_]+_room_[a-z0-9_]+_[0-9]{3}$",
-      "description": "Room identifier following the pattern: {plane}_{zone}_{sub_zone}_room_{street}_{number:03d}"
+      "description": "Room identifier following unified naming schema patterns"
     },
     "name": {
       "type": "string",
@@ -240,5 +239,31 @@
       "description": "Optional field for future extensibility (NPCs, items, effects)"
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "id": {
+            "pattern": "^[a-z0-9_]+_room_[a-z0-9_]+_[0-9]{3}$"
+          }
+        }
+      },
+      "then": {
+        "description": "Regular room validation"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "id": {
+            "pattern": "^[a-z0-9_]+_intersection_[a-z0-9_]+_[a-z0-9_]+$"
+          }
+        }
+      },
+      "then": {
+        "description": "Intersection room validation"
+      }
+    }
+  ]
 }

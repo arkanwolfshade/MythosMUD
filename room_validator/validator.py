@@ -57,7 +57,7 @@ def main(
         # Initialize components
         reporter = Reporter(use_colors=not no_colors)
         room_loader = RoomLoader(base_path)
-        schema_validator = SchemaValidator()
+        schema_validator = SchemaValidator("room_validator/schemas/unified_room_schema.json")
         path_validator = PathValidator(schema_validator)
         fixer = RoomFixer(base_path) if fix else None
 

@@ -1,51 +1,51 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Room Schema",
-  "description": "Schema for validating regular room definitions in the MythosMUD world",
+  "title": "Intersection Schema",
+  "description": "Schema for validating intersection room definitions in the MythosMUD world",
   "type": "object",
   "required": ["id", "name", "description", "plane", "zone", "sub_zone", "exits"],
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9_]+_room_[a-z0-9_]+_[0-9]{3}$",
-      "description": "Room identifier following the pattern: {plane}_{zone}_{sub_zone}_room_{street}_{number:03d}"
+      "pattern": "^[a-z0-9_]+_intersection_[a-z0-9_]+_[a-z0-9_]+$",
+      "description": "Intersection identifier following the pattern: {plane}_{zone}_{sub_zone}_intersection_{street_a}_{street_b}"
     },
     "name": {
       "type": "string",
       "minLength": 1,
       "maxLength": 200,
-      "description": "Human-readable room name"
+      "description": "Human-readable intersection name"
     },
     "description": {
       "type": "string",
       "minLength": 10,
       "maxLength": 2000,
-      "description": "Room description shown to players"
+      "description": "Intersection description shown to players"
     },
     "plane": {
       "type": "string",
       "pattern": "^[a-z0-9_]+$",
-      "description": "Plane identifier this room belongs to"
+      "description": "Plane identifier this intersection belongs to"
     },
     "zone": {
       "type": "string",
       "pattern": "^[a-z0-9_]+$",
-      "description": "Zone identifier this room belongs to"
+      "description": "Zone identifier this intersection belongs to"
     },
     "sub_zone": {
       "type": "string",
       "pattern": "^[a-z0-9_]+$",
-      "description": "Sub-zone identifier this room belongs to"
+      "description": "Sub-zone identifier this intersection belongs to"
     },
     "environment": {
       "type": "string",
       "enum": ["indoors", "outdoors", "underwater"],
       "default": "outdoors",
-      "description": "Environmental classification for this room"
+      "description": "Environmental classification for this intersection"
     },
     "exits": {
       "type": "object",
-      "description": "Room exits to other locations",
+      "description": "Intersection exits to other locations",
       "properties": {
         "north": {
           "oneOf": [
