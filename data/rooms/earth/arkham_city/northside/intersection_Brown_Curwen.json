@@ -1,0 +1,16 @@
+{
+  "id": "earth_arkham_city_northside_Brown_Curwen",
+  "name": "Brown St and W. Curwen St Intersection",
+  "description": "The intersection where Brown Street meets W. Curwen Street.",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_Curwen_St_010",
+    "west": "earth_arkham_city_northside_Curwen_St_009",
+    "up": null,
+    "down": null
+  }
+}

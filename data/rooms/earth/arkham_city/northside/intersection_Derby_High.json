@@ -7,8 +7,8 @@
   "sub_zone": "northside",
   "environment": "outdoors",
   "exits": {
-    "north": null,
-    "south": null,
+    "north": "earth_arkham_city_northside_High_Ln_002",
+    "south": "earth_arkham_city_northside_High_Ln_003",
     "east": "earth_arkham_city_northside_Derby_St_001",
     "west": null,
     "up": null,
