@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Room Graph - Arkham City</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        .stat-label {
+            color: #b0b0b0;
+            margin-top: 5px;
+        }
+        .visualization {
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .control-group label {
+            color: #b0b0b0;
+        }
+        .control-group select, .control-group input {
+            background: #404040;
+            border: 1px solid #555;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        .legend-text {
+            color: #b0b0b0;
+        }
+        .room-list {
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .room-item {
+            background: #404040;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #4ecdc4;
+        }
+        .room-name {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .room-id {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .room-exits {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .intersection-item {
+            background: #404040;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #ffd93d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Simple Room Graph - Arkham City</h1>
+            <p>A simplified visualization focusing only on rooms and their connections</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">58</div>
+                <div class="stat-label">Rooms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Intersections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">139</div>
+                <div class="stat-label">Connections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">78</div>
+                <div class="stat-label">Total Nodes</div>
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <div class="controls">
+                <div class="control-group">
+                    <label for="node-type-filter">Filter by Type:</label>
+                    <select id="node-type-filter">
+                        <option value="">All Types</option>
+                        <option value="room">Rooms Only</option>
+                        <option value="intersection">Intersections Only</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="show-labels">Show Labels:</label>
+                    <input type="checkbox" id="show-labels" checked>
+                </div>
+            </div>
+            
+            <div id="graph-container" style="width: 100%; height: 600px; border: 1px solid #404040; border-radius: 4px;"></div>
+            
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background-color: #4ecdc4"></div><div class="legend-text">Rooms</div></div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #ffd93d"></div><div class="legend-text">Intersections</div></div>
+            </div>
+        </div>
+        
+        <div class="room-list">
+            <h2>📋 All Rooms and Intersections</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>Rooms (58)</h3>
+                    <div class="room-item"><div class="room-name">Boundary Street - Near Crane Intersection</div><div class="room-id">earth_arkham_city_campus_room_boundary_st_001</div></div>
+<div class="room-item"><div class="room-name">Boundary Street - Campus Perimeter</div><div class="room-id">earth_arkham_city_campus_room_boundary_st_002</div></div>
+<div class="room-item"><div class="room-name">Crane Street - Academic Quarter</div><div class="room-id">earth_arkham_city_campus_room_crane_st_001</div></div>
+<div class="room-item"><div class="room-name">Crane Street - Library District</div><div class="room-id">earth_arkham_city_campus_room_crane_st_002</div></div>
+<div class="room-item"><div class="room-name">E. Curwen Street - Commercial District</div><div class="room-id">earth_arkham_city_downtown_room_curwen_st_017</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_001</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_002</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_003</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_004</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_005</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_006</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_007</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_008</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_009</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_010</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_011</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_012</div></div>
+<div class="room-item"><div class="room-name">E. Derby Street</div><div class="room-id">earth_arkham_city_downtown_room_derby_st_013</div></div>
+<div class="room-item"><div class="room-name">Peabody Avenue - Downtown Section</div><div class="room-id">earth_arkham_city_downtown_room_peabody_ave_006</div></div>
+<div class="room-item"><div class="room-name">W. Pickman Street - Dangerous Quarter</div><div class="room-id">earth_arkham_city_lower_southside_room_w_pickman_st_003</div></div>
+<div class="room-item"><div class="room-name">E. Pickman Street - Merchant Quarter</div><div class="room-id">earth_arkham_city_merchant_room_e_pickman_st_001</div></div>
+<div class="room-item"><div class="room-name">Peabody Avenue - Market District</div><div class="room-id">earth_arkham_city_merchant_room_peabody_ave_001</div></div>
+<div class="room-item"><div class="room-name">Apple Lane - Residential Section</div><div class="room-id">earth_arkham_city_northside_room_apple_ln_003</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Near High Lane</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_001</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Middle Section</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_009</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Near Brown Street</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_010</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Near Jenkins Street</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_011</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Eastern Section</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_012</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Near Gedney Street</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_014</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Eastern End</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_015</div></div>
+<div class="room-item"><div class="room-name">W. Curwen Street - Northern Section</div><div class="room-id">earth_arkham_city_northside_room_curwen_st_016</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_001</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_002</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_003</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_004</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_005</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_006</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_007</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_008</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_009</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_010</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_011</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_012</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_013</div></div>
+<div class="room-item"><div class="room-name">W. Derby Street</div><div class="room-id">earth_arkham_city_northside_room_derby_st_014</div></div>
+<div class="room-item"><div class="room-name">N. Garrison Street - Northern Section</div><div class="room-id">earth_arkham_city_northside_room_garrison_st_002</div></div>
+<div class="room-item"><div class="room-name">N. Garrison Street - Middle Section</div><div class="room-id">earth_arkham_city_northside_room_garrison_st_003</div></div>
+<div class="room-item"><div class="room-name">N. Garrison Street - Southern Section</div><div class="room-id">earth_arkham_city_northside_room_garrison_st_004</div></div>
+<div class="room-item"><div class="room-name">N. Garrison Street - Downtown Transition</div><div class="room-id">earth_arkham_city_northside_room_garrison_st_005</div></div>
+<div class="room-item"><div class="room-name">Gedney Street - Residential Quarter</div><div class="room-id">earth_arkham_city_northside_room_gedney_st_001</div></div>
+<div class="room-item"><div class="room-name">High Lane - Northern End</div><div class="room-id">earth_arkham_city_northside_room_high_ln_001</div></div>
+<div class="room-item"><div class="room-name">High Lane - Near Derby Intersection</div><div class="room-id">earth_arkham_city_northside_room_high_ln_002</div></div>
+<div class="room-item"><div class="room-name">High Lane - Derby Intersection South</div><div class="room-id">earth_arkham_city_northside_room_high_ln_003</div></div>
+<div class="room-item"><div class="room-name">High Lane - Middle Section</div><div class="room-id">earth_arkham_city_northside_room_high_ln_004</div></div>
+<div class="room-item"><div class="room-name">High Lane - Southern Middle</div><div class="room-id">earth_arkham_city_northside_room_high_ln_005</div></div>
+<div class="room-item"><div class="room-name">High Lane - Near Curwen Intersection</div><div class="room-id">earth_arkham_city_northside_room_high_ln_006</div></div>
+<div class="room-item"><div class="room-name">High Lane - Curwen Intersection North</div><div class="room-id">earth_arkham_city_northside_room_high_ln_007</div></div>
+<div class="room-item"><div class="room-name">High Lane - Southern End</div><div class="room-id">earth_arkham_city_northside_room_high_ln_008</div></div>
+                </div>
+                <div>
+                    <h3>Intersections (20)</h3>
+                    <div class="intersection-item"><div class="room-name">Apple and Derby Intersection</div><div class="room-id">earth_arkham_city_intersection_apple_derby</div></div>
+<div class="intersection-item"><div class="room-name">Apple and High Street Intersection</div><div class="room-id">earth_arkham_city_intersection_apple_high</div></div>
+<div class="intersection-item"><div class="room-name">Boundary and Crane Intersection</div><div class="room-id">earth_arkham_city_intersection_boundary_crane</div></div>
+<div class="intersection-item"><div class="room-name">Brown St and W. Curwen St Intersection</div><div class="room-id">earth_arkham_city_intersection_brown_curwen</div></div>
+<div class="intersection-item"><div class="room-name">Brown and Derby Street Intersection</div><div class="room-id">earth_arkham_city_intersection_brown_derby</div></div>
+<div class="intersection-item"><div class="room-name">W. Curwen and N. Garrison Street Intersection</div><div class="room-id">earth_arkham_city_intersection_curwen_garrison</div></div>
+<div class="intersection-item"><div class="room-name">W. Curwen and Gedney Street Intersection</div><div class="room-id">earth_arkham_city_intersection_curwen_gedney</div></div>
+<div class="intersection-item"><div class="room-name">W. Curwen and High Lane Intersection</div><div class="room-id">earth_arkham_city_intersection_curwen_high</div></div>
+<div class="intersection-item"><div class="room-name">W. Curwen and Jenkins St Intersection</div><div class="room-id">earth_arkham_city_intersection_curwen_jenkins</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Dyer Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_dyer</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Federal Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_federal</div></div>
+<div class="intersection-item"><div class="room-name">Derby and N. Garrison Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_garrison</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Gedney Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_gedney</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Halsey Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_halsey</div></div>
+<div class="intersection-item"><div class="room-name">W. Derby and High Lane Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_high</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Jenkins Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_jenkins</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Mass Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_mass</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Noyes Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_noyes</div></div>
+<div class="intersection-item"><div class="room-name">Derby and Peabody Street Intersection</div><div class="room-id">earth_arkham_city_intersection_derby_peabody</div></div>
+<div class="intersection-item"><div class="room-name">Peabody and Pickman Intersection</div><div class="room-id">earth_arkham_city_intersection_peabody_pickman</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const nodes = [
+        {
+                "id": "earth_arkham_city_campus_room_boundary_st_001",
+                "name": "Boundary Street - Near Crane Intersection",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_campus_room_boundary_st_002",
+                "name": "Boundary Street - Campus Perimeter",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_campus_room_crane_st_001",
+                "name": "Crane Street - Academic Quarter",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_campus_room_crane_st_002",
+                "name": "Crane Street - Library District",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_curwen_st_017",
+                "name": "E. Curwen Street - Commercial District",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_001",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_002",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_003",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_004",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_005",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_006",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_007",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_008",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_009",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_010",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_011",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_012",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_derby_st_013",
+                "name": "E. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_downtown_room_peabody_ave_006",
+                "name": "Peabody Avenue - Downtown Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_lower_southside_room_w_pickman_st_003",
+                "name": "W. Pickman Street - Dangerous Quarter",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_merchant_room_e_pickman_st_001",
+                "name": "E. Pickman Street - Merchant Quarter",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_merchant_room_peabody_ave_001",
+                "name": "Peabody Avenue - Market District",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_apple_ln_003",
+                "name": "Apple Lane - Residential Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_001",
+                "name": "W. Curwen Street - Near High Lane",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_009",
+                "name": "W. Curwen Street - Middle Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_010",
+                "name": "W. Curwen Street - Near Brown Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_011",
+                "name": "W. Curwen Street - Near Jenkins Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_012",
+                "name": "W. Curwen Street - Eastern Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_014",
+                "name": "W. Curwen Street - Near Gedney Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_015",
+                "name": "W. Curwen Street - Eastern End",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_curwen_st_016",
+                "name": "W. Curwen Street - Northern Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_001",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_002",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_003",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_004",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_005",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_006",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_007",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_008",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_009",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_010",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_011",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_012",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_013",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_derby_st_014",
+                "name": "W. Derby Street",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_garrison_st_002",
+                "name": "N. Garrison Street - Northern Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_garrison_st_003",
+                "name": "N. Garrison Street - Middle Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_garrison_st_004",
+                "name": "N. Garrison Street - Southern Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_garrison_st_005",
+                "name": "N. Garrison Street - Downtown Transition",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_gedney_st_001",
+                "name": "Gedney Street - Residential Quarter",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_001",
+                "name": "High Lane - Northern End",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_002",
+                "name": "High Lane - Near Derby Intersection",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_003",
+                "name": "High Lane - Derby Intersection South",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_004",
+                "name": "High Lane - Middle Section",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_005",
+                "name": "High Lane - Southern Middle",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_006",
+                "name": "High Lane - Near Curwen Intersection",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_007",
+                "name": "High Lane - Curwen Intersection North",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_northside_room_high_ln_008",
+                "name": "High Lane - Southern End",
+                "type": "room",
+                "color": "#4ecdc4"
+        },
+        {
+                "id": "earth_arkham_city_intersection_boundary_crane",
+                "name": "Boundary and Crane Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_curwen_garrison",
+                "name": "W. Curwen and N. Garrison Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_dyer",
+                "name": "Derby and Dyer Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_garrison",
+                "name": "Derby and N. Garrison Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_mass",
+                "name": "Derby and Mass Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_peabody",
+                "name": "Derby and Peabody Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_federal",
+                "name": "Derby and Federal Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_noyes",
+                "name": "Derby and Noyes Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_peabody_pickman",
+                "name": "Peabody and Pickman Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_apple_derby",
+                "name": "Apple and Derby Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_apple_high",
+                "name": "Apple and High Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_brown_curwen",
+                "name": "Brown St and W. Curwen St Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_brown_derby",
+                "name": "Brown and Derby Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_curwen_gedney",
+                "name": "W. Curwen and Gedney Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_curwen_high",
+                "name": "W. Curwen and High Lane Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_curwen_jenkins",
+                "name": "W. Curwen and Jenkins St Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_gedney",
+                "name": "Derby and Gedney Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_high",
+                "name": "W. Derby and High Lane Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_jenkins",
+                "name": "Derby and Jenkins Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        },
+        {
+                "id": "earth_arkham_city_intersection_derby_halsey",
+                "name": "Derby and Halsey Street Intersection",
+                "type": "intersection",
+                "color": "#ffd93d"
+        }
+];
+        const edges = [
+        {
+                "source": "earth_arkham_city_intersection_derby_dyer",
+                "target": "earth_arkham_city_downtown_derby_st_008",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_gedney",
+                "target": "earth_arkham_city_northside_gedney_st_001",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_apple_derby",
+                "target": "earth_arkham_city_northside_apple_ln_003",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_garrison_st_005",
+                "target": "earth_arkham_city_intersection_curwen_garrison",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_garrison_st_004",
+                "target": "earth_arkham_city_intersection_curwen_garrison",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_brown_derby",
+                "target": "earth_arkham_city_northside_derby_st_008",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_dyer",
+                "target": "earth_arkham_city_downtown_derby_st_009",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_005",
+                "target": "earth_arkham_city_northside_derby_st_004",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_peabody",
+                "target": "earth_arkham_city_downtown_derby_st_007",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_009",
+                "target": "earth_arkham_city_northside_derby_st_010",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_high",
+                "target": "earth_arkham_city_northside_derby_st_001",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_crane_st_002",
+                "target": "earth_arkham_city_campus_crane_st_001",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_016",
+                "target": "earth_arkham_city_intersection_curwen_garrison",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_high",
+                "target": "earth_arkham_city_northside_high_ln_007",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_garrison_st_003",
+                "target": "earth_arkham_city_intersection_derby_garrison",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_008",
+                "target": "earth_arkham_city_downtown_derby_st_007",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_boundary_st_001",
+                "target": "earth_arkham_city_intersection_boundary_crane",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_013",
+                "target": "earth_arkham_city_downtown_derby_st_012",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_013",
+                "target": "earth_arkham_city_northside_derby_st_014",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_boundary_st_002",
+                "target": "earth_arkham_city_intersection_boundary_crane",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_003",
+                "target": "earth_arkham_city_northside_derby_st_002",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_004",
+                "target": "earth_arkham_city_northside_derby_st_005",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_010",
+                "target": "earth_arkham_city_northside_derby_st_011",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_peabody_pickman",
+                "target": "earth_arkham_city_lower_southside_w_pickman_st_003",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_garrison",
+                "target": "earth_arkham_city_downtown_derby_st_001",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_002",
+                "target": "earth_arkham_city_northside_derby_st_001",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_merchant_room_peabody_ave_001",
+                "target": "earth_arkham_city_intersection_peabody_pickman",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_012",
+                "target": "earth_arkham_city_downtown_derby_st_011",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_brown_derby",
+                "target": "earth_arkham_city_northside_derby_st_009",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_004",
+                "target": "earth_arkham_city_intersection_apple_derby",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_001",
+                "target": "earth_arkham_city_northside_room_high_ln_002",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_005",
+                "target": "earth_arkham_city_downtown_derby_st_006",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_006",
+                "target": "earth_arkham_city_downtown_derby_st_005",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_crane_st_001",
+                "target": "earth_arkham_city_campus_crane_st_002",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_003",
+                "target": "earth_arkham_city_northside_room_high_ln_002",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_lower_southside_room_w_pickman_st_003",
+                "target": "earth_arkham_city_intersection_peabody_pickman",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_012",
+                "target": "earth_arkham_city_downtown_derby_st_013",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_006",
+                "target": "earth_arkham_city_northside_derby_st_005",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_mass",
+                "target": "earth_arkham_city_downtown_derby_st_013",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_004",
+                "target": "earth_arkham_city_downtown_derby_st_003",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_012",
+                "target": "earth_arkham_city_intersection_derby_gedney",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_013",
+                "target": "earth_arkham_city_intersection_derby_mass",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_gedney",
+                "target": "earth_arkham_city_northside_derby_st_012",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_010",
+                "target": "earth_arkham_city_intersection_derby_jenkins",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_002",
+                "target": "earth_arkham_city_downtown_derby_st_003",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_010",
+                "target": "earth_arkham_city_downtown_derby_st_011",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_002",
+                "target": "earth_arkham_city_northside_room_high_ln_001",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_007",
+                "target": "earth_arkham_city_northside_derby_st_006",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_001",
+                "target": "earth_arkham_city_intersection_curwen_high",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_006",
+                "target": "earth_arkham_city_intersection_derby_peabody",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_009",
+                "target": "earth_arkham_city_intersection_brown_derby",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_boundary_crane",
+                "target": "earth_arkham_city_campus_crane_st_002",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_010",
+                "target": "earth_arkham_city_intersection_brown_curwen",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_001",
+                "target": "earth_arkham_city_northside_derby_st_002",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_boundary_st_002",
+                "target": "earth_arkham_city_campus_boundary_st_001",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_peabody_pickman",
+                "target": "earth_arkham_city_merchant_peabody_ave_001",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_015",
+                "target": "earth_arkham_city_intersection_curwen_gedney",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_006",
+                "target": "earth_arkham_city_northside_derby_st_007",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_008",
+                "target": "earth_arkham_city_northside_derby_st_007",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_merchant_room_e_pickman_st_001",
+                "target": "earth_arkham_city_intersection_peabody_pickman",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_008",
+                "target": "earth_arkham_city_intersection_derby_dyer",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_014",
+                "target": "earth_arkham_city_northside_derby_st_013",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_garrison",
+                "target": "earth_arkham_city_northside_garrison_st_002",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_gedney",
+                "target": "earth_arkham_city_northside_gedney_st_001",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_004",
+                "target": "earth_arkham_city_northside_room_high_ln_005",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_013",
+                "target": "earth_arkham_city_intersection_derby_gedney",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_006",
+                "target": "earth_arkham_city_northside_room_high_ln_007",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_gedney",
+                "target": "earth_arkham_city_northside_curwen_st_014",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_011",
+                "target": "earth_arkham_city_downtown_derby_st_012",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_apple_derby",
+                "target": "earth_arkham_city_northside_derby_st_003",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_002",
+                "target": "earth_arkham_city_northside_room_high_ln_003",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_002",
+                "target": "earth_arkham_city_downtown_derby_st_001",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_peabody",
+                "target": "earth_arkham_city_downtown_derby_st_006",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_009",
+                "target": "earth_arkham_city_intersection_brown_curwen",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_014",
+                "target": "earth_arkham_city_intersection_curwen_gedney",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_boundary_crane",
+                "target": "earth_arkham_city_campus_boundary_st_001",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_crane_st_002",
+                "target": "earth_arkham_city_intersection_boundary_crane",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_curwen_st_017",
+                "target": "earth_arkham_city_intersection_curwen_garrison",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_011",
+                "target": "earth_arkham_city_northside_derby_st_010",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_boundary_crane",
+                "target": "earth_arkham_city_campus_crane_st_001",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_garrison",
+                "target": "earth_arkham_city_northside_garrison_st_004",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_002",
+                "target": "earth_arkham_city_northside_derby_st_003",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_003",
+                "target": "earth_arkham_city_downtown_derby_st_002",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_high",
+                "target": "earth_arkham_city_northside_high_ln_002",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_007",
+                "target": "earth_arkham_city_northside_room_high_ln_006",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_012",
+                "target": "earth_arkham_city_intersection_curwen_jenkins",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_garrison",
+                "target": "earth_arkham_city_northside_derby_st_014",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_001",
+                "target": "earth_arkham_city_intersection_derby_garrison",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_peabody_ave_006",
+                "target": "earth_arkham_city_intersection_peabody_pickman",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_007",
+                "target": "earth_arkham_city_northside_derby_st_008",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_peabody_pickman",
+                "target": "earth_arkham_city_downtown_peabody_ave_006",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_intersection_boundary_crane",
+                "target": "earth_arkham_city_campus_boundary_st_002",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_003",
+                "target": "earth_arkham_city_intersection_derby_high",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_garrison",
+                "target": "earth_arkham_city_downtown_curwen_st_017",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_garrison_st_002",
+                "target": "earth_arkham_city_intersection_derby_garrison",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_boundary_st_001",
+                "target": "earth_arkham_city_campus_boundary_st_002",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_high",
+                "target": "earth_arkham_city_northside_high_ln_003",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_001",
+                "target": "earth_arkham_city_downtown_derby_st_002",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_curwen_st_011",
+                "target": "earth_arkham_city_intersection_curwen_jenkins",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_011",
+                "target": "earth_arkham_city_downtown_derby_st_010",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_gedney",
+                "target": "earth_arkham_city_northside_derby_st_013",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_apple_ln_003",
+                "target": "earth_arkham_city_intersection_apple_derby",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_gedney_st_001",
+                "target": "earth_arkham_city_intersection_curwen_gedney",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_jenkins",
+                "target": "earth_arkham_city_northside_curwen_st_012",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_high",
+                "target": "earth_arkham_city_northside_curwen_st_001",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_008",
+                "target": "earth_arkham_city_intersection_curwen_high",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_014",
+                "target": "earth_arkham_city_intersection_derby_garrison",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_jenkins",
+                "target": "earth_arkham_city_northside_derby_st_010",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_009",
+                "target": "earth_arkham_city_downtown_derby_st_010",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_gedney",
+                "target": "earth_arkham_city_northside_curwen_st_015",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_004",
+                "target": "earth_arkham_city_intersection_derby_high",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_007",
+                "target": "earth_arkham_city_downtown_derby_st_008",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_001",
+                "target": "earth_arkham_city_intersection_derby_high",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_005",
+                "target": "earth_arkham_city_downtown_derby_st_004",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_005",
+                "target": "earth_arkham_city_northside_room_high_ln_004",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_003",
+                "target": "earth_arkham_city_intersection_apple_derby",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_009",
+                "target": "earth_arkham_city_intersection_derby_dyer",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_012",
+                "target": "earth_arkham_city_northside_derby_st_011",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_derby_garrison",
+                "target": "earth_arkham_city_northside_garrison_st_003",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_garrison",
+                "target": "earth_arkham_city_northside_curwen_st_016",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_010",
+                "target": "earth_arkham_city_downtown_derby_st_009",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_garrison",
+                "target": "earth_arkham_city_northside_garrison_st_005",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_006",
+                "target": "earth_arkham_city_northside_room_high_ln_005",
+                "direction": "north"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_008",
+                "target": "earth_arkham_city_intersection_brown_derby",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_007",
+                "target": "earth_arkham_city_intersection_derby_peabody",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_jenkins",
+                "target": "earth_arkham_city_northside_curwen_st_011",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_003",
+                "target": "earth_arkham_city_downtown_derby_st_004",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_010",
+                "target": "earth_arkham_city_northside_derby_st_009",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_007",
+                "target": "earth_arkham_city_intersection_curwen_high",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_downtown_room_derby_st_004",
+                "target": "earth_arkham_city_downtown_derby_st_005",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_campus_room_crane_st_001",
+                "target": "earth_arkham_city_intersection_boundary_crane",
+                "direction": "west"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_005",
+                "target": "earth_arkham_city_northside_derby_st_006",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_derby_st_011",
+                "target": "earth_arkham_city_northside_derby_st_012",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_peabody_pickman",
+                "target": "earth_arkham_city_merchant_e_pickman_st_001",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_curwen_high",
+                "target": "earth_arkham_city_northside_high_ln_008",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_brown_curwen",
+                "target": "earth_arkham_city_northside_curwen_st_010",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_intersection_apple_derby",
+                "target": "earth_arkham_city_northside_derby_st_004",
+                "direction": "east"
+        },
+        {
+                "source": "earth_arkham_city_northside_room_high_ln_005",
+                "target": "earth_arkham_city_northside_room_high_ln_006",
+                "direction": "south"
+        },
+        {
+                "source": "earth_arkham_city_intersection_brown_curwen",
+                "target": "earth_arkham_city_northside_curwen_st_009",
+                "direction": "west"
+        }
+];
+        
+        // Setup
+        const width = document.getElementById('graph-container').offsetWidth;
+        const height = 600;
+        
+        const svg = d3.select('#graph-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+        
+        const g = svg.append('g');
+        
+        // Create force simulation
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(edges).id(d => d.id).distance(100))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(30));
+        
+        // Create links
+        const link = g.append('g')
+            .selectAll('line')
+            .data(edges)
+            .enter().append('line')
+            .attr('stroke', '#666')
+            .attr('stroke-width', 1)
+            .attr('opacity', 0.6);
+        
+        // Create nodes
+        const node = g.append('g')
+            .selectAll('circle')
+            .data(nodes)
+            .enter().append('circle')
+            .attr('r', d => d.type === 'intersection' ? 8 : 6)
+            .attr('fill', d => d.color)
+            .attr('stroke', '#fff')
+            .attr('stroke-width', 2)
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended));
+        
+        // Create labels
+        const label = g.append('g')
+            .selectAll('text')
+            .data(nodes)
+            .enter().append('text')
+            .text(d => d.name.length > 20 ? d.name.substring(0, 20) + '...' : d.name)
+            .attr('font-size', '10px')
+            .attr('fill', '#fff')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.35em');
+        
+        // Update positions on simulation tick
+        simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+            
+            node
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y);
+            
+            label
+                .attr('x', d => d.x)
+                .attr('y', d => d.y);
+        });
+        
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+        
+        // Filtering functionality
+        function updateVisualization() {
+            const typeFilter = document.getElementById('node-type-filter').value;
+            const showLabels = document.getElementById('show-labels').checked;
+            
+            // Filter nodes
+            const filteredNodes = nodes.filter(node => {
+                const typeMatch = !typeFilter || node.type === typeFilter;
+                return typeMatch;
+            });
+            
+            const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
+            const filteredEdges = edges.filter(edge => 
+                filteredNodeIds.has(edge.source.id || edge.source) && 
+                filteredNodeIds.has(edge.target.id || edge.target)
+            );
+            
+            // Update simulation
+            simulation.nodes(filteredNodes);
+            simulation.force('link').links(filteredEdges);
+            simulation.alpha(1).restart();
+            
+            // Update visual elements
+            link.data(filteredEdges)
+                .join('line')
+                .attr('stroke', '#666')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.6);
+            
+            node.data(filteredNodes)
+                .join('circle')
+                .attr('r', d => d.type === 'intersection' ? 8 : 6)
+                .attr('fill', d => d.color)
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            label.data(filteredNodes)
+                .join('text')
+                .text(d => d.name.length > 20 ? d.name.substring(0, 20) + '...' : d.name)
+                .attr('font-size', '10px')
+                .attr('fill', '#fff')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .style('display', showLabels ? 'block' : 'none');
+        }
+        
+        // Add event listeners
+        document.getElementById('node-type-filter').addEventListener('change', updateVisualization);
+        document.getElementById('show-labels').addEventListener('change', updateVisualization);
+    </script>
+</body>
+</html>
