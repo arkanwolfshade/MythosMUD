@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_crane_st_001",
+  "name": "Crane Street - Academic Quarter",
+  "description": "A narrow street lined with imposing academic buildings whose windows seem to watch passersby with an almost sentient awareness. The air here is thick with the weight of accumulated knowledge, and the shadows cast by the Gothic architecture seem to contain secrets of their own. Students and faculty members move about with purposeful strides, their faces bearing the haunted expressions of those who have glimpsed truths that should remain hidden.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_campus_crane_st_002",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

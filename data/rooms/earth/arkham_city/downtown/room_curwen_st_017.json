@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_curwen_st_017",
+  "name": "E. Curwen Street - Commercial District",
+  "description": "A bustling commercial section of E. Curwen Street in downtown Arkham. The street is lined with shops, restaurants, and professional offices, their facades reflecting the constant activity of city life. The cobblestones are well-worn from the steady flow of foot traffic, and the air carries the mingled scents of commerce, coffee, and the faint aroma of something more arcane that lingers just beneath the surface of everyday life.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

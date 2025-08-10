@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_garrison_st_003",
+  "name": "N. Garrison Street - Middle Section",
+  "description": "A middle section of N. Garrison Street where the residential district maintains its stately character. The houses here have an almost aristocratic quality, with tall windows and ornate facades that seem to watch passersby with a quiet dignity. The street is wide and well-lit, but the shadows cast by the architecture seem to contain secrets of their own.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

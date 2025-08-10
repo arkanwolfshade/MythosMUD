@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_merchant_peabody_ave_001",
+  "name": "Peabody Avenue - Market District",
+  "description": "A bustling commercial street in the merchant district where shopkeepers hawk their wares from storefronts that seem to change location when one isn't looking directly at them. The street is always crowded with merchants and customers, but the faces blur together in a way that suggests they might not all be entirely human. The air carries the mingled scents of spices, leather, and something more exotic that lingers just beyond the threshold of normal commerce.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "merchant",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_garrison_st_002",
+  "name": "N. Garrison Street - Northern Section",
+  "description": "A northern section of N. Garrison Street where the residential district takes on a slightly more imposing character. The houses here are larger and more stately, with wrought-iron fences and manicured gardens that seem to hide secrets of their own. The cobblestones are well-maintained, and the air carries the faint scent of roses and something more arcane that lingers just beyond perception.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}
