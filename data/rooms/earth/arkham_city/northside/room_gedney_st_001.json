@@ -7,7 +7,7 @@
   "sub_zone": "northside",
   "environment": "outdoors",
   "exits": {
-    "north": null,
+    "north": "earth_arkham_city_intersection_curwen_gedney",
     "south": null,
     "east": null,
     "west": null,

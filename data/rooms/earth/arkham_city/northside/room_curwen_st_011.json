@@ -9,7 +9,7 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": null,
+    "east": "earth_arkham_city_intersection_curwen_jenkins",
     "west": null,
     "up": null,
     "down": null

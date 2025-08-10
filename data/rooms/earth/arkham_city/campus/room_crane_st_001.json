@@ -10,7 +10,7 @@
     "north": null,
     "south": null,
     "east": "earth_arkham_city_campus_crane_st_002",
-    "west": null,
+    "west": "earth_arkham_city_intersection_boundary_crane",
     "up": null,
     "down": null
   }

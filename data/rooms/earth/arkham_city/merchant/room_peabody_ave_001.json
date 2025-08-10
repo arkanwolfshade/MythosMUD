@@ -7,7 +7,7 @@
   "sub_zone": "merchant",
   "environment": "outdoors",
   "exits": {
-    "north": null,
+    "north": "earth_arkham_city_intersection_peabody_pickman",
     "south": null,
     "east": null,
     "west": null,

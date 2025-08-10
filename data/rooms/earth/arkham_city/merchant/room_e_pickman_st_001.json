@@ -10,7 +10,7 @@
     "north": null,
     "south": null,
     "east": null,
-    "west": null,
+    "west": "earth_arkham_city_intersection_peabody_pickman",
     "up": null,
     "down": null
   }

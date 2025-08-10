@@ -9,7 +9,7 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": null,
+    "east": "earth_arkham_city_intersection_curwen_gedney",
     "west": null,
     "up": null,
     "down": null

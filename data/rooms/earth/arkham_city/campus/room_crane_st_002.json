@@ -9,7 +9,7 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": null,
+    "east": "earth_arkham_city_intersection_boundary_crane",
     "west": "earth_arkham_city_campus_crane_st_001",
     "up": null,
     "down": null
