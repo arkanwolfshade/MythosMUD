@@ -55,6 +55,7 @@ class TestComprehensiveMovement:
             "room4": room4,
         }.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -101,6 +102,7 @@ class TestComprehensiveMovement:
             room_id
         )
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -134,8 +136,11 @@ class TestComprehensiveMovement:
 
         # Create multiple players
         mock_player1 = Mock()
+        mock_player1.player_id = "player1"
         mock_player2 = Mock()
+        mock_player2.player_id = "player2"
         mock_player3 = Mock()
+        mock_player3.player_id = "player3"
         mock_persistence.get_player.side_effect = lambda player_id: {
             "player1": mock_player1,
             "player2": mock_player2,
@@ -186,7 +191,9 @@ class TestComprehensiveMovement:
         # Create multiple players
         mock_players = {}
         for i in range(5):
-            mock_players[f"player{i}"] = Mock()
+            mock_player = Mock()
+            mock_player.player_id = f"player{i}"
+            mock_players[f"player{i}"] = mock_player
 
         mock_persistence.get_player.side_effect = lambda player_id: mock_players.get(player_id)
 
@@ -247,6 +254,7 @@ class TestComprehensiveMovement:
         mock_persistence = Mock()
         mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -282,6 +290,7 @@ class TestComprehensiveMovement:
         mock_persistence = Mock()
         mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -388,6 +397,7 @@ class TestComprehensiveMovement:
         mock_persistence = Mock()
         mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -429,6 +439,7 @@ class TestComprehensiveMovement:
         mock_persistence = Mock()
         mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
@@ -468,6 +479,7 @@ class TestComprehensiveMovement:
         mock_persistence = Mock()
         mock_persistence.get_room.side_effect = lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
         mock_player = Mock()
+        mock_player.player_id = "player1"  # Set the player_id attribute
         mock_persistence.get_player.return_value = mock_player
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):

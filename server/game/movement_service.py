@@ -58,7 +58,7 @@ class MovementService:
         - Durability: Changes are persisted
 
         Args:
-            player_id: The ID of the player to move
+            player_id: The ID of the player to move (can be player_id or player name)
             from_room_id: The ID of the room the player is leaving
             to_room_id: The ID of the room the player is entering
 
@@ -87,13 +87,24 @@ class MovementService:
 
         with self._lock:
             try:
-                # Step 1: Validate the move
-                if not self._validate_movement(player_id, from_room_id, to_room_id):
+                # Step 1: Resolve the player (by ID or name)
+                player = self._persistence.get_player(player_id) or self._persistence.get_player_by_name(player_id)
+                if not player:
+                    self._logger.error(f"Player not found: {player_id}")
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
-                # Step 2: Get the rooms
+                # Use the resolved player ID consistently
+                resolved_player_id = player.player_id
+
+                # Step 2: Validate the move
+                if not self._validate_movement(resolved_player_id, from_room_id, to_room_id):
+                    duration_ms = (time.time() - start_time) * 1000
+                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
+                    return False
+
+                # Step 3: Get the rooms
                 from_room = self._persistence.get_room(from_room_id)
                 to_room = self._persistence.get_room(to_room_id)
 
@@ -109,36 +120,31 @@ class MovementService:
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
-                # Step 3: Verify player is in the from_room
-                if not from_room.has_player(player_id):
-                    self._logger.error(f"Player {player_id} not in room {from_room_id}")
+                # Step 4: Verify player is in the from_room
+                if not from_room.has_player(resolved_player_id):
+                    self._logger.error(f"Player {resolved_player_id} not in room {from_room_id}")
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
-                # Step 4: Perform the atomic move
-                self._logger.info(f"Moving player {player_id} from {from_room_id} to {to_room_id}")
+                # Step 5: Perform the atomic move
+                self._logger.info(f"Moving player {resolved_player_id} from {from_room_id} to {to_room_id}")
 
                 # Remove from old room
-                from_room.player_left(player_id)
+                from_room.player_left(resolved_player_id)
 
                 # Add to new room
-                to_room.player_entered(player_id)
+                to_room.player_entered(resolved_player_id)
 
                 # Update player's room in persistence
-                # Note: WebSocket paths currently identify players by username.
-                # To ensure durability regardless of identifier form, resolve by
-                # either player_id (UUID) or, if not found, by player name.
-                player = self._persistence.get_player(player_id) or self._persistence.get_player_by_name(player_id)
-                if player:
-                    player.current_room_id = to_room_id
-                    self._persistence.save_player(player)
+                player.current_room_id = to_room_id
+                self._persistence.save_player(player)
 
                 # Record successful movement
                 duration_ms = (time.time() - start_time) * 1000
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
 
-                self._logger.info(f"Successfully moved player {player_id} to {to_room_id}")
+                self._logger.info(f"Successfully moved player {resolved_player_id} to {to_room_id}")
                 return True
 
             except Exception as e:

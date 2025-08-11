@@ -379,31 +379,31 @@ class TestCommandProcessing:
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
 
-        # Mock the persistence layer
+        # Create mock app with persistence
         mock_app = Mock()
-        mock_app.state.persistence = Mock()
-        mock_persistence = mock_app.state.persistence
+        mock_persistence = Mock()
+        mock_app.state.persistence = mock_persistence
 
+        # Create test player
         mock_player = Mock()
         mock_player.current_room_id = "test_room"
         mock_player.player_id = "testplayer"
         mock_persistence.get_player_by_name.return_value = mock_player
 
-        mock_room = Room(
-            {"id": "test_room", "name": "Test Room", "description": "A mysterious room.", "exits": {"north": "room_2"}}
-        )
+        # Create test rooms
+        mock_room = Mock()
+        mock_room.exits = {"north": "room_2"}
+        mock_room.name = "Test Room"
+        mock_room.description = "A mysterious room."
 
-        mock_target_room = Room(
-            {
-                "id": "room_2",
-                "name": "North Room",
-                "description": "A northern chamber.",
-                "exits": {"south": "test_room"},
-            }
-        )
+        mock_target_room = Mock()
+        mock_target_room.name = "North Room"
+        mock_target_room.description = "A northern chamber"
+        mock_target_room.exits = {"south": "test_room"}
 
-        # Add player to the starting room
-        mock_room.player_entered("testplayer")
+        # Configure room mocks to track players
+        mock_room.has_player.return_value = True
+        mock_target_room.has_player.return_value = False
 
         # Mock get_room to return the appropriate room based on room_id
         def mock_get_room(room_id):

@@ -320,17 +320,56 @@ class PersistenceLayer:
 
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> Room | None:
-        """Get a room by ID from the cache."""
+        """Get a room by ID from the cache and sync with database state."""
         # First try direct lookup
+        room = None
         if room_id in self._room_cache:
-            return self._room_cache[room_id]
-
-        # If not found, check if it's an old ID that maps to a new one
-        if room_id in self._room_mappings:
+            room = self._room_cache[room_id]
+        elif room_id in self._room_mappings:
+            # If not found, check if it's an old ID that maps to a new one
             new_room_id = self._room_mappings[room_id]
-            return self._room_cache.get(new_room_id)
+            room = self._room_cache.get(new_room_id)
+
+        if room:
+            # Sync the room's player state with the database
+            self._sync_room_players(room)
+            return room
 
         return None
+
+    def _sync_room_players(self, room: Room) -> None:
+        """
+        Sync a room's in-memory player state with the database.
+
+        This ensures that the Room object's _players set reflects the actual
+        players currently in that room according to the database.
+
+        Args:
+            room: The Room object to sync
+        """
+        try:
+            # Get all players currently in this room from the database
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute("SELECT player_id FROM players WHERE current_room_id = ?", (room.id,)).fetchall()
+                db_player_ids = {row["player_id"] for row in rows}
+
+            # Get current in-memory player state
+            memory_player_ids = set(room.get_players())
+
+            # Add players that are in DB but not in memory
+            for player_id in db_player_ids - memory_player_ids:
+                room.player_entered(player_id)
+                self._log(f"Synced player {player_id} to room {room.id} from database")
+
+            # Remove players that are in memory but not in DB
+            for player_id in memory_player_ids - db_player_ids:
+                room.player_left(player_id)
+                self._log(f"Removed player {player_id} from room {room.id} (not in database)")
+
+        except Exception as e:
+            self._log(f"Error syncing room {room.id} players: {e}")
+            # Don't raise the exception - we want to continue even if sync fails
 
     def save_room(self, room: Room):
         """Save or update a room. Currently read-only - rooms are stored as JSON files."""
