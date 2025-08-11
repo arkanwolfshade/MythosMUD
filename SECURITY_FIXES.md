@@ -1,185 +1,126 @@
-# MythosMUD Security Fixes Implementation
+# Security Fixes and Improvements
 
-## 🚨 CRITICAL SECURITY FIXES COMPLETED
+This document tracks security vulnerabilities that have been identified and fixed in the MythosMUD project.
 
-### 1. Hardcoded Secrets & Credentials ✅ FIXED
+## Fixed Issues
 
-**Issues Found:**
-- Hardcoded admin password in configuration files
-- Weak default secret key in auth_utils.py
-- Missing environment variable protection
+### 1. Stack Trace Exposure (CWE-209) - FIXED ✅
 
-**Fixes Implemented:**
-- ✅ Created `server/env.example` with proper environment variable template
-- ✅ Updated `.gitignore` to exclude all `.env*` files
-- ✅ Removed hardcoded admin passwords from config files
-- ✅ Made `MYTHOSMUD_SECRET_KEY` environment variable mandatory
-- ✅ Added environment variable validation in config_loader.py
+**Issue**: CodeQL alert #43 - Stack trace information could be exposed to external users
+**Location**: `server/error_handlers.py` line 71
+**Severity**: Medium
+**CWE**: CWE-209 - Information Exposure Through an Exception
 
-**Files Modified:**
-- `server/auth_utils.py` - Removed weak default secret key
-- `server/server_config.yaml` - Removed hardcoded admin password
-- `server/test_server_config.yaml` - Removed hardcoded admin password
-- `server/config_loader.py` - Added environment variable handling
-- `.gitignore` - Added comprehensive .env file exclusions
+**Root Cause**: The `create_error_response` function was exposing sensitive information including stack traces, file paths, and internal details when `include_details=True`.
 
-### 2. Authentication & Authorization Flaws ✅ FIXED
+**Fix Applied**:
+- Implemented comprehensive sanitization in `_sanitize_detail_value()` function
+- Added `_is_safe_detail_key()` to filter out sensitive detail keys
+- Added `_sanitize_context()` to clean error context information
+- Integrated **Bleach library** for HTML sanitization to prevent XSS
+- Added utility functions `sanitize_html_content()` and `sanitize_text_content()`
 
-**Issues Found:**
-- Missing authentication on critical player management endpoints
-- Unprotected player creation, modification, and deletion endpoints
+**Files Modified**:
+- `server/error_handlers.py` - Enhanced sanitization logic
+- `server/tests/test_error_handlers.py` - Added comprehensive tests
+- `pyproject.toml` - Added bleach dependency
 
-**Fixes Implemented:**
-- ✅ Added `Depends(get_current_user)` to all player management endpoints
-- ✅ Protected player creation endpoint
-- ✅ Protected player listing endpoint
-- ✅ Protected player retrieval endpoints
-- ✅ Protected player deletion endpoint
-- ✅ Protected all player modification endpoints (sanity, fear, corruption, etc.)
+**Security Improvements**:
+- Prevents exposure of stack traces, file paths, and internal system information
+- Blocks sensitive keys like "password", "secret", "file_path", "sql_query", etc.
+- Sanitizes HTML content to prevent XSS attacks
+- Limits output length to prevent information disclosure
+- Maintains safe, user-friendly error messages
 
-**Endpoints Secured:**
-- `POST /players` - Player creation
-- `GET /players` - Player listing
-- `GET /players/{player_id}` - Player retrieval
-- `GET /players/name/{player_name}` - Player retrieval by name
-- `DELETE /players/{player_id}` - Player deletion
-- `POST /players/{player_id}/sanity-loss` - Sanity modification
-- `POST /players/{player_id}/fear` - Fear modification
-- `POST /players/{player_id}/corruption` - Corruption modification
-- `POST /players/{player_id}/occult-knowledge` - Knowledge modification
-- `POST /players/{player_id}/heal` - Health modification
-- `POST /players/{player_id}/damage` - Damage modification
+**Testing**: 20 comprehensive tests added to verify sanitization works correctly
 
-### 3. SQL Injection Vulnerabilities ✅ VERIFIED SECURE
+### 2. GitHub Actions Token Permissions - FIXED ✅
 
-**Analysis Completed:**
-- ✅ No string concatenation in SQL queries found
-- ✅ All database operations use parameterized queries
-- ✅ SQLAlchemy ORM prevents injection attacks
-- ✅ No raw SQL queries with user input found
+**Issue**: Scorecard alert #46 - Token permissions not properly restricted
+**Location**: `.github/workflows/scorecards.yml`
+**Severity**: Medium
 
-### 4. Input Validation & Sanitization ✅ VERIFIED SECURE
+**Root Cause**: The `scorecards.yml` workflow was using `permissions: read-all` instead of the more restrictive `permissions: contents: read`.
 
-**Security Measures Found:**
-- ✅ FastAPI automatic request validation
-- ✅ Pydantic schema validation
-- ✅ Path traversal protection in security_utils.py
-- ✅ Secure filename validation
-- ✅ Input sanitization for file operations
+**Fix Applied**: Updated all workflows to use `permissions: contents: read` where appropriate.
 
-## ⚠️ HIGH PRIORITY FIXES IN PROGRESS
+**Files Modified**:
+- `.github/workflows/scorecards.yml` - Changed from `read-all` to `contents: read`
 
-### 5. Error Handling & Information Disclosure
+**Verification**: All workflows now have proper permission restrictions:
+- ✅ `ci.yml` - `permissions: contents: read`
+- ✅ `codeql.yml` - `permissions: contents: read`
+- ✅ `dependency-review.yml` - `permissions: contents: read`
+- ✅ `semgrep.yml` - `permissions: contents: read`
+- ✅ `scorecards.yml` - `permissions: contents: read` (updated)
 
-**Current Status:** ✅ SECURE
-- Error messages don't expose sensitive information
-- Proper HTTP status codes used
-- No stack traces exposed in production
+### 3. NPM Command Pinning - FIXED ✅
 
-### 6. Dependency Vulnerabilities ✅ IDENTIFIED
+**Issue**: Pinned-Dependencies alert #15 - npm command not pinned by hash
+**Location**: `.github/workflows/ci.yml` line 106
+**Severity**: Low
 
-**Critical Vulnerabilities Found:**
-- ✅ `python-multipart` < 0.0.18 - CVE-2024-53981 (Resource exhaustion)
-- ✅ `python-jose` 3.5.0 - CVE-2024-33664 (DoS via crafted JWE token)
-- ✅ `python-jose` 3.5.0 - CVE-2024-33663 (Algorithm confusion with ECDSA keys)
-- ✅ `ecdsa` 0.19.1 - CVE-2024-23342 (Minerva attack vulnerability)
-- ✅ `ecdsa` 0.19.1 - PVE-2024-64396 (Side-channel attack vulnerability)
-- ✅ `pyjwt` < 2.10.1 - CVE-2024-53861 (Partial comparison bypass)
+**Root Cause**: The `npm install` command was not pinned to a specific version.
 
-**Immediate Actions Required:**
-- ✅ Update `python-multipart` to >= 0.0.18
-- ✅ Update `python-jose` to latest version
-- ✅ Update `ecdsa` to latest version
-- ✅ Update `pyjwt` to >= 2.10.1
-- ✅ Test authentication system after updates
-- ✅ Implement automated dependency scanning
+**Fix Applied**: Updated Node.js setup to include specific npm version.
 
-**Status:** ✅ ALL CRITICAL VULNERABILITIES FIXED
-**Security Scan Result:** 0 vulnerabilities found, 8 ignored due to policy
+**Files Modified**:
+- `.github/workflows/ci.yml` - Added npm version specification
 
-## 🔧 MEDIUM PRIORITY FIXES PLANNED
+## Security Libraries Added
 
-### 7. Session Management
-- [ ] Implement secure session configuration
-- [ ] Add session timeout settings
-- [ ] Configure secure cookie settings
+### Bleach (HTML Sanitization)
+- **Version**: 6.2.0+
+- **Purpose**: HTML content sanitization to prevent XSS attacks
+- **Usage**: Integrated into error handling and general content sanitization
+- **Features**:
+  - Removes dangerous HTML tags and attributes
+  - Whitelist-based sanitization
+  - Link sanitization
+  - Text escaping
 
-### 8. Rate Limiting
-- [ ] Implement API rate limiting
-- [ ] Add brute force protection
-- [ ] Configure request throttling
+## Best Practices Implemented
 
-## 📋 SECURITY CHECKLIST
+### Error Handling Security
+1. **Information Exposure Prevention**: All error details are sanitized before user exposure
+2. **Pattern-Based Filtering**: Sensitive patterns are automatically redacted
+3. **Length Limiting**: Output is truncated to prevent information disclosure
+4. **HTML Sanitization**: All content is sanitized to prevent XSS
 
-### Environment Setup
-- [x] Create `.env` file from `env.example`
-- [x] Set `MYTHOSMUD_SECRET_KEY` to secure random value
-- [x] Set `MYTHOSMUD_ADMIN_PASSWORD` to secure value
-- [ ] Generate secure random keys for production
+### Workflow Security
+1. **Minimal Permissions**: All workflows use the least privileged permissions necessary
+2. **Dependency Pinning**: All external dependencies are pinned to specific versions
+3. **Security Scanning**: Multiple security tools integrated (CodeQL, Semgrep, Scorecards)
 
-### Production Deployment
-- [ ] Use HTTPS/SSL in production
-- [ ] Configure secure headers
-- [ ] Set up proper logging
-- [ ] Implement monitoring and alerting
+## Ongoing Security Measures
 
-### Code Quality
-- [ ] Fix remaining linting issues
-- [ ] Add comprehensive security tests
-- [ ] Implement automated security scanning
+### Automated Security Scanning
+- **CodeQL**: Static analysis for security vulnerabilities
+- **Semgrep**: Pattern-based security scanning
+- **Scorecards**: Security best practices assessment
+- **Dependency Review**: Vulnerability scanning for dependencies
 
-## 🎯 SUCCESS METRICS
+### Manual Security Reviews
+- Regular code reviews focusing on security
+- Input validation testing
+- Error handling verification
+- Permission model validation
 
-### Critical Fixes Status:
-- ✅ Zero hardcoded secrets in codebase
-- ✅ All critical endpoints require authentication
-- ✅ No SQL injection vulnerabilities
-- ✅ Proper input validation implemented
-- ✅ Secure error handling configured
+## Security Checklist
 
-### Next Steps:
-1. **Immediate (24-48 hours):**
-   - Fix remaining linting issues
-   - Run dependency vulnerability scan
-   - Test authentication on all endpoints
+- [x] Stack trace exposure prevention
+- [x] HTML content sanitization
+- [x] GitHub Actions permission restrictions
+- [x] Dependency version pinning
+- [x] Input validation
+- [x] Error handling sanitization
+- [x] Security testing coverage
+- [x] Documentation updates
 
-2. **Short-term (1 week):**
-   - Implement rate limiting
-   - Add comprehensive security tests
-   - Configure production security headers
+## Future Security Enhancements
 
-3. **Medium-term (2-3 weeks):**
-   - Set up automated security scanning
-   - Implement monitoring and alerting
-   - Complete security documentation
-
-## 🔐 SECURITY COMMANDS
-
-```bash
-# Generate secure secret key
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-
-# Check for dependency vulnerabilities
-pip audit
-
-# Run security tests
-pytest tests/ -v -k "security"
-
-# Lint code for security issues
-ruff check . --select S
-```
-
-## 📞 EMERGENCY CONTACTS
-
-If critical security issues are discovered:
-1. Immediately rotate any exposed credentials
-2. Review access logs for unauthorized access
-3. Update all environment variables
-4. Notify all users to change passwords
-5. Consider temporary service shutdown if necessary
-
----
-
-**Last Updated:** $(date)
-**Security Level:** CRITICAL FIXES COMPLETED ✅
-**Next Review:** 1 week from implementation
+1. **Rate Limiting**: Implement comprehensive rate limiting for all endpoints
+2. **Audit Logging**: Enhanced security event logging
+3. **Penetration Testing**: Regular security assessments
+4. **Security Headers**: Additional HTTP security headers
+5. **Content Security Policy**: CSP implementation for web interface

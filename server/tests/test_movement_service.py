@@ -15,6 +15,7 @@ import pytest
 
 from server.events import EventBus
 from server.game.movement_service import MovementService
+from server.models.player import Player
 from server.models.room import Room
 
 
@@ -39,31 +40,43 @@ class TestMovementService:
         assert service._event_bus is None
 
     def test_move_player_success(self):
-        """Test successful player movement between rooms."""
-        # Mock persistence and rooms
+        """Test successful player movement."""
+        # Create mock persistence layer
         mock_persistence = Mock()
-        mock_from_room = Mock(spec=Room)
-        mock_to_room = Mock(spec=Room)
-        mock_player = Mock()
 
-        # Setup mocks
-        mock_persistence.get_room.side_effect = lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(
-            room_id
+        # Create test player
+        player = Player(
+            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
         )
-        mock_persistence.get_player.return_value = mock_player
+
+        # Create test rooms
+        mock_from_room = Mock()
+        mock_to_room = Mock()
+
+        # Configure mocks
+        mock_persistence.get_player.return_value = player
+        mock_persistence.get_room.side_effect = lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
 
+        # Create movement service with mocked persistence
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
-            service = MovementService()
+            movement_service = MovementService()
 
-            result = service.move_player("player1", "room1", "room2")
+            # Move player
+            success = movement_service.move_player("test-player-123", "room1", "room2")
 
-            assert result is True
-            mock_from_room.player_left.assert_called_once_with("player1")
-            mock_to_room.player_entered.assert_called_once_with("player1")
-            mock_player.current_room_id = "room2"
-            mock_persistence.save_player.assert_called_once_with(mock_player)
+            # Verify movement was successful
+            assert success is True
+
+            # Verify player was removed from old room and added to new room
+            # Note: The service now uses the resolved player ID (player.player_id)
+            mock_from_room.player_left.assert_called_once_with("test-player-123")
+            mock_to_room.player_entered.assert_called_once_with("test-player-123")
+
+            # Verify player was saved with updated room
+            mock_persistence.save_player.assert_called_once_with(player)
+            assert player.current_room_id == "room2"
 
     def test_move_player_empty_player_id(self):
         """Test that empty player ID raises ValueError."""

@@ -28,6 +28,7 @@ dependencies = [
     "aiosqlite>=0.21.0",
     "pytest-asyncio>=0.24.0",
     "jsonschema>=4.21.0",
+    "bleach>=6.1.0",
 ]
 
 [project.optional-dependencies]
