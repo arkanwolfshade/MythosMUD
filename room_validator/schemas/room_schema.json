@@ -39,7 +39,7 @@
     },
     "environment": {
       "type": "string",
-      "enum": ["indoors", "outdoors", "underwater"],
+      "enum": ["indoors", "outdoors", "underwater", "street_paved", "street_cobblestone", "alley", "intersection", "plaza", "building_exterior", "building_interior", "institution", "residential", "commercial", "park", "cemetery", "waterfront", "hillside", "campus", "docks", "industrial", "abandoned"],
       "default": "outdoors",
       "description": "Environmental classification for this room"
     },

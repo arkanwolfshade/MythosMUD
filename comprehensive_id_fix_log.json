@@ -1,0 +1,372 @@
+{
+  "summary": {
+    "total_exits_checked": 474,
+    "fixes_made": 52
+  },
+  "fixes": [
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\intersection_boundary_crane.json",
+      "room_id": "earth_arkham_city_intersection_boundary_crane",
+      "direction": "north",
+      "old_id": "earth_arkham_city_campus_boundary_st_001",
+      "new_id": "earth_arkham_city_campus_room_boundary_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\intersection_boundary_crane.json",
+      "room_id": "earth_arkham_city_intersection_boundary_crane",
+      "direction": "south",
+      "old_id": "earth_arkham_city_campus_boundary_st_002",
+      "new_id": "earth_arkham_city_campus_room_boundary_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\intersection_boundary_crane.json",
+      "room_id": "earth_arkham_city_intersection_boundary_crane",
+      "direction": "east",
+      "old_id": "earth_arkham_city_campus_crane_st_001",
+      "new_id": "earth_arkham_city_campus_room_crane_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\intersection_boundary_crane.json",
+      "room_id": "earth_arkham_city_intersection_boundary_crane",
+      "direction": "west",
+      "old_id": "earth_arkham_city_campus_crane_st_002",
+      "new_id": "earth_arkham_city_campus_room_crane_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_boundary_st_001.json",
+      "room_id": "earth_arkham_city_campus_room_boundary_st_001",
+      "direction": "south",
+      "old_id": "earth_arkham_city_campus_boundary_st_002",
+      "new_id": "earth_arkham_city_campus_room_boundary_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_boundary_st_002.json",
+      "room_id": "earth_arkham_city_campus_room_boundary_st_002",
+      "direction": "south",
+      "old_id": "earth_arkham_city_campus_boundary_st_001",
+      "new_id": "earth_arkham_city_campus_room_boundary_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_crane_st_001.json",
+      "room_id": "earth_arkham_city_campus_room_crane_st_001",
+      "direction": "east",
+      "old_id": "earth_arkham_city_campus_crane_st_002",
+      "new_id": "earth_arkham_city_campus_room_crane_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_crane_st_002.json",
+      "room_id": "earth_arkham_city_campus_room_crane_st_002",
+      "direction": "west",
+      "old_id": "earth_arkham_city_campus_crane_st_001",
+      "new_id": "earth_arkham_city_campus_room_crane_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_curwen_garrison.json",
+      "room_id": "earth_arkham_city_intersection_curwen_garrison",
+      "direction": "north",
+      "old_id": "earth_arkham_city_northside_garrison_st_004",
+      "new_id": "earth_arkham_city_northside_room_garrison_st_004"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_curwen_garrison.json",
+      "room_id": "earth_arkham_city_intersection_curwen_garrison",
+      "direction": "south",
+      "old_id": "earth_arkham_city_northside_garrison_st_005",
+      "new_id": "earth_arkham_city_northside_room_garrison_st_005"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_curwen_garrison.json",
+      "room_id": "earth_arkham_city_intersection_curwen_garrison",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_curwen_st_017",
+      "new_id": "earth_arkham_city_downtown_room_curwen_st_017"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_curwen_garrison.json",
+      "room_id": "earth_arkham_city_intersection_curwen_garrison",
+      "direction": "west",
+      "old_id": "earth_arkham_city_northside_curwen_st_016",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_016"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_dyer.json",
+      "room_id": "earth_arkham_city_intersection_derby_dyer",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_009",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_009"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_dyer.json",
+      "room_id": "earth_arkham_city_intersection_derby_dyer",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_008",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_008"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_garrison.json",
+      "room_id": "earth_arkham_city_intersection_derby_garrison",
+      "direction": "north",
+      "old_id": "earth_arkham_city_northside_garrison_st_002",
+      "new_id": "earth_arkham_city_northside_room_garrison_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_garrison.json",
+      "room_id": "earth_arkham_city_intersection_derby_garrison",
+      "direction": "south",
+      "old_id": "earth_arkham_city_northside_garrison_st_003",
+      "new_id": "earth_arkham_city_northside_room_garrison_st_003"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_garrison.json",
+      "room_id": "earth_arkham_city_intersection_derby_garrison",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_001",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_mass.json",
+      "room_id": "earth_arkham_city_intersection_derby_mass",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_013",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_013"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_peabody.json",
+      "room_id": "earth_arkham_city_intersection_derby_peabody",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_007",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_007"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_peabody.json",
+      "room_id": "earth_arkham_city_intersection_derby_peabody",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_006",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_006"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_003.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_003",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_004",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_004"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_003.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_003",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_002",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_002"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_004.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_004",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_005",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_005"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_004.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_004",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_003",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_003"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_005.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_005",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_006",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_006"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_005.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_005",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_004",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_004"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_006.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_006",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_005",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_005"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_007.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_007",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_008",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_008"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_008.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_008",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_007",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_007"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_009.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_009",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_010",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_010"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_010.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_010",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_011",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_011"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_010.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_010",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_009",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_009"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_011.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_011",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_012",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_012"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_011.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_011",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_010",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_010"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_012.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_012",
+      "direction": "east",
+      "old_id": "earth_arkham_city_downtown_derby_st_013",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_013"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_012.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_012",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_011",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_011"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_013.json",
+      "room_id": "earth_arkham_city_downtown_room_derby_st_013",
+      "direction": "west",
+      "old_id": "earth_arkham_city_downtown_derby_st_012",
+      "new_id": "earth_arkham_city_downtown_room_derby_st_012"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\lower_southside\\intersection_peabody_pickman.json",
+      "room_id": "earth_arkham_city_intersection_peabody_pickman",
+      "direction": "north",
+      "old_id": "earth_arkham_city_downtown_peabody_ave_006",
+      "new_id": "earth_arkham_city_downtown_room_peabody_ave_006"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\lower_southside\\intersection_peabody_pickman.json",
+      "room_id": "earth_arkham_city_intersection_peabody_pickman",
+      "direction": "south",
+      "old_id": "earth_arkham_city_merchant_peabody_ave_001",
+      "new_id": "earth_arkham_city_merchant_room_peabody_ave_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\lower_southside\\intersection_peabody_pickman.json",
+      "room_id": "earth_arkham_city_intersection_peabody_pickman",
+      "direction": "east",
+      "old_id": "earth_arkham_city_merchant_e_pickman_st_001",
+      "new_id": "earth_arkham_city_merchant_room_e_pickman_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_apple_derby.json",
+      "room_id": "earth_arkham_city_intersection_apple_derby",
+      "direction": "north",
+      "old_id": "earth_arkham_city_northside_apple_ln_003",
+      "new_id": "earth_arkham_city_northside_room_apple_ln_003"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_brown_curwen.json",
+      "room_id": "earth_arkham_city_intersection_brown_curwen",
+      "direction": "east",
+      "old_id": "earth_arkham_city_northside_curwen_st_010",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_010"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_brown_curwen.json",
+      "room_id": "earth_arkham_city_intersection_brown_curwen",
+      "direction": "west",
+      "old_id": "earth_arkham_city_northside_curwen_st_009",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_009"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_gedney.json",
+      "room_id": "earth_arkham_city_intersection_curwen_gedney",
+      "direction": "south",
+      "old_id": "earth_arkham_city_northside_gedney_st_001",
+      "new_id": "earth_arkham_city_northside_room_gedney_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_gedney.json",
+      "room_id": "earth_arkham_city_intersection_curwen_gedney",
+      "direction": "east",
+      "old_id": "earth_arkham_city_northside_curwen_st_015",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_015"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_gedney.json",
+      "room_id": "earth_arkham_city_intersection_curwen_gedney",
+      "direction": "west",
+      "old_id": "earth_arkham_city_northside_curwen_st_014",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_014"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_high.json",
+      "room_id": "earth_arkham_city_intersection_curwen_high",
+      "direction": "north",
+      "old_id": "earth_arkham_city_northside_high_ln_007",
+      "new_id": "earth_arkham_city_northside_room_high_ln_007"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_high.json",
+      "room_id": "earth_arkham_city_intersection_curwen_high",
+      "direction": "south",
+      "old_id": "earth_arkham_city_northside_high_ln_008",
+      "new_id": "earth_arkham_city_northside_room_high_ln_008"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_high.json",
+      "room_id": "earth_arkham_city_intersection_curwen_high",
+      "direction": "east",
+      "old_id": "earth_arkham_city_northside_curwen_st_001",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_001"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_jenkins.json",
+      "room_id": "earth_arkham_city_intersection_curwen_jenkins",
+      "direction": "east",
+      "old_id": "earth_arkham_city_northside_curwen_st_012",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_012"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_jenkins.json",
+      "room_id": "earth_arkham_city_intersection_curwen_jenkins",
+      "direction": "west",
+      "old_id": "earth_arkham_city_northside_curwen_st_011",
+      "new_id": "earth_arkham_city_northside_room_curwen_st_011"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_derby_gedney.json",
+      "room_id": "earth_arkham_city_intersection_derby_gedney",
+      "direction": "south",
+      "old_id": "earth_arkham_city_northside_gedney_st_001",
+      "new_id": "earth_arkham_city_northside_room_gedney_st_001"
+    }
+  ]
+}

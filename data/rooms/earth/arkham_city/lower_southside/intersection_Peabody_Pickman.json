@@ -1,15 +1,15 @@
 {
-  "id": "earth_arkham_city_intersection_peabody_pickman",
+  "id": "earth_arkham_city_lower_southside_intersection_peabody_pickman",
   "name": "Peabody and Pickman Intersection",
   "description": "The intersection where Peabody Avenue meets Pickman Street, serving as a gateway between downtown and the merchant district. The street is lined with shops and businesses, and the air carries the scent of fresh bread from nearby bakeries. This is a popular spot for both locals and visitors.",
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "lower_southside",
-  "environment": "outdoors",
+  "environment": "intersection",
   "exits": {
-    "north": "earth_arkham_city_downtown_peabody_ave_006",
-    "south": "earth_arkham_city_merchant_peabody_ave_001",
-    "east": "earth_arkham_city_merchant_e_pickman_st_001",
+    "north": "earth_arkham_city_downtown_room_peabody_ave_006",
+    "south": "earth_arkham_city_merchant_room_peabody_ave_001",
+    "east": "earth_arkham_city_merchant_room_e_pickman_st_001",
     "west": "earth_arkham_city_lower_southside_w_pickman_st_003",
     "up": null,
     "down": null

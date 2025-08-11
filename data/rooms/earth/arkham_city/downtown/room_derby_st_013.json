@@ -5,12 +5,12 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "downtown",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
     "south": null,
-    "east": "earth_arkham_city_intersection_derby_mass",
-    "west": "earth_arkham_city_downtown_derby_st_012",
+    "east": "earth_arkham_city_downtown_intersection_derby_mass",
+    "west": "earth_arkham_city_downtown_room_derby_st_012",
     "up": null,
     "down": null
   }

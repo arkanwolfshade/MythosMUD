@@ -5,9 +5,9 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "merchant",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
-    "north": "earth_arkham_city_intersection_peabody_pickman",
+    "north": "earth_arkham_city_lower_southside_intersection_peabody_pickman",
     "south": null,
     "east": null,
     "west": null,

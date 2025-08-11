@@ -5,10 +5,10 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "downtown",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
-    "south": "earth_arkham_city_intersection_peabody_pickman",
+    "south": "earth_arkham_city_lower_southside_intersection_peabody_pickman",
     "east": null,
     "west": null,
     "up": null,

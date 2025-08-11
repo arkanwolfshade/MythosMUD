@@ -30,6 +30,8 @@ dependencies = [
     "jsonschema>=4.21.0",
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
+    "tcod>=19.4.0",
+    "rich>=14.1.0",
 ]
 
 [project.optional-dependencies]

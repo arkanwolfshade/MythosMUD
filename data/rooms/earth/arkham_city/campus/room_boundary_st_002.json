@@ -5,12 +5,12 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "campus",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
-    "south": "earth_arkham_city_campus_boundary_st_001",
+    "south": "earth_arkham_city_campus_room_boundary_st_001",
     "east": null,
-    "west": "earth_arkham_city_intersection_boundary_crane",
+    "west": "earth_arkham_city_campus_intersection_boundary_crane",
     "up": null,
     "down": null
   }

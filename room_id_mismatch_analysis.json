@@ -1,0 +1,15 @@
+{
+  "summary": {
+    "total_rooms": 79,
+    "unique_room_ids": 0,
+    "valid_exits": 0,
+    "null_exits": 0,
+    "mismatches": 0
+  },
+  "mismatch_patterns": {
+    "missing_room_prefix": [],
+    "extra_room_prefix": []
+  },
+  "null_exits": [],
+  "valid_exits": []
+}

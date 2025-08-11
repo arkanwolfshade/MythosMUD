@@ -92,8 +92,32 @@ DIRECTION_DELTAS: dict[str, Coord] = {
 }
 
 
-# Basic tile palette you can expand
+# MythosMUD-specific tile palette for urban Arkham City
 DEFAULT_TILE_MAP = {
+    # Urban Streets
+    "street_paved": {"glyph": "=", "fg": (128, 128, 128), "bg": (0, 0, 0)},
+    "street_cobblestone": {"glyph": "≈", "fg": (100, 100, 100), "bg": (0, 0, 0)},
+    "alley": {"glyph": "|", "fg": (80, 80, 80), "bg": (0, 0, 0)},
+    "intersection": {"glyph": "+", "fg": (150, 150, 150), "bg": (0, 0, 0)},
+    "plaza": {"glyph": "□", "fg": (120, 120, 120), "bg": (0, 0, 0)},
+    # Buildings
+    "building_exterior": {"glyph": "█", "fg": (139, 69, 19), "bg": (0, 0, 0)},
+    "building_interior": {"glyph": "▒", "fg": (160, 82, 45), "bg": (0, 0, 0)},
+    "institution": {"glyph": "▓", "fg": (105, 105, 105), "bg": (0, 0, 0)},
+    "residential": {"glyph": "░", "fg": (184, 134, 11), "bg": (0, 0, 0)},
+    "commercial": {"glyph": "▄", "fg": (139, 69, 19), "bg": (0, 0, 0)},
+    # Natural Areas
+    "park": {"glyph": "♠", "fg": (34, 139, 34), "bg": (0, 0, 0)},
+    "cemetery": {"glyph": "†", "fg": (169, 169, 169), "bg": (0, 0, 0)},
+    "waterfront": {"glyph": "~", "fg": (0, 0, 255), "bg": (0, 0, 0)},
+    "hillside": {"glyph": "^", "fg": (139, 69, 19), "bg": (0, 0, 0)},
+    # Special Areas
+    "campus": {"glyph": "♣", "fg": (0, 100, 0), "bg": (0, 0, 0)},
+    "docks": {"glyph": "⚓", "fg": (139, 69, 19), "bg": (0, 0, 0)},
+    "industrial": {"glyph": "⚙", "fg": (105, 105, 105), "bg": (0, 0, 0)},
+    "abandoned": {"glyph": "☠", "fg": (128, 128, 128), "bg": (0, 0, 0)},
+    # Legacy Support
+    "outdoors": {"glyph": ".", "fg": (100, 220, 100), "bg": (0, 0, 0)},
     "forest": {"glyph": ".", "fg": (0, 200, 0), "bg": (0, 0, 0)},
     "plains": {"glyph": ",", "fg": (100, 220, 100), "bg": (0, 0, 0)},
     "water": {"glyph": "~", "fg": (0, 0, 255), "bg": (0, 0, 0)},
@@ -119,12 +143,17 @@ class Room:
 def load_rooms_from_dir(rooms_dir: str) -> dict[RoomID, Room]:
     """Load all .json files in a directory and return a map of RoomID -> Room"""
     rooms: dict[RoomID, Room] = {}
-    for fname in sorted(glob.glob(os.path.join(rooms_dir, "*.json"))):
+    # Use recursive glob to find all JSON files in subdirectories
+    for fname in sorted(glob.glob(os.path.join(rooms_dir, "**/*.json"), recursive=True)):
         try:
             with open(fname, encoding="utf-8") as f:
                 data = json.load(f)
         except Exception as e:
             print(f"Failed to load {fname}: {e}")
+            continue
+
+        # Skip zone_config.json files as they're not rooms
+        if os.path.basename(fname) == "zone_config.json" or os.path.basename(fname) == "subzone_config.json":
             continue
 
         rid = data.get("id") or os.path.splitext(os.path.basename(fname))[0]
@@ -290,6 +319,8 @@ def build_tile_grid(
 
 
 def compute_bounds(grid: dict[Coord, Any]) -> tuple[int, int, int, int]:
+    if not grid:
+        return 0, 0, 0, 0
     xs = [x for x, y in grid.keys()]
     ys = [y for x, y in grid.keys()]
     return min(xs), max(xs), min(ys), max(ys)
@@ -311,12 +342,15 @@ def render_with_tcod(grid: dict[Coord, dict[str, Any]], title: str = "Map") -> N
     except Exception:
         # Fallback to builtin font if present
         try:
-            tileset = tcod.tileset.get_default()
+            tileset = tcod.tileset.load_tilesheet("dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
         except Exception:
-            tileset = None
+            try:
+                tileset = tcod.tileset.load_tilesheet("terminal.png", 16, 16, tcod.tileset.CHARMAP_TCOD)
+            except Exception:
+                tileset = None
 
-    with tcod.context.new_terminal(width, height, tileset=tileset, title=title, vsync=True) as context:
-        console = tcod.Console(width, height, order="F")
+    with tcod.context.new_terminal(columns=width, rows=height, tileset=tileset, title=title, vsync=True) as context:
+        console = tcod.console.Console(width, height, order="F")
         console.clear()
         for (x, y), tile in grid.items():
             cx = x - min_x

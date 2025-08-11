@@ -1,13 +1,13 @@
 {
-  "id": "earth_arkham_city_intersection_apple_derby",
+  "id": "earth_arkham_city_northside_intersection_apple_derby",
   "name": "Apple and Derby Intersection",
   "description": "The intersection where Apple Lane meets Derby Street. Victorian houses with steep gables and narrow windows line the corners, their dark facades broken only by the occasional flicker of candlelight behind drawn curtains. The cobblestones here seem to absorb sound.",
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "northside",
-  "environment": "outdoors",
+  "environment": "intersection",
   "exits": {
-    "north": "earth_arkham_city_northside_apple_ln_003",
+    "north": "earth_arkham_city_northside_room_apple_ln_003",
     "south": null,
     "east": "earth_arkham_city_northside_room_derby_st_004",
     "west": "earth_arkham_city_northside_room_derby_st_003",

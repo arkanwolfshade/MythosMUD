@@ -1,11 +1,11 @@
 {
-  "id": "earth_arkham_city_intersection_derby_mass",
+  "id": "earth_arkham_city_east_town_intersection_derby_mass",
   "name": "Derby and Mass Street Intersection",
   "description": "The intersection where E. Derby Street meets Mass Street",
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "east_town",
-  "environment": "outdoors",
+  "environment": "intersection",
   "exits": {
     "north": null,
     "south": null,

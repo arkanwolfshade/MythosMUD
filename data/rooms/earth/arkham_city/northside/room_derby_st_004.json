@@ -5,12 +5,12 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "northside",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
     "south": null,
     "east": "earth_arkham_city_northside_room_derby_st_005",
-    "west": "earth_arkham_city_intersection_apple_derby",
+    "west": "earth_arkham_city_northside_intersection_apple_derby",
     "up": null,
     "down": null
   }

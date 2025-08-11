@@ -1,0 +1,565 @@
+{
+  "summary": {
+    "total_processed": 79,
+    "updates_made": 79,
+    "environment_distribution": {
+      "intersection": 21,
+      "street_paved": 58
+    }
+  },
+  "updates": [
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\intersection_boundary_crane.json",
+      "id": "earth_arkham_city_intersection_boundary_crane",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_boundary_st_001.json",
+      "id": "earth_arkham_city_campus_room_boundary_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_boundary_st_002.json",
+      "id": "earth_arkham_city_campus_room_boundary_st_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_crane_st_001.json",
+      "id": "earth_arkham_city_campus_room_crane_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\campus\\room_crane_st_002.json",
+      "id": "earth_arkham_city_campus_room_crane_st_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_curwen_garrison.json",
+      "id": "earth_arkham_city_intersection_curwen_garrison",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_dyer.json",
+      "id": "earth_arkham_city_intersection_derby_dyer",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_garrison.json",
+      "id": "earth_arkham_city_intersection_derby_garrison",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_mass.json",
+      "id": "earth_arkham_city_intersection_derby_mass",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\intersection_derby_peabody.json",
+      "id": "earth_arkham_city_intersection_derby_peabody",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_curwen_st_017.json",
+      "id": "earth_arkham_city_downtown_room_curwen_st_017",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_001.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_002.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_003.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_004.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_004",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_005.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_005",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_006.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_006",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_007.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_007",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_008.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_008",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_009.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_009",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_010.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_010",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_011.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_011",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_012.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_012",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_derby_st_013.json",
+      "id": "earth_arkham_city_downtown_room_derby_st_013",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\downtown\\room_peabody_ave_006.json",
+      "id": "earth_arkham_city_downtown_room_peabody_ave_006",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\east_town\\intersection_derby_federal.json",
+      "id": "earth_arkham_city_intersection_derby_federal",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\east_town\\intersection_derby_mass.json",
+      "id": "earth_arkham_city_intersection_derby_mass",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\east_town\\intersection_derby_noyes.json",
+      "id": "earth_arkham_city_intersection_derby_noyes",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\lower_southside\\intersection_peabody_pickman.json",
+      "id": "earth_arkham_city_intersection_peabody_pickman",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\lower_southside\\room_w_pickman_st_003.json",
+      "id": "earth_arkham_city_lower_southside_room_w_pickman_st_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\merchant\\room_e_pickman_st_001.json",
+      "id": "earth_arkham_city_merchant_room_e_pickman_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\merchant\\room_peabody_ave_001.json",
+      "id": "earth_arkham_city_merchant_room_peabody_ave_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_apple_derby.json",
+      "id": "earth_arkham_city_intersection_apple_derby",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_apple_high.json",
+      "id": "earth_arkham_city_intersection_apple_high",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_brown_curwen.json",
+      "id": "earth_arkham_city_intersection_brown_curwen",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_brown_derby.json",
+      "id": "earth_arkham_city_intersection_brown_derby",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_gedney.json",
+      "id": "earth_arkham_city_intersection_curwen_gedney",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_high.json",
+      "id": "earth_arkham_city_intersection_curwen_high",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_curwen_jenkins.json",
+      "id": "earth_arkham_city_intersection_curwen_jenkins",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_derby_gedney.json",
+      "id": "earth_arkham_city_intersection_derby_gedney",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_derby_high.json",
+      "id": "earth_arkham_city_northside_intersection_derby_high",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\intersection_derby_jenkins.json",
+      "id": "earth_arkham_city_intersection_derby_jenkins",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_apple_ln_003.json",
+      "id": "earth_arkham_city_northside_room_apple_ln_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_001.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_009.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_009",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_010.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_010",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_011.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_011",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_012.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_012",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_014.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_014",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_015.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_015",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_curwen_st_016.json",
+      "id": "earth_arkham_city_northside_room_curwen_st_016",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_001.json",
+      "id": "earth_arkham_city_northside_room_derby_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_002.json",
+      "id": "earth_arkham_city_northside_room_derby_st_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_003.json",
+      "id": "earth_arkham_city_northside_room_derby_st_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_004.json",
+      "id": "earth_arkham_city_northside_room_derby_st_004",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_005.json",
+      "id": "earth_arkham_city_northside_room_derby_st_005",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_006.json",
+      "id": "earth_arkham_city_northside_room_derby_st_006",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_007.json",
+      "id": "earth_arkham_city_northside_room_derby_st_007",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_008.json",
+      "id": "earth_arkham_city_northside_room_derby_st_008",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_009.json",
+      "id": "earth_arkham_city_northside_room_derby_st_009",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_010.json",
+      "id": "earth_arkham_city_northside_room_derby_st_010",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_011.json",
+      "id": "earth_arkham_city_northside_room_derby_st_011",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_012.json",
+      "id": "earth_arkham_city_northside_room_derby_st_012",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_013.json",
+      "id": "earth_arkham_city_northside_room_derby_st_013",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_derby_st_014.json",
+      "id": "earth_arkham_city_northside_room_derby_st_014",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_garrison_st_002.json",
+      "id": "earth_arkham_city_northside_room_garrison_st_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_garrison_st_003.json",
+      "id": "earth_arkham_city_northside_room_garrison_st_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_garrison_st_004.json",
+      "id": "earth_arkham_city_northside_room_garrison_st_004",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_garrison_st_005.json",
+      "id": "earth_arkham_city_northside_room_garrison_st_005",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_gedney_st_001.json",
+      "id": "earth_arkham_city_northside_room_gedney_st_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_001.json",
+      "id": "earth_arkham_city_northside_room_high_ln_001",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_002.json",
+      "id": "earth_arkham_city_northside_room_high_ln_002",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_003.json",
+      "id": "earth_arkham_city_northside_room_high_ln_003",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_004.json",
+      "id": "earth_arkham_city_northside_room_high_ln_004",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_005.json",
+      "id": "earth_arkham_city_northside_room_high_ln_005",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_006.json",
+      "id": "earth_arkham_city_northside_room_high_ln_006",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_007.json",
+      "id": "earth_arkham_city_northside_room_high_ln_007",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\northside\\room_high_ln_008.json",
+      "id": "earth_arkham_city_northside_room_high_ln_008",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "street_paved"
+    },
+    {
+      "file": "data/rooms/earth/arkham_city\\uptown\\intersection_derby_halsey.json",
+      "id": "earth_arkham_city_intersection_derby_halsey",
+      "subzone": "unknown",
+      "old_env": "outdoors",
+      "new_env": "intersection"
+    }
+  ]
+}

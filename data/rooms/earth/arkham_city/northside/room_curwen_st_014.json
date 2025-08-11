@@ -5,11 +5,11 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "northside",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
     "south": null,
-    "east": "earth_arkham_city_intersection_curwen_gedney",
+    "east": "earth_arkham_city_northside_intersection_curwen_gedney",
     "west": null,
     "up": null,
     "down": null

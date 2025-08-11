@@ -5,7 +5,7 @@
   "plane": "earth",
   "zone": "arkham_city",
   "sub_zone": "northside",
-  "environment": "outdoors",
+  "environment": "street_paved",
   "exits": {
     "north": null,
     "south": null,

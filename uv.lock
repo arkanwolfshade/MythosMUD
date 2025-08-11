@@ -805,6 +805,18 @@ wheels = [
 ]
 
 [[package]]
+name = "markdown-it-py"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mdurl" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz", hash = "sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3", size = 73070, upload-time = "2025-08-11T12:57:52.854Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/54/e7d793b573f298e1c9013b8c4dade17d481164aa517d1d7148619c2cedbf/markdown_it_py-4.0.0-py3-none-any.whl", hash = "sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147", size = 87321, upload-time = "2025-08-11T12:57:51.923Z" },
+]
+
+[[package]]
 name = "matplotlib"
 version = "3.10.5"
 source = { registry = "https://pypi.org/simple" }
@@ -859,6 +871,15 @@ wheels = [
 ]
 
 [[package]]
+name = "mdurl"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
 name = "mythosmud"
 version = "0.1.0"
 source = { editable = "." }
@@ -879,9 +900,11 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "python-jose" },
     { name = "requests" },
+    { name = "rich" },
     { name = "setuptools" },
     { name = "sqlalchemy" },
     { name = "structlog" },
+    { name = "tcod" },
     { name = "tqdm" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -932,10 +955,12 @@ requires-dist = [
     { name = "python-dotenv", specifier = "==1.0.0" },
     { name = "python-jose", specifier = "==3.5.0" },
     { name = "requests", specifier = "==2.32.4" },
+    { name = "rich", specifier = ">=14.1.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.12.5" },
     { name = "setuptools", specifier = "<81" },
     { name = "sqlalchemy", specifier = ">=2.0.42" },
     { name = "structlog", specifier = ">=25.4.0" },
+    { name = "tcod", specifier = ">=19.4.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.35.0" },
 ]
@@ -1400,6 +1425,19 @@ wheels = [
 ]
 
 [[package]]
+name = "rich"
+version = "14.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown-it-py" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/75/af448d8e52bf1d8fa6a9d089ca6c07ff4453d86c65c145d0a300bb073b9b/rich-14.1.0.tar.gz", hash = "sha256:e497a48b844b0320d45007cdebfeaeed8db2a4f4bcf49f15e455cfc4af11eaa8", size = 224441, upload-time = "2025-07-25T07:32:58.125Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/30/3c4d035596d3cf444529e0b2953ad0466f6049528a879d27534700580395/rich-14.1.0-py3-none-any.whl", hash = "sha256:536f5f1785986d6dbdea3c75205c473f970777b4a0d6c6dd1b696aa05a3fa04f", size = 243368, upload-time = "2025-07-25T07:32:56.73Z" },
+]
+
+[[package]]
 name = "rpds-py"
 version = "0.27.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1598,6 +1636,24 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/79/b9/6e672db4fec07349e7a8a8172c1a6ae235c58679ca29c3f86a61b5e59ff3/structlog-25.4.0.tar.gz", hash = "sha256:186cd1b0a8ae762e29417095664adf1d6a31702160a46dacb7796ea82f7409e4", size = 1369138, upload-time = "2025-06-02T08:21:12.971Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/4a/97ee6973e3a73c74c8120d59829c3861ea52210667ec3e7a16045c62b64d/structlog-25.4.0-py3-none-any.whl", hash = "sha256:fe809ff5c27e557d14e613f45ca441aabda051d119ee5a0102aaba6ce40eed2c", size = 68720, upload-time = "2025-06-02T08:21:11.43Z" },
+]
+
+[[package]]
+name = "tcod"
+version = "19.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cffi" },
+    { name = "numpy", marker = "implementation_name != 'pypy'" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7f/2c/c97aa351d60cdf621fec31479a8600a09fc1dea784a17d32c742c94a098e/tcod-19.4.0.tar.gz", hash = "sha256:3bda89cb93a18f9d6c71e6cf26a5fc92ebc920dfa7607de1db45edc09286010f", size = 846235, upload-time = "2025-08-06T22:51:09.236Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/12/24cd7f4c793cddbd6f077aa586dddf347be6cb5870841e41667b447a5103/tcod-19.4.0-cp310-abi3-macosx_10_13_universal2.whl", hash = "sha256:de2a5bee0149bbad26f1c294a83c9245b67330e2b603f34204095c11847da9f4", size = 3850270, upload-time = "2025-08-06T22:50:49.48Z" },
+    { url = "https://files.pythonhosted.org/packages/64/91/03f613c163544e02427d9e33bdb8da30c37d38c06d83bc2533cc0c7d95c7/tcod-19.4.0-cp310-abi3-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:d5fe92b8500f6d109a21e45ae878b4fa8c508fd314298304c99787fbc73889b8", size = 8231948, upload-time = "2025-08-06T22:50:51.742Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/55/3bb1d8b5a19fc4c8b780289f3cac0016d2132e2906eda7e4d6806741d508/tcod-19.4.0-cp310-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8fd3a1fbf75425f8a2c93aafc00c0b4d1c189a42f21fd314a1a157c5b406ef2f", size = 8570514, upload-time = "2025-08-06T22:50:53.82Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/2b/c6c3d40bc473149c1df720ea6e416f40ba0c3101cd27be60f3623de86244/tcod-19.4.0-cp310-abi3-win32.whl", hash = "sha256:9a5a10d97e8e0c86ec0ed5344aa77ed9519637b56529c57ca913e27f203b2073", size = 1598415, upload-time = "2025-08-06T22:50:55.812Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/ff/6743d1ed4a96b483855e48255270d2dbec74735f0a659b5f88f769e48b10/tcod-19.4.0-cp310-abi3-win_amd64.whl", hash = "sha256:0cdf038ce0489beebf74af96dd95802a56d31b68514408ee9c9a51e7b0df19d9", size = 1889317, upload-time = "2025-08-06T22:50:57.536Z" },
 ]
 
 [[package]]
