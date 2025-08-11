@@ -219,8 +219,20 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   min-height: 0;
+  background-color: #2a2a2a;
+  border-radius: 3px;
+  border: 1px solid #333;
+  padding: 8px;
+}
+
+.occupants-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 6px;
 }
 
 .occupants-label {
@@ -228,18 +240,89 @@
   font-weight: bold;
   font-size: 12px;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.occupants-text {
-  margin: 0;
-  color: #cccccc;
-  font-size: 11px;
-  line-height: 1.4;
-  padding: 5px;
+.occupant-count-badge {
+  background-color: #00ff00;
+  color: #000;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: none;
+  min-width: 20px;
+  text-align: center;
+}
+
+.occupants-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.occupants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.occupant-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
   background-color: #1a1a1a;
   border-radius: 3px;
-  border: 1px solid #333;
+  border: 1px solid #444;
+  transition: all 0.2s ease;
+}
+
+.occupant-item:hover {
+  background-color: #333;
+  border-color: #00ff00;
+}
+
+.occupant-indicator {
+  color: #00ff00;
+  font-size: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.occupant-name {
+  color: #cccccc;
+  font-size: 11px;
+  font-weight: 500;
   flex: 1;
+}
+
+.no-occupants {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 20px 10px;
+}
+
+.no-occupants-text {
+  color: #666;
+  font-style: italic;
+  font-size: 11px;
+  text-align: center;
 }
 
 .no-room {

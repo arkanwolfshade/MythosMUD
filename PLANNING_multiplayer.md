@@ -70,7 +70,7 @@ Notes and follow-ups discovered:
 - [x] Replace uses of `datetime.utcnow()` with timezone-aware `datetime.now(datetime.UTC)` across server code to
   address deprecations in Python 3.12 (warnings observed in test runs). All tests green.
 - [x] Normalize timestamps in real-time events to a consistent, timezone-aware format.
- - [x] Unify real-time event envelope across SSE and WebSocket (single schema with event_type, timestamp Z, sequence_number, room_id, player_id, data).
+- [x] Unify real-time event envelope across SSE and WebSocket (single schema with event_type, timestamp Z, sequence_number, room_id, player_id, data).
 - [x] Add presence heartbeats and reconnection handling (client retry with backoff; server prunes stale presence).
 
 ---
@@ -333,9 +333,9 @@ function handleGameEvent(event: GameEvent) {
       deprecations and ensure consistent event times. (See issue #118)
 - [x] Normalize real-time event timestamps (replace placeholder timestamps in WebSocket events with real values).
       (See issue #119)
-- [ ] Room occupants panel in `RoomInfoPanel.tsx` to show the same occupants list already available in
+- [x] Room occupants panel in `RoomInfoPanel.tsx` to show the same occupants list already available in
       `GameTerminal.tsx` for parity with planning. (See issue #120)
- - [ ] Client: migrate any remaining legacy `type` consumers to `event_type` and add a thin adapter for backward compatibility in the hook.
+- [ ] Client: migrate any remaining legacy `type` consumers to `event_type` and add a thin adapter for backward compatibility in the hook.
 - [ ] Add comprehensive presence monitoring and alerting for connection health.
 
 ---
@@ -344,8 +344,8 @@ function handleGameEvent(event: GameEvent) {
 
 - [x] #118 Replace utcnow with timezone-aware datetimes across server (Python 3.12)
 - [x] #119 Normalize real-time event timestamps (use real, timezone-aware times)
-- [ ] #120 Add RoomInfoPanel occupants list to match server events
- - [x] #121 Unify real-time event envelope across SSE and WebSocket
+- [x] #120 Add RoomInfoPanel occupants list to match server events
+- [x] #121 Unify real-time event envelope across SSE and WebSocket
 
 ### **Performance Requirements**
 
