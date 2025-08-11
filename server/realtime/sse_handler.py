@@ -42,6 +42,9 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
             try:
                 # Send heartbeat every 30 seconds
                 await asyncio.sleep(30)
+                # Mark presence and send heartbeat
+                connection_manager.mark_player_seen(player_id)
+                connection_manager.prune_stale_players()
                 yield sse_line(build_event("heartbeat", {}, player_id=player_id))
 
             except asyncio.CancelledError:
@@ -73,9 +76,7 @@ async def send_game_event(player_id: str, event_type: str, data: dict):
         data: The event data
     """
     try:
-        await connection_manager.send_personal_message(
-            player_id, build_event(event_type, data, player_id=player_id)
-        )
+        await connection_manager.send_personal_message(player_id, build_event(event_type, data, player_id=player_id))
 
     except Exception as e:
         logger.error(f"Error sending game event to {player_id}: {e}")
@@ -91,9 +92,7 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         exclude_player: Player ID to exclude from broadcast
     """
     try:
-        await connection_manager.broadcast_global(
-            build_event(event_type, data), exclude_player
-        )
+        await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except Exception as e:
         logger.error(f"Error broadcasting game event: {e}")

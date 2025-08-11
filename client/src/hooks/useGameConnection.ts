@@ -36,6 +36,7 @@ interface UseGameConnectionOptions {
 }
 
 export function useGameConnection({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playerId,
   playerName,
   authToken,
@@ -57,6 +58,46 @@ export function useGameConnection({
   const eventSourceRef = useRef<EventSource | null>(null);
   const websocketRef = useRef<WebSocket | null>(null);
   const isConnectingRef = useRef(false);
+  const wsPingIntervalRef = useRef<number | null>(null);
+  const sseReconnectTimerRef = useRef<number | null>(null);
+  const wsReconnectTimerRef = useRef<number | null>(null);
+  const sseAttemptsRef = useRef(0);
+  const wsAttemptsRef = useRef(0);
+
+  const clearTimers = useCallback(() => {
+    if (wsPingIntervalRef.current !== null) {
+      window.clearInterval(wsPingIntervalRef.current);
+      wsPingIntervalRef.current = null;
+    }
+    if (sseReconnectTimerRef.current !== null) {
+      window.clearTimeout(sseReconnectTimerRef.current);
+      sseReconnectTimerRef.current = null;
+    }
+    if (wsReconnectTimerRef.current !== null) {
+      window.clearTimeout(wsReconnectTimerRef.current);
+      wsReconnectTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleSseReconnect = useCallback(() => {
+    const attempt = sseAttemptsRef.current;
+    const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+    logger.info('GameConnection', `Scheduling SSE reconnect in ${delay}ms (attempt ${attempt + 1})`);
+    sseReconnectTimerRef.current = window.setTimeout(() => {
+      sseAttemptsRef.current += 1;
+      connect();
+    }, delay);
+  }, [connect]);
+
+  const scheduleWsReconnect = useCallback(() => {
+    const attempt = wsAttemptsRef.current;
+    const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+    logger.info('GameConnection', `Scheduling WS reconnect in ${delay}ms (attempt ${attempt + 1})`);
+    wsReconnectTimerRef.current = window.setTimeout(() => {
+      wsAttemptsRef.current += 1;
+      connectWebSocket();
+    }, delay);
+  }, [connectWebSocket]);
 
   // Connect WebSocket for commands after SSE connection is established
   const connectWebSocket = useCallback(() => {
@@ -75,6 +116,24 @@ export function useGameConnection({
       websocket.onopen = () => {
         logger.info('GameConnection', 'WebSocket connected');
         setState(prev => ({ ...prev, websocketConnected: true }));
+        // Reset WS backoff attempts
+        wsAttemptsRef.current = 0;
+        if (wsReconnectTimerRef.current !== null) {
+          window.clearTimeout(wsReconnectTimerRef.current);
+          wsReconnectTimerRef.current = null;
+        }
+        // Start periodic ping to keep presence fresh
+        if (wsPingIntervalRef.current === null) {
+          wsPingIntervalRef.current = window.setInterval(() => {
+            try {
+              if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+                websocketRef.current.send(JSON.stringify({ type: 'ping' }));
+              }
+            } catch (err) {
+              logger.error('GameConnection', 'Failed to send WS ping', { error: String(err) });
+            }
+          }, 25000);
+        }
       };
 
       websocket.onmessage = event => {
@@ -90,17 +149,27 @@ export function useGameConnection({
 
       websocket.onerror = error => {
         logger.error('GameConnection', 'WebSocket error', { error: String(error) });
+        // Will attempt reconnect on close
       };
 
       websocket.onclose = () => {
         logger.info('GameConnection', 'WebSocket disconnected');
         websocketRef.current = null;
         setState(prev => ({ ...prev, websocketConnected: false }));
+        if (wsPingIntervalRef.current !== null) {
+          window.clearInterval(wsPingIntervalRef.current);
+          wsPingIntervalRef.current = null;
+        }
+        // If SSE is still up, try to restore WS with backoff
+        if (state.sseConnected) {
+          scheduleWsReconnect();
+        }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
+      scheduleWsReconnect();
     }
-  }, [authToken, playerName, onEvent]);
+  }, [authToken, playerName, onEvent, scheduleWsReconnect, state.sseConnected]);
 
   const connect = useCallback(async () => {
     if (isConnectingRef.current || state.isConnected) {
@@ -134,6 +203,12 @@ export function useGameConnection({
           isConnecting: false,
           error: null,
         }));
+        // Reset SSE backoff
+        sseAttemptsRef.current = 0;
+        if (sseReconnectTimerRef.current !== null) {
+          window.clearTimeout(sseReconnectTimerRef.current);
+          sseReconnectTimerRef.current = null;
+        }
         onConnect?.();
 
         // Connect WebSocket for commands
@@ -161,6 +236,14 @@ export function useGameConnection({
           error: 'Connection failed',
         }));
         onError?.('Connection failed');
+        // Proactively close and schedule reconnect
+        try {
+          eventSource.close();
+        } catch {
+          logger.info('GameConnection', 'SSE close after error');
+        }
+        eventSourceRef.current = null;
+        scheduleSseReconnect();
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect', { error: String(error) });
@@ -172,8 +255,9 @@ export function useGameConnection({
         error: 'Failed to connect',
       }));
       onError?.('Failed to connect');
+      scheduleSseReconnect();
     }
-  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, playerId]);
+  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, scheduleSseReconnect]);
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
@@ -188,6 +272,9 @@ export function useGameConnection({
       websocketRef.current = null;
     }
 
+    clearTimers();
+    sseAttemptsRef.current = 0;
+    wsAttemptsRef.current = 0;
     isConnectingRef.current = false;
     setState(prev => ({
       ...prev,
@@ -197,7 +284,7 @@ export function useGameConnection({
     }));
 
     onDisconnect?.();
-  }, [onDisconnect]);
+  }, [onDisconnect, clearTimers]);
 
   const sendCommand = useCallback((command: string, args: string[] = []) => {
     if (!websocketRef.current || websocketRef.current.readyState !== WebSocket.OPEN) {

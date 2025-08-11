@@ -41,6 +41,8 @@ class ConnectionManager:
         self.online_players: dict[str, dict] = {}
         # room_id -> set of player_ids
         self.room_occupants: dict[str, set[str]] = {}
+        # player_id -> last seen unix timestamp
+        self.last_seen: dict[str, float] = {}
 
         # Rate limiting for connections
         self.connection_attempts: dict[str, list[float]] = {}
@@ -191,6 +193,44 @@ class ConnectionManager:
             logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
 
         logger.info(f"SSE disconnected for player {player_id}")
+
+    def mark_player_seen(self, player_id: str):
+        """Update last-seen timestamp for a player."""
+        try:
+            self.last_seen[player_id] = time.time()
+        except Exception as e:
+            logger.error(f"Error marking player {player_id} seen: {e}")
+
+    def prune_stale_players(self, max_age_seconds: int = 90):
+        """Remove players whose presence is stale beyond the threshold.
+
+        This prunes `online_players` and `room_occupants` and broadcasts an
+        occupants update when appropriate on next room broadcast.
+        """
+        try:
+            now_ts = time.time()
+            stale_ids: list[str] = []
+            for pid, last in list(self.last_seen.items()):
+                if now_ts - last > max_age_seconds:
+                    stale_ids.append(pid)
+
+            for pid in stale_ids:
+                if pid in self.online_players:
+                    del self.online_players[pid]
+                if pid in self.player_websockets:
+                    # forget websocket mapping; socket likely already dead
+                    conn_id = self.player_websockets.pop(pid, None)
+                    if conn_id and conn_id in self.active_websockets:
+                        del self.active_websockets[conn_id]
+                # remove from rooms
+                self._prune_player_from_all_rooms(pid)
+                # forget last_seen entry
+                if pid in self.last_seen:
+                    del self.last_seen[pid]
+            if stale_ids:
+                logger.info(f"Pruned stale players: {stale_ids}")
+        except Exception as e:
+            logger.error(f"Error pruning stale players: {e}")
 
     def _prune_player_from_all_rooms(self, player_id: str):
         """Remove a player from all in-memory room occupant sets."""
@@ -439,6 +479,7 @@ class ConnectionManager:
             }
 
             self.online_players[player_id] = player_info
+            self.mark_player_seen(player_id)
 
             # Update room occupants using canonical room id
             room_id = getattr(player, "current_room_id", None)
@@ -491,6 +532,7 @@ class ConnectionManager:
             if room_id:
                 # 1) left-game notification
                 from .envelope import build_event
+
                 left_event = build_event(
                     "player_left_game",
                     {"player_id": player_id, "player_name": player_name or player_id},

@@ -120,6 +120,8 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 # Receive message from client
                 data = await websocket.receive_text()
                 message = json.loads(data)
+                # Mark presence on any inbound message
+                connection_manager.mark_player_seen(player_id)
 
                 # Process the message
                 await handle_websocket_message(websocket, player_id, message)
@@ -206,9 +208,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         result = await process_websocket_command(cmd, args, player_id)
 
         # Send the result back to the player
-        await websocket.send_json(
-            build_event("command_response", result, player_id=player_id)
-        )
+        await websocket.send_json(build_event("command_response", result, player_id=player_id))
 
         # Broadcast room updates if the command affected the room
         logger.debug(f"Command result: {result}")
