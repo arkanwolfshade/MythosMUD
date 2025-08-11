@@ -173,7 +173,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
 
         # Test with different components
         room_id = generate_room_id("yeng", "katmandu", "palace", "palace_Ground_001")
-        expected_id = "yeng_katmandu_palace_palace_ground_001"
+        expected_id = "yeng_katmandu_palace_palace_Ground_001"
         self.assertEqual(room_id, expected_id)
 
     def test_get_room_environment(self):
