@@ -26,7 +26,7 @@ interface GameConnectionState {
 }
 
 interface UseGameConnectionOptions {
-  playerId: string;
+  playerId?: string; // Optional since not currently used
   playerName: string;
   authToken: string;
   onEvent?: (event: GameEvent) => void;
@@ -35,16 +35,7 @@ interface UseGameConnectionOptions {
   onError?: (error: string) => void;
 }
 
-export function useGameConnection({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  playerId,
-  playerName,
-  authToken,
-  onEvent,
-  onConnect,
-  onError,
-  onDisconnect,
-}: UseGameConnectionOptions) {
+export function useGameConnection({ authToken, onEvent, onConnect, onError, onDisconnect }: UseGameConnectionOptions) {
   const [state, setState] = useState<GameConnectionState>({
     isConnected: false,
     isConnecting: false,
@@ -63,6 +54,10 @@ export function useGameConnection({
   const wsReconnectTimerRef = useRef<number | null>(null);
   const sseAttemptsRef = useRef(0);
   const wsAttemptsRef = useRef(0);
+  const connectRef = useRef<(() => void) | null>(null);
+  const connectWebSocketRef = useRef<(() => void) | null>(null);
+  const scheduleSseReconnectRef = useRef<(() => void) | null>(null);
+  const scheduleWsReconnectRef = useRef<(() => void) | null>(null);
 
   const clearTimers = useCallback(() => {
     if (wsPingIntervalRef.current !== null) {
@@ -105,7 +100,10 @@ export function useGameConnection({
     sseReconnectTimerRef.current = window.setTimeout(() => {
       sseReconnectTimerRef.current = null;
       if (!state.isConnected && !isConnectingRef.current) {
-        connect();
+        // Use a ref to avoid circular dependency
+        if (connectRef.current) {
+          connectRef.current();
+        }
       }
     }, delay);
   }, [state.isConnected]);
@@ -135,10 +133,17 @@ export function useGameConnection({
     wsReconnectTimerRef.current = window.setTimeout(() => {
       wsReconnectTimerRef.current = null;
       if (state.sseConnected && !state.websocketConnected) {
-        connectWebSocket();
+        // Use a ref to avoid circular dependency
+        if (connectWebSocketRef.current) {
+          connectWebSocketRef.current();
+        }
       }
     }, delay);
   }, [state.sseConnected, state.websocketConnected]);
+
+  // Store schedule functions in refs to avoid circular dependencies
+  scheduleSseReconnectRef.current = scheduleSseReconnect;
+  scheduleWsReconnectRef.current = scheduleWsReconnect;
 
   const connectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -196,14 +201,21 @@ export function useGameConnection({
         }
         // If SSE is still up, try to restore WS with backoff
         if (state.sseConnected) {
-          scheduleWsReconnect();
+          if (scheduleWsReconnectRef.current) {
+            scheduleWsReconnectRef.current();
+          }
         }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
-      scheduleWsReconnect();
+      if (scheduleWsReconnectRef.current) {
+        scheduleWsReconnectRef.current();
+      }
     }
-  }, [authToken, playerName, onEvent, scheduleWsReconnect, state.sseConnected]);
+  }, [authToken, onEvent, state.sseConnected]);
+
+  // Store connectWebSocket function in ref to avoid circular dependency
+  connectWebSocketRef.current = connectWebSocket;
 
   const connect = useCallback(async () => {
     if (isConnectingRef.current || state.isConnected) {
@@ -277,7 +289,9 @@ export function useGameConnection({
           logger.info('GameConnection', 'SSE close after error');
         }
         eventSourceRef.current = null;
-        scheduleSseReconnect();
+        if (scheduleSseReconnectRef.current) {
+          scheduleSseReconnectRef.current();
+        }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect', { error: String(error) });
@@ -289,9 +303,14 @@ export function useGameConnection({
         error: 'Failed to connect',
       }));
       onError?.('Failed to connect');
-      scheduleSseReconnect();
+      if (scheduleSseReconnectRef.current) {
+        scheduleSseReconnectRef.current();
+      }
     }
-  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket, scheduleSseReconnect]);
+  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
+
+  // Store connect function in ref to avoid circular dependency
+  connectRef.current = connect;
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
