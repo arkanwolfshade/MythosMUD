@@ -21,6 +21,8 @@ import pytest
 # Add the server directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+# Import the module to ensure coverage tracking
+import server.world_loader
 from server.world_loader import (
     generate_room_id,
     get_room_environment,
@@ -396,6 +398,16 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             # Restore the original path
             if original_path is not None:
                 server.world_loader.ROOMS_BASE_PATH = original_path
+
+    def test_module_coverage(self):
+        """Test to ensure world_loader module is properly imported for coverage."""
+        # This test ensures the module is executed and tracked by coverage
+        assert hasattr(server.world_loader, "load_rooms")
+        assert hasattr(server.world_loader, "load_hierarchical_world")
+        assert hasattr(server.world_loader, "generate_room_id")
+        assert hasattr(server.world_loader, "get_room_environment")
+        assert hasattr(server.world_loader, "resolve_room_reference")
+        assert hasattr(server.world_loader, "ROOMS_BASE_PATH")
 
 
 if __name__ == "__main__":

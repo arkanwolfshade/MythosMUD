@@ -43,6 +43,10 @@ export function RoomInfoPanel({ room }: RoomInfoPanelProps) {
     return description.trim().replace(/\s+/g, ' ');
   };
 
+  const formatOccupantName = (name: string): string => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+
   return (
     <div className="room-info-panel">
       <div className="room-info-content">
@@ -82,14 +86,32 @@ export function RoomInfoPanel({ room }: RoomInfoPanelProps) {
           </p>
         </div>
 
-        {/* Room Occupants */}
+        {/* Enhanced Room Occupants */}
         <div className="room-occupants">
-          <span className="occupants-label">
-            Occupants{typeof room.occupant_count === 'number' ? ` (${room.occupant_count})` : ''}:
-          </span>
-          <p className="occupants-text">
-            {room.occupants && room.occupants.length > 0 ? room.occupants.join(', ') : 'None'}
-          </p>
+          <div className="occupants-header">
+            <span className="occupants-label">
+              Occupants
+              {typeof room.occupant_count === 'number' && (
+                <span className="occupant-count-badge">({room.occupant_count})</span>
+              )}
+            </span>
+          </div>
+          <div className="occupants-content">
+            {room.occupants && room.occupants.length > 0 ? (
+              <div className="occupants-list">
+                {room.occupants.map((occupant, index) => (
+                  <div key={index} className="occupant-item">
+                    <span className="occupant-indicator">●</span>
+                    <span className="occupant-name">{formatOccupantName(occupant)}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-occupants">
+                <span className="no-occupants-text">No other players present</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
