@@ -130,24 +130,24 @@ test.describe('Room occupants - initial population and updates for second client
       });
     }, baseRoom);
 
-    await expect(pageB.locator('.room-occupants .occupants-label')).toContainText('(1)');
-    await expect(pageB.locator('.room-occupants .occupants-text')).toContainText('ArkanWolfshade');
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('1');
+    await expect(pageB.locator('.room-occupants .occupant-name')).toContainText('Arkanwolfshade');
 
     // B leaves: occupants should show None for B
     await pageB.evaluate(() => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
       w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: [], count: 0 } });
     });
-    await expect(pageB.locator('.room-occupants .occupants-label')).toContainText('(0)');
-    await expect(pageB.locator('.room-occupants .occupants-text')).toContainText('None');
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('0');
+    await expect(pageB.locator('.room-occupants .no-occupants-text')).toContainText('No other players present');
 
     // B re-enters: occupants should again list A
     await pageB.evaluate(() => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
       w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: ['ArkanWolfshade'], count: 1 } });
     });
-    await expect(pageB.locator('.room-occupants .occupants-label')).toContainText('(1)');
-    await expect(pageB.locator('.room-occupants .occupants-text')).toContainText('ArkanWolfshade');
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('1');
+    await expect(pageB.locator('.room-occupants .occupant-name')).toContainText('Arkanwolfshade');
 
     await contextA.close();
     await contextB.close();

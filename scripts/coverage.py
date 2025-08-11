@@ -2,11 +2,12 @@ import os
 import subprocess
 import sys
 
-cmd = ["pytest", "--cov=world_loader", "--cov-report=term-missing", "server/tests"]
-env = dict(**os.environ, PYTHONPATH="server")
+# Change to server directory and run pytest with coverage
+cmd = ["pytest", "--cov=.", "--cov-report=term-missing", "tests"]
+env = dict(**os.environ)
 
 print("Running pytest with coverage for world_loader...")
-result = subprocess.run(cmd, env=env)
+result = subprocess.run(cmd, env=env, cwd="server")
 if result.returncode != 0:
     print("Coverage run failed.")
     sys.exit(result.returncode)
