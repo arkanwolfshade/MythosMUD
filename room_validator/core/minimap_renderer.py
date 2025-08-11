@@ -5,7 +5,7 @@ This module provides visual representations of room connectivity graphs
 for use in client mini-maps and debugging room layouts.
 """
 
-from typing import Dict, List, Any, Tuple
+from typing import Any
 
 
 class MinimapRenderer:
@@ -18,14 +18,7 @@ class MinimapRenderer:
 
     def __init__(self):
         """Initialize the mini-map renderer."""
-        self.direction_symbols = {
-            "north": "↑",
-            "south": "↓",
-            "east": "→",
-            "west": "←",
-            "up": "↗",
-            "down": "↘"
-        }
+        self.direction_symbols = {"north": "↑", "south": "↓", "east": "→", "west": "←", "up": "↗", "down": "↘"}
 
         # Street name to acronym mapping
         self.street_acronyms = {
@@ -44,7 +37,6 @@ class MinimapRenderer:
             "Saltonstall_St": "SS",
             "High_St": "HS",
             "East_St": "ES",
-            "West_St": "WS",
             "North_St": "NS",
             "South_St": "SS",
             "Church_St": "CS",
@@ -76,59 +68,58 @@ class MinimapRenderer:
             "S_Peabody_St": "SPS",
             "Powder_Mill_St": "PMS",
             "Walnut_St": "WS",
-            "intersection": "INT"
+            "intersection": "INT",
         }
 
         # Color codes for different streets (ANSI color codes)
         self.street_colors = {
-            "E_College_St": "\033[32m",        # Green
-            "W_College_St": "\033[36m",        # Cyan
-            "W_Church_St": "\033[35m",         # Magenta
-            "West_St": "\033[91m",             # Bright Red
-            "Main_St": "\033[33m",             # Yellow
-            "Federal_St": "\033[35m",          # Magenta
-            "Garrison_St": "\033[34m",         # Blue
-            "Boundary_St": "\033[31m",         # Red
-            "Peabody_Ave": "\033[37m",         # White
-            "Pickman_St": "\033[90m",          # Dark Gray
-            "Washington_St": "\033[95m",       # Bright Magenta
-            "Miskatonic_Ave": "\033[94m",      # Bright Blue
-            "Saltonstall_St": "\033[96m",      # Bright Cyan
-            "High_St": "\033[93m",             # Bright Yellow
-            "East_St": "\033[92m",             # Bright Green
-            "West_St": "\033[91m",             # Bright Red
-            "North_St": "\033[97m",            # Bright White
-            "South_St": "\033[30m",            # Black
-            "Church_St": "\033[33m",           # Yellow
-            "Curwen_St": "\033[35m",           # Magenta
-            "Jenkin_St": "\033[36m",           # Cyan
-            "Whateley_St": "\033[32m",         # Green
-            "Armitage_St": "\033[34m",         # Blue
-            "River_St": "\033[94m",            # Bright Blue
-            "Water_St": "\033[96m",            # Bright Cyan
-            "Sentinel_St": "\033[95m",         # Bright Magenta
-            "New_St": "\033[93m",              # Bright Yellow
-            "Crane_St": "\033[92m",            # Bright Green
-            "N_French_Hill_St": "\033[90m",    # Dark Gray
-            "S_Parsonage_St": "\033[37m",      # White
-            "E_High_St": "\033[33m",           # Yellow
-            "E_Miskatonic_Ave": "\033[94m",    # Bright Blue
-            "E_Pickman_St": "\033[90m",        # Dark Gray
-            "E_Saltonstall_St": "\033[96m",    # Bright Cyan
-            "E_Washington_St": "\033[95m",     # Bright Magenta
-            "E_River_St": "\033[94m",          # Bright Blue
-            "E_Water_St": "\033[96m",          # Bright Cyan
-            "W_High_St": "\033[33m",           # Yellow
-            "W_Miskatonic_Ave": "\033[94m",    # Bright Blue
-            "W_Pickman_St": "\033[90m",        # Dark Gray
-            "W_Saltonstall_St": "\033[96m",    # Bright Cyan
-            "W_Washington_St": "\033[95m",     # Bright Magenta
-            "W_River_St": "\033[94m",          # Bright Blue
-            "W_Water_St": "\033[96m",          # Bright Cyan
-            "S_Peabody_St": "\033[37m",        # White
-            "Powder_Mill_St": "\033[90m",      # Dark Gray
-            "Walnut_St": "\033[33m",           # Yellow
-            "intersection": "\033[93m"         # Bright Yellow
+            "E_College_St": "\033[32m",  # Green
+            "W_College_St": "\033[36m",  # Cyan
+            "W_Church_St": "\033[35m",  # Magenta
+            "West_St": "\033[91m",  # Bright Red
+            "Main_St": "\033[33m",  # Yellow
+            "Federal_St": "\033[35m",  # Magenta
+            "Garrison_St": "\033[34m",  # Blue
+            "Boundary_St": "\033[31m",  # Red
+            "Peabody_Ave": "\033[37m",  # White
+            "Pickman_St": "\033[90m",  # Dark Gray
+            "Washington_St": "\033[95m",  # Bright Magenta
+            "Miskatonic_Ave": "\033[94m",  # Bright Blue
+            "Saltonstall_St": "\033[96m",  # Bright Cyan
+            "High_St": "\033[93m",  # Bright Yellow
+            "East_St": "\033[92m",  # Bright Green
+            "North_St": "\033[97m",  # Bright White
+            "South_St": "\033[30m",  # Black
+            "Church_St": "\033[33m",  # Yellow
+            "Curwen_St": "\033[35m",  # Magenta
+            "Jenkin_St": "\033[36m",  # Cyan
+            "Whateley_St": "\033[32m",  # Green
+            "Armitage_St": "\033[34m",  # Blue
+            "River_St": "\033[94m",  # Bright Blue
+            "Water_St": "\033[96m",  # Bright Cyan
+            "Sentinel_St": "\033[95m",  # Bright Magenta
+            "New_St": "\033[93m",  # Bright Yellow
+            "Crane_St": "\033[92m",  # Bright Green
+            "N_French_Hill_St": "\033[90m",  # Dark Gray
+            "S_Parsonage_St": "\033[37m",  # White
+            "E_High_St": "\033[33m",  # Yellow
+            "E_Miskatonic_Ave": "\033[94m",  # Bright Blue
+            "E_Pickman_St": "\033[90m",  # Dark Gray
+            "E_Saltonstall_St": "\033[96m",  # Bright Cyan
+            "E_Washington_St": "\033[95m",  # Bright Magenta
+            "E_River_St": "\033[94m",  # Bright Blue
+            "E_Water_St": "\033[96m",  # Bright Cyan
+            "W_High_St": "\033[33m",  # Yellow
+            "W_Miskatonic_Ave": "\033[94m",  # Bright Blue
+            "W_Pickman_St": "\033[90m",  # Dark Gray
+            "W_Saltonstall_St": "\033[96m",  # Bright Cyan
+            "W_Washington_St": "\033[95m",  # Bright Magenta
+            "W_River_St": "\033[94m",  # Bright Blue
+            "W_Water_St": "\033[96m",  # Bright Cyan
+            "S_Peabody_St": "\033[37m",  # White
+            "Powder_Mill_St": "\033[90m",  # Dark Gray
+            "Walnut_St": "\033[33m",  # Yellow
+            "intersection": "\033[93m",  # Bright Yellow
         }
 
         # Reset color code
@@ -145,17 +136,17 @@ class MinimapRenderer:
             Street acronym (e.g., ECS)
         """
         # Extract the street name from the room ID
-        parts = room_id.split('_')
+        parts = room_id.split("_")
         if len(parts) >= 4:
             # Look for street name patterns
             for i in range(len(parts) - 1):
-                potential_street = '_'.join(parts[i:i+2])
+                potential_street = "_".join(parts[i : i + 2])
                 if potential_street in self.street_acronyms:
                     return self.street_acronyms[potential_street]
 
                 # Try with more parts for longer street names
                 if i + 2 < len(parts):
-                    potential_street = '_'.join(parts[i:i+3])
+                    potential_street = "_".join(parts[i : i + 3])
                     if potential_street in self.street_acronyms:
                         return self.street_acronyms[potential_street]
 
@@ -172,17 +163,17 @@ class MinimapRenderer:
         Returns:
             Street name (e.g., W_College_St)
         """
-        parts = room_id.split('_')
+        parts = room_id.split("_")
         if len(parts) >= 4:
             # Look for street name patterns
             for i in range(len(parts) - 1):
-                potential_street = '_'.join(parts[i:i+2])
+                potential_street = "_".join(parts[i : i + 2])
                 if potential_street in self.street_acronyms:
                     return potential_street
 
                 # Try with more parts for longer street names
                 if i + 2 < len(parts):
-                    potential_street = '_'.join(parts[i:i+3])
+                    potential_street = "_".join(parts[i : i + 3])
                     if potential_street in self.street_acronyms:
                         return potential_street
 
@@ -202,7 +193,7 @@ class MinimapRenderer:
         # Default to white
         return self.street_colors.get(street_name, "\033[37m")
 
-    def render_ascii_map(self, minimap_data: Dict[str, Any], max_width: int = 80) -> str:
+    def render_ascii_map(self, minimap_data: dict[str, Any], max_width: int = 80) -> str:
         """
         Render the mini-map as ASCII art with grid-based visualization.
 
@@ -242,7 +233,7 @@ class MinimapRenderer:
 
         return "\n".join(lines)
 
-    def _create_grid_map(self, nodes: List, edges: List, start_room: str) -> str:
+    def _create_grid_map(self, nodes: list, edges: list, start_room: str) -> str:
         """
         Create a grid-based map visualization.
 
@@ -268,7 +259,7 @@ class MinimapRenderer:
         grid_height = max_y - min_y + 1
 
         # Initialize grid with empty spaces
-        grid = [[' ' for _ in range(grid_width * 3)] for _ in range(grid_height * 2)]
+        grid = [[" " for _ in range(grid_width * 3)] for _ in range(grid_height * 2)]
 
         # Place rooms in grid
         for room_id, (x, y) in coords.items():
@@ -313,13 +304,13 @@ class MinimapRenderer:
         # Convert grid to string
         lines = []
         for row in grid:
-            line = ''.join(row)
+            line = "".join(row)
             if line.strip():  # Only add non-empty lines
                 lines.append(line)
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _assign_coordinates(self, nodes: List, edges: List, start_room: str) -> Dict[str, Tuple[int, int]]:
+    def _assign_coordinates(self, nodes: list, edges: list, start_room: str) -> dict[str, tuple[int, int]]:
         """
         Assign grid coordinates to rooms based on connectivity.
 
@@ -372,7 +363,7 @@ class MinimapRenderer:
 
         return coords
 
-    def _get_next_coordinates(self, x: int, y: int, direction: str) -> Tuple[int, int]:
+    def _get_next_coordinates(self, x: int, y: int, direction: str) -> tuple[int, int]:
         """
         Get coordinates for the next room based on direction.
 
@@ -405,17 +396,10 @@ class MinimapRenderer:
         Returns:
             Reversed direction
         """
-        direction_map = {
-            "north": "south",
-            "south": "north",
-            "east": "west",
-            "west": "east",
-            "up": "down",
-            "down": "up"
-        }
+        direction_map = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}
         return direction_map.get(direction, direction)
 
-    def _draw_connection(self, grid: List[List[str]], x1: int, y1: int, x2: int, y2: int, direction: str):
+    def _draw_connection(self, grid: list[list[str]], x1: int, y1: int, x2: int, y2: int, direction: str):
         """
         Draw a connection line between two rooms.
 
@@ -444,7 +428,7 @@ class MinimapRenderer:
         if 0 <= mid_y < len(grid) and 0 <= mid_x < len(grid[0]):
             grid[mid_y][mid_x] = symbol
 
-    def _generate_color_legend(self, nodes: List) -> str:
+    def _generate_color_legend(self, nodes: list) -> str:
         """
         Generate a color-coded legend for the streets and special symbols.
 
@@ -468,7 +452,7 @@ class MinimapRenderer:
         for street_name in sorted(streets_used):
             acronym = self.street_acronyms.get(street_name, street_name[:3].upper())
             color = self.street_colors.get(street_name, "\033[37m")
-            readable_name = street_name.replace('_', ' ')
+            readable_name = street_name.replace("_", " ")
 
             legend_lines.append(f"{color}■{self.color_reset} {acronym}: {readable_name}")
 
@@ -486,7 +470,7 @@ class MinimapRenderer:
 
         return "\n".join(legend_lines)
 
-    def render_json_summary(self, minimap_data: Dict[str, Any]) -> str:
+    def render_json_summary(self, minimap_data: dict[str, Any]) -> str:
         """
         Render a JSON summary of the mini-map data.
 
@@ -504,10 +488,10 @@ class MinimapRenderer:
                 "total_nodes": minimap_data.get("total_nodes", 0),
                 "total_edges": minimap_data.get("total_edges", 0),
                 "max_depth": minimap_data.get("max_depth", 0),
-                "starting_room": minimap_data.get("starting_room", "")
+                "starting_room": minimap_data.get("starting_room", ""),
             },
             "sub_zones": {},
-            "connections_by_depth": {}
+            "connections_by_depth": {},
         }
 
         # Group by sub-zones
@@ -515,12 +499,14 @@ class MinimapRenderer:
             sub_zone = node["sub_zone"]
             if sub_zone not in summary["sub_zones"]:
                 summary["sub_zones"][sub_zone] = []
-            summary["sub_zones"][sub_zone].append({
-                "id": node["id"],
-                "name": node["name"],
-                "depth": node["depth"],
-                "is_start": node.get("is_start", False)
-            })
+            summary["sub_zones"][sub_zone].append(
+                {
+                    "id": node["id"],
+                    "name": node["name"],
+                    "depth": node["depth"],
+                    "is_start": node.get("is_start", False),
+                }
+            )
 
         # Group connections by depth
         for edge in minimap_data.get("edges", []):
@@ -534,15 +520,13 @@ class MinimapRenderer:
             if source_depth not in summary["connections_by_depth"]:
                 summary["connections_by_depth"][source_depth] = []
 
-            summary["connections_by_depth"][source_depth].append({
-                "from": edge["from"],
-                "to": edge["to"],
-                "direction": edge["direction"]
-            })
+            summary["connections_by_depth"][source_depth].append(
+                {"from": edge["from"], "to": edge["to"], "direction": edge["direction"]}
+            )
 
         return json.dumps(summary, indent=2)
 
-    def render_connectivity_stats(self, minimap_data: Dict[str, Any]) -> str:
+    def render_connectivity_stats(self, minimap_data: dict[str, Any]) -> str:
         """
         Render connectivity statistics for the mini-map.
 

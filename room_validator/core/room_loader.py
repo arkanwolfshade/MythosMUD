@@ -283,7 +283,7 @@ class RoomLoader:
         referenced_rooms = set()
         for room_data in self.room_database.values():
             exits = room_data.get("exits", {})
-            for direction, target_room in exits.items():
+            for _direction, target_room in exits.items():
                 if target_room and isinstance(target_room, str):
                     referenced_rooms.add(target_room)
 
@@ -299,7 +299,7 @@ class RoomLoader:
             # Check if this intersection references any rooms in our database
             exits = intersection_data.get("exits", {})
             references_our_rooms = False
-            for direction, target_room in exits.items():
+            for _direction, target_room in exits.items():
                 if target_room and isinstance(target_room, str):
                     if target_room in self.room_database:
                         references_our_rooms = True

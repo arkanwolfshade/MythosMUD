@@ -42,17 +42,20 @@ validator/test harness if you like.
 """
 
 from __future__ import annotations
+
 import argparse
+import glob
 import json
 import os
-import glob
-from collections import deque, defaultdict
+from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Dict, Tuple, Optional, Any, Callable, List
+from typing import Any
 
 # Try optional imports
 try:
     import tcod
+
     TCOD_AVAILABLE = True
 except Exception:
     tcod = None
@@ -61,6 +64,7 @@ except Exception:
 try:
     from rich import print as rprint
     from rich.console import Console
+
     RICH_AVAILABLE = True
 except Exception:
     rprint = print
@@ -69,12 +73,12 @@ except Exception:
 
 
 # --- Types ---
-Coord = Tuple[int, int]
+Coord = tuple[int, int]
 RoomID = str
 
 
 # Direction -> delta mapping. 2D only (x, y). Y increases downward for rendering
-DIRECTION_DELTAS: Dict[str, Coord] = {
+DIRECTION_DELTAS: dict[str, Coord] = {
     "north": (0, -1),
     "n": (0, -1),
     "south": (0, 1),
@@ -83,7 +87,7 @@ DIRECTION_DELTAS: Dict[str, Coord] = {
     "e": (1, 0),
     "west": (-1, 0),
     "w": (-1, 0),
-    "up": (0, -1),    # if you want 3D, replace this or extend
+    "up": (0, -1),  # if you want 3D, replace this or extend
     "down": (0, 1),
 }
 
@@ -103,20 +107,21 @@ DEFAULT_TILE_MAP = {
 @dataclass
 class Room:
     id: RoomID
-    exits: Dict[str, RoomID]
-    environment: Optional[str] = None
-    coords: Optional[Coord] = None
-    raw: Dict[str, Any] = None
+    exits: dict[str, RoomID]
+    environment: str | None = None
+    coords: Coord | None = None
+    raw: dict[str, Any] = None
 
 
 # --- Loading rooms ---
 
-def load_rooms_from_dir(rooms_dir: str) -> Dict[RoomID, Room]:
+
+def load_rooms_from_dir(rooms_dir: str) -> dict[RoomID, Room]:
     """Load all .json files in a directory and return a map of RoomID -> Room"""
-    rooms: Dict[RoomID, Room] = {}
+    rooms: dict[RoomID, Room] = {}
     for fname in sorted(glob.glob(os.path.join(rooms_dir, "*.json"))):
         try:
-            with open(fname, "r", encoding="utf-8") as f:
+            with open(fname, encoding="utf-8") as f:
                 data = json.load(f)
         except Exception as e:
             print(f"Failed to load {fname}: {e}")
@@ -133,11 +138,14 @@ def load_rooms_from_dir(rooms_dir: str) -> Dict[RoomID, Room]:
 
 # --- Validation hook ---
 
-def run_validator_on_rooms(rooms: Dict[RoomID, Room], validator: Optional[Callable[[Room], List[str]]] = None) -> Dict[RoomID, List[str]]:
+
+def run_validator_on_rooms(
+    rooms: dict[RoomID, Room], validator: Callable[[Room], list[str]] | None = None
+) -> dict[RoomID, list[str]]:
     """Run user-provided validator function over rooms. It should return a list
     of error strings for each room (empty list if valid). If validator is None,
     returns empty lists."""
-    results: Dict[RoomID, List[str]] = {}
+    results: dict[RoomID, list[str]] = {}
     for rid, room in rooms.items():
         if validator:
             try:
@@ -151,14 +159,17 @@ def run_validator_on_rooms(rooms: Dict[RoomID, Room], validator: Optional[Callab
 
 # --- Coordinate inference ---
 
-def infer_coordinates(rooms: Dict[RoomID, Room], start_room: Optional[RoomID] = None) -> Tuple[Dict[RoomID, Coord], List[str]]:
+
+def infer_coordinates(
+    rooms: dict[RoomID, Room], start_room: RoomID | None = None
+) -> tuple[dict[RoomID, Coord], list[str]]:
     """
     If rooms have coords already, those are used. If some rooms lack coords and
     start_room is provided, do a BFS from start_room following exits to assign
     coordinates using DIRECTION_DELTAS. Returns mapping and a list of conflict/warning messages.
     """
-    coords: Dict[RoomID, Coord] = {}
-    messages: List[str] = []
+    coords: dict[RoomID, Coord] = {}
+    messages: list[str] = []
 
     # First, record explicit coords
     for rid, room in rooms.items():
@@ -214,7 +225,9 @@ def infer_coordinates(rooms: Dict[RoomID, Room], start_room: Optional[RoomID] = 
 
             if dest in coords:
                 if coords[dest] != new_coord:
-                    messages.append(f"Coordinate conflict for {dest}: existing {coords[dest]} vs computed {new_coord} from {cur}->{dir_}")
+                    messages.append(
+                        f"Coordinate conflict for {dest}: existing {coords[dest]} vs computed {new_coord} from {cur}->{dir_}"
+                    )
                 # still continue BFS from dest if not visited
                 if dest not in visited:
                     visited.add(dest)
@@ -224,7 +237,9 @@ def infer_coordinates(rooms: Dict[RoomID, Room], start_room: Optional[RoomID] = 
                 # if coordinate already claimed by another room id, that's a problem
                 holder = next((r for r, c in coords.items() if c == new_coord), None)
                 if holder is not None:
-                    messages.append(f"Spatial collision: {dest} would be placed at {new_coord}, but {holder} already occupies it")
+                    messages.append(
+                        f"Spatial collision: {dest} would be placed at {new_coord}, but {holder} already occupies it"
+                    )
                     # still assign but mark the issue
                     # choose not to overwrite holder
                     # assign dest to new_coord with a suffix? For now, assign and record.
@@ -245,11 +260,14 @@ def infer_coordinates(rooms: Dict[RoomID, Room], start_room: Optional[RoomID] = 
 
 # --- Build grid mapping ---
 
-def build_tile_grid(rooms: Dict[RoomID, Room], coords: Dict[RoomID, Coord], tile_map: Dict[str, Dict[str, Any]] = None) -> Tuple[Dict[Coord, Dict[str, Any]], Dict[str, Coord]]:
+
+def build_tile_grid(
+    rooms: dict[RoomID, Room], coords: dict[RoomID, Coord], tile_map: dict[str, dict[str, Any]] = None
+) -> tuple[dict[Coord, dict[str, Any]], dict[str, Coord]]:
     """Return coord->tile info and roomid->coord mapping"""
     tile_map = tile_map or DEFAULT_TILE_MAP
-    grid: Dict[Coord, Dict[str, Any]] = {}
-    rid_to_coord: Dict[str, Coord] = {}
+    grid: dict[Coord, dict[str, Any]] = {}
+    rid_to_coord: dict[str, Coord] = {}
 
     for rid, room in rooms.items():
         if rid not in coords:
@@ -270,13 +288,14 @@ def build_tile_grid(rooms: Dict[RoomID, Room], coords: Dict[RoomID, Coord], tile
 
 # --- Rendering ---
 
-def compute_bounds(grid: Dict[Coord, Any]) -> Tuple[int, int, int, int]:
+
+def compute_bounds(grid: dict[Coord, Any]) -> tuple[int, int, int, int]:
     xs = [x for x, y in grid.keys()]
     ys = [y for x, y in grid.keys()]
     return min(xs), max(xs), min(ys), max(ys)
 
 
-def render_with_tcod(grid: Dict[Coord, Dict[str, Any]], title: str = "Map") -> None:
+def render_with_tcod(grid: dict[Coord, dict[str, Any]], title: str = "Map") -> None:
     if not TCOD_AVAILABLE:
         raise RuntimeError("tcod not available; install with `pip install tcod`")
 
@@ -317,16 +336,14 @@ def render_with_tcod(grid: Dict[Coord, Dict[str, Any]], title: str = "Map") -> N
                         return
 
 
-def render_text(grid: Dict[Coord, Dict[str, Any]]) -> None:
+def render_text(grid: dict[Coord, dict[str, Any]]) -> None:
     """Fallback textual renderer using simple printing or rich if available."""
     if not grid:
         print("No tiles to render")
         return
     min_x, max_x, min_y, max_y = compute_bounds(grid)
-    width = max_x - min_x + 1
-    height = max_y - min_y + 1
 
-    rows: List[str] = []
+    rows: list[str] = []
     for y in range(min_y, max_y + 1):
         row_chars = []
         for x in range(min_x, max_x + 1):
@@ -346,7 +363,8 @@ def render_text(grid: Dict[Coord, Dict[str, Any]]) -> None:
 
 # --- Utility outputs for debugging ---
 
-def dump_ascii_to_file(grid: Dict[Coord, Dict[str, Any]], out_path: str) -> None:
+
+def dump_ascii_to_file(grid: dict[Coord, dict[str, Any]], out_path: str) -> None:
     min_x, max_x, min_y, max_y = compute_bounds(grid)
     with open(out_path, "w", encoding="utf-8") as f:
         for y in range(min_y, max_y + 1):
@@ -359,7 +377,8 @@ def dump_ascii_to_file(grid: Dict[Coord, Dict[str, Any]], out_path: str) -> None
 
 # --- CLI glue ---
 
-def example_validator(room: Room) -> List[str]:
+
+def example_validator(room: Room) -> list[str]:
     """A tiny example validator; replace with your own validator hook."""
     errors = []
     if not room.id:

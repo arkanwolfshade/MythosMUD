@@ -22,7 +22,7 @@ def load_room_file(file_path: Path) -> dict:
         with open(file_path, encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, FileNotFoundError) as e:
-        raise ValueError(f"Could not load room file {file_path}: {e}")
+        raise ValueError(f"Could not load room file {file_path}: {e}") from e
 
 
 def save_room_file(file_path: Path, room_data: dict) -> None:
@@ -31,7 +31,7 @@ def save_room_file(file_path: Path, room_data: dict) -> None:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(room_data, f, indent=2, ensure_ascii=False)
     except Exception as e:
-        raise ValueError(f"Could not save room file {file_path}: {e}")
+        raise ValueError(f"Could not save room file {file_path}: {e}") from e
 
 
 def standardize_room_id(room_id: str) -> str:
@@ -72,7 +72,7 @@ def process_room_files(base_path: str = "data/rooms") -> None:
     print("=" * 60)
 
     # Walk through all directories
-    for root, dirs, files in os.walk(base_path):
+    for root, _dirs, files in os.walk(base_path):
         root_path = Path(root)
 
         for filename in files:
