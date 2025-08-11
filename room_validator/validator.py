@@ -124,14 +124,17 @@ def main(
             reporter.print_progress("Analyzing room connectivity...")
 
             # Check for unreachable rooms
-            unreachable = path_validator.find_unreachable_rooms(room_database=room_database)
+            start_room_id = "earth_arkham_city_intersection_derby_high"
+            unreachable = path_validator.find_unreachable_rooms(
+                start_room_id=start_room_id, room_database=room_database
+            )
             for room_id in unreachable:
                 errors.append(
                     {
                         "type": "unreachable",
                         "room_id": room_id,
-                        "message": "No path from starting room earth_arkham_city_campus_W_College_St_003",
-                        "suggestion": "Add connection from earth_arkham_city_campus_W_College_St_003 or another reachable room",
+                        "message": f"No path from starting room {start_room_id}",
+                        "suggestion": f"Add connection from {start_room_id} or another reachable room",
                     }
                 )
 

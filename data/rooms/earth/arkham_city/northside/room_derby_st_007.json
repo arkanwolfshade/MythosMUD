@@ -9,8 +9,8 @@
   "exits": {
     "north": null,
     "south": null,
-    "east": "earth_arkham_city_northside_derby_st_008",
-    "west": "earth_arkham_city_northside_derby_st_006",
+    "east": "earth_arkham_city_northside_room_derby_st_008",
+    "west": "earth_arkham_city_northside_room_derby_st_006",
     "up": null,
     "down": null
   }

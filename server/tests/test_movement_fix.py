@@ -108,7 +108,7 @@ class TestMovementFixes:
         assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
 
     def test_player_not_in_room_auto_add(self):
-        """Test that players are automatically added to rooms if not present."""
+        """Test that movement fails when player is not in expected room."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player.return_value = self.test_player
         self.mock_persistence.get_player_by_name.return_value = None
@@ -119,19 +119,21 @@ class TestMovementFixes:
             "earth_arkham_city_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
-        # Don't add player to from_room initially - this should trigger auto-add
+        # Don't add player to from_room initially - this should cause movement to fail
         assert self.from_room.has_player(self.test_player.player_id) is False
 
-        # Test movement - should auto-add player to from_room
+        # Test movement - should fail because player is not in from_room
         result = self.movement_service.move_player(
             self.test_player.player_id,
             "earth_arkham_city_northside_Derby_St_013",
             "earth_arkham_city_northside_Derby_St_014",
         )
 
-        assert result is True
-        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
-        assert self.to_room.has_player(self.test_player.player_id) is True
+        assert result is False
+        # Should not change
+        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_013"
+        # Should not be added to target room
+        assert self.to_room.has_player(self.test_player.player_id) is False
 
     def test_event_bus_integration(self):
         """Test that movement properly integrates with the event bus."""

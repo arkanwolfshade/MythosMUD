@@ -10,6 +10,7 @@ import uuid
 
 from fastapi import WebSocket
 
+from ..game.movement_service import MovementService
 from ..logging_config import get_logger
 from ..models import Player
 
@@ -495,6 +496,18 @@ class ConnectionManager:
                 # Prune any stale occupant ids not currently online
                 self._reconcile_room_presence(room_id)
 
+                # Add player to the Room object's _players set for movement service
+                if self.persistence:
+                    movement_service = MovementService()
+                    success = movement_service.add_player_to_room(player_id, room_id)
+                    if success:
+                        logger.info(f"Player {player_id} added to room {room_id} for movement service")
+                    else:
+                        logger.warning(f"Failed to add player {player_id} to room {room_id} for movement service")
+
+                # Send initial game_state event to the player
+                await self._send_initial_game_state(player_id, player, room_id)
+
             logger.info(f"Player {player_id} presence tracked as connected")
 
         except Exception as e:
@@ -591,6 +604,55 @@ class ConnectionManager:
                 occupants.append(self.online_players[player_id])
 
         return occupants
+
+    async def _send_initial_game_state(self, player_id: str, player: Player, room_id: str):
+        """
+        Send initial game_state event to a newly connected player.
+
+        Args:
+            player_id: The player's ID
+            player: The player object
+            room_id: The player's current room ID
+        """
+        try:
+            from .envelope import build_event
+
+            # Get room information
+            room_data = None
+            if self.persistence and room_id:
+                room = self.persistence.get_room(room_id)
+                if room:
+                    room_data = room.to_dict()
+
+            # Get room occupants
+            occupants = []
+            if room_id and room_id in self.room_occupants:
+                for occ_player_id in self.room_occupants[room_id]:
+                    if occ_player_id != player_id:  # Exclude the player themselves
+                        occ_player = self._get_player(occ_player_id)
+                        if occ_player:
+                            occupants.append(getattr(occ_player, "name", occ_player_id))
+
+            # Create game_state event
+            game_state_data = {
+                "player": {
+                    "player_id": getattr(player, "player_id", player_id),
+                    "name": getattr(player, "name", player_id),
+                    "level": getattr(player, "level", 1),
+                    "current_room_id": room_id,
+                },
+                "room": room_data,
+                "occupants": occupants,
+            }
+
+            game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
+
+            # Send the event to the player
+            await self.send_personal_message(player_id, game_state_event)
+            logger.info(f"Sent initial game_state to player {player_id}")
+
+        except Exception as e:
+            logger.error(f"Error sending initial game_state to player {player_id}: {e}", exc_info=True)
 
     def _reconcile_room_presence(self, room_id: str):
         """Ensure room_occupants only contains currently online players."""
