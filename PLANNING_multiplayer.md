@@ -335,7 +335,7 @@ function handleGameEvent(event: GameEvent) {
       (See issue #119)
 - [x] Room occupants panel in `RoomInfoPanel.tsx` to show the same occupants list already available in
       `GameTerminal.tsx` for parity with planning. (See issue #120)
-- [ ] Client: migrate any remaining legacy `type` consumers to `event_type` and add a thin adapter for backward compatibility in the hook.
+- [x] Client: migrate any remaining legacy `type` consumers to `event_type` and add a thin adapter for backward compatibility in the hook.
 - [ ] Add comprehensive presence monitoring and alerting for connection health.
 
 ---

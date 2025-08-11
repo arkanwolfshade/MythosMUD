@@ -80,54 +80,88 @@ export function useGameConnection({
   }, []);
 
   const scheduleSseReconnect = useCallback(() => {
-    const attempt = sseAttemptsRef.current;
-    const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
-    logger.info('GameConnection', `Scheduling SSE reconnect in ${delay}ms (attempt ${attempt + 1})`);
+    if (sseReconnectTimerRef.current !== null) {
+      return; // Already scheduled
+    }
+
+    const maxAttempts = 5;
+    const baseDelay = 1000; // 1 second
+    const maxDelay = 30000; // 30 seconds
+
+    if (sseAttemptsRef.current >= maxAttempts) {
+      logger.error('GameConnection', 'Max SSE reconnect attempts reached');
+      setState(prev => ({ ...prev, error: 'Max reconnect attempts reached' }));
+      return;
+    }
+
+    const delay = Math.min(baseDelay * Math.pow(2, sseAttemptsRef.current), maxDelay);
+    sseAttemptsRef.current++;
+
+    logger.info('GameConnection', 'Scheduling SSE reconnect', {
+      attempt: sseAttemptsRef.current,
+      delay,
+    });
+
     sseReconnectTimerRef.current = window.setTimeout(() => {
-      sseAttemptsRef.current += 1;
-      connect();
+      sseReconnectTimerRef.current = null;
+      if (!state.isConnected && !isConnectingRef.current) {
+        connect();
+      }
     }, delay);
-  }, [connect]);
+  }, [state.isConnected]);
 
   const scheduleWsReconnect = useCallback(() => {
-    const attempt = wsAttemptsRef.current;
-    const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
-    logger.info('GameConnection', `Scheduling WS reconnect in ${delay}ms (attempt ${attempt + 1})`);
-    wsReconnectTimerRef.current = window.setTimeout(() => {
-      wsAttemptsRef.current += 1;
-      connectWebSocket();
-    }, delay);
-  }, [connectWebSocket]);
+    if (wsReconnectTimerRef.current !== null) {
+      return; // Already scheduled
+    }
 
-  // Connect WebSocket for commands after SSE connection is established
+    const maxAttempts = 5;
+    const baseDelay = 1000; // 1 second
+    const maxDelay = 30000; // 30 seconds
+
+    if (wsAttemptsRef.current >= maxAttempts) {
+      logger.error('GameConnection', 'Max WebSocket reconnect attempts reached');
+      return;
+    }
+
+    const delay = Math.min(baseDelay * Math.pow(2, wsAttemptsRef.current), maxDelay);
+    wsAttemptsRef.current++;
+
+    logger.info('GameConnection', 'Scheduling WebSocket reconnect', {
+      attempt: wsAttemptsRef.current,
+      delay,
+    });
+
+    wsReconnectTimerRef.current = window.setTimeout(() => {
+      wsReconnectTimerRef.current = null;
+      if (state.sseConnected && !state.websocketConnected) {
+        connectWebSocket();
+      }
+    }, delay);
+  }, [state.sseConnected, state.websocketConnected]);
+
   const connectWebSocket = useCallback(() => {
-    if (!authToken || !playerName) {
-      logger.error('GameConnection', 'Missing auth token or player name for WebSocket');
+    if (websocketRef.current) {
+      logger.info('GameConnection', 'WebSocket already connected');
       return;
     }
 
     try {
-      // WebSocket endpoint uses JWT token; server resolves user_id -> player_id
-      const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}`;
-      const websocket = new WebSocket(wsUrl);
-
-      websocketRef.current = websocket;
+      logger.info('GameConnection', 'Connecting WebSocket');
+      const websocket = new WebSocket(`ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}`);
 
       websocket.onopen = () => {
         logger.info('GameConnection', 'WebSocket connected');
+        websocketRef.current = websocket;
         setState(prev => ({ ...prev, websocketConnected: true }));
-        // Reset WS backoff attempts
-        wsAttemptsRef.current = 0;
-        if (wsReconnectTimerRef.current !== null) {
-          window.clearTimeout(wsReconnectTimerRef.current);
-          wsReconnectTimerRef.current = null;
-        }
+        wsAttemptsRef.current = 0; // Reset attempts on successful connection
+
         // Start periodic ping to keep presence fresh
         if (wsPingIntervalRef.current === null) {
           wsPingIntervalRef.current = window.setInterval(() => {
             try {
               if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-                websocketRef.current.send(JSON.stringify({ type: 'ping' }));
+                websocketRef.current.send(JSON.stringify({ event_type: 'ping' }));
               }
             } catch (err) {
               logger.error('GameConnection', 'Failed to send WS ping', { error: String(err) });
@@ -222,7 +256,7 @@ export function useGameConnection({
           setState(prev => ({ ...prev, lastEvent: gameEvent }));
           onEvent?.(gameEvent);
         } catch (error) {
-          logger.error('GameConnection', 'Failed to parse event', { error: String(error) });
+          logger.error('GameConnection', 'Failed to parse SSE event', { error: String(error) });
         }
       };
 
@@ -294,7 +328,7 @@ export function useGameConnection({
 
     try {
       const commandData = {
-        type: 'command',
+        event_type: 'command',
         data: {
           command,
           args,

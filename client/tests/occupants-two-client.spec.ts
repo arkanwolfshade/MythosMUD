@@ -166,11 +166,11 @@ test.describe('Room occupants - two clients', () => {
     });
 
     // Verify RoomInfoPanel shows names and counts
-    await expect(pageA.locator('.room-occupants .occupants-label')).toContainText('(1)');
-    await expect(pageA.locator('.room-occupants .occupants-text')).toContainText('Bob');
+    await expect(pageA.locator('.room-occupants .occupant-count-badge')).toContainText('1');
+    await expect(pageA.locator('.room-occupants .occupant-name')).toContainText('Bob');
 
-    await expect(pageB.locator('.room-occupants .occupants-label')).toContainText('(1)');
-    await expect(pageB.locator('.room-occupants .occupants-text')).toContainText('Alice');
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('1');
+    await expect(pageB.locator('.room-occupants .occupant-name')).toContainText('Alice');
 
     // Simulate Bob leaving: occupants update to [] for Alice, and [] for Bob as well
     await pageA.evaluate(() => {
@@ -182,11 +182,11 @@ test.describe('Room occupants - two clients', () => {
       w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: [], count: 0 } });
     });
 
-    await expect(pageA.locator('.room-occupants .occupants-label')).toContainText('(0)');
-    await expect(pageA.locator('.room-occupants .occupants-text')).toContainText('None');
+    await expect(pageA.locator('.room-occupants .occupant-count-badge')).toContainText('0');
+    await expect(pageA.locator('.room-occupants .no-occupants-text')).toContainText('No other players present');
 
-    await expect(pageB.locator('.room-occupants .occupants-label')).toContainText('(0)');
-    await expect(pageB.locator('.room-occupants .occupants-text')).toContainText('None');
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('0');
+    await expect(pageB.locator('.room-occupants .no-occupants-text')).toContainText('No other players present');
 
     await contextA.close();
     await contextB.close();
