@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_derby_st_006",
+  "name": "W. Derby Street",
+  "description": "A particularly dark stretch of W. Derby Street where the streetlamps seem to struggle against an unnatural gloom. The houses here have steep, peaked roofs that suggest hidden attics and forgotten rooms. The air carries the faint scent of old books.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_room_derby_st_007",
+    "west": "earth_arkham_city_northside_room_derby_st_005",
+    "up": null,
+    "down": null
+  }
+}

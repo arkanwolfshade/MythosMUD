@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_derby_st_002",
+  "name": "W. Derby Street",
+  "description": "A quiet stretch of W. Derby Street where the houses seem to lean together in whispered conspiracy. Ancient oaks line the sidewalk, their gnarled branches casting shadows that writhe in the dim light. The air here feels thick with secrets.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_room_derby_st_003",
+    "west": "earth_arkham_city_northside_room_derby_st_001",
+    "up": null,
+    "down": null
+  }
+}

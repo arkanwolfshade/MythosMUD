@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_campus_room_boundary_st_002",
+  "name": "Boundary Street - Campus Perimeter",
+  "description": "The northern section of Boundary Street where the university's influence begins to wane. Ancient stone walls line the street, their surfaces covered in ivy that seems to move with a purpose of its own. The cobblestones here are worn smooth by generations of scholars who have walked this path, each carrying knowledge that would drive lesser minds to madness. The distant sound of chanting echoes from somewhere within the campus walls.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "campus",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_campus_room_boundary_st_001",
+    "east": null,
+    "west": "earth_arkham_city_campus_intersection_boundary_crane",
+    "up": null,
+    "down": null
+  }
+}

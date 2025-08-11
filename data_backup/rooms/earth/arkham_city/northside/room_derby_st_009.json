@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_derby_st_009",
+  "name": "W. Derby Street",
+  "description": "This stretch of W. Derby Street is dominated by a particularly imposing mansion with turreted towers and narrow, slit-like windows. The building seems to watch the street with a malevolent patience, its dark stone facade absorbing what little light reaches it.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_room_derby_st_010",
+    "west": "earth_arkham_city_northside_intersection_brown_derby",
+    "up": null,
+    "down": null
+  }
+}

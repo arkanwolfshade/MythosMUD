@@ -1,0 +1,12 @@
+{
+  "zone_type": "city",
+  "environment": "outdoors",
+  "description": "A bustling urban area with eldritch undertones, home to Miskatonic University and various occult societies",
+  "weather_patterns": ["fog", "rain", "overcast", "mist"],
+  "special_rules": {
+    "sanity_drain_rate": 0.1,
+    "npc_spawn_modifier": 1.2,
+    "combat_modifier": 1.0,
+    "exploration_bonus": 0.5
+  }
+}

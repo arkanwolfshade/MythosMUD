@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_high_ln_007",
+  "name": "High Lane - Curwen Intersection North",
+  "description": "The northern approach to the W. Curwen Street intersection on High Lane. The street widens significantly here, creating a more open space around the crossroads. The cobblestones are worn smooth by countless footsteps, and the ancient oaks stand as silent witnesses to the intersection's history. The houses here seem to lean together conspiratorially, their windows reflecting the dim light in ways that suggest whispered conversations within. A weathered stone marker stands at the corner, its surface bearing the marks of time.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": "earth_arkham_city_northside_room_high_ln_006",
+    "south": "earth_arkham_city_northside_intersection_curwen_high",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

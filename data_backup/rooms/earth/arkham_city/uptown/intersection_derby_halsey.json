@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_uptown_intersection_derby_halsey",
+  "name": "Derby and Halsey Street Intersection",
+  "description": "The intersection where E. Derby Street meets Halsey Street",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "uptown",
+  "environment": "intersection",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

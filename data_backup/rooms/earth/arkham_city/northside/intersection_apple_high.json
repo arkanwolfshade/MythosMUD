@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_intersection_apple_high",
+  "name": "Apple and High Street Intersection",
+  "description": "The intersection where Apple Lane meets High Street. Ancient oaks loom over the crossroads, their gnarled branches casting shadows that seem to writhe in the dim light. The houses here lean together as if sharing whispered secrets.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "intersection",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_curwen_st_011",
+  "name": "W. Curwen Street - Near Jenkins Street",
+  "description": "A quiet section of W. Curwen Street where the houses seem to huddle together for protection against something unseen. The street is narrow here, and the shadows cast by the Victorian architecture seem to contain secrets of their own. The air is still and heavy, carrying the faint scent of old books and something more arcane that lingers just beyond the threshold of perception.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_northside_intersection_curwen_jenkins",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

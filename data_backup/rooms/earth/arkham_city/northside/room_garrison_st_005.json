@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_garrison_st_005",
+  "name": "N. Garrison Street - Downtown Transition",
+  "description": "The southernmost section of N. Garrison Street where the residential district gives way to the bustling commercial heart of Arkham. The street widens here, and the buildings take on a more urban character with storefronts and offices. The cobblestones are well-maintained, and the air carries the mingled scents of commerce, coffee, and the constant activity of city life.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "street_paved",
+  "exits": {
+    "north": null,
+    "south": "earth_arkham_city_downtown_intersection_curwen_garrison",
+    "east": null,
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}
