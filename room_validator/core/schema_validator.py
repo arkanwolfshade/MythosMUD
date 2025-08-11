@@ -10,6 +10,14 @@ from pathlib import Path
 
 from jsonschema import ValidationError, validate
 
+# Try to import the shared schema validator
+try:
+    from schemas.validator import SchemaValidator as SharedSchemaValidator
+
+    SHARED_VALIDATOR_AVAILABLE = True
+except ImportError:
+    SHARED_VALIDATOR_AVAILABLE = False
+
 
 class SchemaValidator:
     """
@@ -17,11 +25,12 @@ class SchemaValidator:
 
     Supports both legacy string format and new object format for exits,
     as documented in the restricted archives of dimensional mapping.
+
+    This class now wraps the shared schema validator when available,
+    falling back to the original implementation if not.
     """
 
-    def __init__(
-        self, schema_path: str = "./schemas/room_hierarchy_schema.json"
-    ):
+    def __init__(self, schema_path: str = "./schemas/unified_room_schema.json"):
         """
         Initialize the schema validator.
 
@@ -30,7 +39,24 @@ class SchemaValidator:
         """
         self.schema_path = Path(schema_path)
         self.schema = None
-        self._load_schema()
+
+        # Use shared validator if available
+        if SHARED_VALIDATOR_AVAILABLE:
+            try:
+                # Convert relative path to absolute if needed
+                if not self.schema_path.is_absolute():
+                    # Try to resolve relative to room_validator directory
+                    room_validator_root = Path(__file__).parent.parent
+                    self.schema_path = room_validator_root / self.schema_path
+
+                self._shared_validator = SharedSchemaValidator(str(self.schema_path))
+                self._use_shared = True
+            except Exception:
+                self._use_shared = False
+                self._load_schema()
+        else:
+            self._use_shared = False
+            self._load_schema()
 
     def _load_schema(self) -> None:
         """Load and cache the JSON schema."""
@@ -38,9 +64,7 @@ class SchemaValidator:
             with open(self.schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
         except FileNotFoundError as exc:
-            raise FileNotFoundError(
-                f"Schema file not found: {self.schema_path}"
-            ) from exc
+            raise FileNotFoundError(f"Schema file not found: {self.schema_path}") from exc
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid schema file: {e}") from e
 
@@ -55,6 +79,9 @@ class SchemaValidator:
         Returns:
             List of validation error messages
         """
+        if self._use_shared:
+            return self._shared_validator.validate_room(room_data, file_path)
+
         errors = []
 
         try:
@@ -62,9 +89,7 @@ class SchemaValidator:
         except ValidationError as e:
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
-            error_msg = (
-                f"Schema validation failed at {path}: {e.message}"
-            )
+            error_msg = f"Schema validation failed at {path}: {e.message}"
             if file_path:
                 error_msg = f"{file_path}: {error_msg}"
             errors.append(error_msg)
@@ -117,6 +142,9 @@ class SchemaValidator:
         Returns:
             List of validation error messages
         """
+        if self._use_shared:
+            return self._shared_validator.validate_room_file(file_path)
+
         try:
             with open(file_path, encoding="utf-8") as f:
                 room_data = json.load(f)

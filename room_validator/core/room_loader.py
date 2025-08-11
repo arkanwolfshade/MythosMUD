@@ -6,6 +6,7 @@ structure and provides utilities for loading and parsing room data.
 """
 
 import json
+import re
 from pathlib import Path
 
 from tqdm import tqdm
@@ -30,6 +31,104 @@ class RoomLoader:
         self.base_path = Path(base_path)
         self.room_database: dict[str, dict] = {}
         self.parsing_errors: list[tuple[str, str]] = []
+
+    def parse_room_filename(self, filename: str) -> dict[str, str | int] | None:
+        """
+        Parse room filename according to unified naming schema.
+
+        Supports both old and new naming patterns:
+
+        New Schema:
+        - room_{street}_{number:03d}.json
+        - intersection_{street_a}_{street_b}.json
+
+        Old Schema (legacy support):
+        - {Direction}_{StreetName}_{Number}.json
+        - intersection_{StreetA}_{StreetB}.json
+
+        Args:
+            filename: Room filename to parse
+
+        Returns:
+            Dictionary with parsed components or None if invalid
+        """
+        if not filename.endswith(".json"):
+            return None
+
+        name = filename[:-5]  # Remove .json extension
+
+        # New schema patterns
+        room_pattern = r"^room_([a-z0-9_]+)_(\d{3})$"
+        intersection_pattern = r"^intersection_([a-z0-9_]+)_([a-z0-9_]+)$"
+
+        # Try new schema first
+        room_match = re.match(room_pattern, name)
+        if room_match:
+            return {"type": "room", "street": room_match.group(1), "number": int(room_match.group(2))}
+
+        intersection_match = re.match(intersection_pattern, name)
+        if intersection_match:
+            return {
+                "type": "intersection",
+                "street_a": intersection_match.group(1),
+                "street_b": intersection_match.group(2),
+            }
+
+        # Legacy schema patterns
+        legacy_room_pattern = r"^([NESW])_([A-Za-z0-9_]+)_(\d{3})$"
+        legacy_intersection_pattern = r"^intersection_([A-Za-z0-9_]+)_([A-Za-z0-9_]+)$"
+
+        legacy_room_match = re.match(legacy_room_pattern, name)
+        if legacy_room_match:
+            return {
+                "type": "room",
+                "direction": legacy_room_match.group(1),
+                "street": legacy_room_match.group(2).lower(),
+                "number": int(legacy_room_match.group(3)),
+                "legacy": True,
+            }
+
+        legacy_intersection_match = re.match(legacy_intersection_pattern, name)
+        if legacy_intersection_match:
+            return {
+                "type": "intersection",
+                "street_a": legacy_intersection_match.group(1).lower(),
+                "street_b": legacy_intersection_match.group(2).lower(),
+                "legacy": True,
+            }
+
+        return None
+
+    def generate_room_id(self, parsed_filename: dict, plane: str, zone: str, sub_zone: str) -> str:
+        """
+        Generate room ID from parsed filename and location data.
+
+        Args:
+            parsed_filename: Parsed filename data from parse_room_filename
+            plane: Plane identifier
+            zone: Zone identifier
+            sub_zone: Sub-zone identifier
+
+        Returns:
+            Generated room ID
+        """
+        if parsed_filename["type"] == "room":
+            if parsed_filename.get("legacy"):
+                # Legacy format: earth_arkham_city_northside_derby_st_001
+                street_name = parsed_filename["street"].replace("_", " ")
+                return f"{plane}_{zone}_{sub_zone}_{street_name}_{parsed_filename['number']:03d}"
+            else:
+                # New format: earth_arkham_city_northside_room_derby_001
+                return f"{plane}_{zone}_{sub_zone}_room_{parsed_filename['street']}_{parsed_filename['number']:03d}"
+        else:  # intersection
+            if parsed_filename.get("legacy"):
+                # Legacy format: earth_arkham_city_intersection_Derby_High
+                street_a = parsed_filename["street_a"].replace("_", " ")
+                street_b = parsed_filename["street_b"].replace("_", " ")
+                return f"{plane}_{zone}_intersection_{street_a}_{street_b}"
+            else:
+                # New format: earth_arkham_city_northside_intersection_derby_high
+                return f"{plane}_{zone}_{sub_zone}_intersection_{parsed_filename['street_a']}_{parsed_filename['street_b']}"
 
     def discover_room_files(self, base_path: str | None = None) -> list[Path]:
         """
@@ -76,10 +175,42 @@ class RoomLoader:
             if not isinstance(room_data, dict):
                 raise ValueError("Room data must be a JSON object")
 
-            required_fields = ["id", "name", "description", "zone", "exits"]
+            # Parse filename to validate naming schema
+            parsed_filename = self.parse_room_filename(file_path.name)
+            if parsed_filename:
+                # Extract location from file path
+                path_parts = file_path.parts
+                if len(path_parts) >= 4:
+                    # Expected: .../data/rooms/{plane}/{zone}/{subzone}/filename.json
+                    plane = path_parts[-4]
+                    zone = path_parts[-3]
+                    sub_zone = path_parts[-2]
+
+                    # Generate expected room ID
+                    expected_id = self.generate_room_id(parsed_filename, plane, zone, sub_zone)
+
+                    # Validate or update room ID
+                    if "id" not in room_data:
+                        room_data["id"] = expected_id
+                    elif room_data["id"] != expected_id:
+                        # Log mismatch but don't fail
+                        self.parsing_errors.append(
+                            (str(file_path), f"Room ID mismatch: expected {expected_id}, got {room_data['id']}")
+                        )
+
+            # Validate required fields
+            required_fields = ["id", "name", "description", "exits"]
             for field in required_fields:
                 if field not in room_data:
                     raise ValueError(f"Missing required field: {field}")
+
+            # Add location fields if missing
+            if "plane" not in room_data and len(path_parts) >= 4:
+                room_data["plane"] = path_parts[-4]
+            if "zone" not in room_data and len(path_parts) >= 4:
+                room_data["zone"] = path_parts[-3]
+            if "sub_zone" not in room_data and len(path_parts) >= 4:
+                room_data["sub_zone"] = path_parts[-2]
 
             return room_data
 
@@ -92,9 +223,7 @@ class RoomLoader:
             self.parsing_errors.append((str(file_path), error_msg))
             return None
 
-    def build_room_database(
-        self, base_path: str | None = None, show_progress: bool = True
-    ) -> dict[str, dict]:
+    def build_room_database(self, base_path: str | None = None, show_progress: bool = True) -> dict[str, dict]:
         """
         Create complete room index from all discovered files.
 
@@ -154,7 +283,7 @@ class RoomLoader:
         referenced_rooms = set()
         for room_data in self.room_database.values():
             exits = room_data.get("exits", {})
-            for direction, target_room in exits.items():
+            for _direction, target_room in exits.items():
                 if target_room and isinstance(target_room, str):
                     referenced_rooms.add(target_room)
 
@@ -170,7 +299,7 @@ class RoomLoader:
             # Check if this intersection references any rooms in our database
             exits = intersection_data.get("exits", {})
             references_our_rooms = False
-            for direction, target_room in exits.items():
+            for _direction, target_room in exits.items():
                 if target_room and isinstance(target_room, str):
                     if target_room in self.room_database:
                         references_our_rooms = True
@@ -267,9 +396,7 @@ class RoomLoader:
             # Check if file is in appropriate zone directory
             zone_dir = file_path.parent.name
             if zone_dir == "rooms":
-                warnings.append(
-                    f"Room file not in zone directory: {file_path}"
-                )
+                warnings.append(f"Room file not in zone directory: {file_path}")
 
         return warnings
 
@@ -284,10 +411,7 @@ class RoomLoader:
             Dictionary mapping config types to lists of file paths
         """
         search_path = Path(base_path) if base_path else self.base_path
-        config_files = {
-            "subzone_config": [],
-            "zone_config": []
-        }
+        config_files = {"subzone_config": [], "zone_config": []}
 
         if not search_path.exists():
             return config_files
@@ -317,9 +441,7 @@ class RoomLoader:
 
             # Validate basic structure
             if not isinstance(config_data, dict):
-                raise ValueError(
-                    "Configuration data must be a JSON object"
-                )
+                raise ValueError("Configuration data must be a JSON object")
 
             return config_data
 

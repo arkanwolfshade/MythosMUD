@@ -95,7 +95,7 @@ class TestEndpoints:
                 mock_service_instance = Mock()
                 mock_player = Mock()
                 mock_player.name = "testplayer"
-                mock_player.current_room_id = "earth_arkham_city_northside_Derby_High"
+                mock_player.current_room_id = "earth_arkham_city_intersection_derby_high"
                 mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
                 mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
                 mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
@@ -110,7 +110,7 @@ class TestEndpoints:
                 mock_player_service.return_value = mock_service_instance
 
                 response = client.post(
-                    "/players?name=testplayer&starting_room_id=earth_arkham_city_northside_Derby_High"
+                    "/players?name=testplayer&starting_room_id=earth_arkham_city_intersection_derby_high"
                 )
 
                 assert response.status_code == 200
@@ -144,7 +144,7 @@ class TestEndpoints:
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
                 "last_active": "2024-01-01T00:00:00Z",
-                "current_room_id": "earth_arkham_city_northside_Derby_High",
+                "current_room_id": "earth_arkham_city_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
             },
@@ -157,7 +157,7 @@ class TestEndpoints:
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
                 "last_active": "2024-01-01T00:00:00Z",
-                "current_room_id": "earth_arkham_city_northside_Derby_High",
+                "current_room_id": "earth_arkham_city_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
             },
@@ -190,7 +190,7 @@ class TestEndpoints:
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",
             "last_active": "2024-01-01T00:00:00Z",
-            "current_room_id": "earth_arkham_city_northside_Derby_High",
+            "current_room_id": "earth_arkham_city_intersection_derby_high",
             "experience_points": 0,
             "level": 1,
         }
@@ -229,7 +229,7 @@ class TestEndpoints:
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",
             "last_active": "2024-01-01T00:00:00Z",
-            "current_room_id": "earth_arkham_city_northside_Derby_High",
+            "current_room_id": "earth_arkham_city_intersection_derby_high",
             "experience_points": 0,
             "level": 1,
         }

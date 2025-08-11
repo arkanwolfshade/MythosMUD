@@ -1,5 +1,5 @@
 {
-  "id": "earth_arkham_city_northside_Derby_Jenkins",
+  "id": "earth_arkham_city_intersection_derby_jenkins",
   "name": "Derby and Jenkins Street Intersection",
   "description": "The intersection where Derby Street meets Jenkins Street. A gas lamp flickers uncertainly at the corner, its light struggling against the encroaching darkness. The houses here have an almost predatory aspect, their peaked roofs and narrow windows suggesting hidden watchers.",
   "plane": "earth",
@@ -7,7 +7,7 @@
   "sub_zone": "northside",
   "environment": "outdoors",
   "exits": {
-    "north": "earth_arkham_city_northside_Derby_St_010",
+    "north": "earth_arkham_city_northside_room_derby_st_010",
     "south": null,
     "east": null,
     "west": null,

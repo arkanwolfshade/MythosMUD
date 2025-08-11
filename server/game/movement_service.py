@@ -194,18 +194,8 @@ class MovementService:
 
         # Check if player is in the from_room
         if not from_room.has_player(player_id):
-            self._logger.warning(
-                f"Player {player_id} not found in expected from_room {from_room_id}; attempting to add"
-            )
-            # Try to add the player to the room
-            from_room.player_entered(player_id)
-
-            # Check again after adding
-            if not from_room.has_player(player_id):
-                self._logger.error(f"Failed to add player {player_id} to room {from_room_id}; movement invalid")
-                return False
-            else:
-                self._logger.info(f"Successfully added player {player_id} to room {from_room_id}")
+            self._logger.error(f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid")
+            return False
 
         # Check if player is already in the to_room (shouldn't happen, but safety check)
         if to_room.has_player(player_id):

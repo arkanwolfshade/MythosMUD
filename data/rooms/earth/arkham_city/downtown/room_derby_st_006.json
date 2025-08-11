@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_room_derby_st_006",
+  "name": "E. Derby Street",
+  "description": "E. Derby Street 006",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_intersection_derby_peabody",
+    "west": "earth_arkham_city_downtown_derby_st_005",
+    "up": null,
+    "down": null
+  }
+}

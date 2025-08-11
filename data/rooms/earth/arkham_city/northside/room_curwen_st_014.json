@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_curwen_st_014",
+  "name": "W. Curwen Street - Near Gedney Street",
+  "description": "A section of W. Curwen Street where the houses seem to lean together in whispered conspiracy. The street is lined with ancient oaks whose branches cast shadows that move when no wind blows, and the air carries the faint scent of decay mingled with something sweet and cloying. Windows are shuttered tight, but you can't shake the feeling that you're being watched from behind the curtains.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_intersection_curwen_gedney",
+    "west": null,
+    "up": null,
+    "down": null
+  }
+}

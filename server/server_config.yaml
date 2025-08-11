@@ -30,7 +30,7 @@ aliases_dir: ./data/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---
-start_room: earth_arkham_city_northside_Derby_High
+start_room: earth_arkham_city_northside_intersection_derby_high
 starting_level: 1
 allow_multiplay: false
 max_players: 100
@@ -57,6 +57,12 @@ npcs:
   - ./data/npcs/guards.json
 quests:
   - ./data/quests/tutorial.json
+
+# --- Room Validation ---
+room_validation:
+  enable_schema_validation: true  # Enable JSON schema validation of room data
+  strict_validation: false        # If true, server fails to start on validation errors
+  log_validation_errors: true     # Log validation errors to console/logs
 
 # --- Admin/Console/Telnet ---
 # admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable

@@ -137,7 +137,7 @@ class PathValidator:
         return dead_ends
 
     def find_unreachable_rooms(
-        self, start_room_id: str = "earth_arkham_city_campus_Boundary_St_001", room_database: dict[str, dict] = None
+        self, start_room_id: str = "earth_arkham_city_intersection_derby_high", room_database: dict[str, dict] = None
     ) -> set[str]:
         """
         Find rooms that cannot be reached from the start room.

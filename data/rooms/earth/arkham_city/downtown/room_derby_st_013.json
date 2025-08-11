@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_downtown_room_derby_st_013",
+  "name": "E. Derby Street",
+  "description": "The final stretch of E. Derby Street before it meets the Massachusetts Highway. The buildings here seem to loom overhead, their shadows stretching unnaturally across the busy street. The sound of approaching traffic grows louder, though something about its rhythm seems off.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "downtown",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": "earth_arkham_city_intersection_derby_mass",
+    "west": "earth_arkham_city_downtown_derby_st_012",
+    "up": null,
+    "down": null
+  }
+}

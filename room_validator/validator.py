@@ -57,7 +57,7 @@ def main(
         # Initialize components
         reporter = Reporter(use_colors=not no_colors)
         room_loader = RoomLoader(base_path)
-        schema_validator = SchemaValidator()
+        schema_validator = SchemaValidator("schemas/unified_room_schema.json")
         path_validator = PathValidator(schema_validator)
         fixer = RoomFixer(base_path) if fix else None
 
@@ -80,11 +80,6 @@ def main(
             reporter.print_error("No valid rooms found")
             sys.exit(1)
 
-        # Print parsing errors if any
-        parsing_errors = room_loader.get_parsing_errors()
-        if parsing_errors:
-            reporter.print_parsing_errors(parsing_errors)
-
         # Filter by zone if specified
         if zone:
             if zone not in zones:
@@ -96,6 +91,18 @@ def main(
         # Validation phase
         errors = []
         warnings = []
+
+        # Convert parsing errors to validation errors
+        parsing_errors = room_loader.get_parsing_errors()
+        for file_path, error_msg in parsing_errors:
+            errors.append(
+                {
+                    "type": "parse_error",
+                    "room_id": file_path,
+                    "message": error_msg,
+                    "suggestion": "Fix the room file format or naming convention",
+                }
+            )
 
         if not schema_only:
             # Schema validation
@@ -117,14 +124,17 @@ def main(
             reporter.print_progress("Analyzing room connectivity...")
 
             # Check for unreachable rooms
-            unreachable = path_validator.find_unreachable_rooms(room_database=room_database)
+            start_room_id = "earth_arkham_city_intersection_derby_high"
+            unreachable = path_validator.find_unreachable_rooms(
+                start_room_id=start_room_id, room_database=room_database
+            )
             for room_id in unreachable:
                 errors.append(
                     {
                         "type": "unreachable",
                         "room_id": room_id,
-                        "message": "No path from starting room earth_arkham_city_campus_W_College_St_003",
-                        "suggestion": "Add connection from earth_arkham_city_campus_W_College_St_003 or another reachable room",
+                        "message": f"No path from starting room {start_room_id}",
+                        "suggestion": f"Add connection from {start_room_id} or another reachable room",
                     }
                 )
 
@@ -314,7 +324,7 @@ def main(
             if errors:
                 print(f"❌ {len(errors)} errors found (see error.log for details)")
             else:
-                reporter.print_success()
+                reporter.print_success("All validations passed!")
             reporter.print_validation_warnings(warnings)
             reporter.print_summary(stats)
 

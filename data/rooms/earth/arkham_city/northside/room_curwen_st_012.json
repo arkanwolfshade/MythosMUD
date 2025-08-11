@@ -1,0 +1,17 @@
+{
+  "id": "earth_arkham_city_northside_room_curwen_st_012",
+  "name": "W. Curwen Street - Eastern Section",
+  "description": "The eastern section of W. Curwen Street where the residential district begins to transition into something more sinister. The houses here have an almost predatory quality, their windows like eyes watching for unwary passersby. The cobblestones are worn smooth by countless footsteps, and the air carries the faint scent of something that might be herbs or might be something far more disturbing.",
+  "plane": "earth",
+  "zone": "arkham_city",
+  "sub_zone": "northside",
+  "environment": "outdoors",
+  "exits": {
+    "north": null,
+    "south": null,
+    "east": null,
+    "west": "earth_arkham_city_intersection_curwen_jenkins",
+    "up": null,
+    "down": null
+  }
+}
