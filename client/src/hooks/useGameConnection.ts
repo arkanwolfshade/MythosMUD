@@ -166,7 +166,7 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
           wsPingIntervalRef.current = window.setInterval(() => {
             try {
               if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-                websocketRef.current.send(JSON.stringify({ event_type: 'ping' }));
+                websocketRef.current.send(JSON.stringify({ type: 'ping' }));
               }
             } catch (err) {
               logger.error('GameConnection', 'Failed to send WS ping', { error: String(err) });
@@ -347,7 +347,7 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
 
     try {
       const commandData = {
-        event_type: 'command',
+        type: 'command',
         data: {
           command,
           args,

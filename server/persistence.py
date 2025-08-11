@@ -359,8 +359,13 @@ class PersistenceLayer:
 
             # Add players that are in DB but not in memory
             for player_id in db_player_ids - memory_player_ids:
-                room.player_entered(player_id)
-                self._log(f"Synced player {player_id} to room {room.id} from database")
+                # Only add if the player actually exists and is valid
+                player = self.get_player(player_id)
+                if player and player.current_room_id == room.id:
+                    room.player_entered(player_id)
+                    self._log(f"Synced player {player_id} to room {room.id} from database")
+                else:
+                    self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
 
             # Remove players that are in memory but not in DB
             for player_id in memory_player_ids - db_player_ids:

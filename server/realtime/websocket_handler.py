@@ -321,13 +321,13 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             return {"result": "You can't go that way"}
 
         # Use MovementService to move the player (this will trigger events)
-        from ..events import EventBus
         from ..game.movement_service import MovementService
 
-        # Get the event bus from the app state or create a new one
+        # Get the event bus from the connection manager (should be set during app startup)
         event_bus = getattr(connection_manager, "_event_bus", None)
         if not event_bus:
-            event_bus = EventBus()
+            logger.error(f"No EventBus available for player {player_id} movement")
+            return {"result": "Game system temporarily unavailable"}
 
         movement_service = MovementService(event_bus)
 
