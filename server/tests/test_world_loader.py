@@ -66,9 +66,9 @@ def test_corrupted_room_file(tmp_path):
 def test_module_coverage():
     """Test to ensure world_loader module is properly imported for coverage."""
     # This test ensures the module is executed and tracked by coverage
-    assert hasattr(server.world_loader, 'load_rooms')
-    assert hasattr(server.world_loader, 'load_hierarchical_world')
-    assert hasattr(server.world_loader, 'generate_room_id')
-    assert hasattr(server.world_loader, 'get_room_environment')
-    assert hasattr(server.world_loader, 'resolve_room_reference')
-    assert hasattr(server.world_loader, 'ROOMS_BASE_PATH')
+    assert hasattr(server.world_loader, "load_rooms")
+    assert hasattr(server.world_loader, "load_hierarchical_world")
+    assert hasattr(server.world_loader, "generate_room_id")
+    assert hasattr(server.world_loader, "get_room_environment")
+    assert hasattr(server.world_loader, "resolve_room_reference")
+    assert hasattr(server.world_loader, "ROOMS_BASE_PATH")
