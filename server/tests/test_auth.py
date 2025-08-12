@@ -13,7 +13,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from fastapi_users.exceptions import UserAlreadyExists
 
 from server.auth.endpoints import LoginRequest, LoginResponse, UserCreate
 from server.main import app
@@ -121,37 +120,42 @@ class TestRegistrationEndpoints:
         assert response.status_code == 400
         assert "Invalid invite code" in response.json()["error"]["message"]
 
-    @patch("server.auth.endpoints.get_user_manager")
-    def test_registration_duplicate_username(self, mock_get_user, test_client):
+    def test_registration_duplicate_username(self, test_client):
         """Test registration with duplicate username."""
-        # Use real invite manager but mock user manager to simulate duplicate username
-        mock_manager = AsyncMock()
-        mock_manager.create.side_effect = UserAlreadyExists()
-        mock_get_user.return_value = mock_manager
+        import uuid
 
-        # Override the dependency at the app level
-        from server.auth.users import get_user_manager
-        from server.main import app
+        # Use a unique username to avoid conflicts with other tests
+        unique_username = f"duplicate_test_{uuid.uuid4().hex[:8]}"
 
-        def override_get_user_manager():
-            return mock_manager
+        # First, register a user to create the duplicate condition
+        first_response = test_client.post(
+            "/auth/register",
+            json={
+                "username": unique_username,
+                "password": "testpass123",
+                "invite_code": "TEST456"
+            }
+        )
 
-        app.dependency_overrides[get_user_manager] = override_get_user_manager
+        # The first registration should succeed
+        assert first_response.status_code == 200
 
-        try:
-            response = test_client.post(
-                "/auth/register", json={"username": "existinguser", "password": "testpass123", "invite_code": "TEST456"}
-            )
+        # Now try to register with the same username
+        response = test_client.post(
+            "/auth/register",
+            json={
+                "username": unique_username,
+                "password": "testpass123",
+                "invite_code": "TEST456"
+            }
+        )
 
-            # Debug output
-            print(f"Response status: {response.status_code}")
-            print(f"Response body: {response.text}")
+        # Debug output
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
 
-            assert response.status_code == 400
-            assert "Username already exists" in response.json()["error"]["message"]
-        finally:
-            # Clean up the dependency override
-            app.dependency_overrides.clear()
+        assert response.status_code == 400
+        assert "Username already exists" in response.json()["error"]["message"]
 
     def test_registration_with_empty_password(self, test_client):
         """Test registration with empty password should be rejected for security."""
