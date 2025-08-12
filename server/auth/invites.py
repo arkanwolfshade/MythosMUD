@@ -81,8 +81,6 @@ class InviteManager:
         logger.debug("Invite validation successful", invite_code=invite_code)
         return invite
 
-
-
     async def use_invite(self, invite_code: str, user_id: uuid.UUID) -> Invite:
         """Mark an invite as used by a specific user."""
         logger.info("Using invite", invite_code=invite_code, user_id=user_id)

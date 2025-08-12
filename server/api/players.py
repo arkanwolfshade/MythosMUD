@@ -7,7 +7,7 @@ creation, retrieval, listing, and deletion of player characters.
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from ..auth.users import get_current_user
+from ..auth.users import get_current_user, get_current_user_with_logging
 from ..exceptions import RateLimitError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
@@ -215,7 +215,7 @@ def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = get_current_user_with_logging(),
 ):
     """
     Roll random stats for character creation.
@@ -226,8 +226,12 @@ def roll_character_stats(
     Rate limited to 10 requests per minute per user.
     """
     # Check if user is authenticated
+    logger.debug(f"Authentication check - current_user: {current_user}")
     if not current_user:
+        logger.warning("Authentication failed: No user returned from get_current_user")
         raise HTTPException(status_code=401, detail="Authentication required")
+
+    logger.info(f"Authentication successful for user: {current_user.username} (ID: {current_user.id})")
 
     # Apply rate limiting
     try:
@@ -238,8 +242,8 @@ def roll_character_stats(
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
-                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user["id"])
-            }
+                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user["id"]),
+            },
         ) from e
 
     stats_generator = StatsGenerator()
@@ -291,8 +295,8 @@ async def create_character_with_stats(
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
-                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user["id"])
-            }
+                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user["id"]),
+            },
         ) from e
 
     persistence = request.app.state.persistence
@@ -301,31 +305,21 @@ async def create_character_with_stats(
     try:
         # Validate that character name matches username
         if name != current_user.username:
-            raise HTTPException(
-                status_code=400,
-                detail="Character name must match your username"
-            )
+            raise HTTPException(status_code=400, detail="Character name must match your username")
 
         # Convert dict to Stats object
         stats_obj = Stats(**stats)
 
         # Create player with stats
         player = player_service.create_player_with_stats(
-            name=name,
-            stats=stats_obj,
-            starting_room_id=starting_room_id,
-            user_id=current_user.id
+            name=name, stats=stats_obj, starting_room_id=starting_room_id, user_id=current_user.id
         )
 
         # Note: For now, we'll skip marking the invite as used to avoid complexity
         # TODO: Implement a proper way to track and mark invites as used
         logger.info(f"Character {name} created successfully for user {current_user.id}")
 
-        return {
-            "message": f"Character {name} created successfully",
-            "player": player,
-            "stats": stats_obj.model_dump()
-        }
+        return {"message": f"Character {name} created successfully", "player": player, "stats": stats_obj.model_dump()}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:

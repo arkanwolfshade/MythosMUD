@@ -133,24 +133,28 @@ async def register_user(
 
     # Store invite code in user session for later use during character creation
     # We'll mark it as used when the character is actually created
-    logger.info(f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance")
+    logger.info(
+        f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance"
+    )
 
-    # Generate access token using FastAPI Users approach
+    # Generate JWT token using FastAPI Users' built-in method
     import os
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually (without invite code to avoid validation issues)
-    data = {
-        "sub": str(user.id),
-        "aud": ["fastapi-users:auth"]
-    }
+    # Create JWT token with the same format as FastAPI Users expects
+    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(
         data,
         jwt_secret,
         lifetime_seconds=3600,  # 1 hour
     )
+
+    logger.debug(f"JWT token generated for user {user.username}")
+    logger.debug(f"JWT data: {data}")
+    logger.debug(f"JWT secret: {jwt_secret}")
+    logger.debug(f"JWT token preview: {access_token[:50]}...")
 
     return LoginResponse(
         access_token=access_token,

@@ -53,6 +53,7 @@ class Stats(BaseModel):
 
     def __init__(self, **data):
         import random
+
         data.setdefault("strength", random.randint(3, 18))
         data.setdefault("dexterity", random.randint(3, 18))
         data.setdefault("constitution", random.randint(3, 18))

@@ -45,9 +45,7 @@ class RateLimiter:
 
         # Remove old requests outside the window
         self.requests[user_id] = [
-            request_time
-            for request_time in self.requests[user_id]
-            if current_time - request_time < self.window_seconds
+            request_time for request_time in self.requests[user_id] if current_time - request_time < self.window_seconds
         ]
 
         # Check if limit exceeded
@@ -73,8 +71,7 @@ class RateLimiter:
 
         # Filter recent requests
         recent_requests = [
-            request_time for request_time in requests
-            if current_time - request_time < self.window_seconds
+            request_time for request_time in requests if current_time - request_time < self.window_seconds
         ]
 
         # Calculate reset time (when the oldest request will expire)
@@ -107,7 +104,7 @@ class RateLimiter:
             raise RateLimitError(
                 f"Rate limit exceeded. Maximum {self.max_requests} requests per {self.window_seconds} seconds.",
                 limit_type="api_endpoint",
-                retry_after=info["retry_after"]
+                retry_after=info["retry_after"],
             )
 
 

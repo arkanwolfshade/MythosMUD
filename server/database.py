@@ -71,7 +71,8 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             logger.debug("Database session created successfully")
             yield session
         except Exception as e:
-            logger.error("Database session error", error=str(e))
+            logger.error(f"Database session error: {type(e).__name__}: {str(e)}")
+            logger.debug(f"Database session error details: {type(e).__name__}: {str(e)}")
             await session.rollback()
             raise
         finally:
