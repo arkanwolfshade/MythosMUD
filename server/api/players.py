@@ -332,7 +332,7 @@ async def create_character_with_stats(
 
         return {
             "message": f"Character {request_data.name} created successfully",
-            "player": player,
+            "player": player.model_dump(),
             "stats": stats_obj.model_dump(),
         }
     except ValueError as e:

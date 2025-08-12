@@ -636,7 +636,7 @@ class ConnectionManager:
             # Create game_state event
             game_state_data = {
                 "player": {
-                    "player_id": getattr(player, "player_id", player_id),
+                    "player_id": str(getattr(player, "player_id", player_id)),
                     "name": getattr(player, "name", player_id),
                     "level": getattr(player, "level", 1),
                     "current_room_id": room_id,

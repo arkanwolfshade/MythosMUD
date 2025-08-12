@@ -184,7 +184,9 @@ class PersistenceLayer:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+            # Convert player_id to string to ensure SQLite compatibility
+            player_id_str = str(player_id) if player_id else None
+            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
             if row:
                 player_data = self._convert_row_to_player_data(row)
                 player = Player(**player_data)
@@ -197,7 +199,9 @@ class PersistenceLayer:
         """Get a player by the owning user's ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
+            # Convert user_id to string to ensure SQLite compatibility
+            user_id_str = str(user_id) if user_id else None
+            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
             if row:
                 player_data = self._convert_row_to_player_data(row)
                 player = Player(**player_data)

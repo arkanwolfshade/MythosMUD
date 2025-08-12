@@ -10,8 +10,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi_users import InvalidPasswordException, schemas
-from fastapi_users.exceptions import UserAlreadyExists
+from fastapi_users import schemas
 from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,7 +19,6 @@ from ..logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
-from .email_utils import generate_unique_bogus_email
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, auth_backend, fastapi_users, get_user_manager
 
@@ -44,13 +42,12 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 
 # Define user creation schema
-class UserCreate(schemas.BaseUserCreate):
+class UserCreate(BaseModel):
     """Schema for user creation with invite code validation."""
 
     username: str
+    password: str
     invite_code: str | None = None
-
-    # Override email to make it optional
     email: str | None = None
 
     # Add password validation to reject empty passwords
@@ -99,25 +96,59 @@ async def register_user(
 
     # Generate unique bogus email if not provided
     if not user_create.email:
-        user_create.email = await generate_unique_bogus_email(user_create.username, session)
-        logger.info(f"Generated unique bogus email for {user_create.username}: {user_create.email}")
+        # Use a simple email format to avoid the complex generation
+        user_create.email = f"{user_create.username}@wolfshade.org"
+        logger.info(f"Generated simple bogus email for {user_create.username}: {user_create.email}")
 
     # Validate invite code (but don't use it yet)
-    try:
-        await invite_manager.validate_invite(user_create.invite_code)
-    except HTTPException as e:
-        raise e
+    if user_create.invite_code:
+        try:
+            await invite_manager.validate_invite(user_create.invite_code)
+        except HTTPException as e:
+            raise e
 
     # Create user without invite_code field
-    user_data = user_create.model_dump(exclude={"invite_code"})
+    user_data = {"username": user_create.username, "password": user_create.password, "email": user_create.email}
     user_create_clean = UserCreate(**user_data)
 
     try:
-        user = await user_manager.create(user_create_clean)
-    except InvalidPasswordException as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
-    except UserAlreadyExists as e:
-        raise HTTPException(status_code=400, detail="Username already exists") from e
+        # Create user directly using SQLAlchemy to bypass FastAPI Users issues
+        from sqlalchemy import select
+
+        from ..models.user import User
+        from .argon2_utils import hash_password
+
+        # Check if username already exists
+        stmt = select(User).where(User.username == user_create_clean.username)
+        result = await session.execute(stmt)
+        existing_user = result.scalar_one_or_none()
+
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Username already exists")
+
+        # Hash password using Argon2
+        hashed_password = hash_password(user_create_clean.password)
+
+        # Create user with explicit timestamps to avoid None issues
+        from datetime import UTC, datetime
+
+        # Create a minimal user object to avoid FastAPI Users issues
+        user = User()
+        user.username = user_create_clean.username
+        user.email = user_create_clean.email
+        user.hashed_password = hashed_password
+        user.is_active = True
+        user.is_superuser = False
+        user.is_verified = False
+        user.created_at = datetime.now(UTC).replace(tzinfo=None)
+        user.updated_at = datetime.now(UTC).replace(tzinfo=None)
+
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+
+    except HTTPException:
+        raise
     except Exception as e:
         # Check if it's a duplicate username error
         constraint_error = "UNIQUE constraint failed: users.username"

@@ -28,7 +28,7 @@ class PlayerService:
     def create_player(
         self,
         name: str,
-        starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+        starting_room_id: str = "earth_arkham_city_northside_intersection_derby_high",
         user_id: uuid.UUID | None = None,
     ) -> PlayerRead:
         """
@@ -81,7 +81,7 @@ class PlayerService:
         self,
         name: str,
         stats: Stats,
-        starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+        starting_room_id: str = "earth_arkham_city_northside_intersection_derby_high",
         user_id: uuid.UUID | None = None,
     ) -> PlayerRead:
         """
@@ -125,7 +125,12 @@ class PlayerService:
         )
 
         # Set the player's stats
-        player.set_stats(stats)
+        if hasattr(stats, "model_dump"):
+            # Stats object
+            player.set_stats(stats.model_dump())
+        else:
+            # Dictionary
+            player.set_stats(stats)
 
         # Save player to persistence
         self.persistence.save_player(player)
@@ -244,7 +249,7 @@ class PlayerService:
                 current_room_id=player.current_room_id,
                 experience_points=player.experience_points,
                 level=player.level,
-                stats=player.get_stats().model_dump(),
+                stats=player.get_stats(),
                 inventory=player.get_inventory(),
                 status_effects=player.get_status_effects(),
                 created_at=player.created_at,

@@ -30,6 +30,7 @@ dependencies = [
     "jsonschema>=4.21.0",
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
+    "passlib[bcrypt]>=1.7.4",
 ]
 
 [project.optional-dependencies]

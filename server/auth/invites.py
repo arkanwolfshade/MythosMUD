@@ -57,8 +57,12 @@ class InviteManager:
         logger.debug("Invites listed", count=len(invites))
         return invites
 
-    async def validate_invite(self, invite_code: str) -> Invite:
+    async def validate_invite(self, invite_code: str | None) -> Invite:
         """Validate an invite code."""
+        if not invite_code:
+            logger.warning("No invite code provided")
+            raise HTTPException(status_code=400, detail="Invite code is required")
+
         logger.debug("Validating invite code", invite_code=invite_code)
 
         # Find invite by code

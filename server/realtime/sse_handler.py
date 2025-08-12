@@ -25,17 +25,23 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
     Yields:
         str: SSE event data
     """
+    # Convert player_id to string to ensure JSON serialization compatibility
+    player_id_str = str(player_id)
+
     # Connect the SSE connection
-    connection_manager.connect_sse(player_id)
+    connection_manager.connect_sse(player_id_str)
 
     try:
         # Send initial connection event
-        yield sse_line(build_event("connected", {"player_id": player_id}, player_id=player_id))
+        yield sse_line(build_event("connected", {"player_id": player_id_str}, player_id=player_id_str))
+
+        # Send immediate heartbeat to confirm connection is working
+        yield sse_line(build_event("heartbeat", {"message": "Connection established"}, player_id=player_id_str))
 
         # Send pending messages
-        pending_messages = connection_manager.get_pending_messages(player_id)
+        pending_messages = connection_manager.get_pending_messages(player_id_str)
         for message in pending_messages:
-            yield sse_line(build_event("pending_message", message, player_id=player_id))
+            yield sse_line(build_event("pending_message", message, player_id=player_id_str))
 
         # Main event loop
         while True:
@@ -43,22 +49,22 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
                 # Send heartbeat every 30 seconds
                 await asyncio.sleep(30)
                 # Mark presence and send heartbeat
-                connection_manager.mark_player_seen(player_id)
+                connection_manager.mark_player_seen(player_id_str)
                 connection_manager.prune_stale_players()
-                yield sse_line(build_event("heartbeat", {}, player_id=player_id))
+                yield sse_line(build_event("heartbeat", {}, player_id=player_id_str))
 
             except asyncio.CancelledError:
-                logger.info(f"SSE stream cancelled for player {player_id}")
+                logger.info(f"SSE stream cancelled for player {player_id_str}")
                 break
 
             except Exception as e:
-                logger.error(f"Error in SSE stream for player {player_id}: {e}")
-                yield sse_line(build_event("error", {"message": "Stream error occurred"}, player_id=player_id))
+                logger.error(f"Error in SSE stream for player {player_id_str}: {e}")
+                yield sse_line(build_event("error", {"message": "Stream error occurred"}, player_id=player_id_str))
                 break
 
     finally:
         # Clean up connection
-        connection_manager.disconnect_sse(player_id)
+        connection_manager.disconnect_sse(player_id_str)
 
 
 def format_sse_event(event_type: str, data: dict) -> str:  # Backward compat shim
@@ -76,7 +82,11 @@ async def send_game_event(player_id: str, event_type: str, data: dict):
         data: The event data
     """
     try:
-        await connection_manager.send_personal_message(player_id, build_event(event_type, data, player_id=player_id))
+        # Convert player_id to string to ensure JSON serialization compatibility
+        player_id_str = str(player_id)
+        await connection_manager.send_personal_message(
+            player_id_str, build_event(event_type, data, player_id=player_id_str)
+        )
 
     except Exception as e:
         logger.error(f"Error sending game event to {player_id}: {e}")
