@@ -222,9 +222,13 @@ def roll_character_stats(
 
     Rate limited to 10 requests per minute per user.
     """
+    # Check if user is authenticated
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
     # Apply rate limiting
     try:
-        stats_roll_limiter.enforce_rate_limit(current_user["id"])
+        stats_roll_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
         raise HTTPException(
             status_code=429,
@@ -271,9 +275,13 @@ def create_character_with_stats(
 
     Rate limited to 5 creations per 5 minutes per user.
     """
+    # Check if user is authenticated
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
     # Apply rate limiting
     try:
-        character_creation_limiter.enforce_rate_limit(current_user["id"])
+        character_creation_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
         raise HTTPException(
             status_code=429,
@@ -288,6 +296,13 @@ def create_character_with_stats(
     player_service = PlayerService(persistence)
 
     try:
+        # Validate that character name matches username
+        if name != current_user.username:
+            raise HTTPException(
+                status_code=400,
+                detail="Character name must match your username"
+            )
+
         # Convert dict to Stats object
         stats_obj = Stats(**stats)
 
@@ -296,7 +311,7 @@ def create_character_with_stats(
             name=name,
             stats=stats_obj,
             starting_room_id=starting_room_id,
-            user_id=current_user["id"]
+            user_id=current_user.id
         )
 
         return {

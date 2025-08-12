@@ -134,56 +134,7 @@ async def register_user(
     # Mark invite as used
     await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
 
-    # Create player record for the new user
-    import datetime
-    import uuid
-
-    from ..persistence import get_persistence
-
-    # Create player record directly in database to match SQLite schema
-    persistence = get_persistence()
-
-    # Generate player data matching the database schema
-    player_id = str(uuid.uuid4())
-    user_id = str(user.user_id)
-    player_name = user.username
-    stats = '{"health": 100, "sanity": 100, "strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
-    inventory = "[]"
-    status_effects = "[]"
-    current_room_id = "earth_arkham_city_intersection_derby_high"
-    experience_points = 0
-    level = 1
-    created_at = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
-    last_active = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
-
-    # Insert player directly into database
-    import sqlite3
-
-    with sqlite3.connect(persistence.db_path) as conn:
-        conn.execute(
-            """
-            INSERT INTO players (
-                player_id, user_id, name, stats, inventory, status_effects,
-                current_room_id, experience_points, level, created_at, last_active
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                player_id,
-                user_id,
-                player_name,
-                stats,
-                inventory,
-                status_effects,
-                current_room_id,
-                experience_points,
-                level,
-                created_at,
-                last_active,
-            ),
-        )
-        conn.commit()
-
-    persistence._log(f"Created player {player_name} ({player_id}) for user {user_id}")
+    logger.info(f"User {user.username} registered successfully - player creation pending stats acceptance")
 
     # Generate access token using FastAPI Users approach
     import os

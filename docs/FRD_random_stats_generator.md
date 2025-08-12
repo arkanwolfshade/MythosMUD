@@ -18,12 +18,11 @@ As a new player, I want to randomly generate my character's starting stats durin
 
 ### 1. Registration Process
 1. User enters registration code
-2. User completes registration form
-3. User enters character name
-4. **NEW**: User proceeds to stats rolling screen
+2. User completes registration form (username becomes character name)
+3. **NEW**: User proceeds to stats rolling screen
 
 ### 2. Stats Rolling Process
-1. System displays stats rolling interface
+1. System displays stats rolling interface with character name (from registration)
 2. System automatically rolls initial stats using 3d6 method
 3. User views rolled stats (raw numbers only)
 4. User can either:
@@ -40,7 +39,7 @@ As a new player, I want to randomly generate my character's starting stats durin
 
 ### Frontend Requirements
 1. **Stats Rolling Screen**
-   - Display character name (read-only)
+   - Display character name from registration (read-only)
    - Display all six core stats with raw numbers
    - "Reroll Stats" button (disabled during 1-second cooldown)
    - "Accept Stats" button
@@ -131,16 +130,16 @@ As a new player, I want to randomly generate my character's starting stats durin
 ## Implementation Phases
 
 ### Phase 1: Core Stats Rolling
-- [ ] Create stats rolling screen component
-- [ ] Implement stats display
-- [ ] Add reroll functionality
-- [ ] Implement rate limiting
+- [x] Create stats rolling screen component
+- [x] Implement stats display
+- [x] Add reroll functionality
+- [x] Implement rate limiting
 
 ### Phase 2: Integration
-- [ ] Integrate with registration flow
-- [ ] Add character name display
-- [ ] Implement acceptance flow
-- [ ] Add automatic login
+- [x] Integrate with registration flow
+- [x] Add character name display (from registration)
+- [x] Implement acceptance flow
+- [x] Add automatic login
 
 ### Phase 3: Error Handling & Polish
 - [ ] Add comprehensive error handling
