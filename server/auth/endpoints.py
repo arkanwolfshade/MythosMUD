@@ -107,7 +107,7 @@ async def register_user(
     if not user_create.email:
         user_create.email = f"{user_create.username}@wolfshade.org"
 
-    # Validate invite code
+    # Validate invite code (but don't use it yet)
     try:
         await invite_manager.validate_invite(user_create.invite_code)
     except HTTPException as e:
@@ -131,18 +131,21 @@ async def register_user(
         # Re-raise other exceptions
         raise e
 
-    # Mark invite as used
-    await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
-
-    logger.info(f"User {user.username} registered successfully - player creation pending stats acceptance")
+    # Store invite code in user session for later use during character creation
+    # We'll mark it as used when the character is actually created
+    logger.info(f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance")
 
     # Generate access token using FastAPI Users approach
     import os
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually
-    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    # Create JWT token manually with invite code included
+    data = {
+        "sub": str(user.id),
+        "aud": ["fastapi-users:auth"],
+        "invite_code": user_create.invite_code  # Include invite code for later use
+    }
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(
         data,

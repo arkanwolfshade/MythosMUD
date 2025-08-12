@@ -11,9 +11,12 @@ from ..auth.users import get_current_user
 from ..exceptions import RateLimitError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
+from ..logging_config import get_logger
 from ..models import Stats
 from ..schemas.player import PlayerRead
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
+
+logger = get_logger(__name__)
 
 # Create player router
 player_router = APIRouter(prefix="/players", tags=["players"])
@@ -260,7 +263,7 @@ def roll_character_stats(
 
 
 @player_router.post("/create-character")
-def create_character_with_stats(
+async def create_character_with_stats(
     name: str,
     stats: dict,
     starting_room_id: str = "earth_arkham_city_intersection_derby_high",
@@ -313,6 +316,31 @@ def create_character_with_stats(
             starting_room_id=starting_room_id,
             user_id=current_user.id
         )
+
+        # Mark invite as used now that character is created
+        # Extract invite code from JWT token
+        import os
+
+        from fastapi_users.jwt import decode_jwt
+
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+            try:
+                payload = decode_jwt(token, jwt_secret, ["fastapi-users:auth"])
+                invite_code = payload.get("invite_code")
+                if invite_code:
+                    # Mark invite as used
+                    from ..auth.invites import InviteManager
+                    from ..database import get_async_session
+
+                    session = await get_async_session().__anext__()
+                    invite_manager = InviteManager(session)
+                    await invite_manager.use_invite(invite_code, str(current_user.id))
+                    logger.info(f"Invite {invite_code} marked as used for user {current_user.id}")
+            except Exception as e:
+                logger.warning(f"Failed to mark invite as used: {e}")
 
         return {
             "message": f"Character {name} created successfully",
