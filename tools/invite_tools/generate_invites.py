@@ -13,7 +13,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add server directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "server"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
 
 # Now import server modules
 from sqlalchemy import text
