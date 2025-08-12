@@ -28,7 +28,10 @@ os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
 # Legacy logging environment variables no longer needed - logging is handled by centralized system
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+# Use absolute path for aliases directory to prevent incorrect directory creation
+aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+aliases_dir.mkdir(parents=True, exist_ok=True)
+os.environ["ALIASES_DIR"] = str(aliases_dir)
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -61,9 +64,10 @@ def pytest_configure(config):
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
-
-
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    # Use absolute path for aliases directory to prevent incorrect directory creation
+    aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+    aliases_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["ALIASES_DIR"] = str(aliases_dir)
 
 
 @pytest.fixture(scope="session")
