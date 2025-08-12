@@ -6,13 +6,12 @@ management. It integrates with FastAPI Users for user management and includes
 custom invite code validation.
 """
 
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi_users import InvalidPasswordException
-from fastapi_users.exceptions import UserAlreadyExists
-from fastapi_users.schemas import BaseUserCreate
-from pydantic import BaseModel
+from fastapi_users import schemas
+from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
@@ -29,39 +28,29 @@ logger = get_logger("auth.endpoints")
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-# Define user schemas
-class UserRead(BaseModel):
+# Define user schemas compatible with FastAPI Users v14
+class UserRead(schemas.BaseUser[uuid.UUID]):
     """Schema for user read operations."""
 
-    id: str
     username: str
-    email: str | None = None
-    is_active: bool = True
-    is_superuser: bool = False
-    is_verified: bool = False
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(schemas.BaseUserUpdate):
     """Schema for user update operations."""
 
     username: str | None = None
-    email: str | None = None
-    password: str | None = None
 
 
 # Define user creation schema
-class UserCreate(BaseUserCreate):
+class UserCreate(BaseModel):
     """Schema for user creation with invite code validation."""
 
     username: str
+    password: str
     invite_code: str | None = None
-
-    # Override email to make it optional
     email: str | None = None
 
     # Add password validation to reject empty passwords
-    from pydantic import field_validator
-
     @field_validator("password")
     @classmethod
     def validate_password_not_empty(cls, v: str) -> str:
@@ -86,6 +75,8 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user_id: str
+    has_character: bool = True
+    character_name: str | None = None
 
 
 @auth_router.post("/register", response_model=LoginResponse)
@@ -103,26 +94,61 @@ async def register_user(
     """
     logger.info(f"Registration attempt for username: {user_create.username}")
 
-    # Generate bogus email if not provided
+    # Generate unique bogus email if not provided
     if not user_create.email:
+        # Use a simple email format to avoid the complex generation
         user_create.email = f"{user_create.username}@wolfshade.org"
+        logger.info(f"Generated simple bogus email for {user_create.username}: {user_create.email}")
 
-    # Validate invite code
-    try:
-        await invite_manager.validate_invite(user_create.invite_code)
-    except HTTPException as e:
-        raise e
+    # Validate invite code (but don't use it yet)
+    if user_create.invite_code:
+        try:
+            await invite_manager.validate_invite(user_create.invite_code)
+        except HTTPException as e:
+            raise e
 
     # Create user without invite_code field
-    user_data = user_create.model_dump(exclude={"invite_code"})
+    user_data = {"username": user_create.username, "password": user_create.password, "email": user_create.email}
     user_create_clean = UserCreate(**user_data)
 
     try:
-        user = await user_manager.create(user_create_clean)
-    except InvalidPasswordException as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
-    except UserAlreadyExists as e:
-        raise HTTPException(status_code=400, detail="Username already exists") from e
+        # Create user directly using SQLAlchemy to bypass FastAPI Users issues
+        from sqlalchemy import select
+
+        from ..models.user import User
+        from .argon2_utils import hash_password
+
+        # Check if username already exists
+        stmt = select(User).where(User.username == user_create_clean.username)
+        result = await session.execute(stmt)
+        existing_user = result.scalar_one_or_none()
+
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Username already exists")
+
+        # Hash password using Argon2
+        hashed_password = hash_password(user_create_clean.password)
+
+        # Create user with explicit timestamps to avoid None issues
+        from datetime import UTC, datetime
+
+        # Create a minimal user object to avoid FastAPI Users issues
+        user = User()
+        user.username = user_create_clean.username
+        user.email = user_create_clean.email
+        user.hashed_password = hashed_password
+        user.is_active = True
+        user.is_superuser = False
+        user.is_verified = False
+        user.created_at = datetime.now(UTC).replace(tzinfo=None)
+        user.updated_at = datetime.now(UTC).replace(tzinfo=None)
+
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+
+    except HTTPException:
+        raise
     except Exception as e:
         # Check if it's a duplicate username error
         constraint_error = "UNIQUE constraint failed: users.username"
@@ -131,66 +157,18 @@ async def register_user(
         # Re-raise other exceptions
         raise e
 
-    # Mark invite as used
-    await invite_manager.use_invite(user_create.invite_code, str(user.user_id))
+    # Store invite code in user session for later use during character creation
+    # We'll mark it as used when the character is actually created
+    logger.info(
+        f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance"
+    )
 
-    # Create player record for the new user
-    import datetime
-    import uuid
-
-    from ..persistence import get_persistence
-
-    # Create player record directly in database to match SQLite schema
-    persistence = get_persistence()
-
-    # Generate player data matching the database schema
-    player_id = str(uuid.uuid4())
-    user_id = str(user.user_id)
-    player_name = user.username
-    stats = '{"health": 100, "sanity": 100, "strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}'
-    inventory = "[]"
-    status_effects = "[]"
-    current_room_id = "earth_arkham_city_intersection_derby_high"
-    experience_points = 0
-    level = 1
-    created_at = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
-    last_active = user.created_at.isoformat() if user.created_at else datetime.datetime.now(datetime.UTC).isoformat()
-
-    # Insert player directly into database
-    import sqlite3
-
-    with sqlite3.connect(persistence.db_path) as conn:
-        conn.execute(
-            """
-            INSERT INTO players (
-                player_id, user_id, name, stats, inventory, status_effects,
-                current_room_id, experience_points, level, created_at, last_active
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                player_id,
-                user_id,
-                player_name,
-                stats,
-                inventory,
-                status_effects,
-                current_room_id,
-                experience_points,
-                level,
-                created_at,
-                last_active,
-            ),
-        )
-        conn.commit()
-
-    persistence._log(f"Created player {player_name} ({player_id}) for user {user_id}")
-
-    # Generate access token using FastAPI Users approach
+    # Generate JWT token using FastAPI Users' built-in method
     import os
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually
+    # Create JWT token with the same format as FastAPI Users expects
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(
@@ -199,9 +177,19 @@ async def register_user(
         lifetime_seconds=3600,  # 1 hour
     )
 
+    logger.debug(f"JWT token generated for user {user.username}")
+    logger.debug(f"JWT data: {data}")
+    logger.debug(f"JWT secret: {jwt_secret}")
+    logger.debug(f"JWT token preview: {access_token[:50]}...")
+
+    # Newly registered users don't have characters yet
+    logger.info(f"Registration successful for user {user.username}, has_character: False")
+
     return LoginResponse(
         access_token=access_token,
-        user_id=str(user.user_id),
+        user_id=str(user.id),
+        has_character=False,
+        character_name=None,
     )
 
 
@@ -259,8 +247,8 @@ async def login_user(
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
         # Verify we got the same user back
-        if authenticated_user.user_id != user.user_id:
-            logger.error(f"User ID mismatch: expected {user.user_id}, got {authenticated_user.user_id}")
+        if authenticated_user.id != user.id:
+            logger.error(f"User ID mismatch: expected {user.id}, got {authenticated_user.id}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
     except Exception as e:
         logger.error(f"Authentication failed: {str(e)}")
@@ -280,9 +268,22 @@ async def login_user(
         lifetime_seconds=3600,  # 1 hour
     )
 
+    # Check if user has a character
+    from ..persistence import get_persistence
+
+    persistence = get_persistence()
+    player = persistence.get_player_by_user_id(str(user.id))
+
+    has_character = player is not None
+    character_name = player.name if player else None
+
+    logger.info(f"Login successful for user {user.username}, has_character: {has_character}")
+
     return LoginResponse(
         access_token=access_token,
-        user_id=str(user.user_id),
+        user_id=str(user.id),
+        has_character=has_character,
+        character_name=character_name,
     )
 
 
@@ -296,7 +297,7 @@ async def get_current_user_info(
     This endpoint returns information about the currently authenticated user.
     """
     return {
-        "id": str(current_user.user_id),
+        "id": str(current_user.id),
         "email": current_user.email,
         "username": current_user.username,
         "is_superuser": current_user.is_superuser,

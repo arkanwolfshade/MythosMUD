@@ -82,7 +82,8 @@ if ($LASTEXITCODE -ne 0) {
     }
 }
 
-# Create fresh schema
+# Create fresh schema with FastAPI Users v14 compatibility
+Write-Host "Creating fresh schema with FastAPI Users v14 compatibility..." -ForegroundColor Yellow
 Get-Content ./sql/schema.sql | sqlite3 $prodDb
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Production database initialized successfully" -ForegroundColor Green
@@ -119,5 +120,13 @@ sqlite3 $prodDb ".tables"
 Write-Host "`nTest database tables:" -ForegroundColor Yellow
 sqlite3 $testDb ".tables"
 
+Write-Host "`nProduction database schema:" -ForegroundColor Yellow
+sqlite3 $prodDb ".schema users"
+
+Write-Host "`nTest database schema:" -ForegroundColor Yellow
+sqlite3 $testDb ".schema users"
+
 Write-Host "`n🎉 Database initialization completed successfully!" -ForegroundColor Green
 Write-Host "Both databases now contain: users, players, invites tables" -ForegroundColor Green
+Write-Host "✓ FastAPI Users v14 compatible schema with UUID primary keys" -ForegroundColor Green
+Write-Host "✓ Bogus email generation system ready for privacy protection" -ForegroundColor Green

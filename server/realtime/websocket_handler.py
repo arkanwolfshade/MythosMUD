@@ -24,15 +24,18 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
         websocket: The WebSocket connection
         player_id: The player's ID
     """
+    # Convert player_id to string to ensure JSON serialization compatibility
+    player_id_str = str(player_id)
+
     # Connect the WebSocket
-    success = await connection_manager.connect_websocket(websocket, player_id)
+    success = await connection_manager.connect_websocket(websocket, player_id_str)
     if not success:
-        logger.error(f"Failed to connect WebSocket for player {player_id}")
+        logger.error(f"Failed to connect WebSocket for player {player_id_str}")
         return
 
     try:
         # Send initial game state
-        player = connection_manager._get_player(player_id)
+        player = connection_manager._get_player(player_id_str)
         if player and hasattr(player, "current_room_id"):
             persistence = connection_manager.persistence
             if persistence:
@@ -40,9 +43,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
                     added_to_room = False
-                    if not room.has_player(player_id):
-                        logger.info(f"Adding player {player_id} to room {player.current_room_id}")
-                        room.player_entered(player_id)
+                    if not room.has_player(player_id_str):
+                        logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
+                        room.player_entered(player_id_str)
                         added_to_room = True
 
                     # Use canonical room id for subscriptions and broadcasts
@@ -76,16 +79,16 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),
                         },
-                        player_id=player_id,
+                        player_id=player_id_str,
                         room_id=canonical_room_id,
                     )
                     await websocket.send_json(game_state_event)
 
                     # Proactively broadcast a room update so existing occupants see the new player
                     try:
-                        await broadcast_room_update(player_id, canonical_room_id)
+                        await broadcast_room_update(player_id_str, canonical_room_id)
                     except Exception as e:
-                        logger.error(f"Error broadcasting initial room update for {player_id}: {e}")
+                        logger.error(f"Error broadcasting initial room update for {player_id_str}: {e}")
 
                     # If player was already present (reconnect without a leave event),
                     # explicitly notify other occupants they (re)entered to surface the event in UI
@@ -94,23 +97,23 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             synthetic_event = build_event(
                                 "player_entered",
                                 {
-                                    "player_id": player_id,
-                                    "player_name": getattr(player, "name", player_id),
-                                    "message": f"{getattr(player, 'name', player_id)} entered the room.",
+                                    "player_id": player_id_str,
+                                    "player_name": getattr(player, "name", player_id_str),
+                                    "message": f"{getattr(player, 'name', player_id_str)} entered the room.",
                                 },
                                 room_id=canonical_room_id,
                             )
                             await connection_manager.broadcast_to_room(
-                                canonical_room_id, synthetic_event, exclude_player=player_id
+                                canonical_room_id, synthetic_event, exclude_player=player_id_str
                             )
                         except Exception as e:
-                            logger.error(f"Error sending synthetic player_entered for {player_id}: {e}")
+                            logger.error(f"Error sending synthetic player_entered for {player_id_str}: {e}")
 
         # Send welcome message
         welcome_event = build_event(
             "welcome",
             {"message": "Connected to MythosMUD"},
-            player_id=player_id,
+            player_id=player_id_str,
         )
         await websocket.send_json(welcome_event)
 
@@ -121,26 +124,26 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 data = await websocket.receive_text()
                 message = json.loads(data)
                 # Mark presence on any inbound message
-                connection_manager.mark_player_seen(player_id)
+                connection_manager.mark_player_seen(player_id_str)
 
                 # Process the message
-                await handle_websocket_message(websocket, player_id, message)
+                await handle_websocket_message(websocket, player_id_str, message)
 
             except json.JSONDecodeError:
                 logger.warning(f"Invalid JSON from player {player_id}")
                 await websocket.send_json({"type": "error", "message": "Invalid JSON format"})
 
             except WebSocketDisconnect:
-                logger.info(f"WebSocket disconnected for player {player_id}")
+                logger.info(f"WebSocket disconnected for player {player_id_str}")
                 break
 
             except Exception as e:
-                logger.error(f"Error handling WebSocket message for {player_id}: {e}")
+                logger.error(f"Error handling WebSocket message for {player_id_str}: {e}")
                 await websocket.send_json({"type": "error", "message": "Internal server error"})
 
     finally:
         # Clean up connection
-        await connection_manager.disconnect_websocket(player_id)
+        await connection_manager.disconnect_websocket(player_id_str)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
@@ -329,10 +332,28 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             logger.error(f"No EventBus available for player {player_id} movement")
             return {"result": "Game system temporarily unavailable"}
 
+        # Create MovementService with the same persistence layer as the connection manager
         movement_service = MovementService(event_bus)
+        # Override the persistence layer to use the same instance as the connection manager
+        if connection_manager.persistence:
+            movement_service._persistence = connection_manager.persistence
+            logger.debug("Overriding MovementService persistence with connection manager persistence")
+            logger.debug(f"MovementService persistence ID: {id(movement_service._persistence)}")
+            logger.debug(f"Connection manager persistence ID: {id(connection_manager.persistence)}")
+        else:
+            logger.error("Connection manager persistence is None!")
 
         # Get the player's current room before moving
         from_room_id = player.current_room_id
+
+        # Debug: Check if the player is in the room according to both persistence layers
+        from_room = connection_manager.persistence.get_room(from_room_id) if connection_manager.persistence else None
+        if from_room:
+            has_player = from_room.has_player(player_id)
+            logger.debug(f"Player {player_id} in room {from_room_id}: {has_player}")
+            logger.debug(f"Room {from_room_id} players: {list(from_room.get_players())}")
+        else:
+            logger.error(f"Could not get room {from_room_id} from connection manager persistence")
 
         logger.debug(f"Moving player {player_id} from {from_room_id} to {target_room_id}")
 

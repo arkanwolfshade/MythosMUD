@@ -1,60 +1,22 @@
 #!/usr/bin/env python3
 """
-Initialize test database with schema and test player data.
+Test database initialization for MythosMUD.
 
-This script creates a SQLite database using the DATABASE_URL environment
-variable with the same schema as the production database and populates it with
-test player data.
+This module provides utilities for setting up test databases with sample data.
 """
 
-import os
 import sqlite3
 from pathlib import Path
-
-# Get test database path from environment variable - require it to be set
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError(
-        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
-    )
-
-# Extract file path from SQLite URL
-if DATABASE_URL.startswith("sqlite+aiosqlite:///"):
-    db_path = DATABASE_URL.replace("sqlite+aiosqlite:///", "")
-    # Handle relative paths by resolving from project root
-    if db_path.startswith("./"):
-        db_path = db_path[2:]  # Remove "./"
-
-    # Resolve the path relative to the project root to prevent directory duplication
-    project_root = Path(__file__).parent.parent.parent  # Go up to MythosMUD root
-    TEST_DB_PATH = project_root / db_path
-else:
-    raise ValueError(f"Unsupported database URL format: {DATABASE_URL}")
-
-# Load the production schema
-SCHEMA_PATH = Path(__file__).parent.parent / "sql" / "schema.sql"
 
 # Test database path
 TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 
-# Room data paths
-ROOMS_DIR = Path(__file__).parent / "data" / "rooms"
-
-
-def load_schema():
-    """Load the production database schema."""
-    if SCHEMA_PATH.exists():
-        return SCHEMA_PATH.read_text()
-    else:
-        # Fallback schema if the file doesn't exist
-        return SCHEMA
-
-
-# Database schema (same as production)
-SCHEMA = (
-    "-- Users table for authentication\n"
+# Test database schema (FastAPI Users v14 compatible)
+TEST_SCHEMA = (
+    "-- Users table for authentication (FastAPI Users v14 compatible)\n"
     "CREATE TABLE IF NOT EXISTS users (\n"
-    "    user_id TEXT PRIMARY KEY NOT NULL,\n"
+    "    id TEXT PRIMARY KEY NOT NULL,\n"
+    "    -- UUID as TEXT for SQLite compatibility\n"
     "    email TEXT UNIQUE NOT NULL,\n"
     "    username TEXT UNIQUE NOT NULL,\n"
     "    hashed_password TEXT NOT NULL,\n"
@@ -78,7 +40,7 @@ SCHEMA = (
     "    level INTEGER NOT NULL DEFAULT 1,\n"
     "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
     "    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE\n"
+    "    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE\n"
     ");\n"
     "\n"
     "-- Invites table for invite-only registration\n"
@@ -90,12 +52,13 @@ SCHEMA = (
     "    used BOOLEAN NOT NULL DEFAULT 0,\n"
     "    expires_at DATETIME,\n"
     "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    FOREIGN KEY (created_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL,\n"
-    "    FOREIGN KEY (used_by_user_id) REFERENCES users(user_id) ON DELETE SET NULL\n"
+    "    FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL,\n"
+    "    FOREIGN KEY (used_by_user_id) REFERENCES users(id) ON DELETE SET NULL\n"
     ");\n"
     "\n"
     "-- Create indexes for better performance\n"
     "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);\n"
+    "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);\n"
     "CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);\n"
     "CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);\n"
     "CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);\n"
@@ -103,10 +66,15 @@ SCHEMA = (
 )
 
 
+def load_schema():
+    """Load the test database schema."""
+    return TEST_SCHEMA
+
+
 # Sample test user data
 SAMPLE_USERS = [
     {
-        "user_id": "test-user-1",
+        "id": "test-user-1",
         "email": "test1@example.com",
         "username": "test1",
         "hashed_password": "hashed_password_1",
@@ -115,7 +83,7 @@ SAMPLE_USERS = [
         "is_verified": True,
     },
     {
-        "user_id": "test-user-2",
+        "id": "test-user-2",
         "email": "test2@example.com",
         "username": "test2",
         "hashed_password": "hashed_password_2",
@@ -194,11 +162,11 @@ def init_test_database():
             conn.execute(
                 """
                 INSERT OR REPLACE INTO users (
-                    user_id, email, username, hashed_password, is_active, is_superuser, is_verified
+                    id, email, username, hashed_password, is_active, is_superuser, is_verified
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    user_data["user_id"],
+                    user_data["id"],
                     user_data["email"],
                     user_data["username"],
                     user_data["hashed_password"],
@@ -271,7 +239,7 @@ def init_test_database():
         invite_count = cursor.fetchone()[0]
         print(f"✓ Test database contains {invite_count} invites")
 
-    print("✓ Test database initialization complete!")
+    print("✓ Test database initialization completed successfully")
 
 
 if __name__ == "__main__":

@@ -89,6 +89,7 @@ class MovementService:
         with self._lock:
             try:
                 # Step 1: Resolve the player (prefer by ID, fallback to name)
+                self._logger.debug(f"MovementService using persistence instance ID: {id(self._persistence)}")
                 player = self._persistence.get_player(player_id)
                 if not player:
                     # Fallback to name lookup only if player_id doesn't look like a UUID
@@ -194,8 +195,18 @@ class MovementService:
 
         # Check if player is in the from_room
         if not from_room.has_player(player_id):
-            self._logger.error(f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid")
-            return False
+            # Player might not be in the room's in-memory state yet
+            # Check if their current_room_id matches the from_room_id
+            player = self._persistence.get_player(player_id)
+            if player and player.current_room_id == from_room_id:
+                # Player should be in this room, add them to the in-memory state
+                self._logger.info(f"Adding player {player_id} to room {from_room_id} in-memory state")
+                from_room.player_entered(player_id)
+            else:
+                self._logger.error(
+                    f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid"
+                )
+                return False
 
         # Check if player is already in the to_room (shouldn't happen, but safety check)
         if to_room.has_player(player_id):
@@ -220,9 +231,20 @@ class MovementService:
         Returns:
             True if there's a valid exit, False otherwise
         """
-        # For now, we'll allow movement to any room
-        # In the future, this could check specific exits, movement restrictions, etc.
-        return True
+        # Check if any exit in the room leads to the target room
+        exits = from_room.exits
+        if not exits:
+            self._logger.debug(f"No exits found in room {from_room.id}")
+            return False
+
+        # Check each exit direction
+        for direction, target_id in exits.items():
+            if target_id == to_room_id:
+                self._logger.debug(f"Valid exit found: {direction} -> {to_room_id}")
+                return True
+
+        self._logger.debug(f"No valid exit from {from_room.id} to {to_room_id}. Available exits: {exits}")
+        return False
 
     def add_player_to_room(self, player_id: str, room_id: str) -> bool:
         """

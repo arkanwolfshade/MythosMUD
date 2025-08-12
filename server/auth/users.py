@@ -10,7 +10,7 @@ import uuid
 from typing import Any
 
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, FastAPIUsers
+from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
     AuthenticationBackend,
     BearerTransport,
@@ -24,11 +24,12 @@ from ..database import get_async_session
 from ..logging_config import get_logger
 from ..models.user import User
 from .argon2_utils import hash_password, verify_password
+from .email_utils import is_bogus_email
 
 logger = get_logger(__name__)
 
 
-class UserManager(BaseUserManager[User, uuid.UUID]):
+class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     """
     Custom user manager for MythosMUD.
 
@@ -51,6 +52,11 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
         logger.info(f"User {user.username} has registered.")
+
+        # Auto-verify bogus emails for privacy protection
+        if is_bogus_email(user.email):
+            user.is_verified = True
+            logger.info(f"Auto-verified bogus email for user {user.username}: {user.email}")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
@@ -147,3 +153,34 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](
 # Export commonly used functions
 get_current_user = fastapi_users.current_user(optional=True)
 get_current_active_user = fastapi_users.current_user(active=True)
+
+
+# Enhanced logging wrapper for get_current_user
+def get_current_user_with_logging():
+    """Enhanced get_current_user with detailed logging."""
+    logger = get_logger(__name__)
+
+    async def _get_current_user_with_logging(request: Request = None) -> dict | None:
+        try:
+            # Log the request details
+            auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"
+            auth_preview = (
+                auth_header[:50] + "..." if auth_header != "Not provided" and len(auth_header) > 50 else auth_header
+            )
+            logger.debug(f"Authentication attempt - Auth header: {auth_preview}")
+
+            # Get the raw dependency result
+            user = await get_current_user(request)
+
+            if user:
+                logger.info(f"Authentication successful for user: {user.username} (ID: {user.id})")
+            else:
+                logger.warning("Authentication failed: No user returned from get_current_user")
+
+            return user
+        except Exception as e:
+            logger.error(f"Authentication error: {type(e).__name__}: {str(e)}")
+            logger.debug(f"Authentication error details: {type(e).__name__}: {str(e)}")
+            return None
+
+    return Depends(_get_current_user_with_logging)

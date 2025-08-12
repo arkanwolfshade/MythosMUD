@@ -1,0 +1,282 @@
+"""
+Stats Generator Service for MythosMUD.
+
+This module provides random stat generation functionality for character creation,
+allowing players to roll for their character's starting statistics within defined
+ranges while ensuring they meet class prerequisites.
+"""
+
+import random
+
+from ..logging_config import get_logger
+from ..models import AttributeType, Stats
+
+logger = get_logger(__name__)
+
+
+class StatsGenerator:
+    """Service for generating random character statistics."""
+
+    # Standard D&D-style stat ranges (3-18)
+    MIN_STAT = 3
+    MAX_STAT = 18
+
+    # Class prerequisites (minimum stats required for each class)
+    # Based on Lovecraftian investigator archetypes
+    CLASS_PREREQUISITES = {
+        "investigator": {
+            AttributeType.INT: 12,  # High intelligence for research
+            AttributeType.WIS: 10,  # Good perception
+        },
+        "occultist": {
+            AttributeType.INT: 14,  # Very high intelligence for forbidden knowledge
+            AttributeType.WIS: 12,  # Good willpower to resist corruption
+        },
+        "survivor": {
+            AttributeType.CON: 12,  # High constitution for survival
+            AttributeType.DEX: 10,  # Good reflexes
+        },
+        "cultist": {
+            AttributeType.CHA: 12,  # High charisma for cult leadership
+            AttributeType.INT: 10,  # Basic intelligence for rituals
+        },
+        "academic": {
+            AttributeType.INT: 14,  # Very high intelligence for research
+            AttributeType.WIS: 10,  # Good perception
+        },
+        "detective": {
+            AttributeType.INT: 12,  # High intelligence for investigation
+            AttributeType.WIS: 12,  # Good perception and intuition
+        },
+    }
+
+    def __init__(self):
+        """Initialize the stats generator."""
+        logger.info("StatsGenerator initialized")
+
+    def roll_stats(self, method: str = "3d6") -> Stats:
+        """
+        Generate random stats using the specified method.
+
+        Args:
+            method: The rolling method to use ("3d6", "4d6_drop_lowest",
+                    "point_buy")
+
+        Returns:
+            Stats: A new Stats object with randomly generated values
+        """
+        logger.info("Rolling stats", method=method)
+
+        if method == "3d6":
+            stats = self._roll_3d6()
+        elif method == "4d6_drop_lowest":
+            stats = self._roll_4d6_drop_lowest()
+        elif method == "point_buy":
+            stats = self._roll_point_buy()
+        else:
+            logger.warning("Unknown rolling method, using 3d6", method=method)
+            stats = self._roll_3d6()
+
+        logger.info("Stats rolled successfully", stats=stats.model_dump())
+        return stats
+
+    def _roll_3d6(self) -> Stats:
+        """Roll stats using 3d6 method (standard D&D)."""
+        return Stats(
+            strength=random.randint(3, 18),
+            dexterity=random.randint(3, 18),
+            constitution=random.randint(3, 18),
+            intelligence=random.randint(3, 18),
+            wisdom=random.randint(3, 18),
+            charisma=random.randint(3, 18),
+        )
+
+    def _roll_4d6_drop_lowest(self) -> Stats:
+        """Roll stats using 4d6 drop lowest method (more generous)."""
+
+        def roll_4d6_drop_lowest() -> int:
+            rolls = [random.randint(1, 6) for _ in range(4)]
+            rolls.remove(min(rolls))
+            return sum(rolls)
+
+        return Stats(
+            strength=roll_4d6_drop_lowest(),
+            dexterity=roll_4d6_drop_lowest(),
+            constitution=roll_4d6_drop_lowest(),
+            intelligence=roll_4d6_drop_lowest(),
+            wisdom=roll_4d6_drop_lowest(),
+            charisma=roll_4d6_drop_lowest(),
+        )
+
+    def _roll_point_buy(self) -> Stats:
+        """Generate stats using a point-buy system (balanced)."""
+        # Start with 8 in all stats, then distribute 27 points
+        # Each point increases a stat by 1, up to 15
+        # Stats 16-18 cost 2 points each
+        base_stats = {
+            "strength": 8,
+            "dexterity": 8,
+            "constitution": 8,
+            "intelligence": 8,
+            "wisdom": 8,
+            "charisma": 8,
+        }
+
+        points_remaining = 27
+        stat_names = list(base_stats.keys())
+
+        while points_remaining > 0:
+            stat = random.choice(stat_names)
+            current_value = base_stats[stat]
+
+            if current_value >= 18:
+                continue  # Stat is maxed out
+
+            # Calculate cost for next point
+            if current_value < 15:
+                cost = 1
+            else:
+                cost = 2
+
+            if points_remaining >= cost:
+                base_stats[stat] += 1
+                points_remaining -= cost
+            else:
+                break
+
+        return Stats(**base_stats)
+
+    def validate_class_prerequisites(self, stats: Stats, class_name: str) -> tuple[bool, list[str]]:
+        """
+        Check if stats meet the prerequisites for a given class.
+
+        Args:
+            stats: The character's stats
+            class_name: The class to check prerequisites for
+
+        Returns:
+            Tuple[bool, List[str]]: (meets_prerequisites, list_of_failed_requirements)
+        """
+        if class_name not in self.CLASS_PREREQUISITES:
+            logger.warning("Unknown class for prerequisite check", class_name=class_name)
+            return True, []  # Unknown classes have no prerequisites
+
+        prerequisites = self.CLASS_PREREQUISITES[class_name]
+        failed_requirements = []
+
+        for attribute, minimum_value in prerequisites.items():
+            current_value = getattr(stats, attribute.value)
+            if current_value < minimum_value:
+                failed_requirements.append(f"{attribute.value.title()} {current_value} < {minimum_value}")
+
+        meets_prerequisites = len(failed_requirements) == 0
+
+        logger.debug(
+            "Class prerequisite check",
+            class_name=class_name,
+            meets_prerequisites=meets_prerequisites,
+            failed_requirements=failed_requirements,
+        )
+
+        return meets_prerequisites, failed_requirements
+
+    def get_available_classes(self, stats: Stats) -> list[str]:
+        """
+        Get a list of classes that the character qualifies for.
+
+        Args:
+            stats: The character's stats
+
+        Returns:
+            List[str]: List of available class names
+        """
+        available_classes = []
+
+        for class_name in self.CLASS_PREREQUISITES.keys():
+            meets_prerequisites, _ = self.validate_class_prerequisites(stats, class_name)
+            if meets_prerequisites:
+                available_classes.append(class_name)
+
+        logger.debug("Available classes determined", available_classes=available_classes)
+        return available_classes
+
+    def roll_stats_with_validation(
+        self, method: str = "3d6", required_class: str | None = None, max_attempts: int = 10
+    ) -> tuple[Stats, list[str]]:
+        """
+        Roll stats and validate against class requirements.
+
+        Args:
+            method: The rolling method to use
+            required_class: Optional class that the stats must qualify for
+            max_attempts: Maximum number of attempts to roll valid stats
+
+        Returns:
+            Tuple[Stats, List[str]]: (stats, available_classes)
+        """
+        logger.info(
+            "Rolling stats with validation", method=method, required_class=required_class, max_attempts=max_attempts
+        )
+
+        for attempt in range(max_attempts):
+            stats = self.roll_stats(method)
+            available_classes = self.get_available_classes(stats)
+
+            if required_class is None or required_class in available_classes:
+                logger.info("Valid stats rolled", attempt=attempt + 1, available_classes=available_classes)
+                return stats, available_classes
+
+            logger.debug(
+                "Stats don't meet class requirements, retrying",
+                attempt=attempt + 1,
+                required_class=required_class,
+                available_classes=available_classes,
+            )
+
+        # If we couldn't roll valid stats, return the last roll anyway
+        logger.warning(
+            "Could not roll stats meeting class requirements", required_class=required_class, max_attempts=max_attempts
+        )
+        stats = self.roll_stats(method)
+        available_classes = self.get_available_classes(stats)
+        return stats, available_classes
+
+    def get_stat_summary(self, stats: Stats) -> dict[str, any]:
+        """
+        Get a summary of the character's stats including modifiers and totals.
+
+        Args:
+            stats: The character's stats
+
+        Returns:
+            Dict: Summary of stats with modifiers and totals
+        """
+        summary = {
+            "attributes": {
+                "strength": {"value": stats.strength, "modifier": stats.get_attribute_modifier(AttributeType.STR)},
+                "dexterity": {"value": stats.dexterity, "modifier": stats.get_attribute_modifier(AttributeType.DEX)},
+                "constitution": {
+                    "value": stats.constitution,
+                    "modifier": stats.get_attribute_modifier(AttributeType.CON),
+                },
+                "intelligence": {
+                    "value": stats.intelligence,
+                    "modifier": stats.get_attribute_modifier(AttributeType.INT),
+                },
+                "wisdom": {"value": stats.wisdom, "modifier": stats.get_attribute_modifier(AttributeType.WIS)},
+                "charisma": {"value": stats.charisma, "modifier": stats.get_attribute_modifier(AttributeType.CHA)},
+            },
+            "derived_stats": {
+                "max_health": stats.max_health,
+                "max_sanity": stats.max_sanity,
+            },
+            "total_points": sum(
+                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+            ),
+            "average_stat": sum(
+                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+            )
+            / 6,
+        }
+
+        return summary

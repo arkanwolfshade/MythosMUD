@@ -1,7 +1,18 @@
 import { useState } from 'react';
 import './App.css';
 import { GameTerminal } from './components/GameTerminal';
+import { StatsRollingScreen } from './components/StatsRollingScreen';
 import { logger } from './utils/logger';
+
+// Import Stats interface from StatsRollingScreen
+interface Stats {
+  strength: number;
+  dexterity: number;
+  constitution: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
+}
 
 // TypeScript interfaces for error handling
 interface ValidationError {
@@ -20,6 +31,7 @@ function App() {
   const [showRegistration, setShowRegistration] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
   const [playerName, setPlayerName] = useState('');
+  const [showStatsRolling, setShowStatsRolling] = useState(false);
 
   const baseUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -55,12 +67,23 @@ function App() {
         logger.info('App', 'Login successful', {
           playerId: data.player_id,
           hasToken: !!data.access_token,
+          hasCharacter: data.has_character,
+          characterName: data.character_name,
         });
 
         setAuthToken(data.access_token);
         setPlayerId(data.user_id); // Use user_id from the server response
         setPlayerName(username); // Store the username for SSE connection
-        setIsAuthenticated(true);
+
+        // Check if user has a character
+        if (data.has_character) {
+          // User has a character, proceed to game
+          setIsAuthenticated(true);
+        } else {
+          // User doesn't have a character, go to stats rolling
+          logger.info('App', 'User has no character, proceeding to stats rolling');
+          setShowStatsRolling(true);
+        }
       } else {
         const errorData = await response.json();
         logger.error('App', 'Login failed', {
@@ -121,8 +144,16 @@ function App() {
         setError('');
         setShowRegistration(false);
         setInviteCode('');
-        // Show success message and switch to login
-        alert('Registration successful! You may now log in.');
+
+        // Set auth token and user info for character creation
+        setAuthToken(data.access_token);
+        setPlayerId(data.user_id);
+
+        // After successful registration, proceed directly to stats rolling
+        // Use setTimeout to ensure state updates are processed
+        setTimeout(() => {
+          setShowStatsRolling(true);
+        }, 0);
       } else {
         const errorData = await response.json();
         logger.error('App', 'Registration failed', {
@@ -153,6 +184,18 @@ function App() {
     }
   };
 
+  const handleStatsAccepted = (stats: Stats) => {
+    logger.info('App', 'Stats accepted, character created', { characterName: username, stats });
+    // Character is now created and user should be logged in
+    setPlayerName(username);
+    setIsAuthenticated(true);
+  };
+
+  const handleCharacterCreationError = (error: string) => {
+    setError(error);
+    logger.error('App', 'Character creation error', { error });
+  };
+
   if (isAuthenticated) {
     logger.info('App', 'Rendering authenticated view', { playerId, hasToken: !!authToken });
     return (
@@ -162,7 +205,25 @@ function App() {
     );
   }
 
-  logger.info('App', 'Rendering login/registration view', { showRegistration });
+  logger.info('App', 'Rendering login/registration view', {
+    showRegistration,
+    showStatsRolling,
+  });
+
+  // Show stats rolling screen if needed
+  if (showStatsRolling) {
+    return (
+      <div className="app">
+        <StatsRollingScreen
+          characterName={username}
+          onStatsAccepted={handleStatsAccepted}
+          onError={handleCharacterCreationError}
+          baseUrl={baseUrl}
+          authToken={authToken}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="app">

@@ -14,7 +14,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add the server directory to the path so we can import models
-sys.path.append(str(Path(__file__).parent / "server"))
+sys.path.append(str(Path(__file__).parent.parent.parent / "server"))
 
 from server.database import async_session_maker
 from server.models.invite import Invite

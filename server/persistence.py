@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import threading
+import uuid
 from collections.abc import Callable
 
 from .models import Player
@@ -91,6 +92,38 @@ class PersistenceLayer:
     def _log(self, msg: str):
         self._logger.info(msg)
 
+    def _convert_row_to_player_data(self, row: sqlite3.Row) -> dict:
+        """
+        Convert SQLite row data to proper types for Player constructor.
+
+        Args:
+            row: SQLite Row object from query result
+
+        Returns:
+            dict: Data with proper types for Player constructor
+        """
+        data = dict(row)
+
+        # Convert string UUIDs back to UUID objects
+        if data.get("player_id"):
+            try:
+                data["player_id"] = uuid.UUID(data["player_id"])
+            except (ValueError, TypeError):
+                self._log(f"Invalid player_id format: {data['player_id']}")
+                data["player_id"] = None
+
+        if data.get("user_id"):
+            try:
+                data["user_id"] = uuid.UUID(data["user_id"])
+            except (ValueError, TypeError):
+                self._log(f"Invalid user_id format: {data['user_id']}")
+                data["user_id"] = None
+
+        # Convert datetime strings back to datetime objects if needed
+        # (Player model handles this internally, but we could add explicit conversion here)
+
+        return data
+
     # --- Context Management ---
     def __enter__(self):
         self._lock.acquire()
@@ -140,7 +173,8 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -150,9 +184,12 @@ class PersistenceLayer:
         """Get a player by ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+            # Convert player_id to string to ensure SQLite compatibility
+            player_id_str = str(player_id) if player_id else None
+            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -162,9 +199,12 @@ class PersistenceLayer:
         """Get a player by the owning user's ID."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
+            # Convert user_id to string to ensure SQLite compatibility
+            user_id_str = str(user_id) if user_id else None
+            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -190,6 +230,10 @@ class PersistenceLayer:
                     else:
                         last_active = player.last_active.isoformat()
 
+                # Convert UUIDs to strings for SQLite compatibility
+                player_id_str = str(player.player_id) if player.player_id else None
+                user_id_str = str(player.user_id) if player.user_id else None
+
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
@@ -198,8 +242,8 @@ class PersistenceLayer:
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        player.player_id,
-                        player.user_id,
+                        player_id_str,
+                        user_id_str,
                         player.name,
                         player.stats,
                         player.inventory,
@@ -223,14 +267,28 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players").fetchall()
-            return [Player(**dict(row)) for row in rows]
+            players = []
+            for row in rows:
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                players.append(player)
+            return players
 
     def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players currently in a specific room."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
-            return [Player(**dict(row)) for row in rows]
+            players = []
+            for row in rows:
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                players.append(player)
+            return players
 
     def save_players(self, players: list[Player]):
         """Batch save players atomically."""
@@ -253,6 +311,10 @@ class PersistenceLayer:
                         else:
                             last_active = player.last_active.isoformat()
 
+                    # Convert UUIDs to strings for SQLite compatibility
+                    player_id_str = str(player.player_id) if player.player_id else None
+                    user_id_str = str(player.user_id) if player.user_id else None
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
@@ -261,8 +323,8 @@ class PersistenceLayer:
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
-                            player.player_id,
-                            player.user_id,
+                            player_id_str,
+                            user_id_str,
                             player.name,
                             player.stats,
                             player.inventory,
@@ -337,7 +399,7 @@ class PersistenceLayer:
 
         return None
 
-    def _sync_room_players(self, room: Room) -> None:
+    def _sync_room_players(self, room: Room, _recursion_depth: int = 0) -> None:
         """
         Sync a room's in-memory player state with the database.
 
@@ -346,7 +408,13 @@ class PersistenceLayer:
 
         Args:
             room: The Room object to sync
+            _recursion_depth: Internal parameter to prevent infinite recursion
         """
+        # Prevent infinite recursion
+        if _recursion_depth > 2:
+            self._log(f"Preventing infinite recursion in _sync_room_players for room {room.id}")
+            return
+
         try:
             # Get all players currently in this room from the database
             with self._lock, sqlite3.connect(self.db_path) as conn:
@@ -360,17 +428,30 @@ class PersistenceLayer:
             # Add players that are in DB but not in memory
             for player_id in db_player_ids - memory_player_ids:
                 # Only add if the player actually exists and is valid
-                player = self.get_player(player_id)
-                if player and player.current_room_id == room.id:
-                    room.player_entered(player_id)
-                    self._log(f"Synced player {player_id} to room {room.id} from database")
-                else:
-                    self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
+                # Use a direct database query to avoid recursion
+                with self._lock, sqlite3.connect(self.db_path) as conn:
+                    conn.row_factory = sqlite3.Row
+                    row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+                    if row:
+                        current_room_id = row["current_room_id"]
+                        if current_room_id == room.id:
+                            room.player_entered(player_id)
+                            self._log(f"Synced player {player_id} to room {room.id} from database")
+                        else:
+                            self._log(
+                                f"Skipped syncing player {player_id} to room {room.id} (in room {current_room_id})"
+                            )
+                    else:
+                        self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
 
-            # Remove players that are in memory but not in DB
-            for player_id in memory_player_ids - db_player_ids:
-                room.player_left(player_id)
-                self._log(f"Removed player {player_id} from room {room.id} (not in database)")
+            # Don't automatically remove players that are in memory but not in DB
+            # This prevents race conditions where players are removed before they're saved
+            # The movement system will handle removing players when they actually move
+            removed_players = memory_player_ids - db_player_ids
+            if removed_players:
+                self._log(
+                    f"Players in memory but not in DB for room {room.id}: {removed_players} (not removing to prevent race conditions)"
+                )
 
         except Exception as e:
             self._log(f"Error syncing room {room.id} players: {e}")
@@ -416,11 +497,22 @@ class PersistenceLayer:
         if self.get_room(player.current_room_id) is not None:
             return True  # Room exists, no fix needed
 
-        # Room doesn't exist, move player to starting room
+        # Room doesn't exist, move player to default starting room from config
         old_room = player.current_room_id
-        player.current_room_id = "earth_arkham_city_intersection_derby_high"
+        try:
+            from .config_loader import get_config
 
-        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
+            config = get_config()
+            default_room = config.get("default_player_room", "earth_arkham_city_northside_intersection_derby_high")
+            if default_room is None:
+                default_room = "earth_arkham_city_northside_intersection_derby_high"
+        except Exception:
+            # Fallback to hardcoded default if config loading fails
+            default_room = "earth_arkham_city_northside_intersection_derby_high"
+
+        player.current_room_id = default_room
+
+        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to default room '{default_room}'")
         return True
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

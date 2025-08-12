@@ -8,9 +8,8 @@ for authentication and user management.
 import uuid
 from datetime import UTC, datetime
 
-from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy import Boolean, Column, DateTime, String
-from sqlalchemy.dialects.postgresql import UUID
+from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import declarative_base
 
 from ..metadata import metadata
@@ -19,28 +18,21 @@ from ..metadata import metadata
 Base = declarative_base(metadata=metadata)
 
 
-class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
+class User(SQLAlchemyBaseUserTableUUID, Base):
     """
-    User model for FastAPI Users.
+    User model for FastAPI Users v14+.
 
-    Extends SQLAlchemyBaseUserTable to provide all necessary fields
-    for FastAPI Users authentication system.
+    Extends SQLAlchemyBaseUserTableUUID to provide all necessary fields
+    for FastAPI Users authentication system with UUID primary keys.
     """
 
     __tablename__ = "users"
     __table_args__ = {"extend_existing": True}
 
-    # Primary key - UUID
-    user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-    # User authentication fields
-    email = Column(String(length=320), unique=True, nullable=False, index=True)
+    # User authentication fields (email and hashed_password are inherited from base)
     username = Column(String(length=255), unique=True, nullable=False, index=True)
-    hashed_password = Column(String(length=255), nullable=False)
 
-    # User status fields
-    is_active = Column(Boolean(), default=True, nullable=False)
-    is_superuser = Column(Boolean(), default=False, nullable=False)
+    # User status fields (is_active, is_superuser, is_verified are inherited from base)
 
     # Timestamps (persist naive UTC for SQLite)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
@@ -53,12 +45,12 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
 
     def __repr__(self) -> str:
         """String representation of the user."""
-        return f"<User(user_id={self.user_id}, username={self.username}, is_active={self.is_active})>"
+        return f"<User(id={self.id}, username={self.username}, is_active={self.is_active})>"
 
     @property
-    def id(self) -> uuid.UUID:
-        """Get the user ID for FastAPI Users compatibility."""
-        return self.user_id
+    def user_id(self) -> uuid.UUID:
+        """Get the user ID for backward compatibility."""
+        return self.id
 
     @property
     def is_authenticated(self) -> bool:
@@ -67,4 +59,4 @@ class User(SQLAlchemyBaseUserTable[uuid.UUID], Base):
 
     def get_display_name(self) -> str:
         """Get display name for the user."""
-        return self.username if self.username else str(self.user_id)
+        return self.username if self.username else str(self.id)

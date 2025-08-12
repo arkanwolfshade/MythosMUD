@@ -13,7 +13,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Add server directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "server"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
 
 # Now import server modules
 from sqlalchemy import text
@@ -194,11 +194,11 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
 
 
 async def main():
-    """Generate 100 invite codes and store them in the database."""
-    print("Generating 100 unique Mythos-themed invite codes...")
+    """Generate 200 invite codes and store them in the database."""
+    print("Generating 200 unique Mythos-themed invite codes...")
 
     # Generate new codes and store them
-    new_codes = await generate_unique_codes(100)
+    new_codes = await generate_unique_codes(200)
 
     if not new_codes:
         print("❌ Failed to generate unique codes (may already exist)")

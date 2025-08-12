@@ -498,7 +498,11 @@ class ConnectionManager:
 
                 # Add player to the Room object's _players set for movement service
                 if self.persistence:
-                    movement_service = MovementService()
+                    # Create MovementService with the same persistence layer
+                    event_bus = getattr(self, "_event_bus", None)
+                    movement_service = MovementService(event_bus)
+                    # Override the persistence layer to use the same instance
+                    movement_service._persistence = self.persistence
                     success = movement_service.add_player_to_room(player_id, room_id)
                     if success:
                         logger.info(f"Player {player_id} added to room {room_id} for movement service")
@@ -636,7 +640,7 @@ class ConnectionManager:
             # Create game_state event
             game_state_data = {
                 "player": {
-                    "player_id": getattr(player, "player_id", player_id),
+                    "player_id": str(getattr(player, "player_id", player_id)),
                     "name": getattr(player, "name", player_id),
                     "level": getattr(player, "level", 1),
                     "current_room_id": room_id,

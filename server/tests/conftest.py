@@ -28,7 +28,10 @@ os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
 # Legacy logging environment variables no longer needed - logging is handled by centralized system
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+# Use absolute path for aliases directory to prevent incorrect directory creation
+aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+aliases_dir.mkdir(parents=True, exist_ok=True)
+os.environ["ALIASES_DIR"] = str(aliases_dir)
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -61,9 +64,10 @@ def pytest_configure(config):
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
-
-
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    # Use absolute path for aliases directory to prevent incorrect directory creation
+    aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+    aliases_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["ALIASES_DIR"] = str(aliases_dir)
 
 
 @pytest.fixture(scope="session")
@@ -108,3 +112,27 @@ def ensure_test_db_ready(test_database):
 
     reset_persistence()
     pass
+
+
+@pytest.fixture
+def test_client():
+    """Create a test client with properly initialized app state."""
+
+    from fastapi.testclient import TestClient
+
+    from ..main import app
+    from ..persistence import get_persistence, reset_persistence
+    from ..realtime.event_handler import get_real_time_event_handler
+    from ..tests.init_test_db import init_test_database
+
+    # Reset persistence to ensure fresh state
+    reset_persistence()
+
+    # Initialize the test database to ensure it exists and is accessible
+    init_test_database()
+
+    # Initialize the app state manually for tests
+    app.state.event_handler = get_real_time_event_handler()
+    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
+
+    return TestClient(app)

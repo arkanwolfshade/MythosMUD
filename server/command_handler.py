@@ -583,7 +583,9 @@ def process_command(
             return {"result": "You can't go that way"}
 
         # Use MovementService for atomic movement
-        movement_service = MovementService()
+        # Get the event bus from the app state if available
+        event_bus = getattr(app.state, "event_bus", None) if app else None
+        movement_service = MovementService(event_bus)
         success = movement_service.move_player(player.player_id, room_id, target_room_id)
         if not success:
             logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)

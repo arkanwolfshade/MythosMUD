@@ -33,8 +33,8 @@ class Player(Base):
     # Primary key - UUID
     player_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    # Foreign key to users table
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), unique=True, nullable=False)
+    # Foreign key to users table (FastAPI Users v14 compatible)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True, nullable=False)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
