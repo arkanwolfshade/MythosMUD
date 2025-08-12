@@ -1,4 +1,3 @@
-import random
 import uuid
 from datetime import UTC, datetime
 from enum import Enum
@@ -148,16 +147,6 @@ class Stats(BaseModel):
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
 
-    @staticmethod
-    def random_stats():
-        return Stats(
-            strength=random.randint(3, 18),
-            dexterity=random.randint(3, 18),
-            constitution=random.randint(3, 18),
-            intelligence=random.randint(3, 18),
-            wisdom=random.randint(3, 18),
-            charisma=random.randint(3, 18),
-        )
 
     # Derived stats - computed fields
     @computed_field

@@ -6,6 +6,7 @@ for each user, including stats, inventory, and current location.
 """
 
 import json
+import random
 import uuid
 from datetime import datetime
 from typing import Any
@@ -18,7 +19,18 @@ from ..metadata import metadata
 
 Base = declarative_base(metadata=metadata)
 
-
+def random_stats_json() -> str:
+    stats = {
+        "health": 100,
+        "sanity": 100,
+        "strength": random.randint(3, 18),
+        "dexterity": random.randint(3, 18),
+        "constitution": random.randint(3, 18),
+        "intelligence": random.randint(3, 18),
+        "wisdom": random.randint(3, 18),
+        "charisma": random.randint(3, 18),
+    }
+    return json.dumps(stats)
 class Player(Base):
     """
     Player model for game data.
@@ -40,7 +52,8 @@ class Player(Base):
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
     # Game data stored as JSON in TEXT fields (SQLite compatible)
-    stats = Column(Text(), nullable=False, default='{"health": 100, "sanity": 100, "strength": 10}')
+    init_stats = random_stats_json()
+    stats = Column(Text(), nullable=False, default=init_stats)
     inventory = Column(Text(), nullable=False, default="[]")
     status_effects = Column(Text(), nullable=False, default="[]")
 
