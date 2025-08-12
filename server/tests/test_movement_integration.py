@@ -38,6 +38,10 @@ class TestMovementIntegration:
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
 
+        # Configure room exits for movement validation
+        mock_from_room.exits = {"north": "room2"}
+        mock_from_room.id = "room1"
+
         # Create movement service with mocked persistence
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
             movement_service = MovementService()

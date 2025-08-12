@@ -332,10 +332,28 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             logger.error(f"No EventBus available for player {player_id} movement")
             return {"result": "Game system temporarily unavailable"}
 
+        # Create MovementService with the same persistence layer as the connection manager
         movement_service = MovementService(event_bus)
+        # Override the persistence layer to use the same instance as the connection manager
+        if connection_manager.persistence:
+            movement_service._persistence = connection_manager.persistence
+            logger.debug("Overriding MovementService persistence with connection manager persistence")
+            logger.debug(f"MovementService persistence ID: {id(movement_service._persistence)}")
+            logger.debug(f"Connection manager persistence ID: {id(connection_manager.persistence)}")
+        else:
+            logger.error("Connection manager persistence is None!")
 
         # Get the player's current room before moving
         from_room_id = player.current_room_id
+
+        # Debug: Check if the player is in the room according to both persistence layers
+        from_room = connection_manager.persistence.get_room(from_room_id) if connection_manager.persistence else None
+        if from_room:
+            has_player = from_room.has_player(player_id)
+            logger.debug(f"Player {player_id} in room {from_room_id}: {has_player}")
+            logger.debug(f"Room {from_room_id} players: {list(from_room.get_players())}")
+        else:
+            logger.error(f"Could not get room {from_room_id} from connection manager persistence")
 
         logger.debug(f"Moving player {player_id} from {from_room_id} to {target_room_id}")
 

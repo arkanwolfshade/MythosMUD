@@ -7,19 +7,11 @@ before completing character creation.
 
 import uuid
 
-import pytest
-from fastapi.testclient import TestClient
-
-from server.main import app
-
 
 class TestCharacterRecoveryFlow:
     """Test the character recovery flow for disconnected users."""
 
-    @pytest.fixture
-    def test_client(self):
-        """Create a test client for the FastAPI app."""
-        return TestClient(app)
+    # Use the test_client fixture from conftest.py instead of defining our own
 
     def test_user_without_character_goes_to_stats_rolling(self, test_client):
         """Test that a user without a character is directed to stats rolling."""

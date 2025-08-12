@@ -89,6 +89,7 @@ class MovementService:
         with self._lock:
             try:
                 # Step 1: Resolve the player (prefer by ID, fallback to name)
+                self._logger.debug(f"MovementService using persistence instance ID: {id(self._persistence)}")
                 player = self._persistence.get_player(player_id)
                 if not player:
                     # Fallback to name lookup only if player_id doesn't look like a UUID
@@ -220,9 +221,20 @@ class MovementService:
         Returns:
             True if there's a valid exit, False otherwise
         """
-        # For now, we'll allow movement to any room
-        # In the future, this could check specific exits, movement restrictions, etc.
-        return True
+        # Check if any exit in the room leads to the target room
+        exits = from_room.exits
+        if not exits:
+            self._logger.debug(f"No exits found in room {from_room.id}")
+            return False
+
+        # Check each exit direction
+        for direction, target_id in exits.items():
+            if target_id == to_room_id:
+                self._logger.debug(f"Valid exit found: {direction} -> {to_room_id}")
+                return True
+
+        self._logger.debug(f"No valid exit from {from_room.id} to {to_room_id}. Available exits: {exits}")
+        return False
 
     def add_player_to_room(self, player_id: str, room_id: str) -> bool:
         """

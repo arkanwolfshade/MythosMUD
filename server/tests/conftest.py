@@ -112,3 +112,27 @@ def ensure_test_db_ready(test_database):
 
     reset_persistence()
     pass
+
+
+@pytest.fixture
+def test_client():
+    """Create a test client with properly initialized app state."""
+
+    from fastapi.testclient import TestClient
+
+    from ..main import app
+    from ..persistence import get_persistence, reset_persistence
+    from ..realtime.event_handler import get_real_time_event_handler
+    from ..tests.init_test_db import init_test_database
+
+    # Reset persistence to ensure fresh state
+    reset_persistence()
+
+    # Initialize the test database to ensure it exists and is accessible
+    init_test_database()
+
+    # Initialize the app state manually for tests
+    app.state.event_handler = get_real_time_event_handler()
+    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
+
+    return TestClient(app)

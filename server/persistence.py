@@ -399,7 +399,7 @@ class PersistenceLayer:
 
         return None
 
-    def _sync_room_players(self, room: Room) -> None:
+    def _sync_room_players(self, room: Room, _recursion_depth: int = 0) -> None:
         """
         Sync a room's in-memory player state with the database.
 
@@ -408,7 +408,13 @@ class PersistenceLayer:
 
         Args:
             room: The Room object to sync
+            _recursion_depth: Internal parameter to prevent infinite recursion
         """
+        # Prevent infinite recursion
+        if _recursion_depth > 2:
+            self._log(f"Preventing infinite recursion in _sync_room_players for room {room.id}")
+            return
+
         try:
             # Get all players currently in this room from the database
             with self._lock, sqlite3.connect(self.db_path) as conn:
@@ -422,17 +428,30 @@ class PersistenceLayer:
             # Add players that are in DB but not in memory
             for player_id in db_player_ids - memory_player_ids:
                 # Only add if the player actually exists and is valid
-                player = self.get_player(player_id)
-                if player and player.current_room_id == room.id:
-                    room.player_entered(player_id)
-                    self._log(f"Synced player {player_id} to room {room.id} from database")
-                else:
-                    self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
+                # Use a direct database query to avoid recursion
+                with self._lock, sqlite3.connect(self.db_path) as conn:
+                    conn.row_factory = sqlite3.Row
+                    row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
+                    if row:
+                        current_room_id = row["current_room_id"]
+                        if current_room_id == room.id:
+                            room.player_entered(player_id)
+                            self._log(f"Synced player {player_id} to room {room.id} from database")
+                        else:
+                            self._log(
+                                f"Skipped syncing player {player_id} to room {room.id} (in room {current_room_id})"
+                            )
+                    else:
+                        self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
 
-            # Remove players that are in memory but not in DB
-            for player_id in memory_player_ids - db_player_ids:
-                room.player_left(player_id)
-                self._log(f"Removed player {player_id} from room {room.id} (not in database)")
+            # Don't automatically remove players that are in memory but not in DB
+            # This prevents race conditions where players are removed before they're saved
+            # The movement system will handle removing players when they actually move
+            removed_players = memory_player_ids - db_player_ids
+            if removed_players:
+                self._log(
+                    f"Players in memory but not in DB for room {room.id}: {removed_players} (not removing to prevent race conditions)"
+                )
 
         except Exception as e:
             self._log(f"Error syncing room {room.id} players: {e}")
