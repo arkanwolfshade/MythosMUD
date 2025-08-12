@@ -6,8 +6,9 @@ creation, retrieval, listing, and deletion of player characters.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel
 
-from ..auth.users import get_current_user, get_current_user_with_logging
+from ..auth.users import get_current_user
 from ..exceptions import RateLimitError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
@@ -15,6 +16,13 @@ from ..logging_config import get_logger
 from ..models import Stats
 from ..schemas.player import PlayerRead
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
+
+
+class CreateCharacterRequest(BaseModel):
+    """Request model for character creation."""
+    name: str
+    stats: dict
+    starting_room_id: str = "earth_arkham_city_intersection_derby_high"
 
 logger = get_logger(__name__)
 
@@ -215,7 +223,7 @@ def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
-    current_user: dict = get_current_user_with_logging(),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Roll random stats for character creation.
@@ -268,9 +276,7 @@ def roll_character_stats(
 
 @player_router.post("/create-character")
 async def create_character_with_stats(
-    name: str,
-    stats: dict,
-    starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+    request_data: CreateCharacterRequest,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
 ):
@@ -304,22 +310,25 @@ async def create_character_with_stats(
 
     try:
         # Validate that character name matches username
-        if name != current_user.username:
+        if request_data.name != current_user.username:
             raise HTTPException(status_code=400, detail="Character name must match your username")
 
         # Convert dict to Stats object
-        stats_obj = Stats(**stats)
+        stats_obj = Stats(**request_data.stats)
 
         # Create player with stats
         player = player_service.create_player_with_stats(
-            name=name, stats=stats_obj, starting_room_id=starting_room_id, user_id=current_user.id
+            name=request_data.name,
+            stats=stats_obj,
+            starting_room_id=request_data.starting_room_id,
+            user_id=current_user.id
         )
 
         # Note: For now, we'll skip marking the invite as used to avoid complexity
         # TODO: Implement a proper way to track and mark invites as used
-        logger.info(f"Character {name} created successfully for user {current_user.id}")
+        logger.info(f"Character {request_data.name} created successfully for user {current_user.id}")
 
-        return {"message": f"Character {name} created successfully", "player": player, "stats": stats_obj.model_dump()}
+        return {"message": f"Character {request_data.name} created successfully", "player": player, "stats": stats_obj.model_dump()}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:

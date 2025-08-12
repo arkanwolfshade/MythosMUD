@@ -172,9 +172,29 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         onStatsAccepted(currentStats);
       } else {
         const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to create character';
+        let errorMessage = 'Failed to create character';
+
+        // Handle different error response formats
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            // FastAPI validation errors - array of error objects
+            errorMessage = errorData.detail
+              .map((err: { msg?: string; message?: string }) => err.msg || err.message || 'Validation error')
+              .join(', ');
+          } else if (typeof errorData.detail === 'string') {
+            // Simple string error
+            errorMessage = errorData.detail;
+          } else if (errorData.detail.message) {
+            // Object with message property
+            errorMessage = errorData.detail.message;
+          }
+        } else if (errorData.error?.message) {
+          // Custom error format
+          errorMessage = errorData.error.message;
+        }
+
         setError(errorMessage);
-        logger.error('StatsRollingScreen', 'Failed to create character', { error: errorMessage });
+        logger.error('StatsRollingScreen', 'Failed to create character', { error: errorData });
       }
     } catch (error) {
       const errorMessage = 'Failed to connect to server';

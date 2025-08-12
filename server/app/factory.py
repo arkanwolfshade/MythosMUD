@@ -17,7 +17,8 @@ from ..api.monitoring import router as monitoring_router
 from ..api.players import player_router
 from ..api.real_time import realtime_router
 from ..api.rooms import room_router
-from ..auth.endpoints import auth_router
+from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
+from ..auth.users import auth_backend, fastapi_users
 from ..command_handler import router as command_router
 from ..error_handlers import register_error_handlers
 from ..logging_config import get_logger
@@ -94,6 +95,12 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(auth_router)
+
+    # Include FastAPI Users routers for authentication
+    app.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
+    app.include_router(fastapi_users.get_register_router(UserRead, UserCreate), prefix="/auth", tags=["auth"])
+    app.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+
     app.include_router(command_router)
     app.include_router(player_router)
     app.include_router(game_router)
