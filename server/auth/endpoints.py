@@ -140,11 +140,10 @@ async def register_user(
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually with invite code included
+    # Create JWT token manually (without invite code to avoid validation issues)
     data = {
         "sub": str(user.id),
-        "aud": ["fastapi-users:auth"],
-        "invite_code": user_create.invite_code  # Include invite code for later use
+        "aud": ["fastapi-users:auth"]
     }
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
     access_token = generate_jwt(

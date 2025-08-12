@@ -32,10 +32,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   const [rerollCooldown, setRerollCooldown] = useState(0);
   const [error, setError] = useState('');
 
-  // Roll initial stats when component mounts
+  // Roll initial stats when component mounts and authToken is available
   useEffect(() => {
-    rollStats();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (authToken) {
+      rollStats();
+    }
+  }, [authToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle reroll cooldown
   useEffect(() => {

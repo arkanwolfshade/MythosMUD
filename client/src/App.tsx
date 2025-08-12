@@ -139,7 +139,10 @@ function App() {
         setPlayerId(data.user_id);
 
         // After successful registration, proceed directly to stats rolling
-        setShowStatsRolling(true);
+        // Use setTimeout to ensure state updates are processed
+        setTimeout(() => {
+          setShowStatsRolling(true);
+        }, 0);
       } else {
         const errorData = await response.json();
         logger.error('App', 'Registration failed', {
