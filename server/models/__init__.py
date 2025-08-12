@@ -8,11 +8,10 @@ This package contains all database models including:
 """
 
 from .alias import Alias
+from .game import AttributeType, Stats
 from .invite import Invite
 from .player import Player
-
-# Import the setup function but don't call it automatically
 from .relationships import setup_relationships
 from .user import User
 
-__all__ = ["User", "Player", "Invite", "Alias", "setup_relationships"]
+__all__ = ["User", "Player", "Invite", "Alias", "setup_relationships", "Stats", "AttributeType"]

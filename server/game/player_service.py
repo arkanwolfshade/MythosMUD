@@ -10,6 +10,7 @@ import uuid
 
 from ..alias_storage import AliasStorage
 from ..logging_config import get_logger
+from ..models import Stats
 from ..models.player import Player
 from ..schemas.player import PlayerRead
 
@@ -72,6 +73,63 @@ class PlayerService:
         # Save player to persistence
         self.persistence.save_player(player)
         logger.info("Player created successfully", name=name, player_id=player.player_id, user_id=user_id)
+
+        # Convert to schema format
+        return self._convert_player_to_schema(player)
+
+    def create_player_with_stats(
+        self,
+        name: str,
+        stats: Stats,
+        starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+        user_id: uuid.UUID | None = None,
+    ) -> PlayerRead:
+        """
+        Create a new player character with specific stats.
+
+        Args:
+            name: The player's name
+            stats: The player's stats
+            starting_room_id: The room ID where the player starts
+            user_id: Optional user ID (will be generated if not provided)
+
+        Returns:
+            PlayerRead: The created player data
+
+        Raises:
+            ValueError: If player name already exists
+        """
+        logger.info("Creating new player with stats", name=name, starting_room_id=starting_room_id, user_id=user_id)
+
+        # Check if player already exists
+        existing_player = self.persistence.get_player_by_name(name)
+        if existing_player:
+            logger.warning("Player creation failed - name already exists", name=name)
+            raise ValueError("Player name already exists")
+
+        # Generate user_id if not provided
+        if user_id is None:
+            user_id = uuid.uuid4()
+            logger.debug("Generated user_id for new player", name=name, user_id=user_id)
+
+        current_time = datetime.datetime.now()
+        player = Player(
+            player_id=uuid.uuid4(),
+            user_id=user_id,
+            name=name,
+            current_room_id=starting_room_id,
+            experience_points=0,
+            level=1,
+            created_at=current_time,
+            last_active=current_time,
+        )
+
+        # Set the player's stats
+        player.set_stats(stats)
+
+        # Save player to persistence
+        self.persistence.save_player(player)
+        logger.info("Player created successfully with stats", name=name, player_id=player.player_id, user_id=user_id)
 
         # Convert to schema format
         return self._convert_player_to_schema(player)

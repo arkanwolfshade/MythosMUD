@@ -8,8 +8,12 @@ creation, retrieval, listing, and deletion of player characters.
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..auth.users import get_current_user
+from ..exceptions import RateLimitError
 from ..game.player_service import PlayerService
+from ..game.stats_generator import StatsGenerator
+from ..models import Stats
 from ..schemas.player import PlayerRead
+from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 
 # Create player router
 player_router = APIRouter(prefix="/players", tags=["players"])
@@ -200,3 +204,177 @@ def damage_player(
 
     persistence.damage_player(player, amount, damage_type)
     return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+
+
+# Character Creation and Stats Generation Endpoints
+@player_router.post("/roll-stats")
+def roll_character_stats(
+    method: str = "3d6",
+    required_class: str | None = None,
+    max_attempts: int = 10,
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Roll random stats for character creation.
+
+    This endpoint generates random character statistics using the specified method
+    and validates them against class prerequisites if a required class is specified.
+
+    Rate limited to 10 requests per minute per user.
+    """
+    # Apply rate limiting
+    try:
+        stats_roll_limiter.enforce_rate_limit(current_user["id"])
+    except RateLimitError as e:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "message": str(e),
+                "retry_after": e.retry_after,
+                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user["id"])
+            }
+        ) from e
+
+    stats_generator = StatsGenerator()
+
+    try:
+        stats, available_classes = stats_generator.roll_stats_with_validation(
+            method=method, required_class=required_class, max_attempts=max_attempts
+        )
+
+        stat_summary = stats_generator.get_stat_summary(stats)
+
+        return {
+            "stats": stats.model_dump(),
+            "stat_summary": stat_summary,
+            "available_classes": available_classes,
+            "method_used": method,
+            "meets_class_requirements": required_class in available_classes if required_class else True,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to roll stats: {str(e)}") from e
+
+
+@player_router.post("/create-character")
+def create_character_with_stats(
+    name: str,
+    stats: dict,
+    starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+    current_user: dict = Depends(get_current_user),
+    request: Request = None,
+):
+    """
+    Create a new character with specific stats.
+
+    This endpoint creates a new player character with the provided stats
+    and automatically logs the user in with the new character.
+
+    Rate limited to 5 creations per 5 minutes per user.
+    """
+    # Apply rate limiting
+    try:
+        character_creation_limiter.enforce_rate_limit(current_user["id"])
+    except RateLimitError as e:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "message": str(e),
+                "retry_after": e.retry_after,
+                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user["id"])
+            }
+        ) from e
+
+    persistence = request.app.state.persistence
+    player_service = PlayerService(persistence)
+
+    try:
+        # Convert dict to Stats object
+        stats_obj = Stats(**stats)
+
+        # Create player with stats
+        player = player_service.create_player_with_stats(
+            name=name,
+            stats=stats_obj,
+            starting_room_id=starting_room_id,
+            user_id=current_user["id"]
+        )
+
+        return {
+            "message": f"Character {name} created successfully",
+            "player": player,
+            "stats": stats_obj.model_dump()
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create character: {str(e)}") from e
+
+
+@player_router.post("/validate-stats")
+def validate_character_stats(
+    stats: dict,
+    class_name: str | None = None,
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Validate character stats against class prerequisites.
+
+    This endpoint checks if the provided stats meet the requirements for a given class.
+    """
+    stats_generator = StatsGenerator()
+
+    try:
+        # Convert dict to Stats object
+        stats_obj = Stats(**stats)
+
+        if class_name:
+            meets_prerequisites, failed_requirements = stats_generator.validate_class_prerequisites(
+                stats_obj, class_name
+            )
+            available_classes = stats_generator.get_available_classes(stats_obj)
+
+            return {
+                "meets_prerequisites": meets_prerequisites,
+                "failed_requirements": failed_requirements,
+                "available_classes": available_classes,
+                "requested_class": class_name,
+            }
+        else:
+            available_classes = stats_generator.get_available_classes(stats_obj)
+            stat_summary = stats_generator.get_stat_summary(stats_obj)
+
+            return {"available_classes": available_classes, "stat_summary": stat_summary}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid stats format: {str(e)}") from e
+
+
+@player_router.get("/available-classes")
+def get_available_classes(
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Get information about all available character classes and their prerequisites.
+    """
+    stats_generator = StatsGenerator()
+
+    class_info = {}
+    for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
+        class_info[class_name] = {
+            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
+            "description": get_class_description(class_name),
+        }
+
+    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
+
+
+def get_class_description(class_name: str) -> str:
+    """Get a description for a character class."""
+    descriptions = {
+        "investigator": "A skilled researcher and detective, specializing in uncovering mysteries and gathering information.",
+        "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of sanity.",
+        "survivor": "A resilient individual who has learned to endure the horrors of the Mythos through sheer determination.",
+        "cultist": "A charismatic leader who can manipulate others and has ties to dark organizations.",
+        "academic": "A brilliant researcher and scholar, specializing in historical and scientific knowledge.",
+        "detective": "A sharp-witted investigator with exceptional intuition and deductive reasoning skills.",
+    }
+    return descriptions.get(class_name, "A mysterious character with unknown capabilities.")
