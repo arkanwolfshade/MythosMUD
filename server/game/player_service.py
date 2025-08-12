@@ -244,7 +244,7 @@ class PlayerService:
                 current_room_id=player.current_room_id,
                 experience_points=player.experience_points,
                 level=player.level,
-                stats=player.get_stats(),
+                stats=player.get_stats().model_dump(),
                 inventory=player.get_inventory(),
                 status_effects=player.get_status_effects(),
                 created_at=player.created_at,

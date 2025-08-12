@@ -20,9 +20,11 @@ from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 
 class CreateCharacterRequest(BaseModel):
     """Request model for character creation."""
+
     name: str
     stats: dict
     starting_room_id: str = "earth_arkham_city_intersection_derby_high"
+
 
 logger = get_logger(__name__)
 
@@ -321,14 +323,18 @@ async def create_character_with_stats(
             name=request_data.name,
             stats=stats_obj,
             starting_room_id=request_data.starting_room_id,
-            user_id=current_user.id
+            user_id=current_user.id,
         )
 
         # Note: For now, we'll skip marking the invite as used to avoid complexity
         # TODO: Implement a proper way to track and mark invites as used
         logger.info(f"Character {request_data.name} created successfully for user {current_user.id}")
 
-        return {"message": f"Character {request_data.name} created successfully", "player": player, "stats": stats_obj.model_dump()}
+        return {
+            "message": f"Character {request_data.name} created successfully",
+            "player": player,
+            "stats": stats_obj.model_dump(),
+        }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
