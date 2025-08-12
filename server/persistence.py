@@ -497,11 +497,22 @@ class PersistenceLayer:
         if self.get_room(player.current_room_id) is not None:
             return True  # Room exists, no fix needed
 
-        # Room doesn't exist, move player to starting room
+        # Room doesn't exist, move player to default starting room from config
         old_room = player.current_room_id
-        player.current_room_id = "earth_arkham_city_intersection_derby_high"
+        try:
+            from .config_loader import get_config
 
-        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to starting room")
+            config = get_config()
+            default_room = config.get("default_player_room", "earth_arkham_city_northside_intersection_derby_high")
+            if default_room is None:
+                default_room = "earth_arkham_city_northside_intersection_derby_high"
+        except Exception:
+            # Fallback to hardcoded default if config loading fails
+            default_room = "earth_arkham_city_northside_intersection_derby_high"
+
+        player.current_room_id = default_room
+
+        self._log(f"Player {player.name} was in invalid room '{old_room}', moved to default room '{default_room}'")
         return True
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

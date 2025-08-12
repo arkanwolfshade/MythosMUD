@@ -23,7 +23,7 @@ class CreateCharacterRequest(BaseModel):
 
     name: str
     stats: dict
-    starting_room_id: str = "earth_arkham_city_intersection_derby_high"
+    starting_room_id: str = "earth_arkham_city_northside_intersection_derby_high"
 
 
 logger = get_logger(__name__)
@@ -35,7 +35,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 def create_player(
     name: str,
-    starting_room_id: str = "earth_arkham_city_intersection_derby_high",
+    starting_room_id: str = "earth_arkham_city_northside_intersection_derby_high",
     current_user: dict = Depends(get_current_user),
     request: Request = None,
 ):

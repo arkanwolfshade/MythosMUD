@@ -10,12 +10,29 @@ ROOMS_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", 
 
 # Try to import the shared schema validator
 try:
-    from schemas.validator import SchemaValidator, create_validator
+    import os
+    import sys
 
-    SCHEMA_VALIDATION_AVAILABLE = True
-except ImportError:
+    # Add the project root to the path to find the schemas package
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+
+    # Try importing with absolute path
+    try:
+        from schemas.validator import SchemaValidator, create_validator
+
+        SCHEMA_VALIDATION_AVAILABLE = True
+    except ImportError:
+        # Fallback: try importing with relative path
+        sys.path.insert(0, os.path.join(project_root, "schemas"))
+        from validator import SchemaValidator, create_validator
+
+        SCHEMA_VALIDATION_AVAILABLE = True
+
+except ImportError as e:
     SCHEMA_VALIDATION_AVAILABLE = False
-    logger.warning("Schema validation not available - schemas package not found")
+    logger.warning(f"Schema validation not available - schemas package not found: {e}")
 
 
 def load_zone_config(zone_path: str) -> dict[str, Any] | None:
