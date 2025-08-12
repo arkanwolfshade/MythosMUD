@@ -67,12 +67,23 @@ function App() {
         logger.info('App', 'Login successful', {
           playerId: data.player_id,
           hasToken: !!data.access_token,
+          hasCharacter: data.has_character,
+          characterName: data.character_name,
         });
 
         setAuthToken(data.access_token);
         setPlayerId(data.user_id); // Use user_id from the server response
         setPlayerName(username); // Store the username for SSE connection
-        setIsAuthenticated(true);
+
+        // Check if user has a character
+        if (data.has_character) {
+          // User has a character, proceed to game
+          setIsAuthenticated(true);
+        } else {
+          // User doesn't have a character, go to stats rolling
+          logger.info('App', 'User has no character, proceeding to stats rolling');
+          setShowStatsRolling(true);
+        }
       } else {
         const errorData = await response.json();
         logger.error('App', 'Login failed', {

@@ -78,6 +78,8 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user_id: str
+    has_character: bool = True
+    character_name: str | None = None
 
 
 @auth_router.post("/register", response_model=LoginResponse)
@@ -149,9 +151,14 @@ async def register_user(
     logger.debug(f"JWT secret: {jwt_secret}")
     logger.debug(f"JWT token preview: {access_token[:50]}...")
 
+    # Newly registered users don't have characters yet
+    logger.info(f"Registration successful for user {user.username}, has_character: False")
+
     return LoginResponse(
         access_token=access_token,
         user_id=str(user.id),
+        has_character=False,
+        character_name=None,
     )
 
 
@@ -230,9 +237,22 @@ async def login_user(
         lifetime_seconds=3600,  # 1 hour
     )
 
+    # Check if user has a character
+    from ..persistence import get_persistence
+
+    persistence = get_persistence()
+    player = persistence.get_player_by_user_id(str(user.id))
+
+    has_character = player is not None
+    character_name = player.name if player else None
+
+    logger.info(f"Login successful for user {user.username}, has_character: {has_character}")
+
     return LoginResponse(
         access_token=access_token,
         user_id=str(user.id),
+        has_character=has_character,
+        character_name=character_name,
     )
 
 
