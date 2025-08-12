@@ -218,7 +218,7 @@ class TestLoginEndpoints:
         """Test successful login with valid credentials."""
         # Create mock user
         mock_user = MagicMock()
-        mock_user.user_id = uuid.uuid4()
+        mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
         mock_user.email = "testuser@wolfshade.org"
         mock_user.username = "testuser"
 
@@ -251,7 +251,7 @@ class TestLoginEndpoints:
             assert response.status_code == 200
             data = response.json()
             assert "access_token" in data
-            assert "user_id" in data
+            assert "user_id" in data  # This is the response field name, not the model property
             assert data["token_type"] == "bearer"
         finally:
             # Clean up the override
@@ -281,7 +281,7 @@ class TestLoginEndpoints:
 
         # Mock user lookup with no email
         mock_user = MagicMock()
-        mock_user.user_id = uuid.uuid4()
+        mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
         mock_user.email = None
         mock_user.username = "testuser"
 
@@ -302,7 +302,7 @@ class TestUserInfoEndpoints:
     def test_get_current_user_info_superuser(self, mock_get_current, test_client):
         """Test /auth/me endpoint with superuser."""
         mock_user = MagicMock()
-        mock_user.user_id = uuid.uuid4()
+        mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
         mock_user.email = "admin@wolfshade.org"
         mock_user.username = "admin"
         mock_user.is_superuser = True
@@ -321,7 +321,7 @@ class TestUserInfoEndpoints:
 
             assert response.status_code == 200
             data = response.json()
-            assert data["id"] == str(mock_user.user_id)
+            assert data["id"] == str(mock_user.id)  # Use 'id' instead of 'user_id'
             assert data["email"] == mock_user.email
             assert data["username"] == mock_user.username
             assert data["is_superuser"] is True
@@ -333,7 +333,7 @@ class TestUserInfoEndpoints:
     def test_get_current_user_info_regular_user(self, mock_get_current, test_client):
         """Test /auth/me endpoint with regular user."""
         mock_user = MagicMock()
-        mock_user.user_id = uuid.uuid4()
+        mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
         mock_user.email = "user@wolfshade.org"
         mock_user.username = "user"
         mock_user.is_superuser = False
@@ -352,7 +352,7 @@ class TestUserInfoEndpoints:
 
             assert response.status_code == 200
             data = response.json()
-            assert data["id"] == str(mock_user.user_id)
+            assert data["id"] == str(mock_user.id)  # Use 'id' instead of 'user_id'
             assert data["email"] == mock_user.email
             assert data["username"] == mock_user.username
             assert data["is_superuser"] is False

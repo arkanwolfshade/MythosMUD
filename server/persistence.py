@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import threading
+import uuid
 from collections.abc import Callable
 
 from .models import Player
@@ -91,6 +92,38 @@ class PersistenceLayer:
     def _log(self, msg: str):
         self._logger.info(msg)
 
+    def _convert_row_to_player_data(self, row: sqlite3.Row) -> dict:
+        """
+        Convert SQLite row data to proper types for Player constructor.
+
+        Args:
+            row: SQLite Row object from query result
+
+        Returns:
+            dict: Data with proper types for Player constructor
+        """
+        data = dict(row)
+
+        # Convert string UUIDs back to UUID objects
+        if data.get("player_id"):
+            try:
+                data["player_id"] = uuid.UUID(data["player_id"])
+            except (ValueError, TypeError):
+                self._log(f"Invalid player_id format: {data['player_id']}")
+                data["player_id"] = None
+
+        if data.get("user_id"):
+            try:
+                data["user_id"] = uuid.UUID(data["user_id"])
+            except (ValueError, TypeError):
+                self._log(f"Invalid user_id format: {data['user_id']}")
+                data["user_id"] = None
+
+        # Convert datetime strings back to datetime objects if needed
+        # (Player model handles this internally, but we could add explicit conversion here)
+
+        return data
+
     # --- Context Management ---
     def __enter__(self):
         self._lock.acquire()
@@ -140,7 +173,8 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -152,7 +186,8 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -164,7 +199,8 @@ class PersistenceLayer:
             conn.row_factory = sqlite3.Row
             row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)).fetchone()
             if row:
-                player = Player(**dict(row))
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
                 # Validate and fix room placement if needed
                 self.validate_and_fix_player_room(player)
                 return player
@@ -190,6 +226,10 @@ class PersistenceLayer:
                     else:
                         last_active = player.last_active.isoformat()
 
+                # Convert UUIDs to strings for SQLite compatibility
+                player_id_str = str(player.player_id) if player.player_id else None
+                user_id_str = str(player.user_id) if player.user_id else None
+
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO players (
@@ -198,8 +238,8 @@ class PersistenceLayer:
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
-                        player.player_id,
-                        player.user_id,
+                        player_id_str,
+                        user_id_str,
                         player.name,
                         player.stats,
                         player.inventory,
@@ -223,14 +263,28 @@ class PersistenceLayer:
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players").fetchall()
-            return [Player(**dict(row)) for row in rows]
+            players = []
+            for row in rows:
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                players.append(player)
+            return players
 
     def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players currently in a specific room."""
         with self._lock, sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
-            return [Player(**dict(row)) for row in rows]
+            players = []
+            for row in rows:
+                player_data = self._convert_row_to_player_data(row)
+                player = Player(**player_data)
+                # Validate and fix room placement if needed
+                self.validate_and_fix_player_room(player)
+                players.append(player)
+            return players
 
     def save_players(self, players: list[Player]):
         """Batch save players atomically."""
@@ -253,6 +307,10 @@ class PersistenceLayer:
                         else:
                             last_active = player.last_active.isoformat()
 
+                    # Convert UUIDs to strings for SQLite compatibility
+                    player_id_str = str(player.player_id) if player.player_id else None
+                    user_id_str = str(player.user_id) if player.user_id else None
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
@@ -261,8 +319,8 @@ class PersistenceLayer:
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
-                            player.player_id,
-                            player.user_id,
+                            player_id_str,
+                            user_id_str,
                             player.name,
                             player.stats,
                             player.inventory,

@@ -6,13 +6,13 @@ management. It integrates with FastAPI Users for user management and includes
 custom invite code validation.
 """
 
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi_users import InvalidPasswordException
+from fastapi_users import InvalidPasswordException, schemas
 from fastapi_users.exceptions import UserAlreadyExists
-from fastapi_users.schemas import BaseUserCreate
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
@@ -20,6 +20,7 @@ from ..logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from .dependencies import get_current_superuser
+from .email_utils import generate_unique_bogus_email
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, auth_backend, fastapi_users, get_user_manager
 
@@ -29,28 +30,21 @@ logger = get_logger("auth.endpoints")
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-# Define user schemas
-class UserRead(BaseModel):
+# Define user schemas compatible with FastAPI Users v14
+class UserRead(schemas.BaseUser[uuid.UUID]):
     """Schema for user read operations."""
 
-    id: str
     username: str
-    email: str | None = None
-    is_active: bool = True
-    is_superuser: bool = False
-    is_verified: bool = False
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(schemas.BaseUserUpdate):
     """Schema for user update operations."""
 
     username: str | None = None
-    email: str | None = None
-    password: str | None = None
 
 
 # Define user creation schema
-class UserCreate(BaseUserCreate):
+class UserCreate(schemas.BaseUserCreate):
     """Schema for user creation with invite code validation."""
 
     username: str
@@ -60,8 +54,6 @@ class UserCreate(BaseUserCreate):
     email: str | None = None
 
     # Add password validation to reject empty passwords
-    from pydantic import field_validator
-
     @field_validator("password")
     @classmethod
     def validate_password_not_empty(cls, v: str) -> str:
@@ -103,9 +95,10 @@ async def register_user(
     """
     logger.info(f"Registration attempt for username: {user_create.username}")
 
-    # Generate bogus email if not provided
+    # Generate unique bogus email if not provided
     if not user_create.email:
-        user_create.email = f"{user_create.username}@wolfshade.org"
+        user_create.email = await generate_unique_bogus_email(user_create.username, session)
+        logger.info(f"Generated unique bogus email for {user_create.username}: {user_create.email}")
 
     # Validate invite code (but don't use it yet)
     try:
@@ -158,7 +151,7 @@ async def register_user(
 
     return LoginResponse(
         access_token=access_token,
-        user_id=str(user.user_id),
+        user_id=str(user.id),
     )
 
 
@@ -216,8 +209,8 @@ async def login_user(
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
         # Verify we got the same user back
-        if authenticated_user.user_id != user.user_id:
-            logger.error(f"User ID mismatch: expected {user.user_id}, got {authenticated_user.user_id}")
+        if authenticated_user.id != user.id:
+            logger.error(f"User ID mismatch: expected {user.id}, got {authenticated_user.id}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
     except Exception as e:
         logger.error(f"Authentication failed: {str(e)}")
@@ -239,7 +232,7 @@ async def login_user(
 
     return LoginResponse(
         access_token=access_token,
-        user_id=str(user.user_id),
+        user_id=str(user.id),
     )
 
 
@@ -253,7 +246,7 @@ async def get_current_user_info(
     This endpoint returns information about the currently authenticated user.
     """
     return {
-        "id": str(current_user.user_id),
+        "id": str(current_user.id),
         "email": current_user.email,
         "username": current_user.username,
         "is_superuser": current_user.is_superuser,

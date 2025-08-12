@@ -24,8 +24,8 @@ class Invite(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     invite_code = Column(String, unique=True, nullable=False, index=True)
-    created_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
-    used_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
+    created_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    used_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
     used = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     # Store datetimes in database as naive UTC to keep SQLite comparisons simple.

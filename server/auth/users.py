@@ -10,7 +10,7 @@ import uuid
 from typing import Any
 
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, FastAPIUsers
+from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
     AuthenticationBackend,
     BearerTransport,
@@ -24,11 +24,12 @@ from ..database import get_async_session
 from ..logging_config import get_logger
 from ..models.user import User
 from .argon2_utils import hash_password, verify_password
+from .email_utils import is_bogus_email
 
 logger = get_logger(__name__)
 
 
-class UserManager(BaseUserManager[User, uuid.UUID]):
+class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     """
     Custom user manager for MythosMUD.
 
@@ -51,6 +52,11 @@ class UserManager(BaseUserManager[User, uuid.UUID]):
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
         logger.info(f"User {user.username} has registered.")
+
+        # Auto-verify bogus emails for privacy protection
+        if is_bogus_email(user.email):
+            user.is_verified = True
+            logger.info(f"Auto-verified bogus email for user {user.username}: {user.email}")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
