@@ -89,11 +89,80 @@ class RoomService:
             room_id: The room's ID
 
         Returns:
-            list[Dict[str, Any]]: List of adjacent rooms
+            list[Dict[str, Any]]: List of adjacent rooms with direction and room data
         """
         logger.debug("Getting adjacent rooms", room_id=room_id)
 
-        # This would need to be implemented in the persistence layer
-        # For now, we'll return an empty list
-        logger.debug("Adjacent room lookup not implemented", room_id=room_id)
-        return []
+        # Get the source room
+        source_room = self.get_room(room_id)
+        if not source_room:
+            logger.debug("Source room not found", room_id=room_id)
+            return []
+
+        adjacent_rooms = []
+        exits = source_room.get("exits", {})
+
+        # Check each exit direction
+        for direction, target_room_id in exits.items():
+            if target_room_id:  # Skip null/None exits
+                target_room = self.get_room(target_room_id)
+                if target_room:
+                    adjacent_rooms.append({
+                        "direction": direction,
+                        "room_id": target_room_id,
+                        "room_data": target_room
+                    })
+                    logger.debug(
+                        "Found adjacent room",
+                        source_room_id=room_id,
+                        direction=direction,
+                        target_room_id=target_room_id
+                    )
+                else:
+                    logger.warning(
+                        "Adjacent room not found",
+                        source_room_id=room_id,
+                        direction=direction,
+                        target_room_id=target_room_id
+                    )
+
+        logger.debug(
+            "Adjacent rooms found",
+            room_id=room_id,
+            adjacent_count=len(adjacent_rooms)
+        )
+        return adjacent_rooms
+
+    def get_local_chat_scope(self, room_id: str) -> list[str]:
+        """
+        Get the scope of rooms for local chat (current room + adjacent rooms).
+
+        Args:
+            room_id: The room's ID
+
+        Returns:
+            list[str]: List of room IDs in the local chat scope
+        """
+        logger.debug("Getting local chat scope", room_id=room_id)
+
+        # Get the source room first
+        source_room = self.get_room(room_id)
+        if not source_room:
+            logger.debug("Source room not found for local chat scope", room_id=room_id)
+            return []
+
+        # Start with the current room
+        local_scope = [room_id]
+
+        # Add adjacent rooms
+        adjacent_rooms = self.get_adjacent_rooms(room_id)
+        for adjacent in adjacent_rooms:
+            local_scope.append(adjacent["room_id"])
+
+        logger.debug(
+            "Local chat scope determined",
+            room_id=room_id,
+            scope_count=len(local_scope),
+            scope_rooms=local_scope
+        )
+        return local_scope
