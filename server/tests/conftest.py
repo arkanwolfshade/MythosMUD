@@ -12,8 +12,8 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
-# Set environment variables BEFORE any imports to prevent module-level instantiations
-# from using the wrong paths
+# Set environment variables BEFORE any imports to prevent module-level
+# instantiations from using the wrong paths
 os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
 os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
@@ -27,7 +27,11 @@ os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
-# Legacy logging environment variables no longer needed - logging is handled by centralized system
+# Set test configuration file path
+test_config_path = project_root / "server" / "tests" / "test_server_config.yaml"
+os.environ["MYTHOSMUD_CONFIG_PATH"] = str(test_config_path)
+# Legacy logging environment variables no longer needed - logging is handled by
+# centralized system
 # Use absolute path for aliases directory to prevent incorrect directory creation
 aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
 aliases_dir.mkdir(parents=True, exist_ok=True)

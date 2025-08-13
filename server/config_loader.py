@@ -131,10 +131,16 @@ def _get_config_path() -> str:
     Determine the appropriate config file path based on environment.
 
     Returns:
-        Path to the production config file
+        Path to the config file to use
     """
-    # Production always uses the main config file
-    logger.debug("Getting config path", config_path=_CONFIG_PATH)
+    # Check for explicit config path from environment variable
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH")
+    if config_path and os.path.exists(config_path):
+        logger.debug("Using config path from environment", config_path=config_path)
+        return config_path
+
+    # Default to production config file
+    logger.debug("Using default config path", config_path=_CONFIG_PATH)
     return _CONFIG_PATH
 
 

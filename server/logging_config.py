@@ -408,6 +408,14 @@ def setup_logging(config: dict[str, Any]) -> None:
     environment = logging_config.get("environment", detect_environment())
     log_level = logging_config.get("level", "INFO")
 
+    # Check if logging should be disabled
+    disable_logging = logging_config.get("disable_logging", False)
+
+    if disable_logging:
+        # Configure minimal logging without file handlers
+        configure_structlog(environment, log_level, {"disable_logging": True})
+        return
+
     # Configure Structlog
     configure_structlog(environment, log_level, logging_config)
 
