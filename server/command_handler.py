@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
+from .game.chat_service import ChatService
 from .game.movement_service import MovementService
 from .logging_config import get_logger
 
@@ -114,28 +115,36 @@ to revelations best left undiscovered.</p>
     },
     "say": {
         "category": "Communication",
-        "description": "Speak to others in the same room",
+        "description": "Speak to other players in your current room",
         "usage": "say <message>",
-        "examples": ["say Hello there!", "say What eldritch horrors await us?"],
+        "examples": ["say Hello everyone!", "say What a strange place this is..."],
         "detailed_help": """
-<div style="color: #8B0000;">
+<div style="color: #006400;">
 <h3>SAY Command</h3>
-<p>Give voice to your thoughts, though beware what echoes back from the shadows.
-Your words may attract attention from entities best left undisturbed.</p>
+<p>Project your voice into the eldritch air, allowing your words to reach
+the ears of those who share your current location. As the ancient texts
+suggest, communication is the first step toward understanding.</p>
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>say [message]</strong> - Speak to others in your current location</li>
+<li><strong>say [message]</strong> - Speak to players in your current room</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
-<li>say Hello there!</li>
-<li>say What eldritch horrors await us?</li>
-<li>say The stars are right...</li>
+<li>say Hello everyone!</li>
+<li>say What a strange place this is...</li>
+<li>say Has anyone seen the professor?</li>
 </ul>
 
-<p>Warning: "Some things that speak should not be heard." - Miskatonic University Archives</p>
+<h4>Notes:</h4>
+<ul>
+<li>Only players in your current room will hear your message</li>
+<li>Messages are limited to 500 characters</li>
+<li>You cannot speak if you are muted in the say channel</li>
+</ul>
+
+<p>"Words have power in the right places, and the right places have power in words." - Prof. Armitage</p>
 </div>
 """,
     },
@@ -603,10 +612,45 @@ def process_command(
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
+        logger.debug("Processing say command", player=player_name, args=args)
+
+        if not persistence:
+            logger.warning("Say command failed - no persistence layer", player=player_name)
+            return {"result": "You cannot speak right now."}
+
+        if not args:
+            logger.warning("Say command failed - no message provided", player=player_name)
+            return {"result": "Say what? Usage: say <message>"}
+
         message = " ".join(args).strip()
         if not message:
-            return {"result": "You open your mouth, but no words come out"}
-        return {"result": f"You say: {message}"}
+            return {"result": "You open your mouth, but no words come out."}
+
+        # Get player information
+        player = persistence.get_player_by_name(current_user["username"])
+        if not player:
+            logger.warning("Say command failed - player not found", player=player_name)
+            return {"result": "You cannot speak right now."}
+
+        # Initialize chat service
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Send the message
+        result = chat_service.send_say_message(player.player_id, message)
+
+        if result["success"]:
+            # Format the message for display
+            formatted_message = f"{player.name} says: {message}"
+            logger.info("Say message sent successfully", player=player_name, message_length=len(message))
+            return {"result": formatted_message}
+        else:
+            logger.warning("Say message failed", player=player_name, error=result.get("error"))
+            return {"result": result.get("error", "You cannot speak right now.")}
     else:
         return {"result": f"Unknown command: {cmd}"}
 
