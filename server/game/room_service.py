@@ -44,11 +44,7 @@ class RoomService:
             # If it's already a dictionary, use it directly
             room_dict = room
 
-        logger.debug(
-            "Room found by ID",
-            room_id=room_id,
-            room_name=room_dict.get("name", "Unknown")
-        )
+        logger.debug("Room found by ID", room_id=room_id, room_name=room_dict.get("name", "Unknown"))
         return room_dict
 
     def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
@@ -65,10 +61,7 @@ class RoomService:
 
         # This would need to be implemented in the persistence layer
         # For now, we'll return None as this functionality isn't available
-        logger.debug(
-            "Room lookup by name not implemented",
-            room_name=room_name
-        )
+        logger.debug("Room lookup by name not implemented", room_name=room_name)
         return None
 
     def list_rooms_in_zone(self, zone_id: str) -> list[dict[str, Any]]:
