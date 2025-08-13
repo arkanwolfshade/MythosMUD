@@ -28,6 +28,7 @@ This document outlines the implementation of a comprehensive chat system for Myt
 ## User Experience & Commands
 
 ### Chat Commands
+
 ```
 /global <message>      - System-wide communication
 /local <message>       - Area-wide communication (current room + adjacent)
@@ -38,17 +39,22 @@ This document outlines the implementation of a comprehensive chat system for Myt
 ```
 
 ### Channel Management Commands
+
 ```
 /mute <channel>        - Mute specific channel (global, local, party)
 /unmute <channel>      - Unmute specific channel
+/mute <player>         - Mute specific player across all channels
+/unmute <player>       - Unmute specific player
 /mute all              - Mute all channels except whispers
 /unmute all            - Unmute all channels
 /channels              - Show current channel status
 /channels muted        - Show muted channels
 /channels active       - Show active channels
+/muted players         - Show list of muted players
 ```
 
 ### Channel Subscription Model
+
 - **Automatic Subscription**: Players are automatically subscribed based on context
 - **Say/Local**: Automatically active when in rooms
 - **Global**: Always available (but can be muted)
@@ -56,7 +62,17 @@ This document outlines the implementation of a comprehensive chat system for Myt
 - **Whisper**: Always available for private communication
 - **No Manual Join/Leave**: Use mute/unmute instead for better UX
 
+### Player Muting Rules
+
+- **Player Muting**: Users can mute specific players across all channels
+- **Admin Protection**: Admins and moderators cannot be muted by regular users
+- **Self-Muting**: Players cannot mute themselves
+- **Cross-Channel**: Muted players are hidden from all channels (global, local, party, say)
+- **Whisper Exception**: Muted players can still send whispers (for emergency communication)
+- **Admin Override**: Admins can mute/unmute any player, including other admins
+
 ### Message Display Format
+
 ```
 [Global] Prof. Armitage: Welcome to Miskatonic University
 [Local] Dr. Wilmarth: Is anyone in the library complex?
@@ -64,6 +80,25 @@ Prof. Armitage says, "The restricted section is this way."
 [Party] Prof. Armitage: Let's investigate the basement together
 Prof. Armitage whispers to you, "I found something disturbing..."
 ```
+
+### Muting Examples
+
+```
+/mute global              - Mute global channel
+/mute Ithaqua             - Mute player "Ithaqua" across all channels
+/unmute local             - Unmute local channel
+/unmute Yog-Sothoth       - Unmute player "Yog-Sothoth"
+/muted players            - Show: "Muted players: Ithaqua, Cthulhu"
+/channels muted           - Show: "Muted channels: global"
+```
+
+### Muting Behavior
+
+- **Channel Muting**: Messages from muted channels are completely hidden
+- **Player Muting**: Messages from muted players are hidden in all channels except whispers
+- **Admin Messages**: Cannot be muted by regular users (system protection)
+- **Whisper Exception**: Muted players can still send whispers for emergency communication
+- **Cross-Session**: Mute settings persist across game sessions
 
 ## Technical Architecture
 
@@ -81,9 +116,12 @@ class ChatService:
         self.moderators = set()  # Admin/moderator list
 
     async def send_message(self, player_id: str, channel: str, message: str) -> bool
-    async def join_channel(self, player_id: str, channel: str) -> bool
-    async def leave_channel(self, player_id: str, channel: str) -> bool
-    async def mute_player(self, target_id: str, duration: int) -> bool
+    async def mute_channel(self, player_id: str, channel: str, duration: int = None) -> bool
+    async def unmute_channel(self, player_id: str, channel: str) -> bool
+    async def mute_player(self, muter_id: str, target_id: str, duration: int = None) -> bool
+    async def unmute_player(self, unmuter_id: str, target_id: str) -> bool
+    async def is_player_muted(self, player_id: str, by_player_id: str) -> bool
+    async def is_channel_muted(self, player_id: str, channel: str) -> bool
     async def filter_message(self, message: str) -> tuple[bool, str]
 ```
 
@@ -124,8 +162,23 @@ async def leave_channel(request: LeaveChannelRequest)
 @router.get("/chat/history/{channel}")
 async def get_chat_history(channel: str, limit: int = 50)
 
-@router.post("/chat/mute")
+@router.post("/chat/mute/channel")
+async def mute_channel(request: MuteChannelRequest)
+
+@router.post("/chat/unmute/channel")
+async def unmute_channel(request: UnmuteChannelRequest)
+
+@router.post("/chat/mute/player")
 async def mute_player(request: MutePlayerRequest)
+
+@router.post("/chat/unmute/player")
+async def unmute_player(request: UnmutePlayerRequest)
+
+@router.get("/chat/muted/channels")
+async def get_muted_channels(player_id: str)
+
+@router.get("/chat/muted/players")
+async def get_muted_players(player_id: str)
 ```
 
 ### Frontend Components
@@ -153,12 +206,14 @@ interface UseChatReturn {
 ## Chat Logging & Storage
 
 ### Chat Log Files
+
 - **Location**: `logs/chat/` directory
 - **Format**: JSON-structured logs for AI integration
 - **Rotation**: Daily log files with timestamp naming
 - **Retention**: 30 days by default, configurable
 
 ### Log File Structure
+
 ```json
 {
   "timestamp": "2025-01-27T10:30:00Z",
@@ -178,15 +233,17 @@ interface UseChatReturn {
 -- Chat mute settings (persistent across sessions)
 CREATE TABLE chat_mute_settings (
     player_id TEXT NOT NULL,
-    channel TEXT NOT NULL,
+    target_type TEXT NOT NULL, -- 'channel' or 'player'
+    target_id TEXT NOT NULL,   -- channel name or player id
     muted_until DATETIME,
     muted_by TEXT, -- moderator who applied mute
     reason TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (player_id, channel),
+    PRIMARY KEY (player_id, target_type, target_id),
     FOREIGN KEY (player_id) REFERENCES players(id),
     FOREIGN KEY (muted_by) REFERENCES players(id)
 );
+```
 
 -- Chat moderation logs (for admin oversight)
 CREATE TABLE chat_moderation_logs (
@@ -199,6 +256,7 @@ CREATE TABLE chat_moderation_logs (
     FOREIGN KEY (moderator_id) REFERENCES players(id),
     FOREIGN KEY (target_id) REFERENCES players(id)
 );
+
 ```
 
 ## Implementation Phases
@@ -251,8 +309,9 @@ CREATE TABLE chat_moderation_logs (
    - Custom filter lists
 
 2. **Communication Controls**
-   - Mute/unmute functionality
-   - Channel preferences
+   - Channel mute/unmute functionality
+   - Player mute/unmute functionality
+   - Admin protection and override rules
    - Message rate limiting
 
 3. **Admin Tools**
@@ -284,6 +343,8 @@ CREATE TABLE chat_moderation_logs (
 - Chat service functionality
 - Message filtering logic
 - Channel management
+- Player muting logic
+- Admin protection rules
 - API endpoint validation
 
 ### Integration Tests
@@ -312,6 +373,8 @@ CREATE TABLE chat_moderation_logs (
 ### Access Control
 
 - Channel permissions
+- Player muting permissions
+- Admin protection from muting
 - Moderator privileges
 - Admin authentication
 - Audit trail maintenance
