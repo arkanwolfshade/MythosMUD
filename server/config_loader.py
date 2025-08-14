@@ -113,7 +113,7 @@ _DEFAULTS = {
     "chat": {
         "rate_limiting": {
             "enabled": True,
-            "global": 10,      # messages per minute
+            "global": 10,  # messages per minute
             "local": 20,
             "say": 15,
             "party": 30,
