@@ -2,6 +2,35 @@
 
 *Academic Research into Forbidden Communications - Prof. Armitage's Notes*
 
+## Current Status (Updated: August 14, 2025)
+
+### ✅ **Phase 1: Core Infrastructure - COMPLETED**
+
+- **NATS Integration**: Successfully migrated from Redis to NATS for real-time messaging
+- **Server-Side Architecture**: NATS service, message handler, and WebSocket integration working
+- **Cross-Player Chat**: Demonstrated working chat between ArkanWolfshade and Ithaqua
+- **Real-Time Communication**: Messages delivered instantly via NATS → WebSocket pipeline
+
+### 🔄 **Phase 2: Chat Channels - IN PROGRESS**
+
+- **Say Channel**: ✅ **COMPLETED** - Working cross-player communication in same room
+- **Local Channel**: ⏳ **PENDING** - Area-wide communication (room + adjacent)
+- **Global Channel**: ⏳ **PENDING** - System-wide communication
+- **Party Channel**: ⏳ **PENDING** - Group communication
+- **Whisper Channel**: ⏳ **PENDING** - Private messaging
+
+### ⏳ **Phase 3: Advanced Features - PENDING**
+
+- **Server-Side Filtering**: ⏳ **PENDING** - Room/zone-based message filtering
+- **Rate Limiting**: ⏳ **PENDING** - Per-user, per-channel rate limiting
+- **Content Filtering**: ⏳ **PENDING** - Profanity and keyword detection
+- **Muting System**: ⏳ **PENDING** - Player and channel muting
+- **Message Persistence**: ⏳ **PENDING** - Chat history and audit trail
+
+### 🎯 **Next Priority**: Server-Side Message Filtering
+
+Implement room-based filtering to reduce network traffic and improve performance.
+
 ## Overview
 
 This document outlines the implementation of a comprehensive chat system for MythosMUD, addressing both the core chat channels (Issue #18) and the full chat system with moderation features (Issue #58). The system will enable players to communicate across multiple channels while maintaining the eldritch atmosphere of our Miskatonic University setting.

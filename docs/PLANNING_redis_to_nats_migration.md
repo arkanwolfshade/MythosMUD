@@ -149,11 +149,11 @@ class NATSService:
 
 **Tasks**:
 
-- [ ] Update `server/game/chat_service.py` to use NATS
-- [ ] Implement NATS message publishing
-- [ ] Implement NATS message subscription
-- [ ] Update message envelope structure
-- [ ] Test message routing functionality
+- [x] Update `server/game/chat_service.py` to use NATS
+- [x] Implement NATS message publishing
+- [x] Implement NATS message subscription
+- [x] Update message envelope structure
+- [x] Test message routing functionality
 
 **Code Changes**:
 
@@ -171,11 +171,11 @@ await nats_service.publish(f"chat.say.{room_id}", message_data)
 
 **Tasks**:
 
-- [ ] Update `server/realtime/redis_message_handler.py` → `nats_message_handler.py`
-- [ ] Implement NATS message processing
-- [ ] Update WebSocket broadcasting logic
-- [ ] Test real-time message delivery
-- [ ] Verify message ordering and delivery
+- [x] Update `server/realtime/redis_message_handler.py` → `nats_message_handler.py`
+- [x] Implement NATS message processing
+- [x] Update WebSocket broadcasting logic
+- [x] Test real-time message delivery
+- [x] Verify message ordering and delivery
 
 #### 2.3 Error Handling and Fallbacks
 
@@ -183,11 +183,49 @@ await nats_service.publish(f"chat.say.{room_id}", message_data)
 
 **Tasks**:
 
-- [ ] Add NATS connection monitoring
-- [ ] Implement automatic reconnection
-- [ ] Add fallback to direct WebSocket broadcasting
-- [ ] Create health check endpoints
-- [ ] Add logging for NATS operations
+- [x] Add NATS connection monitoring
+- [x] Implement automatic reconnection
+- [x] Add fallback to direct WebSocket broadcasting
+- [x] Create health check endpoints
+- [x] Add logging for NATS operations
+
+#### 2.4 Server-Side Message Filtering
+
+**Goal**: Implement server-side filtering to reduce network traffic and client load
+
+**Rationale**: Since we know what rooms players are in, we should do server-side filtering of outgoing messages on the "say" channel for the clients. We do not want to send all "say" messages to all clients and force them to filter to their room client-side. This would generate unnecessary network traffic and load on the client. This same behavior would be used for sub-zone/zone/plane communications as well.
+
+**Tasks**:
+
+- [ ] Implement room-based message filtering in NATS message handler
+- [ ] Add zone/subzone/plane-based filtering for broader communications
+- [ ] Update WebSocket broadcasting to only send relevant messages
+- [ ] Add configuration for filtering granularity
+- [ ] Test filtering with multiple players in different rooms
+- [ ] Verify network traffic reduction
+- [ ] Add metrics for message filtering efficiency
+
+**Implementation Strategy**:
+
+```python
+# In NATS message handler
+async def _broadcast_by_channel_type(self, channel, chat_event, room_id, party_id, target_player_id, sender_id):
+    if channel in ["say", "local"]:
+        # Only broadcast to players in the same room
+        await connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=sender_id)
+    elif channel == "zone":
+        # Broadcast to players in the same zone
+        await connection_manager.broadcast_to_zone(zone_id, chat_event, exclude_player=sender_id)
+    elif channel == "subzone":
+        # Broadcast to players in the same subzone
+        await connection_manager.broadcast_to_subzone(subzone_id, chat_event, exclude_player=sender_id)
+```
+
+**Benefits**:
+- **Reduced Network Traffic**: Only relevant messages sent to clients
+- **Lower Client Load**: No client-side filtering required
+- **Better Performance**: Faster message delivery to intended recipients
+- **Scalability**: More efficient as player count increases
 
 ### Phase 3: Supporting Infrastructure Implementation
 
