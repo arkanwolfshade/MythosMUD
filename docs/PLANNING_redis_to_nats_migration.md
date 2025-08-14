@@ -235,11 +235,14 @@ async def _broadcast_by_channel_type(self, channel, chat_event, room_id, party_i
 
 **Tasks**:
 
-- [ ] Create `server/models/chat_message.py`
-- [ ] Design SQLite schema for message history
-- [ ] Implement message storage service
-- [ ] Add message retrieval endpoints
-- [ ] Implement message cleanup (TTL)
+- [x] Create `server/services/chat_logger.py` (AI-focused logging)
+- [x] Design logfile-based persistence architecture
+- [x] Implement structured JSON logging for AI processing
+- [x] Add comprehensive moderation event logging
+- [x] Implement daily log rotation with timestamp naming
+- [x] Create log directories: logs/chat/, logs/moderation/, logs/system/
+- [x] Integrate ChatLogger into ChatService and RealTimeEventHandler
+- [x] Optimize for log shipping to external AI moderation systems
 
 **Database Schema**:
 
