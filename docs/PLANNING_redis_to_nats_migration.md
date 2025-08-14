@@ -63,11 +63,11 @@ chat.admin                    # Admin-only messages
 
 **Tasks**:
 
-- [ ] Download NATS server binary for Windows
-- [ ] Install NATS server in `E:\nats-server\`
-- [ ] Create NATS configuration file
-- [ ] Set up NATS as Windows service (optional)
-- [ ] Test NATS server connectivity
+- [x] Download NATS server binary for Windows
+- [x] Install NATS server in `E:\nats-server\`
+- [x] Create NATS configuration file
+- [x] Set up NATS as Windows service (optional)
+- [x] Test NATS server connectivity
 
 **Configuration**:
 
@@ -87,11 +87,11 @@ logtime: true
 
 **Tasks**:
 
-- [ ] Add `nats-py` to `pyproject.toml`
-- [ ] Update `uv.lock` with new dependency
-- [ ] Create NATS service wrapper
-- [ ] Implement connection management
-- [ ] Add error handling and reconnection logic
+- [x] Add `nats-py` to `pyproject.toml`
+- [x] Update `uv.lock` with new dependency
+- [x] Create NATS service wrapper
+- [x] Implement connection management
+- [x] Add error handling and reconnection logic
 
 **Code Structure**:
 
@@ -114,6 +114,20 @@ class NATSService:
     async def close(self):
         """Close NATS connection"""
 ```
+
+#### 1.1.1 NATS Server Management Integration
+
+**Goal**: Integrate NATS server management into existing server management scripts
+
+**Tasks**:
+
+- [x] Create NATS server management module (`scripts/nats_manager.ps1`)
+- [x] Create NATS status checking script (`scripts/nats_status.ps1`)
+- [x] Integrate NATS management into `start_server.ps1`
+- [x] Integrate NATS management into `stop_server.ps1`
+- [x] Update `start_dev.ps1` to inform users about automatic NATS startup
+- [x] Test NATS server automatic start/stop functionality
+- [x] Verify background operation and process management
 
 #### 1.3 NATS Service Integration
 
