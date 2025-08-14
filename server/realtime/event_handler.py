@@ -81,14 +81,15 @@ class RealTimeEventHandler:
 
             # Log player movement for AI processing
             try:
-                room = self.connection_manager.persistence.get_room(event.room_id) if self.connection_manager.persistence else None
+                room = (
+                    self.connection_manager.persistence.get_room(event.room_id)
+                    if self.connection_manager.persistence
+                    else None
+                )
                 room_name = getattr(room, "name", event.room_id) if room else event.room_id
 
                 self.chat_logger.log_player_joined_room(
-                    player_id=event.player_id,
-                    player_name=player_name,
-                    room_id=event.room_id,
-                    room_name=room_name
+                    player_id=event.player_id, player_name=player_name, room_id=event.room_id, room_name=room_name
                 )
             except Exception as e:
                 self._logger.error(f"Error logging player joined room: {e}")
@@ -152,14 +153,15 @@ class RealTimeEventHandler:
 
             # Log player movement for AI processing
             try:
-                room = self.connection_manager.persistence.get_room(event.room_id) if self.connection_manager.persistence else None
+                room = (
+                    self.connection_manager.persistence.get_room(event.room_id)
+                    if self.connection_manager.persistence
+                    else None
+                )
                 room_name = getattr(room, "name", event.room_id) if room else event.room_id
 
                 self.chat_logger.log_player_left_room(
-                    player_id=event.player_id,
-                    player_name=player_name,
-                    room_id=event.room_id,
-                    room_name=room_name
+                    player_id=event.player_id, player_name=player_name, room_id=event.room_id, room_name=room_name
                 )
             except Exception as e:
                 self._logger.error(f"Error logging player left room: {e}")
