@@ -49,6 +49,7 @@ if (-not (Test-Path "server") -or -not (Test-Path "client")) {
 function Start-Server {
     Write-Host "Starting MythosMUD server on port $ServerPort..." -ForegroundColor Yellow
     Write-Host "Server will be available at: http://localhost:$ServerPort" -ForegroundColor Cyan
+    Write-Host "NATS server will be started automatically" -ForegroundColor Cyan
     Write-Host ""
 
     # Start server in background

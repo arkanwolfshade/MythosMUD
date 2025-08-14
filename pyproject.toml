@@ -32,6 +32,7 @@ dependencies = [
     "tqdm>=4.67.1",
     "passlib[bcrypt]>=1.7.4",
     # "redis>=6.4.0",  # Redis removed from system
+    "nats-py>=2.6.0",  # NATS Python client for messaging
 ]
 
 [project.optional-dependencies]

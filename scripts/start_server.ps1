@@ -189,6 +189,35 @@ function Test-PortInUse {
     }
 }
 
+# Function to start NATS server
+function Start-NatsServerForMythosMUD {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "Checking NATS server..." -ForegroundColor Cyan
+
+    # Import NATS management functions
+    $natsManagerPath = Join-Path $PSScriptRoot "nats_manager.ps1"
+    if (Test-Path $natsManagerPath) {
+        . $natsManagerPath
+
+        # Check if NATS is running
+        if (-not (Test-NatsServerRunning)) {
+            Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
+            $natsStarted = Start-NatsServer -UseConfig -Background
+            if ($natsStarted) {
+                Write-Host "NATS server started successfully" -ForegroundColor Green
+            } else {
+                Write-Host "Warning: Failed to start NATS server" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "NATS server is already running" -ForegroundColor Green
+        }
+    } else {
+        Write-Host "Warning: NATS manager not found at $natsManagerPath" -ForegroundColor Yellow
+    }
+}
+
 # Function to start the server
 function Start-MythosMUDServer {
     [CmdletBinding()]
@@ -266,13 +295,16 @@ try {
     # Step 2: Stop existing processes
     Stop-ServerProcesses
 
-    # Step 2: Check if port is free
+    # Step 2.5: Start NATS server
+    Start-NatsServerForMythosMUD
+
+    # Step 3: Check if port is free
     if (Test-PortInUse -Port $Port) {
         Write-Host "Port $Port is still in use. Please check for other processes." -ForegroundColor Red
         exit 1
     }
 
-    # Step 3: Start the server
+    # Step 4: Start the server
     $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload
 
     if ($success) {

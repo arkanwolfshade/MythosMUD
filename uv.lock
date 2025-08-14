@@ -871,6 +871,7 @@ dependencies = [
     { name = "fastapi-users", extra = ["sqlalchemy"] },
     { name = "httpx" },
     { name = "jsonschema" },
+    { name = "nats-py" },
     { name = "passlib", extra = ["bcrypt"] },
     { name = "pre-commit" },
     { name = "pydantic" },
@@ -919,6 +920,7 @@ requires-dist = [
     { name = "httpx", specifier = "==0.28.1" },
     { name = "jsonschema", specifier = ">=4.21.0" },
     { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.10.5" },
+    { name = "nats-py", specifier = ">=2.6.0" },
     { name = "networkx", marker = "extra == 'dev'", specifier = ">=3.5" },
     { name = "numpy", marker = "extra == 'dev'", specifier = ">=2.3.2" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7.4" },
@@ -945,6 +947,12 @@ provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "ruff", specifier = ">=0.12.5" }]
+
+[[package]]
+name = "nats-py"
+version = "2.11.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/65/be/757c8af63596453daaa42cc21be51aa42fc6b23cc9d4347784f99c8357b5/nats_py-2.11.0.tar.gz", hash = "sha256:fb1097db8b520bb4c8f5ad51340ca54d9fa54dbfc4ecc81c3625ef80994b6100", size = 114186, upload-time = "2025-07-22T08:41:08.589Z" }
 
 [[package]]
 name = "networkx"
