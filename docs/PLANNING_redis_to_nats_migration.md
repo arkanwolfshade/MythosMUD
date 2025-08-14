@@ -197,11 +197,11 @@ await nats_service.publish(f"chat.say.{room_id}", message_data)
 
 **Tasks**:
 
-- [ ] Implement room-based message filtering in NATS message handler
+- [x] Implement room-based message filtering in NATS message handler
 - [ ] Add zone/subzone/plane-based filtering for broader communications
-- [ ] Update WebSocket broadcasting to only send relevant messages
+- [x] Update WebSocket broadcasting to only send relevant messages
 - [ ] Add configuration for filtering granularity
-- [ ] Test filtering with multiple players in different rooms
+- [x] Test filtering with multiple players in different rooms
 - [ ] Verify network traffic reduction
 - [ ] Add metrics for message filtering efficiency
 

@@ -156,13 +156,13 @@ class NATSMessageHandler:
         """
         try:
             if channel in ["say", "local"]:
-                # Room-based channels
+                # Room-based channels - implement server-side filtering
                 if room_id:
-                    await connection_manager.broadcast_to_room(
-                        room_id, chat_event, exclude_player=sender_id
+                    await self._broadcast_to_room_with_filtering(
+                        room_id, chat_event, sender_id, channel
                     )
                     logger.debug(
-                        "Broadcasted room message",
+                        "Broadcasted room message with server-side filtering",
                         channel=channel,
                         room_id=room_id,
                         sender_id=sender_id,
@@ -212,6 +212,115 @@ class NATSMessageHandler:
                 party_id=party_id,
                 target_player_id=target_player_id,
             )
+
+    async def _broadcast_to_room_with_filtering(
+        self, room_id: str, chat_event: dict, sender_id: str, channel: str
+    ):
+        """
+        Broadcast room-based messages with server-side filtering.
+
+        This method ensures that players only receive messages from their current room,
+        reducing network traffic and client load by filtering on the server side.
+
+        Args:
+            room_id: Room ID where the message originated
+            chat_event: WebSocket event to broadcast
+            sender_id: Sender player ID
+            channel: Channel type (say, local)
+        """
+        try:
+            # Get all players subscribed to this room
+            canonical_id = connection_manager._canonical_room_id(room_id) or room_id
+            targets: set[str] = set()
+
+            if canonical_id in connection_manager.room_subscriptions:
+                targets.update(connection_manager.room_subscriptions[canonical_id])
+            if room_id != canonical_id and room_id in connection_manager.room_subscriptions:
+                targets.update(connection_manager.room_subscriptions[room_id])
+
+            # Filter players based on their current room
+            filtered_targets = []
+            for player_id in targets:
+                if player_id == sender_id:
+                    continue  # Skip sender
+
+                # Check if player is currently in the message's room
+                if self._is_player_in_room(player_id, room_id):
+                    filtered_targets.append(player_id)
+                else:
+                    logger.debug(
+                        "Filtered out player not in room",
+                        player_id=player_id,
+                        message_room_id=room_id,
+                        channel=channel,
+                    )
+
+            # Send message only to filtered players
+            for player_id in filtered_targets:
+                await connection_manager.send_personal_message(player_id, chat_event)
+
+            logger.info(
+                "Room message broadcasted with server-side filtering",
+                channel=channel,
+                room_id=room_id,
+                sender_id=sender_id,
+                total_subscribers=len(targets),
+                filtered_recipients=len(filtered_targets),
+                excluded_count=len(targets) - len(filtered_targets) - 1,  # -1 for sender
+            )
+
+        except Exception as e:
+            logger.error(
+                "Error in server-side room message filtering",
+                error=str(e),
+                room_id=room_id,
+                sender_id=sender_id,
+                channel=channel,
+            )
+
+    def _is_player_in_room(self, player_id: str, room_id: str) -> bool:
+        """
+        Check if a player is currently in the specified room.
+
+        Args:
+            player_id: Player ID to check
+            room_id: Room ID to check against
+
+        Returns:
+            bool: True if player is in the room, False otherwise
+        """
+        try:
+            # Get player's current room from connection manager's online players
+            if player_id in connection_manager.online_players:
+                player_info = connection_manager.online_players[player_id]
+                player_room_id = player_info.get("current_room_id")
+
+                if player_room_id:
+                    # Use canonical room ID for comparison
+                    canonical_player_room = connection_manager._canonical_room_id(player_room_id) or player_room_id
+                    canonical_message_room = connection_manager._canonical_room_id(room_id) or room_id
+
+                    return canonical_player_room == canonical_message_room
+
+            # Fallback: check persistence layer
+            if connection_manager.persistence:
+                player = connection_manager.persistence.get_player(player_id)
+                if player and player.current_room_id:
+                    canonical_player_room = connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
+                    canonical_message_room = connection_manager._canonical_room_id(room_id) or room_id
+
+                    return canonical_player_room == canonical_message_room
+
+            return False
+
+        except Exception as e:
+            logger.error(
+                "Error checking if player is in room",
+                error=str(e),
+                player_id=player_id,
+                room_id=room_id,
+            )
+            return False
 
     async def subscribe_to_room(self, room_id: str):
         """
