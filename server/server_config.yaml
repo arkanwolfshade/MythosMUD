@@ -74,6 +74,10 @@ xp_multiplier: 1.0
 hp_regen_rate: 5
 combat_tick_interval: 2  # seconds
 
+# --- Redis Configuration ---
+# Redis has been removed in favor of direct WebSocket broadcasting
+# Configuration will be replaced with NATS in future migration
+
 # --- Runtime/Scheduler ---
 game_tick_rate: 1  # seconds
 weather_update_interval: 60

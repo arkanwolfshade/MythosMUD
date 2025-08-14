@@ -98,6 +98,16 @@ _DEFAULTS = {
     "game_tick_rate": 1.0,
     "weather_update_interval": 300,
     "save_interval": 60,
+    # Redis configuration removed - using direct WebSocket broadcasting
+    # "redis": {
+    #     "enabled": True,
+    #     "host": "localhost",
+    #     "port": 6379,
+    #     "db": 0,
+    #     "socket_connect_timeout": 5,
+    #     "socket_timeout": 5,
+    #     "decode_responses": True,
+    # },
 }
 
 _FIELD_TYPES = {

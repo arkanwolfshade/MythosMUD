@@ -143,6 +143,7 @@ class MultiFileHandler:
             "commands",
             "errors",
             "access",
+            # "redis",  # Redis removed from system
         ]
 
     def get_log_file_path(self, logger_name: str) -> Path:
@@ -171,6 +172,7 @@ class MultiFileHandler:
             "commands": "commands",
             "errors": "errors",
             "access": "access",
+            # "redis": "redis",  # Redis removed from system
         }
 
         # Determine log file based on logger name
@@ -316,6 +318,7 @@ def _setup_file_logging(
         "commands": ["commands"],
         "errors": ["errors"],
         "access": ["access", "server.app.factory"],
+        # "redis": ["redis", "services.redis_service", "realtime.redis_message_handler"],  # Redis removed from system
     }
 
     for log_file, prefixes in log_categories.items():

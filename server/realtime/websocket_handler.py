@@ -375,10 +375,26 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
 
     elif cmd == "say":
-        message = " ".join(args).strip()
-        if not message:
-            return {"result": "You open your mouth, but no words come out"}
-        return {"result": f"You say: {message}"}
+        # Use the proper command handler for say command
+        from ..alias_storage import AliasStorage
+        from ..command_handler import process_command
+
+        # Create a mock request object for the command handler
+        class MockRequest:
+            def __init__(self, persistence):
+                self.app = type("MockApp", (), {"state": type("MockState", (), {"persistence": persistence})()})()
+
+        mock_request = MockRequest(connection_manager.persistence)
+
+        # Get player name for the command handler
+        player_name = getattr(player, "name", "Unknown")
+
+        # Create alias storage (this might need to be passed in)
+        alias_storage = AliasStorage()
+
+        # Process the command using the proper command handler
+        result = process_command(cmd, args, {"username": player_name}, mock_request, alias_storage, player_name)
+        return result
 
     elif cmd == "help":
         if len(args) > 1:

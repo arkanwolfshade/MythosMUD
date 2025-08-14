@@ -47,6 +47,9 @@ async def lifespan(app: FastAPI):
 
     logger.info("Real-time event handler initialized")
 
+    # Redis has been removed - using direct WebSocket broadcasting
+    logger.info("Redis removed from system - using direct WebSocket broadcasting for chat messages")
+
     # Start the game tick loop
     tick_task = asyncio.create_task(game_tick_loop(app))
     app.state.tick_task = tick_task
@@ -55,6 +58,10 @@ async def lifespan(app: FastAPI):
 
     # Shutdown logic
     logger.info("Shutting down MythosMUD server...")
+
+    # Redis has been removed - no cleanup needed
+    logger.info("Redis removed from system - no cleanup required")
+
     if hasattr(app.state, "tick_task"):
         app.state.tick_task.cancel()
         try:

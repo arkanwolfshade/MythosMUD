@@ -31,6 +31,7 @@ dependencies = [
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
     "passlib[bcrypt]>=1.7.4",
+    # "redis>=6.4.0",  # Redis removed from system
 ]
 
 [project.optional-dependencies]
