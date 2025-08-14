@@ -12,6 +12,7 @@ from typing import Any
 from ..logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.nats_service import nats_service
+from ..services.rate_limiter import rate_limiter
 
 logger = get_logger("communications.chat_service")
 
@@ -86,6 +87,9 @@ class ChatService:
         # Chat logger for AI processing and log shipping
         self.chat_logger = chat_logger
 
+        # Rate limiter for message throttling
+        self.rate_limiter = rate_limiter
+
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
     async def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
@@ -115,20 +119,27 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 500 characters)"}
 
         # Get player information
-        player = self.persistence.get_player(player_id)
+        player = self.player_service.get_player(player_id)
         if not player:
-            logger.warning("=== CHAT SERVICE DEBUG: Player not found ===", player_id=player_id)
+            logger.warning("Player not found for chat message", player_id=player_id)
             return {"success": False, "error": "Player not found"}
 
-        logger.info("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
+        # Check rate limits before allowing message
+        if not self.rate_limiter.check_rate_limit(player_id, "say", player.name):
+            logger.warning("Rate limit exceeded for say message", player_id=player_id, player_name=player.name)
+            return {
+                "success": False,
+                "error": "Rate limit exceeded. Please wait before sending another message.",
+                "rate_limited": True,
+            }
 
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("=== CHAT SERVICE DEBUG: Player has no room ===", player_id=player_id)
-            return {"success": False, "error": "You are not in a room"}
+            logger.warning("Player not in a room", player_id=player_id)
+            return {"success": False, "error": "Player not in a room"}
 
-        logger.info("=== CHAT SERVICE DEBUG: Player room found ===", player_id=player_id, room_id=room_id)
+        logger.info("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
 
         # Check if player is muted in say channel (synchronous for MVP)
         if self._muted_channels.get(player_id, {}).get("say", False):
@@ -151,6 +162,9 @@ class ChatService:
                 "moderation_notes": None,
             }
         )
+
+        # Record message for rate limiting
+        self.rate_limiter.record_message(player_id, "say", player.name)
 
         # Also log to communications log (existing behavior)
         chat_message.log_message()
