@@ -486,7 +486,7 @@ def handle_expanded_command(
     return result
 
 
-def process_command(
+async def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
@@ -646,7 +646,7 @@ def process_command(
             player_id=str(player.player_id),
             message=message,
         )
-        result = chat_service.send_say_message(str(player.player_id), message)
+        result = await chat_service.send_say_message(str(player.player_id), message)
         logger.info("=== COMMAND HANDLER DEBUG: chat_service.send_say_message completed ===", result=result)
 
         if result["success"]:

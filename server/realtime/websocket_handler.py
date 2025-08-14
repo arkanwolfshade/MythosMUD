@@ -393,7 +393,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         alias_storage = AliasStorage()
 
         # Process the command using the proper command handler
-        result = process_command(cmd, args, {"username": player_name}, mock_request, alias_storage, player_name)
+        result = await process_command(cmd, args, {"username": player_name}, mock_request, alias_storage, player_name)
         return result
 
     elif cmd == "help":

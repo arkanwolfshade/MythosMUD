@@ -6,6 +6,7 @@ replacing the previous Redis-based implementation with a more lightweight
 and Windows-native solution.
 """
 
+import asyncio
 import json
 from collections.abc import Callable
 from typing import Any
@@ -34,7 +35,7 @@ class NATSService:
         """
         self.config = config or {}
         self.nc: nats.NATS | None = None
-        self.subscriptions: dict[str, nats.Subscription] = {}
+        self.subscriptions: dict[str, Any] = {}
         self._running = False
         self._connection_retries = 0
         self._max_retries = self.config.get("max_reconnect_attempts", 5)
@@ -64,10 +65,14 @@ class NATSService:
             # Connect to NATS
             self.nc = await nats.connect(nats_url, **connect_options)
 
-            # Set up connection event handlers
-            self.nc.add_error_listener(self._on_error)
-            self.nc.add_disconnect_listener(self._on_disconnect)
-            self.nc.add_reconnect_listener(self._on_reconnect)
+            # Set up connection event handlers (if available)
+            try:
+                self.nc.add_error_listener(self._on_error)
+                self.nc.add_disconnect_listener(self._on_disconnect)
+                self.nc.add_reconnect_listener(self._on_reconnect)
+            except AttributeError:
+                # Event listeners not available in this version of nats-py
+                logger.debug("Event listeners not available in nats-py version")
 
             self._running = True
             self._connection_retries = 0
@@ -173,8 +178,11 @@ class NATSService:
                     data = msg.data.decode("utf-8")
                     message_data = json.loads(data)
 
-                    # Call the registered callback
-                    callback(message_data)
+                    # Call the registered callback (await if it's async)
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback(message_data)
+                    else:
+                        callback(message_data)
 
                     logger.debug(
                         "Message received from NATS subject",

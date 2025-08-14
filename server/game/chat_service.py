@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Any
 
 from ..logging_config import get_logger
+from ..services.nats_service import nats_service
 
 logger = get_logger("communications.chat_service")
 
@@ -78,9 +79,12 @@ class ChatService:
         # Message limits
         self._max_messages_per_room = 100
 
-        logger.info("ChatService initialized")
+        # NATS service for real-time messaging
+        self.nats_service = nats_service
 
-    def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
+        logger.info("ChatService initialized with NATS integration")
+
+    async def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
         """
         Send a say message to players in the same room.
 
@@ -153,15 +157,80 @@ class ChatService:
             message_id=chat_message.id,
         )
 
-        # Broadcast message directly to room via WebSocket
-        # Redis has been removed - using direct WebSocket broadcasting
-        logger.info("=== CHAT SERVICE DEBUG: About to broadcast message directly to room ===")
-        self._broadcast_chat_message_directly(chat_message, room_id)
-        logger.info("=== CHAT SERVICE DEBUG: Direct broadcast completed ===")
+        # Publish message to NATS for real-time distribution
+        logger.info("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        if not success:
+            # Fallback to direct WebSocket broadcasting if NATS fails
+            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
+            await self._broadcast_chat_message_directly(chat_message, room_id)
+        logger.info("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
 
-    def _broadcast_chat_message_directly(self, chat_message: ChatMessage, room_id: str):
+    async def _publish_chat_message_to_nats(self, chat_message: ChatMessage, room_id: str) -> bool:
+        """
+        Publish a chat message to NATS for real-time distribution.
+
+        This method publishes the message to the appropriate NATS subject
+        for distribution to all subscribers.
+
+        Args:
+            chat_message: The chat message to publish
+            room_id: The room ID for the message
+
+        Returns:
+            True if published successfully, False otherwise
+        """
+        try:
+            # Check if NATS service is available and connected
+            if not self.nats_service or not self.nats_service.is_connected():
+                logger.warning("NATS service not available or not connected")
+                return False
+
+            # Create message data for NATS
+            message_data = {
+                "message_id": chat_message.id,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "channel": chat_message.channel,
+                "content": chat_message.content,
+                "timestamp": chat_message.timestamp.isoformat(),
+                "room_id": room_id,
+            }
+
+            # Determine NATS subject based on channel
+            subject = f"chat.{chat_message.channel}.{room_id}"
+
+            # Publish to NATS
+            success = await self.nats_service.publish(subject, message_data)
+            if success:
+                logger.info(
+                    "Chat message published to NATS successfully",
+                    message_id=chat_message.id,
+                    subject=subject,
+                    sender_id=chat_message.sender_id,
+                    room_id=room_id,
+                )
+            else:
+                logger.error(
+                    "Failed to publish chat message to NATS",
+                    message_id=chat_message.id,
+                    subject=subject,
+                )
+
+            return success
+
+        except Exception as e:
+            logger.error(
+                "Error publishing chat message to NATS",
+                error=str(e),
+                message_id=chat_message.id,
+                room_id=room_id,
+            )
+            return False
+
+    async def _broadcast_chat_message_directly(self, chat_message: ChatMessage, room_id: str):
         """
         Broadcast a chat message directly to all players in the room via WebSocket.
 
@@ -174,8 +243,6 @@ class ChatService:
         """
         try:
             # Import required modules for direct broadcasting
-            import asyncio
-
             from ..realtime.connection_manager import connection_manager
             from ..realtime.envelope import build_event
 
@@ -194,26 +261,7 @@ class ChatService:
             )
 
             # Broadcast directly to room
-            try:
-                # Get the current event loop
-                loop = asyncio.get_event_loop()
-
-                # If loop is running, create a task to broadcast the message
-                if loop.is_running():
-                    loop.create_task(
-                        connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=chat_message.sender_id)
-                    )
-                else:
-                    # If no loop is running, run the coroutine directly
-                    loop.run_until_complete(
-                        connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=chat_message.sender_id)
-                    )
-
-            except RuntimeError:
-                # If no event loop is available, create a new one
-                asyncio.run(
-                    connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=chat_message.sender_id)
-                )
+            await connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=chat_message.sender_id)
 
             logger.info(
                 "Chat message broadcasted directly to room",
