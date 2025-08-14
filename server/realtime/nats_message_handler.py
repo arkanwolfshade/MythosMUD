@@ -55,13 +55,13 @@ class NATSMessageHandler:
     async def _subscribe_to_chat_subjects(self):
         """Subscribe to all chat-related NATS subjects."""
         subjects = [
-            "chat.say.*",      # Say messages per room
-            "chat.local.*",    # Local messages per room
-            "chat.global",     # Global messages
-            "chat.party.*",    # Party messages per party
+            "chat.say.*",  # Say messages per room
+            "chat.local.*",  # Local messages per room
+            "chat.global",  # Global messages
+            "chat.party.*",  # Party messages per party
             "chat.whisper.*",  # Whisper messages per player
-            "chat.system",     # System messages
-            "chat.admin",      # Admin messages
+            "chat.system",  # System messages
+            "chat.admin",  # Admin messages
         ]
 
         for subject in subjects:
@@ -133,9 +133,7 @@ class NATSMessageHandler:
             )
 
             # Broadcast based on channel type
-            await self._broadcast_by_channel_type(
-                channel, chat_event, room_id, party_id, target_player_id, sender_id
-            )
+            await self._broadcast_by_channel_type(channel, chat_event, room_id, party_id, target_player_id, sender_id)
 
         except Exception as e:
             logger.error("Error handling NATS message", error=str(e), message_data=message_data)
@@ -158,9 +156,7 @@ class NATSMessageHandler:
             if channel in ["say", "local"]:
                 # Room-based channels - implement server-side filtering
                 if room_id:
-                    await self._broadcast_to_room_with_filtering(
-                        room_id, chat_event, sender_id, channel
-                    )
+                    await self._broadcast_to_room_with_filtering(room_id, chat_event, sender_id, channel)
                     logger.debug(
                         "Broadcasted room message with server-side filtering",
                         channel=channel,
@@ -213,9 +209,7 @@ class NATSMessageHandler:
                 target_player_id=target_player_id,
             )
 
-    async def _broadcast_to_room_with_filtering(
-        self, room_id: str, chat_event: dict, sender_id: str, channel: str
-    ):
+    async def _broadcast_to_room_with_filtering(self, room_id: str, chat_event: dict, sender_id: str, channel: str):
         """
         Broadcast room-based messages with server-side filtering.
 
@@ -306,7 +300,9 @@ class NATSMessageHandler:
             if connection_manager.persistence:
                 player = connection_manager.persistence.get_player(player_id)
                 if player and player.current_room_id:
-                    canonical_player_room = connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
+                    canonical_player_room = (
+                        connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
+                    )
                     canonical_message_room = connection_manager._canonical_room_id(room_id) or room_id
 
                     return canonical_player_room == canonical_message_room
