@@ -9,7 +9,7 @@ preservation and understanding.
 
 import traceback
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from .logging_config import get_logger
@@ -32,7 +32,7 @@ class ErrorContext:
     command: str | None = None
     session_id: str | None = None
     request_id: str | None = None
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -77,7 +77,7 @@ class MythosMUDError(Exception):
         self.context = context or ErrorContext()
         self.details = details or {}
         self.user_friendly = user_friendly or message
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.now(UTC)
 
         # Log the error with context
         self._log_error()

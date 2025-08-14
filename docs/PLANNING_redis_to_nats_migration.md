@@ -307,32 +307,34 @@ class RateLimiter:
 
 **Tasks**:
 
-- [ ] Create `server/models/chat_mutes.py`
-- [ ] Implement mute/unmute functionality
-- [ ] Add admin protection logic
-- [ ] Create mute management endpoints
-- [ ] Implement mute filtering in message processing
+- [x] Create `server/services/user_manager.py`
+- [x] Implement player muting (permanent and temporary)
+- [x] Implement channel muting (permanent and temporary)
+- [x] Implement global muting (permanent and temporary)
+- [x] Add admin player management (immune to mutes)
+- [x] Integrate UserManager into ChatService
+- [x] Add permission checking for message sending
+- [x] Implement mute expiry and cleanup
+- [x] Add comprehensive logging for AI processing
 
-**Database Schema**:
+**User Management Features**:
 
-```sql
--- Chat mute settings
-CREATE TABLE chat_mutes (
-    id TEXT PRIMARY KEY,
-    player_id TEXT NOT NULL,
-    target_type TEXT NOT NULL, -- 'channel' or 'player'
-    target_id TEXT NOT NULL,   -- channel name or player id
-    muted_until DATETIME,
-    muted_by TEXT,
-    reason TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (player_id) REFERENCES players(id),
-    FOREIGN KEY (muted_by) REFERENCES players(id)
-);
+```python
+class UserManager:
+    def mute_player(self, muter_id: str, target_id: str, duration_minutes: int = None) -> bool:
+        """Mute a specific player for another player"""
 
--- Indexes
-CREATE INDEX idx_chat_mutes_player ON chat_mutes(player_id);
-CREATE INDEX idx_chat_mutes_target ON chat_mutes(target_type, target_id);
+    def mute_channel(self, player_id: str, channel: str, duration_minutes: int = None) -> bool:
+        """Mute a specific channel for a player"""
+
+    def mute_global(self, muter_id: str, target_id: str, duration_minutes: int = None) -> bool:
+        """Apply a global mute to a player (cannot use any chat channels)"""
+
+    def add_admin(self, player_id: str) -> bool:
+        """Add a player as an admin (immune to mutes)"""
+
+    def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
+        """Check if a player can send a message"""
 ```
 
 #### 3.4 Content Filtering System

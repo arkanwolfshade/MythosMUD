@@ -10,7 +10,7 @@ proper categorization of knowledge is essential for its preservation.
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -69,7 +69,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
         return
 
     # Generate timestamp for rotation
-    timestamp = datetime.now().strftime("%Y_%m_%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y_%m_%d_%H%M%S")
 
     # Get all log files in the directory
     log_files = list(env_log_dir.glob("*.log"))

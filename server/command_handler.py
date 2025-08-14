@@ -490,7 +490,7 @@ async def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
-    logger.info("=== COMMAND HANDLER DEBUG: Processing command ===", player=player_name, command=cmd, args=args)
+    logger.debug("=== COMMAND HANDLER DEBUG: Processing command ===", player=player_name, command=cmd, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -612,7 +612,7 @@ async def process_command(
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
-        logger.info("=== COMMAND HANDLER DEBUG: Processing say command ===", player=player_name, args=args)
+        logger.debug("=== COMMAND HANDLER DEBUG: Processing say command ===", player=player_name, args=args)
 
         if not persistence:
             logger.warning("Say command failed - no persistence layer", player=player_name)
@@ -641,13 +641,13 @@ async def process_command(
         chat_service = ChatService(persistence, room_service, player_service)
 
         # Send the message
-        logger.info(
+        logger.debug(
             "=== COMMAND HANDLER DEBUG: About to call chat_service.send_say_message ===",
             player_id=str(player.player_id),
             message=message,
         )
         result = await chat_service.send_say_message(str(player.player_id), message)
-        logger.info("=== COMMAND HANDLER DEBUG: chat_service.send_say_message completed ===", result=result)
+        logger.debug("=== COMMAND HANDLER DEBUG: chat_service.send_say_message completed ===", result=result)
 
         if result["success"]:
             # Format the message for display

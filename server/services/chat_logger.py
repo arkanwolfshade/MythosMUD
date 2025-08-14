@@ -6,7 +6,7 @@ and system events, optimized for AI processing and log shipping.
 """
 
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -55,7 +55,7 @@ class ChatLogger:
         Returns:
             Path to current log file
         """
-        today = datetime.now().strftime("%Y-%m-%d")
+        today = datetime.now(UTC).strftime("%Y-%m-%d")
         filename = f"{log_type}_{today}.log"
 
         if log_type == "chat":
@@ -80,7 +80,7 @@ class ChatLogger:
 
             # Add timestamp if not present
             if "timestamp" not in entry:
-                entry["timestamp"] = datetime.now(datetime.UTC).isoformat() + "Z"
+                entry["timestamp"] = datetime.now(UTC).isoformat()
 
             # Write JSON line to file
             with open(log_file, "a", encoding="utf-8") as f:
@@ -193,7 +193,7 @@ class ChatLogger:
             "mute_type": mute_type,
             "duration_minutes": duration_minutes,
             "reason": reason,
-            "timestamp": datetime.now(datetime.UTC).isoformat() + "Z",
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         self._write_log_entry("moderation", entry)
@@ -215,7 +215,7 @@ class ChatLogger:
             "target_id": target_id,
             "target_name": target_name,
             "mute_type": mute_type,
-            "timestamp": datetime.now(datetime.UTC).isoformat() + "Z",
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         self._write_log_entry("moderation", entry)
