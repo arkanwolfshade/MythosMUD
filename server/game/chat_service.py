@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Any
 
 from ..logging_config import get_logger
+from ..services.chat_logger import chat_logger
 from ..services.nats_service import nats_service
 
 logger = get_logger("communications.chat_service")
@@ -71,7 +72,7 @@ class ChatService:
         self.room_service = room_service
         self.player_service = player_service
 
-        # In-memory storage for MVP (will be replaced with NATS for production)
+        # In-memory storage for recent messages (last 100 per room)
         self._room_messages: dict[str, list[ChatMessage]] = {}
         self._muted_channels: dict[str, dict[str, bool]] = {}
         self._muted_players: dict[str, list[str]] = {}
@@ -82,7 +83,10 @@ class ChatService:
         # NATS service for real-time messaging
         self.nats_service = nats_service
 
-        logger.info("ChatService initialized with NATS integration")
+        # Chat logger for AI processing and log shipping
+        self.chat_logger = chat_logger
+
+        logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
     async def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
         """
@@ -134,7 +138,21 @@ class ChatService:
         # Create chat message
         chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="say", content=message.strip())
 
-        # Log the chat message
+        # Log the chat message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "room_id": room_id,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Also log to communications log (existing behavior)
         chat_message.log_message()
 
         logger.info("=== CHAT SERVICE DEBUG: Chat message created ===", message_id=chat_message.id)
@@ -281,6 +299,16 @@ class ChatService:
         if player_id not in self._muted_channels:
             self._muted_channels[player_id] = {}
         self._muted_channels[player_id][channel] = True
+
+        # Log moderation event for AI processing
+        self.chat_logger.log_player_muted(
+            muter_id=player_id,
+            target_id=player_id,
+            target_name=player_id,  # We'll get actual name if needed
+            mute_type=f"channel_{channel}",
+            reason="Player self-muted channel",
+        )
+
         logger.info("Player muted channel", player_id=player_id, channel=channel)
         return True
 
@@ -288,6 +316,15 @@ class ChatService:
         """Unmute a specific channel for a player."""
         if player_id in self._muted_channels and channel in self._muted_channels[player_id]:
             self._muted_channels[player_id][channel] = False
+
+            # Log moderation event for AI processing
+            self.chat_logger.log_player_unmuted(
+                unmuter_id=player_id,
+                target_id=player_id,
+                target_name=player_id,  # We'll get actual name if needed
+                mute_type=f"channel_{channel}",
+            )
+
             logger.info("Player unmuted channel", player_id=player_id, channel=channel)
             return True
         return False
@@ -308,6 +345,16 @@ class ChatService:
 
         if target_player["player_id"] not in self._muted_players[muter_id]:
             self._muted_players[muter_id].append(target_player["player_id"])
+
+            # Log moderation event for AI processing
+            self.chat_logger.log_player_muted(
+                muter_id=muter_id,
+                target_id=target_player["player_id"],
+                target_name=target_player_name,
+                mute_type="player",
+                reason="Player muted by another player",
+            )
+
             logger.info("Player muted another player", muter_id=muter_id, target=target_player_name)
             return True
         return False
@@ -324,6 +371,15 @@ class ChatService:
 
         if target_player["player_id"] in self._muted_players[muter_id]:
             self._muted_players[muter_id].remove(target_player["player_id"])
+
+            # Log moderation event for AI processing
+            self.chat_logger.log_player_unmuted(
+                unmuter_id=muter_id,
+                target_id=target_player["player_id"],
+                target_name=target_player_name,
+                mute_type="player",
+            )
+
             logger.info("Player unmuted another player", muter_id=muter_id, target=target_player_name)
             return True
         return False

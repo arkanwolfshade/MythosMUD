@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from ..events import EventBus
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from ..logging_config import get_logger
+from ..services.chat_logger import chat_logger
 from .connection_manager import connection_manager
 
 
@@ -39,6 +40,9 @@ class RealTimeEventHandler:
         self.connection_manager = connection_manager
         self._logger = get_logger("RealTimeEventHandler")
         self._sequence_counter = 0
+
+        # Chat logger for AI processing
+        self.chat_logger = chat_logger
 
         # Subscribe to relevant game events
         self._subscribe_to_events()
@@ -74,6 +78,20 @@ class RealTimeEventHandler:
                 return
 
             player_name = getattr(player, "name", event.player_id)
+
+            # Log player movement for AI processing
+            try:
+                room = self.connection_manager.persistence.get_room(event.room_id) if self.connection_manager.persistence else None
+                room_name = getattr(room, "name", event.room_id) if room else event.room_id
+
+                self.chat_logger.log_player_joined_room(
+                    player_id=event.player_id,
+                    player_name=player_name,
+                    room_id=event.room_id,
+                    room_name=room_name
+                )
+            except Exception as e:
+                self._logger.error(f"Error logging player joined room: {e}")
 
             # Create real-time message
             message = self._create_player_entered_message(event, player_name)
@@ -131,6 +149,20 @@ class RealTimeEventHandler:
                 return
 
             player_name = getattr(player, "name", event.player_id)
+
+            # Log player movement for AI processing
+            try:
+                room = self.connection_manager.persistence.get_room(event.room_id) if self.connection_manager.persistence else None
+                room_name = getattr(room, "name", event.room_id) if room else event.room_id
+
+                self.chat_logger.log_player_left_room(
+                    player_id=event.player_id,
+                    player_name=player_name,
+                    room_id=event.room_id,
+                    room_name=room_name
+                )
+            except Exception as e:
+                self._logger.error(f"Error logging player left room: {e}")
 
             # Create real-time message
             message = self._create_player_left_message(event, player_name)
