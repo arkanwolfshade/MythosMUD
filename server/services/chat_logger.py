@@ -80,7 +80,7 @@ class ChatLogger:
 
             # Add timestamp if not present
             if "timestamp" not in entry:
-                entry["timestamp"] = datetime.utcnow().isoformat() + "Z"
+                entry["timestamp"] = datetime.now(datetime.UTC).isoformat() + "Z"
 
             # Write JSON line to file
             with open(log_file, "a", encoding="utf-8") as f:
@@ -193,7 +193,7 @@ class ChatLogger:
             "mute_type": mute_type,
             "duration_minutes": duration_minutes,
             "reason": reason,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(datetime.UTC).isoformat() + "Z",
         }
 
         self._write_log_entry("moderation", entry)
@@ -215,7 +215,7 @@ class ChatLogger:
             "target_id": target_id,
             "target_name": target_name,
             "mute_type": mute_type,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(datetime.UTC).isoformat() + "Z",
         }
 
         self._write_log_entry("moderation", entry)

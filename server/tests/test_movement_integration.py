@@ -10,6 +10,8 @@ for maintaining the integrity of our eldritch architecture.
 
 from unittest.mock import Mock, patch
 
+import pytest
+
 from server.game.movement_service import MovementService
 from server.models.player import Player
 from server.models.room import Room
@@ -88,7 +90,8 @@ class TestMovementIntegration:
             assert room.name == "Test Room"
             assert room.description == "A test room"
 
-    def test_command_handler_with_movement_service(self):
+    @pytest.mark.asyncio
+    async def test_command_handler_with_movement_service(self):
         """Test that command handler uses MovementService correctly."""
         from server.command_handler import process_command
 
@@ -122,7 +125,9 @@ class TestMovementIntegration:
             mock_alias_storage = Mock()
 
             # Test go command
-            result = process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testplayer")
+            result = await process_command(
+                "go", ["north"], current_user, mock_request, mock_alias_storage, "testplayer"
+            )
 
             # Verify MovementService was called
             mock_movement_service.move_player.assert_called_once_with("player1", "room1", "room2")
@@ -132,7 +137,8 @@ class TestMovementIntegration:
             assert "North Room" in result["result"]
             assert "A northern chamber" in result["result"]
 
-    def test_movement_failure_handling(self):
+    @pytest.mark.asyncio
+    async def test_movement_failure_handling(self):
         """Test that movement failures are handled gracefully."""
         from server.command_handler import process_command
 
@@ -160,7 +166,9 @@ class TestMovementIntegration:
             mock_alias_storage = Mock()
 
             # Test go command with failed movement
-            result = process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testplayer")
+            result = await process_command(
+                "go", ["north"], current_user, mock_request, mock_alias_storage, "testplayer"
+            )
 
             # Verify MovementService was called
             mock_movement_service.move_player.assert_called_once_with("player1", "room1", "room2")

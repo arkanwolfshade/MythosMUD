@@ -343,7 +343,7 @@ Perhaps it exists in dimensions yet undiscovered, or perhaps it was never meant 
 
 
 @router.post("", status_code=status.HTTP_200_OK)
-def handle_command(
+async def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -400,7 +400,7 @@ def handle_command(
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
-        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+        return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check if this is an alias
     alias = alias_storage.get_alias(player_name, cmd)
@@ -409,7 +409,7 @@ def handle_command(
         # Expand the alias
         expanded_command = alias.get_expanded_command(args)
         # Recursively process the expanded command (with depth limit to prevent loops)
-        result = handle_expanded_command(
+        result = await handle_expanded_command(
             expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
         )
         # Add alias chain information to the result
@@ -419,10 +419,10 @@ def handle_command(
 
     # Process command normally
     logger.debug("Processing standard command", player=player_name, command=cmd)
-    return process_command(cmd, args, current_user, request, alias_storage, player_name)
+    return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
 
-def handle_expanded_command(
+async def handle_expanded_command(
     command_line: str,
     current_user: dict,
     request: Request,
@@ -450,7 +450,7 @@ def handle_expanded_command(
 
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command in expanded context", player=player_name, command=cmd)
-        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+        return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check for alias expansion
     alias = alias_storage.get_alias(player_name, cmd)
@@ -466,7 +466,7 @@ def handle_expanded_command(
 
         # Expand the alias and recurse
         expanded_command = alias.get_expanded_command(args)
-        result = handle_expanded_command(
+        result = await handle_expanded_command(
             expanded_command, current_user, request, alias_storage, player_name, depth + 1, alias_chain
         )
 
@@ -477,7 +477,7 @@ def handle_expanded_command(
         return result
 
     # Process command normally
-    result = process_command(cmd, args, current_user, request, alias_storage, player_name)
+    result = await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Add alias chain to result if this is the top level
     if depth == 0 and alias_chain:

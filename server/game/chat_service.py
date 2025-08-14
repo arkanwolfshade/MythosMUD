@@ -26,7 +26,7 @@ class ChatMessage:
         self.sender_name = sender_name
         self.channel = channel
         self.content = content
-        self.timestamp = datetime.utcnow()
+        self.timestamp = datetime.now(datetime.UTC)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert message to dictionary for serialization."""
