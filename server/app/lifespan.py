@@ -9,12 +9,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from ..config_loader import get_config
 from ..database import init_db
 from ..logging_config import get_logger
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..realtime.event_handler import get_real_time_event_handler
 from ..realtime.sse_handler import broadcast_game_event
+from ..services.nats_service import nats_service
 
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
@@ -47,8 +49,31 @@ async def lifespan(app: FastAPI):
 
     logger.info("Real-time event handler initialized")
 
-    # Redis has been removed - using direct WebSocket broadcasting
-    logger.info("Redis removed from system - using direct WebSocket broadcasting for chat messages")
+    # Initialize NATS service for real-time messaging
+    config = get_config()
+    nats_config = config.get("nats", {})
+
+    if nats_config.get("enabled", False):
+        logger.info("Initializing NATS service for real-time messaging")
+        try:
+            # Configure NATS service with config
+            nats_service.config = nats_config
+
+            # Connect to NATS server
+            connected = await nats_service.connect()
+            if connected:
+                logger.info("NATS service connected successfully")
+                app.state.nats_service = nats_service
+            else:
+                logger.warning("Failed to connect to NATS server - falling back to direct WebSocket broadcasting")
+                app.state.nats_service = None
+        except Exception as e:
+            logger.error("Error initializing NATS service", error=str(e))
+            logger.info("Falling back to direct WebSocket broadcasting for chat messages")
+            app.state.nats_service = None
+    else:
+        logger.info("NATS service disabled - using direct WebSocket broadcasting for chat messages")
+        app.state.nats_service = None
 
     # Start the game tick loop
     tick_task = asyncio.create_task(game_tick_loop(app))
@@ -59,8 +84,14 @@ async def lifespan(app: FastAPI):
     # Shutdown logic
     logger.info("Shutting down MythosMUD server...")
 
-    # Redis has been removed - no cleanup needed
-    logger.info("Redis removed from system - no cleanup required")
+    # Disconnect NATS service if connected
+    if hasattr(app.state, "nats_service") and app.state.nats_service:
+        logger.info("Disconnecting NATS service")
+        try:
+            await app.state.nats_service.disconnect()
+            logger.info("NATS service disconnected successfully")
+        except Exception as e:
+            logger.error("Error disconnecting NATS service", error=str(e))
 
     if hasattr(app.state, "tick_task"):
         app.state.tick_task.cancel()

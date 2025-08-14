@@ -74,9 +74,36 @@ xp_multiplier: 1.0
 hp_regen_rate: 5
 combat_tick_interval: 2  # seconds
 
-# --- Redis Configuration ---
-# Redis has been removed in favor of direct WebSocket broadcasting
-# Configuration will be replaced with NATS in future migration
+# --- NATS Configuration ---
+nats:
+  enabled: true
+  url: nats://localhost:4222
+  max_payload: 1048576  # 1MB max message size
+  reconnect_time_wait: 1
+  max_reconnect_attempts: 5
+  connect_timeout: 5
+  ping_interval: 30
+  max_outstanding_pings: 5
+
+# --- Chat System Configuration ---
+chat:
+  rate_limiting:
+    enabled: true
+    global: 10      # messages per minute
+    local: 20
+    say: 15
+    party: 30
+    whisper: 5
+
+  content_filtering:
+    enabled: true
+    profanity_filter: true
+    keyword_detection: true
+
+  message_history:
+    enabled: true
+    retention_days: 30
+    max_messages_per_channel: 1000
 
 # --- Runtime/Scheduler ---
 game_tick_rate: 1  # seconds

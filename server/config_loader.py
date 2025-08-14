@@ -98,16 +98,38 @@ _DEFAULTS = {
     "game_tick_rate": 1.0,
     "weather_update_interval": 300,
     "save_interval": 60,
-    # Redis configuration removed - using direct WebSocket broadcasting
-    # "redis": {
-    #     "enabled": True,
-    #     "host": "localhost",
-    #     "port": 6379,
-    #     "db": 0,
-    #     "socket_connect_timeout": 5,
-    #     "socket_timeout": 5,
-    #     "decode_responses": True,
-    # },
+    # NATS configuration for real-time messaging
+    "nats": {
+        "enabled": True,
+        "url": "nats://localhost:4222",
+        "max_payload": 1048576,  # 1MB max message size
+        "reconnect_time_wait": 1,
+        "max_reconnect_attempts": 5,
+        "connect_timeout": 5,
+        "ping_interval": 30,
+        "max_outstanding_pings": 5,
+    },
+    # Chat system configuration
+    "chat": {
+        "rate_limiting": {
+            "enabled": True,
+            "global": 10,      # messages per minute
+            "local": 20,
+            "say": 15,
+            "party": 30,
+            "whisper": 5,
+        },
+        "content_filtering": {
+            "enabled": True,
+            "profanity_filter": True,
+            "keyword_detection": True,
+        },
+        "message_history": {
+            "enabled": True,
+            "retention_days": 30,
+            "max_messages_per_channel": 1000,
+        },
+    },
 }
 
 _FIELD_TYPES = {
@@ -133,6 +155,8 @@ _FIELD_TYPES = {
     "game_tick_rate": float,
     "weather_update_interval": int,
     "save_interval": int,
+    "nats": dict,
+    "chat": dict,
 }
 
 

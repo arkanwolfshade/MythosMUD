@@ -126,7 +126,7 @@ class NATSService:
 
             # Serialize message data
             message_json = json.dumps(data)
-            message_bytes = message_json.encode('utf-8')
+            message_bytes = message_json.encode("utf-8")
 
             # Publish to NATS subject
             await self.nc.publish(subject, message_bytes)
@@ -170,7 +170,7 @@ class NATSService:
             async def message_handler(msg):
                 try:
                     # Decode message data
-                    data = msg.data.decode('utf-8')
+                    data = msg.data.decode("utf-8")
                     message_data = json.loads(data)
 
                     # Call the registered callback
@@ -244,13 +244,13 @@ class NATSService:
 
             # Serialize request data
             request_json = json.dumps(data)
-            request_bytes = request_json.encode('utf-8')
+            request_bytes = request_json.encode("utf-8")
 
             # Send request and wait for response
             response = await self.nc.request(subject, request_bytes, timeout=timeout)
 
             # Decode response data
-            response_data = response.data.decode('utf-8')
+            response_data = response.data.decode("utf-8")
             response_json = json.loads(response_data)
 
             logger.debug(
