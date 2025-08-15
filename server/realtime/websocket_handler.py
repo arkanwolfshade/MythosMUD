@@ -33,6 +33,15 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
         logger.error(f"Failed to connect WebSocket for player {player_id_str}")
         return
 
+    # Load player mute data when they connect to the game
+    try:
+        from ..services.user_manager import user_manager
+
+        user_manager.load_player_mutes(player_id_str)
+        logger.info(f"Loaded mute data for player {player_id_str}")
+    except Exception as e:
+        logger.error(f"Error loading mute data for player {player_id_str}: {e}")
+
     try:
         # Send initial game state
         player = connection_manager._get_player(player_id_str)
@@ -144,6 +153,15 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
     finally:
         # Clean up connection
         await connection_manager.disconnect_websocket(player_id_str)
+
+        # Clean up player mute data when they disconnect
+        try:
+            from ..services.user_manager import user_manager
+
+            user_manager.cleanup_player_mutes(player_id_str)
+            logger.info(f"Cleaned up mute data for player {player_id_str}")
+        except Exception as e:
+            logger.error(f"Error cleaning up mute data for player {player_id_str}: {e}")
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
@@ -374,36 +392,31 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
 
-    elif cmd == "say":
-        # Use the proper command handler for say command
-        from ..alias_storage import AliasStorage
-        from ..command_handler import process_command
+    # Use the proper command handler for all commands
+    from ..alias_storage import AliasStorage
+    from ..command_handler import process_command
 
-        # Create a mock request object for the command handler
-        class MockRequest:
-            def __init__(self, persistence):
-                self.app = type("MockApp", (), {"state": type("MockState", (), {"persistence": persistence})()})()
+    # Create a mock request object for the command handler
+    class MockRequest:
+        def __init__(self, persistence):
+            self.app = type("MockApp", (), {"state": type("MockState", (), {"persistence": persistence})()})()
 
-        mock_request = MockRequest(connection_manager.persistence)
+    mock_request = MockRequest(connection_manager.persistence)
 
-        # Get player name for the command handler
-        player_name = getattr(player, "name", "Unknown")
+    # Get player name for the command handler
+    player_name = getattr(player, "name", "Unknown")
 
-        # Create alias storage (this might need to be passed in)
-        alias_storage = AliasStorage()
+    # Create a User object for the command handler
+    from ..models.user import User
 
-        # Process the command using the proper command handler
-        result = await process_command(cmd, args, {"username": player_name}, mock_request, alias_storage, player_name)
-        return result
+    user_obj = User(username=player_name, id=player_id)
 
-    elif cmd == "help":
-        if len(args) > 1:
-            return {"result": "Too many arguments. Usage: help [command]"}
-        command_name = args[0] if args else None
-        return {"result": get_help_content(command_name)}
+    # Create alias storage (this might need to be passed in)
+    alias_storage = AliasStorage()
 
-    else:
-        return {"result": f"Unknown command: {cmd}"}
+    # Process the command using the proper command handler
+    result = await process_command(cmd, args, user_obj, mock_request, alias_storage, player_name)
+    return result
 
 
 def get_help_content(command_name: str = None) -> str:

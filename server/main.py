@@ -24,6 +24,7 @@ from .config_loader import get_config
 from .logging_config import get_logger, setup_logging
 
 # Suppress passlib deprecation warning about pkg_resources
+# Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
 # Get logger

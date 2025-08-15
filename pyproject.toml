@@ -30,7 +30,8 @@ dependencies = [
     "jsonschema>=4.21.0",
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
-    "passlib[bcrypt]>=1.7.4",
+
+    "pwdlib[bcrypt]==0.2.1",  # Required by fastapi-users (we override the hashing)
     "nats-py>=2.6.0",  # NATS Python client for messaging
 ]
 

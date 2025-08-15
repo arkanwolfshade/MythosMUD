@@ -121,7 +121,7 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 500 characters)"}
 
         # Get player information
-        player = self.player_service.get_player(player_id)
+        player = self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for chat message", player_id=player_id)
             return {"success": False, "error": "Player not found"}
@@ -323,7 +323,7 @@ class ChatService:
     def mute_channel(self, player_id: str, channel: str) -> bool:
         """Mute a specific channel for a player."""
         # Get player name for logging
-        player = self.player_service.get_player(player_id)
+        player = self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         success = self.user_manager.mute_channel(player_id, player_name, channel)
@@ -334,7 +334,7 @@ class ChatService:
     def unmute_channel(self, player_id: str, channel: str) -> bool:
         """Unmute a specific channel for a player."""
         # Get player name for logging
-        player = self.player_service.get_player(player_id)
+        player = self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         success = self.user_manager.unmute_channel(player_id, player_name, channel)
@@ -349,7 +349,7 @@ class ChatService:
     def mute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Mute a specific player for another player."""
         # Get muter name for logging
-        muter = self.player_service.get_player(muter_id)
+        muter = self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
@@ -357,7 +357,7 @@ class ChatService:
         if not target_player:
             return False
 
-        success = self.user_manager.mute_player(muter_id, muter_name, target_player["player_id"], target_player_name)
+        success = self.user_manager.mute_player(muter_id, muter_name, target_player.id, target_player_name)
         if success:
             logger.info("Player muted another player", muter_id=muter_id, target=target_player_name)
         return success
@@ -365,7 +365,7 @@ class ChatService:
     def unmute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Unmute a specific player for another player."""
         # Get muter name for logging
-        muter = self.player_service.get_player(muter_id)
+        muter = self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
@@ -373,7 +373,7 @@ class ChatService:
         if not target_player:
             return False
 
-        success = self.user_manager.unmute_player(muter_id, muter_name, target_player["player_id"], target_player_name)
+        success = self.user_manager.unmute_player(muter_id, muter_name, target_player.id, target_player_name)
         if success:
             logger.info("Player unmuted another player", muter_id=muter_id, target=target_player_name)
         return success
@@ -387,7 +387,7 @@ class ChatService:
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
         # Get muter name for logging
-        muter = self.player_service.get_player(muter_id)
+        muter = self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
@@ -396,7 +396,7 @@ class ChatService:
             return False
 
         success = self.user_manager.mute_global(
-            muter_id, muter_name, target_player["player_id"], target_player_name, duration_minutes, reason
+            muter_id, muter_name, target_player.id, target_player_name, duration_minutes, reason
         )
         if success:
             logger.info(
@@ -407,7 +407,7 @@ class ChatService:
     def unmute_global(self, unmuter_id: str, target_player_name: str) -> bool:
         """Remove a global mute from a player."""
         # Get unmuter name for logging
-        unmuter = self.player_service.get_player(unmuter_id)
+        unmuter = self.player_service.get_player_by_id(unmuter_id)
         unmuter_name = unmuter.name if unmuter else unmuter_id
 
         # Resolve target player name to ID
@@ -415,9 +415,7 @@ class ChatService:
         if not target_player:
             return False
 
-        success = self.user_manager.unmute_global(
-            unmuter_id, unmuter_name, target_player["player_id"], target_player_name
-        )
+        success = self.user_manager.unmute_global(unmuter_id, unmuter_name, target_player.id, target_player_name)
         if success:
             logger.info("Player globally unmuted", unmuter_id=unmuter_id, target=target_player_name)
         return success
@@ -428,7 +426,7 @@ class ChatService:
 
     def add_admin(self, player_id: str) -> bool:
         """Add a player as an admin."""
-        player = self.player_service.get_player(player_id)
+        player = self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         self.user_manager.add_admin(player_id, player_name)
@@ -437,7 +435,7 @@ class ChatService:
 
     def remove_admin(self, player_id: str) -> bool:
         """Remove a player's admin status."""
-        player = self.player_service.get_player(player_id)
+        player = self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         self.user_manager.remove_admin(player_id, player_name)

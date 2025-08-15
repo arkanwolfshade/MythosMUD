@@ -19,7 +19,7 @@ This document outlines the migration from our current custom invite-only authent
 
 ### Current Dependencies
 
-- `passlib` for password hashing
+- `argon2-cffi` for password hashing
 - `python-jose` for JWT handling
 - `bcrypt` for password security
 - Custom `auth_utils.py` and `security_utils.py`

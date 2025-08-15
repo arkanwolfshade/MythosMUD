@@ -5,7 +5,9 @@ This module provides comprehensive user management including muting,
 permissions, and user state tracking for the chat system.
 """
 
+import json
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from ..logging_config import get_logger
@@ -39,7 +41,11 @@ class UserManager:
         # Chat logger for AI processing
         self.chat_logger = chat_logger
 
-        logger.info("UserManager initialized")
+        # Data directory for player-specific mute files
+        self.data_dir = Path("data/user_management")
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info("UserManager initialized with JSON file persistence")
 
     def add_admin(self, player_id: str, player_name: str = None):
         """
@@ -51,6 +57,8 @@ class UserManager:
         """
         self._admin_players.add(player_id)
         logger.info("Player added as admin", player_id=player_id, player_name=player_name)
+        # Save admin status
+        self.save_player_mutes(player_id)
 
     def remove_admin(self, player_id: str, player_name: str = None):
         """
@@ -63,6 +71,8 @@ class UserManager:
         if player_id in self._admin_players:
             self._admin_players.remove(player_id)
             logger.info("Player admin status removed", player_id=player_id, player_name=player_name)
+            # Save admin status
+            self.save_player_mutes(player_id)
 
     def is_admin(self, player_id: str) -> bool:
         """
@@ -148,6 +158,10 @@ class UserManager:
                 reason=reason,
             )
 
+            # Save mute data for both players
+            self.save_player_mutes(muter_id)
+            self.save_player_mutes(target_id)
+
             return True
 
         except Exception as e:
@@ -189,6 +203,10 @@ class UserManager:
                     target_id=target_id,
                     target_name=target_name,
                 )
+
+                # Save mute data for both players
+                self.save_player_mutes(unmuter_id)
+                self.save_player_mutes(target_id)
 
                 return True
             else:
@@ -255,6 +273,9 @@ class UserManager:
                 reason=reason,
             )
 
+            # Save mute data for the player
+            self.save_player_mutes(player_id)
+
             return True
 
         except Exception as e:
@@ -289,6 +310,9 @@ class UserManager:
                 )
 
                 logger.info("Player unmuted channel", player_id=player_id, player_name=player_name, channel=channel)
+
+                # Save mute data for the player
+                self.save_player_mutes(player_id)
 
                 return True
             else:
@@ -367,6 +391,10 @@ class UserManager:
                 reason=reason,
             )
 
+            # Save mute data for both players
+            self.save_player_mutes(muter_id)
+            self.save_player_mutes(target_id)
+
             return True
 
         except Exception as e:
@@ -404,6 +432,10 @@ class UserManager:
                     target_id=target_id,
                     target_name=target_name,
                 )
+
+                # Save mute data for both players
+                self.save_player_mutes(unmuter_id)
+                self.save_player_mutes(target_id)
 
                 return True
             else:
@@ -644,6 +676,201 @@ class UserManager:
 
         except Exception as e:
             logger.error("Error cleaning up expired mutes", error=str(e))
+
+    def _get_player_mute_file(self, player_id: str) -> Path:
+        """Get the mute data file path for a specific player."""
+        return self.data_dir / f"mutes_{player_id}.json"
+
+    def load_player_mutes(self, player_id: str) -> bool:
+        """
+        Load mute data for a specific player from JSON file.
+
+        Args:
+            player_id: Player ID to load mutes for
+
+        Returns:
+            True if data was loaded successfully, False otherwise
+        """
+        try:
+            mute_file = self._get_player_mute_file(player_id)
+
+            if not mute_file.exists():
+                logger.debug("No mute file found for player", player_id=player_id)
+                return False
+
+            with open(mute_file, encoding="utf-8") as f:
+                data = json.load(f)
+
+            # Load player mutes
+            if "player_mutes" in data:
+                self._player_mutes[player_id] = {}
+                for target_id, mute_info in data["player_mutes"].items():
+                    # Convert timestamp strings back to datetime objects
+                    if "muted_at" in mute_info:
+                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
+                    if "expires_at" in mute_info and mute_info["expires_at"]:
+                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+                    self._player_mutes[player_id][target_id] = mute_info
+
+            # Load channel mutes
+            if "channel_mutes" in data:
+                self._channel_mutes[player_id] = {}
+                for channel, mute_info in data["channel_mutes"].items():
+                    # Convert timestamp strings back to datetime objects
+                    if "muted_at" in mute_info:
+                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
+                    if "expires_at" in mute_info and mute_info["expires_at"]:
+                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+                    self._channel_mutes[player_id][channel] = mute_info
+
+            # Load global mutes applied by this player
+            if "global_mutes" in data:
+                for target_id, mute_info in data["global_mutes"].items():
+                    # Convert timestamp strings back to datetime objects
+                    if "muted_at" in mute_info:
+                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
+                    if "expires_at" in mute_info and mute_info["expires_at"]:
+                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+                    self._global_mutes[target_id] = mute_info
+
+            # Load admin status
+            if "is_admin" in data and data["is_admin"]:
+                self._admin_players.add(player_id)
+
+            logger.info("Player mute data loaded", player_id=player_id)
+            return True
+
+        except Exception as e:
+            logger.error("Error loading player mute data", error=str(e), player_id=player_id)
+            return False
+
+    def save_player_mutes(self, player_id: str) -> bool:
+        """
+        Save mute data for a specific player to JSON file.
+
+        Args:
+            player_id: Player ID to save mutes for
+
+        Returns:
+            True if data was saved successfully, False otherwise
+        """
+        try:
+            mute_file = self._get_player_mute_file(player_id)
+
+            # Prepare data for serialization
+            data = {
+                "player_id": player_id,
+                "last_updated": datetime.now(UTC).isoformat(),
+                "player_mutes": {},
+                "channel_mutes": {},
+                "global_mutes": {},
+                "is_admin": player_id in self._admin_players,
+            }
+
+            # Save player mutes
+            if player_id in self._player_mutes:
+                for target_id, mute_info in self._player_mutes[player_id].items():
+                    # Convert datetime objects to ISO strings for JSON serialization
+                    serialized_mute = mute_info.copy()
+                    if "muted_at" in serialized_mute:
+                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
+                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
+                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
+                    data["player_mutes"][target_id] = serialized_mute
+
+            # Save channel mutes
+            if player_id in self._channel_mutes:
+                for channel, mute_info in self._channel_mutes[player_id].items():
+                    # Convert datetime objects to ISO strings for JSON serialization
+                    serialized_mute = mute_info.copy()
+                    if "muted_at" in serialized_mute:
+                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
+                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
+                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
+                    data["channel_mutes"][channel] = serialized_mute
+
+            # Save global mutes applied by this player
+            for target_id, mute_info in self._global_mutes.items():
+                if mute_info.get("muted_by") == player_id:
+                    # Convert datetime objects to ISO strings for JSON serialization
+                    serialized_mute = mute_info.copy()
+                    if "muted_at" in serialized_mute:
+                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
+                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
+                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
+                    data["global_mutes"][target_id] = serialized_mute
+
+            # Validate data is serializable before writing
+            try:
+                json.dumps(data, indent=2, ensure_ascii=False)
+            except Exception as e:
+                logger.error("Data is not JSON serializable", error=str(e), player_id=player_id)
+                return False
+
+            # Write to file atomically to prevent corruption
+
+            # Create a temporary file
+            temp_file = mute_file.with_suffix(".tmp")
+            try:
+                with open(temp_file, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                # Atomically replace the original file
+                temp_file.replace(mute_file)
+            except Exception as e:
+                # Clean up temp file if it exists
+                if temp_file.exists():
+                    temp_file.unlink()
+                raise e
+
+            logger.debug("Player mute data saved", player_id=player_id)
+            return True
+
+        except Exception as e:
+            logger.error(
+                "Error saving player mute data",
+                error=str(e),
+                player_id=player_id,
+                data_keys=list(data.keys()) if "data" in locals() else None,
+            )
+            return False
+
+    def cleanup_player_mutes(self, player_id: str) -> bool:
+        """
+        Remove mute data for a player from memory and delete their file.
+        Called when a player logs out or is deleted.
+
+        Args:
+            player_id: Player ID to cleanup
+
+        Returns:
+            True if cleanup was successful, False otherwise
+        """
+        try:
+            # Remove from memory
+            if player_id in self._player_mutes:
+                del self._player_mutes[player_id]
+
+            if player_id in self._channel_mutes:
+                del self._channel_mutes[player_id]
+
+            if player_id in self._global_mutes:
+                del self._global_mutes[player_id]
+
+            if player_id in self._admin_players:
+                self._admin_players.remove(player_id)
+
+            # Delete file
+            mute_file = self._get_player_mute_file(player_id)
+            if mute_file.exists():
+                mute_file.unlink()
+
+            logger.info("Player mute data cleaned up", player_id=player_id)
+            return True
+
+        except Exception as e:
+            logger.error("Error cleaning up player mute data", error=str(e), player_id=player_id)
+            return False
 
 
 # Global user manager instance
