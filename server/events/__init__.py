@@ -3,7 +3,7 @@ Events module for MythosMUD.
 
 This module provides the event system for tracking room state changes,
 player movements, and other game events. The system uses an in-memory
-pub/sub pattern that can be extended to use Redis or other external
+pub/sub pattern that can be extended to use NATS or other external
 event systems in the future.
 
 As noted in the Pnakotic Manuscripts, proper event tracking is essential

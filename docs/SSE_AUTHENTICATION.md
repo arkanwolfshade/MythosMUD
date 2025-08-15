@@ -214,8 +214,8 @@ python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
 ### Dependencies
 
 - **python-jose**: JWT token handling
-- **passlib**: Password hashing and verification
-- **bcrypt**: Password hashing algorithm
+- **argon2-cffi**: Password hashing and verification
+
 - **fastapi**: Web framework with WebSocket support
 
 ### Configuration

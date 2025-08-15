@@ -98,6 +98,38 @@ _DEFAULTS = {
     "game_tick_rate": 1.0,
     "weather_update_interval": 300,
     "save_interval": 60,
+    # NATS configuration for real-time messaging
+    "nats": {
+        "enabled": True,
+        "url": "nats://localhost:4222",
+        "max_payload": 1048576,  # 1MB max message size
+        "reconnect_time_wait": 1,
+        "max_reconnect_attempts": 5,
+        "connect_timeout": 5,
+        "ping_interval": 30,
+        "max_outstanding_pings": 5,
+    },
+    # Chat system configuration
+    "chat": {
+        "rate_limiting": {
+            "enabled": True,
+            "global": 10,  # messages per minute
+            "local": 20,
+            "say": 15,
+            "party": 30,
+            "whisper": 5,
+        },
+        "content_filtering": {
+            "enabled": True,
+            "profanity_filter": True,
+            "keyword_detection": True,
+        },
+        "message_history": {
+            "enabled": True,
+            "retention_days": 30,
+            "max_messages_per_channel": 1000,
+        },
+    },
 }
 
 _FIELD_TYPES = {
@@ -123,6 +155,8 @@ _FIELD_TYPES = {
     "game_tick_rate": float,
     "weather_update_interval": int,
     "save_interval": int,
+    "nats": dict,
+    "chat": dict,
 }
 
 
@@ -131,10 +165,16 @@ def _get_config_path() -> str:
     Determine the appropriate config file path based on environment.
 
     Returns:
-        Path to the production config file
+        Path to the config file to use
     """
-    # Production always uses the main config file
-    logger.debug("Getting config path", config_path=_CONFIG_PATH)
+    # Check for explicit config path from environment variable
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH")
+    if config_path and os.path.exists(config_path):
+        logger.debug("Using config path from environment", config_path=config_path)
+        return config_path
+
+    # Default to production config file
+    logger.debug("Using default config path", config_path=_CONFIG_PATH)
     return _CONFIG_PATH
 
 

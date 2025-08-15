@@ -244,6 +244,117 @@ The basic MUD functionality is now working:
 3. **Rate Limiting Implementation** - Add protection against abuse
 4. **Error Handling Standardization** - Implement consistent patterns
 
+### **Phase 1.5: Redis Chat Integration Debugging (Immediate - This Week)**
+*As noted in the restricted archives of Miskatonic University, the Redis integration for real-time chat communication requires immediate attention to resolve the message processing loop issue.*
+
+#### **Current Redis Integration Status: 90% Complete** ✅
+- ✅ **Redis Server**: Running on localhost:6379
+- ✅ **Redis Connection**: Successfully established
+- ✅ **Message Publishing**: Working correctly (messages published to Redis)
+- ✅ **Player Connections**: Both players connect and join rooms successfully
+- ✅ **Command Processing**: Say commands processed and responses received
+- ❌ **Message Reception**: Redis message processing loop not staying alive
+
+#### **Redis Debugging Plan**
+
+**Step 1: Diagnose Redis Message Loop Issue**
+- [ ] Investigate `redis_service.start_message_loop()` implementation
+- [ ] Check async task management in `RedisMessageHandler.start()`
+- [ ] Verify Redis pubsub connection lifecycle
+- [ ] Add detailed logging to Redis message processing
+
+**Step 2: Fix Redis Message Processing**
+- [ ] Ensure Redis pubsub connection stays alive
+- [ ] Fix async task management for message loop
+- [ ] Implement proper error handling and reconnection logic
+- [ ] Add heartbeat/ping mechanism for Redis connection
+
+**Step 3: Test Redis Chat Functionality**
+- [ ] Verify messages flow: `Player A → Server → Redis → Player B`
+- [ ] Test with multiple players in same room
+- [ ] Test with players in different rooms
+- [ ] Verify message persistence and delivery guarantees
+
+**Step 4: Performance and Reliability**
+- [ ] Add Redis connection pooling
+- [ ] Implement message retry logic
+- [ ] Add Redis health monitoring
+- [ ] Test under load conditions
+
+#### **Technical Investigation Points**
+
+**Redis Service Analysis:**
+```python
+# Key files to investigate:
+server/services/redis_service.py          # Redis connection and pubsub
+server/realtime/redis_message_handler.py  # Message processing loop
+server/app/lifespan.py                    # Startup/shutdown management
+```
+
+**Expected Message Flow:**
+```
+1. ArkanWolfshade sends: "say Hello Ithaqua!"
+2. Server processes command → Creates ChatMessage
+3. Server publishes to Redis: chat:room:{room_id}
+4. Redis message handler receives message
+5. Redis handler broadcasts to WebSocket clients
+6. Ithaqua receives message via WebSocket
+```
+
+**Current Issue:**
+- Step 3 works (messages published to Redis)
+- Step 4 fails (Redis message handler not receiving messages)
+- Root cause: Redis message processing loop stops immediately
+
+#### **Debugging Commands**
+```bash
+# Check Redis server status
+wsl redis-cli ping
+
+# Monitor Redis pubsub channels
+wsl redis-cli monitor
+
+# Check server logs for Redis messages
+Get-Content logs/development/server.log | Select-String "Redis|redis"
+
+# Test Redis connectivity
+python -c "import redis; r=redis.Redis(); print(r.ping())"
+```
+
+#### **Success Criteria**
+- [ ] Both players receive chat messages in real-time
+- [ ] Messages persist across server restarts
+- [ ] Redis connection remains stable
+- [ ] No memory leaks in Redis message processing
+- [ ] Graceful handling of Redis connection failures
+
+#### **Redis Integration Demonstration Results (2025-08-13)**
+
+**Test Setup:**
+- **Players**: ArkanWolfshade and Ithaqua (both using password: Cthulhu1)
+- **Room**: High Lane - Derby Intersection South (earth_arkham_city_northside_room_high_ln_003)
+- **Test Message**: "Greetings Ithaqua! This message is being sent through Redis!"
+
+**Results:**
+```
+✅ ArkanWolfshade Connection: Successful
+✅ Ithaqua Connection: Successful
+✅ Both Players in Same Room: Confirmed
+✅ Command Processing: "say" command processed successfully
+✅ Message Publishing: Published to Redis successfully
+✅ Server Response: "ArkanWolfshade says: Greetings Ithaqua! This message is being sent through Redis!"
+❌ Message Reception: Ithaqua did not receive the message
+```
+
+**Server Log Evidence:**
+```
+2025-08-13 22:53:32 - server.services.redis_service - DEBUG - Chat message published to Redis
+2025-08-13 22:53:32 - communications.chat_service - INFO - Chat message published to Redis
+```
+
+**Root Cause Identified:**
+The Redis message processing loop starts but immediately stops, preventing message reception from Redis channels. The issue is in the async task management of the Redis message handler.
+
 ### **Phase 2: Code Quality (1-2 Weeks)**
 1. **Service Layer Enhancement** - Create dedicated service classes
 2. **API Consistency** - Standardize response formats and error handling

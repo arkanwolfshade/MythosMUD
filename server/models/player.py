@@ -49,6 +49,9 @@ class Player(Base):
     experience_points = Column(Integer(), default=0, nullable=False)
     level = Column(Integer(), default=1, nullable=False)
 
+    # Admin status
+    is_admin = Column(Integer(), default=0, nullable=False)  # SQLite doesn't have BOOLEAN, use INTEGER
+
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
     last_active = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
@@ -100,6 +103,14 @@ class Player(Base):
         """Check if player is alive."""
         stats = self.get_stats()
         return stats.get("health", 0) > 0
+
+    def is_admin_user(self) -> bool:
+        """Check if player has admin privileges."""
+        return bool(self.is_admin)
+
+    def set_admin_status(self, admin_status: bool) -> None:
+        """Set player's admin status."""
+        self.is_admin = 1 if admin_status else 0
 
     def get_health_percentage(self) -> float:
         """Get player health as percentage."""

@@ -102,6 +102,34 @@ function Stop-ProcessesByPort {
     }
 }
 
+# Function to stop NATS server
+function Stop-NatsServerForMythosMUD {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "Stopping NATS server..." -ForegroundColor Cyan
+
+    # Import NATS management functions
+    $natsManagerPath = Join-Path $PSScriptRoot "nats_manager.ps1"
+    if (Test-Path $natsManagerPath) {
+        . $natsManagerPath
+        Stop-NatsServer
+    } else {
+        Write-Host "Warning: NATS manager not found, stopping NATS processes manually..." -ForegroundColor Yellow
+        # Manual NATS process cleanup
+        $natsProcesses = Get-Process | Where-Object {
+            $_.ProcessName -like "*nats*" -or
+            $_.ProcessName -like "*nats-server*"
+        }
+        if ($natsProcesses) {
+            foreach ($process in $natsProcesses) {
+                Write-Host "Stopping NATS process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
+                Stop-Process -Id $process.Id -Force
+            }
+        }
+    }
+}
+
 # Function to kill processes by name pattern
 function Stop-ProcessesByName {
     [CmdletBinding()]
@@ -257,10 +285,13 @@ function Wait-ForPortFree {
 try {
     Write-Host "Starting robust server shutdown process..." -ForegroundColor Green
 
-    # Method 1: Kill PowerShell processes that spawned the server
+    # Method 1: Stop NATS server
+    Stop-NatsServerForMythosMUD
+
+    # Method 2: Kill PowerShell processes that spawned the server
     Stop-PowerShellServerProcesses
 
-    # Method 2: Kill processes by port
+    # Method 3: Kill processes by port
     Stop-ProcessesByPort -Port 54731
 
     # Method 3: Kill processes by name patterns

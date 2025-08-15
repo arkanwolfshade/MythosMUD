@@ -323,6 +323,9 @@ class ConnectionManager:
         self.room_subscriptions[canonical_id].add(player_id)
         logger.debug(f"Player {player_id} subscribed to room {canonical_id}")
 
+        # Redis has been removed - no subscription needed
+        logger.debug(f"Redis removed - no subscription needed for room {canonical_id}")
+
     async def unsubscribe_from_room(self, player_id: str, room_id: str):
         """
         Unsubscribe a player from a room.
@@ -336,6 +339,10 @@ class ConnectionManager:
             self.room_subscriptions[canonical_id].discard(player_id)
             if not self.room_subscriptions[canonical_id]:
                 del self.room_subscriptions[canonical_id]
+
+                # Redis has been removed - no unsubscription needed
+        logger.debug(f"Redis removed - no unsubscription needed for room {canonical_id}")
+
         logger.debug(f"Player {player_id} unsubscribed from room {canonical_id}")
 
     def _get_next_sequence(self) -> int:

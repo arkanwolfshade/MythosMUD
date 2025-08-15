@@ -10,7 +10,7 @@ proper categorization of knowledge is essential for its preservation.
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -69,7 +69,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
         return
 
     # Generate timestamp for rotation
-    timestamp = datetime.now().strftime("%Y_%m_%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y_%m_%d_%H%M%S")
 
     # Get all log files in the directory
     log_files = list(env_log_dir.glob("*.log"))
@@ -143,6 +143,7 @@ class MultiFileHandler:
             "commands",
             "errors",
             "access",
+            # "redis",  # Redis removed from system
         ]
 
     def get_log_file_path(self, logger_name: str) -> Path:
@@ -171,6 +172,7 @@ class MultiFileHandler:
             "commands": "commands",
             "errors": "errors",
             "access": "access",
+            # "redis": "redis",  # Redis removed from system
         }
 
         # Determine log file based on logger name
@@ -316,6 +318,7 @@ def _setup_file_logging(
         "commands": ["commands"],
         "errors": ["errors"],
         "access": ["access", "server.app.factory"],
+        # "redis": ["redis", "services.redis_service", "realtime.redis_message_handler"],  # Redis removed from system
     }
 
     for log_file, prefixes in log_categories.items():
@@ -407,6 +410,14 @@ def setup_logging(config: dict[str, Any]) -> None:
     logging_config = config.get("logging", {})
     environment = logging_config.get("environment", detect_environment())
     log_level = logging_config.get("level", "INFO")
+
+    # Check if logging should be disabled
+    disable_logging = logging_config.get("disable_logging", False)
+
+    if disable_logging:
+        # Configure minimal logging without file handlers
+        configure_structlog(environment, log_level, {"disable_logging": True})
+        return
 
     # Configure Structlog
     configure_structlog(environment, log_level, logging_config)

@@ -5,12 +5,24 @@ from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
+from .config_loader import get_config
+from .game.chat_service import ChatService
 from .game.movement_service import MovementService
 from .logging_config import get_logger
 
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/command", tags=["command"])
+
+
+def get_username_from_user(user_obj):
+    """Safely extract username from user object or dictionary."""
+    if hasattr(user_obj, "username"):
+        return user_obj.username
+    elif isinstance(user_obj, dict) and "username" in user_obj:
+        return user_obj["username"]
+    else:
+        raise ValueError("User object must have username attribute or key")
 
 
 class CommandRequest(BaseModel):
@@ -43,7 +55,7 @@ def clean_command_input(command: str) -> str:
     return cleaned
 
 
-MAX_COMMAND_LENGTH = 50
+MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
 
 
 # Command definitions for help system
@@ -114,28 +126,36 @@ to revelations best left undiscovered.</p>
     },
     "say": {
         "category": "Communication",
-        "description": "Speak to others in the same room",
+        "description": "Speak to other players in your current room",
         "usage": "say <message>",
-        "examples": ["say Hello there!", "say What eldritch horrors await us?"],
+        "examples": ["say Hello everyone!", "say What a strange place this is..."],
         "detailed_help": """
-<div style="color: #8B0000;">
+<div style="color: #006400;">
 <h3>SAY Command</h3>
-<p>Give voice to your thoughts, though beware what echoes back from the shadows.
-Your words may attract attention from entities best left undisturbed.</p>
+<p>Project your voice into the eldritch air, allowing your words to reach
+the ears of those who share your current location. As the ancient texts
+suggest, communication is the first step toward understanding.</p>
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>say [message]</strong> - Speak to others in your current location</li>
+<li><strong>say [message]</strong> - Speak to players in your current room</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
-<li>say Hello there!</li>
-<li>say What eldritch horrors await us?</li>
-<li>say The stars are right...</li>
+<li>say Hello everyone!</li>
+<li>say What a strange place this is...</li>
+<li>say Has anyone seen the professor?</li>
 </ul>
 
-<p>Warning: "Some things that speak should not be heard." - Miskatonic University Archives</p>
+<h4>Notes:</h4>
+<ul>
+<li>Only players in your current room will hear your message</li>
+<li>Messages are limited to 500 characters</li>
+<li>You cannot speak if you are muted in the say channel</li>
+</ul>
+
+<p>"Words have power in the right places, and the right places have power in words." - Prof. Armitage</p>
 </div>
 """,
     },
@@ -242,10 +262,10 @@ your collection.</p>
         "usage": "help [command]",
         "examples": ["help", "help look", "help go"],
         "detailed_help": """
-<div style="color: #4B0082;">
+<div style="color: #2F4F4F;">
 <h3>HELP Command</h3>
-<p>Seek knowledge from the ancient tomes of command lore. This command reveals
-the secrets of interaction with our world.</p>
+<p>Access the forbidden knowledge of Miskatonic University's command archives.
+This command provides guidance on the eldritch incantations available to you.</p>
 
 <h4>Usage:</h4>
 <ul>
@@ -262,6 +282,226 @@ the secrets of interaction with our world.</p>
 </ul>
 
 <p>"Knowledge is power, but some knowledge comes at a price." - Restricted Section</p>
+</div>
+""",
+    },
+    "mute": {
+        "category": "User Management",
+        "description": "Mute a specific player (you won't see their messages)",
+        "usage": "mute <player_name> [duration_minutes] [reason]",
+        "examples": ["mute Ithaqua", "mute Ithaqua 30", "mute Ithaqua 60 Being annoying"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>MUTE Command</h3>
+<p>Silence the voice of another player, as documented in the restricted
+archives of Miskatonic University. This prevents you from seeing their
+messages in the say channel.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>mute [player_name]</strong> - Mute a player permanently</li>
+<li><strong>mute [player_name] [duration_minutes]</strong> - Mute for a specific duration</li>
+<li><strong>mute [player_name] [duration_minutes] [reason]</strong> - Mute with reason</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>mute Ithaqua</li>
+<li>mute Ithaqua 30</li>
+<li>mute Ithaqua 60 Being annoying</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Only affects your view of the muted player's messages</li>
+<li>Other players can still see the muted player's messages</li>
+<li>Duration is in minutes (omit for permanent mute)</li>
+<li>Admin players cannot be muted</li>
+</ul>
+
+<p>"Sometimes silence is the greatest weapon against chaos." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "unmute": {
+        "category": "User Management",
+        "description": "Unmute a previously muted player",
+        "usage": "unmute <player_name>",
+        "examples": ["unmute Ithaqua"],
+        "detailed_help": """
+<div style="color: #006400;">
+<h3>UNMUTE Command</h3>
+<p>Restore the voice of a previously muted player, allowing you to once again
+hear their eldritch utterances in the say channel.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>unmute [player_name]</strong> - Remove mute from a player</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>unmute Ithaqua</li>
+<li>unmute Azathoth</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Only affects your view of the player's messages</li>
+<li>If the player was muted by multiple people, you only unmute your own mute</li>
+<li>You can only unmute players you personally muted</li>
+</ul>
+
+<p>"Redemption is always possible, even in the darkest corners." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "mute_global": {
+        "category": "User Management",
+        "description": "Globally mute a player (they cannot use any chat channels)",
+        "usage": "mute_global <player_name> [duration_minutes] [reason]",
+        "examples": ["mute_global Ithaqua", "mute_global Ithaqua 120", "mute_global Ithaqua 60 Spamming"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>MUTE_GLOBAL Command</h3>
+<p>Apply a comprehensive silence to a player, preventing them from using any
+chat channels. This is a powerful tool documented in the restricted archives
+of Miskatonic University.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>mute_global [player_name]</strong> - Globally mute a player permanently</li>
+<li><strong>mute_global [player_name] [duration_minutes]</strong> - Global mute for duration</li>
+<li><strong>mute_global [player_name] [duration_minutes] [reason]</strong> - Global mute with reason</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>mute_global Ithaqua</li>
+<li>mute_global Ithaqua 120</li>
+<li>mute_global Ithaqua 60 Spamming</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Affects the player's ability to send messages in all channels</li>
+<li>Other players cannot see messages from globally muted players</li>
+<li>Duration is in minutes (omit for permanent mute)</li>
+<li>Admin players cannot be globally muted</li>
+<li>Use with caution - this is a powerful moderation tool</li>
+</ul>
+
+<p>"The power to silence must be wielded with wisdom and restraint." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "unmute_global": {
+        "category": "User Management",
+        "description": "Remove global mute from a player",
+        "usage": "unmute_global <player_name>",
+        "examples": ["unmute_global Ithaqua"],
+        "detailed_help": """
+<div style="color: #006400;">
+<h3>UNMUTE_GLOBAL Command</h3>
+<p>Restore a player's ability to communicate across all channels, lifting
+the comprehensive silence that was previously applied.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>unmute_global [player_name]</strong> - Remove global mute from a player</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>unmute_global Ithaqua</li>
+<li>unmute_global Azathoth</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Restores the player's ability to send messages in all channels</li>
+<li>You can only unmute players you personally globally muted</li>
+<li>Use this command when you believe the player has learned their lesson</li>
+</ul>
+
+<p>"Redemption is the highest form of wisdom." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "add_admin": {
+        "category": "User Management",
+        "description": "Grant admin privileges to a player",
+        "usage": "add_admin <player_name>",
+        "examples": ["add_admin Azathoth"],
+        "detailed_help": """
+<div style="color: #FFD700;">
+<h3>ADD_ADMIN Command</h3>
+<p>Grant administrative privileges to a player, as documented in the restricted
+archives of Miskatonic University. Admin players are immune to mutes and
+have access to powerful moderation tools.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>add_admin [player_name]</strong> - Grant admin status to a player</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>add_admin Azathoth</li>
+<li>add_admin Ithaqua</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Admin players are immune to all types of mutes</li>
+<li>Admin status is permanent until manually removed</li>
+<li>Use this power wisely and only for trusted players</li>
+<li>Admin players can help with moderation and community management</li>
+</ul>
+
+<p>"With great power comes great responsibility." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "mutes": {
+        "category": "User Management",
+        "description": "Show your current mute status and who you have muted",
+        "usage": "mutes",
+        "examples": ["mutes"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>MUTES Command</h3>
+<p>Display your current mute status and list of players you have muted, as recorded
+in the Miskatonic archives of player interactions.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>mutes</strong> - Show your mute status and muted players</li>
+</ul>
+
+<h4>What it shows:</h4>
+<ul>
+<li>Players you have muted (personal mutes)</li>
+<li>Players you have globally muted</li>
+<li>Your admin status</li>
+<li>Mute durations and expiry times</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>mutes</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Personal mutes only affect your ability to see messages from that player</li>
+<li>Global mutes prevent the player from sending messages to anyone</li>
+<li>Admin players are immune to all types of mutes</li>
+<li>Mute durations are shown in minutes remaining</li>
+<li>For privacy and anti-harassment, you cannot see if others have muted you</li>
+</ul>
+
+<p>"Knowledge of one's own restrictions is the first step toward understanding." - Prof. Armitage</p>
 </div>
 """,
     },
@@ -334,7 +574,7 @@ Perhaps it exists in dimensions yet undiscovered, or perhaps it was never meant 
 
 
 @router.post("", status_code=status.HTTP_200_OK)
-def handle_command(
+async def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -346,7 +586,7 @@ def handle_command(
     if not current_user:
         raise HTTPException(status_code=401, detail="Authentication required")
 
-    player_name = current_user["username"]
+    player_name = get_username_from_user(current_user)
 
     logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
 
@@ -391,7 +631,7 @@ def handle_command(
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
-        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+        return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check if this is an alias
     alias = alias_storage.get_alias(player_name, cmd)
@@ -400,7 +640,7 @@ def handle_command(
         # Expand the alias
         expanded_command = alias.get_expanded_command(args)
         # Recursively process the expanded command (with depth limit to prevent loops)
-        result = handle_expanded_command(
+        result = await handle_expanded_command(
             expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
         )
         # Add alias chain information to the result
@@ -410,10 +650,10 @@ def handle_command(
 
     # Process command normally
     logger.debug("Processing standard command", player=player_name, command=cmd)
-    return process_command(cmd, args, current_user, request, alias_storage, player_name)
+    return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
 
-def handle_expanded_command(
+async def handle_expanded_command(
     command_line: str,
     current_user: dict,
     request: Request,
@@ -441,7 +681,7 @@ def handle_expanded_command(
 
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command in expanded context", player=player_name, command=cmd)
-        return process_command(cmd, args, current_user, request, alias_storage, player_name)
+        return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check for alias expansion
     alias = alias_storage.get_alias(player_name, cmd)
@@ -457,7 +697,7 @@ def handle_expanded_command(
 
         # Expand the alias and recurse
         expanded_command = alias.get_expanded_command(args)
-        result = handle_expanded_command(
+        result = await handle_expanded_command(
             expanded_command, current_user, request, alias_storage, player_name, depth + 1, alias_chain
         )
 
@@ -468,7 +708,7 @@ def handle_expanded_command(
         return result
 
     # Process command normally
-    result = process_command(cmd, args, current_user, request, alias_storage, player_name)
+    result = await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Add alias chain to result if this is the top level
     if depth == 0 and alias_chain:
@@ -477,11 +717,11 @@ def handle_expanded_command(
     return result
 
 
-def process_command(
+async def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
-    logger.info("Processing command", player=player_name, command=cmd, args=args)
+    logger.debug("=== COMMAND HANDLER DEBUG: Processing command ===", player=player_name, command=cmd, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -513,7 +753,7 @@ def process_command(
         if not persistence:
             logger.warning("Look command failed - no persistence layer", player=player_name)
             return {"result": "You see nothing special."}
-        player = persistence.get_player_by_name(current_user["username"])
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Look command failed - player not found", player=player_name)
             return {"result": "You see nothing special."}
@@ -561,7 +801,7 @@ def process_command(
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
         logger.debug("Player attempting to move", player=player_name, direction=direction)
-        player = persistence.get_player_by_name(current_user["username"])
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Go command failed - player not found", player=player_name)
             return {"result": "You can't go that way"}
@@ -591,8 +831,7 @@ def process_command(
             logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way"}
 
-        # Update current user's room ID
-        current_user["current_room_id"] = target_room_id
+        # Room ID is updated in the Player object via MovementService
 
         # Return room description
         name = target_room.name
@@ -603,10 +842,259 @@ def process_command(
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
+        logger.debug("=== COMMAND HANDLER DEBUG: Processing say command ===", player=player_name, args=args)
+
+        if not persistence:
+            logger.warning("Say command failed - no persistence layer", player=player_name)
+            return {"result": "You cannot speak right now."}
+
+        if not args:
+            logger.warning("Say command failed - no message provided", player=player_name)
+            return {"result": "Say what? Usage: say <message>"}
+
         message = " ".join(args).strip()
         if not message:
-            return {"result": "You open your mouth, but no words come out"}
-        return {"result": f"You say: {message}"}
+            return {"result": "You open your mouth, but no words come out."}
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            logger.warning("Say command failed - player not found", player=player_name)
+            return {"result": "You cannot speak right now."}
+
+        # Initialize chat service
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Send the message
+        logger.debug(
+            "=== COMMAND HANDLER DEBUG: About to call chat_service.send_say_message ===",
+            player_id=str(player.player_id),
+            message=message,
+        )
+        result = await chat_service.send_say_message(str(player.player_id), message)
+        logger.debug("=== COMMAND HANDLER DEBUG: chat_service.send_say_message completed ===", result=result)
+
+        if result["success"]:
+            # Format the message for display
+            formatted_message = f"{player.name} says: {message}"
+            logger.info("Say message sent successfully", player=player_name, message_length=len(message))
+            return {"result": formatted_message}
+        else:
+            logger.warning("Say message failed", player=player_name, error=result.get("error"))
+            return {"result": result.get("error", "You cannot speak right now.")}
+
+    # User management commands
+    elif cmd == "mute":
+        logger.debug("Processing mute command", player=player_name, args=args)
+        if not args:
+            return {"result": "Usage: mute <player_name> [duration_minutes] [reason]"}
+
+        target_name = args[0]
+        duration_minutes = None
+        reason = ""
+
+        if len(args) > 1:
+            try:
+                duration_minutes = int(args[1])
+            except ValueError:
+                # If second arg isn't a number, treat it as part of the reason
+                reason = " ".join(args[1:])
+
+        if len(args) > 2 and duration_minutes is not None:
+            reason = " ".join(args[2:])
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Resolve target player
+        target_player = player_service.resolve_player_name(target_name)
+        if not target_player:
+            return {"result": f"Player '{target_name}' not found."}
+
+        # Perform mute
+        success = chat_service.mute_player(str(player.player_id), target_name)
+        if success:
+            duration_text = f" for {duration_minutes} minutes" if duration_minutes else " permanently"
+            return {"result": f"You have muted {target_name}{duration_text}."}
+        else:
+            return {"result": f"Failed to mute {target_name}."}
+
+    elif cmd == "unmute":
+        logger.debug("Processing unmute command", player=player_name, args=args)
+        if not args:
+            return {"result": "Usage: unmute <player_name>"}
+
+        target_name = args[0]
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Resolve target player
+        target_player = player_service.resolve_player_name(target_name)
+        if not target_player:
+            return {"result": f"Player '{target_name}' not found."}
+
+        # Perform unmute
+        success = chat_service.unmute_player(str(player.player_id), target_name)
+        if success:
+            return {"result": f"You have unmuted {target_name}."}
+        else:
+            return {"result": f"Failed to unmute {target_name}."}
+
+    elif cmd == "mute_global":
+        logger.debug("Processing mute_global command", player=player_name, args=args)
+        if not args:
+            return {"result": "Usage: mute_global <player_name> [duration_minutes] [reason]"}
+
+        target_name = args[0]
+        duration_minutes = None
+        reason = ""
+
+        if len(args) > 1:
+            try:
+                duration_minutes = int(args[1])
+            except ValueError:
+                # If second arg isn't a number, treat it as part of the reason
+                reason = " ".join(args[1:])
+
+        if len(args) > 2 and duration_minutes is not None:
+            reason = " ".join(args[2:])
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Resolve target player
+        target_player = player_service.resolve_player_name(target_name)
+        if not target_player:
+            return {"result": f"Player '{target_name}' not found."}
+
+        # Perform global mute
+        success = chat_service.mute_global(str(player.player_id), target_name, duration_minutes, reason)
+        if success:
+            duration_text = f" for {duration_minutes} minutes" if duration_minutes else " permanently"
+            return {"result": f"You have globally muted {target_name}{duration_text}."}
+        else:
+            return {"result": f"Failed to globally mute {target_name}."}
+
+    elif cmd == "unmute_global":
+        logger.debug("Processing unmute_global command", player=player_name, args=args)
+        if not args:
+            return {"result": "Usage: unmute_global <player_name>"}
+
+        target_name = args[0]
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Resolve target player
+        target_player = player_service.resolve_player_name(target_name)
+        if not target_player:
+            return {"result": f"Player '{target_name}' not found."}
+
+        # Perform global unmute
+        success = chat_service.unmute_global(str(player.player_id), target_name)
+        if success:
+            return {"result": f"You have globally unmuted {target_name}."}
+        else:
+            return {"result": f"Failed to globally unmute {target_name}."}
+
+    elif cmd == "add_admin":
+        logger.debug("Processing add_admin command", player=player_name, args=args)
+        if not args:
+            return {"result": "Usage: add_admin <player_name>"}
+
+        target_name = args[0]
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Resolve target player
+        target_player = player_service.resolve_player_name(target_name)
+        if not target_player:
+            return {"result": f"Player '{target_name}' not found."}
+
+        # Add admin status
+        success = chat_service.add_admin(target_player.id)
+        if success:
+            return {"result": f"You have added {target_name} as an admin."}
+        else:
+            return {"result": f"Failed to add {target_name} as admin."}
+
+    elif cmd == "mutes":
+        logger.debug("Processing mutes command", player=player_name, args=args)
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Get mute status
+        mute_info = chat_service.get_mute_status(str(player.player_id))
+        return {"result": mute_info}
+
     else:
         return {"result": f"Unknown command: {cmd}"}
 

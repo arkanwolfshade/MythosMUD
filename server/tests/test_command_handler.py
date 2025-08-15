@@ -9,6 +9,8 @@ import importlib.util
 import os
 from unittest.mock import Mock, patch
 
+import pytest
+
 from ..command_handler import (
     clean_command_input,
     get_help_content,
@@ -158,7 +160,8 @@ class TestCommandExpansion:
     """Test command expansion with aliases."""
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_basic(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_basic(self, mock_alias_storage):
         """Test basic command handling without aliases."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -190,14 +193,15 @@ class TestCommandExpansion:
         request = Mock()
         request.app = mock_app
 
-        result = handle_expanded_command("look", current_user, request, mock_storage, "testplayer")
+        result = await handle_expanded_command("look", current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         # Note: The function doesn't return a 'success' key, so we check for the result content
         assert "Test Room" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_with_alias(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_with_alias(self, mock_alias_storage):
         """Test command handling with alias expansion."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -224,7 +228,7 @@ class TestCommandExpansion:
         request = Mock()
         request.app = mock_app
 
-        result = handle_expanded_command("n", current_user, request, mock_storage, "testplayer")
+        result = await handle_expanded_command("n", current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "alias_chain" in result
@@ -232,7 +236,8 @@ class TestCommandExpansion:
         assert len(result["alias_chain"]) >= 1
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_alias_chain(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_alias_chain(self, mock_alias_storage):
         """Test command handling with alias chains."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -268,13 +273,14 @@ class TestCommandExpansion:
         request = Mock()
         request.app = mock_app
 
-        result = handle_expanded_command("n", current_user, request, mock_storage, "testplayer")
+        result = await handle_expanded_command("n", current_user, request, mock_storage, "testplayer")
 
         assert "alias_chain" in result
         assert len(result["alias_chain"]) >= 1
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_max_depth(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_max_depth(self, mock_alias_storage):
         """Test that alias expansion respects maximum depth."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -286,7 +292,7 @@ class TestCommandExpansion:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = handle_expanded_command(
+        result = await handle_expanded_command(
             "loop",
             current_user,
             request,
@@ -299,7 +305,8 @@ class TestCommandExpansion:
         assert "Error: Alias loop detected" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_suspicious_input(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_suspicious_input(self, mock_alias_storage):
         """Test that suspicious input is detected during expansion."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -308,14 +315,15 @@ class TestCommandExpansion:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = handle_expanded_command("look; rm -rf /", current_user, request, mock_storage, "testplayer")
+        result = await handle_expanded_command("look; rm -rf /", current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         # The function should detect suspicious input and return an error
         assert "suspicious" in result["result"].lower() or "unknown command" in result["result"].lower()
 
     @patch("server.command_handler.AliasStorage")
-    def test_handle_expanded_command_too_long(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_handle_expanded_command_too_long(self, mock_alias_storage):
         """Test that overly long commands are rejected."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -327,7 +335,7 @@ class TestCommandExpansion:
         # Create a command that exceeds the maximum length
         long_command = "a" * 100
 
-        result = handle_expanded_command(long_command, current_user, request, mock_storage, "testplayer")
+        result = await handle_expanded_command(long_command, current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         # The function should detect the long command and return an error
@@ -338,7 +346,8 @@ class TestCommandProcessing:
     """Test command processing functionality."""
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_look(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_look(self, mock_alias_storage):
         """Test processing the look command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -366,7 +375,7 @@ class TestCommandProcessing:
         request = Mock()
         request.app = mock_app
 
-        result = process_command("look", [], current_user, request, mock_storage, "testplayer")
+        result = await process_command("look", [], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "Test Room" in result["result"]
@@ -374,7 +383,8 @@ class TestCommandProcessing:
         assert "Exits: north" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_go(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_go(self, mock_alias_storage):
         """Test processing the go command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -421,14 +431,15 @@ class TestCommandProcessing:
 
         # Mock the global get_persistence function
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
-            result = process_command("go", ["north"], current_user, request, mock_storage, "testplayer")
+            result = await process_command("go", ["north"], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "North Room" in result["result"]
         assert "A northern chamber" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_help(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_help(self, mock_alias_storage):
         """Test processing the help command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -436,14 +447,15 @@ class TestCommandProcessing:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = process_command("help", [], current_user, request, mock_storage, "testplayer")
+        result = await process_command("help", [], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         # The help command should return help content
         assert "MYTHOSMUD COMMAND GRIMOIRE" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_unknown(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_unknown(self, mock_alias_storage):
         """Test processing unknown commands."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -451,13 +463,14 @@ class TestCommandProcessing:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = process_command("unknown_command", [], current_user, request, mock_storage, "testplayer")
+        result = await process_command("unknown_command", [], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "Unknown command: unknown_command" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_alias(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_alias(self, mock_alias_storage):
         """Test processing the alias command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -471,13 +484,14 @@ class TestCommandProcessing:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = process_command("alias", ["n", "go", "north"], current_user, request, mock_storage, "testplayer")
+        result = await process_command("alias", ["n", "go", "north"], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "Alias 'n' created" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_aliases(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_aliases(self, mock_alias_storage):
         """Test processing the aliases command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -489,14 +503,15 @@ class TestCommandProcessing:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = process_command("aliases", [], current_user, request, mock_storage, "testplayer")
+        result = await process_command("aliases", [], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "n" in result["result"]
         assert "s" in result["result"]
 
     @patch("server.command_handler.AliasStorage")
-    def test_process_command_unalias(self, mock_alias_storage):
+    @pytest.mark.asyncio
+    async def test_process_command_unalias(self, mock_alias_storage):
         """Test processing the unalias command."""
         mock_storage = Mock()
         mock_alias_storage.return_value = mock_storage
@@ -507,7 +522,7 @@ class TestCommandProcessing:
         current_user = {"username": "testplayer"}
         request = Mock()
 
-        result = process_command("unalias", ["n"], current_user, request, mock_storage, "testplayer")
+        result = await process_command("unalias", ["n"], current_user, request, mock_storage, "testplayer")
 
         assert "result" in result
         assert "Alias 'n' removed" in result["result"]

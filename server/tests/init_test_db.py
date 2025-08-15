@@ -38,6 +38,7 @@ TEST_SCHEMA = (
     "    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',\n"
     "    experience_points INTEGER NOT NULL DEFAULT 0,\n"
     "    level INTEGER NOT NULL DEFAULT 1,\n"
+    "    is_admin INTEGER NOT NULL DEFAULT 0,\n"
     "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
     "    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
     "    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE\n"
@@ -61,6 +62,7 @@ TEST_SCHEMA = (
     "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);\n"
     "CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);\n"
     "CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);\n"
+    "CREATE INDEX IF NOT EXISTS idx_players_is_admin ON players(is_admin);\n"
     "CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);\n"
     "CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);\n"
 )
