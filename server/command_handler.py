@@ -15,6 +15,16 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/command", tags=["command"])
 
 
+def get_username_from_user(user_obj):
+    """Safely extract username from user object or dictionary."""
+    if hasattr(user_obj, "username"):
+        return user_obj.username
+    elif isinstance(user_obj, dict) and "username" in user_obj:
+        return user_obj["username"]
+    else:
+        raise ValueError("User object must have username attribute or key")
+
+
 class CommandRequest(BaseModel):
     command: str
 
@@ -576,7 +586,7 @@ async def handle_command(
     if not current_user:
         raise HTTPException(status_code=401, detail="Authentication required")
 
-    player_name = current_user.username
+    player_name = get_username_from_user(current_user)
 
     logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
 
@@ -743,7 +753,7 @@ async def process_command(
         if not persistence:
             logger.warning("Look command failed - no persistence layer", player=player_name)
             return {"result": "You see nothing special."}
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Look command failed - player not found", player=player_name)
             return {"result": "You see nothing special."}
@@ -791,7 +801,7 @@ async def process_command(
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
         logger.debug("Player attempting to move", player=player_name, direction=direction)
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Go command failed - player not found", player=player_name)
             return {"result": "You can't go that way"}
@@ -821,8 +831,7 @@ async def process_command(
             logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way"}
 
-        # Update current user's room ID
-        current_user["current_room_id"] = target_room_id
+        # Room ID is updated in the Player object via MovementService
 
         # Return room description
         name = target_room.name
@@ -848,7 +857,7 @@ async def process_command(
             return {"result": "You open your mouth, but no words come out."}
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Say command failed - player not found", player=player_name)
             return {"result": "You cannot speak right now."}
@@ -900,7 +909,7 @@ async def process_command(
             reason = " ".join(args[2:])
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
@@ -933,7 +942,7 @@ async def process_command(
         target_name = args[0]
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
@@ -977,7 +986,7 @@ async def process_command(
             reason = " ".join(args[2:])
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
@@ -1010,7 +1019,7 @@ async def process_command(
         target_name = args[0]
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
@@ -1042,7 +1051,7 @@ async def process_command(
         target_name = args[0]
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
@@ -1070,7 +1079,7 @@ async def process_command(
         logger.debug("Processing mutes command", player=player_name, args=args)
 
         # Get player information
-        player = persistence.get_player_by_name(current_user.username)
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             return {"result": "You cannot perform this action right now."}
 
