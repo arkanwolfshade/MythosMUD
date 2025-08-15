@@ -19,6 +19,7 @@ $NatsServerPath = "E:\nats-server\nats-server.exe"
 $NatsConfigPath = "E:\nats-server\nats-server.conf"
 $NatsPort = 4222
 $NatsHttpPort = 8222
+$NatsLogPath = "E:/projects/GitHub/MythosMUD/logs/nats/nats-server.log"
 
 # Function to check if NATS server is installed
 function Test-NatsServerInstalled {
@@ -28,7 +29,8 @@ function Test-NatsServerInstalled {
     if (Test-Path $NatsServerPath) {
         Write-Host "NATS server found at: $NatsServerPath" -ForegroundColor Green
         return $true
-    } else {
+    }
+    else {
         Write-Host "NATS server not found at: $NatsServerPath" -ForegroundColor Red
         Write-Host "Please install NATS server to E:\nats-server\" -ForegroundColor Yellow
         return $false
@@ -46,7 +48,8 @@ function Test-NatsServerRunning {
         if ($connection) {
             Write-Host "NATS server is running on port $NatsPort" -ForegroundColor Green
             return $true
-        } else {
+        }
+        else {
             Write-Host "NATS server is not running on port $NatsPort" -ForegroundColor Yellow
             return $false
         }
@@ -83,7 +86,8 @@ function Start-NatsServer {
         if ($UseConfig -and (Test-Path $NatsConfigPath)) {
             Write-Host "Using configuration file: $NatsConfigPath" -ForegroundColor Gray
             $command = "& '$NatsServerPath' -c '$NatsConfigPath'"
-        } else {
+        }
+        else {
             Write-Host "Using default configuration" -ForegroundColor Gray
             $command = "& '$NatsServerPath' -p $NatsPort -m $NatsHttpPort"
         }
@@ -92,7 +96,8 @@ function Start-NatsServer {
             # Start NATS server in background
             Start-Process powershell -ArgumentList "-NoExit", "-Command", $command -WindowStyle Normal
             Write-Host "NATS server started in background" -ForegroundColor Green
-        } else {
+        }
+        else {
             # Start NATS server in foreground
             Invoke-Expression $command
         }
@@ -106,7 +111,8 @@ function Start-NatsServer {
             Write-Host "Client port: $NatsPort" -ForegroundColor Cyan
             Write-Host "HTTP port: $NatsHttpPort" -ForegroundColor Cyan
             return $true
-        } else {
+        }
+        else {
             Write-Host "NATS server failed to start" -ForegroundColor Red
             return $false
         }
@@ -162,7 +168,8 @@ function Stop-NatsServer {
         if (-not (Test-NatsServerRunning)) {
             Write-Host "NATS server stopped successfully" -ForegroundColor Green
             return $true
-        } else {
+        }
+        else {
             Write-Host "NATS server may still be running" -ForegroundColor Yellow
             return $false
         }
@@ -214,17 +221,22 @@ function Get-NatsServerStatus {
     $clientPort = Test-NetConnection -ComputerName localhost -Port $NatsPort -WarningAction SilentlyContinue
     $httpPort = Test-NetConnection -ComputerName localhost -Port $NatsHttpPort -WarningAction SilentlyContinue
 
+    # Check log file
+    $logExists = Test-Path $NatsLogPath
+
     Write-Host ""
     Write-Host "Installation: $(if ($installed) { 'Installed' } else { 'Not Installed' })" -ForegroundColor $(if ($installed) { 'Green' } else { 'Red' })
     Write-Host "Status: $(if ($running) { 'Running' } else { 'Stopped' })" -ForegroundColor $(if ($running) { 'Green' } else { 'Yellow' })
     Write-Host "Client Port ($NatsPort): $(if ($clientPort.TcpTestSucceeded) { 'Open' } else { 'Closed' })" -ForegroundColor $(if ($clientPort.TcpTestSucceeded) { 'Green' } else { 'Red' })
     Write-Host "HTTP Port ($NatsHttpPort): $(if ($httpPort.TcpTestSucceeded) { 'Open' } else { 'Closed' })" -ForegroundColor $(if ($httpPort.TcpTestSucceeded) { 'Green' } else { 'Red' })
+    Write-Host "Log File: $(if ($logExists) { 'Exists' } else { 'Missing' }) at $NatsLogPath" -ForegroundColor $(if ($logExists) { 'Green' } else { 'Yellow' })
 
     return @{
-        Installed = $installed
-        Running = $running
+        Installed      = $installed
+        Running        = $running
         ClientPortOpen = $clientPort.TcpTestSucceeded
-        HttpPortOpen = $httpPort.TcpTestSucceeded
+        HttpPortOpen   = $httpPort.TcpTestSucceeded
+        LogFileExists  = $logExists
     }
 }
 

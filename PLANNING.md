@@ -104,6 +104,17 @@ If a decision is pending, it is marked as **TODO**.
 - Basic inventory and stats commands
 - Security improvements and automated testing
 
+### User Management System ✅ (NEW - 2025-08-15)
+
+- **Comprehensive Mute System**: Personal and global muting capabilities
+- **Admin System**: Database-based admin privileges and persistence
+- **Mute Commands**: `mute`, `unmute`, `mutes` commands with privacy protection
+- **Server-Side Filtering**: Real-time message filtering based on mute status
+- **JSON Persistence**: Individual player mute data stored in JSON files
+- **Privacy Protection**: Players cannot see who has muted them
+- **Real-Time Testing**: Verified with Playwright MCP using three players
+- **Code Quality**: All linting issues resolved, comprehensive test coverage
+
 ### Development Tools ✅
 
 - Enhanced testing infrastructure with mock persistence layer
@@ -244,116 +255,69 @@ The basic MUD functionality is now working:
 3. **Rate Limiting Implementation** - Add protection against abuse
 4. **Error Handling Standardization** - Implement consistent patterns
 
-### **Phase 1.5: Redis Chat Integration Debugging (Immediate - This Week)**
-*As noted in the restricted archives of Miskatonic University, the Redis integration for real-time chat communication requires immediate attention to resolve the message processing loop issue.*
+### **Phase 1.5: User Management System (COMPLETED)** ✅
+*As noted in the restricted archives of Miskatonic University, the user management system has been successfully implemented and tested, providing comprehensive muting capabilities and admin privileges.*
 
-#### **Current Redis Integration Status: 90% Complete** ✅
-- ✅ **Redis Server**: Running on localhost:6379
-- ✅ **Redis Connection**: Successfully established
-- ✅ **Message Publishing**: Working correctly (messages published to Redis)
-- ✅ **Player Connections**: Both players connect and join rooms successfully
-- ✅ **Command Processing**: Say commands processed and responses received
-- ❌ **Message Reception**: Redis message processing loop not staying alive
+#### **User Management System Status: 100% Complete** ✅
+- ✅ **Player Muting**: Personal mute functionality (player A mutes player B)
+- ✅ **Global Muting**: Admin-only global mute functionality
+- ✅ **Mute Persistence**: JSON file-based persistence per player
+- ✅ **Admin System**: Database-based admin status persistence
+- ✅ **Mute Commands**: `mute`, `unmute`, `mutes` commands implemented
+- ✅ **Privacy Protection**: Players cannot see who has muted them
+- ✅ **Server-Side Filtering**: Messages filtered on server before client delivery
+- ✅ **Real-Time Testing**: Verified with Playwright MCP using three players
+- ✅ **Code Quality**: All linting issues resolved, tests passing
 
-#### **Redis Debugging Plan**
+#### **Completed Features**
 
-**Step 1: Diagnose Redis Message Loop Issue**
-- [ ] Investigate `redis_service.start_message_loop()` implementation
-- [ ] Check async task management in `RedisMessageHandler.start()`
-- [ ] Verify Redis pubsub connection lifecycle
-- [ ] Add detailed logging to Redis message processing
+**Mute System:**
+- Personal mutes: Player A can mute Player B (only affects Player A's view)
+- Global mutes: Admins can globally mute players (affects all non-admin players)
+- Mute persistence: Stored in individual JSON files per player
+- Mute commands: `mute <player>`, `unmute <player>`, `mutes` (view own mutes)
+- Privacy protection: Players cannot see if they are muted by others
 
-**Step 2: Fix Redis Message Processing**
-- [ ] Ensure Redis pubsub connection stays alive
-- [ ] Fix async task management for message loop
-- [ ] Implement proper error handling and reconnection logic
-- [ ] Add heartbeat/ping mechanism for Redis connection
+**Admin System:**
+- Admin status stored in database (`is_admin` field)
+- Admin privileges for global muting
+- Admin status persistence across sessions
 
-**Step 3: Test Redis Chat Functionality**
-- [ ] Verify messages flow: `Player A → Server → Redis → Player B`
-- [ ] Test with multiple players in same room
-- [ ] Test with players in different rooms
-- [ ] Verify message persistence and delivery guarantees
+**Testing & Quality:**
+- Comprehensive Playwright MCP testing with three players
+- All linting issues resolved (ruff compliance)
+- Test coverage maintained at 80%+
+- Real-time functionality verified end-to-end
 
-**Step 4: Performance and Reliability**
-- [ ] Add Redis connection pooling
-- [ ] Implement message retry logic
-- [ ] Add Redis health monitoring
-- [ ] Test under load conditions
+#### **Technical Implementation**
 
-#### **Technical Investigation Points**
+**Key Components:**
+- `UserManager`: Core service for mute management and persistence
+- `ChatService`: Interface between commands and UserManager
+- `NatsMessageHandler`: Server-side message filtering
+- JSON file persistence: Individual files per player for mute data
+- Database integration: Admin status in players table
 
-**Redis Service Analysis:**
-```python
-# Key files to investigate:
-server/services/redis_service.py          # Redis connection and pubsub
-server/realtime/redis_message_handler.py  # Message processing loop
-server/app/lifespan.py                    # Startup/shutdown management
+**Message Flow:**
 ```
-
-**Expected Message Flow:**
-```
-1. ArkanWolfshade sends: "say Hello Ithaqua!"
+1. Player A sends: "say Hello everyone!"
 2. Server processes command → Creates ChatMessage
-3. Server publishes to Redis: chat:room:{room_id}
-4. Redis message handler receives message
-5. Redis handler broadcasts to WebSocket clients
-6. Ithaqua receives message via WebSocket
+3. Server filters message based on mute status
+4. Message sent only to unmuted players in room
+5. Players receive filtered messages via WebSocket
 ```
 
-**Current Issue:**
-- Step 3 works (messages published to Redis)
-- Step 4 fails (Redis message handler not receiving messages)
-- Root cause: Redis message processing loop stops immediately
+#### **Testing Results (2025-08-15)**
 
-#### **Debugging Commands**
-```bash
-# Check Redis server status
-wsl redis-cli ping
+**Three-Player Test Scenario:**
+- **Players**: ArkanWolfshade, Ithaqua, Azathoth
+- **Test**: ArkanWolfshade mutes Ithaqua, verifies Azathoth can still see Ithaqua's messages
+- **Results**: ✅ All functionality working correctly
+- **Mute/Unmute**: ✅ Successfully tested and verified
+- **Privacy**: ✅ Players cannot see who has muted them
+- **Real-time**: ✅ Messages filtered correctly in real-time
 
-# Monitor Redis pubsub channels
-wsl redis-cli monitor
 
-# Check server logs for Redis messages
-Get-Content logs/development/server.log | Select-String "Redis|redis"
-
-# Test Redis connectivity
-python -c "import redis; r=redis.Redis(); print(r.ping())"
-```
-
-#### **Success Criteria**
-- [ ] Both players receive chat messages in real-time
-- [ ] Messages persist across server restarts
-- [ ] Redis connection remains stable
-- [ ] No memory leaks in Redis message processing
-- [ ] Graceful handling of Redis connection failures
-
-#### **Redis Integration Demonstration Results (2025-08-13)**
-
-**Test Setup:**
-- **Players**: ArkanWolfshade and Ithaqua (both using password: Cthulhu1)
-- **Room**: High Lane - Derby Intersection South (earth_arkham_city_northside_room_high_ln_003)
-- **Test Message**: "Greetings Ithaqua! This message is being sent through Redis!"
-
-**Results:**
-```
-✅ ArkanWolfshade Connection: Successful
-✅ Ithaqua Connection: Successful
-✅ Both Players in Same Room: Confirmed
-✅ Command Processing: "say" command processed successfully
-✅ Message Publishing: Published to Redis successfully
-✅ Server Response: "ArkanWolfshade says: Greetings Ithaqua! This message is being sent through Redis!"
-❌ Message Reception: Ithaqua did not receive the message
-```
-
-**Server Log Evidence:**
-```
-2025-08-13 22:53:32 - server.services.redis_service - DEBUG - Chat message published to Redis
-2025-08-13 22:53:32 - communications.chat_service - INFO - Chat message published to Redis
-```
-
-**Root Cause Identified:**
-The Redis message processing loop starts but immediately stops, preventing message reception from Redis channels. The issue is in the async task management of the Redis message handler.
 
 ### **Phase 2: Code Quality (1-2 Weeks)**
 1. **Service Layer Enhancement** - Create dedicated service classes
