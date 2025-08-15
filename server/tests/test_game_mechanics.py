@@ -1,249 +1,406 @@
-"""Tests for the game/mechanics module."""
+"""
+Tests for the game/mechanics module.
 
-import os
-from pathlib import Path
+This module tests the GameMechanicsService class which handles all game mechanics
+including sanity, fear, corruption, healing, and damage mechanics.
+"""
 
-import pytest
+import uuid
+from unittest.mock import Mock
+
+from ..game.mechanics import GameMechanicsService
 
 
-class TestGameMechanics:
-    """Test the game/mechanics module functionality."""
+class TestGameMechanicsService:
+    """Test cases for GameMechanicsService."""
 
-    def test_mechanics_file_exists(self):
-        """Test that the mechanics file exists."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        assert mechanics_path.exists()
+    def setup_method(self):
+        """Set up test fixtures."""
+        # Create a mock persistence object with the required methods
+        self.mock_persistence = Mock()
+        self.mock_persistence.get_player = Mock()
+        self.mock_persistence.apply_sanity_loss = Mock()
+        self.mock_persistence.apply_fear = Mock()
+        self.mock_persistence.apply_corruption = Mock()
+        self.mock_persistence.gain_occult_knowledge = Mock()
+        self.mock_persistence.heal_player = Mock()
+        self.mock_persistence.damage_player = Mock()
 
-    def test_mechanics_file_content(self):
-        """Test that the mechanics file contains expected content."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Create the service instance
+        self.mechanics_service = GameMechanicsService(self.mock_persistence)
 
-        # Check for key elements
-        assert "def" in content
-        assert "import" in content
+        # Create a mock player for testing
+        self.mock_player = Mock()
+        self.mock_player.name = "TestPlayer"
+        self.mock_player.player_id = str(uuid.uuid4())
 
-    def test_mechanics_imports_available(self):
-        """Test that all necessary imports are available."""
-        try:
-            # Test that the file exists and can be read
-            mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-            content = mechanics_path.read_text(encoding="utf-8")
+    def test_apply_sanity_loss_success(self):
+        """Test successful sanity loss application."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 10
+        source = "eldritch tome"
 
-            # Check that it contains the expected imports
-            assert "import" in content
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-        except Exception as e:
-            pytest.fail(f"Test failed: {e}")
+        # Execute
+        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount, source)
 
-    def test_mechanics_function_signature(self):
-        """Test that the script has proper structure."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Verify
+        assert success is True
+        assert f"Applied {amount} sanity loss to {self.mock_player.name}" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_sanity_loss.assert_called_once_with(self.mock_player, amount, source)
 
-        # Check for key components
-        assert "def" in content
+    def test_apply_sanity_loss_player_not_found(self):
+        """Test sanity loss application when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 10
+        source = "eldritch tome"
 
-    def test_mechanics_docstring(self):
-        """Test that mechanics has proper documentation."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        self.mock_persistence.get_player.return_value = None
 
-        # Check for docstring
-        assert '"""' in content or "'''" in content
+        # Execute
+        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount, source)
 
-    def test_mechanics_structure(self):
-        """Test the structure of the mechanics file."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_sanity_loss.assert_not_called()
 
-        # Check for key components
-        assert "def" in content
+    def test_apply_sanity_loss_default_source(self):
+        """Test sanity loss application with default source."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 10
 
-    def test_mechanics_configuration(self):
-        """Test that the script has proper configuration."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-        # Check for specific configuration values
-        assert "def" in content
+        # Execute
+        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount)
 
-    def test_mechanics_script_execution(self):
-        """Test that the script can be executed."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
+        # Verify
+        assert success is True
+        self.mock_persistence.apply_sanity_loss.assert_called_once_with(self.mock_player, amount, "unknown")
 
-        # Check that file is executable
-        assert os.access(mechanics_path, os.R_OK)
+    def test_apply_fear_success(self):
+        """Test successful fear application."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 15
+        source = "dark ritual"
 
-    def test_mechanics_file_permissions(self):
-        """Test that the mechanics file has proper permissions."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-        # Check that file is readable
-        assert os.access(mechanics_path, os.R_OK)
+        # Execute
+        success, message = self.mechanics_service.apply_fear(player_id, amount, source)
 
-    def test_mechanics_file_size(self):
-        """Test that the mechanics file has reasonable size."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
+        # Verify
+        assert success is True
+        assert f"Applied {amount} fear to {self.mock_player.name}" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_fear.assert_called_once_with(self.mock_player, amount, source)
 
-        # Check file size (should be reasonable for a module file)
-        size = mechanics_path.stat().st_size
-        assert size > 10  # Should be more than 10 bytes
-        assert size < 5000  # Should be less than 5KB
+    def test_apply_fear_player_not_found(self):
+        """Test fear application when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 15
+        source = "dark ritual"
 
-    def test_mechanics_encoding(self):
-        """Test that the mechanics file uses proper encoding."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
+        self.mock_persistence.get_player.return_value = None
 
-        # Try to read with UTF-8 encoding
-        try:
-            content = mechanics_path.read_text(encoding="utf-8")
-            assert len(content) > 0
-        except UnicodeDecodeError:
-            raise AssertionError("mechanics file should be UTF-8 encoded") from None
+        # Execute
+        success, message = self.mechanics_service.apply_fear(player_id, amount, source)
 
-    def test_mechanics_line_count(self):
-        """Test that the mechanics file has reasonable line count."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
-        lines = content.split("\n")
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_fear.assert_not_called()
 
-        # Should have reasonable number of lines
-        assert len(lines) > 3  # More than 3 lines
-        assert len(lines) < 100  # Less than 100 lines
+    def test_apply_corruption_success(self):
+        """Test successful corruption application."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 5
+        source = "forbidden knowledge"
 
-    def test_mechanics_comment_quality(self):
-        """Test that the mechanics file has good comments."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-        # Check for module docstring
-        assert '"""' in content or "'''" in content
+        # Execute
+        success, message = self.mechanics_service.apply_corruption(player_id, amount, source)
 
-    def test_mechanics_variable_names(self):
-        """Test that the mechanics file uses good variable names."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Verify
+        assert success is True
+        assert f"Applied {amount} corruption to {self.mock_player.name}" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_corruption.assert_called_once_with(self.mock_player, amount, source)
 
-        # Check for good variable naming
-        lines = content.split("\n")
-        for line in lines:
-            if "def " in line or "class " in line:
-                # Function and class names should be descriptive
-                assert len(line.strip()) > 5
+    def test_apply_corruption_player_not_found(self):
+        """Test corruption application when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 5
+        source = "forbidden knowledge"
 
-    def test_mechanics_no_hardcoded_secrets(self):
-        """Test that the mechanics file doesn't contain hardcoded secrets."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        self.mock_persistence.get_player.return_value = None
 
-        # Check for absence of hardcoded secrets
-        assert "password" not in content.lower()
-        assert "secret" not in content.lower()
-        assert "key" not in content.lower()
+        # Execute
+        success, message = self.mechanics_service.apply_corruption(player_id, amount, source)
 
-    def test_mechanics_consistent_indentation(self):
-        """Test that the mechanics file uses consistent indentation."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.apply_corruption.assert_not_called()
 
-        # Check for consistent indentation
-        lines = content.split("\n")
-        for line in lines:
-            if line.strip() and not line.startswith("#"):
-                # Should use spaces, not tabs
-                assert "\t" not in line
+    def test_gain_occult_knowledge_success(self):
+        """Test successful occult knowledge gain."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 20
+        source = "necronomicon"
 
-    def test_mechanics_no_syntax_errors(self):
-        """Test that the mechanics file has no syntax errors."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-        # Try to compile the file to check for syntax errors
-        try:
-            compile(mechanics_path.read_text(encoding="utf-8"), str(mechanics_path), "exec")
-        except SyntaxError as e:
-            pytest.fail(f"Syntax error in mechanics.py: {e}")
+        # Execute
+        success, message = self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
 
-    def test_mechanics_shebang(self):
-        """Test that the mechanics file has proper shebang."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Verify
+        assert success is True
+        assert f"Gained {amount} occult knowledge for {self.mock_player.name}" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.gain_occult_knowledge.assert_called_once_with(self.mock_player, amount, source)
 
-        # Check for shebang
-        lines = content.split("\n")
-        if lines and lines[0].startswith("#!"):
-            assert "python" in lines[0]
+    def test_gain_occult_knowledge_player_not_found(self):
+        """Test occult knowledge gain when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 20
+        source = "necronomicon"
 
-    def test_mechanics_imports_structure(self):
-        """Test that the mechanics file has proper import structure."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        self.mock_persistence.get_player.return_value = None
 
-        # Check import structure
-        lines = content.split("\n")
-        import_lines = [line for line in lines if line.startswith("from") or line.startswith("import")]
+        # Execute
+        success, message = self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
 
-        # Should have some imports
-        assert len(import_lines) > 0
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.gain_occult_knowledge.assert_not_called()
 
-    def test_mechanics_function_structure(self):
-        """Test that the mechanics file has proper function structure."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+    def test_heal_player_success(self):
+        """Test successful player healing."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 25
 
-        # Check for function definition
-        assert "def" in content
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-    def test_mechanics_output_format(self):
-        """Test that the mechanics file has proper output format."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Execute
+        success, message = self.mechanics_service.heal_player(player_id, amount)
 
-        # Check for proper output handling
-        assert "def" in content
+        # Verify
+        assert success is True
+        assert f"Healed {self.mock_player.name} for {amount} health" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.heal_player.assert_called_once_with(self.mock_player, amount)
 
-    def test_mechanics_edge_cases(self):
-        """Test that the mechanics file handles edge cases properly."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+    def test_heal_player_not_found(self):
+        """Test healing when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 25
 
-        # Check for error handling
-        assert "try" in content or "except" in content or "if" in content
+        self.mock_persistence.get_player.return_value = None
 
-    def test_mechanics_special_characters(self):
-        """Test that the mechanics file handles special characters properly."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Execute
+        success, message = self.mechanics_service.heal_player(player_id, amount)
 
-        # Check for proper string handling
-        assert '"' in content or "'" in content
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.heal_player.assert_not_called()
 
-    def test_mechanics_methods_are_sets(self):
-        """Test that the mechanics file uses proper method organization."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+    def test_damage_player_success(self):
+        """Test successful player damage."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 30
+        damage_type = "psychic"
 
-        # Check for proper method organization
-        lines = content.split("\n")
-        function_count = sum(1 for line in lines if line.strip().startswith("def "))
-        assert function_count >= 0  # Should have at least 0 functions
+        self.mock_persistence.get_player.return_value = self.mock_player
 
-    def test_mechanics_paths_are_normalized(self):
-        """Test that the mechanics file uses normalized paths."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+        # Execute
+        success, message = self.mechanics_service.damage_player(player_id, amount, damage_type)
 
-        # Check for path normalization
-        assert "Path" in content or "os.path" in content
+        # Verify
+        assert success is True
+        assert f"Damaged {self.mock_player.name} for {amount} {damage_type} damage" in message
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.damage_player.assert_called_once_with(self.mock_player, amount, damage_type)
 
-    def test_mechanics_consistency(self):
-        """Test that the mechanics file is consistent."""
-        mechanics_path = Path(__file__).parent.parent / "game" / "mechanics.py"
-        content = mechanics_path.read_text(encoding="utf-8")
+    def test_damage_player_default_type(self):
+        """Test player damage with default damage type."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 30
 
-        # Check for consistency in coding style
-        lines = content.split("\n")
-        for line in lines:
-            if line.strip() and not line.startswith("#"):
-                # Should not have trailing whitespace
-                assert line == line.rstrip()
+        self.mock_persistence.get_player.return_value = self.mock_player
+
+        # Execute
+        success, message = self.mechanics_service.damage_player(player_id, amount)
+
+        # Verify
+        assert success is True
+        assert f"Damaged {self.mock_player.name} for {amount} physical damage" in message
+        self.mock_persistence.damage_player.assert_called_once_with(self.mock_player, amount, "physical")
+
+    def test_damage_player_not_found(self):
+        """Test damage when player is not found."""
+        # Setup
+        player_id = str(uuid.uuid4())
+        amount = 30
+        damage_type = "psychic"
+
+        self.mock_persistence.get_player.return_value = None
+
+        # Execute
+        success, message = self.mechanics_service.damage_player(player_id, amount, damage_type)
+
+        # Verify
+        assert success is False
+        assert message == "Player not found"
+        self.mock_persistence.get_player.assert_called_once_with(player_id)
+        self.mock_persistence.damage_player.assert_not_called()
+
+    def test_zero_amount_operations(self):
+        """Test operations with zero amounts."""
+        # Setup
+        player_id = str(uuid.uuid4())
+
+        self.mock_persistence.get_player.return_value = self.mock_player
+
+        # Test all operations with zero amounts
+        operations = [
+            ("apply_sanity_loss", 0, "test"),
+            ("apply_fear", 0, "test"),
+            ("apply_corruption", 0, "test"),
+            ("gain_occult_knowledge", 0, "test"),
+            ("heal_player", 0),
+            ("damage_player", 0, "physical"),
+        ]
+
+        for operation, amount, *args in operations:
+            method = getattr(self.mechanics_service, operation)
+            if operation == "heal_player":
+                success, message = method(player_id, amount)
+            else:
+                success, message = method(player_id, amount, *args)
+
+            assert success is True
+            assert str(amount) in message
+
+    def test_negative_amount_operations(self):
+        """Test operations with negative amounts."""
+        # Setup
+        player_id = str(uuid.uuid4())
+
+        self.mock_persistence.get_player.return_value = self.mock_player
+
+        # Test all operations with negative amounts
+        operations = [
+            ("apply_sanity_loss", -10, "test"),
+            ("apply_fear", -15, "test"),
+            ("apply_corruption", -5, "test"),
+            ("gain_occult_knowledge", -20, "test"),
+            ("heal_player", -25),
+            ("damage_player", -30, "physical"),
+        ]
+
+        for operation, amount, *args in operations:
+            method = getattr(self.mechanics_service, operation)
+            if operation == "heal_player":
+                success, message = method(player_id, amount)
+            else:
+                success, message = method(player_id, amount, *args)
+
+            assert success is True
+            assert str(amount) in message
+
+    def test_large_amount_operations(self):
+        """Test operations with large amounts."""
+        # Setup
+        player_id = str(uuid.uuid4())
+
+        self.mock_persistence.get_player.return_value = self.mock_player
+
+        # Test all operations with large amounts
+        operations = [
+            ("apply_sanity_loss", 1000, "test"),
+            ("apply_fear", 1500, "test"),
+            ("apply_corruption", 500, "test"),
+            ("gain_occult_knowledge", 2000, "test"),
+            ("heal_player", 2500),
+            ("damage_player", 3000, "physical"),
+        ]
+
+        for operation, amount, *args in operations:
+            method = getattr(self.mechanics_service, operation)
+            if operation == "heal_player":
+                success, message = method(player_id, amount)
+            else:
+                success, message = method(player_id, amount, *args)
+
+            assert success is True
+            assert str(amount) in message
+
+    def test_service_initialization(self):
+        """Test GameMechanicsService initialization."""
+        # Test that the service is properly initialized
+        assert self.mechanics_service.persistence == self.mock_persistence
+        assert hasattr(self.mechanics_service, "apply_sanity_loss")
+        assert hasattr(self.mechanics_service, "apply_fear")
+        assert hasattr(self.mechanics_service, "apply_corruption")
+        assert hasattr(self.mechanics_service, "gain_occult_knowledge")
+        assert hasattr(self.mechanics_service, "heal_player")
+        assert hasattr(self.mechanics_service, "damage_player")
+
+    def test_persistence_method_calls(self):
+        """Test that all persistence methods are called correctly."""
+        # Setup
+        player_id = str(uuid.uuid4())
+
+        self.mock_persistence.get_player.return_value = self.mock_player
+
+        # Test all methods to ensure persistence calls are made
+        test_cases = [
+            ("apply_sanity_loss", [10, "test"], "apply_sanity_loss"),
+            ("apply_fear", [15, "test"], "apply_fear"),
+            ("apply_corruption", [5, "test"], "apply_corruption"),
+            ("gain_occult_knowledge", [20, "test"], "gain_occult_knowledge"),
+            ("heal_player", [25], "heal_player"),
+            ("damage_player", [30, "psychic"], "damage_player"),
+        ]
+
+        for method_name, args, persistence_method in test_cases:
+            # Reset mock
+            self.mock_persistence.reset_mock()
+
+            # Call the method
+            method = getattr(self.mechanics_service, method_name)
+            method(player_id, *args)
+
+            # Verify persistence method was called
+            persistence_method_obj = getattr(self.mock_persistence, persistence_method)
+            persistence_method_obj.assert_called_once()
+
+            # Verify the call arguments
+            call_args = persistence_method_obj.call_args[0]
+            assert call_args[0] == self.mock_player  # First arg should be the player
+            assert call_args[1] == args[0]  # Second arg should be the amount
