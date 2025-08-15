@@ -506,7 +506,7 @@ class ChatService:
             personal_mutes = mute_info.get("player_mutes", {})
             if personal_mutes:
                 status_lines.append("🔇 PLAYERS YOU HAVE MUTED:")
-                for target_id, mute_data in personal_mutes.items():
+                for _target_id, mute_data in personal_mutes.items():
                     target_name = mute_data.get("target_name", "Unknown")
                     expires_at = mute_data.get("expires_at")
                     reason = mute_data.get("reason", "")
@@ -531,7 +531,7 @@ class ChatService:
                                 duration_text = f" ({minutes_left} minutes remaining)"
                             else:
                                 duration_text = " (EXPIRED)"
-                        except:
+                        except Exception:
                             duration_text = ""
                     else:
                         duration_text = " (PERMANENT)"
@@ -547,7 +547,7 @@ class ChatService:
             global_mutes = mute_info.get("global_mutes", {})
             if global_mutes:
                 status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED:")
-                for target_id, mute_data in global_mutes.items():
+                for _target_id, mute_data in global_mutes.items():
                     target_name = mute_data.get("target_name", "Unknown")
                     expires_at = mute_data.get("expires_at")
                     reason = mute_data.get("reason", "")
@@ -572,7 +572,7 @@ class ChatService:
                                 duration_text = f" ({minutes_left} minutes remaining)"
                             else:
                                 duration_text = " (EXPIRED)"
-                        except:
+                        except Exception:
                             duration_text = ""
                     else:
                         duration_text = " (PERMANENT)"

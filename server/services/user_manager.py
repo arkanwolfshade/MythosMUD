@@ -727,7 +727,7 @@ class UserManager:
             muted_by.append((muter_name, "global"))
 
         # Check personal mutes
-        for muter_id, mutes in self._player_mutes.items():
+        for _muter_id, mutes in self._player_mutes.items():
             if player_id in mutes:
                 mute_info = mutes[player_id]
                 muter_name = mute_info.get("muted_by_name", "Unknown")
