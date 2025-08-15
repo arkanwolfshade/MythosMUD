@@ -126,6 +126,9 @@ class ChatService:
             logger.warning("Player not found for chat message", player_id=player_id)
             return {"success": False, "error": "Player not found"}
 
+        # Load player's mute data to ensure it's available for permission checks
+        self.user_manager.load_player_mutes(player_id)
+
         # Check rate limits before allowing message
         if not self.rate_limiter.check_rate_limit(player_id, "say", player.name):
             logger.warning("Rate limit exceeded for say message", player_id=player_id, player_name=player.name)
@@ -462,3 +465,130 @@ class ChatService:
         """Get recent messages for a room."""
         messages = self._room_messages.get(room_id, [])
         return [msg.to_dict() for msg in messages[-limit:]]
+
+    def get_mute_status(self, player_id: str) -> str:
+        """
+        Get comprehensive mute status for a player.
+
+        Args:
+            player_id: Player ID to get mute status for
+
+        Returns:
+            Formatted string with mute status information
+        """
+        try:
+            # Get player name
+            player = self.player_service.get_player_by_id(player_id)
+            if not player:
+                return "Player not found."
+
+            player_name = player.name
+
+            # Load player's mute data first
+            self.user_manager.load_player_mutes(player_id)
+
+            # Get mute information from UserManager
+            mute_info = self.user_manager.get_player_mutes(player_id)
+
+            # Check if player is admin
+            is_admin = self.user_manager.is_admin(player_id)
+
+            # Build status report
+            status_lines = []
+            status_lines.append(f"=== MUTE STATUS FOR {player_name.upper()} ===")
+
+            if is_admin:
+                status_lines.append("🔴 ADMIN STATUS: You are an admin (immune to all mutes)")
+
+            status_lines.append("")
+
+            # Personal mutes (players you have muted)
+            personal_mutes = mute_info.get("player_mutes", {})
+            if personal_mutes:
+                status_lines.append("🔇 PLAYERS YOU HAVE MUTED:")
+                for target_id, mute_data in personal_mutes.items():
+                    target_name = mute_data.get("target_name", "Unknown")
+                    expires_at = mute_data.get("expires_at")
+                    reason = mute_data.get("reason", "")
+
+                    if expires_at:
+                        # Calculate remaining time
+                        from datetime import UTC, datetime
+
+                        try:
+                            if isinstance(expires_at, str):
+                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+                            else:
+                                expires_dt = expires_at
+
+                            now = datetime.now(UTC)
+                            if expires_dt.tzinfo is None:
+                                expires_dt = expires_dt.replace(tzinfo=UTC)
+
+                            remaining = expires_dt - now
+                            if remaining.total_seconds() > 0:
+                                minutes_left = int(remaining.total_seconds() / 60)
+                                duration_text = f" ({minutes_left} minutes remaining)"
+                            else:
+                                duration_text = " (EXPIRED)"
+                        except:
+                            duration_text = ""
+                    else:
+                        duration_text = " (PERMANENT)"
+
+                    reason_text = f" - {reason}" if reason else ""
+                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
+            else:
+                status_lines.append("🔇 PLAYERS YOU HAVE MUTED: None")
+
+            status_lines.append("")
+
+            # Global mutes (players you have globally muted)
+            global_mutes = mute_info.get("global_mutes", {})
+            if global_mutes:
+                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED:")
+                for target_id, mute_data in global_mutes.items():
+                    target_name = mute_data.get("target_name", "Unknown")
+                    expires_at = mute_data.get("expires_at")
+                    reason = mute_data.get("reason", "")
+
+                    if expires_at:
+                        # Calculate remaining time
+                        from datetime import UTC, datetime
+
+                        try:
+                            if isinstance(expires_at, str):
+                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+                            else:
+                                expires_dt = expires_at
+
+                            now = datetime.now(UTC)
+                            if expires_dt.tzinfo is None:
+                                expires_dt = expires_dt.replace(tzinfo=UTC)
+
+                            remaining = expires_dt - now
+                            if remaining.total_seconds() > 0:
+                                minutes_left = int(remaining.total_seconds() / 60)
+                                duration_text = f" ({minutes_left} minutes remaining)"
+                            else:
+                                duration_text = " (EXPIRED)"
+                        except:
+                            duration_text = ""
+                    else:
+                        duration_text = " (PERMANENT)"
+
+                    reason_text = f" - {reason}" if reason else ""
+                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
+            else:
+                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED: None")
+
+            status_lines.append("")
+
+            # Note: We do not show if you are muted by others to prevent retaliation
+            # This information is kept private for the protection of players who mute others
+
+            return "\n".join(status_lines)
+
+        except Exception as e:
+            logger.error("Error getting mute status", error=str(e), player_id=player_id)
+            return "Error retrieving mute status."

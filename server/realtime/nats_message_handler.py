@@ -232,22 +232,33 @@ class NATSMessageHandler:
             if room_id != canonical_id and room_id in connection_manager.room_subscriptions:
                 targets.update(connection_manager.room_subscriptions[room_id])
 
-            # Filter players based on their current room
+            # Filter players based on their current room and mute status
             filtered_targets = []
             for player_id in targets:
                 if player_id == sender_id:
                     continue  # Skip sender
 
                 # Check if player is currently in the message's room
-                if self._is_player_in_room(player_id, room_id):
-                    filtered_targets.append(player_id)
-                else:
+                if not self._is_player_in_room(player_id, room_id):
                     logger.debug(
                         "Filtered out player not in room",
                         player_id=player_id,
                         message_room_id=room_id,
                         channel=channel,
                     )
+                    continue
+
+                # Check if the receiving player has muted the sender
+                if self._is_player_muted_by_receiver(player_id, sender_id):
+                    logger.debug(
+                        "Filtered out message due to mute",
+                        receiver_id=player_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                    )
+                    continue
+
+                filtered_targets.append(player_id)
 
             # Send message only to filtered players
             for player_id in filtered_targets:
@@ -315,6 +326,56 @@ class NATSMessageHandler:
                 error=str(e),
                 player_id=player_id,
                 room_id=room_id,
+            )
+            return False
+
+    def _is_player_muted_by_receiver(self, receiver_id: str, sender_id: str) -> bool:
+        """
+        Check if a receiving player has muted the sender.
+
+        Args:
+            receiver_id: Player ID of the message receiver
+            sender_id: Player ID of the message sender
+
+        Returns:
+            bool: True if receiver has muted sender, False otherwise
+        """
+        try:
+            # Import UserManager to check mute status
+            from ..services.user_manager import UserManager
+
+            user_manager = UserManager()
+
+            # Load the receiver's mute data before checking
+            user_manager.load_player_mutes(receiver_id)
+
+            # Check if receiver has muted sender (personal mute)
+            if user_manager.is_player_muted(receiver_id, sender_id):
+                logger.debug(
+                    "Player muted by receiver (personal mute)",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+                return True
+
+            # Load global mutes and check if sender is globally muted by anyone
+            # Only apply global mute if receiver is not an admin (admins can see globally muted players)
+            if user_manager.is_player_muted_by_others(sender_id) and not user_manager.is_admin(receiver_id):
+                logger.debug(
+                    "Player muted by receiver (global mute)",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+                return True
+
+            return False
+
+        except Exception as e:
+            logger.error(
+                "Error checking mute status",
+                error=str(e),
+                receiver_id=receiver_id,
+                sender_id=sender_id,
             )
             return False
 

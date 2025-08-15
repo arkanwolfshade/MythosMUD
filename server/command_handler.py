@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
+from .config_loader import get_config
 from .game.chat_service import ChatService
 from .game.movement_service import MovementService
 from .logging_config import get_logger
@@ -44,7 +45,7 @@ def clean_command_input(command: str) -> str:
     return cleaned
 
 
-MAX_COMMAND_LENGTH = 50
+MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
 
 
 # Command definitions for help system
@@ -449,6 +450,48 @@ have access to powerful moderation tools.</p>
 </ul>
 
 <p>"With great power comes great responsibility." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "mutes": {
+        "category": "User Management",
+        "description": "Show your current mute status and who you have muted",
+        "usage": "mutes",
+        "examples": ["mutes"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>MUTES Command</h3>
+<p>Display your current mute status and list of players you have muted, as recorded
+in the Miskatonic archives of player interactions.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>mutes</strong> - Show your mute status and muted players</li>
+</ul>
+
+<h4>What it shows:</h4>
+<ul>
+<li>Players you have muted (personal mutes)</li>
+<li>Players you have globally muted</li>
+<li>Your admin status</li>
+<li>Mute durations and expiry times</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>mutes</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Personal mutes only affect your ability to see messages from that player</li>
+<li>Global mutes prevent the player from sending messages to anyone</li>
+<li>Admin players are immune to all types of mutes</li>
+<li>Mute durations are shown in minutes remaining</li>
+<li>For privacy and anti-harassment, you cannot see if others have muted you</li>
+</ul>
+
+<p>"Knowledge of one's own restrictions is the first step toward understanding." - Prof. Armitage</p>
 </div>
 """,
     },
@@ -1022,6 +1065,26 @@ async def process_command(
             return {"result": f"You have added {target_name} as an admin."}
         else:
             return {"result": f"Failed to add {target_name} as admin."}
+
+    elif cmd == "mutes":
+        logger.debug("Processing mutes command", player=player_name, args=args)
+
+        # Get player information
+        player = persistence.get_player_by_name(current_user.username)
+        if not player:
+            return {"result": "You cannot perform this action right now."}
+
+        # Initialize services
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Get mute status
+        mute_info = chat_service.get_mute_status(str(player.player_id))
+        return {"result": mute_info}
 
     else:
         return {"result": f"Unknown command: {cmd}"}

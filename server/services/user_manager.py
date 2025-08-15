@@ -55,10 +55,29 @@ class UserManager:
             player_id: Player ID
             player_name: Player name for logging
         """
-        self._admin_players.add(player_id)
-        logger.info("Player added as admin", player_id=player_id, player_name=player_name)
-        # Save admin status
-        self.save_player_mutes(player_id)
+        try:
+            # Update database
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+
+            # Get player from database
+            player = persistence.get_player(player_id)
+            if player:
+                player.set_admin_status(True)
+                persistence.save_player(player)
+                logger.info("Player added as admin in database", player_id=player_id, player_name=player_name)
+            else:
+                logger.error("Player not found in database", player_id=player_id)
+                return False
+
+            # Update in-memory cache
+            self._admin_players.add(player_id)
+
+            return True
+        except Exception as e:
+            logger.error("Error adding admin status", error=str(e), player_id=player_id)
+            return False
 
     def remove_admin(self, player_id: str, player_name: str = None):
         """
@@ -68,11 +87,30 @@ class UserManager:
             player_id: Player ID
             player_name: Player name for logging
         """
-        if player_id in self._admin_players:
-            self._admin_players.remove(player_id)
-            logger.info("Player admin status removed", player_id=player_id, player_name=player_name)
-            # Save admin status
-            self.save_player_mutes(player_id)
+        try:
+            # Update database
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+
+            # Get player from database
+            player = persistence.get_player(player_id)
+            if player:
+                player.set_admin_status(False)
+                persistence.save_player(player)
+                logger.info("Player admin status removed from database", player_id=player_id, player_name=player_name)
+            else:
+                logger.error("Player not found in database", player_id=player_id)
+                return False
+
+            # Update in-memory cache
+            if player_id in self._admin_players:
+                self._admin_players.remove(player_id)
+
+            return True
+        except Exception as e:
+            logger.error("Error removing admin status", error=str(e), player_id=player_id)
+            return False
 
     def is_admin(self, player_id: str) -> bool:
         """
@@ -84,7 +122,25 @@ class UserManager:
         Returns:
             True if player is admin
         """
-        return player_id in self._admin_players
+        # Check in-memory cache first
+        if player_id in self._admin_players:
+            return True
+
+        # Check database if not in cache
+        try:
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+
+            player = persistence.get_player(player_id)
+            if player and player.is_admin_user():
+                # Add to cache
+                self._admin_players.add(player_id)
+                return True
+        except Exception as e:
+            logger.error("Error checking admin status in database", error=str(e), player_id=player_id)
+
+        return False
 
     def mute_player(
         self,
@@ -182,10 +238,23 @@ class UserManager:
             True if unmute was successful
         """
         try:
-            # Check if mute exists
-            if unmuter_id in self._player_mutes and target_id in self._player_mutes[unmuter_id]:
+            # Load unmuter's mute data to ensure it's available
+            self.load_player_mutes(unmuter_id)
+
+            # Debug logging
+            logger.debug(f"Unmute debug - unmuter_id: {unmuter_id} (type: {type(unmuter_id)})")
+            logger.debug(f"Unmute debug - target_id: {target_id} (type: {type(target_id)})")
+            logger.debug(f"Unmute debug - player_mutes_keys: {list(self._player_mutes.keys())}")
+            logger.debug(f"Unmute debug - unmuter_mutes keys: {list(self._player_mutes.get(unmuter_id, {}).keys())}")
+            logger.debug(
+                f"Unmute debug - target_id in unmuter_mutes: {target_id in self._player_mutes.get(unmuter_id, {})}"
+            )
+
+            # Check if mute exists (convert target_id to string for comparison)
+            target_id_str = str(target_id)
+            if unmuter_id in self._player_mutes and target_id_str in self._player_mutes[unmuter_id]:
                 # Remove the mute
-                del self._player_mutes[unmuter_id][target_id]
+                del self._player_mutes[unmuter_id][target_id_str]
 
                 # Clean up empty player mute entries
                 if not self._player_mutes[unmuter_id]:
@@ -415,6 +484,9 @@ class UserManager:
             True if unmute was successful
         """
         try:
+            # Load unmuter's mute data to ensure it's available
+            self.load_player_mutes(unmuter_id)
+
             # Check if global mute exists
             if target_id in self._global_mutes:
                 # Remove the global mute
@@ -460,6 +532,9 @@ class UserManager:
             True if target is muted by player
         """
         try:
+            # Load player's mute data to ensure it's available
+            self.load_player_mutes(player_id)
+
             # Check if mute exists and is not expired
             if player_id in self._player_mutes and target_id in self._player_mutes[player_id]:
                 mute_info = self._player_mutes[player_id][target_id]
@@ -566,9 +641,9 @@ class UserManager:
             if channel and self.is_channel_muted(sender_id, channel):
                 return False
 
-            # Check player mute if applicable
-            if target_id and self.is_player_muted(sender_id, target_id):
-                return False
+            # Note: We don't check if sender has muted target_id because that should not
+            # prevent the sender from sending messages. The mute filtering happens on the
+            # receiving end, not the sending end.
 
             return True
 
@@ -615,6 +690,50 @@ class UserManager:
         except Exception as e:
             logger.error("Error getting player mutes", error=str(e), player_id=player_id)
             return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+
+    def is_player_muted_by_others(self, player_id: str) -> bool:
+        """
+        Check if a player is globally muted by any other player.
+
+        Args:
+            player_id: Player ID to check
+
+        Returns:
+            True if player is globally muted by others
+        """
+        # Only check if player is in any global mutes
+        # Personal mutes should not prevent the muted player from sending messages
+        if player_id in self._global_mutes:
+            return True
+
+        return False
+
+    def get_who_muted_player(self, player_id: str) -> list[tuple[str, str]]:
+        """
+        Get information about who muted a player.
+
+        Args:
+            player_id: Player ID to check
+
+        Returns:
+            List of tuples (muter_name, mute_type)
+        """
+        muted_by = []
+
+        # Check global mutes
+        if player_id in self._global_mutes:
+            mute_info = self._global_mutes[player_id]
+            muter_name = mute_info.get("muted_by_name", "Unknown")
+            muted_by.append((muter_name, "global"))
+
+        # Check personal mutes
+        for muter_id, mutes in self._player_mutes.items():
+            if player_id in mutes:
+                mute_info = mutes[player_id]
+                muter_name = mute_info.get("muted_by_name", "Unknown")
+                muted_by.append((muter_name, "personal"))
+
+        return muted_by
 
     def get_system_stats(self) -> dict[str, Any]:
         """
@@ -776,7 +895,10 @@ class UserManager:
                         serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
                     if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
                         serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    data["player_mutes"][target_id] = serialized_mute
+                    # Convert UUID to string for JSON serialization
+                    if "target_id" in serialized_mute:
+                        serialized_mute["target_id"] = str(serialized_mute["target_id"])
+                    data["player_mutes"][str(target_id)] = serialized_mute
 
             # Save channel mutes
             if player_id in self._channel_mutes:
@@ -798,7 +920,10 @@ class UserManager:
                         serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
                     if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
                         serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    data["global_mutes"][target_id] = serialized_mute
+                    # Convert UUID to string for JSON serialization
+                    if "target_id" in serialized_mute:
+                        serialized_mute["target_id"] = str(serialized_mute["target_id"])
+                    data["global_mutes"][str(target_id)] = serialized_mute
 
             # Validate data is serializable before writing
             try:

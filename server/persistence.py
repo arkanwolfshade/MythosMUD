@@ -238,8 +238,8 @@ class PersistenceLayer:
                     """
                     INSERT OR REPLACE INTO players (
                         player_id, user_id, name, stats, inventory, status_effects,
-                        current_room_id, experience_points, level, created_at, last_active
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        current_room_id, experience_points, level, is_admin, created_at, last_active
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         player_id_str,
@@ -251,6 +251,7 @@ class PersistenceLayer:
                         player.current_room_id,
                         player.experience_points,
                         player.level,
+                        player.is_admin,
                         created_at,
                         last_active,
                     ),
