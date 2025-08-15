@@ -163,7 +163,7 @@ class TestNATSMessageHandler:
                 call_args = mock_broadcast.call_args[0]
                 assert call_args[0] == "say"  # channel
                 assert call_args[2] == "room_001"  # room_id
-                assert call_args[4] == "player_001"  # sender_id
+                assert call_args[5] == "player_001"  # sender_id
 
     @pytest.mark.asyncio
     async def test_handle_nats_message_invalid_missing_fields(self):
@@ -308,12 +308,15 @@ class TestNATSMessageHandler:
         }
 
         with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
-            with patch.object(self.handler, "_is_player_in_room", return_value=True):
+            with patch.object(
+                self.handler, "_is_player_in_room", side_effect=lambda p, r: p in ["player_001", "player_002"]
+            ):
                 with patch.object(self.handler, "_is_player_muted_by_receiver", return_value=False):
                     await self.handler._broadcast_to_room_with_filtering("room_001", chat_event, "player_001", "say")
 
                     # Should send to player_002 (player_001 is sender, player_003 is in different room)
-                    self.mock_connection_manager.send_personal_message.assert_called_once_with("player_002", chat_event)
+                    assert self.mock_connection_manager.send_personal_message.call_count == 1
+                    self.mock_connection_manager.send_personal_message.assert_called_with("player_002", chat_event)
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_filtering_muted_player(self):
@@ -357,7 +360,7 @@ class TestNATSMessageHandler:
     def test_is_player_in_room_false(self):
         """Test checking if player is in room - returns False."""
         self.mock_connection_manager.online_players = {"player_001": {"current_room_id": "room_002"}}
-        self.mock_connection_manager._canonical_room_id.return_value = "room_002"
+        self.mock_connection_manager._canonical_room_id.side_effect = lambda x: x
 
         with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
             result = self.handler._is_player_in_room("player_001", "room_001")
@@ -387,7 +390,7 @@ class TestNATSMessageHandler:
         mock_user_manager.is_player_muted_by_others.return_value = False
         mock_user_manager.is_admin.return_value = False
 
-        with patch("server.realtime.nats_message_handler.UserManager", return_value=mock_user_manager):
+        with patch("server.services.user_manager.UserManager", return_value=mock_user_manager):
             result = self.handler._is_player_muted_by_receiver("receiver_001", "sender_001")
             assert result is True
 
@@ -398,13 +401,13 @@ class TestNATSMessageHandler:
         mock_user_manager.is_player_muted_by_others.return_value = False
         mock_user_manager.is_admin.return_value = False
 
-        with patch("server.realtime.nats_message_handler.UserManager", return_value=mock_user_manager):
+        with patch("server.services.user_manager.UserManager", return_value=mock_user_manager):
             result = self.handler._is_player_muted_by_receiver("receiver_001", "sender_001")
             assert result is False
 
     def test_is_player_muted_by_receiver_with_exception(self):
         """Test checking if player is muted when exception occurs."""
-        with patch("server.realtime.nats_message_handler.UserManager", side_effect=Exception("User manager error")):
+        with patch("server.services.user_manager.UserManager", side_effect=Exception("User manager error")):
             result = self.handler._is_player_muted_by_receiver("receiver_001", "sender_001")
             assert result is False
 
