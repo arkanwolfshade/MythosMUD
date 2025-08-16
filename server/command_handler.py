@@ -37,6 +37,35 @@ INJECTION_PATTERNS = [
     r"%[a-zA-Z]",  # format string
 ]
 
+# Commands that traditionally use slash prefix in modern interfaces
+SLASH_COMMANDS = {
+    "help", "who", "quit", "look", "go", "say", "me", "pose", "alias", "aliases", "unalias"
+}
+
+def normalize_command(command: str) -> str:
+    """
+    Normalize command input by removing optional slash prefix.
+
+    Supports both traditional MUD commands (go north) and modern slash commands (/go north).
+    This allows for flexible command input while maintaining backward compatibility.
+
+    Args:
+        command: The raw command string from user input
+
+    Returns:
+        Normalized command string with slash prefix removed if present
+    """
+    if not command:
+        return command
+
+    # Remove leading slash if present
+    if command.startswith('/'):
+        normalized = command[1:].strip()
+        logger.debug("Slash prefix removed from command", original=command, normalized=normalized)
+        return normalized
+
+    return command.strip()
+
 
 def is_suspicious_input(command: str) -> bool:
     """Check if command contains suspicious patterns that might indicate injection attempts."""
@@ -63,8 +92,8 @@ COMMANDS = {
     "look": {
         "category": "Exploration",
         "description": ("Examine your surroundings or look in a specific direction"),
-        "usage": "look [direction]",
-        "examples": ["look", "look north", "look east"],
+        "usage": "look [direction] or /look [direction]",
+        "examples": ["look", "look north", "look east", "/look", "/look north"],
         "detailed_help": """
 <div style="color: #8B4513;">
 <h3>LOOK Command</h3>
@@ -91,8 +120,8 @@ Use this command to examine your surroundings or peer into the unknown.</p>
     "go": {
         "category": "Movement",
         "description": "Move in a specific direction",
-        "usage": "go <direction>",
-        "examples": ["go north", "go south", "go east", "go west"],
+        "usage": "go <direction> or /go <direction>",
+        "examples": ["go north", "go south", "go east", "go west", "/go north", "/go south"],
         "detailed_help": """
 <div style="color: #2F4F4F;">
 <h3>GO Command</h3>
@@ -101,7 +130,7 @@ to revelations best left undiscovered.</p>
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>go [direction]</strong> - Move in the specified direction</li>
+<li><strong>go [direction]</strong> or <strong>/go [direction]</strong> - Move in the specified direction</li>
 </ul>
 
 <h4>Available Directions:</h4>
@@ -115,7 +144,9 @@ to revelations best left undiscovered.</p>
 <h4>Examples:</h4>
 <ul>
 <li>go north</li>
+<li>/go north</li>
 <li>go south</li>
+<li>/go south</li>
 <li>go east</li>
 <li>go west</li>
 </ul>
@@ -156,6 +187,121 @@ suggest, communication is the first step toward understanding.</p>
 </ul>
 
 <p>"Words have power in the right places, and the right places have power in words." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "emote": {
+        "category": "Communication",
+        "description": "Perform an action or gesture visible to other players in your room",
+        "usage": "emote <action>",
+        "examples": ["emote adjusts his spectacles", "emote looks around nervously", "emote examines the ancient tome"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>EMOTE Command</h3>
+<p>Express yourself through actions and gestures, allowing others to witness
+your physical presence in the eldritch realm. As the ancient texts suggest,
+actions speak louder than words in the presence of forbidden knowledge.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>emote [action]</strong> - Perform an action visible to players in your room</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>emote adjusts his spectacles</li>
+<li>emote looks around nervously</li>
+<li>emote examines the ancient tome</li>
+<li>emote shudders at the eldritch atmosphere</li>
+<li>emote reaches for the forbidden tome</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Only players in your current room will see your emote</li>
+<li>Emotes are limited to 200 characters</li>
+<li>Use third person perspective (e.g., "adjusts" not "adjust")</li>
+<li>You cannot emote if you are muted in the say channel</li>
+</ul>
+
+<p>"In the presence of the unknown, every gesture becomes a prayer." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "me": {
+        "category": "Communication",
+        "description": "Describe an action you are performing (alternative to emote)",
+        "usage": "me <action>",
+        "examples": ["me adjusts his spectacles", "me looks around nervously", "me examines the ancient tome"],
+        "detailed_help": """
+<div style="color: #2F4F4F;">
+<h3>ME Command</h3>
+<p>Describe your actions in the third person, allowing others to witness
+your presence and activities in the eldritch realm. This command is an
+alternative to the emote command.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>me [action]</strong> - Describe an action you are performing</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>me adjusts his spectacles</li>
+<li>me looks around nervously</li>
+<li>me examines the ancient tome</li>
+<li>me shudders at the eldritch atmosphere</li>
+<li>me reaches for the forbidden tome</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Only players in your current room will see your action</li>
+<li>Actions are limited to 200 characters</li>
+<li>Use third person perspective (e.g., "adjusts" not "adjust")</li>
+<li>You cannot use this command if you are muted in the say channel</li>
+</ul>
+
+<p>"Every action in this realm leaves an echo in the fabric of reality." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "pose": {
+        "category": "Communication",
+        "description": "Set or display your current pose/status",
+        "usage": "pose [description]",
+        "examples": ["pose", "pose stands with scholarly authority", "pose is deep in thought"],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>POSE Command</h3>
+<p>Set your current pose or status, allowing others to see how you appear
+in the eldritch realm. Your pose persists until changed and is visible
+to anyone who looks at you or enters your room.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>pose</strong> - Display your current pose</li>
+<li><strong>pose [description]</strong> - Set your pose to the specified description</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>pose</li>
+<li>pose stands with scholarly authority</li>
+<li>pose is deep in thought</li>
+<li>pose appears to be studying ancient texts</li>
+<li>pose looks ready for adventure</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Your pose is visible to all players in your room</li>
+<li>Poses are limited to 100 characters</li>
+<li>Your pose persists when you move between rooms</li>
+<li>Use "pose" without arguments to see your current pose</li>
+</ul>
+
+<p>"In the realm of the unknown, one's stance reveals one's soul." - Prof. Armitage</p>
 </div>
 """,
     },
@@ -259,8 +405,8 @@ your collection.</p>
     "help": {
         "category": "Information",
         "description": "Get help on commands and game features",
-        "usage": "help [command]",
-        "examples": ["help", "help look", "help go"],
+        "usage": "help [command] or /help [command]",
+        "examples": ["help", "help look", "help go", "/help", "/help look"],
         "detailed_help": """
 <div style="color: #2F4F4F;">
 <h3>HELP Command</h3>
@@ -269,16 +415,25 @@ This command provides guidance on the eldritch incantations available to you.</p
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>help</strong> - Show all available commands</li>
-<li><strong>help [command]</strong> - Get detailed help for a specific command</li>
+<li><strong>help</strong> or <strong>/help</strong> - Show all available commands</li>
+<li><strong>help [command]</strong> or <strong>/help [command]</strong> - Get detailed help for a specific command</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
 <li>help</li>
+<li>/help</li>
 <li>help look</li>
+<li>/help look</li>
 <li>help go</li>
 <li>help say</li>
+</ul>
+
+<h4>Command Conventions:</h4>
+<p>MythosMUD supports both traditional MUD commands and modern slash commands:</p>
+<ul>
+<li><strong>Traditional:</strong> go north, look, say hello</li>
+<li><strong>Modern:</strong> /go north, /look, /say hello</li>
 </ul>
 
 <p>"Knowledge is power, but some knowledge comes at a price." - Restricted Section</p>
@@ -612,6 +767,12 @@ async def handle_command(
         logger.debug("Empty command after cleaning", player=player_name)
         return {"result": ""}
 
+    # Normalize command by removing optional slash prefix
+    command_line = normalize_command(command_line)
+    if not command_line:
+        logger.debug("Empty command after normalization", player=player_name)
+        return {"result": ""}
+
     # Initialize alias storage
     try:
         alias_storage = AliasStorage()
@@ -887,6 +1048,110 @@ async def process_command(
         else:
             logger.warning("Say message failed", player=player_name, error=result.get("error"))
             return {"result": result.get("error", "You cannot speak right now.")}
+
+    elif cmd in ["emote", "me"]:
+        logger.debug("=== COMMAND HANDLER DEBUG: Processing emote command ===", player=player_name, args=args)
+
+        if not persistence:
+            logger.warning("Emote command failed - no persistence layer", player=player_name)
+            return {"result": "You cannot emote right now."}
+
+        if not args:
+            logger.warning("Emote command failed - no action provided", player=player_name)
+            return {"result": "Emote what? Usage: emote <action>"}
+
+        action = " ".join(args).strip()
+        if not action:
+            return {"result": "You attempt to emote, but nothing happens."}
+
+        if len(action) > 200:
+            return {"result": "Emote too long (max 200 characters)"}
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            logger.warning("Emote command failed - player not found", player=player_name)
+            return {"result": "You cannot emote right now."}
+
+        # Initialize chat service
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Send the emote message
+        logger.debug(
+            "=== COMMAND HANDLER DEBUG: About to call chat_service.send_emote_message ===",
+            player_id=str(player.player_id),
+            action=action,
+        )
+        result = await chat_service.send_emote_message(str(player.player_id), action)
+        logger.debug("=== COMMAND HANDLER DEBUG: chat_service.send_emote_message completed ===", result=result)
+
+        if result["success"]:
+            # Format the message for display
+            formatted_message = f"{player.name} {action}"
+            logger.info("Emote message sent successfully", player=player_name, action_length=len(action))
+            return {"result": formatted_message}
+        else:
+            logger.warning("Emote message failed", player=player_name, error=result.get("error"))
+            return {"result": result.get("error", "You cannot emote right now.")}
+
+    elif cmd == "pose":
+        logger.debug("=== COMMAND HANDLER DEBUG: Processing pose command ===", player=player_name, args=args)
+
+        if not persistence:
+            logger.warning("Pose command failed - no persistence layer", player=player_name)
+            return {"result": "You cannot pose right now."}
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            logger.warning("Pose command failed - player not found", player=player_name)
+            return {"result": "You cannot pose right now."}
+
+        # Initialize chat service
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        if not args:
+            # Display current pose
+            current_pose = chat_service.get_player_pose(str(player.player_id))
+            if current_pose:
+                return {"result": f"Your current pose: {current_pose}"}
+            else:
+                return {"result": "You are not currently posing."}
+        else:
+            # Set new pose
+            pose = " ".join(args).strip()
+            if not pose:
+                return {"result": "Pose what? Usage: pose [description]"}
+
+            if len(pose) > 100:
+                return {"result": "Pose too long (max 100 characters)"}
+
+            # Send the pose message
+            logger.debug(
+                "=== COMMAND HANDLER DEBUG: About to call chat_service.set_player_pose ===",
+                player_id=str(player.player_id),
+                pose=pose,
+            )
+            result = await chat_service.set_player_pose(str(player.player_id), pose)
+            logger.debug("=== COMMAND HANDLER DEBUG: chat_service.set_player_pose completed ===", result=result)
+
+            if result["success"]:
+                formatted_message = f"{player.name} {pose}"
+                logger.info("Pose set successfully", player=player_name, pose_length=len(pose))
+                return {"result": formatted_message}
+            else:
+                logger.warning("Pose set failed", player=player_name, error=result.get("error"))
+                return {"result": result.get("error", "You cannot pose right now.")}
 
     # User management commands
     elif cmd == "mute":

@@ -242,6 +242,12 @@
   margin-bottom: 0;
 }
 
+/* Emote message styling - italic formatting */
+.emote-message {
+  font-style: italic;
+  color: #00cc00;
+}
+
 .command-input {
   display: flex;
   gap: 10px;

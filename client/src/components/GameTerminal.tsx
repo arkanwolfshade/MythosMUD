@@ -61,6 +61,7 @@ interface GameState {
     timestamp: string;
     isHtml: boolean;
     isCompleteHtml?: boolean;
+    messageType?: string;
     aliasChain?: Array<{
       original: string;
       expanded: string;
@@ -239,11 +240,31 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
         addMessage(`[COMBAT] ${event.data.message as string}`);
         break;
 
-      case 'chat_message':
-        addMessage(
-          `[${event.data.channel as string}] ${event.data.player_name as string}: ${event.data.message as string}`
-        );
+      case 'chat_message': {
+        const channel = event.data.channel as string;
+        const playerName = event.data.player_name as string;
+        const message = event.data.message as string;
+
+        // Format messages based on channel type
+        switch (channel) {
+          case 'say':
+            addMessage(`${playerName} says: ${message}`);
+            break;
+          case 'emote':
+            // Format emotes in italics to distinguish from say messages
+            addMessage(`*${playerName} ${message}*`, undefined, 'emote');
+            break;
+          case 'pose':
+            // Format poses to show current status
+            addMessage(`${playerName} ${message}`);
+            break;
+          default:
+            // Fallback for unknown channels
+            addMessage(`[${channel}] ${playerName}: ${message}`);
+            break;
+        }
         break;
+      }
 
       case 'game_tick':
         // Show tick updates every 10th tick for debugging
@@ -271,7 +292,11 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     }
   }
 
-  function addMessage(message: string, aliasChain?: Array<{ original: string; expanded: string; alias_name: string }>) {
+  function addMessage(
+    message: string,
+    aliasChain?: Array<{ original: string; expanded: string; alias_name: string }>,
+    messageType?: string
+  ) {
     // Check if message contains ANSI escape sequences
     const hasAnsi = message.includes('\x1b[');
     console.log('addMessage called with:', message.substring(0, 100) + '...');
@@ -303,6 +328,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
           timestamp: new Date().toLocaleTimeString(),
           isHtml: hasAnsi || hasHtml,
           isCompleteHtml: isCompleteHtml,
+          messageType: messageType,
           aliasChain: aliasChain,
         },
       ].slice(-100), // Keep last 100 messages
@@ -551,6 +577,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
                     {/* Regular message content */}
                     {message.isHtml ? (
                       <span
+                        className={message.messageType === 'emote' ? 'emote-message' : ''}
                         dangerouslySetInnerHTML={{
                           __html: message.isCompleteHtml
                             ? message.text
@@ -558,7 +585,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
                         }}
                       />
                     ) : (
-                      `[${message.timestamp}] ${message.text}`
+                      <span className={message.messageType === 'emote' ? 'emote-message' : ''}>
+                        {`[${message.timestamp}] ${message.text}`}
+                      </span>
                     )}
                   </div>
                 ))}
