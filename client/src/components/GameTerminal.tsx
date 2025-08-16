@@ -4,6 +4,9 @@ import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
 import { logger } from '../utils/logger';
 import './GameTerminal.css';
 import { RoomInfoPanel } from './RoomInfoPanel';
+import { CommandHelpDrawer } from './CommandHelpDrawer';
+import { IconButton, Tooltip } from '@mui/material';
+import { Help as HelpIcon } from '@mui/icons-material';
 
 interface GameTerminalProps {
   playerId: string;
@@ -77,6 +80,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
   const [commandInput, setCommandInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -435,6 +439,19 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             >
               Download Logs
             </button>
+            <Tooltip title="Command Reference">
+              <IconButton
+                onClick={() => setHelpDrawerOpen(true)}
+                sx={{
+                  color: 'primary.main',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <HelpIcon />
+              </IconButton>
+            </Tooltip>
           </div>
 
           {/* Room Information Panel */}
@@ -542,6 +559,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
           Send
         </button>
       </form>
+
+      {/* Command Help Drawer */}
+      <CommandHelpDrawer open={helpDrawerOpen} onClose={() => setHelpDrawerOpen(false)} />
     </div>
   );
 }
