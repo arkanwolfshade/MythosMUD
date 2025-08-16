@@ -11,7 +11,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ..command_handler import (
+from server.command_handler import (
     clean_command_input,
     get_help_content,
     handle_alias_command,
@@ -19,8 +19,10 @@ from ..command_handler import (
     handle_expanded_command,
     handle_unalias_command,
     is_suspicious_input,
+    normalize_command,
     process_command,
 )
+
 from ..models.room import Room
 
 # Import models.py directly to avoid package conflicts
@@ -31,6 +33,55 @@ models_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(models_module)
 
 Alias = models_module.Alias
+
+
+class TestSlashCommandNormalization:
+    """Test slash command normalization functionality."""
+
+    def test_normalize_command_no_slash(self):
+        """Test that commands without slash prefix are unchanged."""
+        commands = [
+            "look",
+            "go north",
+            "say hello",
+            "help",
+            "alias l look",
+        ]
+
+        for command in commands:
+            result = normalize_command(command)
+            assert result == command, f"Command '{command}' should be unchanged"
+
+    def test_normalize_command_with_slash(self):
+        """Test that commands with slash prefix have it removed."""
+        test_cases = [
+            ("/look", "look"),
+            ("/go north", "go north"),
+            ("/say hello", "say hello"),
+            ("/help", "help"),
+            ("/alias l look", "alias l look"),
+            ("/me adjusts spectacles", "me adjusts spectacles"),
+        ]
+
+        for input_cmd, expected in test_cases:
+            result = normalize_command(input_cmd)
+            assert result == expected, f"Expected '{expected}' for input '{input_cmd}', got '{result}'"
+
+    def test_normalize_command_empty_and_whitespace(self):
+        """Test normalization with empty and whitespace-only commands."""
+        assert normalize_command("") == ""
+        assert normalize_command("   ") == ""
+        assert normalize_command("/   ") == ""
+
+    def test_normalize_command_multiple_slashes(self):
+        """Test that only the first slash is removed."""
+        assert normalize_command("//look") == "/look"
+        assert normalize_command("///go north") == "//go north"
+
+    def test_normalize_command_with_extra_whitespace(self):
+        """Test normalization preserves proper spacing after slash removal."""
+        assert normalize_command("/  look  ") == "look"
+        assert normalize_command("/  go  north  ") == "go  north"
 
 
 class TestSecurityValidation:

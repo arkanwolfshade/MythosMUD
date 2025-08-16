@@ -1,5 +1,6 @@
 import {
   Settings as AliasIcon,
+  EmojiEmotions as EmoteIcon,
   ExpandLess,
   ExpandMore,
   DirectionsWalk as GoIcon,
@@ -62,6 +63,30 @@ const commands: Command[] = [
     usage: 'say <message>',
     examples: ['say Hello everyone!', 'say How are you?'],
     icon: <SayIcon />,
+  },
+  {
+    name: 'emote',
+    category: 'Communication',
+    description: 'Perform an action or gesture visible to other players',
+    usage: 'emote <action> or [predefined_emote]',
+    examples: ['emote adjusts spectacles', 'twibble', 'dance', 'wave'],
+    icon: <EmoteIcon />,
+  },
+  {
+    name: 'me',
+    category: 'Communication',
+    description: 'Describe an action you are performing (alternative to emote)',
+    usage: 'me <action> or me [predefined_emote]',
+    examples: ['me looks around', 'me twibble', 'me dance'],
+    icon: <EmoteIcon />,
+  },
+  {
+    name: 'pose',
+    category: 'Communication',
+    description: 'Set or display your current pose/status',
+    usage: 'pose [description]',
+    examples: ['pose', 'pose stands with authority', 'pose is deep in thought'],
+    icon: <EmoteIcon />,
   },
   {
     name: 'alias',

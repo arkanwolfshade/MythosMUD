@@ -72,7 +72,7 @@ class TestLoadMotd:
         except Exception:
             # Clean up if the file still exists
             if os.path.exists(motd_file):
-                os.chmod(motd_file, 0o666)
+                os.chmod(motd_file, 0o644)  # Use secure permissions
                 os.unlink(motd_file)
 
 

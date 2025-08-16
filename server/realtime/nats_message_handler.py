@@ -57,6 +57,8 @@ class NATSMessageHandler:
         subjects = [
             "chat.say.*",  # Say messages per room
             "chat.local.*",  # Local messages per room
+            "chat.emote.*",  # Emote messages per room
+            "chat.pose.*",  # Pose messages per room
             "chat.global",  # Global messages
             "chat.party.*",  # Party messages per party
             "chat.whisper.*",  # Whisper messages per player
@@ -145,7 +147,7 @@ class NATSMessageHandler:
         Broadcast message based on channel type.
 
         Args:
-            channel: Channel type (say, local, global, party, whisper, system, admin)
+            channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
             chat_event: WebSocket event to broadcast
             room_id: Room ID for room-based channels
             party_id: Party ID for party-based channels
@@ -153,7 +155,7 @@ class NATSMessageHandler:
             sender_id: Sender player ID
         """
         try:
-            if channel in ["say", "local"]:
+            if channel in ["say", "local", "emote", "pose"]:
                 # Room-based channels - implement server-side filtering
                 if room_id:
                     await self._broadcast_to_room_with_filtering(room_id, chat_event, sender_id, channel)
@@ -220,7 +222,7 @@ class NATSMessageHandler:
             room_id: Room ID where the message originated
             chat_event: WebSocket event to broadcast
             sender_id: Sender player ID
-            channel: Channel type (say, local)
+            channel: Channel type (say, local, emote, pose)
         """
         try:
             # Get all players subscribed to this room

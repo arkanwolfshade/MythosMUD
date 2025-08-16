@@ -47,6 +47,7 @@ dev = [
     "ruff==0.12.5",
     "aiosqlite>=0.21.0",
     "pre-commit>=4.2.0",
+    "semgrep>=1.132.0",  # Static analysis for security and best practices
 ]
 
 [tool.setuptools.packages.find]
@@ -79,4 +80,5 @@ ignore = [
 [dependency-groups]
 dev = [
     "ruff>=0.12.5",
+    "semgrep>=1.132.0",  # Static analysis for security and best practices
 ]

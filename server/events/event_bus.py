@@ -136,13 +136,26 @@ class EventBus:
             else:
                 # Fallback: try to get the current running loop
                 try:
-                    asyncio.create_task(subscriber(event))
+                    current_loop = asyncio.get_running_loop()
+                    # Store the task reference to prevent "never awaited" warnings
+                    task = current_loop.create_task(subscriber(event))
+                    # Add a callback to handle any exceptions
+                    task.add_done_callback(lambda t: self._handle_task_result(t, subscriber.__name__))
                     self._logger.debug(f"Created task for async subscriber {subscriber.__name__}")
                 except RuntimeError:
-                    # No running loop, log warning and skip
-                    self._logger.warning(f"No event loop available for async subscriber {subscriber.__name__}")
+                    # No running loop available, skip async subscriber
+                    # This is expected in test environments without event loops
+                    self._logger.debug(f"Skipping async subscriber {subscriber.__name__} - no event loop available")
         except Exception as e:
             self._logger.error(f"Error handling async subscriber {subscriber.__name__}: {e}")
+
+    def _handle_task_result(self, task: asyncio.Task, subscriber_name: str):
+        """Handle the result of an async task to catch any exceptions."""
+        try:
+            # Get the result to ensure any exceptions are properly handled
+            task.result()
+        except Exception as e:
+            self._logger.error(f"Error in async subscriber {subscriber_name}: {e}")
 
     def publish(self, event: BaseEvent) -> None:
         """

@@ -13,20 +13,20 @@ interface AnsiState {
 
 const ANSI_COLORS: { [key: string]: string } = {
   '30': '#000000', // black
-  '31': '#ff0000', // red
-  '32': '#00ff00', // green
-  '33': '#ffff00', // yellow
-  '34': '#0000ff', // blue
-  '35': '#ff00ff', // magenta
-  '36': '#00ffff', // cyan
-  '37': '#ffffff', // white
-  '90': '#808080', // bright black
-  '91': '#ff8080', // bright red
-  '92': '#80ff80', // bright green
-  '93': '#ffff80', // bright yellow
-  '94': '#8080ff', // bright blue
-  '95': '#ff80ff', // bright magenta
-  '96': '#80ffff', // bright cyan
+  '31': '#ff4444', // red (bright for dark background)
+  '32': '#00ff00', // green (bright for dark background)
+  '33': '#ffaa00', // yellow/orange (bright for dark background)
+  '34': '#4488ff', // blue (bright for dark background)
+  '35': '#ff44ff', // magenta (bright for dark background)
+  '36': '#44ffff', // cyan (bright for dark background)
+  '37': '#ffffff', // white (bright for dark background)
+  '90': '#666666', // bright black (gray)
+  '91': '#ff6666', // bright red
+  '92': '#66ff66', // bright green
+  '93': '#ffcc66', // bright yellow/orange
+  '94': '#6699ff', // bright blue
+  '95': '#ff66ff', // bright magenta
+  '96': '#66ffff', // bright cyan
   '97': '#ffffff', // bright white
 };
 
