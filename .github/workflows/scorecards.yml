@@ -46,7 +46,8 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use PAT for accessing private submodule
+          token: ${{ secrets.MYTHOSMUD_PAT }}
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@05b42c624433fc40578a4040d5cf5e36ddca8cde # v2.4.2
