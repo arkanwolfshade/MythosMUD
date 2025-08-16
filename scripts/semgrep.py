@@ -7,9 +7,7 @@ success = True
 # Check if semgrep is available
 semgrep_path = shutil.which("semgrep")
 if not semgrep_path:
-    msg = (
-        "semgrep not found in PATH. Please install semgrep: pip install semgrep"
-    )
+    msg = "semgrep not found in PATH. Please install semgrep: pip install semgrep"
     print(msg)
     sys.exit(1)
 
@@ -18,14 +16,7 @@ print("This will check for security vulnerabilities and best practices...")
 
 # Run semgrep with default rules (security and best practices)
 # Using --config=auto to automatically detect and use appropriate rules
-cmd = [
-    semgrep_path,
-    "scan",
-    "--config=auto",
-    "--json",
-    "--quiet",
-    "."
-]
+cmd = [semgrep_path, "scan", "--config=auto", "--json", "--quiet", "."]
 
 try:
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=".")

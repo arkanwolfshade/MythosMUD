@@ -172,13 +172,17 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
 
 
 def benchmark_hash_time(
-    password: str = "test_password",
+    password: str = "test_password",  # Safe for benchmarking only
     iterations: int = 3,
     time_cost: int = TIME_COST,
     memory_cost: int = MEMORY_COST,
     parallelism: int = PARALLELISM,
 ) -> dict[str, Any]:
-    """Benchmark hashing performance with given parameters."""
+    """Benchmark hashing performance with given parameters.
+
+    Note: The default password is intentionally hardcoded for benchmarking purposes only.
+    This function is not used for actual password hashing in production.
+    """
     hasher = create_hasher_with_params(
         time_cost=time_cost,
         memory_cost=memory_cost,
