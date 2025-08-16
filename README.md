@@ -43,11 +43,19 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 
 ### Quickstart
 
-1. **Clone the repository:**
+1. **Clone the repository with submodules:**
 
    ```sh
+   # Option 1: Clone with submodules in one command
+   git clone --recursive <your-repo-url>
+   cd MythosMUD
+   ```
+
+   ```sh
+   # Option 2: Clone first, then fetch submodules
    git clone <your-repo-url>
    cd MythosMUD
+   git submodule update --init --recursive
    ```
 
 2. **Start the development environment:**
@@ -84,6 +92,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 MythosMUD/
 ├── client/      # React + TypeScript frontend (Vite)
 ├── server/      # Python FastAPI backend
+├── data/        # World data (git submodule)
 ├── scripts/     # Utility scripts (PowerShell & Python)
 ├── docs/        # Documentation (PRD, etc.)
 ├── .github/     # GitHub Actions workflows

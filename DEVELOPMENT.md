@@ -40,9 +40,19 @@ uv --version
 ## 2. Clone the Repository
 
 ```sh
-git clone <your-repo-url>
+# Option 1: Clone with submodules in one command
+git clone --recursive <your-repo-url>
 cd MythosMUD
 ```
+
+```sh
+# Option 2: Clone first, then fetch submodules
+git clone <your-repo-url>
+cd MythosMUD
+git submodule update --init --recursive
+```
+
+**Note:** The `data/` directory is a git submodule containing world data. Make sure to fetch it using one of the methods above.
 
 ---
 
