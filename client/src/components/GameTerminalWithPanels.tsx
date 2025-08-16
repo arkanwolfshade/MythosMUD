@@ -1,15 +1,12 @@
-import { Help as HelpIcon } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
-import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
 import { logger } from '../utils/logger';
 import { CommandHelpDrawer } from './CommandHelpDrawer';
-import './GameTerminal.css';
+import './GameTerminalWithPanels.css';
 import { MotdContent } from './MotdContent';
-import { RoomInfoPanel } from './RoomInfoPanel';
+import { PanelManager } from './PanelManager';
 
-interface GameTerminalProps {
+interface GameTerminalWithPanelsProps {
   playerId: string;
   playerName: string;
   authToken: string;
@@ -70,7 +67,7 @@ interface GameState {
   }>;
 }
 
-export function GameTerminal({ playerId, playerName, authToken }: GameTerminalProps) {
+export function GameTerminalWithPanels({ playerId, playerName, authToken }: GameTerminalWithPanelsProps) {
   const [gameState, setGameState] = useState<GameState>({
     player: null,
     room: null,
@@ -79,14 +76,9 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     messages: [],
   });
 
-  const [commandInput, setCommandInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
   const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
   const [showMotd, setShowMotd] = useState(true);
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
     playerId,
@@ -342,15 +334,11 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     }));
   }
 
-  function handleCommandSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!commandInput.trim()) return;
-
-    const command = commandInput.trim();
+  function handleCommandSubmit(command: string) {
+    if (!command.trim()) return;
 
     // Add to history
     setCommandHistory(prev => [...prev, command].slice(-50)); // Keep last 50 commands
-    setHistoryIndex(-1);
 
     // Parse command into command name and arguments
     const parts = command.split(/\s+/);
@@ -364,29 +352,6 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     } else {
       addMessage('Failed to send command - not connected');
     }
-
-    setCommandInput('');
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (historyIndex < commandHistory.length - 1) {
-        const newIndex = historyIndex + 1;
-        setHistoryIndex(newIndex);
-        setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
-      }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        const newIndex = historyIndex - 1;
-        setHistoryIndex(newIndex);
-        setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
-      } else if (historyIndex === 0) {
-        setHistoryIndex(-1);
-        setCommandInput('');
-      }
-    }
   }
 
   function handleConnect() {
@@ -399,8 +364,21 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     disconnect();
   }
 
+  function handleLogout() {
+    // Proper logout - redirect to login page
+    window.location.href = '/';
+  }
+
+  function handleClearMessages() {
+    setGameState(prev => ({ ...prev, messages: [] }));
+  }
+
+  function handleClearHistory() {
+    setCommandHistory([]);
+  }
+
   const handleMotdContinue = () => {
-    logger.info('GameTerminal', 'User continued from MOTD and connecting to game');
+    logger.info('GameTerminalWithPanels', 'User continued from MOTD and connecting to game');
     setShowMotd(false);
     // Add a welcome message to the game
     addMessage('Welcome to MythosMUD! You are now ready to explore the Dreamlands.');
@@ -408,218 +386,50 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     connect();
   };
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [gameState.messages]);
-
   // Focus input on mount
   useEffect(() => {
-    inputRef.current?.focus();
     // Show welcome message and connection instructions
     addMessage('Welcome to MythosMUD! You are now authenticated.');
-    addMessage("Click the 'Connect' button in the left sidebar to join the game.");
-    addMessage('Once connected, you can enter commands in the input field at the bottom.');
+    addMessage("Click the 'Connect' button in the connection panel to join the game.");
+    addMessage('Once connected, you can enter commands in the command panel.');
   }, []);
 
-  // Remove auto-connect to prevent infinite loop
-  // useEffect(() => {
-  //   if (playerId && authToken) {
-  //     addMessage("Auto-connecting to MythosMUD...");
-  //     connect();
-  //   }
-  // }, [playerId, authToken, connect]);
+  if (showMotd) {
+    return (
+      <div className="game-terminal">
+        <div className="motd-display">
+          <div className="motd-content">
+            <MotdContent />
+            <div className="motd-actions">
+              <button onClick={handleMotdContinue} className="continue-button">
+                Enter the Dreamlands
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-terminal">
-      {/* Main content area - two columns */}
-      <div className="game-content">
-        {/* Left sidebar */}
-        <div className="left-sidebar">
-          {/* Connection Status */}
-          <div className="connection-status">
-            <div className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
-              {isConnecting ? 'Connecting...' : isConnected ? 'Connected' : 'Disconnected'}
-            </div>
-            {error && <div className="error-message">{error}</div>}
-            {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
-          </div>
-
-          {/* Connection Instructions */}
-          {!isConnected && !isConnecting && (
-            <div className="connection-instructions">
-              <h4>Getting Started</h4>
-              <p>You are authenticated and ready to play!</p>
-              <p>Click the "Connect" button below to join the game world.</p>
-            </div>
-          )}
-
-          {/* Connection Controls - grouped together */}
-          <div className="connection-controls">
-            {!isConnected && !isConnecting && (
-              <button onClick={handleConnect} className="connect-btn">
-                Connect to Game
-              </button>
-            )}
-            {isConnected && (
-              <button onClick={handleDisconnect} className="disconnect-btn">
-                Disconnect
-              </button>
-            )}
-            <button
-              onClick={() => {
-                // Proper logout - redirect to login page
-                window.location.href = '/';
-              }}
-              className="logout-btn"
-            >
-              Logout
-            </button>
-            <button
-              onClick={() => {
-                logger.downloadLogs();
-              }}
-              className="download-logs-btn"
-            >
-              Download Logs
-            </button>
-            <Tooltip title="Command Reference">
-              <IconButton
-                onClick={() => setHelpDrawerOpen(true)}
-                sx={{
-                  color: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                  },
-                }}
-              >
-                <HelpIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-
-          {/* Room Information Panel */}
-          <RoomInfoPanel room={gameState.room} />
-
-          {/* Game State Display */}
-          {gameState.player && (
-            <div className="player-info">
-              <h3>{gameState.player.name}</h3>
-              <div className="stats">
-                <span>Level: {gameState.player.level || 1}</span>
-                {gameState.player.stats && (
-                  <div className="stats-grid">
-                    {(() => {
-                      let statsObj = gameState.player.stats;
-
-                      // If stats is a string, try to parse it as JSON
-                      if (typeof statsObj === 'string') {
-                        try {
-                          statsObj = JSON.parse(statsObj);
-                        } catch (e) {
-                          console.error('Failed to parse stats JSON:', e);
-                        }
-                      }
-
-                      // If we have a valid object, display the stats
-                      if (typeof statsObj === 'object' && statsObj !== null) {
-                        return Object.entries(statsObj).map(([key, value]) => (
-                          <div key={key} className="stat-item">
-                            <span className="stat-label">
-                              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
-                            </span>
-                            <span className="stat-value">{value}</span>
-                          </div>
-                        ));
-                      } else {
-                        return (
-                          <div className="stat-item">
-                            <span className="stat-label">Stats:</span>
-                            <span className="stat-value">Loading...</span>
-                          </div>
-                        );
-                      }
-                    })()}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right terminal area */}
-        <div className="terminal-area">
-          {showMotd ? (
-            /* MOTD Display */
-            <div className="motd-display">
-              <div className="motd-content">
-                <MotdContent />
-                <div className="motd-actions">
-                  <button onClick={handleMotdContinue} className="continue-button">
-                    Enter the Dreamlands
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Message Log */
-            <div className="message-log">
-              <div className="messages">
-                {gameState.messages.map((message, index) => (
-                  <div key={index} className="message">
-                    {/* Show alias expansion information if available */}
-                    {message.aliasChain && message.aliasChain.length > 0 && (
-                      <div className="alias-expansion">
-                        <span className="alias-indicator">🔗</span>
-                        {message.aliasChain.map((alias, chainIndex) => (
-                          <span key={chainIndex} className="alias-chain">
-                            <span className="alias-original">{alias.original}</span>
-                            <span className="alias-arrow">→</span>
-                            <span className="alias-expanded">{alias.expanded}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Regular message content */}
-                    {message.isHtml ? (
-                      <span
-                        className={message.messageType === 'emote' ? 'emote-message' : ''}
-                        dangerouslySetInnerHTML={{
-                          __html: message.isCompleteHtml
-                            ? message.text
-                            : `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
-                        }}
-                      />
-                    ) : (
-                      <span className={message.messageType === 'emote' ? 'emote-message' : ''}>
-                        {`[${message.timestamp}] ${message.text}`}
-                      </span>
-                    )}
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Command Input - full width at bottom */}
-      <form onSubmit={handleCommandSubmit} className="command-input">
-        <input
-          ref={inputRef}
-          type="text"
-          value={commandInput}
-          onChange={e => setCommandInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter command (e.g., 'look' or '/look')..."
-          disabled={!isConnected}
-        />
-        <button type="submit" disabled={!isConnected || !commandInput.trim()}>
-          Send
-        </button>
-      </form>
+      <PanelManager
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        error={error}
+        reconnectAttempts={reconnectAttempts}
+        room={gameState.room}
+        player={gameState.player}
+        messages={gameState.messages}
+        commandHistory={commandHistory}
+        onConnect={handleConnect}
+        onDisconnect={handleDisconnect}
+        onLogout={handleLogout}
+        onDownloadLogs={() => logger.downloadLogs()}
+        onSendCommand={handleCommandSubmit}
+        onClearMessages={handleClearMessages}
+        onClearHistory={handleClearHistory}
+      />
 
       {/* Command Help Drawer */}
       <CommandHelpDrawer open={helpDrawerOpen} onClose={() => setHelpDrawerOpen(false)} />

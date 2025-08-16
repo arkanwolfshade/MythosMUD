@@ -24,4 +24,8 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+          # Use PAT for accessing private submodule
+          token: ${{ secrets.MYTHOSMUD_PAT }}
       - run: semgrep ci
