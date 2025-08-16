@@ -449,6 +449,124 @@ class ChatService:
 
         return poses
 
+    async def send_predefined_emote(self, player_id: str, emote_command: str) -> dict[str, Any]:
+        """
+        Send a predefined emote message using the EmoteService.
+
+        This method uses predefined emote definitions to send formatted messages
+        to both the player and room occupants.
+
+        Args:
+            player_id: ID of the player sending the emote
+            emote_command: The emote command (e.g., 'twibble', 'dance')
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        logger.debug("=== CHAT SERVICE DEBUG: send_predefined_emote called ===", player_id=player_id, emote_command=emote_command)
+
+        # Import EmoteService here to avoid circular imports
+        from .emote_service import EmoteService
+
+        # Initialize emote service
+        emote_service = EmoteService()
+
+        # Check if this is a valid emote command
+        if not emote_service.is_emote_alias(emote_command):
+            logger.warning("Invalid emote command", player_id=player_id, emote_command=emote_command)
+            return {"success": False, "error": f"Unknown emote: {emote_command}"}
+
+        # Get player information
+        player = self.player_service.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Player not found for predefined emote", player_id=player_id)
+            return {"success": False, "error": "Player not found"}
+
+        # Load player's mute data to ensure it's available for permission checks
+        self.user_manager.load_player_mutes(player_id)
+
+        # Check rate limits before allowing emote
+        if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):
+            logger.warning("Rate limit exceeded for predefined emote", player_id=player_id, player_name=player.name)
+            return {
+                "success": False,
+                "error": "Rate limit exceeded. Please wait before sending another emote.",
+                "rate_limited": True,
+            }
+
+        # Get player's current room
+        room_id = player.current_room_id
+        if not room_id:
+            logger.warning("Player not in a room", player_id=player_id)
+            return {"success": False, "error": "Player not in a room"}
+
+        # Check if player is muted in say channel (emotes use same channel as say)
+        if self.user_manager.is_channel_muted(player_id, "say"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", player_id=player_id)
+            return {"success": False, "error": "You are muted in the say channel"}
+
+        # Check if player is globally muted
+        if self.user_manager.is_globally_muted(player_id):
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", player_id=player_id)
+            return {"success": False, "error": "You are globally muted and cannot send messages"}
+
+        # Check if player can send messages (admin check, etc.)
+        if not self.user_manager.can_send_message(player_id, channel="say"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", player_id=player_id)
+            return {"success": False, "error": "You cannot send messages at this time"}
+
+        try:
+            # Format the emote messages
+            self_message, other_message = emote_service.format_emote_messages(emote_command, player.name)
+        except ValueError as e:
+            logger.error("Failed to format emote messages", player_id=player_id, emote_command=emote_command, error=str(e))
+            return {"success": False, "error": str(e)}
+
+        # Create chat message for the predefined emote
+        chat_message = ChatMessage(
+            sender_id=player_id, sender_name=player.name, channel="emote", content=other_message
+        )
+
+        # Log the emote message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "room_id": room_id,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        logger.info(
+            "Predefined emote message created successfully",
+            player_id=player_id,
+            player_name=player.name,
+            room_id=room_id,
+            emote_command=emote_command,
+            message_id=chat_message.id,
+        )
+
+        # Publish message to NATS for real-time distribution
+        logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        if not success:
+            # Fallback to direct WebSocket broadcasting if NATS fails
+            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
+            await self._broadcast_chat_message_directly(chat_message, room_id)
+        logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
+
+        return {
+            "success": True,
+            "self_message": self_message,
+            "other_message": other_message,
+            "message": chat_message.to_dict(),
+            "room_id": room_id
+        }
+
     async def _publish_chat_message_to_nats(self, chat_message: ChatMessage, room_id: str) -> bool:
         """
         Publish a chat message to NATS for real-time distribution.

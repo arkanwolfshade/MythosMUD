@@ -251,8 +251,15 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
             addMessage(`${playerName} says: ${message}`);
             break;
           case 'emote':
-            // Format emotes in italics to distinguish from say messages
-            addMessage(`*${playerName} ${message}*`, undefined, 'emote');
+            // For predefined emotes, the message is already formatted
+            // For regular emotes, format as "PlayerName action"
+            if (message.includes(' ') && !message.startsWith('*')) {
+              // This is likely a predefined emote (e.g., "ArkanWolfshade twibbles around aimlessly.")
+              addMessage(`*${message}*`, undefined, 'emote');
+            } else {
+              // This is a regular emote (e.g., "adjusts spectacles")
+              addMessage(`*${playerName} ${message}*`, undefined, 'emote');
+            }
             break;
           case 'pose':
             // Format poses to show current status
@@ -606,7 +613,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
           value={commandInput}
           onChange={e => setCommandInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Enter command..."
+          placeholder="Enter command (e.g., 'look' or '/look')..."
           disabled={!isConnected}
         />
         <button type="submit" disabled={!isConnected || !commandInput.trim()}>

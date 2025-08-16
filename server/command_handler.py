@@ -38,9 +38,8 @@ INJECTION_PATTERNS = [
 ]
 
 # Commands that traditionally use slash prefix in modern interfaces
-SLASH_COMMANDS = {
-    "help", "who", "quit", "look", "go", "say", "me", "pose", "alias", "aliases", "unalias"
-}
+SLASH_COMMANDS = {"help", "who", "quit", "look", "go", "say", "me", "pose", "alias", "aliases", "unalias"}
+
 
 def normalize_command(command: str) -> str:
     """
@@ -59,7 +58,7 @@ def normalize_command(command: str) -> str:
         return command
 
     # Remove leading slash if present
-    if command.startswith('/'):
+    if command.startswith("/"):
         normalized = command[1:].strip()
         logger.debug("Slash prefix removed from command", original=command, normalized=normalized)
         return normalized
@@ -82,6 +81,25 @@ def clean_command_input(command: str) -> str:
     if cleaned != command:
         logger.debug("Command input cleaned", original=command, cleaned=cleaned)
     return cleaned
+
+
+def _is_predefined_emote(command: str) -> bool:
+    """
+    Check if a command is a predefined emote alias.
+
+    Args:
+        command: The command to check
+
+    Returns:
+        True if the command is a predefined emote, False otherwise
+    """
+    try:
+        from .game.emote_service import EmoteService
+        emote_service = EmoteService()
+        return emote_service.is_emote_alias(command)
+    except Exception as e:
+        logger.warning(f"Error checking predefined emote: {e}")
+        return False
 
 
 MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
@@ -1097,6 +1115,45 @@ async def process_command(
             return {"result": formatted_message}
         else:
             logger.warning("Emote message failed", player=player_name, error=result.get("error"))
+            return {"result": result.get("error", "You cannot emote right now.")}
+
+    # Check for predefined emotes (like 'twibble', 'dance', etc.)
+    elif _is_predefined_emote(cmd):
+        logger.debug("=== COMMAND HANDLER DEBUG: Processing predefined emote command ===", player=player_name, emote=cmd)
+
+        if not persistence:
+            logger.warning("Predefined emote command failed - no persistence layer", player=player_name)
+            return {"result": "You cannot emote right now."}
+
+        # Get player information
+        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            logger.warning("Predefined emote command failed - player not found", player=player_name)
+            return {"result": "You cannot emote right now."}
+
+        # Initialize chat service
+        from .game.player_service import PlayerService
+        from .game.room_service import RoomService
+
+        room_service = RoomService(persistence)
+        player_service = PlayerService(persistence)
+        chat_service = ChatService(persistence, room_service, player_service)
+
+        # Send the predefined emote message
+        logger.debug(
+            "=== COMMAND HANDLER DEBUG: About to call chat_service.send_predefined_emote ===",
+            player_id=str(player.player_id),
+            emote_command=cmd,
+        )
+        result = await chat_service.send_predefined_emote(str(player.player_id), cmd)
+        logger.debug("=== COMMAND HANDLER DEBUG: chat_service.send_predefined_emote completed ===", result=result)
+
+        if result["success"]:
+            # Return the self message for the player
+            logger.info("Predefined emote message sent successfully", player=player_name, emote=cmd)
+            return {"result": result["self_message"]}
+        else:
+            logger.warning("Predefined emote message failed", player=player_name, error=result.get("error"))
             return {"result": result.get("error", "You cannot emote right now.")}
 
     elif cmd == "pose":
