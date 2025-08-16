@@ -1,12 +1,13 @@
+import { Help as HelpIcon } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
 import { logger } from '../utils/logger';
-import './GameTerminal.css';
-import { RoomInfoPanel } from './RoomInfoPanel';
 import { CommandHelpDrawer } from './CommandHelpDrawer';
-import { IconButton, Tooltip } from '@mui/material';
-import { Help as HelpIcon } from '@mui/icons-material';
+import './GameTerminal.css';
+import { MotdContent } from './MotdContent';
+import { RoomInfoPanel } from './RoomInfoPanel';
 
 interface GameTerminalProps {
   playerId: string;
@@ -81,6 +82,7 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
+  const [showMotd, setShowMotd] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -364,6 +366,15 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     disconnect();
   }
 
+  const handleMotdContinue = () => {
+    logger.info('GameTerminal', 'User continued from MOTD and connecting to game');
+    setShowMotd(false);
+    // Add a welcome message to the game
+    addMessage('Welcome to MythosMUD! You are now ready to explore the Dreamlands.');
+    // Connect to the game
+    connect();
+  };
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -505,42 +516,56 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
 
         {/* Right terminal area */}
         <div className="terminal-area">
-          {/* Message Log */}
-          <div className="message-log">
-            <div className="messages">
-              {gameState.messages.map((message, index) => (
-                <div key={index} className="message">
-                  {/* Show alias expansion information if available */}
-                  {message.aliasChain && message.aliasChain.length > 0 && (
-                    <div className="alias-expansion">
-                      <span className="alias-indicator">🔗</span>
-                      {message.aliasChain.map((alias, chainIndex) => (
-                        <span key={chainIndex} className="alias-chain">
-                          <span className="alias-original">{alias.original}</span>
-                          <span className="alias-arrow">→</span>
-                          <span className="alias-expanded">{alias.expanded}</span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Regular message content */}
-                  {message.isHtml ? (
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: message.isCompleteHtml
-                          ? message.text
-                          : `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
-                      }}
-                    />
-                  ) : (
-                    `[${message.timestamp}] ${message.text}`
-                  )}
+          {showMotd ? (
+            /* MOTD Display */
+            <div className="motd-display">
+              <div className="motd-content">
+                <MotdContent />
+                <div className="motd-actions">
+                  <button onClick={handleMotdContinue} className="continue-button">
+                    Enter the Dreamlands
+                  </button>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Message Log */
+            <div className="message-log">
+              <div className="messages">
+                {gameState.messages.map((message, index) => (
+                  <div key={index} className="message">
+                    {/* Show alias expansion information if available */}
+                    {message.aliasChain && message.aliasChain.length > 0 && (
+                      <div className="alias-expansion">
+                        <span className="alias-indicator">🔗</span>
+                        {message.aliasChain.map((alias, chainIndex) => (
+                          <span key={chainIndex} className="alias-chain">
+                            <span className="alias-original">{alias.original}</span>
+                            <span className="alias-arrow">→</span>
+                            <span className="alias-expanded">{alias.expanded}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Regular message content */}
+                    {message.isHtml ? (
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: message.isCompleteHtml
+                            ? message.text
+                            : `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
+                        }}
+                      />
+                    ) : (
+                      `[${message.timestamp}] ${message.text}`
+                    )}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

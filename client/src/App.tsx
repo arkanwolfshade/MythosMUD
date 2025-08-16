@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import { GameTerminal } from './components/GameTerminal';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
+
 import { logger } from './utils/logger';
 
 // Import Stats interface from StatsRollingScreen
@@ -77,7 +78,8 @@ function App() {
 
         // Check if user has a character
         if (data.has_character) {
-          // User has a character, proceed to game
+          // User has a character, proceed to game (MOTD will show in GameTerminal)
+          logger.info('App', 'User has character, proceeding to game');
           setIsAuthenticated(true);
         } else {
           // User doesn't have a character, go to stats rolling

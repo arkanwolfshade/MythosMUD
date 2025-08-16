@@ -426,3 +426,221 @@
   color: #00ff00;
   font-style: italic;
 }
+
+/* MOTD Display Styles */
+.motd-display {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #0a0a0a;
+  color: #d4af37;
+  font-family: 'Courier New', monospace;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.motd-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #d4af37;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-top: 3px solid #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.motd-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.motd-html-content {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+/* MOTD Content Styles */
+.motd-content .container {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.motd-content .title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.motd-content .title-border {
+  border: 2px solid #d4af37;
+  border-radius: 5px;
+  padding: 20px;
+  background: linear-gradient(45deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  position: relative;
+}
+
+.motd-content .title-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.motd-content .title-text {
+  font-size: 2.2em;
+  color: #d4af37;
+  text-shadow: 0 0 15px #d4af37;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.motd-content .title-subtitle {
+  font-size: 1.2em;
+  color: #d4af37;
+  text-shadow: 0 0 10px #d4af37;
+  font-family: 'Courier New', monospace;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+
+.motd-content .yellow-sign {
+  font-size: 1em;
+  margin: 20px 0;
+  text-align: center;
+  color: #ffd700;
+  text-shadow: 0 0 5px #ffd700;
+  font-weight: bold;
+  line-height: 1;
+  white-space: pre;
+  font-family: 'Courier New', monospace;
+}
+
+.motd-content .welcome-text {
+  font-size: 0.95em;
+  margin: 20px 0;
+  text-align: left;
+  color: #d4af37;
+  line-height: 1.4;
+}
+
+.motd-content .warning {
+  color: #8b0000;
+  font-weight: bold;
+  margin: 15px 0;
+  text-align: center;
+  font-size: 0.9em;
+  text-shadow: 0 0 5px #8b0000;
+}
+
+.motd-content .stats {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 5px;
+}
+
+.motd-content .stats h3 {
+  margin-top: 0;
+  color: #d4af37;
+  font-size: 1.1em;
+}
+
+.motd-content .stats p {
+  margin: 5px 0;
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+.motd-content .footer {
+  margin-top: 20px;
+  font-size: 0.8em;
+  color: #666;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  text-align: center;
+}
+
+.motd-actions {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.continue-button {
+  background: linear-gradient(45deg, #d4af37, #b8941f);
+  color: #0a0a0a;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1em;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+}
+
+.continue-button:hover {
+  background: linear-gradient(45deg, #b8941f, #d4af37);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive MOTD */
+@media (max-width: 768px) {
+  .motd-display {
+    padding: 10px;
+  }
+
+  .motd-html-content .title {
+    font-size: 1.2em;
+  }
+
+  .motd-html-content .yellow-sign {
+    font-size: 0.7em;
+  }
+
+  .continue-button {
+    padding: 10px 25px;
+    font-size: 1em;
+  }
+}
