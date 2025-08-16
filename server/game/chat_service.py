@@ -463,7 +463,9 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug("=== CHAT SERVICE DEBUG: send_predefined_emote called ===", player_id=player_id, emote_command=emote_command)
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: send_predefined_emote called ===", player_id=player_id, emote_command=emote_command
+        )
 
         # Import EmoteService here to avoid circular imports
         from .emote_service import EmoteService
@@ -519,13 +521,13 @@ class ChatService:
             # Format the emote messages
             self_message, other_message = emote_service.format_emote_messages(emote_command, player.name)
         except ValueError as e:
-            logger.error("Failed to format emote messages", player_id=player_id, emote_command=emote_command, error=str(e))
+            logger.error(
+                "Failed to format emote messages", player_id=player_id, emote_command=emote_command, error=str(e)
+            )
             return {"success": False, "error": str(e)}
 
         # Create chat message for the predefined emote
-        chat_message = ChatMessage(
-            sender_id=player_id, sender_name=player.name, channel="emote", content=other_message
-        )
+        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="emote", content=other_message)
 
         # Log the emote message for AI processing
         self.chat_logger.log_chat_message(
@@ -564,7 +566,7 @@ class ChatService:
             "self_message": self_message,
             "other_message": other_message,
             "message": chat_message.to_dict(),
-            "room_id": room_id
+            "room_id": room_id,
         }
 
     async def _publish_chat_message_to_nats(self, chat_message: ChatMessage, room_id: str) -> bool:

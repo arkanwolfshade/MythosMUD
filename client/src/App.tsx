@@ -1,7 +1,10 @@
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import './App.css';
-import { GameTerminal } from './components/GameTerminal';
+import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
+import mythosTheme from './theme/mythosTheme';
 
 import { logger } from './utils/logger';
 
@@ -201,9 +204,12 @@ function App() {
   if (isAuthenticated) {
     logger.info('App', 'Rendering authenticated view', { playerId, hasToken: !!authToken });
     return (
-      <div className="app">
-        <GameTerminal playerId={playerId} playerName={playerName} authToken={authToken} />
-      </div>
+      <ThemeProvider theme={mythosTheme}>
+        <CssBaseline />
+        <div className="app">
+          <GameTerminalWithPanels playerId={playerId} playerName={playerName} authToken={authToken} />
+        </div>
+      </ThemeProvider>
     );
   }
 
@@ -215,127 +221,133 @@ function App() {
   // Show stats rolling screen if needed
   if (showStatsRolling) {
     return (
-      <div className="app">
-        <StatsRollingScreen
-          characterName={username}
-          onStatsAccepted={handleStatsAccepted}
-          onError={handleCharacterCreationError}
-          baseUrl={baseUrl}
-          authToken={authToken}
-        />
-      </div>
+      <ThemeProvider theme={mythosTheme}>
+        <CssBaseline />
+        <div className="app">
+          <StatsRollingScreen
+            characterName={username}
+            onStatsAccepted={handleStatsAccepted}
+            onError={handleCharacterCreationError}
+            baseUrl={baseUrl}
+            authToken={authToken}
+          />
+        </div>
+      </ThemeProvider>
     );
   }
 
   return (
-    <div className="app">
-      <div className="auth-container">
-        <h1>MythosMUD</h1>
-        <p className="tagline">Enter the realm of forbidden knowledge...</p>
+    <ThemeProvider theme={mythosTheme}>
+      <CssBaseline />
+      <div className="app">
+        <div className="auth-container">
+          <h1>MythosMUD</h1>
+          <p className="tagline">Enter the realm of forbidden knowledge...</p>
 
-        {!showRegistration ? (
-          <>
-            <form onSubmit={handleLogin} className="login-form">
-              <div className="form-group">
-                <label htmlFor="username">Username:</label>
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  required
-                  placeholder="Enter your username"
-                />
+          {!showRegistration ? (
+            <>
+              <form onSubmit={handleLogin} className="login-form">
+                <div className="form-group">
+                  <label htmlFor="username">Username:</label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    required
+                    placeholder="Enter your username"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password:</label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    placeholder="Enter your password"
+                  />
+                </div>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <button type="submit" disabled={isLoading} className="login-button">
+                  {isLoading ? 'Connecting...' : 'Enter the MUD'}
+                </button>
+              </form>
+
+              <div className="form-footer">
+                <p>Don't have an account?</p>
+                <button type="button" onClick={() => setShowRegistration(true)} className="secondary-button">
+                  Register with Invite Code
+                </button>
               </div>
+            </>
+          ) : (
+            <>
+              <form onSubmit={handleRegister} className="login-form">
+                <div className="form-group">
+                  <label htmlFor="reg-username">Username:</label>
+                  <input
+                    id="reg-username"
+                    type="text"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    required
+                    placeholder="Choose a username"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="password">Password:</label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  placeholder="Enter your password"
-                />
+                <div className="form-group">
+                  <label htmlFor="reg-password">Password:</label>
+                  <input
+                    id="reg-password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    placeholder="Choose a password"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="invite-code">Invite Code:</label>
+                  <input
+                    id="invite-code"
+                    type="text"
+                    value={inviteCode}
+                    onChange={e => setInviteCode(e.target.value)}
+                    required
+                    placeholder="Enter your invite code"
+                  />
+                </div>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <button type="submit" disabled={isLoading} className="login-button">
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </button>
+              </form>
+
+              <div className="form-footer">
+                <p>Already have an account?</p>
+                <button type="button" onClick={() => setShowRegistration(false)} className="secondary-button">
+                  Back to Login
+                </button>
               </div>
+            </>
+          )}
 
-              {error && <div className="error-message">{error}</div>}
-
-              <button type="submit" disabled={isLoading} className="login-button">
-                {isLoading ? 'Connecting...' : 'Enter the MUD'}
-              </button>
-            </form>
-
-            <div className="form-footer">
-              <p>Don't have an account?</p>
-              <button type="button" onClick={() => setShowRegistration(true)} className="secondary-button">
-                Register with Invite Code
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <form onSubmit={handleRegister} className="login-form">
-              <div className="form-group">
-                <label htmlFor="reg-username">Username:</label>
-                <input
-                  id="reg-username"
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  required
-                  placeholder="Choose a username"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-password">Password:</label>
-                <input
-                  id="reg-password"
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  placeholder="Choose a password"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="invite-code">Invite Code:</label>
-                <input
-                  id="invite-code"
-                  type="text"
-                  value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value)}
-                  required
-                  placeholder="Enter your invite code"
-                />
-              </div>
-
-              {error && <div className="error-message">{error}</div>}
-
-              <button type="submit" disabled={isLoading} className="login-button">
-                {isLoading ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </form>
-
-            <div className="form-footer">
-              <p>Already have an account?</p>
-              <button type="button" onClick={() => setShowRegistration(false)} className="secondary-button">
-                Back to Login
-              </button>
-            </div>
-          </>
-        )}
-
-        <div className="debug-container">
-          <button onClick={() => logger.downloadLogs()} className="debug-button">
-            Download Debug Logs
-          </button>
+          <div className="debug-container">
+            <button onClick={() => logger.downloadLogs()} className="debug-button">
+              Download Debug Logs
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 
