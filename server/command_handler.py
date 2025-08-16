@@ -95,6 +95,7 @@ def _is_predefined_emote(command: str) -> bool:
     """
     try:
         from .game.emote_service import EmoteService
+
         emote_service = EmoteService()
         return emote_service.is_emote_alias(command)
     except Exception as e:
@@ -223,6 +224,19 @@ actions speak louder than words in the presence of forbidden knowledge.</p>
 <h4>Usage:</h4>
 <ul>
 <li><strong>emote [action]</strong> - Perform an action visible to players in your room</li>
+<li><strong>[predefined_emote]</strong> - Use a predefined emote (see list below)</li>
+</ul>
+
+<h4>Predefined Emotes:</h4>
+<ul>
+<li><strong>twibble</strong> - Twibble around aimlessly</li>
+<li><strong>dance</strong> - Dance like no one is watching</li>
+<li><strong>wave</strong> - Wave hello (aliases: hello, hi)</li>
+<li><strong>bow</strong> - Bow respectfully (aliases: curtsey, curtsy)</li>
+<li><strong>laugh</strong> - Laugh heartily (aliases: chuckle, giggle)</li>
+<li><strong>sigh</strong> - Sigh deeply (aliases: exhale)</li>
+<li><strong>stretch</strong> - Stretch your limbs (aliases: flex)</li>
+<li><strong>yawn</strong> - Yawn widely (aliases: tire)</li>
 </ul>
 
 <h4>Examples:</h4>
@@ -230,8 +244,10 @@ actions speak louder than words in the presence of forbidden knowledge.</p>
 <li>emote adjusts his spectacles</li>
 <li>emote looks around nervously</li>
 <li>emote examines the ancient tome</li>
-<li>emote shudders at the eldritch atmosphere</li>
-<li>emote reaches for the forbidden tome</li>
+<li>twibble</li>
+<li>dance</li>
+<li>wave</li>
+<li>/bow</li>
 </ul>
 
 <h4>Notes:</h4>
@@ -240,6 +256,7 @@ actions speak louder than words in the presence of forbidden knowledge.</p>
 <li>Emotes are limited to 200 characters</li>
 <li>Use third person perspective (e.g., "adjusts" not "adjust")</li>
 <li>You cannot emote if you are muted in the say channel</li>
+<li>Predefined emotes can be used directly or with slash prefix (e.g., /twibble)</li>
 </ul>
 
 <p>"In the presence of the unknown, every gesture becomes a prayer." - Prof. Armitage</p>
@@ -256,11 +273,12 @@ actions speak louder than words in the presence of forbidden knowledge.</p>
 <h3>ME Command</h3>
 <p>Describe your actions in the third person, allowing others to witness
 your presence and activities in the eldritch realm. This command is an
-alternative to the emote command.</p>
+alternative to the emote command and works identically.</p>
 
 <h4>Usage:</h4>
 <ul>
 <li><strong>me [action]</strong> - Describe an action you are performing</li>
+<li><strong>me [predefined_emote]</strong> - Use a predefined emote (see emote help for list)</li>
 </ul>
 
 <h4>Examples:</h4>
@@ -268,8 +286,9 @@ alternative to the emote command.</p>
 <li>me adjusts his spectacles</li>
 <li>me looks around nervously</li>
 <li>me examines the ancient tome</li>
-<li>me shudders at the eldritch atmosphere</li>
-<li>me reaches for the forbidden tome</li>
+<li>me twibble</li>
+<li>me dance</li>
+<li>me wave</li>
 </ul>
 
 <h4>Notes:</h4>
@@ -278,6 +297,7 @@ alternative to the emote command.</p>
 <li>Actions are limited to 200 characters</li>
 <li>Use third person perspective (e.g., "adjusts" not "adjust")</li>
 <li>You cannot use this command if you are muted in the say channel</li>
+<li>This command works identically to the emote command</li>
 </ul>
 
 <p>"Every action in this realm leaves an echo in the fabric of reality." - Prof. Armitage</p>
@@ -1119,7 +1139,9 @@ async def process_command(
 
     # Check for predefined emotes (like 'twibble', 'dance', etc.)
     elif _is_predefined_emote(cmd):
-        logger.debug("=== COMMAND HANDLER DEBUG: Processing predefined emote command ===", player=player_name, emote=cmd)
+        logger.debug(
+            "=== COMMAND HANDLER DEBUG: Processing predefined emote command ===", player=player_name, emote=cmd
+        )
 
         if not persistence:
             logger.warning("Predefined emote command failed - no persistence layer", player=player_name)
