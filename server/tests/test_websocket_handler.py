@@ -167,7 +167,7 @@ class TestWebSocketMessageHandling:
                 "error_type": "invalid_command",
                 "message": "Unknown message type: unknown_type",
                 "user_friendly": "Invalid command",
-                "details": {"message_type": "unknown_type", "player_id": "test_player_123"}
+                "details": {"message_type": "unknown_type", "player_id": "test_player_123"},
             }
         )
 
@@ -187,7 +187,7 @@ class TestWebSocketMessageHandling:
                 "error_type": "invalid_command",
                 "message": "Unknown message type: unknown",
                 "user_friendly": "Invalid command",
-                "details": {"message_type": "unknown", "player_id": "test_player_123"}
+                "details": {"message_type": "unknown", "player_id": "test_player_123"},
             }
         )
 
@@ -221,7 +221,7 @@ class TestWebSocketMessageHandling:
                     "error_type": "message_processing_error",
                     "message": "Error processing message: Test error",
                     "user_friendly": "Error processing message",
-                    "details": {"player_id": "test_player_123"}
+                    "details": {"player_id": "test_player_123"},
                 }
             )
 
@@ -529,7 +529,7 @@ class TestWebSocketErrorHandling:
                 "error_type": "invalid_command",
                 "message": "Unknown message type: unknown",
                 "user_friendly": "Invalid command",
-                "details": {"message_type": "unknown", "player_id": "test_player_123"}
+                "details": {"message_type": "unknown", "player_id": "test_player_123"},
             }
         )
 
@@ -543,13 +543,15 @@ class TestWebSocketErrorHandling:
         await handle_websocket_message(self.mock_websocket, self.player_id, message)
 
         # Verify - None message causes exception, so we get error processing message
-        self.mock_websocket.send_json.assert_called_once_with({
-            "type": "error",
-            "error_type": "message_processing_error",
-            "message": "Error processing message: 'NoneType' object has no attribute 'get'",
-            "user_friendly": "Error processing message",
-            "details": {"player_id": "test_player_123"}
-        })
+        self.mock_websocket.send_json.assert_called_once_with(
+            {
+                "type": "error",
+                "error_type": "message_processing_error",
+                "message": "Error processing message: 'NoneType' object has no attribute 'get'",
+                "user_friendly": "Error processing message",
+                "details": {"player_id": "test_player_123"},
+            }
+        )
 
     @pytest.mark.asyncio
     async def test_process_websocket_command_room_has_no_exits_attribute(self):

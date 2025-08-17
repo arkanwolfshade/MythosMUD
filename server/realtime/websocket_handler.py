@@ -145,7 +145,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     ErrorType.INVALID_FORMAT,
                     "Invalid JSON format",
                     ErrorMessages.INVALID_FORMAT,
-                    {"player_id": player_id_str}
+                    {"player_id": player_id_str},
                 )
                 await websocket.send_json(error_response)
 
@@ -159,7 +159,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     ErrorType.INTERNAL_ERROR,
                     f"Internal server error: {str(e)}",
                     ErrorMessages.INTERNAL_ERROR,
-                    {"player_id": player_id_str}
+                    {"player_id": player_id_str},
                 )
                 await websocket.send_json(error_response)
 
@@ -212,7 +212,7 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
                 ErrorType.INVALID_COMMAND,
                 f"Unknown message type: {message_type}",
                 ErrorMessages.INVALID_COMMAND,
-                {"message_type": message_type, "player_id": player_id}
+                {"message_type": message_type, "player_id": player_id},
             )
             await websocket.send_json(error_response)
 
@@ -222,7 +222,7 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
             ErrorType.MESSAGE_PROCESSING_ERROR,
             f"Error processing message: {str(e)}",
             ErrorMessages.MESSAGE_PROCESSING_ERROR,
-            {"player_id": player_id}
+            {"player_id": player_id},
         )
         await websocket.send_json(error_response)
 
@@ -243,10 +243,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
             parts = command.strip().split()
             if not parts:
                 error_response = create_websocket_error_response(
-                    ErrorType.INVALID_COMMAND,
-                    "Empty command",
-                    ErrorMessages.INVALID_COMMAND,
-                    {"player_id": player_id}
+                    ErrorType.INVALID_COMMAND, "Empty command", ErrorMessages.INVALID_COMMAND, {"player_id": player_id}
                 )
                 await websocket.send_json(error_response)
                 return
@@ -283,7 +280,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
             ErrorType.MESSAGE_PROCESSING_ERROR,
             f"Error processing command: {str(e)}",
             ErrorMessages.MESSAGE_PROCESSING_ERROR,
-            {"player_id": player_id, "command": command}
+            {"player_id": player_id, "command": command},
         )
         await websocket.send_json(error_response)
 
@@ -500,7 +497,7 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
             ErrorType.MESSAGE_PROCESSING_ERROR,
             f"Error sending chat message: {str(e)}",
             ErrorMessages.MESSAGE_PROCESSING_ERROR,
-            {"player_id": player_id}
+            {"player_id": player_id},
         )
         await websocket.send_json(error_response)
 
