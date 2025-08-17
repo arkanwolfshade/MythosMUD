@@ -6,6 +6,7 @@ and real-time game updates for clients.
 """
 
 import asyncio
+import time
 from collections.abc import AsyncGenerator
 
 from ..logging_config import get_logger
@@ -51,6 +52,9 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
                 # Mark presence and send heartbeat
                 connection_manager.mark_player_seen(player_id_str)
                 connection_manager.prune_stale_players()
+                # Clean up orphaned data every 5 minutes (10 heartbeats)
+                if int(time.time() / 30) % 10 == 0:  # Every 5 minutes
+                    connection_manager.cleanup_orphaned_data()
                 yield sse_line(build_event("heartbeat", {}, player_id=player_id_str))
 
             except asyncio.CancelledError:

@@ -105,23 +105,38 @@ class ConnectionManager:
         Args:
             player_id: The player's ID
         """
-        if player_id in self.player_websockets:
-            connection_id = self.player_websockets[player_id]
-            if connection_id in self.active_websockets:
-                del self.active_websockets[connection_id]
-            del self.player_websockets[player_id]
+        try:
+            if player_id in self.player_websockets:
+                connection_id = self.player_websockets[player_id]
+                if connection_id in self.active_websockets:
+                    del self.active_websockets[connection_id]
+                del self.player_websockets[player_id]
 
-            # Track player disconnection
-            await self._track_player_disconnected(player_id)
+                # Track player disconnection
+                await self._track_player_disconnected(player_id)
 
-            # Unsubscribe from all rooms
-            for room_id in list(self.room_subscriptions.keys()):
-                if player_id in self.room_subscriptions[room_id]:
-                    self.room_subscriptions[room_id].discard(player_id)
-                    if not self.room_subscriptions[room_id]:
-                        del self.room_subscriptions[room_id]
+                # Unsubscribe from all rooms
+                for room_id in list(self.room_subscriptions.keys()):
+                    if player_id in self.room_subscriptions[room_id]:
+                        self.room_subscriptions[room_id].discard(player_id)
+                        if not self.room_subscriptions[room_id]:
+                            del self.room_subscriptions[room_id]
 
-            logger.info(f"WebSocket disconnected for player {player_id}")
+                # Clean up rate limiting data
+                if player_id in self.connection_attempts:
+                    del self.connection_attempts[player_id]
+
+                # Clean up pending messages
+                if player_id in self.pending_messages:
+                    del self.pending_messages[player_id]
+
+                # Clean up last seen data
+                if player_id in self.last_seen:
+                    del self.last_seen[player_id]
+
+                logger.info(f"WebSocket disconnected for player {player_id}")
+        except Exception as e:
+            logger.error(f"Error during WebSocket disconnect for {player_id}: {e}", exc_info=True)
 
     def connect_sse(self, player_id: str) -> str:
         """
@@ -177,23 +192,38 @@ class ConnectionManager:
         Args:
             player_id: The player's ID
         """
-        if player_id in self.active_sse_connections:
-            del self.active_sse_connections[player_id]
-
-        # Delegate to unified disconnect logic. If no running loop, run synchronously.
         try:
-            import asyncio
+            if player_id in self.active_sse_connections:
+                del self.active_sse_connections[player_id]
 
+            # Clean up rate limiting data
+            if player_id in self.connection_attempts:
+                del self.connection_attempts[player_id]
+
+            # Clean up pending messages
+            if player_id in self.pending_messages:
+                del self.pending_messages[player_id]
+
+            # Clean up last seen data
+            if player_id in self.last_seen:
+                del self.last_seen[player_id]
+
+            # Delegate to unified disconnect logic. If no running loop, run synchronously.
             try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(self._track_player_disconnected(player_id))
-            except RuntimeError:
-                # No running loop in this thread; execute synchronously
-                asyncio.run(self._track_player_disconnected(player_id))
-        except Exception as e:
-            logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
+                import asyncio
 
-        logger.info(f"SSE disconnected for player {player_id}")
+                try:
+                    loop = asyncio.get_running_loop()
+                    loop.create_task(self._track_player_disconnected(player_id))
+                except RuntimeError:
+                    # No running loop in this thread; execute synchronously
+                    asyncio.run(self._track_player_disconnected(player_id))
+            except Exception as e:
+                logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
+
+            logger.info(f"SSE disconnected for player {player_id}")
+        except Exception as e:
+            logger.error(f"Error during SSE disconnect for {player_id}: {e}", exc_info=True)
 
     def mark_player_seen(self, player_id: str):
         """Update last-seen timestamp for a player."""
@@ -228,10 +258,61 @@ class ConnectionManager:
                 # forget last_seen entry
                 if pid in self.last_seen:
                     del self.last_seen[pid]
+                # Clean up other references
+                if pid in self.connection_attempts:
+                    del self.connection_attempts[pid]
+                if pid in self.pending_messages:
+                    del self.pending_messages[pid]
+                if pid in self.active_sse_connections:
+                    del self.active_sse_connections[pid]
             if stale_ids:
                 logger.info(f"Pruned stale players: {stale_ids}")
         except Exception as e:
             logger.error(f"Error pruning stale players: {e}")
+
+    def cleanup_orphaned_data(self):
+        """Clean up orphaned data that might accumulate over time."""
+        try:
+            # Clean up orphaned connection attempts (older than 1 hour)
+            now_ts = time.time()
+            orphaned_attempts = []
+            for player_id, attempts in list(self.connection_attempts.items()):
+                # Remove attempts older than 1 hour
+                self.connection_attempts[player_id] = [
+                    attempt_time
+                    for attempt_time in attempts
+                    if now_ts - attempt_time < 3600  # 1 hour
+                ]
+                # Remove empty entries
+                if not self.connection_attempts[player_id]:
+                    orphaned_attempts.append(player_id)
+
+            for player_id in orphaned_attempts:
+                del self.connection_attempts[player_id]
+
+            # Clean up orphaned pending messages (older than 1 hour)
+            orphaned_messages = []
+            for player_id, messages in list(self.pending_messages.items()):
+                # Remove messages older than 1 hour
+                self.pending_messages[player_id] = [
+                    msg
+                    for msg in messages
+                    if now_ts - msg.get("timestamp", 0) < 3600  # 1 hour
+                ]
+                # Remove empty entries
+                if not self.pending_messages[player_id]:
+                    orphaned_messages.append(player_id)
+
+            for player_id in orphaned_messages:
+                del self.pending_messages[player_id]
+
+            if orphaned_attempts or orphaned_messages:
+                logger.info(
+                    f"Cleaned up orphaned data: {len(orphaned_attempts)} attempts, {len(orphaned_messages)} message queues"
+                )
+
+        except Exception as e:
+            logger.error(f"Error cleaning up orphaned data: {e}")
 
     def _prune_player_from_all_rooms(self, player_id: str):
         """Remove a player from all in-memory room occupant sets."""
@@ -551,6 +632,16 @@ class ConnectionManager:
                 if key in self.online_players:
                     del self.online_players[key]
                 self._prune_player_from_all_rooms(key)
+
+            # Clean up any remaining references
+            if player_id in self.online_players:
+                del self.online_players[player_id]
+            if player_id in self.last_seen:
+                del self.last_seen[player_id]
+            if player_id in self.connection_attempts:
+                del self.connection_attempts[player_id]
+            if player_id in self.pending_messages:
+                del self.pending_messages[player_id]
 
             # Notify current room that player left the game and refresh occupants
             if room_id:
