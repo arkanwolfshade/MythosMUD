@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY NOT NULL,
     -- UUID as TEXT for SQLite compatibility
     email TEXT UNIQUE NOT NULL,
-    username TEXT UNIQUE NOT NULL,
+    username TEXT NOT NULL,
     hashed_password TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT 1,
     is_superuser BOOLEAN NOT NULL DEFAULT 0,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS players (
     player_id TEXT PRIMARY KEY NOT NULL,
     user_id TEXT NOT NULL UNIQUE,
-    name TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
     stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
@@ -51,3 +51,6 @@ CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
 CREATE INDEX IF NOT EXISTS idx_players_is_admin ON players(is_admin);
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
 CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
+-- Create case-insensitive unique constraints
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_unique ON users(username COLLATE NOCASE);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_players_name_unique ON players(name COLLATE NOCASE);
