@@ -112,13 +112,14 @@ class CommandProcessor:
             Dictionary containing the command data in a format expected by existing handlers
         """
         command_data = {
-            "command_type": validated_command.command_type.value,
+            "command_type": validated_command.command_type,  # Already a string value due to use_enum_values=True
             "player_name": None,  # Will be set by the calling code
         }
 
         # Extract command-specific data based on type
         if hasattr(validated_command, "direction"):
-            command_data["direction"] = validated_command.direction.value if validated_command.direction else None
+            # Direction is already a string value due to use_enum_values=True
+            command_data["direction"] = validated_command.direction
 
         if hasattr(validated_command, "message"):
             command_data["message"] = validated_command.message

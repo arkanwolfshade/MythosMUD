@@ -93,7 +93,7 @@ class TestMovementIntegration:
     @pytest.mark.asyncio
     async def test_command_handler_with_movement_service(self):
         """Test that command handler uses MovementService correctly."""
-        from server.command_handler import process_command
+        from server.command_handler_v2 import process_command
 
         # Mock persistence and movement service
         mock_persistence = Mock()
@@ -113,7 +113,7 @@ class TestMovementIntegration:
         mock_target_room.description = "A northern chamber"
         mock_target_room.exits = {"south": "room1"}
 
-        with patch("server.command_handler.MovementService") as mock_movement_service_class:
+        with patch("server.command_handler_v2.MovementService") as mock_movement_service_class:
             mock_movement_service = Mock()
             mock_movement_service_class.return_value = mock_movement_service
             mock_movement_service.move_player.return_value = True
@@ -140,7 +140,7 @@ class TestMovementIntegration:
     @pytest.mark.asyncio
     async def test_movement_failure_handling(self):
         """Test that movement failures are handled gracefully."""
-        from server.command_handler import process_command
+        from server.command_handler_v2 import process_command
 
         # Mock persistence and movement service
         mock_persistence = Mock()
@@ -154,7 +154,7 @@ class TestMovementIntegration:
         mock_persistence.get_room.return_value = mock_room
         mock_room.exits = {"north": "room2"}
 
-        with patch("server.command_handler.MovementService") as mock_movement_service_class:
+        with patch("server.command_handler_v2.MovementService") as mock_movement_service_class:
             mock_movement_service = Mock()
             mock_movement_service_class.return_value = mock_movement_service
             mock_movement_service.move_player.return_value = False  # Movement fails
@@ -169,6 +169,8 @@ class TestMovementIntegration:
             result = await process_command(
                 "go", ["north"], current_user, mock_request, mock_alias_storage, "testplayer"
             )
+
+            # Verify MovementService was called
 
             # Verify MovementService was called
             mock_movement_service.move_player.assert_called_once_with("player1", "room1", "room2")

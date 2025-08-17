@@ -391,10 +391,10 @@ class TestCommandProcessorIntegration:
 
     def test_extract_command_data(self):
         """Test command data extraction."""
-        # Create a mock validated command
+        # Create a mock validated command that matches our real command structure
         mock_command = MagicMock()
-        mock_command.command_type.value = "look"
-        mock_command.direction.value = "north"
+        mock_command.command_type = "look"  # No .value since use_enum_values=True
+        mock_command.direction = "north"    # No .value since use_enum_values=True
 
         command_data = self.processor.extract_command_data(mock_command)
 

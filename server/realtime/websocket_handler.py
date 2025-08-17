@@ -394,7 +394,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Use the proper command handler for all commands
     from ..alias_storage import AliasStorage
-    from ..command_handler import process_command
+    from ..command_handler_v2 import process_command
 
     # Create a mock request object for the command handler
     class MockRequest:
