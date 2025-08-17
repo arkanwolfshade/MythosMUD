@@ -14,10 +14,25 @@ from ..validators.command_validator import (
     normalize_command,
     validate_command_format,
 )
+from .admin_commands import (
+    handle_add_admin_command,
+    handle_mute_command,
+    handle_mute_global_command,
+    handle_mutes_command,
+    handle_unmute_command,
+    handle_unmute_global_command,
+)
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
 from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
 from .exploration_commands import handle_go_command, handle_look_command
 from .system_commands import handle_help_command
+from .utility_commands import (
+    handle_emote_command,
+    handle_inventory_command,
+    handle_quit_command,
+    handle_status_command,
+    handle_who_command,
+)
 
 logger = get_logger(__name__)
 
@@ -33,15 +48,32 @@ class CommandService:
     def __init__(self):
         """Initialize the command service."""
         self.command_handlers = {
+            # System commands
             "help": handle_help_command,
+            # Alias commands
             "alias": handle_alias_command,
             "aliases": handle_aliases_command,
             "unalias": handle_unalias_command,
+            # Exploration commands
             "look": handle_look_command,
             "go": handle_go_command,
+            # Communication commands
             "say": handle_say_command,
             "me": handle_me_command,
             "pose": handle_pose_command,
+            "emote": handle_emote_command,
+            # Administrative commands
+            "mute": handle_mute_command,
+            "unmute": handle_unmute_command,
+            "mute_global": handle_mute_global_command,
+            "unmute_global": handle_unmute_global_command,
+            "add_admin": handle_add_admin_command,
+            "mutes": handle_mutes_command,
+            # Utility commands
+            "who": handle_who_command,
+            "quit": handle_quit_command,
+            "status": handle_status_command,
+            "inventory": handle_inventory_command,
         }
 
     async def process_command(
