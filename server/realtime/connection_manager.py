@@ -63,6 +63,12 @@ class ConnectionManager:
         """
         try:
             logger.info(f"Attempting to accept WebSocket for player {player_id}")
+
+            # Check if player already has an active connection and terminate it
+            if player_id in self.player_websockets or player_id in self.active_sse_connections:
+                logger.info(f"Player {player_id} has existing connection, terminating it")
+                await self.force_disconnect_player(player_id)
+
             await websocket.accept()
             logger.info(f"WebSocket accepted for player {player_id}")
 
@@ -109,6 +115,12 @@ class ConnectionManager:
             if player_id in self.player_websockets:
                 connection_id = self.player_websockets[player_id]
                 if connection_id in self.active_websockets:
+                    websocket = self.active_websockets[connection_id]
+                    # Properly close the WebSocket connection
+                    try:
+                        await websocket.close(code=1000, reason="New connection established")
+                    except Exception as e:
+                        logger.warning(f"Error closing WebSocket for {player_id}: {e}")
                     del self.active_websockets[connection_id]
                 del self.player_websockets[player_id]
 
@@ -138,6 +150,29 @@ class ConnectionManager:
         except Exception as e:
             logger.error(f"Error during WebSocket disconnect for {player_id}: {e}", exc_info=True)
 
+    async def force_disconnect_player(self, player_id: str):
+        """
+        Force disconnect a player from all connections (WebSocket and SSE).
+        This is used when a new connection is established for the same player.
+
+        Args:
+            player_id: The player's ID
+        """
+        try:
+            logger.info(f"Force disconnecting player {player_id} from all connections")
+
+            # Disconnect WebSocket if active
+            if player_id in self.player_websockets:
+                await self.disconnect_websocket(player_id)
+
+            # Disconnect SSE if active
+            if player_id in self.active_sse_connections:
+                self.disconnect_sse(player_id)
+
+            logger.info(f"Player {player_id} force disconnected from all connections")
+        except Exception as e:
+            logger.error(f"Error force disconnecting player {player_id}: {e}", exc_info=True)
+
     def connect_sse(self, player_id: str) -> str:
         """
         Connect an SSE connection for a player.
@@ -148,6 +183,21 @@ class ConnectionManager:
         Returns:
             str: The SSE connection ID
         """
+        # Check if player already has an active connection and terminate it
+        if player_id in self.player_websockets or player_id in self.active_sse_connections:
+            logger.info(f"Player {player_id} has existing connection, terminating it")
+            # Use async version if we're in an async context
+            try:
+                import asyncio
+
+                loop = asyncio.get_running_loop()
+                loop.create_task(self.force_disconnect_player(player_id))
+            except RuntimeError:
+                # No running loop, run synchronously
+                import asyncio
+
+                asyncio.run(self.force_disconnect_player(player_id))
+
         connection_id = str(uuid.uuid4())
         self.active_sse_connections[player_id] = connection_id
         logger.info(f"SSE connected for player {player_id}")
