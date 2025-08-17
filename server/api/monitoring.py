@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from ..game.movement_monitor import get_movement_monitor
 from ..persistence import get_persistence
+from ..realtime.connection_manager import connection_manager
 
 router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 
@@ -56,6 +57,25 @@ class IntegrityResponse(BaseModel):
 
 class AlertsResponse(BaseModel):
     """Response model for system alerts."""
+
+    alerts: list[str]
+    alert_count: int
+    timestamp: str
+
+
+class MemoryStatsResponse(BaseModel):
+    """Response model for memory statistics."""
+
+    memory: dict
+    connections: dict
+    data_structures: dict
+    cleanup_stats: dict
+    memory_monitor: dict
+    timestamp: str
+
+
+class MemoryAlertsResponse(BaseModel):
+    """Response model for memory alerts."""
 
     alerts: list[str]
     alert_count: int
@@ -156,3 +176,42 @@ async def get_performance_summary():
         return summary
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}") from e
+
+
+@router.get("/memory", response_model=MemoryStatsResponse)
+async def get_memory_stats():
+    """Get comprehensive memory and connection statistics."""
+    try:
+        import datetime
+
+        memory_stats = connection_manager.get_memory_stats()
+        memory_stats["timestamp"] = datetime.datetime.now(datetime.UTC).isoformat()
+
+        return MemoryStatsResponse(**memory_stats)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving memory stats: {str(e)}") from e
+
+
+@router.get("/memory-alerts", response_model=MemoryAlertsResponse)
+async def get_memory_alerts():
+    """Get memory-related alerts and warnings."""
+    try:
+        import datetime
+
+        alerts = connection_manager.get_memory_alerts()
+
+        return MemoryAlertsResponse(
+            alerts=alerts, alert_count=len(alerts), timestamp=datetime.datetime.now(datetime.UTC).isoformat()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving memory alerts: {str(e)}") from e
+
+
+@router.post("/memory/cleanup")
+async def force_memory_cleanup():
+    """Force immediate memory cleanup (admin only)."""
+    try:
+        await connection_manager.force_cleanup()
+        return {"message": "Memory cleanup completed successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during memory cleanup: {str(e)}") from e

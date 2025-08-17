@@ -30,9 +30,10 @@ dependencies = [
     "jsonschema>=4.21.0",
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
-
-    "pwdlib[bcrypt]==0.2.1",  # Required by fastapi-users (we override the hashing)
-    "nats-py>=2.6.0",  # NATS Python client for messaging
+    "click>=8.1.0", # Command line interface for command parsing and validation
+    "pwdlib[bcrypt]==0.2.1", # Required by fastapi-users (we override the hashing)
+    "nats-py>=2.6.0", # NATS Python client for messaging
+    "psutil>=6.0.0", # System and process utilities for memory monitoring
 ]
 
 [project.optional-dependencies]
@@ -48,6 +49,7 @@ dev = [
     "aiosqlite>=0.21.0",
     "pre-commit>=4.2.0",
     "semgrep>=1.132.0",  # Static analysis for security and best practices
+    "websocket-client>=1.8.0",  # WebSocket client for testing connection termination
 ]
 
 [tool.setuptools.packages.find]
@@ -81,4 +83,5 @@ ignore = [
 dev = [
     "ruff>=0.12.5",
     "semgrep>=1.132.0",  # Static analysis for security and best practices
+    "websocket-client>=1.8.0",  # WebSocket client for testing connection termination
 ]

@@ -5,7 +5,6 @@ This module defines the User model that will be used by FastAPI Users
 for authentication and user management.
 """
 
-import uuid
 from datetime import UTC, datetime
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
@@ -29,6 +28,9 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     __tablename__ = "users"
     __table_args__ = {"extend_existing": True}
 
+    # Use standard SQLAlchemy UUID primary key - let SQLAlchemy handle the UUID generation
+    # The base class SQLAlchemyBaseUserTableUUID already provides the proper UUID handling
+
     # User authentication fields (email and hashed_password are inherited from base)
     username = Column(String(length=255), unique=True, nullable=False, index=True)
 
@@ -47,10 +49,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         """String representation of the user."""
         return f"<User(id={self.id}, username={self.username}, is_active={self.is_active})>"
 
-    @property
-    def user_id(self) -> uuid.UUID:
-        """Get the user ID for backward compatibility."""
-        return self.id
+    # The id property is already provided by the base class
 
     @property
     def is_authenticated(self) -> bool:

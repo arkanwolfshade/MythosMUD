@@ -93,9 +93,53 @@ Formats code using ruff.
 
 Installs project dependencies.
 
-### `bootstrap_db.py`
+### `init_database.py`
 
-Bootstraps the database with initial data.
+Unified database initialization script that creates a database with the current schema.
+Supports both production and test databases by taking a target database path as a parameter.
+
+**Usage:**
+```bash
+python init_database.py <database_path>
+```
+
+**Examples:**
+```bash
+# Initialize production database
+python init_database.py data/players/players.db
+
+# Initialize test database
+python init_database.py server/tests/data/players/test_players.db
+```
+
+**Features:**
+- Creates database with current schema from `server/sql/schema.sql`
+- Includes case-insensitive unique constraints on username and player name
+- Automatically backs up existing databases before initialization
+- Verifies schema creation and constraint functionality
+- FastAPI Users v14 compatible schema
+
+### `init_prod_db.ps1`
+
+PowerShell wrapper to initialize the production database.
+
+**Usage:**
+```powershell
+.\init_prod_db.ps1
+```
+
+### `init_test_db.ps1`
+
+PowerShell wrapper to initialize the test database.
+
+**Usage:**
+```powershell
+.\init_test_db.ps1
+```
+
+### `bootstrap_db.py` (DEPRECATED)
+
+Legacy database bootstrapping script. Use `init_database.py` instead.
 
 ### `build.py`
 

@@ -6,12 +6,10 @@ for each user, including stats, inventory, and current location.
 """
 
 import json
-import uuid
 from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base
 
 from ..metadata import metadata
@@ -30,11 +28,11 @@ class Player(Base):
     __tablename__ = "players"
     __table_args__ = {"extend_existing": True}
 
-    # Primary key - UUID
-    player_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    # Primary key - TEXT (matches database schema)
+    player_id = Column(String(length=255), primary_key=True)
 
-    # Foreign key to users table (FastAPI Users v14 compatible)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True, nullable=False)
+    # Foreign key to users table
+    user_id = Column(String(length=255), ForeignKey("users.id"), unique=True, nullable=False)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)

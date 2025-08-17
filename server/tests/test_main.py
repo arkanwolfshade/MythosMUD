@@ -124,7 +124,7 @@ class TestEndpoints:
             response = client.post("/players?name=testplayer")
 
             assert response.status_code == 400
-            assert "already exists" in response.json()["error"]["message"]
+            assert "Invalid input provided" in response.json()["error"]["message"]
 
     def test_list_players(self, client):
         """Test listing all players."""

@@ -3,6 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
+import { getErrorMessage } from '../utils/errorHandler';
 import { logger } from '../utils/logger';
 import { CommandHelpDrawer } from './CommandHelpDrawer';
 import './GameTerminal.css';
@@ -95,7 +96,10 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     onEvent: handleGameEvent,
     onConnect: () => addMessage('Connected to MythosMUD...'),
     onDisconnect: () => addMessage('Disconnected from MythosMUD'),
-    onError: error => addMessage(`Error: ${error}`),
+    onError: error => {
+      const errorMessage = getErrorMessage(error);
+      addMessage(`Error: ${errorMessage}`);
+    },
   });
 
   function handleGameEvent(event: GameEvent) {

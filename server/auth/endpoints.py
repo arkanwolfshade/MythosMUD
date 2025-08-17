@@ -18,7 +18,7 @@ from ..database import get_async_session
 from ..logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
-from .dependencies import get_current_superuser
+from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, auth_backend, fastapi_users, get_user_manager
 
@@ -289,7 +289,7 @@ async def login_user(
 
 @auth_router.get("/me", response_model=dict[str, Any])
 async def get_current_user_info(
-    current_user: User = Depends(get_current_superuser),
+    current_user: User = Depends(get_current_active_user),
 ) -> dict[str, Any]:
     """
     Get current user information.
