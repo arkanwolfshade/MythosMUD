@@ -3,6 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
+import { getErrorMessage } from '../utils/errorHandler';
 import { logger } from '../utils/logger';
 import { CommandHelpDrawer } from './CommandHelpDrawer';
 import './GameTerminal.css';

@@ -6,7 +6,6 @@ zone transitions and dimensional boundaries.
 """
 
 import pytest
-
 from room_validator.core.path_validator import PathValidator
 
 

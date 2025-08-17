@@ -9,10 +9,10 @@ export interface StandardErrorResponse {
   error: {
     type: string;
     message: string;
-    user_friendly: string;
-    details: Record<string, unknown>;
-    severity: string;
-    timestamp: string;
+    user_friendly?: string;
+    details?: Record<string, unknown>;
+    severity?: string;
+    timestamp?: string;
   };
 }
 
@@ -20,16 +20,16 @@ export interface WebSocketErrorResponse {
   type: 'error';
   error_type: string;
   message: string;
-  user_friendly: string;
-  details: Record<string, unknown>;
+  user_friendly?: string;
+  details?: Record<string, unknown>;
 }
 
 export interface SSEErrorResponse {
   type: 'error';
   error_type: string;
   message: string;
-  user_friendly: string;
-  details: Record<string, unknown>;
+  user_friendly?: string;
+  details?: Record<string, unknown>;
 }
 
 export type ErrorResponse = StandardErrorResponse | WebSocketErrorResponse | SSEErrorResponse;
@@ -42,13 +42,16 @@ export function isErrorResponse(response: unknown): response is ErrorResponse {
     return false;
   }
 
+  const obj = response as Record<string, unknown>;
+
   // Check for API error format
-  if (response.error && typeof response.error === 'object') {
-    return response.error.type && response.error.message;
+  if (obj.error && typeof obj.error === 'object') {
+    const errorObj = obj.error as Record<string, unknown>;
+    return typeof errorObj.type === 'string' && typeof errorObj.message === 'string';
   }
 
   // Check for WebSocket/SSE error format
-  if (response.type === 'error' && response.error_type && response.message) {
+  if (obj.type === 'error' && typeof obj.error_type === 'string' && typeof obj.message === 'string') {
     return true;
   }
 
@@ -61,12 +64,12 @@ export function isErrorResponse(response: unknown): response is ErrorResponse {
 export function getErrorMessage(response: unknown): string {
   if (isErrorResponse(response)) {
     // API error format
-    if (response.error) {
+    if ('error' in response && response.error) {
       return response.error.user_friendly || response.error.message;
     }
 
     // WebSocket/SSE error format
-    if (response.type === 'error') {
+    if ('type' in response && response.type === 'error') {
       return response.user_friendly || response.message;
     }
   }
@@ -77,7 +80,13 @@ export function getErrorMessage(response: unknown): string {
   }
 
   if (response && typeof response === 'object') {
-    return response.message || response.detail || response.error || 'An unknown error occurred';
+    const obj = response as Record<string, unknown>;
+    return (
+      (typeof obj.message === 'string' ? obj.message : '') ||
+      (typeof obj.detail === 'string' ? obj.detail : '') ||
+      (typeof obj.error === 'string' ? obj.error : '') ||
+      'An unknown error occurred'
+    );
   }
 
   return 'An unknown error occurred';
@@ -89,12 +98,12 @@ export function getErrorMessage(response: unknown): string {
 export function getErrorType(response: unknown): string {
   if (isErrorResponse(response)) {
     // API error format
-    if (response.error) {
+    if ('error' in response && response.error) {
       return response.error.type;
     }
 
     // WebSocket/SSE error format
-    if (response.type === 'error') {
+    if ('type' in response && response.type === 'error') {
       return response.error_type;
     }
   }
@@ -108,12 +117,12 @@ export function getErrorType(response: unknown): string {
 export function getErrorDetails(response: unknown): Record<string, unknown> {
   if (isErrorResponse(response)) {
     // API error format
-    if (response.error) {
+    if ('error' in response && response.error) {
       return response.error.details || {};
     }
 
     // WebSocket/SSE error format
-    if (response.type === 'error') {
+    if ('type' in response && response.type === 'error') {
       return response.details || {};
     }
   }
@@ -127,7 +136,7 @@ export function getErrorDetails(response: unknown): Record<string, unknown> {
 export function getErrorSeverity(response: unknown): string {
   if (isErrorResponse(response)) {
     // API error format
-    if (response.error) {
+    if ('error' in response && response.error) {
       return response.error.severity || 'medium';
     }
   }
@@ -206,13 +215,14 @@ export function isErrorType(response: unknown, errorType: string): boolean {
  */
 export function isNetworkError(response: unknown): boolean {
   const errorType = getErrorType(response);
-  return [
+  const networkErrorTypes = [
     ErrorTypes.NETWORK_ERROR,
     ErrorTypes.CONNECTION_ERROR,
     ErrorTypes.TIMEOUT_ERROR,
     ErrorTypes.WEBSOCKET_ERROR,
     ErrorTypes.SSE_ERROR,
-  ].includes(errorType as string);
+  ] as const;
+  return networkErrorTypes.includes(errorType as (typeof networkErrorTypes)[number]);
 }
 
 /**
@@ -220,12 +230,13 @@ export function isNetworkError(response: unknown): boolean {
  */
 export function isAuthenticationError(response: unknown): boolean {
   const errorType = getErrorType(response);
-  return [
+  const authErrorTypes = [
     ErrorTypes.AUTHENTICATION_FAILED,
     ErrorTypes.AUTHORIZATION_DENIED,
     ErrorTypes.INVALID_TOKEN,
     ErrorTypes.TOKEN_EXPIRED,
-  ].includes(errorType as string);
+  ] as const;
+  return authErrorTypes.includes(errorType as (typeof authErrorTypes)[number]);
 }
 
 /**
@@ -233,10 +244,11 @@ export function isAuthenticationError(response: unknown): boolean {
  */
 export function isValidationError(response: unknown): boolean {
   const errorType = getErrorType(response);
-  return [
+  const validationErrorTypes = [
     ErrorTypes.VALIDATION_ERROR,
     ErrorTypes.INVALID_INPUT,
     ErrorTypes.MISSING_REQUIRED_FIELD,
     ErrorTypes.INVALID_FORMAT,
-  ].includes(errorType as string);
+  ] as const;
+  return validationErrorTypes.includes(errorType as (typeof validationErrorTypes)[number]);
 }
