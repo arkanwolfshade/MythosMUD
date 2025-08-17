@@ -138,7 +138,7 @@ class TestErrorResponseCreation:
 
         # Should not include details
         assert response.details == {}
-        assert response.error_type == "ValidationError"
+        assert response.error_type.value == "validation_error"
         assert response.message == "Invalid input"
 
     def test_create_error_response_with_safe_details(self):
@@ -249,7 +249,7 @@ class TestErrorHandlerIntegration:
 
         # Should not expose sensitive information
         assert "error" in data
-        assert data["error"]["type"] == "ValidationError"
+        assert data["error"]["type"] == "validation_error"
         assert data["error"]["message"] == "Test validation error"
 
         # Should not include stack traces or sensitive details

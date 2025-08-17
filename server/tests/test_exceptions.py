@@ -242,25 +242,35 @@ class TestErrorResponse:
 
     def test_error_response_to_dict(self):
         """Test converting ErrorResponse to dictionary."""
-        response = ErrorResponse(error_type="TestError", message="Test message", details={"detail": "value"})
+        from ..error_types import ErrorType
+
+        response = ErrorResponse(
+            error_type=ErrorType.INTERNAL_ERROR, message="Test message", details={"detail": "value"}
+        )
 
         response_dict = response.to_dict()
 
-        assert response_dict["error"]["type"] == "TestError"
+        assert response_dict["error"]["type"] == "internal_error"
         assert response_dict["error"]["message"] == "Test message"
         assert response_dict["error"]["details"]["detail"] == "value"
 
     def test_error_response_to_response(self):
         """Test converting ErrorResponse to FastAPI JSONResponse."""
-        response = ErrorResponse(error_type="TestError", message="Test message", status_code=400)
+        from ..error_types import ErrorType
+
+        response = ErrorResponse(error_type=ErrorType.INTERNAL_ERROR, message="Test message", status_code=400)
 
         json_response = response.to_response()
 
         assert json_response.status_code == 400
-        assert (
-            json_response.body.decode()
-            == '{"error":{"type":"TestError","message":"Test message","user_friendly":"Test message","details":{}}}'
-        )
+        response_body = json_response.body.decode()
+        assert '"error"' in response_body
+        assert '"type":"internal_error"' in response_body
+        assert '"message":"Test message"' in response_body
+        assert '"user_friendly":"Test message"' in response_body
+        assert '"details":{}' in response_body
+        assert '"severity":"medium"' in response_body
+        assert '"timestamp":"' in response_body
 
 
 class TestErrorResponseCreation:
@@ -273,7 +283,7 @@ class TestErrorResponseCreation:
 
         response = create_error_response(error)
 
-        assert response.error_type == "AuthenticationError"
+        assert response.error_type.value == "authentication_failed"
         assert response.message == "Auth failed"
         assert response.status_code == 401
 
@@ -284,7 +294,7 @@ class TestErrorResponseCreation:
 
         response = create_error_response(error, include_details=True)
 
-        assert response.error_type == "ValidationError"
+        assert response.error_type.value == "validation_error"
         assert response.status_code == 400
         assert "context" in response.details
 

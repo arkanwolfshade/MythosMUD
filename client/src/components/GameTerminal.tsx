@@ -95,7 +95,10 @@ export function GameTerminal({ playerId, playerName, authToken }: GameTerminalPr
     onEvent: handleGameEvent,
     onConnect: () => addMessage('Connected to MythosMUD...'),
     onDisconnect: () => addMessage('Disconnected from MythosMUD'),
-    onError: error => addMessage(`Error: ${error}`),
+    onError: error => {
+      const errorMessage = getErrorMessage(error);
+      addMessage(`Error: ${errorMessage}`);
+    },
   });
 
   function handleGameEvent(event: GameEvent) {

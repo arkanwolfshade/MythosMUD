@@ -16,6 +16,7 @@ from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .error_types import ErrorMessages, ErrorSeverity, ErrorType, create_standard_error_response
 from .exceptions import (
     AuthenticationError,
     ConfigurationError,
@@ -44,28 +45,29 @@ class ErrorResponse:
 
     def __init__(
         self,
-        error_type: str,
+        error_type: ErrorType,
         message: str,
         details: dict[str, Any] | None = None,
         user_friendly: str | None = None,
         status_code: int = 500,
+        severity: ErrorSeverity = ErrorSeverity.MEDIUM,
     ):
         self.error_type = error_type
         self.message = message
         self.details = details or {}
         self.user_friendly = user_friendly or message
         self.status_code = status_code
+        self.severity = severity
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON response."""
-        return {
-            "error": {
-                "type": self.error_type,
-                "message": self.message,
-                "user_friendly": self.user_friendly,
-                "details": self.details,
-            }
-        }
+        return create_standard_error_response(
+            self.error_type,
+            self.message,
+            self.user_friendly,
+            self.details,
+            self.severity,
+        )
 
     def to_response(self) -> JSONResponse:
         """Convert to FastAPI JSONResponse."""
@@ -83,8 +85,14 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
     Returns:
         ErrorResponse object
     """
+    # Map MythosMUD error types to standardized error types
+    error_type = _map_error_type(error)
+
     # Determine status code based on error type
     status_code = _get_status_code_for_error(error)
+
+    # Determine severity based on error type
+    severity = _get_severity_for_error(error)
 
     # Create response details - always sanitize to prevent information exposure
     details = {}
@@ -103,12 +111,49 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
             details["context"] = safe_context
 
     return ErrorResponse(
-        error_type=error.__class__.__name__,
+        error_type=error_type,
         message=error.message,
         details=details,
         user_friendly=error.user_friendly,
         status_code=status_code,
+        severity=severity,
     )
+
+
+def _map_error_type(error: MythosMUDError) -> ErrorType:
+    """Map MythosMUD error types to standardized error types."""
+    if isinstance(error, AuthenticationError):
+        return ErrorType.AUTHENTICATION_FAILED
+    elif isinstance(error, ValidationError):
+        return ErrorType.VALIDATION_ERROR
+    elif isinstance(error, ResourceNotFoundError):
+        return ErrorType.RESOURCE_NOT_FOUND
+    elif isinstance(error, RateLimitError):
+        return ErrorType.RATE_LIMIT_EXCEEDED
+    elif isinstance(error, GameLogicError):
+        return ErrorType.GAME_LOGIC_ERROR
+    elif isinstance(error, DatabaseError):
+        return ErrorType.DATABASE_ERROR
+    elif isinstance(error, NetworkError):
+        return ErrorType.NETWORK_ERROR
+    elif isinstance(error, ConfigurationError):
+        return ErrorType.CONFIGURATION_ERROR
+    else:
+        return ErrorType.INTERNAL_ERROR
+
+
+def _get_severity_for_error(error: MythosMUDError) -> ErrorSeverity:
+    """Get appropriate severity level for error type."""
+    if isinstance(error, AuthenticationError | ValidationError | ResourceNotFoundError):
+        return ErrorSeverity.LOW
+    elif isinstance(error, GameLogicError | RateLimitError):
+        return ErrorSeverity.MEDIUM
+    elif isinstance(error, DatabaseError | NetworkError):
+        return ErrorSeverity.HIGH
+    elif isinstance(error, ConfigurationError):
+        return ErrorSeverity.CRITICAL
+    else:
+        return ErrorSeverity.MEDIUM
 
 
 def _get_status_code_for_error(error: MythosMUDError) -> int:
@@ -227,34 +272,32 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
     Returns:
         JSONResponse with error details
     """
-    context = create_error_context(
-        request_id=str(request.url),
-        metadata={
-            "path": str(request.url),
-            "method": request.method,
-        },
-    )
 
-    # Convert to MythosMUD error
+    # Map HTTP status codes to appropriate error types and messages
     if exc.status_code == 401:
-        mythos_error = AuthenticationError(str(exc.detail), context)
+        error_type = ErrorType.AUTHENTICATION_FAILED
+        user_friendly = ErrorMessages.AUTHENTICATION_REQUIRED
     elif exc.status_code == 404:
-        mythos_error = ResourceNotFoundError(str(exc.detail), context)
+        error_type = ErrorType.RESOURCE_NOT_FOUND
+        user_friendly = ErrorMessages.PLAYER_NOT_FOUND
     elif exc.status_code == 422:
-        mythos_error = ValidationError(str(exc.detail), context)
+        error_type = ErrorType.VALIDATION_ERROR
+        user_friendly = ErrorMessages.INVALID_INPUT
+    elif exc.status_code == 429:
+        error_type = ErrorType.RATE_LIMIT_EXCEEDED
+        user_friendly = ErrorMessages.TOO_MANY_REQUESTS
     else:
-        mythos_error = MythosMUDError(str(exc.detail), context)
+        error_type = ErrorType.INTERNAL_ERROR
+        user_friendly = ErrorMessages.INTERNAL_ERROR
 
-    # Create error response
-    # Safely get debug setting from app state, default to False
-    try:
-        include_details = request.app.state.config.get("debug", False)
-    except (AttributeError, KeyError):
-        include_details = False
-    error_response = create_error_response(mythos_error, include_details=include_details)
-
-    # Override status code from HTTP exception
-    error_response.status_code = exc.status_code
+    # Create standardized error response
+    error_response = create_standard_error_response(
+        error_type=error_type,
+        message=str(exc.detail),
+        user_friendly=user_friendly,
+        details={"status_code": exc.status_code},
+        severity=ErrorSeverity.MEDIUM,
+    )
 
     logger.warning(
         "HTTP exception handled",
@@ -262,9 +305,10 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
         detail=exc.detail,
         path=str(request.url),
         method=request.method,
+        error_type=error_type.value,
     )
 
-    return error_response.to_response()
+    return JSONResponse(status_code=exc.status_code, content=error_response)
 
 
 @contextmanager

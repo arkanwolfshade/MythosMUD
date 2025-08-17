@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from ..auth.users import get_current_user
+from ..error_types import ErrorMessages
 from ..exceptions import RateLimitError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
@@ -45,8 +46,8 @@ def create_player(
 
     try:
         return player_service.create_player(name, starting_room_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from None
+    except ValueError:
+        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT) from None
 
 
 @player_router.get("/", response_model=list[PlayerRead])
@@ -72,7 +73,7 @@ def get_player(
 
     player = player_service.get_player_by_id(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     return player
 
@@ -89,7 +90,7 @@ def get_player_by_name(
 
     player = player_service.get_player_by_name(player_name)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     return player
 
@@ -106,7 +107,7 @@ def delete_player(
 
     success, message = player_service.delete_player(player_id)
     if not success:
-        raise HTTPException(status_code=404, detail=message)
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     return {"message": message}
 
@@ -124,7 +125,7 @@ def apply_sanity_loss(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.apply_sanity_loss(player, amount, source)
     return {"message": f"Applied {amount} sanity loss to {player.name}"}
@@ -142,7 +143,7 @@ def apply_fear(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.apply_fear(player, amount, source)
     return {"message": f"Applied {amount} fear to {player.name}"}
@@ -160,7 +161,7 @@ def apply_corruption(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.apply_corruption(player, amount, source)
     return {"message": f"Applied {amount} corruption to {player.name}"}
@@ -178,7 +179,7 @@ def gain_occult_knowledge(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.gain_occult_knowledge(player, amount, source)
     return {"message": f"Gained {amount} occult knowledge for {player.name}"}
@@ -195,7 +196,7 @@ def heal_player(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.heal_player(player, amount)
     return {"message": f"Healed {player.name} for {amount} health"}
@@ -213,7 +214,7 @@ def damage_player(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail="Player not found")
+        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
 
     persistence.damage_player(player, amount, damage_type)
     return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
@@ -273,7 +274,7 @@ def roll_character_stats(
             "meets_class_requirements": required_class in available_classes if required_class else True,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to roll stats: {str(e)}") from e
+        raise HTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR) from e
 
 
 @player_router.post("/create-character")
@@ -292,7 +293,7 @@ async def create_character_with_stats(
     """
     # Check if user is authenticated
     if not current_user:
-        raise HTTPException(status_code=401, detail="Authentication required")
+        raise HTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED)
 
     # Apply rate limiting
     try:
@@ -313,7 +314,7 @@ async def create_character_with_stats(
     try:
         # Validate that character name matches username
         if request_data.name != current_user.username:
-            raise HTTPException(status_code=400, detail="Character name must match your username")
+            raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT)
 
         # Convert dict to Stats object
         stats_obj = Stats(**request_data.stats)
@@ -336,9 +337,9 @@ async def create_character_with_stats(
             "stats": stats_obj.model_dump(),
         }
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
+        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create character: {str(e)}") from e
+        raise HTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR) from e
 
 
 @player_router.post("/validate-stats")
@@ -376,7 +377,7 @@ def validate_character_stats(
 
             return {"available_classes": available_classes, "stat_summary": stat_summary}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid stats format: {str(e)}") from e
+        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT) from e
 
 
 @player_router.get("/available-classes")

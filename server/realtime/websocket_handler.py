@@ -9,6 +9,7 @@ import json
 
 from fastapi import WebSocket, WebSocketDisconnect
 
+from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..logging_config import get_logger
 from .connection_manager import connection_manager
 from .envelope import build_event
@@ -140,7 +141,13 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
 
             except json.JSONDecodeError:
                 logger.warning(f"Invalid JSON from player {player_id}")
-                await websocket.send_json({"type": "error", "message": "Invalid JSON format"})
+                error_response = create_websocket_error_response(
+                    ErrorType.INVALID_FORMAT,
+                    "Invalid JSON format",
+                    ErrorMessages.INVALID_FORMAT,
+                    {"player_id": player_id_str}
+                )
+                await websocket.send_json(error_response)
 
             except WebSocketDisconnect:
                 logger.info(f"WebSocket disconnected for player {player_id_str}")
@@ -148,7 +155,13 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
 
             except Exception as e:
                 logger.error(f"Error handling WebSocket message for {player_id_str}: {e}")
-                await websocket.send_json({"type": "error", "message": "Internal server error"})
+                error_response = create_websocket_error_response(
+                    ErrorType.INTERNAL_ERROR,
+                    f"Internal server error: {str(e)}",
+                    ErrorMessages.INTERNAL_ERROR,
+                    {"player_id": player_id_str}
+                )
+                await websocket.send_json(error_response)
 
     finally:
         # Clean up connection
@@ -195,11 +208,23 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         else:
             # Unknown message type
             logger.warning(f"Unknown message type '{message_type}' from player {player_id}")
-            await websocket.send_json({"type": "error", "message": f"Unknown message type: {message_type}"})
+            error_response = create_websocket_error_response(
+                ErrorType.INVALID_COMMAND,
+                f"Unknown message type: {message_type}",
+                ErrorMessages.INVALID_COMMAND,
+                {"message_type": message_type, "player_id": player_id}
+            )
+            await websocket.send_json(error_response)
 
     except Exception as e:
         logger.error(f"Error processing WebSocket message for {player_id}: {e}")
-        await websocket.send_json({"type": "error", "message": "Error processing message"})
+        error_response = create_websocket_error_response(
+            ErrorType.MESSAGE_PROCESSING_ERROR,
+            f"Error processing message: {str(e)}",
+            ErrorMessages.MESSAGE_PROCESSING_ERROR,
+            {"player_id": player_id}
+        )
+        await websocket.send_json(error_response)
 
 
 async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list = None):
@@ -217,7 +242,13 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         if args is None:
             parts = command.strip().split()
             if not parts:
-                await websocket.send_json({"type": "error", "message": "Empty command"})
+                error_response = create_websocket_error_response(
+                    ErrorType.INVALID_COMMAND,
+                    "Empty command",
+                    ErrorMessages.INVALID_COMMAND,
+                    {"player_id": player_id}
+                )
+                await websocket.send_json(error_response)
                 return
 
             cmd = parts[0].lower()
@@ -248,12 +279,13 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
     except Exception as e:
         logger.error(f"Error processing command '{command}' for {player_id}: {e}")
-        await websocket.send_json(
-            {
-                "type": "error",
-                "message": f"Error processing command: {str(e)}",
-            }
+        error_response = create_websocket_error_response(
+            ErrorType.MESSAGE_PROCESSING_ERROR,
+            f"Error processing command: {str(e)}",
+            ErrorMessages.MESSAGE_PROCESSING_ERROR,
+            {"player_id": player_id, "command": command}
         )
+        await websocket.send_json(error_response)
 
 
 async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
@@ -464,7 +496,13 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
 
     except Exception as e:
         logger.error(f"Error handling chat message for {player_id}: {e}")
-        await websocket.send_json({"type": "error", "message": "Error sending chat message"})
+        error_response = create_websocket_error_response(
+            ErrorType.MESSAGE_PROCESSING_ERROR,
+            f"Error sending chat message: {str(e)}",
+            ErrorMessages.MESSAGE_PROCESSING_ERROR,
+            {"player_id": player_id}
+        )
+        await websocket.send_json(error_response)
 
 
 async def broadcast_room_update(player_id: str, room_id: str):

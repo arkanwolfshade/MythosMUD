@@ -9,6 +9,7 @@ import asyncio
 import time
 from collections.abc import AsyncGenerator
 
+from ..error_types import ErrorMessages, ErrorType, create_sse_error_response
 from ..logging_config import get_logger
 from .connection_manager import connection_manager
 from .envelope import build_event, sse_line
@@ -63,7 +64,13 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
 
             except Exception as e:
                 logger.error(f"Error in SSE stream for player {player_id_str}: {e}")
-                yield sse_line(build_event("error", {"message": "Stream error occurred"}, player_id=player_id_str))
+                error_response = create_sse_error_response(
+                    ErrorType.SSE_ERROR,
+                    f"Stream error occurred: {str(e)}",
+                    ErrorMessages.SSE_ERROR,
+                    {"player_id": player_id_str},
+                )
+                yield sse_line(build_event("error", error_response, player_id=player_id_str))
                 break
 
     finally:
