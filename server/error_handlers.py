@@ -299,12 +299,15 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
         severity=ErrorSeverity.MEDIUM,
     )
 
+    # Handle WebSocket vs HTTP request differences
+    method = getattr(request, "method", "WEBSOCKET") if hasattr(request, "method") else "WEBSOCKET"
+
     logger.warning(
         "HTTP exception handled",
         status_code=exc.status_code,
         detail=exc.detail,
         path=str(request.url),
-        method=request.method,
+        method=method,
         error_type=error_type.value,
     )
 

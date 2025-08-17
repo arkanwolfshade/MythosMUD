@@ -292,7 +292,7 @@ class TestLoginEndpoints:
 class TestUserInfoEndpoints:
     """Test user information endpoint functionality."""
 
-    @patch("server.auth.endpoints.get_current_superuser")
+    @patch("server.auth.endpoints.get_current_active_user")
     def test_get_current_user_info_superuser(self, mock_get_current, test_client):
         """Test /auth/me endpoint with superuser."""
         mock_user = MagicMock()
@@ -302,13 +302,13 @@ class TestUserInfoEndpoints:
         mock_user.is_superuser = True
 
         # Override the dependency at the app level
-        from server.auth.dependencies import get_current_superuser
+        from server.auth.dependencies import get_current_active_user
 
-        async def mock_get_current_superuser():
+        async def mock_get_current_active_user():
             return mock_user
 
         # Override the dependency in the app
-        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
 
         try:
             response = test_client.get("/auth/me")
@@ -323,7 +323,7 @@ class TestUserInfoEndpoints:
             # Clean up the override
             test_client.app.dependency_overrides.clear()
 
-    @patch("server.auth.endpoints.get_current_superuser")
+    @patch("server.auth.endpoints.get_current_active_user")
     def test_get_current_user_info_regular_user(self, mock_get_current, test_client):
         """Test /auth/me endpoint with regular user."""
         mock_user = MagicMock()
@@ -333,13 +333,13 @@ class TestUserInfoEndpoints:
         mock_user.is_superuser = False
 
         # Override the dependency at the app level
-        from server.auth.dependencies import get_current_superuser
+        from server.auth.dependencies import get_current_active_user
 
-        async def mock_get_current_superuser():
+        async def mock_get_current_active_user():
             return mock_user
 
         # Override the dependency in the app
-        test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        test_client.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
 
         try:
             response = test_client.get("/auth/me")

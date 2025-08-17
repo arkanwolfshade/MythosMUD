@@ -31,8 +31,8 @@ class Player(Base):
     # Primary key - TEXT (matches database schema)
     player_id = Column(String(length=255), primary_key=True)
 
-    # Foreign key to users table (matches database schema)
-    user_id = Column(String(length=255), ForeignKey("users.user_id"), unique=True, nullable=False)
+    # Foreign key to users table
+    user_id = Column(String(length=255), ForeignKey("users.id"), unique=True, nullable=False)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
