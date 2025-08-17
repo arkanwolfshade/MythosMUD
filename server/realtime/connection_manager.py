@@ -5,9 +5,11 @@ This module handles WebSocket and SSE connection management,
 including connection tracking, rate limiting, and room subscriptions.
 """
 
+import gc
 import time
 import uuid
 
+import psutil
 from fastapi import WebSocket
 
 from ..game.movement_service import MovementService
@@ -15,6 +17,60 @@ from ..logging_config import get_logger
 from ..models import Player
 
 logger = get_logger(__name__)
+
+
+class MemoryMonitor:
+    """Monitor memory usage and trigger cleanup when needed."""
+
+    def __init__(self):
+        self.last_cleanup_time = time.time()
+        self.cleanup_interval = 300  # 5 minutes
+        self.memory_threshold = 0.8  # 80% memory usage triggers cleanup
+        self.max_connection_age = 3600  # 1 hour
+        self.max_pending_messages = 1000  # Max pending messages per player
+        self.max_rate_limit_entries = 1000  # Max rate limit entries per player
+
+    def should_cleanup(self) -> bool:
+        """Check if cleanup should be triggered."""
+        current_time = time.time()
+        memory_usage = self.get_memory_usage()
+
+        # Time-based cleanup
+        if current_time - self.last_cleanup_time > self.cleanup_interval:
+            return True
+
+        # Memory-based cleanup
+        if memory_usage > self.memory_threshold:
+            logger.warning(f"Memory usage high ({memory_usage:.2%}), triggering cleanup")
+            return True
+
+        return False
+
+    def get_memory_usage(self) -> float:
+        """Get current memory usage as percentage."""
+        try:
+            process = psutil.Process()
+            memory_percent = process.memory_percent()
+            return memory_percent / 100.0
+        except Exception as e:
+            logger.error(f"Error getting memory usage: {e}")
+            return 0.0
+
+    def get_memory_stats(self) -> dict:
+        """Get detailed memory statistics."""
+        try:
+            process = psutil.Process()
+            memory_info = process.memory_info()
+            return {
+                "rss_mb": memory_info.rss / 1024 / 1024,
+                "vms_mb": memory_info.vms / 1024 / 1024,
+                "percent": process.memory_percent(),
+                "available_mb": psutil.virtual_memory().available / 1024 / 1024,
+                "total_mb": psutil.virtual_memory().total / 1024 / 1024,
+            }
+        except Exception as e:
+            logger.error(f"Error getting memory stats: {e}")
+            return {}
 
 
 class ConnectionManager:
@@ -50,6 +106,20 @@ class ConnectionManager:
         self.max_connection_attempts = 5  # Max attempts per minute
         self.connection_window = 60  # Time window in seconds
 
+        # Memory monitoring
+        self.memory_monitor = MemoryMonitor()
+
+        # Connection tracking with timestamps
+        self.connection_timestamps: dict[str, float] = {}
+
+        # Cleanup counters
+        self.cleanup_stats = {
+            "last_cleanup": time.time(),
+            "cleanups_performed": 0,
+            "memory_cleanups": 0,
+            "time_cleanups": 0,
+        }
+
     async def connect_websocket(self, websocket: WebSocket, player_id: str) -> bool:
         """
         Connect a WebSocket for a player.
@@ -75,6 +145,7 @@ class ConnectionManager:
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
             self.player_websockets[player_id] = connection_id
+            self.connection_timestamps[connection_id] = time.time()
 
             # Subscribe to player's current room (canonical room id)
             player = self._get_player(player_id)
@@ -89,6 +160,9 @@ class ConnectionManager:
                 # Track player presence
                 await self._track_player_connected(player_id, player)
 
+            # Check if cleanup is needed
+            await self._check_and_cleanup()
+
             logger.info(f"WebSocket connected for player {player_id}")
             return True
         except Exception as e:
@@ -98,10 +172,7 @@ class ConnectionManager:
             )
             # Clean up any partial state in case of failure
             if player_id in self.player_websockets:
-                connection_id = self.player_websockets[player_id]
-                if connection_id in self.active_websockets:
-                    del self.active_websockets[connection_id]
-                del self.player_websockets[player_id]
+                await self.disconnect_websocket(player_id)
             return False
 
     async def disconnect_websocket(self, player_id: str):
@@ -320,11 +391,19 @@ class ConnectionManager:
         except Exception as e:
             logger.error(f"Error pruning stale players: {e}")
 
-    def cleanup_orphaned_data(self):
+    async def cleanup_orphaned_data(self):
         """Clean up orphaned data that might accumulate over time."""
         try:
-            # Clean up orphaned connection attempts (older than 1 hour)
             now_ts = time.time()
+            cleanup_stats = {
+                "orphaned_attempts": 0,
+                "orphaned_messages": 0,
+                "stale_connections": 0,
+                "large_message_queues": 0,
+                "large_rate_limits": 0,
+            }
+
+            # Clean up orphaned connection attempts (older than 1 hour)
             orphaned_attempts = []
             for player_id, attempts in list(self.connection_attempts.items()):
                 # Remove attempts older than 1 hour
@@ -333,12 +412,21 @@ class ConnectionManager:
                     for attempt_time in attempts
                     if now_ts - attempt_time < 3600  # 1 hour
                 ]
+
+                # Limit rate limit entries per player
+                if len(self.connection_attempts[player_id]) > self.memory_monitor.max_rate_limit_entries:
+                    self.connection_attempts[player_id] = self.connection_attempts[player_id][
+                        -self.memory_monitor.max_rate_limit_entries :
+                    ]
+                    cleanup_stats["large_rate_limits"] += 1
+
                 # Remove empty entries
                 if not self.connection_attempts[player_id]:
                     orphaned_attempts.append(player_id)
 
             for player_id in orphaned_attempts:
                 del self.connection_attempts[player_id]
+                cleanup_stats["orphaned_attempts"] += 1
 
             # Clean up orphaned pending messages (older than 1 hour)
             orphaned_messages = []
@@ -349,20 +437,54 @@ class ConnectionManager:
                     for msg in messages
                     if now_ts - msg.get("timestamp", 0) < 3600  # 1 hour
                 ]
+
+                # Limit pending messages per player
+                if len(self.pending_messages[player_id]) > self.memory_monitor.max_pending_messages:
+                    self.pending_messages[player_id] = self.pending_messages[player_id][
+                        -self.memory_monitor.max_pending_messages :
+                    ]
+                    cleanup_stats["large_message_queues"] += 1
+
                 # Remove empty entries
                 if not self.pending_messages[player_id]:
                     orphaned_messages.append(player_id)
 
             for player_id in orphaned_messages:
                 del self.pending_messages[player_id]
+                cleanup_stats["orphaned_messages"] += 1
 
-            if orphaned_attempts or orphaned_messages:
+            # Clean up stale connections
+            stale_connections = []
+            for connection_id, timestamp in list(self.connection_timestamps.items()):
+                if now_ts - timestamp > self.memory_monitor.max_connection_age:
+                    stale_connections.append(connection_id)
+
+            for connection_id in stale_connections:
+                if connection_id in self.active_websockets:
+                    try:
+                        websocket = self.active_websockets[connection_id]
+                        await websocket.close(code=1000, reason="Connection timeout")
+                    except Exception as e:
+                        logger.warning(f"Error closing stale connection {connection_id}: {e}")
+                    del self.active_websockets[connection_id]
+                del self.connection_timestamps[connection_id]
+                cleanup_stats["stale_connections"] += 1
+
+            # Update cleanup stats
+            self.cleanup_stats["cleanups_performed"] += 1
+            self.memory_monitor.last_cleanup_time = now_ts
+
+            if any(cleanup_stats.values()):
                 logger.info(
-                    f"Cleaned up orphaned data: {len(orphaned_attempts)} attempts, {len(orphaned_messages)} message queues"
+                    f"Memory cleanup completed: {cleanup_stats['orphaned_attempts']} attempts, "
+                    f"{cleanup_stats['orphaned_messages']} message queues, "
+                    f"{cleanup_stats['stale_connections']} stale connections, "
+                    f"{cleanup_stats['large_message_queues']} large queues, "
+                    f"{cleanup_stats['large_rate_limits']} large rate limits"
                 )
 
         except Exception as e:
-            logger.error(f"Error cleaning up orphaned data: {e}")
+            logger.error(f"Error cleaning up orphaned data: {e}", exc_info=True)
 
     def _prune_player_from_all_rooms(self, player_id: str):
         """Remove a player from all in-memory room occupant sets."""
@@ -815,6 +937,103 @@ class ConnectionManager:
                 self.room_occupants[room_id] = pruned
         except Exception as e:
             logger.error(f"Error reconciling room presence for {room_id}: {e}")
+
+    async def _check_and_cleanup(self):
+        """
+        Periodically check for cleanup conditions and perform cleanup if needed.
+        """
+        if self.memory_monitor.should_cleanup():
+            logger.info("MemoryMonitor triggered cleanup.")
+            self.cleanup_stats["memory_cleanups"] += 1
+            self.cleanup_stats["last_cleanup"] = time.time()
+            await self.cleanup_orphaned_data()
+            self.prune_stale_players()
+            gc.collect()
+            logger.info("Cleanup complete.")
+
+    def get_memory_stats(self) -> dict:
+        """Get comprehensive memory and connection statistics."""
+        try:
+            memory_stats = self.memory_monitor.get_memory_stats()
+
+            return {
+                "memory": memory_stats,
+                "connections": {
+                    "active_websockets": len(self.active_websockets),
+                    "active_sse": len(self.active_sse_connections),
+                    "total_connections": len(self.active_websockets) + len(self.active_sse_connections),
+                    "player_websockets": len(self.player_websockets),
+                    "connection_timestamps": len(self.connection_timestamps),
+                },
+                "data_structures": {
+                    "online_players": len(self.online_players),
+                    "room_occupants": len(self.room_occupants),
+                    "room_subscriptions": len(self.room_subscriptions),
+                    "last_seen": len(self.last_seen),
+                    "connection_attempts": len(self.connection_attempts),
+                    "pending_messages": len(self.pending_messages),
+                },
+                "cleanup_stats": self.cleanup_stats,
+                "memory_monitor": {
+                    "last_cleanup": self.memory_monitor.last_cleanup_time,
+                    "cleanup_interval": self.memory_monitor.cleanup_interval,
+                    "memory_threshold": self.memory_monitor.memory_threshold,
+                    "max_connection_age": self.memory_monitor.max_connection_age,
+                    "max_pending_messages": self.memory_monitor.max_pending_messages,
+                    "max_rate_limit_entries": self.memory_monitor.max_rate_limit_entries,
+                },
+            }
+        except Exception as e:
+            logger.error(f"Error getting memory stats: {e}", exc_info=True)
+            return {}
+
+    def get_memory_alerts(self) -> list[str]:
+        """Get memory-related alerts."""
+        alerts = []
+
+        try:
+            memory_usage = self.memory_monitor.get_memory_usage()
+
+            if memory_usage > 0.9:  # 90%
+                alerts.append(f"CRITICAL: Memory usage at {memory_usage:.1%}")
+            elif memory_usage > 0.8:  # 80%
+                alerts.append(f"WARNING: Memory usage at {memory_usage:.1%}")
+            elif memory_usage > 0.7:  # 70%
+                alerts.append(f"INFO: Memory usage at {memory_usage:.1%}")
+
+            # Check for large data structures
+            if len(self.connection_attempts) > 1000:
+                alerts.append(f"WARNING: Large number of rate limit entries: {len(self.connection_attempts)}")
+
+            if len(self.pending_messages) > 1000:
+                alerts.append(f"WARNING: Large number of pending message queues: {len(self.pending_messages)}")
+
+            # Check for stale connections
+            now = time.time()
+            stale_count = sum(
+                1 for ts in self.connection_timestamps.values() if now - ts > self.memory_monitor.max_connection_age
+            )
+            if stale_count > 0:
+                alerts.append(f"WARNING: {stale_count} stale connections detected")
+
+        except Exception as e:
+            logger.error(f"Error getting memory alerts: {e}", exc_info=True)
+            alerts.append(f"ERROR: Failed to get memory alerts: {e}")
+
+        return alerts
+
+    async def force_cleanup(self):
+        """Force immediate cleanup of all orphaned data."""
+        try:
+            logger.info("Forcing immediate cleanup")
+            await self.cleanup_orphaned_data()
+            self.prune_stale_players()
+            gc.collect()
+            self.cleanup_stats["cleanups_performed"] += 1
+            self.memory_monitor.last_cleanup_time = time.time()
+            logger.info("Force cleanup completed")
+        except Exception as e:
+            logger.error(f"Error during force cleanup: {e}", exc_info=True)
 
 
 # Global connection manager instance
