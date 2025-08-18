@@ -153,7 +153,10 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
 
     try {
       logger.info('GameConnection', 'Connecting WebSocket');
-      const websocket = new WebSocket(`ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}`);
+      const wsBase = window.location.origin.replace('http', 'ws');
+      const wsUrl = `${wsBase}/api/ws?token=${encodeURIComponent(authToken)}`;
+      logger.info('GameConnection', 'Creating WebSocket connection', { url: wsUrl });
+      const websocket = new WebSocket(wsUrl);
 
       websocket.onopen = () => {
         logger.info('GameConnection', 'WebSocket connected');
@@ -227,7 +230,7 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     setState(prev => ({ ...prev, isConnecting: true, error: null }));
 
     try {
-      logger.info('GameConnection', 'Connecting to game server');
+      logger.info('GameConnection', 'Connecting to game server', { authToken: authToken ? 'present' : 'missing' });
 
       // Close any existing connection
       if (eventSourceRef.current) {
@@ -236,7 +239,9 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
       }
 
       // Prefer token-authenticated SSE endpoint; server resolves token -> user_id -> player_id
-      const eventSource = new EventSource(`http://localhost:54731/api/events?token=${encodeURIComponent(authToken)}`);
+      const sseUrl = `/api/events?token=${encodeURIComponent(authToken)}`;
+      logger.info('GameConnection', 'Creating SSE connection', { url: sseUrl });
+      const eventSource = new EventSource(sseUrl);
 
       eventSourceRef.current = eventSource;
 
@@ -273,7 +278,7 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
       };
 
       eventSource.onerror = error => {
-        logger.error('GameConnection', 'Connection error', { error: String(error) });
+        logger.error('GameConnection', 'SSE connection error', { error: String(error) });
         isConnectingRef.current = false;
         setState(prev => ({
           ...prev,

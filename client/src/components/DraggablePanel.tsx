@@ -1,380 +1,250 @@
-import { Close, DragIndicator, Minimize, OpenInFull } from '@mui/icons-material';
-import { Box, IconButton, Paper, Tooltip, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
-// Styled components for the draggable panel
-const DraggablePaper = styled(Paper)(({ theme }) => ({
-  position: 'absolute',
-  cursor: 'move',
-  userSelect: 'none',
-  zIndex: 1000,
-  minWidth: 200,
-  minHeight: 150,
-  transition: 'box-shadow 0.2s ease-in-out',
-  '&:hover': {
-    boxShadow: theme.shadows[8],
-  },
-  '&.dragging': {
-    boxShadow: theme.shadows[12],
-    opacity: 0.9,
-  },
-  '&.snapping': {
-    transition: 'transform 0.1s ease-out',
-  },
-}));
-
-const PanelHeader = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: theme.spacing(1, 2),
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  cursor: 'move',
-  borderTopLeftRadius: theme.shape.borderRadius,
-  borderTopRightRadius: theme.shape.borderRadius,
-  '&:hover': {
-    backgroundColor: theme.palette.primary.dark,
-  },
-}));
-
-const PanelContent = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  height: 'calc(100% - 48px)', // Subtract header height
-  overflow: 'auto',
-}));
-
-const HeaderControls = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-});
-
-interface PanelPosition {
-  x: number;
-  y: number;
-}
-
-interface PanelSize {
-  width: number;
-  height: number;
-}
+import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
+import { TerminalButton } from './ui/TerminalButton';
 
 interface DraggablePanelProps {
-  id: string;
-  title: string;
   children: React.ReactNode;
-  initialPosition?: PanelPosition;
-  initialSize?: PanelSize;
-  minSize?: PanelSize;
-  maxSize?: PanelSize;
-  onPositionChange?: (position: PanelPosition) => void;
-  onSizeChange?: (size: PanelSize) => void;
+  title: string;
+  defaultPosition?: { x: number; y: number };
+  defaultSize?: { width: number; height: number };
+  minSize?: { width: number; height: number };
+  maxSize?: { width: number; height: number };
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
-  isMinimized?: boolean;
-  isMaximized?: boolean;
-  snapToGrid?: boolean;
-  gridSize?: number;
   className?: string;
-  style?: React.CSSProperties;
+  variant?: 'default' | 'eldritch' | 'elevated';
+  zIndex?: number;
 }
 
 export const DraggablePanel: React.FC<DraggablePanelProps> = ({
-  title,
   children,
-  initialPosition = { x: 50, y: 50 },
-  initialSize = { width: 300, height: 400 },
+  title,
+  defaultPosition = { x: 50, y: 50 },
+  defaultSize = { width: 400, height: 300 },
   minSize = { width: 200, height: 150 },
   maxSize = { width: 800, height: 600 },
-  onPositionChange,
-  onSizeChange,
   onClose,
   onMinimize,
   onMaximize,
-  isMinimized = false,
-  isMaximized = false,
-  snapToGrid = true,
-  gridSize = 20,
-  className,
+  className = '',
+  variant = 'default',
+  zIndex = 1000,
 }) => {
-  const [position, setPosition] = useState<PanelPosition>(initialPosition);
-  const [size, setSize] = useState<PanelSize>(initialSize);
+  const [position, setPosition] = useState(defaultPosition);
+  const [size, setSize] = useState(defaultSize);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const [dragOffset, setDragOffset] = useState<PanelPosition>({ x: 0, y: 0 });
-  const [resizeHandle, setResizeHandle] = useState<string | null>(null);
-  const [resizeStart, setResizeStart] = useState<{ size: PanelSize; mouse: PanelPosition } | null>(null);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [resizeDirection, setResizeDirection] = useState<string>('');
 
   const panelRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
-  // Snap position to grid
-  const snapToGridPosition = useCallback(
-    (pos: PanelPosition): PanelPosition => {
-      if (!snapToGrid) return pos;
-      return {
-        x: Math.round(pos.x / gridSize) * gridSize,
-        y: Math.round(pos.y / gridSize) * gridSize,
-      };
-    },
-    [snapToGrid, gridSize]
-  );
+  const baseClasses =
+    'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch';
 
-  // Snap size to grid
-  const snapToGridSize = useCallback(
-    (s: PanelSize): PanelSize => {
-      if (!snapToGrid) return s;
-      return {
-        width: Math.round(s.width / gridSize) * gridSize,
-        height: Math.round(s.height / gridSize) * gridSize,
-      };
-    },
-    [snapToGrid, gridSize]
-  );
+  const variantClasses = {
+    default: 'text-mythos-terminal-text',
+    eldritch:
+      'text-mythos-terminal-text border-mythos-terminal-primary shadow-green-900/30 hover:shadow-green-900/50 hover:animate-eldritch-shadow',
+    elevated:
+      'text-mythos-terminal-text border-mythos-terminal-primary shadow-xl shadow-green-900/20 hover:shadow-2xl hover:shadow-green-900/30',
+  };
 
-  // Handle mouse down for dragging
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (e.target !== e.currentTarget) return; // Only drag from header
+  const headerClasses = {
+    default: 'bg-mythos-terminal-background border-b border-gray-700 cursor-move select-none',
+    eldritch:
+      'bg-mythos-terminal-background border-b border-mythos-terminal-primary cursor-move select-none animate-eldritch-glow',
+    elevated: 'bg-mythos-terminal-background border-b border-mythos-terminal-primary cursor-move select-none',
+  };
 
+  const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;
+
+  const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.preventDefault();
-    setIsDragging(true);
+    setIsResizing(true);
+    setResizeDirection(direction);
+  };
 
-    const rect = panelRef.current?.getBoundingClientRect();
-    if (rect) {
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    }
-  }, []);
-
-  // Handle mouse down for resizing
-  const handleResizeMouseDown = useCallback(
-    (e: React.MouseEvent, handle: string) => {
+  const handleHeaderMouseDown = (e: React.MouseEvent) => {
+    if (e.target === headerRef.current || headerRef.current?.contains(e.target as Node)) {
       e.preventDefault();
-      e.stopPropagation();
-
-      setIsResizing(true);
-      setResizeHandle(handle);
-
+      setIsDragging(true);
       const rect = panelRef.current?.getBoundingClientRect();
       if (rect) {
-        setResizeStart({
-          size: { ...size },
-          mouse: { x: e.clientX, y: e.clientY },
+        setDragOffset({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
         });
       }
-    },
-    [size]
-  );
+    }
+  };
 
-  // Handle mouse move
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        const newPosition = snapToGridPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
-        });
-
-        setPosition(newPosition);
-        onPositionChange?.(newPosition);
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+        setPosition({ x: Math.max(0, newX), y: Math.max(0, newY) });
       }
 
-      if (isResizing && resizeStart) {
-        const deltaX = e.clientX - resizeStart.mouse.x;
-        const deltaY = e.clientY - resizeStart.mouse.y;
+      if (isResizing) {
+        const rect = panelRef.current?.getBoundingClientRect();
+        if (rect) {
+          let newWidth = size.width;
+          let newHeight = size.height;
+          let newX = position.x;
+          let newY = position.y;
 
-        const newSize = { ...resizeStart.size };
+          if (resizeDirection.includes('e')) {
+            newWidth = Math.max(minSize.width, Math.min(maxSize.width, e.clientX - rect.left));
+          }
+          if (resizeDirection.includes('w')) {
+            const deltaX = rect.right - e.clientX;
+            newWidth = Math.max(minSize.width, Math.min(maxSize.width, size.width + deltaX));
+            newX = position.x + (size.width - newWidth);
+          }
+          if (resizeDirection.includes('s')) {
+            newHeight = Math.max(minSize.height, Math.min(maxSize.height, e.clientY - rect.top));
+          }
+          if (resizeDirection.includes('n')) {
+            const deltaY = rect.bottom - e.clientY;
+            newHeight = Math.max(minSize.height, Math.min(maxSize.height, size.height + deltaY));
+            newY = position.y + (size.height - newHeight);
+          }
 
-        switch (resizeHandle) {
-          case 'nw':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width - deltaX);
-            newSize.height = Math.max(minSize.height, resizeStart.size.height - deltaY);
-            break;
-          case 'ne':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width + deltaX);
-            newSize.height = Math.max(minSize.height, resizeStart.size.height - deltaY);
-            break;
-          case 'sw':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width - deltaX);
-            newSize.height = Math.max(minSize.height, resizeStart.size.height + deltaY);
-            break;
-          case 'se':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width + deltaX);
-            newSize.height = Math.max(minSize.height, resizeStart.size.height + deltaY);
-            break;
-          case 'n':
-            newSize.height = Math.max(minSize.height, resizeStart.size.height - deltaY);
-            break;
-          case 's':
-            newSize.height = Math.max(minSize.height, resizeStart.size.height + deltaY);
-            break;
-          case 'e':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width + deltaX);
-            break;
-          case 'w':
-            newSize.width = Math.max(minSize.width, resizeStart.size.width - deltaX);
-            break;
+          setSize({ width: newWidth, height: newHeight });
+          setPosition({ x: newX, y: newY });
         }
-
-        // Apply max size constraints
-        newSize.width = Math.min(maxSize.width, newSize.width);
-        newSize.height = Math.min(maxSize.height, newSize.height);
-
-        const snappedSize = snapToGridSize(newSize);
-        setSize(snappedSize);
-        onSizeChange?.(snappedSize);
       }
     },
-    [
-      isDragging,
-      isResizing,
-      dragOffset,
-      resizeStart,
-      resizeHandle,
-      minSize,
-      maxSize,
-      snapToGridPosition,
-      snapToGridSize,
-      onPositionChange,
-      onSizeChange,
-    ]
+    [isDragging, isResizing, dragOffset, resizeDirection, position, size, minSize, maxSize]
   );
 
-  // Handle mouse up
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = () => {
     setIsDragging(false);
     setIsResizing(false);
-    setResizeHandle(null);
-    setResizeStart(null);
-  }, []);
+    setResizeDirection('');
+  };
 
-  // Add/remove event listeners
+  const handleMinimize = () => {
+    setIsMinimized(!isMinimized);
+    onMinimize?.();
+  };
+
+  const handleMaximize = () => {
+    setIsMaximized(!isMaximized);
+    onMaximize?.();
+  };
+
   useEffect(() => {
     if (isDragging || isResizing) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
+  }, [isDragging, isResizing, dragOffset, resizeDirection, position, size, handleMouseMove]);
 
-  // Resize handles
-  const ResizeHandle = styled(Box)<{ handlePosition: string }>(({ handlePosition }) => ({
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    },
-    ...(handlePosition.includes('n') && { top: 0, height: 4, cursor: 'n-resize' }),
-    ...(handlePosition.includes('s') && { bottom: 0, height: 4, cursor: 's-resize' }),
-    ...(handlePosition.includes('e') && { right: 0, width: 4, cursor: 'e-resize' }),
-    ...(handlePosition.includes('w') && { left: 0, width: 4, cursor: 'w-resize' }),
-    ...(handlePosition === 'nw' && { cursor: 'nw-resize' }),
-    ...(handlePosition === 'ne' && { cursor: 'ne-resize' }),
-    ...(handlePosition === 'sw' && { cursor: 'sw-resize' }),
-    ...(handlePosition === 'se' && { cursor: 'se-resize' }),
-  }));
-
-  if (isMinimized) {
-    return (
-      <DraggablePaper
-        ref={panelRef}
-        style={{
-          left: position.x,
-          top: position.y,
-          width: 200,
-          height: 48,
-        }}
-        className={`${className || ''} ${isDragging ? 'dragging' : ''}`}
-        elevation={isDragging ? 12 : 4}
-      >
-        <PanelHeader onMouseDown={handleMouseDown}>
-          <Typography variant="subtitle2" noWrap>
-            {title}
-          </Typography>
-          <HeaderControls>
-            {onMaximize && (
-              <Tooltip title="Restore">
-                <IconButton size="small" onClick={onMaximize}>
-                  <OpenInFull fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {onClose && (
-              <Tooltip title="Close">
-                <IconButton size="small" onClick={onClose}>
-                  <Close fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </HeaderControls>
-        </PanelHeader>
-      </DraggablePaper>
-    );
-  }
+  const panelStyle: React.CSSProperties = {
+    left: position.x,
+    top: position.y,
+    width: isMinimized ? size.width : size.width,
+    height: isMinimized ? 'auto' : size.height,
+    zIndex,
+  };
 
   return (
-    <DraggablePaper
-      ref={panelRef}
-      style={{
-        left: position.x,
-        top: position.y,
-        width: size.width,
-        height: size.height,
-      }}
-      className={`${className || ''} ${isDragging ? 'dragging' : ''} ${isResizing ? 'snapping' : ''}`}
-      elevation={isDragging || isResizing ? 12 : 4}
-    >
-      <PanelHeader onMouseDown={handleMouseDown}>
-        <Box display="flex" alignItems="center" gap={1}>
-          <DragIndicator fontSize="small" />
-          <Typography variant="subtitle2" noWrap>
-            {title}
-          </Typography>
-        </Box>
-        <HeaderControls>
+    <div ref={panelRef} className={classes} style={panelStyle}>
+      {/* Header */}
+      <div
+        ref={headerRef}
+        className={`flex items-center justify-between px-3 py-2 ${headerClasses[variant]}`}
+        onMouseDown={handleHeaderMouseDown}
+      >
+        <div className="flex items-center space-x-2">
+          <EldritchIcon name={MythosIcons.panel} size={16} className="text-mythos-terminal-primary" />
+          <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
+        </div>
+        <div className="flex items-center space-x-1">
           {onMinimize && (
-            <Tooltip title="Minimize">
-              <IconButton size="small" onClick={onMinimize}>
-                <Minimize fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton
+              variant="secondary"
+              size="sm"
+              onClick={handleMinimize}
+              className="w-6 h-6 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
+            >
+              <EldritchIcon name={MythosIcons.minimize} size={12} />
+            </TerminalButton>
           )}
           {onMaximize && (
-            <Tooltip title={isMaximized ? 'Restore' : 'Maximize'}>
-              <IconButton size="small" onClick={onMaximize}>
-                <OpenInFull fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton
+              variant="secondary"
+              size="sm"
+              onClick={handleMaximize}
+              className="w-6 h-6 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
+            >
+              <EldritchIcon name={isMaximized ? MythosIcons.restore : MythosIcons.maximize} size={12} />
+            </TerminalButton>
           )}
           {onClose && (
-            <Tooltip title="Close">
-              <IconButton size="small" onClick={onClose}>
-                <Close fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton
+              variant="danger"
+              size="sm"
+              onClick={onClose}
+              className="w-6 h-6 p-0 flex items-center justify-center hover:animate-eldritch-glow"
+            >
+              <EldritchIcon name={MythosIcons.close} size={12} />
+            </TerminalButton>
           )}
-        </HeaderControls>
-      </PanelHeader>
+        </div>
+      </div>
 
-      <PanelContent>{children}</PanelContent>
+      {/* Content */}
+      {!isMinimized && <div className="p-3 h-full overflow-auto">{children}</div>}
 
       {/* Resize handles */}
-      <ResizeHandle handlePosition="n" onMouseDown={e => handleResizeMouseDown(e, 'n')} />
-      <ResizeHandle handlePosition="s" onMouseDown={e => handleResizeMouseDown(e, 's')} />
-      <ResizeHandle handlePosition="e" onMouseDown={e => handleResizeMouseDown(e, 'e')} />
-      <ResizeHandle handlePosition="w" onMouseDown={e => handleResizeMouseDown(e, 'w')} />
-      <ResizeHandle handlePosition="nw" onMouseDown={e => handleResizeMouseDown(e, 'nw')} />
-      <ResizeHandle handlePosition="ne" onMouseDown={e => handleResizeMouseDown(e, 'ne')} />
-      <ResizeHandle handlePosition="sw" onMouseDown={e => handleResizeMouseDown(e, 'sw')} />
-      <ResizeHandle handlePosition="se" onMouseDown={e => handleResizeMouseDown(e, 'se')} />
-    </DraggablePaper>
+      {!isMinimized && (
+        <>
+          <div
+            className="absolute top-0 right-0 w-2 h-2 cursor-se-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'se')}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'sw')}
+          />
+          <div
+            className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'se')}
+          />
+          <div
+            className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'nw')}
+          />
+          <div
+            className="absolute top-1/2 left-0 w-1 h-4 -translate-y-1/2 cursor-w-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'w')}
+          />
+          <div
+            className="absolute top-1/2 right-0 w-1 h-4 -translate-y-1/2 cursor-e-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'e')}
+          />
+          <div
+            className="absolute left-1/2 top-0 w-4 h-1 -translate-x-1/2 cursor-n-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 'n')}
+          />
+          <div
+            className="absolute left-1/2 bottom-0 w-4 h-1 -translate-x-1/2 cursor-s-resize hover:bg-mythos-terminal-primary/20"
+            onMouseDown={e => handleMouseDown(e, 's')}
+          />
+        </>
+      )}
+    </div>
   );
 };

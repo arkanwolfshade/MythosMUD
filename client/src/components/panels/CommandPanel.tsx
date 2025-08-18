@@ -1,78 +1,28 @@
-import { Clear, Help, Send } from '@mui/icons-material';
-import { Box, Button, IconButton, List, ListItem, ListItemText, TextField, Tooltip, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useEffect, useRef, useState } from 'react';
+import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
+import { TerminalButton } from '../ui/TerminalButton';
+import { TerminalInput } from '../ui/TerminalInput';
 
 interface CommandPanelProps {
   commandHistory: string[];
   onSendCommand: (command: string) => void;
   onClearHistory?: () => void;
   disabled?: boolean;
+  isConnected?: boolean;
   placeholder?: string;
 }
-
-const CommandContainer = styled(Box)(() => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-}));
-
-const CommandInputArea = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  gap: theme.spacing(1),
-  padding: theme.spacing(1, 0),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(1),
-}));
-
-const HistoryArea = styled(Box)(({ theme }) => ({
-  flex: 1,
-  overflow: 'auto',
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.background.default,
-}));
-
-const HistoryItem = styled(ListItem)(({ theme }) => ({
-  padding: theme.spacing(1, 2),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  '&:last-child': {
-    borderBottom: 'none',
-  },
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-}));
-
-const CommandText = styled(Typography)(() => ({
-  fontFamily: 'monospace',
-  fontSize: '0.875rem',
-}));
-
-const CommandTimestamp = styled(Typography)(({ theme }) => ({
-  fontSize: '0.75rem',
-  color: theme.palette.text.secondary,
-  marginTop: theme.spacing(0.5),
-}));
-
-const HistoryToolbar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: theme.spacing(1, 2),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
-}));
 
 export const CommandPanel: React.FC<CommandPanelProps> = ({
   commandHistory,
   onSendCommand,
   onClearHistory,
   disabled = false,
+  isConnected = true,
   placeholder = "Enter command (e.g., 'look' or '/look')...",
 }) => {
   const [commandInput, setCommandInput] = useState('');
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Focus input on mount
@@ -88,6 +38,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     onSendCommand(command);
     setCommandInput('');
     setHistoryIndex(-1);
+    setShowSuggestions(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -108,6 +59,9 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
         setHistoryIndex(-1);
         setCommandInput('');
       }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      // Auto-complete logic could be added here
     }
   };
 
@@ -117,119 +71,221 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   };
 
   const formatTimestamp = (index: number) => {
-    // For now, we'll use a simple index-based timestamp
-    // In a real implementation, you'd store actual timestamps
-    // const now = new Date();
     const timeAgo = commandHistory.length - index;
     if (timeAgo === 1) return 'Just now';
     if (timeAgo < 60) return `${timeAgo} commands ago`;
     return `${Math.floor(timeAgo / 60)}m ago`;
   };
 
-  return (
-    <CommandContainer>
-      <Typography variant="h6" gutterBottom>
-        Command Input
-      </Typography>
+  const quickCommands = [
+    { command: 'look', icon: MythosIcons.look, description: 'Look around' },
+    { command: 'inventory', icon: MythosIcons.inventory, description: 'Check inventory' },
+    { command: 'help', icon: MythosIcons.help, description: 'Get help' },
+    { command: 'who', icon: MythosIcons.character, description: 'Who is online' },
+    { command: 'n', icon: MythosIcons.exit, description: 'Go north' },
+    { command: 's', icon: MythosIcons.exit, description: 'Go south' },
+    { command: 'e', icon: MythosIcons.exit, description: 'Go east' },
+    { command: 'w', icon: MythosIcons.exit, description: 'Go west' },
+  ];
 
-      {/* Command Input */}
-      <form onSubmit={handleCommandSubmit}>
-        <CommandInputArea>
-          <TextField
-            ref={inputRef}
-            fullWidth
-            size="small"
-            value={commandInput}
-            onChange={e => setCommandInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={disabled}
-            InputProps={{
-              endAdornment: (
-                <Button
-                  type="submit"
-                  disabled={!commandInput.trim() || disabled}
-                  variant="contained"
-                  size="small"
-                  endIcon={<Send />}
-                >
-                  Send
-                </Button>
-              ),
-            }}
-          />
-        </CommandInputArea>
-      </form>
+  const commonCommands = [
+    'look',
+    'inventory',
+    'help',
+    'who',
+    'say',
+    'whisper',
+    'shout',
+    'n',
+    's',
+    'e',
+    'w',
+    'ne',
+    'nw',
+    'se',
+    'sw',
+    'up',
+    'down',
+    'get',
+    'drop',
+    'wear',
+    'remove',
+    'cast',
+    'attack',
+    'flee',
+  ];
+
+  const getSuggestions = (input: string) => {
+    if (!input.trim()) return [];
+    return commonCommands.filter(cmd => cmd.toLowerCase().startsWith(input.toLowerCase())).slice(0, 5);
+  };
+
+  const suggestions = getSuggestions(commandInput);
+
+  return (
+    <div className="h-full flex flex-col font-mono">
+      {/* Command Header */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-surface">
+        <div className="flex items-center gap-2">
+          <EldritchIcon name={MythosIcons.search} size={20} variant="primary" />
+          <h3 className="text-mythos-terminal-primary font-bold">Command Input</h3>
+        </div>
+        <div className="flex items-center gap-2">
+          {onClearHistory && (
+            <TerminalButton variant="secondary" size="sm" onClick={onClearHistory} className="p-2 h-8 w-8">
+              <EldritchIcon name={MythosIcons.clear} size={14} variant="error" />
+            </TerminalButton>
+          )}
+          <TerminalButton
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowSuggestions(!showSuggestions)}
+            className="p-2 h-8 w-8"
+          >
+            <EldritchIcon name={MythosIcons.help} size={14} variant="primary" />
+          </TerminalButton>
+        </div>
+      </div>
+
+      {/* Command Input Area */}
+      <div className="p-3 border-b border-gray-700 bg-mythos-terminal-surface">
+        <form onSubmit={handleCommandSubmit} className="space-y-3">
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <TerminalInput
+                // ref={inputRef}
+                value={commandInput}
+                onChange={setCommandInput}
+                onKeyDown={handleKeyDown}
+                placeholder={placeholder}
+                disabled={disabled || !isConnected}
+                className="w-full"
+                onFocus={() => setShowSuggestions(true)}
+              />
+              {suggestions.length > 0 && showSuggestions && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-10">
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-2 hover:bg-mythos-terminal-background cursor-pointer text-sm"
+                      onClick={() => {
+                        setCommandInput(suggestion);
+                        setShowSuggestions(false);
+                        inputRef.current?.focus();
+                      }}
+                    >
+                      <span className="text-mythos-terminal-primary">{suggestion}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <TerminalButton
+              type="submit"
+              variant="primary"
+              disabled={!commandInput.trim() || disabled || !isConnected}
+              className="px-4"
+            >
+              <EldritchIcon name={MythosIcons.chat} size={16} className="mr-2" />
+              Send
+            </TerminalButton>
+          </div>
+        </form>
+      </div>
 
       {/* Command History */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <HistoryToolbar>
-          <Typography variant="subtitle2">Command History ({commandHistory.length})</Typography>
-          <Box>
-            {onClearHistory && (
-              <Tooltip title="Clear History">
-                <IconButton size="small" onClick={onClearHistory}>
-                  <Clear />
-                </IconButton>
-              </Tooltip>
-            )}
-            <Tooltip title="Command Help">
-              <IconButton size="small">
-                <Help />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </HistoryToolbar>
+      <div className="flex-1 flex flex-col">
+        <div className="flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-background">
+          <span className="text-sm text-mythos-terminal-text-secondary">Command History ({commandHistory.length})</span>
+          <div className="flex items-center gap-1">
+            <EldritchIcon name={MythosIcons.clock} size={12} variant="secondary" />
+            <span className="text-xs text-mythos-terminal-text-secondary">Use ↑↓ to navigate</span>
+          </div>
+        </div>
 
-        <HistoryArea>
+        <div className="flex-1 overflow-auto bg-mythos-terminal-background border border-gray-700 rounded">
           {commandHistory.length === 0 ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', p: 2 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="center">
-                No command history yet.
-                <br />
-                Start typing commands to see them here.
-              </Typography>
-            </Box>
+            <div className="flex items-center justify-center h-full p-4">
+              <div className="text-center space-y-2">
+                <EldritchIcon name={MythosIcons.search} size={32} variant="secondary" className="mx-auto opacity-50" />
+                <p className="text-mythos-terminal-text-secondary text-sm">No command history yet.</p>
+                <p className="text-mythos-terminal-text-secondary text-xs">Start typing commands to see them here.</p>
+              </div>
+            </div>
           ) : (
-            <List dense sx={{ p: 0 }}>
+            <div className="space-y-1 p-2">
               {commandHistory
                 .slice()
                 .reverse()
                 .map((command, index) => (
-                  <HistoryItem key={index} onClick={() => handleHistoryClick(command)} sx={{ cursor: 'pointer' }}>
-                    <ListItemText
-                      primary={<CommandText>&gt; {command}</CommandText>}
-                      secondary={<CommandTimestamp>{formatTimestamp(index)}</CommandTimestamp>}
-                    />
-                  </HistoryItem>
+                  <div
+                    key={index}
+                    onClick={() => handleHistoryClick(command)}
+                    className="p-2 bg-mythos-terminal-surface border border-gray-700 rounded cursor-pointer hover:border-mythos-terminal-primary/30 transition-colors duration-200"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="text-sm text-mythos-terminal-text font-mono">&gt; {command}</div>
+                        <div className="text-xs text-mythos-terminal-text-secondary mt-1">{formatTimestamp(index)}</div>
+                      </div>
+                      <EldritchIcon name={MythosIcons.exit} size={12} variant="secondary" className="opacity-50" />
+                    </div>
+                  </div>
                 ))}
-            </List>
+            </div>
           )}
-        </HistoryArea>
-      </Box>
+        </div>
+      </div>
 
       {/* Quick Commands */}
-      <Box sx={{ mt: 1, pt: 1, borderTop: 1, borderColor: 'divider' }}>
-        <Typography variant="caption" color="text.secondary" gutterBottom>
-          Quick Commands:
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          {['look', 'inventory', 'help', 'who'].map(cmd => (
-            <Button
-              key={cmd}
-              size="small"
-              variant="outlined"
-              onClick={() => {
-                setCommandInput(cmd);
-                inputRef.current?.focus();
-              }}
-              disabled={disabled}
-            >
-              {cmd}
-            </Button>
-          ))}
-        </Box>
-      </Box>
-    </CommandContainer>
+      <div className="p-3 border-t border-gray-700 bg-mythos-terminal-surface">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <EldritchIcon name={MythosIcons.move} size={14} variant="primary" />
+            <span className="text-sm text-mythos-terminal-text-secondary font-bold">Quick Commands:</span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {quickCommands.map(({ command, icon }) => (
+              <TerminalButton
+                key={command}
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setCommandInput(command);
+                  inputRef.current?.focus();
+                }}
+                disabled={disabled || !isConnected}
+                className="flex items-center gap-2 text-xs"
+              >
+                <EldritchIcon name={icon} size={12} variant="primary" />
+                <span>{command}</span>
+              </TerminalButton>
+            ))}
+          </div>
+
+          <div className="text-xs text-mythos-terminal-text-secondary">
+            <span className="font-bold">Tip:</span> Use Tab for auto-completion, ↑↓ for history navigation
+          </div>
+        </div>
+      </div>
+
+      {/* Command Statistics */}
+      <div className="p-2 border-t border-gray-700 bg-mythos-terminal-background">
+        <div className="flex items-center justify-between text-xs text-mythos-terminal-text-secondary">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <EldritchIcon name={MythosIcons.stats} size={12} variant="secondary" />
+              <span>{commandHistory.length} commands</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <EldritchIcon name={MythosIcons.connection} size={12} variant="secondary" />
+              <span>Ready</span>
+            </div>
+          </div>
+          <div className="text-xs opacity-75">MythosMUD Terminal</div>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -1,20 +1,9 @@
-import { Help as HelpIcon } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { useGameConnection } from '../hooks/useGameConnection';
-import { ansiToHtmlWithBreaks } from '../utils/ansiToHtml';
-import { getErrorMessage } from '../utils/errorHandler';
-import { logger } from '../utils/logger';
-import { CommandHelpDrawer } from './CommandHelpDrawer';
-import './GameTerminal.css';
+import React, { useState } from 'react';
+import { DraggablePanel } from './DraggablePanel';
 import { MotdContent } from './MotdContent';
-import { RoomInfoPanel } from './RoomInfoPanel';
-
-interface GameTerminalProps {
-  playerId: string;
-  playerName: string;
-  authToken: string;
-}
+import { ChatPanel } from './panels/ChatPanel';
+import { CommandPanel } from './panels/CommandPanel';
+import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 
 interface Player {
   name: string;
@@ -29,604 +18,238 @@ interface Room {
   id: string;
   name: string;
   description: string;
-  plane?: string;
-  zone?: string;
-  sub_zone?: string;
-  environment?: string;
-  exits?: Record<string, string | null>;
-  occupants?: string[];
-  occupant_count?: number;
+  exits: Record<string, string>;
+  entities?: Array<{
+    name: string;
+    type: string;
+  }>;
 }
 
-interface Entity {
-  name: string;
-}
-
-interface GameEvent {
-  event_type: string;
-  data: Record<string, unknown>;
-  alias_chain?: Array<{
+interface ChatMessage {
+  text: string;
+  timestamp: string;
+  isHtml: boolean;
+  isCompleteHtml?: boolean;
+  messageType?: string;
+  aliasChain?: Array<{
     original: string;
     expanded: string;
     alias_name: string;
   }>;
 }
 
-interface GameState {
-  player: Player | null;
+interface GameTerminalProps {
+  playerName: string;
+  isConnected: boolean;
+  isConnecting: boolean;
+  error: string | null;
+  reconnectAttempts: number;
   room: Room | null;
-  entities: Entity[];
-  roomOccupants: string[];
-  messages: Array<{
-    text: string;
-    timestamp: string;
-    isHtml: boolean;
-    isCompleteHtml?: boolean;
-    messageType?: string;
-    aliasChain?: Array<{
-      original: string;
-      expanded: string;
-      alias_name: string;
-    }>;
-  }>;
+  player: Player | null;
+  messages: ChatMessage[];
+  commandHistory: string[];
+  onConnect: () => void;
+  onDisconnect: () => void;
+  onLogout: () => void;
+  onDownloadLogs: () => void;
+  onSendCommand: (command: string) => void;
+  onClearMessages: () => void;
+  onClearHistory: () => void;
 }
 
-export function GameTerminal({ playerId, playerName, authToken }: GameTerminalProps) {
-  const [gameState, setGameState] = useState<GameState>({
-    player: null,
-    room: null,
-    entities: [],
-    roomOccupants: [],
-    messages: [],
-  });
-
-  const [commandInput, setCommandInput] = useState('');
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
+export const GameTerminal: React.FC<GameTerminalProps> = ({
+  playerName,
+  isConnected,
+  isConnecting,
+  error,
+  reconnectAttempts,
+  room,
+  player,
+  messages,
+  commandHistory,
+  onDownloadLogs,
+  onSendCommand,
+  onClearMessages,
+  onClearHistory,
+}) => {
   const [showMotd, setShowMotd] = useState(true);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
-    playerId,
-    playerName,
-    authToken,
-    onEvent: handleGameEvent,
-    onConnect: () => addMessage('Connected to MythosMUD...'),
-    onDisconnect: () => addMessage('Disconnected from MythosMUD'),
-    onError: error => {
-      const errorMessage = getErrorMessage(error);
-      addMessage(`Error: ${errorMessage}`);
-    },
-  });
-
-  function handleGameEvent(event: GameEvent) {
-    console.log('Game event received:', event);
-
-    const filterAndDedupe = (names: string[]): string[] => {
-      const filtered = (names || []).filter(n => !!n && n !== playerName);
-      return Array.from(new Set(filtered));
-    };
-
-    // Safely extract strongly-typed properties from generic event payloads
-    const getStringProp = (data: Record<string, unknown>, key: string): string | undefined => {
-      const value = data[key];
-      return typeof value === 'string' ? value : undefined;
-    };
-
-    const getStringArrayProp = (data: Record<string, unknown>, key: string): string[] => {
-      const value = data[key];
-      if (Array.isArray(value)) {
-        return value.filter((v): v is string => typeof v === 'string');
-      }
-      return [];
-    };
-
-    switch (event.event_type) {
-      case 'game_state': {
-        const roomFromEvent = (event.data.room as Room) || null;
-        const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
-        const roomWithOccupants = roomFromEvent
-          ? {
-              ...roomFromEvent,
-              occupants: occupantsFromEvent,
-              occupant_count: occupantsFromEvent.length,
-            }
-          : null;
-
-        setGameState(prev => ({
-          ...prev,
-          player: event.data.player as Player,
-          room: roomWithOccupants,
-          roomOccupants: occupantsFromEvent,
-        }));
-        addMessage(`Welcome to ${(roomFromEvent as Room)?.name || 'Unknown Room'}`);
-        break;
-      }
-
-      case 'motd':
-        // Display the Message of the Day
-        console.log('MOTD received:', event.data.message);
-        console.log('MOTD contains ANSI:', (event.data.message as string).includes('\x1b['));
-        console.log('MOTD length:', (event.data.message as string).length);
-        addMessage(event.data.message as string);
-        break;
-
-      case 'room_update': {
-        console.log('Room update received:', event.data);
-        const roomFromEvent = (event.data.room as Room) || null;
-        const occupantsFromEvent = filterAndDedupe((event.data.occupants as string[]) || []);
-        const roomWithOccupants = roomFromEvent
-          ? {
-              ...roomFromEvent,
-              occupants: occupantsFromEvent,
-              occupant_count: occupantsFromEvent.length,
-            }
-          : null;
-
-        setGameState(prev => ({
-          ...prev,
-          room: roomWithOccupants,
-          entities: (event.data.entities as Entity[]) || [],
-          roomOccupants: occupantsFromEvent,
-        }));
-        addMessage(`Room updated: ${(roomFromEvent as Room)?.name}`);
-        break;
-      }
-
-      case 'player_entered': {
-        const name = getStringProp(event.data, 'player_name');
-        if (name && name !== playerName) {
-          addMessage(`${name} entered the room.`);
-          // Optimistically add to occupants
-          setGameState(prev => {
-            const current = prev.room?.occupants || [];
-            const next = Array.from(new Set([...current, name]));
-            return {
-              ...prev,
-              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
-              roomOccupants: next,
-            };
-          });
-        }
-        break;
-      }
-
-      case 'player_left': {
-        const name = getStringProp(event.data, 'player_name');
-        if (name && name !== playerName) {
-          addMessage(`${name} left the room.`);
-          // Optimistically remove from occupants
-          setGameState(prev => {
-            const current = prev.room?.occupants || [];
-            const next = current.filter(n => n !== name);
-            return {
-              ...prev,
-              room: prev.room ? { ...prev.room, occupants: next, occupant_count: next.length } : prev.room,
-              roomOccupants: next,
-            };
-          });
-        }
-        break;
-      }
-
-      case 'player_left_game': {
-        const name = getStringProp(event.data, 'player_name');
-        if (name && name !== playerName) {
-          addMessage(`${name} left the game.`);
-          // Optimistically remove from occupants
-          setGameState(prev => {
-            const current = prev.room?.occupants || [];
-            const next = current.filter(n => n !== name);
-            return {
-              ...prev,
-              room: prev.room ? { ...prev.room, occupants: next } : prev.room,
-              roomOccupants: next,
-            };
-          });
-        }
-        break;
-      }
-
-      case 'room_occupants': {
-        const occupants = filterAndDedupe(getStringArrayProp(event.data, 'occupants'));
-        setGameState(prev => ({
-          ...prev,
-          room: prev.room ? { ...prev.room, occupants, occupant_count: occupants.length } : prev.room,
-          roomOccupants: occupants,
-        }));
-        break;
-      }
-
-      case 'combat_event':
-        addMessage(`[COMBAT] ${event.data.message as string}`);
-        break;
-
-      case 'chat_message': {
-        const channel = event.data.channel as string;
-        const playerName = event.data.player_name as string;
-        const message = event.data.message as string;
-
-        // Format messages based on channel type
-        switch (channel) {
-          case 'say':
-            addMessage(`${playerName} says: ${message}`);
-            break;
-          case 'emote':
-            // For predefined emotes, the message is already formatted
-            // For regular emotes, format as "PlayerName action"
-            if (message.includes(' ') && !message.startsWith('*')) {
-              // This is likely a predefined emote (e.g., "ArkanWolfshade twibbles around aimlessly.")
-              addMessage(`*${message}*`, undefined, 'emote');
-            } else {
-              // This is a regular emote (e.g., "adjusts spectacles")
-              addMessage(`*${playerName} ${message}*`, undefined, 'emote');
-            }
-            break;
-          case 'pose':
-            // Format poses to show current status
-            addMessage(`${playerName} ${message}`);
-            break;
-          default:
-            // Fallback for unknown channels
-            addMessage(`[${channel}] ${playerName}: ${message}`);
-            break;
-        }
-        break;
-      }
-
-      case 'game_tick':
-        // Show tick updates every 10th tick for debugging
-        if ((event.data.tick_number as number) % 10 === 0) {
-          addMessage(`[TICK] Game tick ${event.data.tick_number as number}`);
-        }
-        break;
-
-      case 'command_response': {
-        // Handle command response with potential alias chain information
-        const result = event.data.result as string;
-        const aliasChain = event.alias_chain;
-        addMessage(result, aliasChain);
-        break;
-      }
-
-      case 'heartbeat':
-        // Silent heartbeat - just keep connection alive
-        break;
-
-      default:
-        // Log unknown event types for debugging but don't display to user
-        console.log('Unknown event type:', event.event_type, event.data);
-        break;
-    }
-  }
-
-  function addMessage(
-    message: string,
-    aliasChain?: Array<{ original: string; expanded: string; alias_name: string }>,
-    messageType?: string
-  ) {
-    // Check if message contains ANSI escape sequences
-    const hasAnsi = message.includes('\x1b[');
-    console.log('addMessage called with:', message.substring(0, 100) + '...');
-    console.log('hasAnsi:', hasAnsi);
-
-    // Count ANSI sequences manually
-    let ansiCount = 0;
-    for (let i = 0; i < message.length - 1; i++) {
-      if (message[i] === '\x1b' && message[i + 1] === '[') {
-        ansiCount++;
-      }
-    }
-    console.log('ANSI sequences count:', ansiCount);
-
-    // Check if message contains HTML tags
-    const hasHtml = /<[^>]*>/.test(message);
-    console.log('hasHtml:', hasHtml);
-
-    // Check if this is a complete HTML document (starts with <!DOCTYPE or <html)
-    const isCompleteHtml = message.trim().startsWith('<!DOCTYPE') || message.trim().startsWith('<html');
-    console.log('isCompleteHtml:', isCompleteHtml);
-
-    setGameState(prev => ({
-      ...prev,
-      messages: [
-        ...prev.messages,
-        {
-          text: message,
-          timestamp: new Date().toLocaleTimeString(),
-          isHtml: hasAnsi || hasHtml,
-          isCompleteHtml: isCompleteHtml,
-          messageType: messageType,
-          aliasChain: aliasChain,
-        },
-      ].slice(-100), // Keep last 100 messages
-    }));
-  }
-
-  function handleCommandSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!commandInput.trim()) return;
-
-    const command = commandInput.trim();
-
-    // Add to history
-    setCommandHistory(prev => [...prev, command].slice(-50)); // Keep last 50 commands
-    setHistoryIndex(-1);
-
-    // Parse command into command name and arguments
-    const parts = command.split(/\s+/);
-    const commandName = parts[0];
-    const args = parts.slice(1);
-
-    // Send command
-    const success = sendCommand(commandName, args);
-    if (success) {
-      addMessage(`> ${command}`);
-    } else {
-      addMessage('Failed to send command - not connected');
-    }
-
-    setCommandInput('');
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (historyIndex < commandHistory.length - 1) {
-        const newIndex = historyIndex + 1;
-        setHistoryIndex(newIndex);
-        setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
-      }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        const newIndex = historyIndex - 1;
-        setHistoryIndex(newIndex);
-        setCommandInput(commandHistory[commandHistory.length - 1 - newIndex]);
-      } else if (historyIndex === 0) {
-        setHistoryIndex(-1);
-        setCommandInput('');
-      }
-    }
-  }
-
-  function handleConnect() {
-    addMessage('Attempting to connect...');
-    connect();
-  }
-
-  function handleDisconnect() {
-    addMessage('Disconnecting...');
-    disconnect();
-  }
-
-  const handleMotdContinue = () => {
-    logger.info('GameTerminal', 'User continued from MOTD and connecting to game');
-    setShowMotd(false);
-    // Add a welcome message to the game
-    addMessage('Welcome to MythosMUD! You are now ready to explore the Dreamlands.');
-    // Connect to the game
-    connect();
-  };
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [gameState.messages]);
-
-  // Focus input on mount
-  useEffect(() => {
-    inputRef.current?.focus();
-    // Show welcome message and connection instructions
-    addMessage('Welcome to MythosMUD! You are now authenticated.');
-    addMessage("Click the 'Connect' button in the left sidebar to join the game.");
-    addMessage('Once connected, you can enter commands in the input field at the bottom.');
-  }, []);
-
-  // Remove auto-connect to prevent infinite loop
-  // useEffect(() => {
-  //   if (playerId && authToken) {
-  //     addMessage("Auto-connecting to MythosMUD...");
-  //     connect();
-  //   }
-  // }, [playerId, authToken, connect]);
-
   return (
-    <div className="game-terminal">
-      {/* Main content area - two columns */}
-      <div className="game-content">
-        {/* Left sidebar */}
-        <div className="left-sidebar">
-          {/* Connection Status */}
-          <div className="connection-status">
-            <div className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
-              {isConnecting ? 'Connecting...' : isConnected ? 'Connected' : 'Disconnected'}
-            </div>
-            {error && <div className="error-message">{error}</div>}
-            {reconnectAttempts > 0 && <div className="reconnect-info">Reconnect attempt {reconnectAttempts}</div>}
-          </div>
-
-          {/* Connection Instructions */}
-          {!isConnected && !isConnecting && (
-            <div className="connection-instructions">
-              <h4>Getting Started</h4>
-              <p>You are authenticated and ready to play!</p>
-              <p>Click the "Connect" button below to join the game world.</p>
-            </div>
-          )}
-
-          {/* Connection Controls - grouped together */}
-          <div className="connection-controls">
-            {!isConnected && !isConnecting && (
-              <button onClick={handleConnect} className="connect-btn">
-                Connect to Game
-              </button>
-            )}
-            {isConnected && (
-              <button onClick={handleDisconnect} className="disconnect-btn">
-                Disconnect
-              </button>
-            )}
-            <button
-              onClick={() => {
-                // Proper logout - redirect to login page
-                window.location.href = '/';
-              }}
-              className="logout-btn"
-            >
-              Logout
-            </button>
-            <button
-              onClick={() => {
-                logger.downloadLogs();
-              }}
-              className="download-logs-btn"
-            >
-              Download Logs
-            </button>
-            <Tooltip title="Command Reference">
-              <IconButton
-                onClick={() => setHelpDrawerOpen(true)}
-                sx={{
-                  color: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                  },
-                }}
-              >
-                <HelpIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-
-          {/* Room Information Panel */}
-          <RoomInfoPanel room={gameState.room} />
-
-          {/* Game State Display */}
-          {gameState.player && (
-            <div className="player-info">
-              <h3>{gameState.player.name}</h3>
-              <div className="stats">
-                <span>Level: {gameState.player.level || 1}</span>
-                {gameState.player.stats && (
-                  <div className="stats-grid">
-                    {(() => {
-                      let statsObj = gameState.player.stats;
-
-                      // If stats is a string, try to parse it as JSON
-                      if (typeof statsObj === 'string') {
-                        try {
-                          statsObj = JSON.parse(statsObj);
-                        } catch (e) {
-                          console.error('Failed to parse stats JSON:', e);
-                        }
-                      }
-
-                      // If we have a valid object, display the stats
-                      if (typeof statsObj === 'object' && statsObj !== null) {
-                        return Object.entries(statsObj).map(([key, value]) => (
-                          <div key={key} className="stat-item">
-                            <span className="stat-label">
-                              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
-                            </span>
-                            <span className="stat-value">{value}</span>
-                          </div>
-                        ));
-                      } else {
-                        return (
-                          <div className="stat-item">
-                            <span className="stat-label">Stats:</span>
-                            <span className="stat-value">Loading...</span>
-                          </div>
-                        );
-                      }
-                    })()}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+    <div
+      className="min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden"
+      style={{ minHeight: '100vh', width: '100%' }}
+    >
+      {/* Header */}
+      <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-10">
+        <div className="flex items-center gap-3">
+          <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} />
+          <h1 className="text-lg font-bold text-mythos-terminal-primary">MythosMUD Terminal</h1>
         </div>
-
-        {/* Right terminal area */}
-        <div className="terminal-area">
-          {showMotd ? (
-            /* MOTD Display */
-            <div className="motd-display">
-              <div className="motd-content">
-                <MotdContent />
-                <div className="motd-actions">
-                  <button onClick={handleMotdContinue} className="continue-button">
-                    Enter the Dreamlands
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Message Log */
-            <div className="message-log">
-              <div className="messages">
-                {gameState.messages.map((message, index) => (
-                  <div key={index} className="message">
-                    {/* Show alias expansion information if available */}
-                    {message.aliasChain && message.aliasChain.length > 0 && (
-                      <div className="alias-expansion">
-                        <span className="alias-indicator">🔗</span>
-                        {message.aliasChain.map((alias, chainIndex) => (
-                          <span key={chainIndex} className="alias-chain">
-                            <span className="alias-original">{alias.original}</span>
-                            <span className="alias-arrow">→</span>
-                            <span className="alias-expanded">{alias.expanded}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Regular message content */}
-                    {message.isHtml ? (
-                      <span
-                        className={message.messageType === 'emote' ? 'emote-message' : ''}
-                        dangerouslySetInnerHTML={{
-                          __html: message.isCompleteHtml
-                            ? message.text
-                            : `[${message.timestamp}] ${ansiToHtmlWithBreaks(message.text)}`,
-                        }}
-                      />
-                    ) : (
-                      <span className={message.messageType === 'emote' ? 'emote-message' : ''}>
-                        {`[${message.timestamp}] ${message.text}`}
-                      </span>
-                    )}
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-mythos-terminal-text-secondary">Player: {playerName}</span>
+          <span
+            className={`px-2 py-1 rounded text-xs ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
+          >
+            {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
+          </span>
+          {error && <span className="text-mythos-terminal-error text-xs">{error}</span>}
+          {reconnectAttempts > 0 && (
+            <span className="text-mythos-terminal-warning text-xs">Reconnect: {reconnectAttempts}</span>
           )}
         </div>
       </div>
 
-      {/* Command Input - full width at bottom */}
-      <form onSubmit={handleCommandSubmit} className="command-input">
-        <input
-          ref={inputRef}
-          type="text"
-          value={commandInput}
-          onChange={e => setCommandInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter command (e.g., 'look' or '/look')..."
-          disabled={!isConnected}
-        />
-        <button type="submit" disabled={!isConnected || !commandInput.trim()}>
-          Send
-        </button>
-      </form>
+      {/* MOTD Overlay (preserved styles) */}
+      {showMotd && (
+        <div
+          className="motd-display"
+          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100000 }}
+        >
+          <div className="motd-content">
+            <MotdContent />
+          </div>
+          <div className="motd-actions">
+            <button className="continue-button" onClick={() => setShowMotd(false)}>
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
 
-      {/* Command Help Drawer */}
-      <CommandHelpDrawer open={helpDrawerOpen} onClose={() => setHelpDrawerOpen(false)} />
+      {/* Main Content Area */}
+      <div className="pt-12 min-h-screen">
+        {/* Chat Panel */}
+        <DraggablePanel
+          title="Chat"
+          defaultPosition={{ x: 50, y: 50 }}
+          defaultSize={{ width: 400, height: 300 }}
+          minSize={{ width: 200, height: 150 }}
+          maxSize={{ width: 800, height: 600 }}
+          variant="eldritch"
+          onClose={() => console.log('Chat panel closed')}
+          onMinimize={() => console.log('Chat panel minimized')}
+          onMaximize={() => console.log('Chat panel maximized')}
+        >
+          <ChatPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
+        </DraggablePanel>
+
+        {/* Command Panel */}
+        <DraggablePanel
+          title="Commands"
+          defaultPosition={{ x: 500, y: 50 }}
+          defaultSize={{ width: 350, height: 250 }}
+          minSize={{ width: 200, height: 150 }}
+          maxSize={{ width: 600, height: 500 }}
+          variant="elevated"
+          onClose={() => console.log('Command panel closed')}
+          onMinimize={() => console.log('Command panel minimized')}
+          onMaximize={() => console.log('Command panel maximized')}
+        >
+          <CommandPanel
+            commandHistory={commandHistory}
+            onSendCommand={onSendCommand}
+            onClearHistory={onClearHistory}
+            isConnected={isConnected}
+          />
+        </DraggablePanel>
+
+        {/* Room Info Panel */}
+        {room && (
+          <DraggablePanel
+            title="Room Info"
+            defaultPosition={{ x: 50, y: 400 }}
+            defaultSize={{ width: 300, height: 200 }}
+            minSize={{ width: 200, height: 100 }}
+            maxSize={{ width: 500, height: 400 }}
+            variant="default"
+            onClose={() => console.log('Room panel closed')}
+            onMinimize={() => console.log('Room panel minimized')}
+            onMaximize={() => console.log('Room panel maximized')}
+          >
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-mythos-terminal-primary font-bold mb-2">{room.name}</h4>
+                <p className="text-sm text-mythos-terminal-text-secondary">{room.description}</p>
+              </div>
+              {room.exits && Object.keys(room.exits).length > 0 && (
+                <div>
+                  <h5 className="text-mythos-terminal-primary text-sm font-bold mb-1">Exits:</h5>
+                  <div className="text-xs text-mythos-terminal-text-secondary">
+                    {Object.entries(room.exits).map(([direction, destination]) => (
+                      <div key={direction}>
+                        {direction}: {destination}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {room.entities && room.entities.length > 0 && (
+                <div>
+                  <h5 className="text-mythos-terminal-primary text-sm font-bold mb-1">Entities:</h5>
+                  <div className="text-xs text-mythos-terminal-text-secondary">
+                    {room.entities.map((entity, index) => (
+                      <div key={index}>
+                        {entity.name} ({entity.type})
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </DraggablePanel>
+        )}
+
+        {/* Player Status Panel */}
+        <DraggablePanel
+          title="Status"
+          defaultPosition={{ x: 400, y: 400 }}
+          defaultSize={{ width: 300, height: 200 }}
+          minSize={{ width: 200, height: 100 }}
+          maxSize={{ width: 500, height: 400 }}
+          variant="default"
+          onClose={() => console.log('Status panel closed')}
+          onMinimize={() => console.log('Status panel minimized')}
+          onMaximize={() => console.log('Status panel maximized')}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Connection:</span>
+              <div className="flex items-center space-x-2">
+                <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} />
+                <span
+                  className={`text-sm ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}
+                >
+                  {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Player:</span>
+              <span className="text-sm text-mythos-terminal-text">{playerName}</span>
+            </div>
+            {player?.stats && (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-mythos-terminal-text-secondary">Health:</span>
+                  <span className="text-sm text-mythos-terminal-text">{player.stats.current_health}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-mythos-terminal-text-secondary">Sanity:</span>
+                  <span className="text-sm text-mythos-terminal-text">{player.stats.sanity}</span>
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Messages:</span>
+              <span className="text-sm text-mythos-terminal-text">{messages.length}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Commands:</span>
+              <span className="text-sm text-mythos-terminal-text">{commandHistory.length}</span>
+            </div>
+          </div>
+        </DraggablePanel>
+      </div>
     </div>
   );
-}
+};

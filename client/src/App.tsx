@@ -1,353 +1,118 @@
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import './App.css';
+import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
-import { StatsRollingScreen } from './components/StatsRollingScreen';
-import mythosTheme from './theme/mythosTheme';
-
-import { logger } from './utils/logger';
-
-// Import Stats interface from StatsRollingScreen
-interface Stats {
-  strength: number;
-  dexterity: number;
-  constitution: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
-}
-
-// TypeScript interfaces for error handling
-interface ValidationError {
-  msg?: string;
-  message?: string;
-}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [playerId, setPlayerId] = useState('');
-  const [authToken, setAuthToken] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showRegistration, setShowRegistration] = useState(false);
-  const [inviteCode, setInviteCode] = useState('');
   const [playerName, setPlayerName] = useState('');
-  const [showStatsRolling, setShowStatsRolling] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authToken, setAuthToken] = useState('');
+  const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const baseUrl = import.meta.env.VITE_API_URL || '/api';
-
-  logger.info('App', 'Component initialized', { baseUrl });
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    logger.info('App', 'Login attempt started', { username, baseUrl });
-
+  const handleLoginClick = async () => {
+    if (!playerName || !password) {
+      setError('Username and password are required');
+      return;
+    }
+    setIsSubmitting(true);
+    setError(null);
     try {
-      const response = await fetch(`${baseUrl}/auth/login`, {
+      const response = await fetch('/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: playerName, password }),
       });
-
-      logger.info('App', 'Login response received', {
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        logger.info('App', 'Login successful', {
-          playerId: data.player_id,
-          hasToken: !!data.access_token,
-          hasCharacter: data.has_character,
-          characterName: data.character_name,
-        });
-
-        setAuthToken(data.access_token);
-        setPlayerId(data.user_id); // Use user_id from the server response
-        setPlayerName(username); // Store the username for SSE connection
-
-        // Check if user has a character
-        if (data.has_character) {
-          // User has a character, proceed to game (MOTD will show in GameTerminal)
-          logger.info('App', 'User has character, proceeding to game');
-          setIsAuthenticated(true);
-        } else {
-          // User doesn't have a character, go to stats rolling
-          logger.info('App', 'User has no character, proceeding to stats rolling');
-          setShowStatsRolling(true);
+      if (!response.ok) {
+        let message = `Login failed (${response.status})`;
+        try {
+          const data = await response.json();
+          message = data?.error?.message || data?.detail || message;
+        } catch {
+          // Ignore JSON parsing errors, use default message
         }
-      } else {
-        const errorData = await response.json();
-        logger.error('App', 'Login failed', {
-          status: response.status,
-          error: errorData.detail,
-        });
-        // Handle validation errors properly
-        let errorMessage = 'Login failed';
-        if (errorData.detail) {
-          if (Array.isArray(errorData.detail)) {
-            // Format validation errors
-            errorMessage = errorData.detail
-              .map((err: ValidationError) => err.msg || err.message || 'Validation error')
-              .join(', ');
-          } else {
-            errorMessage = errorData.detail;
-          }
-        }
-        setError(errorMessage);
+        throw new Error(message);
       }
-    } catch (error) {
-      logger.error('App', 'Login network error', { error: error instanceof Error ? error.message : String(error) });
-      setError('Failed to connect to server');
+      const data = await response.json();
+      const token = data?.access_token as string | undefined;
+      if (!token) throw new Error('No access_token in response');
+      setAuthToken(token);
+      setIsAuthenticated(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    logger.info('App', 'Registration attempt started', { username, inviteCode, baseUrl });
-
-    try {
-      const response = await fetch(`${baseUrl}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          invite_code: inviteCode,
-        }),
-      });
-
-      logger.info('App', 'Registration response received', {
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        logger.info('App', 'Registration successful', { data });
-        setError('');
-        setShowRegistration(false);
-        setInviteCode('');
-
-        // Set auth token and user info for character creation
-        setAuthToken(data.access_token);
-        setPlayerId(data.user_id);
-
-        // After successful registration, proceed directly to stats rolling
-        // Use setTimeout to ensure state updates are processed
-        setTimeout(() => {
-          setShowStatsRolling(true);
-        }, 0);
-      } else {
-        const errorData = await response.json();
-        logger.error('App', 'Registration failed', {
-          status: response.status,
-          error: errorData.detail,
-        });
-        // Handle validation errors properly
-        let errorMessage = 'Registration failed';
-        if (errorData.detail) {
-          if (Array.isArray(errorData.detail)) {
-            // Format validation errors
-            errorMessage = errorData.detail
-              .map((err: ValidationError) => err.msg || err.message || 'Validation error')
-              .join(', ');
-          } else {
-            errorMessage = errorData.detail;
-          }
-        }
-        setError(errorMessage);
-      }
-    } catch (error) {
-      logger.error('App', 'Registration network error', {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      setError('Failed to connect to server');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStatsAccepted = (stats: Stats) => {
-    logger.info('App', 'Stats accepted, character created', { characterName: username, stats });
-    // Character is now created and user should be logged in
-    setPlayerName(username);
-    setIsAuthenticated(true);
-  };
-
-  const handleCharacterCreationError = (error: string) => {
-    setError(error);
-    logger.error('App', 'Character creation error', { error });
-  };
-
-  if (isAuthenticated) {
-    logger.info('App', 'Rendering authenticated view', { playerId, hasToken: !!authToken });
+  // Demo mode for testing eldritch effects (disabled for normal flow)
+  if (showDemo) {
     return (
-      <ThemeProvider theme={mythosTheme}>
-        <CssBaseline />
-        <div className="app">
-          <GameTerminalWithPanels playerId={playerId} playerName={playerName} authToken={authToken} />
+      <div className="App">
+        <div className="demo-controls fixed top-4 right-4 z-50">
+          <button
+            onClick={() => setShowDemo(false)}
+            className="bg-mythos-terminal-primary text-black px-4 py-2 rounded font-mono hover:bg-green-400 transition-colors"
+          >
+            Exit Demo
+          </button>
         </div>
-      </ThemeProvider>
+        <EldritchEffectsDemo />
+      </div>
     );
   }
 
-  logger.info('App', 'Rendering login/registration view', {
-    showRegistration,
-    showStatsRolling,
-  });
-
-  // Show stats rolling screen if needed
-  if (showStatsRolling) {
+  if (!isAuthenticated) {
     return (
-      <ThemeProvider theme={mythosTheme}>
-        <CssBaseline />
-        <div className="app">
-          <StatsRollingScreen
-            characterName={username}
-            onStatsAccepted={handleStatsAccepted}
-            onError={handleCharacterCreationError}
-            baseUrl={baseUrl}
-            authToken={authToken}
-          />
+      <div className="App">
+        <div className="login-container">
+          <div className="login-form">
+            <h1 className="login-title">MythosMUD</h1>
+            <p className="login-subtitle">Enter the realm of eldritch knowledge</p>
+
+            <div className="login-inputs">
+              <input
+                type="text"
+                placeholder="Username"
+                className="login-input"
+                value={playerName}
+                onChange={e => setPlayerName(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="login-input"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+            </div>
+
+            {error ? <div className="error-message">{error}</div> : null}
+
+            <button className="login-button" onClick={handleLoginClick} disabled={isSubmitting}>
+              {isSubmitting ? 'Authenticating…' : 'Enter the Void'}
+            </button>
+
+            <div className="demo-button">
+              <button
+                onClick={() => setShowDemo(true)}
+                className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+              >
+                View Eldritch Effects Demo
+              </button>
+            </div>
+          </div>
         </div>
-      </ThemeProvider>
+      </div>
     );
   }
 
   return (
-    <ThemeProvider theme={mythosTheme}>
-      <CssBaseline />
-      <div className="app">
-        <div className="auth-container">
-          <h1>MythosMUD</h1>
-          <p className="tagline">Enter the realm of forbidden knowledge...</p>
-
-          {!showRegistration ? (
-            <>
-              <form onSubmit={handleLogin} className="login-form">
-                <div className="form-group">
-                  <label htmlFor="username">Username:</label>
-                  <input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    required
-                    placeholder="Enter your username"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="password">Password:</label>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    placeholder="Enter your password"
-                  />
-                </div>
-
-                {error && <div className="error-message">{error}</div>}
-
-                <button type="submit" disabled={isLoading} className="login-button">
-                  {isLoading ? 'Connecting...' : 'Enter the MUD'}
-                </button>
-              </form>
-
-              <div className="form-footer">
-                <p>Don't have an account?</p>
-                <button type="button" onClick={() => setShowRegistration(true)} className="secondary-button">
-                  Register with Invite Code
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <form onSubmit={handleRegister} className="login-form">
-                <div className="form-group">
-                  <label htmlFor="reg-username">Username:</label>
-                  <input
-                    id="reg-username"
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    required
-                    placeholder="Choose a username"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="reg-password">Password:</label>
-                  <input
-                    id="reg-password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    placeholder="Choose a password"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="invite-code">Invite Code:</label>
-                  <input
-                    id="invite-code"
-                    type="text"
-                    value={inviteCode}
-                    onChange={e => setInviteCode(e.target.value)}
-                    required
-                    placeholder="Enter your invite code"
-                  />
-                </div>
-
-                {error && <div className="error-message">{error}</div>}
-
-                <button type="submit" disabled={isLoading} className="login-button">
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
-                </button>
-              </form>
-
-              <div className="form-footer">
-                <p>Already have an account?</p>
-                <button type="button" onClick={() => setShowRegistration(false)} className="secondary-button">
-                  Back to Login
-                </button>
-              </div>
-            </>
-          )}
-
-          <div className="debug-container">
-            <button onClick={() => logger.downloadLogs()} className="debug-button">
-              Download Debug Logs
-            </button>
-          </div>
-        </div>
-      </div>
-    </ThemeProvider>
+    <div className="App">
+      <GameTerminalWithPanels playerName={playerName} authToken={authToken} />
+    </div>
   );
 }
 

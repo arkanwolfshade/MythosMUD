@@ -10,17 +10,11 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
+        ws: true,
       },
-      '/events': {
+      '/auth': {
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
-        ws: true,
-      },
-      '/ws': {
-        target: 'ws://127.0.0.1:54731',
-        changeOrigin: true,
-        ws: true,
       },
     },
   },
