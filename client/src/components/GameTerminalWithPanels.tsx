@@ -14,6 +14,16 @@ interface Player {
   stats?: {
     current_health: number;
     sanity: number;
+    strength?: number;
+    dexterity?: number;
+    constitution?: number;
+    intelligence?: number;
+    wisdom?: number;
+    charisma?: number;
+    occult_knowledge?: number;
+    fear?: number;
+    corruption?: number;
+    cult_affiliation?: number;
   };
   level?: number;
 }
@@ -62,8 +72,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         case 'game_state':
           logger.info('GameTerminalWithPanels', 'Game state received', {
             room_data: event.data.room,
-            room_id: (event.data.room as any)?.id,
-            room_name: (event.data.room as any)?.name,
+            room_id: (event.data.room as Room)?.id,
+            room_name: (event.data.room as Room)?.name,
           });
           setGameState(prev => ({
             ...prev,
@@ -74,8 +84,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         case 'room_update':
           logger.info('GameTerminalWithPanels', 'Room update received', {
             room_data: event.data.room,
-            room_id: (event.data.room as any)?.id,
-            room_name: (event.data.room as any)?.name,
+            room_id: (event.data.room as Room)?.id,
+            room_name: (event.data.room as Room)?.name,
           });
           setGameState(prev => ({
             ...prev,

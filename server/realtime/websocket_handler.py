@@ -78,7 +78,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                         logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
 
                     # Get room data and ensure UUIDs are converted to strings
-                    room_data = (room.to_dict() if hasattr(room, "to_dict") else room)
+                    room_data = room.to_dict() if hasattr(room, "to_dict") else room
 
                     # Ensure all UUID objects are converted to strings for JSON serialization
                     def convert_uuids_to_strings(obj):
@@ -86,12 +86,33 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
                         elif isinstance(obj, list):
                             return [convert_uuids_to_strings(item) for item in obj]
-                        elif hasattr(obj, '__class__') and 'UUID' in obj.__class__.__name__:
+                        elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
                             return str(obj)
                         else:
                             return obj
 
                     room_data = convert_uuids_to_strings(room_data)
+
+                    # Prepare player stats as a JSON object (not raw string)
+                    stats_data = {}
+                    try:
+                        if hasattr(player, "get_stats"):
+                            stats_data = player.get_stats()
+                        else:
+                            raw_stats = getattr(player, "stats", {})
+                            if isinstance(raw_stats, str):
+                                stats_data = json.loads(raw_stats)
+                            elif isinstance(raw_stats, dict):
+                                stats_data = raw_stats
+                    except Exception:
+                        stats_data = {}
+
+                    # Normalize health field for client (current_health expected)
+                    if "current_health" not in stats_data and "health" in stats_data:
+                        try:
+                            stats_data["current_health"] = stats_data.get("health")
+                        except Exception:
+                            pass
 
                     game_state_event = build_event(
                         "game_state",
@@ -99,7 +120,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                             "player": {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
-                                "stats": getattr(player, "stats", {}),
+                                "stats": stats_data,
                             },
                             "room": room_data,
                             "occupants": occupant_names,
@@ -567,7 +588,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
                 return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
             elif isinstance(obj, list):
                 return [convert_uuids_to_strings(item) for item in obj]
-            elif hasattr(obj, '__class__') and 'UUID' in obj.__class__.__name__:
+            elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
                 return str(obj)
             else:
                 return obj
