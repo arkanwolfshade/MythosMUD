@@ -19,7 +19,7 @@ from ..api.real_time import realtime_router
 from ..api.rooms import room_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
-from ..command_handler_v2 import router as command_router
+from ..command_handler_unified import router as command_router
 from ..error_handlers import register_error_handlers
 from ..logging_config import get_logger
 from .lifespan import lifespan

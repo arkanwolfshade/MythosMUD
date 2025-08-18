@@ -421,30 +421,33 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
 
-    # Use the proper command handler for all commands
+    # Use the unified command handler for all commands
     from ..alias_storage import AliasStorage
-    from ..command_handler_v2 import process_command
+    from ..command_handler_unified import process_command_unified
+    from ..realtime.request_context import create_websocket_request_context
 
-    # Create a mock request object for the command handler
-    class MockRequest:
-        def __init__(self, persistence):
-            self.app = type("MockApp", (), {"state": type("MockState", (), {"persistence": persistence})()})()
-
-    mock_request = MockRequest(connection_manager.persistence)
+    # Create proper request context for WebSocket
+    request_context = create_websocket_request_context(
+        persistence=connection_manager.persistence,
+        event_bus=getattr(connection_manager, "event_bus", None),
+        user=player,
+    )
 
     # Get player name for the command handler
     player_name = getattr(player, "name", "Unknown")
 
-    # Create a User object for the command handler
-    from ..models.user import User
-
-    user_obj = User(username=player_name, id=player_id)
-
-    # Create alias storage (this might need to be passed in)
+    # Create alias storage
     alias_storage = AliasStorage()
+    request_context.set_alias_storage(alias_storage)
 
-    # Process the command using the proper command handler
-    result = await process_command(cmd, args, user_obj, mock_request, alias_storage, player_name)
+    # Process the command using the unified command handler
+    result = await process_command_unified(
+        command_line=f"{cmd} {' '.join(args)}".strip(),
+        current_user=player,
+        request=request_context,
+        alias_storage=alias_storage,
+        player_name=player_name,
+    )
     return result
 
 

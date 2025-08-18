@@ -11,11 +11,13 @@
 ### Dual Command Processing Architecture
 
 **HTTP API Path:**
+
 ```
 Client → HTTP Request → command_handler_v2.py → MovementService → Database
 ```
 
 **WebSocket Path:**
+
 ```
 Client → WebSocket → websocket_handler.py → MovementService → Database
 ```
@@ -33,11 +35,13 @@ Client → WebSocket → websocket_handler.py → MovementService → Database
 ### Unified Command Processing
 
 **Target Flow:**
+
 ```
 Client → HTTP Request/WebSocket → command_handler_v2.py → MovementService → Database
 ```
 
 Both HTTP and WebSocket requests will use the same unified command handler, ensuring:
+
 - Single source of truth for command logic
 - Consistent behavior across all interfaces
 - Easier maintenance and testing
@@ -48,18 +52,21 @@ Both HTTP and WebSocket requests will use the same unified command handler, ensu
 ### Phase 1: Analysis and Preparation (1-2 days)
 
 #### 1.1 Audit Current Command Handler
+
 - [ ] Document all commands supported by `command_handler_v2.py`
 - [ ] Document all commands supported by `websocket_handler.py`
 - [ ] Identify any WebSocket-specific commands that don't exist in HTTP
 - [ ] Map command signatures and expected parameters
 
 #### 1.2 Analyze Request Context Requirements
+
 - [ ] Document what `command_handler_v2.py` expects from `Request` object
 - [ ] Identify required `app.state` attributes (persistence, event_bus)
 - [ ] Document authentication context requirements
 - [ ] Map error response formats
 
 #### 1.3 Create Test Suite
+
 - [ ] Create comprehensive tests for current HTTP command behavior
 - [ ] Create comprehensive tests for current WebSocket command behavior
 - [ ] Establish baseline for regression testing
@@ -67,6 +74,7 @@ Both HTTP and WebSocket requests will use the same unified command handler, ensu
 ### Phase 2: WebSocket Handler Refactoring (2-3 days)
 
 #### 2.1 Create Request Context Factory
+
 ```python
 # New file: server/realtime/request_context.py
 class WebSocketRequestContext:
@@ -83,7 +91,9 @@ class WebSocketRequestContext:
 ```
 
 #### 2.2 Refactor Command Processing
+
 **Current (websocket_handler.py):**
+
 ```python
 async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
     # Direct implementation of commands
@@ -94,6 +104,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ```
 
 **Target:**
+
 ```python
 async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
     # Create proper request context
@@ -107,6 +118,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ```
 
 #### 2.3 Update Error Handling
+
 - [ ] Ensure WebSocket error responses match HTTP error format
 - [ ] Implement proper error propagation from unified handler
 - [ ] Maintain WebSocket-specific error handling where needed
@@ -114,11 +126,13 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ### Phase 3: Authentication Context (1-2 days)
 
 #### 3.1 User Context Management
+
 - [ ] Ensure WebSocket connections maintain proper user authentication
 - [ ] Create user objects compatible with `command_handler_v2.py` expectations
 - [ ] Handle session management consistently
 
 #### 3.2 Permission and Authorization
+
 - [ ] Verify that WebSocket commands respect the same authorization rules
 - [ ] Implement proper permission checking in unified context
 - [ ] Handle authentication failures gracefully
@@ -126,18 +140,21 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ### Phase 4: Testing and Validation (2-3 days)
 
 #### 4.1 Functional Testing
+
 - [ ] Test all commands via both HTTP and WebSocket
 - [ ] Verify identical behavior between interfaces
 - [ ] Test error conditions and edge cases
 - [ ] Validate command responses and side effects
 
 #### 4.2 Performance Testing
+
 - [ ] Benchmark command processing performance
 - [ ] Ensure no significant performance degradation
 - [ ] Test under load conditions
 - [ ] Monitor memory usage and resource consumption
 
 #### 4.3 Integration Testing
+
 - [ ] Test full game flow (login → command → response)
 - [ ] Verify real-time updates work correctly
 - [ ] Test concurrent user scenarios
@@ -146,11 +163,13 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ### Phase 5: Cleanup and Documentation (1 day)
 
 #### 5.1 Code Cleanup
+
 - [ ] Remove duplicate command logic from `websocket_handler.py`
 - [ ] Clean up any unused imports or functions
 - [ ] Update code comments and documentation
 
 #### 5.2 Documentation Updates
+
 - [ ] Update API documentation to reflect unified architecture
 - [ ] Document the new request context pattern
 - [ ] Update development guidelines
@@ -215,12 +234,14 @@ async def process_command(
 ## Risk Assessment
 
 ### High Risk Areas
+
 1. **Authentication Context**: WebSocket authentication may not match HTTP
 2. **Error Handling**: Different error formats could break client expectations
 3. **Performance**: Additional request context creation could impact performance
 4. **Event Bus Integration**: WebSocket events may not propagate correctly
 
 ### Mitigation Strategies
+
 1. **Comprehensive Testing**: Extensive test coverage for all scenarios
 2. **Gradual Rollout**: Implement changes incrementally with feature flags
 3. **Monitoring**: Add detailed logging and monitoring during transition
@@ -229,12 +250,14 @@ async def process_command(
 ## Success Criteria
 
 ### Functional Requirements
+
 - [ ] All existing commands work identically via HTTP and WebSocket
 - [ ] No regression in game functionality
 - [ ] Error responses are consistent between interfaces
 - [ ] Authentication and authorization work correctly
 
 ### Non-Functional Requirements
+
 - [ ] Performance is maintained or improved
 - [ ] Code duplication is eliminated
 - [ ] Test coverage is comprehensive
@@ -253,23 +276,27 @@ async def process_command(
 ## Dependencies
 
 ### Prerequisites
+
 - [ ] TailwindCSS migration completed and stable
 - [ ] Current WebSocket functionality working correctly
 - [ ] Comprehensive test suite in place
 - [ ] Development environment stable
 
 ### Blocking Issues
+
 - None identified at this time
 
 ## Future Considerations
 
 ### Post-Implementation Benefits
+
 1. **Easier Feature Development**: New commands only need one implementation
 2. **Better Testing**: Single code path reduces testing complexity
 3. **Improved Maintainability**: Bug fixes apply to all interfaces
 4. **Enhanced Extensibility**: Easier to add new command interfaces
 
 ### Potential Future Work
+
 1. **GraphQL Integration**: Unified command handler could support GraphQL
 2. **REST API Expansion**: Easier to add new REST endpoints
 3. **Command Middleware**: Centralized command processing enables middleware
