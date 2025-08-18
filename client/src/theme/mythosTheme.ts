@@ -1,301 +1,240 @@
-import { createTheme } from '@mui/material/styles';
+// import { createTheme } from '@mui/material/styles';
 
 // Custom MythosMUD theme with proper contrast for terminal-style interface
-export const mythosTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#00ff00', // Bright green for primary elements
-      light: '#4caf50', // Softer green for light variants
-      dark: '#2e7d32', // Darker green for dark variants
-      contrastText: '#000000', // Black text on green backgrounds
-    },
-    secondary: {
-      main: '#ff9800', // Orange for secondary elements
-      light: '#ffb74d',
-      dark: '#f57c00',
-      contrastText: '#000000',
-    },
-    error: {
-      main: '#f44336', // Red for errors
-      light: '#e57373',
-      dark: '#d32f2f',
-      contrastText: '#ffffff',
-    },
-    warning: {
-      main: '#ff9800', // Orange for warnings
-      light: '#ffb74d',
-      dark: '#f57c00',
-      contrastText: '#000000',
-    },
-    info: {
-      main: '#2196f3', // Blue for info
-      light: '#64b5f6',
-      dark: '#1976d2',
-      contrastText: '#ffffff',
-    },
-    success: {
-      main: '#4caf50', // Green for success
-      light: '#81c784',
-      dark: '#388e3c',
-      contrastText: '#ffffff',
-    },
-    background: {
-      default: '#0a0a0a', // Very dark background
-      paper: '#1a1a1a', // Slightly lighter for panels
-    },
-    text: {
-      primary: '#00ff00', // Bright green for primary text
-      secondary: '#4caf50', // Softer green for secondary text
-      disabled: '#666666', // Gray for disabled text
-    },
-    divider: '#333333', // Dark gray for dividers
-    action: {
-      active: '#00ff00',
-      hover: 'rgba(0, 255, 0, 0.08)',
-      selected: 'rgba(0, 255, 0, 0.16)',
-      disabled: 'rgba(255, 255, 255, 0.3)',
-      disabledBackground: 'rgba(255, 255, 255, 0.12)',
-    },
-  },
-  typography: {
-    fontFamily: '"Courier New", monospace',
-    fontSize: 14,
-    h1: {
-      fontSize: '2rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    h2: {
-      fontSize: '1.75rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    h3: {
-      fontSize: '1.5rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    h4: {
-      fontSize: '1.25rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    h5: {
-      fontSize: '1.125rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    h6: {
-      fontSize: '1rem',
-      fontWeight: 600,
-      color: '#00ff00',
-    },
-    body1: {
-      fontSize: '0.875rem',
-      lineHeight: 1.4,
-      color: '#00ff00',
-    },
-    body2: {
-      fontSize: '0.75rem',
-      lineHeight: 1.4,
-      color: '#4caf50',
-    },
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1a1a1a',
-          color: '#00ff00',
-          border: '1px solid #333333',
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          fontFamily: '"Courier New", monospace',
-          textTransform: 'none',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiInputBase-root': {
-            fontFamily: '"Courier New", monospace',
-          },
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          fontFamily: '"Courier New", monospace',
-        },
-      },
-    },
-    // Preserve MOTD styling while allowing theme for panels
-    MuiCssBaseline: {
-      styleOverrides: {
-        // MOTD - preserve original styling completely
-        '.motd-display': {
-          display: 'flex !important',
-          flexDirection: 'column !important',
-          height: '100% !important',
-          backgroundColor: '#0a0a0a !important',
-          color: '#d4af37 !important',
-          fontFamily: '"Courier New", monospace !important',
-          overflowY: 'auto !important',
-          padding: '20px !important',
-        },
-        '.motd-content': {
-          flex: '1 !important',
-          display: 'flex !important',
-          flexDirection: 'column !important',
-          maxWidth: '800px !important',
-          margin: '0 auto !important',
-          width: '100% !important',
-        },
-        '.motd-content .container': {
-          maxWidth: 'none !important',
-          margin: '0 !important',
-          padding: '0 !important',
-        },
-        '.motd-content .title': {
-          marginBottom: '20px !important',
-          textAlign: 'center !important',
-        },
-        '.motd-content .title-border': {
-          border: '2px solid #d4af37 !important',
-          borderRadius: '5px !important',
-          padding: '20px !important',
-          background: 'linear-gradient(45deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05)) !important',
-          boxShadow: '0 0 20px rgba(212, 175, 55, 0.3) !important',
-          position: 'relative !important',
-        },
-        '.motd-content .title-border::before': {
-          position: 'absolute !important',
-          top: '0 !important',
-          left: '0 !important',
-          right: '0 !important',
-          bottom: '0 !important',
-          background:
-            'linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%) !important',
-          pointerEvents: 'none !important',
-          animation: 'shimmer 3s ease-in-out infinite !important',
-        },
-        '.motd-content .title-text': {
-          fontSize: '2.2em !important',
-          color: '#d4af37 !important',
-          textShadow: '0 0 15px #d4af37 !important',
-          fontWeight: 'bold !important',
-          fontFamily: '"Courier New", monospace !important',
-          marginBottom: '10px !important',
-          letterSpacing: '2px !important',
-        },
-        '.motd-content .title-subtitle': {
-          fontSize: '1.2em !important',
-          color: '#d4af37 !important',
-          textShadow: '0 0 10px #d4af37 !important',
-          fontFamily: '"Courier New", monospace !important',
-          fontStyle: 'italic !important',
-          letterSpacing: '1px !important',
-        },
-        '.motd-content .yellow-sign': {
-          fontSize: '1em !important',
-          margin: '20px 0 !important',
-          textAlign: 'center !important',
-          color: '#ffd700 !important',
-          textShadow: '0 0 5px #ffd700 !important',
-          fontWeight: 'bold !important',
-          lineHeight: '1 !important',
-          whiteSpace: 'pre !important',
-          fontFamily: '"Courier New", monospace !important',
-        },
-        '.motd-content .welcome-text': {
-          fontSize: '0.95em !important',
-          margin: '20px 0 !important',
-          textAlign: 'left !important',
-          color: '#d4af37 !important',
-          lineHeight: '1.4 !important',
-        },
-        '.motd-content .warning': {
-          color: '#8b0000 !important',
-          fontWeight: 'bold !important',
-          margin: '15px 0 !important',
-          textAlign: 'center !important',
-          fontSize: '0.9em !important',
-          textShadow: '0 0 5px #8b0000 !important',
-        },
-        '.motd-content .stats': {
-          backgroundColor: '#1a1a1a !important',
-          border: '1px solid #333 !important',
-          padding: '15px !important',
-          margin: '15px 0 !important',
-          borderRadius: '5px !important',
-        },
-        '.motd-content .stats h3': {
-          marginTop: '0 !important',
-          color: '#d4af37 !important',
-          fontSize: '1.1em !important',
-        },
-        '.motd-content .stats p': {
-          margin: '5px 0 !important',
-          color: '#ccc !important',
-          fontSize: '0.9em !important',
-        },
-        '.motd-content .footer': {
-          marginTop: '20px !important',
-          fontSize: '0.8em !important',
-          color: '#666 !important',
-          borderTop: '1px solid #333 !important',
-          paddingTop: '15px !important',
-          textAlign: 'center !important',
-        },
-        '.motd-actions': {
-          textAlign: 'center !important',
-          marginTop: '20px !important',
-          paddingTop: '20px !important',
-          borderTop: '1px solid #333 !important',
-        },
-        '.continue-button': {
-          background: 'linear-gradient(45deg, #d4af37, #b8941f) !important',
-          color: '#0a0a0a !important',
-          border: 'none !important',
-          padding: '12px 30px !important',
-          fontSize: '1.1em !important',
-          fontWeight: 'bold !important',
-          fontFamily: '"Courier New", monospace !important',
-          borderRadius: '5px !important',
-          cursor: 'pointer !important',
-          transition: 'all 0.3s ease !important',
-          textTransform: 'uppercase !important',
-          letterSpacing: '1px !important',
-          boxShadow: '0 4px 8px rgba(212, 175, 55, 0.3) !important',
-        },
-        '.continue-button:hover': {
-          background: 'linear-gradient(45deg, #b8941f, #d4af37) !important',
-          transform: 'translateY(-2px) !important',
-          boxShadow: '0 6px 12px rgba(212, 175, 55, 0.4) !important',
-        },
-        // Add shimmer animation
-        '@keyframes shimmer': {
-          '0%': {
-            opacity: '0.3',
-          },
-          '50%': {
-            opacity: '0.7',
-          },
-          '100%': {
-            opacity: '0.3',
-          },
-        },
-      },
-    },
-  },
-});
+// export const mythosTheme = createTheme({
+//   palette: {
+//     mode: 'dark',
+//     primary: {
+//       main: '#00ff00',
+//       light: '#33ff33',
+//       dark: '#00cc00',
+//       contrastText: '#000000',
+//     },
+//     secondary: {
+//       main: '#ff6600',
+//       light: '#ff8533',
+//       dark: '#cc5200',
+//       contrastText: '#000000',
+//     },
+//     background: {
+//       default: '#0a0a0a',
+//       paper: '#1a1a1a',
+//     },
+//     text: {
+//       primary: '#00ff00',
+//       secondary: '#888888',
+//     },
+//     error: {
+//       main: '#ff0000',
+//       light: '#ff3333',
+//       dark: '#cc0000',
+//       contrastText: '#ffffff',
+//     },
+//     warning: {
+//       main: '#ffaa00',
+//       light: '#ffbb33',
+//       dark: '#cc8800',
+//       contrastText: '#000000',
+//     },
+//     success: {
+//       main: '#00ff00',
+//       light: '#33ff33',
+//       dark: '#00cc00',
+//       contrastText: '#000000',
+//     },
+//   },
+//   typography: {
+//     fontFamily: '"Courier New", monospace',
+//     h1: {
+//       fontSize: '2rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 10px #00ff00',
+//     },
+//     h2: {
+//       fontSize: '1.5rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 8px #00ff00',
+//     },
+//     h3: {
+//       fontSize: '1.25rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 6px #00ff00',
+//     },
+//     h4: {
+//       fontSize: '1.125rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 4px #00ff00',
+//     },
+//     h5: {
+//       fontSize: '1rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 3px #00ff00',
+//     },
+//     h6: {
+//       fontSize: '0.875rem',
+//       fontWeight: 'bold',
+//       textShadow: '0 0 2px #00ff00',
+//     },
+//     body1: {
+//       fontSize: '0.875rem',
+//       lineHeight: 1.6,
+//     },
+//     body2: {
+//       fontSize: '0.75rem',
+//       lineHeight: 1.5,
+//     },
+//     caption: {
+//       fontSize: '0.625rem',
+//       lineHeight: 1.4,
+//     },
+//   },
+//   components: {
+//     MuiCssBaseline: {
+//       styleOverrides: {
+//         body: {
+//           backgroundColor: '#0a0a0a',
+//           color: '#00ff00',
+//           fontFamily: '"Courier New", monospace',
+//           lineHeight: 1.6,
+//         },
+//         '.motd-display': {
+//           position: 'fixed !important',
+//           top: '0 !important',
+//           left: '0 !important',
+//           width: '100vw !important',
+//           height: '100vh !important',
+//           backgroundColor: '#0a0a0a !important',
+//           color: '#d4af37 !important',
+//           display: 'flex !important',
+//           flexDirection: 'column !important',
+//           justifyContent: 'center !important',
+//           alignItems: 'center !important',
+//           zIndex: 9999 !important,
+//           fontFamily: '"Courier New", monospace !important',
+//           fontSize: '14px !important',
+//           lineHeight: 1.6 !important',
+//           padding: '20px !important',
+//           textAlign: 'center !important',
+//           overflow: 'auto !important',
+//         },
+//         '.motd-content': {
+//           flex: '1 !important',
+//           display: 'flex !important',
+//           flexDirection: 'column !important',
+//           justifyContent: 'center !important',
+//           alignItems: 'center !important',
+//           maxWidth: '800px !important',
+//           width: '100% !important',
+//         },
+//         '.motd-title': {
+//           fontSize: '2rem !important',
+//           fontWeight: 'bold !important',
+//           marginBottom: '1rem !important',
+//           textShadow: '0 0 10px #d4af37 !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-subtitle': {
+//           fontSize: '1.2rem !important',
+//           marginBottom: '2rem !important',
+//           color: '#d4af37 !important',
+//           fontStyle: 'italic !important',
+//         },
+//         '.motd-yellow-sign': {
+//           fontFamily: 'monospace !important',
+//           fontSize: '1.5rem !important',
+//           lineHeight: 1.2 !important',
+//           marginBottom: '2rem !important',
+//           color: '#d4af37 !important',
+//           whiteSpace: 'pre !important',
+//         },
+//         '.motd-welcome': {
+//           marginBottom: '1.5rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-description': {
+//           marginBottom: '1.5rem !important',
+//           color: '#d4af37 !important',
+//           textAlign: 'justify !important',
+//         },
+//         '.motd-warning': {
+//           marginBottom: '1.5rem !important',
+//           color: '#ff6600 !important',
+//           fontWeight: 'bold !important',
+//           border: '1px solid #ff6600 !important',
+//           padding: '1rem !important',
+//           borderRadius: '4px !important',
+//           backgroundColor: 'rgba(255, 102, 0, 0.1) !important',
+//         },
+//         '.motd-stats': {
+//           marginBottom: '1.5rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-stats h3': {
+//           fontSize: '1.1rem !important',
+//           fontWeight: 'bold !important',
+//           marginBottom: '0.5rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-stats p': {
+//           marginBottom: '0.25rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-stats strong': {
+//           color: '#ff6600 !important',
+//         },
+//         '.motd-commands': {
+//           marginBottom: '1.5rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-commands p': {
+//           marginBottom: '0.25rem !important',
+//           color: '#d4af37 !important',
+//         },
+//         '.motd-commands code': {
+//           backgroundColor: 'rgba(255, 102, 0, 0.2) !important',
+//           padding: '0.125rem 0.25rem !important',
+//           borderRadius: '2px !important',
+//           color: '#ff6600 !important',
+//           fontFamily: 'monospace !important',
+//         },
+//         '.motd-footer': {
+//           marginTop: 'auto !important',
+//           color: '#888888 !important',
+//           fontSize: '0.8rem !important',
+//           fontStyle: 'italic !important',
+//         },
+//         '.motd-footer p': {
+//           marginBottom: '0.25rem !important',
+//           color: '#888888 !important',
+//         },
+//         '.motd-actions': {
+//           marginTop: '2rem !important',
+//         },
+//         '.continue-button': {
+//           backgroundColor: '#d4af37 !important',
+//           color: '#000000 !important',
+//           border: 'none !important',
+//           padding: '0.75rem 2rem !important',
+//           fontSize: '1rem !important',
+//           fontWeight: 'bold !important',
+//           borderRadius: '4px !important',
+//           cursor: 'pointer !important',
+//           fontFamily: '"Courier New", monospace !important',
+//           textTransform: 'none !important',
+//           boxShadow: '0 0 10px rgba(212, 175, 55, 0.5) !important',
+//           transition: 'all 0.3s ease !important',
+//         },
+//         '.continue-button:hover': {
+//           backgroundColor: '#ffd700 !important',
+//           boxShadow: '0 0 15px rgba(212, 175, 55, 0.8) !important',
+//           transform: 'translateY(-2px) !important',
+//         },
+//         '.continue-button:active': {
+//           transform: 'translateY(0) !important',
+//         },
+//       },
+//     },
+//   },
+// });
 
-// Export the theme for use in the app
-export default mythosTheme;
+export const mythosTheme = {}; // Placeholder for now

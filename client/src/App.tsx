@@ -67,13 +67,13 @@ function App() {
     }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    setFormData({ username: '', password: '' });
-    setError(null);
-    logger.info('App', 'User logged out');
-  };
+  // const handleLogout = () => {
+  //   setIsAuthenticated(false);
+  //   setUser(null);
+  //   setFormData({ username: '', password: '' });
+  //   setError(null);
+  //   logger.info('App', 'User logged out');
+  // };
 
   // Show game interface if authenticated
   if (isAuthenticated && user) {

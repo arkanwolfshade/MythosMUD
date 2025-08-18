@@ -18,9 +18,8 @@ body {
 
 #root {
   width: 100%;
-  height: 100vh;
-  display: flex;
-  flex: 1;
+  min-height: 100vh;
+  display: block; /* Avoid flex shrinking children to width: 0 when Tailwind classes aren't applied */
 }
 
 .app {

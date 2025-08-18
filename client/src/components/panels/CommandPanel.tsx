@@ -151,7 +151,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <TerminalInput
-                ref={inputRef}
+                // ref={inputRef}
                 value={commandInput}
                 onChange={setCommandInput}
                 onKeyDown={handleKeyDown}
@@ -244,7 +244,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {quickCommands.map(({ command, icon, description }) => (
+            {quickCommands.map(({ command, icon }) => (
               <TerminalButton
                 key={command}
                 variant="secondary"

@@ -61,7 +61,9 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
     // Simulate game response
     setTimeout(() => {
       const gameResponse: ChatMessage = {
-        text: `The eldritch forces process your command: "${command}". The forbidden knowledge courses through your mind.`,
+        text:
+          `The eldritch forces process your command: "${command}". ` +
+          'The forbidden knowledge courses through your mind.',
         timestamp: new Date().toISOString(),
         isHtml: false,
         messageType: 'system',
@@ -91,7 +93,10 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
   };
 
   return (
-    <div className="h-full w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden">
+    <div
+      className="min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden"
+      style={{ minHeight: '100vh', width: '100%' }}
+    >
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-10">
         <div className="flex items-center gap-3">
@@ -110,18 +115,23 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
 
       {/* MOTD Overlay (preserved styles) */}
       {showMotd && (
-        <div className="motd-display">
+        <div
+          className="motd-display"
+          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100000 }}
+        >
           <div className="motd-content">
             <MotdContent />
           </div>
           <div className="motd-actions">
-            <button onClick={() => setShowMotd(false)}>Continue</button>
+            <button className="continue-button" onClick={() => setShowMotd(false)}>
+              Continue
+            </button>
           </div>
         </div>
       )}
 
       {/* Main Content Area */}
-      <div className="pt-12 h-full">
+      <div className="pt-12 min-h-screen">
         {/* Chat Panel */}
         <DraggablePanel
           id="chat-panel"

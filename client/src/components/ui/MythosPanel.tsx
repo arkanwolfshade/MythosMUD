@@ -37,10 +37,14 @@ export const MythosPanel: React.FC<MythosPanelProps> = ({
   };
 
   const eldritchBorderClasses = showEldritchBorder
-    ? 'before:absolute before:inset-0 before:border before:border-mythos-terminal-primary/30 before:rounded before:pointer-events-none before:animate-pulse'
+    ? [
+        'before:absolute before:inset-0 before:border',
+        'before:border-mythos-terminal-primary/30 before:rounded',
+        'before:pointer-events-none before:animate-pulse',
+      ].join(' ')
     : '';
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${eldritchBorderClasses} ${className}`;
+  const classes = [baseClasses, variantClasses[variant], sizeClasses[size], eldritchBorderClasses, className].join(' ');
 
   return (
     <div className={classes}>
@@ -56,7 +60,9 @@ export const MythosPanel: React.FC<MythosPanelProps> = ({
 
       {title && (
         <div
-          className={`border-b border-gray-700 bg-mythos-terminal-background ${size === 'sm' ? 'px-2 py-1' : size === 'md' ? 'px-3 py-2' : 'px-4 py-3'}`}
+          className={`border-b border-gray-700 bg-mythos-terminal-background ${
+            size === 'sm' ? 'px-2 py-1' : size === 'md' ? 'px-3 py-2' : 'px-4 py-3'
+          }`}
         >
           <h3 className="text-mythos-terminal-primary font-bold text-sm">{title}</h3>
           {subtitle && <p className="text-mythos-terminal-text-secondary text-xs mt-1">{subtitle}</p>}

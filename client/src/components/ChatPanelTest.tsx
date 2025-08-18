@@ -5,12 +5,14 @@ import { MythosPanel } from './ui/MythosPanel';
 import { TerminalButton } from './ui/TerminalButton';
 import { TerminalInput } from './ui/TerminalInput';
 
+type ChatMessageType = 'chat' | 'whisper' | 'shout' | 'emote' | 'system' | 'error';
+
 interface ChatMessage {
   text: string;
   timestamp: string;
   isHtml: boolean;
   isCompleteHtml?: boolean;
-  messageType?: string;
+  messageType?: ChatMessageType;
   aliasChain?: Array<{
     original: string;
     expanded: string;
@@ -115,7 +117,7 @@ export const ChatPanelTest: React.FC = () => {
   ]);
 
   const [newMessage, setNewMessage] = useState('');
-  const [messageType, setMessageType] = useState<string>('chat');
+  const [messageType, setMessageType] = useState<ChatMessageType>('chat');
 
   const addMessage = () => {
     if (newMessage.trim()) {
@@ -123,7 +125,7 @@ export const ChatPanelTest: React.FC = () => {
         text: newMessage,
         timestamp: new Date().toISOString(),
         isHtml: false,
-        messageType: messageType as any,
+        messageType,
       };
       setMessages(prev => [...prev, message]);
       setNewMessage('');
@@ -146,12 +148,12 @@ export const ChatPanelTest: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const addSampleMessage = (type: string, text: string) => {
+  const addSampleMessage = (type: ChatMessageType, text: string) => {
     const message: ChatMessage = {
       text,
       timestamp: new Date().toISOString(),
       isHtml: false,
-      messageType: type as any,
+      messageType: type,
     };
     setMessages(prev => [...prev, message]);
   };
@@ -182,7 +184,7 @@ export const ChatPanelTest: React.FC = () => {
                   <label className="text-sm text-mythos-terminal-text-secondary">Message Type:</label>
                   <select
                     value={messageType}
-                    onChange={e => setMessageType(e.target.value)}
+                    onChange={e => setMessageType(e.target.value as ChatMessageType)}
                     className="w-full p-2 bg-mythos-terminal-surface border border-gray-700 rounded text-mythos-terminal-text focus:border-mythos-terminal-primary focus:outline-none"
                   >
                     <option value="chat">Chat</option>
