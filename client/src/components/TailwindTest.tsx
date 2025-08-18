@@ -71,7 +71,7 @@ export const TailwindTest: React.FC = () => {
               <span className="text-xs text-center">Disconnected</span>
             </div>
             <div className="flex flex-col items-center space-y-2 p-3 border border-gray-700 rounded">
-              <EldritchIcon name={MythosIcons.connecting} variant="warning" size={24} animated />
+              <EldritchIcon name={MythosIcons.connecting} variant="warning" size={24} />
               <span className="text-xs text-center">Connecting</span>
             </div>
             <div className="flex flex-col items-center space-y-2 p-3 border border-gray-700 rounded">
@@ -213,7 +213,7 @@ export const TailwindTest: React.FC = () => {
                 <TerminalButton variant="secondary" size="md">
                   Focus Me
                 </TerminalButton>
-                <EldritchIcon name={MythosIcons.eldritch} variant="warning" size={32} animated />
+                <EldritchIcon name={MythosIcons.eldritch} variant="warning" size={32} />
               </div>
             </div>
           </div>

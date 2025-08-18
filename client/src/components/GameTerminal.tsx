@@ -5,11 +5,24 @@ import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 
-interface GameTerminalProps {
-  playerId: string;
-  playerName: string;
-  authToken: string;
-  isConnected: boolean;
+interface Player {
+  name: string;
+  stats?: {
+    current_health: number;
+    sanity: number;
+  };
+  level?: number;
+}
+
+interface Room {
+  id: string;
+  name: string;
+  description: string;
+  exits: Record<string, string>;
+  entities?: Array<{
+    name: string;
+    type: string;
+  }>;
 }
 
 interface ChatMessage {
@@ -25,72 +38,41 @@ interface ChatMessage {
   }>;
 }
 
-export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName, isConnected }) => {
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      text: `Welcome to MythosMUD, ${playerName}. The eldritch forces await your command.`,
-      timestamp: new Date().toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'You enter the dimly lit library of Miskatonic University. Ancient tomes line the walls, their leather bindings cracked with age.',
-      timestamp: new Date().toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-  ]);
+interface GameTerminalProps {
+  playerName: string;
+  isConnected: boolean;
+  isConnecting: boolean;
+  error: string | null;
+  reconnectAttempts: number;
+  room: Room | null;
+  player: Player | null;
+  messages: ChatMessage[];
+  commandHistory: string[];
+  onConnect: () => void;
+  onDisconnect: () => void;
+  onLogout: () => void;
+  onDownloadLogs: () => void;
+  onSendCommand: (command: string) => void;
+  onClearMessages: () => void;
+  onClearHistory: () => void;
+}
 
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+export const GameTerminal: React.FC<GameTerminalProps> = ({
+  playerName,
+  isConnected,
+  isConnecting,
+  error,
+  reconnectAttempts,
+  room,
+  player,
+  messages,
+  commandHistory,
+  onDownloadLogs,
+  onSendCommand,
+  onClearMessages,
+  onClearHistory,
+}) => {
   const [showMotd, setShowMotd] = useState(true);
-
-  const handleSendCommand = (command: string) => {
-    // Add command to history
-    setCommandHistory(prev => [...prev, command]);
-
-    // Add system response to chat
-    const response: ChatMessage = {
-      text: `You say: "${command}"`,
-      timestamp: new Date().toISOString(),
-      isHtml: false,
-      messageType: 'chat',
-    };
-
-    setChatMessages(prev => [...prev, response]);
-
-    // Simulate game response
-    setTimeout(() => {
-      const gameResponse: ChatMessage = {
-        text:
-          `The eldritch forces process your command: "${command}". ` +
-          'The forbidden knowledge courses through your mind.',
-        timestamp: new Date().toISOString(),
-        isHtml: false,
-        messageType: 'system',
-      };
-      setChatMessages(prev => [...prev, gameResponse]);
-    }, 500);
-  };
-
-  const handleClearChat = () => {
-    setChatMessages([]);
-  };
-
-  const handleDownloadChat = () => {
-    const logContent = chatMessages.map(msg => `[${new Date(msg.timestamp).toLocaleString()}] ${msg.text}`).join('\n');
-
-    const blob = new Blob([logContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mythosmud-chat-${new Date().toISOString().split('T')[0]}.log`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleClearCommands = () => {
-    setCommandHistory([]);
-  };
 
   return (
     <div
@@ -108,8 +90,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
           <span
             className={`px-2 py-1 rounded text-xs ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
           >
-            {isConnected ? 'Connected' : 'Disconnected'}
+            {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
           </span>
+          {error && <span className="text-mythos-terminal-error text-xs">{error}</span>}
+          {reconnectAttempts > 0 && (
+            <span className="text-mythos-terminal-warning text-xs">Reconnect: {reconnectAttempts}</span>
+          )}
         </div>
       </div>
 
@@ -134,28 +120,26 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
       <div className="pt-12 min-h-screen">
         {/* Chat Panel */}
         <DraggablePanel
-          id="chat-panel"
           title="Chat"
-          initialPosition={{ x: 20, y: 80 }}
-          initialSize={{ width: 500, height: 400 }}
-          minSize={{ width: 300, height: 200 }}
+          defaultPosition={{ x: 50, y: 50 }}
+          defaultSize={{ width: 400, height: 300 }}
+          minSize={{ width: 200, height: 150 }}
           maxSize={{ width: 800, height: 600 }}
           variant="eldritch"
           onClose={() => console.log('Chat panel closed')}
           onMinimize={() => console.log('Chat panel minimized')}
           onMaximize={() => console.log('Chat panel maximized')}
         >
-          <ChatPanel messages={chatMessages} onClearMessages={handleClearChat} onDownloadLogs={handleDownloadChat} />
+          <ChatPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
         </DraggablePanel>
 
         {/* Command Panel */}
         <DraggablePanel
-          id="command-panel"
           title="Commands"
-          initialPosition={{ x: 540, y: 80 }}
-          initialSize={{ width: 400, height: 400 }}
-          minSize={{ width: 300, height: 200 }}
-          maxSize={{ width: 600, height: 600 }}
+          defaultPosition={{ x: 500, y: 50 }}
+          defaultSize={{ width: 350, height: 250 }}
+          minSize={{ width: 200, height: 150 }}
+          maxSize={{ width: 600, height: 500 }}
           variant="elevated"
           onClose={() => console.log('Command panel closed')}
           onMinimize={() => console.log('Command panel minimized')}
@@ -163,58 +147,105 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({ playerId, playerName
         >
           <CommandPanel
             commandHistory={commandHistory}
-            onSendCommand={handleSendCommand}
-            onClearHistory={handleClearCommands}
-            placeholder="Enter your eldritch command..."
+            onSendCommand={onSendCommand}
+            onClearHistory={onClearHistory}
+            isConnected={isConnected}
           />
         </DraggablePanel>
 
-        {/* Status Panel */}
+        {/* Room Info Panel */}
+        {room && (
+          <DraggablePanel
+            title="Room Info"
+            defaultPosition={{ x: 50, y: 400 }}
+            defaultSize={{ width: 300, height: 200 }}
+            minSize={{ width: 200, height: 100 }}
+            maxSize={{ width: 500, height: 400 }}
+            variant="default"
+            onClose={() => console.log('Room panel closed')}
+            onMinimize={() => console.log('Room panel minimized')}
+            onMaximize={() => console.log('Room panel maximized')}
+          >
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-mythos-terminal-primary font-bold mb-2">{room.name}</h4>
+                <p className="text-sm text-mythos-terminal-text-secondary">{room.description}</p>
+              </div>
+              {room.exits && Object.keys(room.exits).length > 0 && (
+                <div>
+                  <h5 className="text-mythos-terminal-primary text-sm font-bold mb-1">Exits:</h5>
+                  <div className="text-xs text-mythos-terminal-text-secondary">
+                    {Object.entries(room.exits).map(([direction, destination]) => (
+                      <div key={direction}>
+                        {direction}: {destination}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {room.entities && room.entities.length > 0 && (
+                <div>
+                  <h5 className="text-mythos-terminal-primary text-sm font-bold mb-1">Entities:</h5>
+                  <div className="text-xs text-mythos-terminal-text-secondary">
+                    {room.entities.map((entity, index) => (
+                      <div key={index}>
+                        {entity.name} ({entity.type})
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </DraggablePanel>
+        )}
+
+        {/* Player Status Panel */}
         <DraggablePanel
-          id="status-panel"
           title="Status"
-          initialPosition={{ x: 20, y: 500 }}
-          initialSize={{ width: 300, height: 200 }}
-          minSize={{ width: 200, height: 150 }}
-          maxSize={{ width: 400, height: 300 }}
+          defaultPosition={{ x: 400, y: 400 }}
+          defaultSize={{ width: 300, height: 200 }}
+          minSize={{ width: 200, height: 100 }}
+          maxSize={{ width: 500, height: 400 }}
           variant="default"
           onClose={() => console.log('Status panel closed')}
           onMinimize={() => console.log('Status panel minimized')}
           onMaximize={() => console.log('Status panel maximized')}
         >
-          <div className="p-4 space-y-4">
-            <div className="space-y-2">
-              <h3 className="text-mythos-terminal-primary font-bold">Player Info</h3>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-mythos-terminal-text-secondary">Name:</span>
-                  <span className="text-mythos-terminal-text">{playerName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-mythos-terminal-text-secondary">ID:</span>
-                  <span className="text-mythos-terminal-text">{playerId}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-mythos-terminal-text-secondary">Status:</span>
-                  <span className={`${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}>
-                    {isConnected ? 'Online' : 'Offline'}
-                  </span>
-                </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Connection:</span>
+              <div className="flex items-center space-x-2">
+                <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} />
+                <span
+                  className={`text-sm ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}
+                >
+                  {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
+                </span>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <h3 className="text-mythos-terminal-primary font-bold">Statistics</h3>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-mythos-terminal-text-secondary">Messages:</span>
-                  <span className="text-mythos-terminal-text">{chatMessages.length}</span>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Player:</span>
+              <span className="text-sm text-mythos-terminal-text">{playerName}</span>
+            </div>
+            {player?.stats && (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-mythos-terminal-text-secondary">Health:</span>
+                  <span className="text-sm text-mythos-terminal-text">{player.stats.current_health}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-mythos-terminal-text-secondary">Commands:</span>
-                  <span className="text-mythos-terminal-text">{commandHistory.length}</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-mythos-terminal-text-secondary">Sanity:</span>
+                  <span className="text-sm text-mythos-terminal-text">{player.stats.sanity}</span>
                 </div>
-              </div>
+              </>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Messages:</span>
+              <span className="text-sm text-mythos-terminal-text">{messages.length}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-mythos-terminal-text-secondary">Commands:</span>
+              <span className="text-sm text-mythos-terminal-text">{commandHistory.length}</span>
             </div>
           </div>
         </DraggablePanel>

@@ -1,30 +1,108 @@
-import * as LucideIcons from 'lucide-react';
 import React from 'react';
+import * as LucideIcons from 'lucide-react';
+
+// Define the icon names as string literals
+export const MythosIcons = {
+  // Core UI icons
+  chat: 'chat',
+  move: 'move',
+  download: 'download',
+  clear: 'clear',
+  connection: 'connection',
+  minimize: 'minimize',
+  maximize: 'maximize',
+  restore: 'restore',
+  close: 'close',
+  clock: 'clock',
+
+  // Phase 4.1: New icons for eldritch effects demo
+  lightbulb: 'lightbulb',
+  heart: 'heart',
+  sparkles: 'sparkles',
+  eye: 'eye',
+  eyeOff: 'eyeOff',
+  star: 'star',
+  shadow: 'shadow',
+  square: 'square',
+  play: 'play',
+  stop: 'stop',
+  settings: 'settings',
+  panel: 'panel',
+  rotate: 'rotate',
+
+  // Additional icons used throughout the codebase
+  help: 'help',
+  stats: 'stats',
+  look: 'look',
+  search: 'search',
+  inventory: 'inventory',
+  character: 'character',
+  exit: 'exit',
+  disconnected: 'disconnected',
+  connecting: 'connecting',
+  attack: 'attack',
+  room: 'room',
+  eldritch: 'eldritch',
+  horror: 'horror',
+} as const;
+
+// Map icon names to Lucide icon components
+const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
+  // Core UI icons
+  chat: 'MessageCircle',
+  move: 'Move',
+  download: 'Download',
+  clear: 'Trash2',
+  connection: 'Wifi',
+  minimize: 'Minus',
+  maximize: 'Maximize',
+  restore: 'Minimize2',
+  close: 'X',
+  clock: 'Clock',
+
+  // Phase 4.1: New icons for eldritch effects demo
+  lightbulb: 'Lightbulb',
+  heart: 'Heart',
+  sparkles: 'Sparkles',
+  eye: 'Eye',
+  eyeOff: 'EyeOff',
+  star: 'Star',
+  shadow: 'Moon',
+  square: 'Square',
+  play: 'Play',
+  stop: 'Square',
+  settings: 'Settings',
+  panel: 'Layout',
+  rotate: 'RotateCw',
+
+  // Additional icons used throughout the codebase
+  help: 'HelpCircle',
+  stats: 'BarChart3',
+  look: 'Eye',
+  search: 'Search',
+  inventory: 'Package',
+  character: 'User',
+  exit: 'ArrowRight',
+  disconnected: 'WifiOff',
+  connecting: 'Loader2',
+  attack: 'Sword',
+  room: 'Home',
+  eldritch: 'Moon',
+  horror: 'Skull',
+};
 
 interface EldritchIconProps {
-  name: keyof typeof LucideIcons;
+  name: keyof typeof MythosIcons;
   size?: number;
   className?: string;
-  variant?: 'default' | 'primary' | 'secondary' | 'warning' | 'error' | 'success';
-  animated?: boolean;
+  variant?: 'primary' | 'secondary' | 'warning' | 'error' | 'success';
 }
 
-export const EldritchIcon: React.FC<EldritchIconProps> = ({
-  name,
-  size = 16,
-  className = '',
-  variant = 'default',
-  animated = false,
-}) => {
-  const IconComponent = LucideIcons[name] as React.ComponentType<{ size?: number; className?: string }>;
-
-  if (!IconComponent) {
-    console.warn(`Icon "${name}" not found in Lucide React`);
-    return null;
-  }
+export const EldritchIcon: React.FC<EldritchIconProps> = ({ name, size = 16, className = '', variant = 'primary' }) => {
+  const iconKey = iconMap[name];
+  const IconComponent = LucideIcons[iconKey] as React.ComponentType<{ size?: number; className?: string }>;
 
   const variantClasses = {
-    default: 'text-mythos-terminal-text',
     primary: 'text-mythos-terminal-primary',
     secondary: 'text-mythos-terminal-secondary',
     warning: 'text-mythos-terminal-warning',
@@ -32,70 +110,7 @@ export const EldritchIcon: React.FC<EldritchIconProps> = ({
     success: 'text-mythos-terminal-success',
   };
 
-  const animationClasses = animated ? 'animate-pulse' : '';
-
-  const classes = `${variantClasses[variant]} ${animationClasses} ${className}`;
+  const classes = `${variantClasses[variant]} ${className}`;
 
   return <IconComponent size={size} className={classes} />;
 };
-
-// Predefined Mythos-themed icon mappings
-export const MythosIcons = {
-  // Connection and status
-  connection: 'Wifi' as keyof typeof LucideIcons,
-  disconnected: 'WifiOff' as keyof typeof LucideIcons,
-  connecting: 'Loader2' as keyof typeof LucideIcons,
-
-  // Navigation and movement
-  move: 'Move' as keyof typeof LucideIcons,
-  look: 'Eye' as keyof typeof LucideIcons,
-  search: 'Search' as keyof typeof LucideIcons,
-
-  // Communication
-  chat: 'MessageCircle' as keyof typeof LucideIcons,
-  whisper: 'MessageSquare' as keyof typeof LucideIcons,
-  shout: 'Volume2' as keyof typeof LucideIcons,
-
-  // Combat and actions
-  attack: 'Sword' as keyof typeof LucideIcons,
-  defend: 'Shield' as keyof typeof LucideIcons,
-  cast: 'Zap' as keyof typeof LucideIcons,
-
-  // Inventory and items
-  inventory: 'Package' as keyof typeof LucideIcons,
-  item: 'Box' as keyof typeof LucideIcons,
-  gold: 'Coins' as keyof typeof LucideIcons,
-
-  // Character and stats
-  character: 'User' as keyof typeof LucideIcons,
-  stats: 'BarChart3' as keyof typeof LucideIcons,
-  health: 'Heart' as keyof typeof LucideIcons,
-  sanity: 'Brain' as keyof typeof LucideIcons,
-
-  // Environment
-  room: 'Home' as keyof typeof LucideIcons,
-  exit: 'ArrowRight' as keyof typeof LucideIcons,
-  door: 'DoorOpen' as keyof typeof LucideIcons,
-
-  // Eldritch and Mythos
-  eldritch: 'Moon' as keyof typeof LucideIcons,
-  forbidden: 'Lock' as keyof typeof LucideIcons,
-  ancient: 'Clock' as keyof typeof LucideIcons,
-  horror: 'Skull' as keyof typeof LucideIcons,
-
-  // UI and controls
-  close: 'X' as keyof typeof LucideIcons,
-  minimize: 'Minus' as keyof typeof LucideIcons,
-  maximize: 'Maximize' as keyof typeof LucideIcons,
-  settings: 'Settings' as keyof typeof LucideIcons,
-  help: 'HelpCircle' as keyof typeof LucideIcons,
-  download: 'Download' as keyof typeof LucideIcons,
-  clear: 'Trash2' as keyof typeof LucideIcons,
-
-  // System
-  error: 'AlertCircle' as keyof typeof LucideIcons,
-  warning: 'AlertTriangle' as keyof typeof LucideIcons,
-  success: 'CheckCircle' as keyof typeof LucideIcons,
-  info: 'Info' as keyof typeof LucideIcons,
-  clock: 'Clock' as keyof typeof LucideIcons,
-} as const;

@@ -40,6 +40,9 @@ def get_persistence(event_bus=None) -> "PersistenceLayer":
     with _persistence_lock:
         if _persistence_instance is None:
             _persistence_instance = PersistenceLayer(event_bus=event_bus)
+        elif event_bus is not None and _persistence_instance._event_bus is None:
+            # Update the event bus if it's not set and we have one to set
+            _persistence_instance._event_bus = event_bus
         return _persistence_instance
 
 

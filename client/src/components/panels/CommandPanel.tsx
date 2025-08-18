@@ -8,6 +8,7 @@ interface CommandPanelProps {
   onSendCommand: (command: string) => void;
   onClearHistory?: () => void;
   disabled?: boolean;
+  isConnected?: boolean;
   placeholder?: string;
 }
 
@@ -16,6 +17,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   onSendCommand,
   onClearHistory,
   disabled = false,
+  isConnected = true,
   placeholder = "Enter command (e.g., 'look' or '/look')...",
 }) => {
   const [commandInput, setCommandInput] = useState('');
@@ -156,7 +158,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
                 onChange={setCommandInput}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
-                disabled={disabled}
+                disabled={disabled || !isConnected}
                 className="w-full"
                 onFocus={() => setShowSuggestions(true)}
               />
@@ -181,7 +183,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
             <TerminalButton
               type="submit"
               variant="primary"
-              disabled={!commandInput.trim() || disabled}
+              disabled={!commandInput.trim() || disabled || !isConnected}
               className="px-4"
             >
               <EldritchIcon name={MythosIcons.chat} size={16} className="mr-2" />
@@ -253,7 +255,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
                   setCommandInput(command);
                   inputRef.current?.focus();
                 }}
-                disabled={disabled}
+                disabled={disabled || !isConnected}
                 className="flex items-center gap-2 text-xs"
               >
                 <EldritchIcon name={icon} size={12} variant="primary" />

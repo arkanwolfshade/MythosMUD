@@ -1,170 +1,172 @@
-// import {
-//   Settings as AliasIcon,
-//   EmojiEmotions as EmoteIcon,
-//   ExpandLess,
-//   ExpandMore,
-//   DirectionsWalk as GoIcon,
-//   Info as HelpCommandIcon,
-//   Help as HelpIcon,
-//   List as ListIcon,
-//   Visibility as LookIcon,
-//   VolumeOff as MuteIcon,
-//   Chat as SayIcon,
-//   Settings,
-//   VolumeUp as UnmuteIcon,
-//   Person as WhoIcon,
-// } from '@mui/icons-material';
-// import {
-//   Box,
-//   Chip,
-//   Collapse,
-//   Divider,
-//   Drawer,
-//   IconButton,
-//   List,
-//   ListItem,
-//   ListItemButton,
-//   ListItemIcon,
-//   ListItemText,
-//   Typography,
-// } from '@mui/material';
-// import React, { useState } from 'react';
+// Temporarily commented out due to MUI dependencies
+// This component will be migrated to TailwindCSS in a future phase
+
+/*
+import React, { useState } from 'react';
+import {
+  Drawer,
+  Box,
+  Typography,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Chip,
+  Divider,
+} from '@mui/material';
+import {
+  ExpandLess,
+  ExpandMore,
+  Help as HelpIcon,
+  Visibility as LookIcon,
+  DirectionsWalk as GoIcon,
+  Chat as SayIcon,
+  Settings,
+  Group as WhoIcon,
+  List as ListIcon,
+  VolumeOff as MuteIcon,
+  VolumeUp as UnmuteIcon,
+} from '@mui/icons-material';
+
+// Custom icon components (these would need to be replaced with Lucide icons)
+const EmoteIcon = () => <span>😊</span>;
+const AliasIcon = () => <span>🔗</span>;
+const HelpCommandIcon = () => <span>❓</span>;
 
 interface Command {
   name: string;
-  category: string;
   description: string;
-  usage: string;
+  syntax: string;
   examples: string[];
+  category: string;
   icon: React.ReactNode;
 }
 
 const commands: Command[] = [
   {
     name: 'look',
+    description: 'Look around the current room or at a specific object',
+    syntax: 'look [target]',
+    examples: ['look', 'look north', 'look at the door'],
     category: 'Exploration',
-    description: 'Examine your surroundings or look in a specific direction',
-    usage: 'look [direction]',
-    examples: ['look', 'look north', 'look east'],
     icon: <LookIcon />,
   },
   {
-    name: 'go',
+    name: 'north/south/east/west',
+    description: 'Move in the specified direction',
+    syntax: 'north|south|east|west',
+    examples: ['north', 's', 'east'],
     category: 'Movement',
-    description: 'Move in a specific direction',
-    usage: 'go <direction>',
-    examples: ['go north', 'go south', 'go east', 'go west'],
     icon: <GoIcon />,
   },
   {
     name: 'say',
+    description: 'Speak to everyone in the room',
+    syntax: 'say <message>',
+    examples: ['say Hello everyone!', 'say "How are you?"'],
     category: 'Communication',
-    description: 'Speak to other players in the room',
-    usage: 'say <message>',
-    examples: ['say Hello everyone!', 'say How are you?'],
     icon: <SayIcon />,
   },
   {
     name: 'emote',
+    description: 'Perform an action or emotion',
+    syntax: 'emote <action>',
+    examples: ['emote smiles warmly', 'emote looks around nervously'],
     category: 'Communication',
-    description: 'Perform an action or gesture visible to other players',
-    usage: 'emote <action> or [predefined_emote]',
-    examples: ['emote adjusts spectacles', 'twibble', 'dance', 'wave'],
     icon: <EmoteIcon />,
   },
   {
-    name: 'me',
+    name: 'whisper',
+    description: 'Send a private message to another player',
+    syntax: 'whisper <player> <message>',
+    examples: ['whisper ArkanWolfshade Hello!', 'whisper "John Doe" "How are you?"'],
     category: 'Communication',
-    description: 'Describe an action you are performing (alternative to emote)',
-    usage: 'me <action> or me [predefined_emote]',
-    examples: ['me looks around', 'me twibble', 'me dance'],
     icon: <EmoteIcon />,
   },
   {
-    name: 'pose',
+    name: 'shout',
+    description: 'Shout a message to all connected players',
+    syntax: 'shout <message>',
+    examples: ['shout "Anyone want to group up?"', 'shout Hello everyone!'],
     category: 'Communication',
-    description: 'Set or display your current pose/status',
-    usage: 'pose [description]',
-    examples: ['pose', 'pose stands with authority', 'pose is deep in thought'],
     icon: <EmoteIcon />,
   },
   {
     name: 'alias',
+    description: 'Create a shortcut for a command',
+    syntax: 'alias <shortcut> <command>',
+    examples: ['alias n north', 'alias "look door" "look at the door"'],
     category: 'System',
-    description: 'Create shortcuts for commonly used commands',
-    usage: 'alias <shortcut> <command>',
-    examples: ['alias n go north', 'alias s go south'],
     icon: <AliasIcon />,
   },
   {
     name: 'help',
+    description: 'Get help on a specific command',
+    syntax: 'help [command]',
+    examples: ['help', 'help look', 'help movement'],
     category: 'System',
-    description: 'Get detailed help for a specific command',
-    usage: 'help [command]',
-    examples: ['help', 'help look', 'help go'],
     icon: <HelpCommandIcon />,
   },
   {
     name: 'who',
-    category: 'Information',
     description: 'See who is currently online',
-    usage: 'who',
+    syntax: 'who',
     examples: ['who'],
+    category: 'Information',
     icon: <WhoIcon />,
   },
   {
-    name: 'mutes',
-    category: 'Communication',
-    description: 'View your current mute list',
-    usage: 'mutes',
-    examples: ['mutes'],
+    name: 'inventory',
+    description: 'Check your inventory',
+    syntax: 'inventory',
+    examples: ['inventory', 'i'],
+    category: 'Information',
     icon: <ListIcon />,
   },
   {
     name: 'mute',
-    category: 'Communication',
-    description: 'Mute a player (personal or global if admin)',
-    usage: 'mute <player>',
-    examples: ['mute PlayerName'],
+    description: 'Mute a specific player or channel',
+    syntax: 'mute <target>',
+    examples: ['mute ArkanWolfshade', 'mute chat'],
+    category: 'System',
     icon: <MuteIcon />,
   },
   {
     name: 'unmute',
-    category: 'Communication',
-    description: 'Unmute a previously muted player',
-    usage: 'unmute <player>',
-    examples: ['unmute PlayerName'],
+    description: 'Unmute a previously muted player or channel',
+    syntax: 'unmute <target>',
+    examples: ['unmute ArkanWolfshade', 'unmute chat'],
+    category: 'System',
     icon: <UnmuteIcon />,
   },
 ];
-
-const categories = ['Exploration', 'Movement', 'Communication', 'Information', 'System'];
 
 interface CommandHelpDrawerProps {
   open: boolean;
   onClose: () => void;
 }
 
-export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
+export const CommandHelpDrawer: React.FC<CommandHelpDrawerProps> = ({ open, onClose }) => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   const handleCategoryClick = (category: string) => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
-  const getCommandsByCategory = (category: string) => {
-    return commands.filter(cmd => cmd.category === category);
-  };
+  const categories = Array.from(new Set(commands.map(cmd => cmd.category)));
 
   return (
     <Drawer
       anchor="right"
       open={open}
       onClose={onClose}
-      sx={{
-        '& .MuiDrawer-paper': {
+      PaperProps={{
+        sx: {
           width: 400,
-          maxWidth: '90vw',
+          bgcolor: 'background.paper',
         },
       }}
     >
@@ -172,7 +174,7 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Typography variant="h6" component="h2">
             <HelpIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-            Command Reference
+            Command Help
           </Typography>
           <IconButton onClick={onClose} size="small">
             <ExpandLess />
@@ -180,12 +182,12 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
         </Box>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Click on a category to see available commands and their usage.
+          Browse available commands by category. Click on a category to expand and see detailed information.
         </Typography>
 
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-          {categories.map(category => {
-            const categoryCommands = getCommandsByCategory(category);
+          {categories.map((category) => {
+            const categoryCommands = commands.filter(cmd => cmd.category === category);
             const isExpanded = expandedCategory === category;
 
             return (
@@ -201,7 +203,7 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
                     </ListItemIcon>
                     <ListItemText
                       primary={category}
-                      secondary={`${categoryCommands.length} command${categoryCommands.length !== 1 ? 's' : ''}`}
+                      primaryTypographyProps={{ fontWeight: 'bold' }}
                     />
                     {isExpanded ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
@@ -209,7 +211,7 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
 
                 <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {categoryCommands.map(command => (
+                    {categoryCommands.map((command) => (
                       <ListItem key={command.name} sx={{ pl: 4 }}>
                         <Box sx={{ width: '100%' }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -218,10 +220,9 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
                               {command.name}
                             </Typography>
                             <Chip
-                              label={command.usage}
+                              label={command.category}
                               size="small"
-                              variant="outlined"
-                              sx={{ ml: 1, fontSize: '0.7rem' }}
+                              sx={{ ml: 'auto', fontSize: '0.7rem' }}
                             />
                           </Box>
 
@@ -231,6 +232,16 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
 
                           <Box>
                             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                              Syntax:
+                            </Typography>
+                            <Chip
+                              label={command.syntax}
+                              size="small"
+                              variant="outlined"
+                              sx={{ fontSize: '0.7rem', mb: 1 }}
+                            />
+
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
                               Examples:
                             </Typography>
                             {command.examples.map((example, index) => (
@@ -238,16 +249,8 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
                                 key={index}
                                 label={example}
                                 size="small"
-                                variant="filled"
-                                sx={{
-                                  mr: 0.5,
-                                  mb: 0.5,
-                                  fontSize: '0.7rem',
-                                  bgcolor: 'action.hover',
-                                  '&:hover': {
-                                    bgcolor: 'action.selected',
-                                  },
-                                }}
+                                variant="outlined"
+                                sx={{ fontSize: '0.7rem', mr: 0.5, mb: 0.5 }}
                               />
                             ))}
                           </Box>
@@ -256,7 +259,6 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
                     ))}
                   </List>
                 </Collapse>
-
                 <Divider />
               </React.Fragment>
             );
@@ -265,4 +267,9 @@ export function CommandHelpDrawer({ open, onClose }: CommandHelpDrawerProps) {
       </Box>
     </Drawer>
   );
-}
+};
+*/
+
+export const CommandHelpDrawer: React.FC<{ open: boolean; onClose: () => void }> = () => {
+  return <div>Command Help (Coming Soon)</div>;
+};

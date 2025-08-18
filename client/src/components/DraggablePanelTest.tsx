@@ -30,10 +30,6 @@ export const DraggablePanelTest: React.FC = () => {
     },
   ]);
 
-  const updatePanel = (id: string, updates: Partial<(typeof panels)[0]>) => {
-    setPanels(prev => prev.map(panel => (panel.id === id ? { ...panel, ...updates } : panel)));
-  };
-
   const closePanel = (id: string) => {
     setPanels(prev => prev.filter(panel => panel.id !== id));
   };
@@ -88,20 +84,13 @@ export const DraggablePanelTest: React.FC = () => {
         {panels.map(panel => (
           <DraggablePanel
             key={panel.id}
-            id={panel.id}
             title={panel.title}
             variant={panel.variant}
-            initialPosition={panel.position}
-            initialSize={panel.size}
-            onPositionChange={position => updatePanel(panel.id, { position })}
-            onSizeChange={size => updatePanel(panel.id, { size })}
+            defaultPosition={panel.position}
+            defaultSize={panel.size}
             onClose={() => closePanel(panel.id)}
             onMinimize={() => console.log('Minimize panel:', panel.id)}
             onMaximize={() => console.log('Maximize panel:', panel.id)}
-            minSize={{ width: 200, height: 150 }}
-            maxSize={{ width: 800, height: 600 }}
-            snapToGrid={true}
-            gridSize={20}
           >
             <div className="space-y-4">
               <MythosPanel
@@ -115,7 +104,7 @@ export const DraggablePanelTest: React.FC = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm text-mythos-terminal-text-secondary">Sample Input:</label>
-                    <TerminalInput value="" onChange={() => {}} placeholder="Type something..." size="sm" />
+                    <TerminalInput value="" onChange={() => {}} placeholder="Type something..." />
                   </div>
 
                   <div className="flex flex-wrap gap-2">

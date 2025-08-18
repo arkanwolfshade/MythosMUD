@@ -1,6 +1,204 @@
 @import 'tailwindcss';
 @import './styles/motd-preserved.css';
 
+/* Phase 4.1: Eldritch Animations - Direct CSS Implementation */
+@keyframes eldritch-glow {
+  0% {
+    box-shadow:
+      0 0 10px #00ff00,
+      0 0 20px #00ff00,
+      0 0 30px #00ff00;
+    text-shadow:
+      0 0 10px #00ff00,
+      0 0 20px #00ff00;
+  }
+  50% {
+    box-shadow:
+      0 0 20px #00ff00,
+      0 0 40px #00ff00,
+      0 0 60px #00ff00;
+    text-shadow:
+      0 0 20px #00ff00,
+      0 0 40px #00ff00;
+  }
+  100% {
+    box-shadow:
+      0 0 10px #00ff00,
+      0 0 20px #00ff00,
+      0 0 30px #00ff00;
+    text-shadow:
+      0 0 10px #00ff00,
+      0 0 20px #00ff00;
+  }
+}
+
+@keyframes eldritch-pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes eldritch-shimmer {
+  0% {
+    background-position: -200% 0;
+    background-image: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.3), transparent);
+  }
+  50% {
+    background-position: 0% 0;
+    background-image: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.5), transparent);
+  }
+  100% {
+    background-position: 200% 0;
+    background-image: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.3), transparent);
+  }
+}
+
+@keyframes eldritch-fade {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes eldritch-slide {
+  0% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(-5px);
+  }
+}
+
+@keyframes eldritch-scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes eldritch-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes eldritch-blur {
+  0% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(3px);
+  }
+  100% {
+    filter: blur(0px);
+  }
+}
+
+@keyframes eldritch-shadow {
+  0% {
+    box-shadow:
+      0 0 10px rgba(0, 255, 0, 0.5),
+      0 0 20px rgba(0, 255, 0, 0.3);
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(0, 255, 0, 0.8),
+      0 0 50px rgba(0, 255, 0, 0.5);
+    text-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(0, 255, 0, 0.5),
+      0 0 20px rgba(0, 255, 0, 0.3);
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  }
+}
+
+@keyframes eldritch-border {
+  0% {
+    border-color: rgba(0, 255, 0, 0.5);
+    border-width: 2px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.3);
+  }
+  50% {
+    border-color: rgba(0, 255, 0, 1);
+    border-width: 3px;
+    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.6);
+  }
+  100% {
+    border-color: rgba(0, 255, 0, 0.5);
+    border-width: 2px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.3);
+  }
+}
+
+/* Animation Classes */
+.animate-eldritch-glow {
+  animation: eldritch-glow 1.5s ease-in-out infinite alternate;
+}
+
+.animate-eldritch-pulse {
+  animation: eldritch-pulse 1s ease-in-out infinite;
+}
+
+.animate-eldritch-shimmer {
+  animation: eldritch-shimmer 2s linear infinite;
+}
+
+.animate-eldritch-fade {
+  animation: eldritch-fade 1.5s ease-in-out infinite alternate;
+}
+
+.animate-eldritch-slide {
+  animation: eldritch-slide 1s ease-in-out infinite;
+}
+
+.animate-eldritch-scale {
+  animation: eldritch-scale 1s ease-in-out infinite alternate;
+}
+
+.animate-eldritch-rotate {
+  animation: eldritch-rotate 3s linear infinite;
+}
+
+.animate-eldritch-blur {
+  animation: eldritch-blur 1.5s ease-in-out infinite alternate;
+}
+
+.animate-eldritch-shadow {
+  animation: eldritch-shadow 2s ease-in-out infinite;
+}
+
+.animate-eldritch-border {
+  animation: eldritch-border 2s linear infinite;
+}
+
 /* MythosMUD Client Styles - TailwindCSS Enhanced */
 
 * {
@@ -17,9 +215,9 @@ body {
 }
 
 #root {
+  display: block;
+  height: 100vh;
   width: 100%;
-  min-height: 100vh;
-  display: block; /* Avoid flex shrinking children to width: 0 when Tailwind classes aren't applied */
 }
 
 .app {

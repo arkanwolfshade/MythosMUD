@@ -1,146 +1,117 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './App.css';
+import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
-import { logger } from './utils/logger';
-
-interface LoginFormData {
-  username: string;
-  password: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  authToken: string;
-}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [password, setPassword] = useState('');
+  const [authToken, setAuthToken] = useState('');
+  const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<LoginFormData>({
-    username: '',
-    password: '',
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const baseUrl = import.meta.env.VITE_API_URL || '/api';
-  logger.info('App', 'Component initialized', { baseUrl });
-
-  const handleInputChange = (field: keyof LoginFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-    setError(null); // Clear error when user starts typing
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleLoginClick = async () => {
+    if (!playerName || !password) {
+      setError('Username and password are required');
+      return;
+    }
+    setIsSubmitting(true);
     setError(null);
-
     try {
-      // For now, we'll simulate a successful login
-      // In a real implementation, this would make an API call
-      logger.info('App', 'Attempting login', { username: formData.username });
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Simulate successful login
-      const mockUser: User = {
-        id: '1',
-        name: formData.username,
-        authToken: 'mock-auth-token-' + Date.now(),
-      };
-
-      setUser(mockUser);
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: playerName, password }),
+      });
+      if (!response.ok) {
+        let message = `Login failed (${response.status})`;
+        try {
+          const data = await response.json();
+          message = data?.error?.message || data?.detail || message;
+        } catch {
+          // Ignore JSON parsing errors, use default message
+        }
+        throw new Error(message);
+      }
+      const data = await response.json();
+      const token = data?.access_token as string | undefined;
+      if (!token) throw new Error('No access_token in response');
+      setAuthToken(token);
       setIsAuthenticated(true);
-      logger.info('App', 'Login successful', { userId: mockUser.id, username: mockUser.name });
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-      logger.error('App', 'Login failed', { error: errorMessage });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  // const handleLogout = () => {
-  //   setIsAuthenticated(false);
-  //   setUser(null);
-  //   setFormData({ username: '', password: '' });
-  //   setError(null);
-  //   logger.info('App', 'User logged out');
-  // };
-
-  // Show game interface if authenticated
-  if (isAuthenticated && user) {
-    return <GameTerminalWithPanels playerId={user.id} playerName={user.name} authToken={user.authToken} />;
+  // Demo mode for testing eldritch effects (disabled for normal flow)
+  if (showDemo) {
+    return (
+      <div className="App">
+        <div className="demo-controls fixed top-4 right-4 z-50">
+          <button
+            onClick={() => setShowDemo(false)}
+            className="bg-mythos-terminal-primary text-black px-4 py-2 rounded font-mono hover:bg-green-400 transition-colors"
+          >
+            Exit Demo
+          </button>
+        </div>
+        <EldritchEffectsDemo />
+      </div>
+    );
   }
 
-  // Show login screen
-  return (
-    <div className="app">
-      <div className="login-container">
-        <h1>MythosMUD</h1>
-        <p className="subtitle">Enter the realm of forbidden knowledge</p>
+  if (!isAuthenticated) {
+    return (
+      <div className="App">
+        <div className="login-container">
+          <div className="login-form">
+            <h1 className="login-title">MythosMUD</h1>
+            <p className="login-subtitle">Enter the realm of eldritch knowledge</p>
 
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={formData.username}
-              onChange={handleInputChange('username')}
-              placeholder="Enter your username"
-              required
-              disabled={isLoading}
-            />
+            <div className="login-inputs">
+              <input
+                type="text"
+                placeholder="Username"
+                className="login-input"
+                value={playerName}
+                onChange={e => setPlayerName(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="login-input"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+            </div>
+
+            {error ? <div className="error-message">{error}</div> : null}
+
+            <button className="login-button" onClick={handleLoginClick} disabled={isSubmitting}>
+              {isSubmitting ? 'Authenticating…' : 'Enter the Void'}
+            </button>
+
+            <div className="demo-button">
+              <button
+                onClick={() => setShowDemo(true)}
+                className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+              >
+                View Eldritch Effects Demo
+              </button>
+            </div>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange('password')}
-              placeholder="Enter your password"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <button
-            type="submit"
-            className="login-button"
-            disabled={isLoading || !formData.username || !formData.password}
-          >
-            {isLoading ? 'Connecting...' : 'Enter the Mythos'}
-          </button>
-        </form>
-
-        <div className="form-footer">
-          <p>Welcome to the eldritch realm of MythosMUD</p>
-          <p>Where sanity is optional and knowledge is forbidden</p>
-        </div>
-
-        <div className="debug-container">
-          <button
-            className="debug-button"
-            onClick={() => {
-              setFormData({ username: 'testuser', password: 'testpass' });
-            }}
-          >
-            Fill Test Credentials
-          </button>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="App">
+      <GameTerminalWithPanels playerName={playerName} authToken={authToken} />
     </div>
   );
 }

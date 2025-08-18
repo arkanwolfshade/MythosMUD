@@ -8,6 +8,7 @@ interface MythosPanelProps {
   variant?: 'default' | 'elevated' | 'outlined' | 'eldritch';
   size?: 'sm' | 'md' | 'lg';
   showEldritchBorder?: boolean;
+  interactive?: boolean;
 }
 
 export const MythosPanel: React.FC<MythosPanelProps> = ({
@@ -18,16 +19,19 @@ export const MythosPanel: React.FC<MythosPanelProps> = ({
   variant = 'default',
   size = 'md',
   showEldritchBorder = false,
+  interactive = false,
 }) => {
-  const baseClasses = 'font-mono border rounded relative overflow-hidden';
+  const baseClasses =
+    'font-mono border rounded relative overflow-hidden transition-eldritch duration-eldritch ease-eldritch';
 
   const variantClasses = {
     default: 'bg-mythos-terminal-surface border-gray-700 text-mythos-terminal-text',
     elevated:
-      'bg-mythos-terminal-surface border-mythos-terminal-primary shadow-lg shadow-green-900/20 text-mythos-terminal-text',
-    outlined: 'bg-transparent border-mythos-terminal-primary text-mythos-terminal-text',
+      'bg-mythos-terminal-surface border-mythos-terminal-primary shadow-lg shadow-green-900/20 text-mythos-terminal-text hover:shadow-xl hover:shadow-green-900/30 hover:animate-eldritch-shadow',
+    outlined:
+      'bg-transparent border-mythos-terminal-primary text-mythos-terminal-text hover:bg-mythos-terminal-surface/10 hover:animate-eldritch-border',
     eldritch:
-      'bg-mythos-terminal-surface border-mythos-terminal-primary text-mythos-terminal-text shadow-lg shadow-green-900/30',
+      'bg-mythos-terminal-surface border-mythos-terminal-primary text-mythos-terminal-text shadow-lg shadow-green-900/30 hover:shadow-2xl hover:shadow-green-900/50 hover:animate-eldritch-glow',
   };
 
   const sizeClasses = {
@@ -44,17 +48,26 @@ export const MythosPanel: React.FC<MythosPanelProps> = ({
       ].join(' ')
     : '';
 
-  const classes = [baseClasses, variantClasses[variant], sizeClasses[size], eldritchBorderClasses, className].join(' ');
+  const interactiveClasses = interactive ? 'cursor-pointer hover:scale-[1.02] hover:animate-eldritch-pulse' : '';
+
+  const classes = [
+    baseClasses,
+    variantClasses[variant],
+    sizeClasses[size],
+    eldritchBorderClasses,
+    interactiveClasses,
+    className,
+  ].join(' ');
 
   return (
     <div className={classes}>
       {/* Eldritch corner decorations for eldritch variant */}
       {variant === 'eldritch' && (
         <>
-          <div className="absolute top-0 left-0 w-2 h-2 border-l-2 border-t-2 border-mythos-terminal-primary/50"></div>
-          <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-mythos-terminal-primary/50"></div>
-          <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-mythos-terminal-primary/50"></div>
-          <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-mythos-terminal-primary/50"></div>
+          <div className="absolute top-0 left-0 w-2 h-2 border-l-2 border-t-2 border-mythos-terminal-primary/50 animate-eldritch-glow"></div>
+          <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-mythos-terminal-primary/50 animate-eldritch-glow"></div>
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-mythos-terminal-primary/50 animate-eldritch-glow"></div>
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-mythos-terminal-primary/50 animate-eldritch-glow"></div>
         </>
       )}
 
