@@ -1,8 +1,7 @@
-import { Clear, Download } from '@mui/icons-material';
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useEffect, useRef } from 'react';
 import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
+import { TerminalButton } from '../ui/TerminalButton';
+import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 
 interface ChatMessage {
   text: string;
@@ -23,99 +22,6 @@ interface ChatPanelProps {
   onDownloadLogs?: () => void;
 }
 
-const MessageContainer = styled(Box)(() => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-}));
-
-const MessagesArea = styled(Box)(({ theme }) => ({
-  flex: 1,
-  overflow: 'auto',
-  padding: theme.spacing(1),
-  backgroundColor: '#0a0a0a', // Dark background for MythosMUD theme
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
-  color: '#00ff00', // Green text for terminal feel
-}));
-
-const MessageItem = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(1),
-  padding: theme.spacing(1),
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: '#1a1a1a', // Darker background for message items
-  border: `1px solid #333333`, // Dark border
-  color: '#00ff00', // Green text
-  '&:last-child': {
-    marginBottom: 0,
-  },
-}));
-
-const MessageTimestamp = styled(Typography)(({ theme }) => ({
-  fontSize: '0.75rem',
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(0.5),
-}));
-
-const MessageContent = styled(Box)(({ theme }) => ({
-  fontSize: '0.875rem',
-  lineHeight: 1.4,
-  wordWrap: 'break-word',
-  '&.emote': {
-    fontStyle: 'italic',
-    color: theme.palette.primary.main,
-  },
-  '&.system': {
-    color: theme.palette.warning.main,
-    fontWeight: 'bold',
-  },
-  '&.error': {
-    color: theme.palette.error.main,
-    fontWeight: 'bold',
-  },
-}));
-
-const AliasExpansion = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.action.hover,
-  border: `1px solid ${theme.palette.primary.light}`,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(0.5, 1),
-  marginBottom: theme.spacing(0.5),
-  fontSize: '0.75rem',
-}));
-
-const AliasChain = styled(Box)(({ theme }) => ({
-  display: 'inline-block',
-  marginRight: theme.spacing(1),
-}));
-
-const AliasOriginal = styled(Typography)(({ theme }) => ({
-  color: theme.palette.warning.main,
-  fontWeight: 'bold',
-  fontSize: 'inherit',
-}));
-
-const AliasArrow = styled(Typography)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  margin: `0 ${theme.spacing(0.5)}`,
-  fontSize: 'inherit',
-}));
-
-const AliasExpanded = styled(Typography)(({ theme }) => ({
-  color: theme.palette.success.main,
-  fontStyle: 'italic',
-  fontSize: 'inherit',
-}));
-
-const ChatToolbar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: theme.spacing(1, 0),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(1),
-}));
-
 export const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onClearMessages, onDownloadLogs }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -127,85 +33,134 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onClearMessages,
   const getMessageClass = (messageType?: string): string => {
     switch (messageType) {
       case 'emote':
-        return 'emote';
+        return 'text-mythos-terminal-primary italic';
       case 'system':
-        return 'system';
+        return 'text-mythos-terminal-warning font-bold';
       case 'error':
-        return 'error';
+        return 'text-mythos-terminal-error font-bold';
+      case 'whisper':
+        return 'text-mythos-terminal-secondary italic';
+      case 'shout':
+        return 'text-mythos-terminal-warning font-bold';
       default:
-        return '';
+        return 'text-mythos-terminal-text';
+    }
+  };
+
+  const formatTimestamp = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+    } catch {
+      return timestamp;
     }
   };
 
   return (
-    <MessageContainer>
-      <ChatToolbar>
-        <Typography variant="h6">Chat Log ({messages.length} messages)</Typography>
-        <Box>
+    <div className="h-full flex flex-col font-mono">
+      {/* Chat Header */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-surface">
+        <div className="flex items-center gap-2">
+          <EldritchIcon name={MythosIcons.chat} size={20} variant="primary" />
+          <h3 className="text-mythos-terminal-primary font-bold">Chat Log ({messages.length} messages)</h3>
+        </div>
+        <div className="flex items-center gap-2">
           {onClearMessages && (
-            <Tooltip title="Clear Messages">
-              <IconButton size="small" onClick={onClearMessages}>
-                <Clear />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton variant="secondary" size="sm" onClick={onClearMessages} className="p-2 h-8 w-8">
+              <EldritchIcon name={MythosIcons.clear} size={14} variant="error" />
+            </TerminalButton>
           )}
           {onDownloadLogs && (
-            <Tooltip title="Download Logs">
-              <IconButton size="small" onClick={onDownloadLogs}>
-                <Download />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton variant="secondary" size="sm" onClick={onDownloadLogs} className="p-2 h-8 w-8">
+              <EldritchIcon name={MythosIcons.download} size={14} variant="primary" />
+            </TerminalButton>
           )}
-        </Box>
-      </ChatToolbar>
+        </div>
+      </div>
 
-      <MessagesArea>
+      {/* Messages Area */}
+      <div className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded">
         {messages.length === 0 ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-            <Typography variant="body2" color="text.secondary">
-              No messages yet. Connect to the game to see chat activity.
-            </Typography>
-          </Box>
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center space-y-2">
+              <EldritchIcon name={MythosIcons.chat} size={32} variant="secondary" className="mx-auto opacity-50" />
+              <p className="text-mythos-terminal-text-secondary text-sm">
+                No messages yet. Connect to the game to see chat activity.
+              </p>
+            </div>
+          </div>
         ) : (
-          messages.map((message, index) => (
-            <MessageItem key={index}>
-              {/* Alias Expansion Information */}
-              {message.aliasChain && message.aliasChain.length > 0 && (
-                <AliasExpansion>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                      🔗 Alias Expansion:
-                    </Typography>
-                  </Box>
-                  {message.aliasChain.map((alias, chainIndex) => (
-                    <AliasChain key={chainIndex}>
-                      <AliasOriginal>{alias.original}</AliasOriginal>
-                      <AliasArrow>→</AliasArrow>
-                      <AliasExpanded>{alias.expanded}</AliasExpanded>
-                    </AliasChain>
-                  ))}
-                </AliasExpansion>
-              )}
+          <div className="space-y-3">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-200 hover:border-mythos-terminal-primary/30"
+              >
+                {/* Alias Expansion Information */}
+                {message.aliasChain && message.aliasChain.length > 0 && (
+                  <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
+                    <div className="flex items-center gap-2 mb-2">
+                      <EldritchIcon name={MythosIcons.move} size={12} variant="warning" />
+                      <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
+                    </div>
+                    <div className="space-y-1">
+                      {message.aliasChain.map((alias, chainIndex) => (
+                        <div key={chainIndex} className="flex items-center gap-2">
+                          <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
+                          <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" />
+                          <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              {/* Message Timestamp */}
-              <MessageTimestamp>{message.timestamp}</MessageTimestamp>
+                {/* Message Timestamp */}
+                <div className="mb-2">
+                  <span className="text-xs text-mythos-terminal-text-secondary font-mono">
+                    {formatTimestamp(message.timestamp)}
+                  </span>
+                </div>
 
-              {/* Message Content */}
-              <MessageContent
-                className={getMessageClass(message.messageType)}
-                dangerouslySetInnerHTML={{
-                  __html: message.isHtml
-                    ? message.isCompleteHtml
-                      ? message.text
-                      : ansiToHtmlWithBreaks(message.text)
-                    : message.text,
-                }}
-              />
-            </MessageItem>
-          ))
+                {/* Message Content */}
+                <div
+                  className={`text-sm leading-relaxed ${getMessageClass(message.messageType)}`}
+                  dangerouslySetInnerHTML={{
+                    __html: message.isHtml
+                      ? message.isCompleteHtml
+                        ? message.text
+                        : ansiToHtmlWithBreaks(message.text)
+                      : message.text,
+                  }}
+                />
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
         )}
-        <div ref={messagesEndRef} />
-      </MessagesArea>
-    </MessageContainer>
+      </div>
+
+      {/* Chat Footer */}
+      <div className="p-2 border-t border-gray-700 bg-mythos-terminal-surface">
+        <div className="flex items-center justify-between text-xs text-mythos-terminal-text-secondary">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-mythos-terminal-success rounded-full"></div>
+              <span>Connected</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <EldritchIcon name={MythosIcons.chat} size={12} variant="secondary" />
+              <span>{messages.length} messages</span>
+            </div>
+          </div>
+          <div className="text-xs opacity-75">MythosMUD Terminal</div>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -1,55 +1,6 @@
-import { Close, DragIndicator, Minimize, OpenInFull } from '@mui/icons-material';
-import { Box, IconButton, Paper, Tooltip, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
-// Styled components for the draggable panel
-const DraggablePaper = styled(Paper)(({ theme }) => ({
-  position: 'absolute',
-  cursor: 'move',
-  userSelect: 'none',
-  zIndex: 1000,
-  minWidth: 200,
-  minHeight: 150,
-  transition: 'box-shadow 0.2s ease-in-out',
-  '&:hover': {
-    boxShadow: theme.shadows[8],
-  },
-  '&.dragging': {
-    boxShadow: theme.shadows[12],
-    opacity: 0.9,
-  },
-  '&.snapping': {
-    transition: 'transform 0.1s ease-out',
-  },
-}));
-
-const PanelHeader = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: theme.spacing(1, 2),
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  cursor: 'move',
-  borderTopLeftRadius: theme.shape.borderRadius,
-  borderTopRightRadius: theme.shape.borderRadius,
-  '&:hover': {
-    backgroundColor: theme.palette.primary.dark,
-  },
-}));
-
-const PanelContent = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  height: 'calc(100% - 48px)', // Subtract header height
-  overflow: 'auto',
-}));
-
-const HeaderControls = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-});
+import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
+import { TerminalButton } from './ui/TerminalButton';
 
 interface PanelPosition {
   x: number;
@@ -80,6 +31,7 @@ interface DraggablePanelProps {
   gridSize?: number;
   className?: string;
   style?: React.CSSProperties;
+  variant?: 'default' | 'elevated' | 'eldritch';
 }
 
 export const DraggablePanel: React.FC<DraggablePanelProps> = ({
@@ -98,7 +50,8 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   isMaximized = false,
   snapToGrid = true,
   gridSize = 20,
-  className,
+  className = '',
+  variant = 'default',
 }) => {
   const [position, setPosition] = useState<PanelPosition>(initialPosition);
   const [size, setSize] = useState<PanelSize>(initialSize);
@@ -265,116 +218,137 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     }
   }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
-  // Resize handles
-  const ResizeHandle = styled(Box)<{ handlePosition: string }>(({ handlePosition }) => ({
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    },
-    ...(handlePosition.includes('n') && { top: 0, height: 4, cursor: 'n-resize' }),
-    ...(handlePosition.includes('s') && { bottom: 0, height: 4, cursor: 's-resize' }),
-    ...(handlePosition.includes('e') && { right: 0, width: 4, cursor: 'e-resize' }),
-    ...(handlePosition.includes('w') && { left: 0, width: 4, cursor: 'w-resize' }),
-    ...(handlePosition === 'nw' && { cursor: 'nw-resize' }),
-    ...(handlePosition === 'ne' && { cursor: 'ne-resize' }),
-    ...(handlePosition === 'sw' && { cursor: 'sw-resize' }),
-    ...(handlePosition === 'se' && { cursor: 'se-resize' }),
-  }));
+  // Base panel classes
+  const baseClasses = 'font-mono border rounded relative overflow-hidden transition-all duration-200';
+
+  const variantClasses = {
+    default: 'bg-mythos-terminal-surface border-gray-700 text-mythos-terminal-text shadow-lg',
+    elevated:
+      'bg-mythos-terminal-surface border-mythos-terminal-primary text-mythos-terminal-text shadow-xl shadow-green-900/20',
+    eldritch:
+      'bg-mythos-terminal-surface border-mythos-terminal-primary text-mythos-terminal-text shadow-xl shadow-green-900/30',
+  };
+
+  const stateClasses = isDragging || isResizing ? 'shadow-2xl opacity-90' : '';
+
+  const panelClasses = `${baseClasses} ${variantClasses[variant]} ${stateClasses} ${className}`;
+
+  // Resize handle component
+  const ResizeHandle: React.FC<{ handlePosition: string }> = ({ handlePosition }) => {
+    const handleClasses = 'absolute bg-transparent hover:bg-mythos-terminal-primary/20 transition-colors duration-200';
+
+    const positionClasses = {
+      n: 'top-0 left-0 right-0 h-1 cursor-n-resize',
+      s: 'bottom-0 left-0 right-0 h-1 cursor-s-resize',
+      e: 'top-0 right-0 bottom-0 w-1 cursor-e-resize',
+      w: 'top-0 left-0 bottom-0 w-1 cursor-w-resize',
+      nw: 'top-0 left-0 w-2 h-2 cursor-nw-resize',
+      ne: 'top-0 right-0 w-2 h-2 cursor-ne-resize',
+      sw: 'bottom-0 left-0 w-2 h-2 cursor-sw-resize',
+      se: 'bottom-0 right-0 w-2 h-2 cursor-se-resize',
+    };
+
+    return (
+      <div
+        className={`${handleClasses} ${positionClasses[handlePosition as keyof typeof positionClasses]}`}
+        onMouseDown={e => handleResizeMouseDown(e, handlePosition)}
+      />
+    );
+  };
 
   if (isMinimized) {
     return (
-      <DraggablePaper
+      <div
         ref={panelRef}
         style={{
+          position: 'absolute',
           left: position.x,
           top: position.y,
           width: 200,
           height: 48,
+          zIndex: 1000,
         }}
-        className={`${className || ''} ${isDragging ? 'dragging' : ''}`}
-        elevation={isDragging ? 12 : 4}
+        className={panelClasses}
       >
-        <PanelHeader onMouseDown={handleMouseDown}>
-          <Typography variant="subtitle2" noWrap>
-            {title}
-          </Typography>
-          <HeaderControls>
+        <div
+          className="flex items-center justify-between px-3 py-2 bg-mythos-terminal-primary text-black cursor-move border-b border-gray-700"
+          onMouseDown={handleMouseDown}
+        >
+          <span className="text-sm font-bold truncate">{title}</span>
+          <div className="flex items-center gap-1">
             {onMaximize && (
-              <Tooltip title="Restore">
-                <IconButton size="small" onClick={onMaximize}>
-                  <OpenInFull fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <TerminalButton variant="secondary" size="sm" onClick={onMaximize} className="p-1 h-6 w-6">
+                <EldritchIcon name={MythosIcons.maximize} size={12} variant="primary" />
+              </TerminalButton>
             )}
             {onClose && (
-              <Tooltip title="Close">
-                <IconButton size="small" onClick={onClose}>
-                  <Close fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <TerminalButton variant="danger" size="sm" onClick={onClose} className="p-1 h-6 w-6">
+                <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
+              </TerminalButton>
             )}
-          </HeaderControls>
-        </PanelHeader>
-      </DraggablePaper>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <DraggablePaper
+    <div
       ref={panelRef}
       style={{
+        position: 'absolute',
         left: position.x,
         top: position.y,
         width: size.width,
         height: size.height,
+        zIndex: 1000,
       }}
-      className={`${className || ''} ${isDragging ? 'dragging' : ''} ${isResizing ? 'snapping' : ''}`}
-      elevation={isDragging || isResizing ? 12 : 4}
+      className={panelClasses}
     >
-      <PanelHeader onMouseDown={handleMouseDown}>
-        <Box display="flex" alignItems="center" gap={1}>
-          <DragIndicator fontSize="small" />
-          <Typography variant="subtitle2" noWrap>
-            {title}
-          </Typography>
-        </Box>
-        <HeaderControls>
+      {/* Header */}
+      <div
+        className="flex items-center justify-between px-3 py-2 bg-mythos-terminal-primary text-black cursor-move border-b border-gray-700"
+        onMouseDown={handleMouseDown}
+      >
+        <div className="flex items-center gap-2">
+          <EldritchIcon name={MythosIcons.move} size={16} variant="primary" />
+          <span className="text-sm font-bold truncate">{title}</span>
+        </div>
+        <div className="flex items-center gap-1">
           {onMinimize && (
-            <Tooltip title="Minimize">
-              <IconButton size="small" onClick={onMinimize}>
-                <Minimize fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton variant="secondary" size="sm" onClick={onMinimize} className="p-1 h-6 w-6">
+              <EldritchIcon name={MythosIcons.minimize} size={12} variant="primary" />
+            </TerminalButton>
           )}
           {onMaximize && (
-            <Tooltip title={isMaximized ? 'Restore' : 'Maximize'}>
-              <IconButton size="small" onClick={onMaximize}>
-                <OpenInFull fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton variant="secondary" size="sm" onClick={onMaximize} className="p-1 h-6 w-6">
+              <EldritchIcon
+                name={isMaximized ? MythosIcons.maximize : MythosIcons.maximize}
+                size={12}
+                variant="primary"
+              />
+            </TerminalButton>
           )}
           {onClose && (
-            <Tooltip title="Close">
-              <IconButton size="small" onClick={onClose}>
-                <Close fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <TerminalButton variant="danger" size="sm" onClick={onClose} className="p-1 h-6 w-6">
+              <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
+            </TerminalButton>
           )}
-        </HeaderControls>
-      </PanelHeader>
+        </div>
+      </div>
 
-      <PanelContent>{children}</PanelContent>
+      {/* Content */}
+      <div className="p-3 h-[calc(100%-48px)] overflow-auto">{children}</div>
 
       {/* Resize handles */}
-      <ResizeHandle handlePosition="n" onMouseDown={e => handleResizeMouseDown(e, 'n')} />
-      <ResizeHandle handlePosition="s" onMouseDown={e => handleResizeMouseDown(e, 's')} />
-      <ResizeHandle handlePosition="e" onMouseDown={e => handleResizeMouseDown(e, 'e')} />
-      <ResizeHandle handlePosition="w" onMouseDown={e => handleResizeMouseDown(e, 'w')} />
-      <ResizeHandle handlePosition="nw" onMouseDown={e => handleResizeMouseDown(e, 'nw')} />
-      <ResizeHandle handlePosition="ne" onMouseDown={e => handleResizeMouseDown(e, 'ne')} />
-      <ResizeHandle handlePosition="sw" onMouseDown={e => handleResizeMouseDown(e, 'sw')} />
-      <ResizeHandle handlePosition="se" onMouseDown={e => handleResizeMouseDown(e, 'se')} />
-    </DraggablePaper>
+      <ResizeHandle handlePosition="n" />
+      <ResizeHandle handlePosition="s" />
+      <ResizeHandle handlePosition="e" />
+      <ResizeHandle handlePosition="w" />
+      <ResizeHandle handlePosition="nw" />
+      <ResizeHandle handlePosition="ne" />
+      <ResizeHandle handlePosition="sw" />
+      <ResizeHandle handlePosition="se" />
+    </div>
   );
 };
