@@ -10,6 +10,16 @@ interface Player {
   stats?: {
     current_health: number;
     sanity: number;
+    strength?: number;
+    dexterity?: number;
+    constitution?: number;
+    intelligence?: number;
+    wisdom?: number;
+    charisma?: number;
+    occult_knowledge?: number;
+    fear?: number;
+    corruption?: number;
+    cult_affiliation?: number;
   };
   level?: number;
 }
@@ -236,6 +246,78 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-mythos-terminal-text-secondary">Sanity:</span>
                   <span className="text-sm text-mythos-terminal-text">{player.stats.sanity}</span>
+                </div>
+                {/* Core Attributes */}
+                <div className="border-t border-mythos-terminal-border pt-2">
+                  <h5 className="text-xs text-mythos-terminal-primary font-bold mb-1">Core Attributes:</h5>
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    {player.stats.strength !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">STR:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.strength}</span>
+                      </div>
+                    )}
+                    {player.stats.dexterity !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">DEX:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.dexterity}</span>
+                      </div>
+                    )}
+                    {player.stats.constitution !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">CON:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.constitution}</span>
+                      </div>
+                    )}
+                    {player.stats.intelligence !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">INT:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.intelligence}</span>
+                      </div>
+                    )}
+                    {player.stats.wisdom !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">WIS:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.wisdom}</span>
+                      </div>
+                    )}
+                    {player.stats.charisma !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">CHA:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.charisma}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Horror Stats */}
+                <div className="border-t border-mythos-terminal-border pt-2">
+                  <h5 className="text-xs text-mythos-terminal-primary font-bold mb-1">Horror Stats:</h5>
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    {player.stats.occult_knowledge !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">Occult:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.occult_knowledge}</span>
+                      </div>
+                    )}
+                    {player.stats.fear !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">Fear:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.fear}</span>
+                      </div>
+                    )}
+                    {player.stats.corruption !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">Corruption:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.corruption}</span>
+                      </div>
+                    )}
+                    {player.stats.cult_affiliation !== undefined && (
+                      <div className="flex justify-between">
+                        <span className="text-mythos-terminal-text-secondary">Cult:</span>
+                        <span className="text-mythos-terminal-text">{player.stats.cult_affiliation}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </>
             )}

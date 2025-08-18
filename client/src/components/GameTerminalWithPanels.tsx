@@ -14,6 +14,16 @@ interface Player {
   stats?: {
     current_health: number;
     sanity: number;
+    strength?: number;
+    dexterity?: number;
+    constitution?: number;
+    intelligence?: number;
+    wisdom?: number;
+    charisma?: number;
+    occult_knowledge?: number;
+    fear?: number;
+    corruption?: number;
+    cult_affiliation?: number;
   };
   level?: number;
 }
@@ -59,7 +69,24 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
 
       // Handle different event types
       switch (event.event_type) {
+        case 'game_state':
+          logger.info('GameTerminalWithPanels', 'Game state received', {
+            room_data: event.data.room,
+            room_id: (event.data.room as Room)?.id,
+            room_name: (event.data.room as Room)?.name,
+          });
+          setGameState(prev => ({
+            ...prev,
+            room: (event.data.room as Room) ?? prev.room,
+            player: (event.data.player as Player) ?? prev.player,
+          }));
+          break;
         case 'room_update':
+          logger.info('GameTerminalWithPanels', 'Room update received', {
+            room_data: event.data.room,
+            room_id: (event.data.room as Room)?.id,
+            room_name: (event.data.room as Room)?.name,
+          });
           setGameState(prev => ({
             ...prev,
             room: event.data.room as Room,
@@ -86,10 +113,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           break;
         }
         case 'command_response': {
+          // Server uses `result` as the payload key
+          const resultText = (event.data.result as string) ?? '';
           const response = {
-            text: event.data.response as string,
+            text: resultText,
             timestamp: event.timestamp,
-            isHtml: (event.data.is_html as boolean) || false,
+            isHtml: Boolean(event.data.is_html),
             messageType: 'system',
           };
           setGameState(prev => ({
@@ -111,27 +140,25 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     },
   });
 
-  // Connect to the game server when component mounts
+  // Connect once on mount; disconnect on unmount.
+  // Important: Avoid including changing dependencies (like connect/disconnect identity or state)
+  // which would trigger cleanup on every render and cause immediate disconnects.
   useEffect(() => {
-    if (authToken && playerName && !isConnected && !isConnecting && !hasAttemptedConnection.current) {
+    if (!hasAttemptedConnection.current) {
       hasAttemptedConnection.current = true;
       logger.info('GameTerminalWithPanels', 'Initiating connection', {
         hasAuthToken: !!authToken,
         playerName,
-        isConnected,
-        isConnecting,
       });
       connect();
     }
 
-    // Cleanup function to disconnect when component unmounts
     return () => {
-      if (isConnected) {
-        logger.info('GameTerminalWithPanels', 'Cleaning up connection on unmount');
-        disconnect();
-      }
+      logger.info('GameTerminalWithPanels', 'Cleaning up connection on unmount');
+      disconnect();
     };
-  }, [authToken, playerName, isConnected, isConnecting, connect, disconnect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCommandSubmit = async (command: string) => {
     if (!command.trim() || !isConnected) return;
@@ -172,10 +199,15 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     // Add to command history
     setCommandHistory(prev => [...prev, normalized]);
 
+    // Parse command for sending to server
+    const commandParts = normalized.split(/\s+/);
+    const commandName = commandParts[0];
+    const commandArgs = commandParts.slice(1);
+
     // Send command to server
-    const success = await sendCommand(normalized);
+    const success = await sendCommand(commandName, commandArgs);
     if (!success) {
-      logger.error('GameTerminalWithPanels', 'Failed to send command', { command: normalized });
+      logger.error('GameTerminalWithPanels', 'Failed to send command', { command: commandName, args: commandArgs });
     }
   };
 

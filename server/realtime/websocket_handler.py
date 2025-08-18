@@ -77,15 +77,52 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     except Exception as e:
                         logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
 
+                    # Get room data and ensure UUIDs are converted to strings
+                    room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+                    # Ensure all UUID objects are converted to strings for JSON serialization
+                    def convert_uuids_to_strings(obj):
+                        if isinstance(obj, dict):
+                            return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
+                        elif isinstance(obj, list):
+                            return [convert_uuids_to_strings(item) for item in obj]
+                        elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+                            return str(obj)
+                        else:
+                            return obj
+
+                    room_data = convert_uuids_to_strings(room_data)
+
+                    # Prepare player stats as a JSON object (not raw string)
+                    stats_data = {}
+                    try:
+                        if hasattr(player, "get_stats"):
+                            stats_data = player.get_stats()
+                        else:
+                            raw_stats = getattr(player, "stats", {})
+                            if isinstance(raw_stats, str):
+                                stats_data = json.loads(raw_stats)
+                            elif isinstance(raw_stats, dict):
+                                stats_data = raw_stats
+                    except Exception:
+                        stats_data = {}
+
+                    # Normalize health field for client (current_health expected)
+                    if "current_health" not in stats_data and "health" in stats_data:
+                        try:
+                            stats_data["current_health"] = stats_data.get("health")
+                        except Exception:
+                            pass
+
                     game_state_event = build_event(
                         "game_state",
                         {
                             "player": {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
-                                "stats": getattr(player, "stats", {}),
+                                "stats": stats_data,
                             },
-                            "room": (room.to_dict() if hasattr(room, "to_dict") else room),
+                            "room": room_data,
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),
                         },
@@ -421,30 +458,33 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
 
-    # Use the proper command handler for all commands
+    # Use the unified command handler for all commands
     from ..alias_storage import AliasStorage
-    from ..command_handler_v2 import process_command
+    from ..command_handler_unified import process_command_unified
+    from ..realtime.request_context import create_websocket_request_context
 
-    # Create a mock request object for the command handler
-    class MockRequest:
-        def __init__(self, persistence):
-            self.app = type("MockApp", (), {"state": type("MockState", (), {"persistence": persistence})()})()
-
-    mock_request = MockRequest(connection_manager.persistence)
+    # Create proper request context for WebSocket
+    request_context = create_websocket_request_context(
+        persistence=connection_manager.persistence,
+        event_bus=getattr(connection_manager, "event_bus", None),
+        user=player,
+    )
 
     # Get player name for the command handler
     player_name = getattr(player, "name", "Unknown")
 
-    # Create a User object for the command handler
-    from ..models.user import User
-
-    user_obj = User(username=player_name, id=player_id)
-
-    # Create alias storage (this might need to be passed in)
+    # Create alias storage
     alias_storage = AliasStorage()
+    request_context.set_alias_storage(alias_storage)
 
-    # Process the command using the proper command handler
-    result = await process_command(cmd, args, user_obj, mock_request, alias_storage, player_name)
+    # Process the command using the unified command handler
+    result = await process_command_unified(
+        command_line=f"{cmd} {' '.join(args)}".strip(),
+        current_user=player,
+        request=request_context,
+        alias_storage=alias_storage,
+        player_name=player_name,
+    )
     return result
 
 
@@ -540,10 +580,25 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.error(f"Error transforming room occupants for room {room_id}: {e}")
 
         # Create room update event
+        room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+        # Ensure all UUID objects are converted to strings for JSON serialization
+        def convert_uuids_to_strings(obj):
+            if isinstance(obj, dict):
+                return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_uuids_to_strings(item) for item in obj]
+            elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+                return str(obj)
+            else:
+                return obj
+
+        room_data = convert_uuids_to_strings(room_data)
+
         update_event = build_event(
             "room_update",
             {
-                "room": room.to_dict() if hasattr(room, "to_dict") else room,
+                "room": room_data,
                 "entities": [],
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),

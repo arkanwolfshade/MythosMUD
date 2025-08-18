@@ -38,7 +38,11 @@ class Player(Base):
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
     # Game data stored as JSON in TEXT fields (SQLite compatible)
-    stats = Column(Text(), nullable=False, default='{"health": 100, "sanity": 100, "strength": 10}')
+    stats = Column(
+        Text(),
+        nullable=False,
+        default='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}',
+    )
     inventory = Column(Text(), nullable=False, default="[]")
     status_effects = Column(Text(), nullable=False, default="[]")
 
@@ -63,7 +67,20 @@ class Player(Base):
         try:
             return json.loads(self.stats)
         except (json.JSONDecodeError, TypeError):
-            return {"health": 100, "sanity": 100, "strength": 10}
+            return {
+                "strength": 10,
+                "dexterity": 10,
+                "constitution": 10,
+                "intelligence": 10,
+                "wisdom": 10,
+                "charisma": 10,
+                "sanity": 100,
+                "occult_knowledge": 0,
+                "fear": 0,
+                "corruption": 0,
+                "cult_affiliation": 0,
+                "current_health": 100,
+            }
 
     def set_stats(self, stats: dict[str, Any]) -> None:
         """Set player stats from dictionary."""

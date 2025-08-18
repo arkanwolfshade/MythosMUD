@@ -2,15 +2,30 @@ import { useState } from 'react';
 import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
+import { StatsRollingScreen } from './components/StatsRollingScreen';
+
+// Import the Stats interface from StatsRollingScreen
+interface Stats {
+  strength: number;
+  dexterity: number;
+  constitution: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
+}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasCharacter, setHasCharacter] = useState(false);
+  const [characterName, setCharacterName] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [password, setPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleLoginClick = async () => {
     if (!playerName || !password) {
@@ -38,13 +53,76 @@ function App() {
       const data = await response.json();
       const token = data?.access_token as string | undefined;
       if (!token) throw new Error('No access_token in response');
+
       setAuthToken(token);
       setIsAuthenticated(true);
+      setHasCharacter(data?.has_character || false);
+      setCharacterName(data?.character_name || '');
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleRegisterClick = async () => {
+    if (!playerName || !password || !inviteCode) {
+      setError('Username, password, and invite code are required');
+      return;
+    }
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: playerName,
+          password,
+          invite_code: inviteCode,
+        }),
+      });
+      if (!response.ok) {
+        let message = `Registration failed (${response.status})`;
+        try {
+          const data = await response.json();
+          message = data?.error?.message || data?.detail || message;
+        } catch {
+          // Ignore JSON parsing errors, use default message
+        }
+        throw new Error(message);
+      }
+      const data = await response.json();
+      const token = data?.access_token as string | undefined;
+      if (!token) throw new Error('No access_token in response');
+
+      setAuthToken(token);
+      setIsAuthenticated(true);
+      setHasCharacter(data?.has_character || false);
+      setCharacterName(data?.character_name || '');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStatsAccepted = (_stats: Stats) => {
+    // After stats are accepted and character is created, update state
+    setHasCharacter(true);
+    setCharacterName(playerName); // Character name is the same as username
+  };
+
+  const handleStatsError = (error: string) => {
+    setError(error);
+  };
+
+  const toggleMode = () => {
+    setIsRegistering(!isRegistering);
+    setError(null);
+    setPlayerName('');
+    setPassword('');
+    setInviteCode('');
   };
 
   // Demo mode for testing eldritch effects (disabled for normal flow)
@@ -87,13 +165,41 @@ function App() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
+              {isRegistering && (
+                <input
+                  type="text"
+                  placeholder="Invite Code"
+                  className="login-input"
+                  value={inviteCode}
+                  onChange={e => setInviteCode(e.target.value)}
+                />
+              )}
             </div>
 
             {error ? <div className="error-message">{error}</div> : null}
 
-            <button className="login-button" onClick={handleLoginClick} disabled={isSubmitting}>
-              {isSubmitting ? 'Authenticating…' : 'Enter the Void'}
+            <button
+              className="login-button"
+              onClick={isRegistering ? handleRegisterClick : handleLoginClick}
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? isRegistering
+                  ? 'Registering…'
+                  : 'Authenticating…'
+                : isRegistering
+                  ? 'Enter the Void'
+                  : 'Enter the Void'}
             </button>
+
+            <div className="mode-toggle">
+              <button
+                onClick={toggleMode}
+                className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+              >
+                {isRegistering ? 'Already have an account? Login' : 'Need an account? Register'}
+              </button>
+            </div>
 
             <div className="demo-button">
               <button
@@ -109,9 +215,25 @@ function App() {
     );
   }
 
+  // If authenticated but no character, show stats rolling screen
+  if (!hasCharacter) {
+    return (
+      <div className="App">
+        <StatsRollingScreen
+          characterName={playerName}
+          onStatsAccepted={handleStatsAccepted}
+          onError={handleStatsError}
+          baseUrl="http://localhost:54731"
+          authToken={authToken}
+        />
+      </div>
+    );
+  }
+
+  // If authenticated and has character, show game terminal
   return (
     <div className="App">
-      <GameTerminalWithPanels playerName={playerName} authToken={authToken} />
+      <GameTerminalWithPanels playerName={characterName} authToken={authToken} />
     </div>
   );
 }

@@ -482,7 +482,7 @@ class TestWebSocketCommandProcessing:
         mock_command_result = {"result": "Command executed successfully"}
 
         with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.command_handler_v2.process_command", return_value=mock_command_result):
+            with patch("server.command_handler_unified.process_command_unified", return_value=mock_command_result):
                 # Execute
                 result = await process_websocket_command("say", ["hello"], self.player_id)
 
