@@ -77,6 +77,22 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     except Exception as e:
                         logger.error(f"Error transforming game_state occupants for room {player.current_room_id}: {e}")
 
+                    # Get room data and ensure UUIDs are converted to strings
+                    room_data = (room.to_dict() if hasattr(room, "to_dict") else room)
+
+                    # Ensure all UUID objects are converted to strings for JSON serialization
+                    def convert_uuids_to_strings(obj):
+                        if isinstance(obj, dict):
+                            return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
+                        elif isinstance(obj, list):
+                            return [convert_uuids_to_strings(item) for item in obj]
+                        elif hasattr(obj, '__class__') and 'UUID' in obj.__class__.__name__:
+                            return str(obj)
+                        else:
+                            return obj
+
+                    room_data = convert_uuids_to_strings(room_data)
+
                     game_state_event = build_event(
                         "game_state",
                         {
@@ -85,7 +101,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                                 "level": getattr(player, "level", 1),
                                 "stats": getattr(player, "stats", {}),
                             },
-                            "room": (room.to_dict() if hasattr(room, "to_dict") else room),
+                            "room": room_data,
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),
                         },
@@ -543,10 +559,25 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.error(f"Error transforming room occupants for room {room_id}: {e}")
 
         # Create room update event
+        room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+        # Ensure all UUID objects are converted to strings for JSON serialization
+        def convert_uuids_to_strings(obj):
+            if isinstance(obj, dict):
+                return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_uuids_to_strings(item) for item in obj]
+            elif hasattr(obj, '__class__') and 'UUID' in obj.__class__.__name__:
+                return str(obj)
+            else:
+                return obj
+
+        room_data = convert_uuids_to_strings(room_data)
+
         update_event = build_event(
             "room_update",
             {
-                "room": room.to_dict() if hasattr(room, "to_dict") else room,
+                "room": room_data,
                 "entities": [],
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),
