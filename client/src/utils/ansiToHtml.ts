@@ -12,6 +12,7 @@ interface AnsiState {
 }
 
 const ANSI_COLORS: { [key: string]: string } = {
+  // Foreground colors
   '30': '#000000', // black
   '31': '#ff4444', // red (bright for dark background)
   '32': '#00ff00', // green (bright for dark background)
@@ -28,6 +29,24 @@ const ANSI_COLORS: { [key: string]: string } = {
   '95': '#ff66ff', // bright magenta
   '96': '#66ffff', // bright cyan
   '97': '#ffffff', // bright white
+
+  // Background colors
+  '40': '#000000', // black
+  '41': '#ff4444', // red
+  '42': '#00ff00', // green
+  '43': '#ffaa00', // yellow/orange
+  '44': '#4488ff', // blue
+  '45': '#ff44ff', // magenta
+  '46': '#44ffff', // cyan
+  '47': '#ffffff', // white
+  '100': '#666666', // bright black (gray)
+  '101': '#ff6666', // bright red
+  '102': '#66ff66', // bright green
+  '103': '#ffcc66', // bright yellow/orange
+  '104': '#6699ff', // bright blue
+  '105': '#ff66ff', // bright magenta
+  '106': '#66ffff', // bright cyan
+  '107': '#ffffff', // bright white
 };
 
 export function ansiToHtml(text: string): string {

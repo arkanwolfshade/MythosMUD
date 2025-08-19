@@ -16,6 +16,8 @@ def test_no_database_files_outside_approved_locations():
     Approved locations:
     - /data/players/ (production databases)
     - /server/tests/data/players/ (test databases)
+
+    Note: node_modules directories are excluded as they contain external dependencies.
     """
     # Get the project root directory
     project_root = Path(__file__).parent.parent.parent
@@ -26,10 +28,12 @@ def test_no_database_files_outside_approved_locations():
         project_root / "server" / "tests" / "data" / "players",
     ]
 
-    # Find all .db files in the project
+    # Find all .db files in the project, excluding node_modules
     db_files = []
     for db_file in project_root.rglob("*.db"):
-        db_files.append(db_file)
+        # Skip files in node_modules directories (external dependencies)
+        if "node_modules" not in db_file.parts:
+            db_files.append(db_file)
 
     # Check each .db file to ensure it's in an approved location
     unauthorized_db_files = []
@@ -70,6 +74,8 @@ def test_no_log_files_outside_approved_locations():
     - /client/logs/ (client logs)
     - /tools/room_toolkit/room_validator/ (room validator logs)
     - /server/logs/ (server logs - all environment subdirectories)
+
+    Note: node_modules directories are excluded as they contain external dependencies.
     """
     # Get the project root directory
     project_root = Path(__file__).parent.parent.parent
@@ -84,10 +90,12 @@ def test_no_log_files_outside_approved_locations():
         project_root / "server" / "logs",
     ]
 
-    # Find all .log files in the project
+    # Find all .log files in the project, excluding node_modules
     log_files = []
     for log_file in project_root.rglob("*.log"):
-        log_files.append(log_file)
+        # Skip files in node_modules directories (external dependencies)
+        if "node_modules" not in log_file.parts:
+            log_files.append(log_file)
 
     # Check each .log file to ensure it's in an approved location
     unauthorized_log_files = []

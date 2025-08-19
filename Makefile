@@ -10,8 +10,10 @@ help:
 	@echo "  clean     - Remove build, dist, and cache files"
 	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
 	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
-	@echo "  test      - Run Python and Node tests (includes test DB cleanup)"
-	@echo "  coverage  - Run Python tests with coverage"
+	@echo "  test      - Run all tests (server + client)"
+	@echo "  test-server - Run server tests only"
+	@echo "  test-client - Run client tests only"
+	@echo "  coverage  - Run coverage for both server and client"
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
 	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
@@ -27,6 +29,12 @@ format:
 
 test:
 	cd $(PROJECT_ROOT) && python scripts/test.py
+
+test-server:
+	cd $(PROJECT_ROOT) && python scripts/test.py --server-only
+
+test-client:
+	cd $(PROJECT_ROOT) && python scripts/test.py --client-only
 
 coverage:
 	cd $(PROJECT_ROOT) && python scripts/coverage.py
