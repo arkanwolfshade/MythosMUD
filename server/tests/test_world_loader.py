@@ -1,5 +1,3 @@
-import os
-
 # Import the module to ensure coverage tracking
 import server.world_loader
 from server.world_loader import load_rooms
@@ -27,26 +25,6 @@ def test_loader_as_script(capsys):
     captured = capsys.readouterr()
     assert "Loaded" in captured.out
     assert len(rooms) > 0
-
-
-def test_missing_rooms_dir(tmp_path):
-    """Test behavior when rooms directory doesn't exist."""
-    temp_dir = tmp_path / "empty"
-    temp_dir.mkdir()
-    import types
-
-    mock_module = types.ModuleType("world_loader_test")
-    mock_module.ROOMS_BASE_PATH = str(temp_dir)
-
-    def mock_load_rooms():
-        rooms = {}
-        if not os.path.exists(mock_module.ROOMS_BASE_PATH):
-            return rooms
-        return rooms
-
-    mock_module.load_rooms = mock_load_rooms
-    rooms = mock_module.load_rooms()
-    assert rooms == {}
 
 
 def test_corrupted_room_file(tmp_path):

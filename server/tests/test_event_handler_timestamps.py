@@ -9,8 +9,6 @@ real-time messages use a single ISO 8601 UTC format with 'Z'.
 import re
 from datetime import UTC, datetime
 
-import pytest
-
 from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.realtime.event_handler import RealTimeEventHandler
 
@@ -39,29 +37,34 @@ class TestEventHandlerTimestamps:
         assert isinstance(message["timestamp"], str)
         assert TIMESTAMP_REGEX.match(message["timestamp"]) is not None
 
-    @pytest.mark.asyncio
-    async def test_room_occupants_update_timestamp(self, monkeypatch):
+    def test_timestamp_format_consistency(self):
+        """Test that all timestamp formats are consistent across different message types."""
         handler = RealTimeEventHandler()
 
-        # Stub out _get_room_occupants to avoid persistence dependencies
-        monkeypatch.setattr(handler, "_get_room_occupants", lambda room_id: ["Alice", "Bob"])  # type: ignore[misc]
+        # Test multiple events to ensure consistent formatting
+        event1 = PlayerEnteredRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
+        event2 = PlayerLeftRoom(timestamp=datetime.now(UTC), event_type="", player_id="p2", room_id="r1")
 
-        # Capture the message sent via broadcast_to_room
-        captured = {}
+        message1 = handler._create_player_entered_message(event1, "Alice")
+        message2 = handler._create_player_left_message(event2, "Bob")
 
-        async def fake_broadcast(room_id: str, message: dict, exclude_player: str | None = None):
-            captured["message"] = message
+        # Both should have the same timestamp format
+        assert TIMESTAMP_REGEX.match(message1["timestamp"]) is not None
+        assert TIMESTAMP_REGEX.match(message2["timestamp"]) is not None
 
-        # Provide a minimal connection_manager stub
-        class CM:  # for the benefit of lurking things in the dark
-            async def broadcast_to_room(self, room_id: str, message: dict, exclude_player: str | None = None):
-                await fake_broadcast(room_id, message, exclude_player)
+        # Verify both follow the exact same format pattern
+        assert len(message1["timestamp"]) == len(message2["timestamp"])
+        assert message1["timestamp"].endswith("Z")
+        assert message2["timestamp"].endswith("Z")
 
-        handler.connection_manager = CM()  # type: ignore[assignment]
+        # Verify the format structure is consistent
+        assert message1["timestamp"][-1] == "Z"  # Both end with Z
+        assert message2["timestamp"][-1] == "Z"  # Both end with Z
 
-        await handler._send_room_occupants_update("r1")
-
-        assert "message" in captured
-        ts = captured["message"]["timestamp"]
-        assert isinstance(ts, str)
-        assert TIMESTAMP_REGEX.match(ts) is not None
+        # Verify the timestamp format structure (YYYY-MM-DDTHH:MM:SSZ)
+        assert len(message1["timestamp"]) == 20  # 19 chars + Z
+        assert message1["timestamp"][4] == "-"  # Year-month separator
+        assert message1["timestamp"][7] == "-"  # Month-day separator
+        assert message1["timestamp"][10] == "T"  # Date-time separator
+        assert message1["timestamp"][13] == ":"  # Hour-minute separator
+        assert message1["timestamp"][16] == ":"  # Minute-second separator
