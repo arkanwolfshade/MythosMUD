@@ -68,7 +68,7 @@ def test_no_log_files_outside_approved_locations():
     - /logs/ (project root logs - all environment subdirectories)
     - /server/tests/logs/ (test logs - all environment subdirectories)
     - /client/logs/ (client logs)
-    - /room_validator/ (room validator logs)
+    - /tools/room_toolkit/room_validator/ (room validator logs)
     - /server/logs/ (server logs - all environment subdirectories)
     """
     # Get the project root directory
@@ -80,7 +80,7 @@ def test_no_log_files_outside_approved_locations():
         project_root / "logs",
         project_root / "server" / "tests" / "logs",
         project_root / "client" / "logs",
-        project_root / "room_validator",
+        project_root / "tools" / "room_toolkit" / "room_validator",
         project_root / "server" / "logs",
     ]
 

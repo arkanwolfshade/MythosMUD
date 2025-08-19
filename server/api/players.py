@@ -15,6 +15,7 @@ from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging_config import get_logger
 from ..models import Stats
+from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 
@@ -37,7 +38,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 def create_player(
     name: str,
     starting_room_id: str = "earth_arkham_city_northside_intersection_derby_high",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Create a new player character."""
@@ -52,7 +53,7 @@ def create_player(
 
 @player_router.get("/", response_model=list[PlayerRead])
 def list_players(
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Get a list of all players."""
@@ -64,7 +65,7 @@ def list_players(
 @player_router.get("/{player_id}", response_model=PlayerRead)
 def get_player(
     player_id: str,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Get a specific player by ID."""
@@ -81,7 +82,7 @@ def get_player(
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
 def get_player_by_name(
     player_name: str,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Get a specific player by name."""
@@ -98,7 +99,7 @@ def get_player_by_name(
 @player_router.delete("/{player_id}")
 def delete_player(
     player_id: str,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Delete a player character."""
@@ -118,7 +119,7 @@ def apply_sanity_loss(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Apply sanity loss to a player."""
@@ -136,7 +137,7 @@ def apply_fear(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Apply fear to a player."""
@@ -154,7 +155,7 @@ def apply_corruption(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Apply corruption to a player."""
@@ -172,7 +173,7 @@ def gain_occult_knowledge(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Gain occult knowledge (with sanity loss)."""
@@ -189,7 +190,7 @@ def gain_occult_knowledge(
 def heal_player(
     player_id: str,
     amount: int,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Heal a player's health."""
@@ -207,7 +208,7 @@ def damage_player(
     player_id: str,
     amount: int,
     damage_type: str = "physical",
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """Damage a player's health."""
@@ -226,7 +227,7 @@ def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Roll random stats for character creation.
@@ -253,7 +254,7 @@ def roll_character_stats(
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
-                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user["id"]),
+                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user.id),
             },
         ) from e
 
@@ -280,7 +281,7 @@ def roll_character_stats(
 @player_router.post("/create-character")
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
 ):
     """
@@ -304,7 +305,7 @@ async def create_character_with_stats(
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
-                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user["id"]),
+                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user.id),
             },
         ) from e
 
@@ -336,6 +337,9 @@ async def create_character_with_stats(
             "player": player.model_dump(),
             "stats": stats_obj.model_dump(),
         }
+    except HTTPException:
+        # Re-raise HTTPExceptions without modification
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT) from e
     except Exception as e:
@@ -346,7 +350,7 @@ async def create_character_with_stats(
 def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Validate character stats against class prerequisites.
@@ -382,7 +386,7 @@ def validate_character_stats(
 
 @player_router.get("/available-classes")
 def get_available_classes(
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Get information about all available character classes and their prerequisites.
