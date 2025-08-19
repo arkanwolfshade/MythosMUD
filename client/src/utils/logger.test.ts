@@ -226,12 +226,14 @@ describe('ClientLogger', () => {
       const entry = buffer.find(e => e.message === 'Test message' && e.component === 'TestComponent');
       expect(entry).toBeDefined();
 
-      expect(entry).toHaveProperty('timestamp');
-      expect(entry).toHaveProperty('level', 'INFO');
-      expect(entry).toHaveProperty('component', 'TestComponent');
-      expect(entry).toHaveProperty('message', 'Test message');
-      expect(entry).toHaveProperty('data', { data: 'test' });
-      expect(new Date(entry.timestamp).getTime()).toBeCloseTo(new Date(timestamp).getTime(), -2);
+      if (entry) {
+        expect(entry).toHaveProperty('timestamp');
+        expect(entry).toHaveProperty('level', 'INFO');
+        expect(entry).toHaveProperty('component', 'TestComponent');
+        expect(entry).toHaveProperty('message', 'Test message');
+        expect(entry).toHaveProperty('data', { data: 'test' });
+        expect(new Date(entry.timestamp).getTime()).toBeCloseTo(new Date(timestamp).getTime(), -2);
+      }
     });
 
     it('should handle optional data parameter', () => {
@@ -242,7 +244,9 @@ describe('ClientLogger', () => {
       const entry = buffer.find(e => e.message === 'Test message' && e.component === 'TestComponent');
       expect(entry).toBeDefined();
 
-      expect(entry.data).toBeUndefined();
+      if (entry) {
+        expect(entry.data).toBeUndefined();
+      }
     });
   });
 
