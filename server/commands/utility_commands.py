@@ -215,8 +215,11 @@ async def handle_inventory_command(
             item_list = []
             for item in player.inventory:
                 item_desc = f"{item.name}"
-                if hasattr(item, "description") and item.description:
-                    item_desc += f" - {item.description}"
+                if hasattr(item, "description"):
+                    description = item.description if item.description else "No description"
+                    item_desc += f" - {description}"
+                else:
+                    item_desc += " - No description"
                 item_list.append(item_desc)
 
             result = "You are carrying:\n" + "\n".join(item_list)
