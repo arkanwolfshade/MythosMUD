@@ -1,0 +1,9 @@
+**COPPA Compliance**: All features must comply with Children's Online Privacy Protection Rule
+**No Personal Data**: Never collect personal information from minors under any circumstances
+**Data Minimization**: Only collect data absolutely necessary for game functionality
+**Security-First**: All decisions prioritize security over convenience or performance
+**Environment Variables**: All secrets must be stored in environment variables, never hardcoded
+**Input Validation**: Validate all user inputs server-side to prevent injection attacks
+**Path Security**: Use secure path validation for all file operations
+**Rate Limiting**: Implement per-user and per-endpoint rate limiting
+**Privacy by Design**: Build privacy considerations into every feature from the start

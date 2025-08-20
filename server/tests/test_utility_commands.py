@@ -6,7 +6,7 @@ inventory, and emote commands. Tests cover both success and error scenarios
 to ensure robust error handling and edge case coverage.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock
 
 import pytest
@@ -118,7 +118,7 @@ class TestWhoCommand:
         mock_request.app.state.persistence = mock_persistence
 
         # Create players with old last_active timestamps
-        old_time = datetime.utcnow() - timedelta(minutes=10)
+        old_time = datetime.now(UTC) - timedelta(minutes=10)
         offline_players = [
             MagicMock(username="user1", last_active=old_time),
             MagicMock(username="user2", last_active=old_time),
@@ -141,7 +141,7 @@ class TestWhoCommand:
         mock_request.app.state.persistence = mock_persistence
 
         # Create players with recent last_active timestamps
-        recent_time = datetime.utcnow() - timedelta(minutes=2)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
         online_players = [
             MagicMock(username="alice", last_active=recent_time),
             MagicMock(username="bob", last_active=recent_time),
@@ -165,8 +165,8 @@ class TestWhoCommand:
         mock_request.app.state.persistence = mock_persistence
 
         # Create mix of online and offline players
-        recent_time = datetime.utcnow() - timedelta(minutes=2)
-        old_time = datetime.utcnow() - timedelta(minutes=10)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        old_time = datetime.now(UTC) - timedelta(minutes=10)
         players = [
             MagicMock(username="alice", last_active=recent_time),  # Online
             MagicMock(username="bob", last_active=old_time),  # Offline
@@ -711,7 +711,7 @@ class TestEmoteCommand:
     async def test_emote_command_with_action(self, mock_request, mock_alias_storage):
         """Test emote command with a single action."""
         result = await handle_emote_command(
-            args=["adjusts", "spectacles"],
+            args_or_data=["adjusts", "spectacles"],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -724,7 +724,7 @@ class TestEmoteCommand:
     async def test_emote_command_complex_action(self, mock_request, mock_alias_storage):
         """Test emote command with complex multi-word action."""
         result = await handle_emote_command(
-            args=["opens", "the", "forbidden", "tome", "with", "trembling", "hands"],
+            args_or_data=["opens", "the", "forbidden", "tome", "with", "trembling", "hands"],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -737,7 +737,7 @@ class TestEmoteCommand:
     async def test_emote_command_no_args(self, mock_request, mock_alias_storage):
         """Test emote command with no arguments."""
         result = await handle_emote_command(
-            args=[],
+            args_or_data=[],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -750,7 +750,7 @@ class TestEmoteCommand:
     async def test_emote_command_empty_string_args(self, mock_request, mock_alias_storage):
         """Test emote command with empty string arguments."""
         result = await handle_emote_command(
-            args=["", ""],
+            args_or_data=["", ""],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -763,7 +763,7 @@ class TestEmoteCommand:
     async def test_emote_command_special_characters(self, mock_request, mock_alias_storage):
         """Test emote command with special characters in action."""
         result = await handle_emote_command(
-            args=["whispers", "something", "in", "an", "ancient", "tongue..."],
+            args_or_data=["whispers", "something", "in", "an", "ancient", "tongue..."],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,

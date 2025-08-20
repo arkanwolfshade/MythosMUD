@@ -1,5 +1,10 @@
----
-alwaysApply: true
----
+Avoid Mock-Only Tests: Always ensure tests exercise real production code paths
+Test Configuration Separately: Keep configuration testing separate from production code testing
+
+**Security Testing**: Include tests for security vulnerabilities, especially COPPA compliance and data privacy
+**Input Validation Testing**: Test all user inputs for injection attacks and malicious data
+**Privacy Testing**: Ensure no personal data is collected from minors in test scenarios
+**Coverage Requirements**: Maintain 80% minimum test coverage (target 90%) for all new features
+
 Avoid Mock-Only Tests: Always ensure tests exercise real production code paths
 Test Configuration Separately: Keep configuration testing separate from production code testing

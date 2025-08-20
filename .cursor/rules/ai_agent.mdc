@@ -1,0 +1,8 @@
+**Task Prioritization**: Follow the 4-level priority framework (Critical Security → High → Medium → Low)
+**Development Workflow**: Start session → Select task → Write tests → Implement → Test → Document → Commit
+**Communication**: Update TASKS.local.md with progress, blockers, and decisions needed
+**Security Concerns**: Immediately flag any security or privacy concerns
+**Database Rules**: Never create database files outside /data/players/ (prod) or /server/tests/data/players/ (tests)
+**Server Management**: Always use start_dev.ps1 and stop_server.ps1 scripts
+**Testing**: Use make test from project root, maintain 80%+ coverage
+**PowerShell**: Use PowerShell syntax, never bash-style && for command chaining

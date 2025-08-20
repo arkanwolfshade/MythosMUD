@@ -148,7 +148,8 @@ async def handle_go_command(
     # Use movement service for the actual movement
     from ..game.movement_service import MovementService
 
-    movement_service = MovementService(persistence)
+    # Pass the same event bus that persistence uses to ensure events are published correctly
+    movement_service = MovementService(persistence._event_bus)
     success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
 
     if success:

@@ -1,7 +1,11 @@
----
-name: serverstart
-alwaysApply: true
----
+
+The server should only be started using the start_dev.ps1 script, run from the project root
+You should always verify there is no running server by using stop_server.ps1 script before trying to start the server
+
+**Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users.
+**Database Placement**: Verify database files are in correct locations (/data/players/ for production, /server/tests/data/players/ for tests)
+**Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
+
 
 The server should only be started using the start_dev.ps1 script, run from the project root
 You should always verify there is no running server by using stop_server.ps1 script before trying to start the server

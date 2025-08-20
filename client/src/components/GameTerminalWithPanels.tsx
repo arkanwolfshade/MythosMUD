@@ -127,10 +127,44 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           }));
           break;
         }
+        case 'player_entered': {
+          const playerName = event.data.player_name as string;
+          if (playerName) {
+            const message = {
+              text: `${playerName} enters the room.`,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system',
+            };
+            setGameState(prev => ({
+              ...prev,
+              messages: [...prev.messages, message],
+            }));
+          }
+          break;
+        }
+        case 'player_left': {
+          const playerName = event.data.player_name as string;
+          if (playerName) {
+            const message = {
+              text: `${playerName} leaves the room.`,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system',
+            };
+            setGameState(prev => ({
+              ...prev,
+              messages: [...prev.messages, message],
+            }));
+          }
+          break;
+        }
       }
     },
     onConnect: () => {
       logger.info('GameTerminalWithPanels', 'Connected to game server');
+      // Clear messages on successful connection to start fresh
+      setGameState(prev => ({ ...prev, messages: [] }));
     },
     onDisconnect: () => {
       logger.info('GameTerminalWithPanels', 'Disconnected from game server');

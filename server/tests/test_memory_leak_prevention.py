@@ -22,7 +22,7 @@ class TestMemoryMonitor:
 
         assert monitor.cleanup_interval == 300
         assert monitor.memory_threshold == 0.8
-        assert monitor.max_connection_age == 3600
+        assert monitor.max_connection_age == 300
         assert monitor.max_pending_messages == 1000
         assert monitor.max_rate_limit_entries == 1000
 

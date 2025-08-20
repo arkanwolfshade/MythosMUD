@@ -90,15 +90,78 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 
 ```
 MythosMUD/
-├── client/      # React + TypeScript frontend (Vite)
-├── server/      # Python FastAPI backend
-├── data/        # World data (git submodule)
-├── scripts/     # Utility scripts (PowerShell & Python)
-├── docs/        # Documentation (PRD, etc.)
-├── .github/     # GitHub Actions workflows
-├── PLANNING.md  # Vision, architecture, stack
-├── DEVELOPMENT.md # Dev environment setup
-└── README.md    # This file
+├── client/                    # React + TypeScript frontend (Vite)
+│   ├── src/
+│   │   ├── components/        # React components (GameTerminal, Panels, UI)
+│   │   ├── hooks/             # React hooks (useGameConnection)
+│   │   ├── utils/             # Utility functions (ansiToHtml, errorHandler)
+│   │   ├── theme/             # Theming system (mythosTheme)
+│   │   ├── styles/            # Style files (motd-preserved.css)
+│   │   ├── test/              # Test utilities
+│   │   └── assets/            # Static assets
+│   ├── tests/                 # End-to-end tests (Playwright)
+│   ├── public/                # Public assets
+│   └── [config files]         # TypeScript, Vite, TailwindCSS configs
+│
+├── server/                    # Python FastAPI backend
+│   ├── auth/                  # Authentication system (Argon2, JWT, invites)
+│   ├── api/                   # API endpoints (game, players, rooms, monitoring)
+│   ├── game/                  # Game logic services (chat, movement, stats)
+│   ├── realtime/              # Real-time communication (WebSockets, NATS, SSE)
+│   ├── commands/              # Command processing (admin, alias, chat, help)
+│   ├── models/                # Data models (player, room, command, chat)
+│   ├── services/              # Business logic services (NATS, chat logging)
+│   ├── utils/                 # Utility modules (command parsing, processing)
+│   ├── validators/            # Input validation (command, security)
+│   ├── middleware/            # Request middleware (logging)
+│   ├── schemas/               # JSON schemas (player, invite)
+│   ├── sql/                   # Database schema (schema.sql)
+│   ├── help/                  # Help system (help_content)
+│   ├── events/                # Event system (event_bus, event_types)
+│   ├── app/                   # Application factory (factory, lifespan)
+│   ├── logs/                  # Log files directory
+│   ├── data/                  # Data files
+│   ├── tests/                 # Test suite (comprehensive test coverage)
+│   └── [core files]           # Main app, persistence, config, etc.
+│
+├── data/                      # World data (git submodule)
+│   ├── players/               # Player database and aliases
+│   ├── rooms/                 # Hierarchical room structure (earth/yeng planes)
+│   ├── user_management/       # User management data
+│   └── [game data]            # Emotes, MOTD, visualizations
+│
+├── scripts/                   # Utility scripts (PowerShell & Python)
+│   ├── start_dev.ps1          # Development server startup
+│   ├── stop_server.ps1        # Server shutdown
+│   ├── init_database.py       # Database initialization
+│   └── [other utilities]      # Testing, linting, formatting
+│
+├── docs/                      # Documentation
+│   ├── archive/               # Consolidated planning documents
+│   ├── PRD.md                 # Product Requirements Document
+│   ├── REAL_TIME_ARCHITECTURE.md # Real-time system architecture
+│   └── [technical docs]       # Security, database, room planning
+│
+├── schemas/                   # JSON schemas for validation
+│   ├── room_schema.json       # Room definition schema
+│   ├── intersection_schema.json # Intersection schema
+│   └── unified_room_schema.json # Unified room schema
+│
+├── tools/                     # Development tools
+│   ├── invite_tools/          # Invite management utilities
+│   └── room_toolkit/          # Room validation and tools
+│
+├── .github/                   # GitHub Actions workflows
+├── .cursor/                   # Cursor IDE configuration
+├── PLANNING.md                # Comprehensive project planning
+├── DEVELOPMENT.md             # Development environment setup
+├── DEVELOPMENT_AI.md          # AI agent development guide
+├── TASKS.md                   # Task tracking (deprecated - use GitHub Issues)
+├── TASKS.local.md             # Local task tracking
+├── Makefile                   # Build and development commands
+├── pyproject.toml             # Python project configuration
+├── uv.lock                    # Python dependency lock file
+└── README.md                  # This file
 ```
 
 ---

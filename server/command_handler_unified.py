@@ -87,6 +87,26 @@ def normalize_command(command: str) -> str:
     return command
 
 
+def _is_predefined_emote(command: str) -> bool:
+    """
+    Check if a command is a predefined emote alias.
+
+    Args:
+        command: The command to check
+
+    Returns:
+        True if the command is a predefined emote, False otherwise
+    """
+    try:
+        from .game.emote_service import EmoteService
+
+        emote_service = EmoteService()
+        return emote_service.is_emote_alias(command)
+    except Exception as e:
+        logger.warning(f"Error checking predefined emote: {e}")
+        return False
+
+
 async def process_command_unified(
     command_line: str,
     current_user: dict,
@@ -175,6 +195,13 @@ async def process_command_unified(
                 result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
             return result
 
+    # Step 6.5: Check if single word command is an emote
+    if not args and _is_predefined_emote(cmd):
+        logger.debug("Single word emote detected, converting to emote command", player=player_name, emote=cmd)
+        emote_command = f"emote {cmd}"
+        # Use the command service directly to avoid recursion
+        return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
+
     # Step 7: Process command with new validation system
     logger.debug("Processing command with validation system", player=player_name, command=cmd)
     return await process_command_with_validation(command_line, current_user, request, alias_storage, player_name)
@@ -208,8 +235,10 @@ async def process_command_with_validation(
 
         logger.debug("Command validated successfully", player=player_name, command_type=command_type, data=command_data)
 
-        # Use the command service for processing
-        result = await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
+        # Use the command service for processing with validated data
+        result = await command_service.process_validated_command(
+            command_data, current_user, request, alias_storage, player_name
+        )
 
         logger.debug("Command processed successfully", player=player_name, command_type=command_type)
         return result

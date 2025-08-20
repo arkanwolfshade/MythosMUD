@@ -904,7 +904,11 @@ class TestConnectionManagerComprehensive:
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = "sse_conn_id"
 
-        with patch.object(connection_manager, "_track_player_disconnected", new_callable=AsyncMock) as mock_track:
+        # Create a mock that returns a completed coroutine
+        async def mock_track_async(player_id):
+            return None
+
+        with patch.object(connection_manager, "_track_player_disconnected", side_effect=mock_track_async) as mock_track:
             connection_manager.disconnect_sse("test_player")
 
             mock_track.assert_called_once_with("test_player")
@@ -925,10 +929,15 @@ class TestConnectionManagerComprehensive:
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = "sse_conn_id"
 
+        # Create a mock that returns a completed coroutine but asyncio.run fails
+        async def mock_track_async(player_id):
+            return None
+
         with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
             with patch("asyncio.run", side_effect=Exception("Tracking failed")):
-                connection_manager.disconnect_sse("test_player")
-                # Should not raise exception
+                with patch.object(connection_manager, "_track_player_disconnected", side_effect=mock_track_async):
+                    connection_manager.disconnect_sse("test_player")
+                    # Should not raise exception
 
 
 class TestMemoryMonitorComprehensive:

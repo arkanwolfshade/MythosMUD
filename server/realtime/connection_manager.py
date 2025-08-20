@@ -26,7 +26,7 @@ class MemoryMonitor:
         self.last_cleanup_time = time.time()
         self.cleanup_interval = 300  # 5 minutes
         self.memory_threshold = 0.8  # 80% memory usage triggers cleanup
-        self.max_connection_age = 3600  # 1 hour
+        self.max_connection_age = 300  # 5 minutes
         self.max_pending_messages = 1000  # Max pending messages per player
         self.max_rate_limit_entries = 1000  # Max rate limit entries per player
 
@@ -435,7 +435,7 @@ class ConnectionManager:
                 self.pending_messages[player_id] = [
                     msg
                     for msg in messages
-                    if now_ts - msg.get("timestamp", 0) < 3600  # 1 hour
+                    if self._is_message_recent(msg, now_ts)  # 1 hour
                 ]
 
                 # Limit pending messages per player
@@ -485,6 +485,40 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(f"Error cleaning up orphaned data: {e}", exc_info=True)
+
+    def _is_message_recent(self, msg: dict, now_ts: float) -> bool:
+        """
+        Check if a message is recent (within 1 hour).
+
+        Args:
+            msg: Message dictionary
+            now_ts: Current timestamp as float
+
+        Returns:
+            bool: True if message is recent, False otherwise
+        """
+        try:
+            timestamp = msg.get("timestamp", 0)
+            if isinstance(timestamp, str):
+                # Try to parse ISO timestamp string
+                try:
+                    from datetime import datetime
+
+                    dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    msg_ts = dt.timestamp()
+                except (ValueError, AttributeError):
+                    # If parsing fails, assume it's old
+                    return False
+            elif isinstance(timestamp, int | float):
+                msg_ts = float(timestamp)
+            else:
+                # Unknown timestamp format, assume it's old
+                return False
+
+            return now_ts - msg_ts < 3600  # 1 hour
+        except Exception:
+            # If any error occurs, assume the message is old
+            return False
 
     def _prune_player_from_all_rooms(self, player_id: str):
         """Remove a player from all in-memory room occupant sets."""
@@ -621,6 +655,25 @@ class ConnectionManager:
             logger.error(f"Error resolving canonical room id for {room_id}: {e}")
         return room_id
 
+    def _convert_uuids_to_strings(self, obj):
+        """
+        Recursively convert UUID objects to strings for JSON serialization.
+
+        Args:
+            obj: Object to convert
+
+        Returns:
+            Object with UUIDs converted to strings
+        """
+        if isinstance(obj, dict):
+            return {k: self._convert_uuids_to_strings(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_uuids_to_strings(item) for item in obj]
+        elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+            return str(obj)
+        else:
+            return obj
+
     async def send_personal_message(self, player_id: str, event: dict) -> bool:
         """
         Send a personal message to a player.
@@ -633,18 +686,21 @@ class ConnectionManager:
             bool: True if sent successfully, False otherwise
         """
         try:
+            # Convert UUIDs to strings for JSON serialization
+            serializable_event = self._convert_uuids_to_strings(event)
+
             # Try WebSocket first
             if player_id in self.player_websockets:
                 connection_id = self.player_websockets[player_id]
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
-                    await websocket.send_json(event)
+                    await websocket.send_json(serializable_event)
                     return True
 
             # Fallback to pending messages
             if player_id not in self.pending_messages:
                 self.pending_messages[player_id] = []
-            self.pending_messages[player_id].append(event)
+            self.pending_messages[player_id].append(serializable_event)
             return True
 
         except Exception as e:
