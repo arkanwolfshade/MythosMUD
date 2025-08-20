@@ -51,9 +51,9 @@ async def handle_who_command(
         players = persistence.list_players()
         if players:
             # Filter to only show online players (those with recent activity)
-            from datetime import datetime, timedelta
+            from datetime import UTC, datetime, timedelta
 
-            now = datetime.utcnow()
+            now = datetime.now(UTC)
             online_threshold = now - timedelta(minutes=5)  # Consider players online if active in last 5 minutes
 
             online_players = []
@@ -103,9 +103,9 @@ async def handle_quit_command(
         try:
             player = persistence.get_player_by_name(get_username_from_user(current_user))
             if player:
-                from datetime import datetime
+                from datetime import UTC, datetime
 
-                player.last_active = datetime.utcnow()
+                player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active", player=player_name)
         except Exception as e:
