@@ -117,11 +117,14 @@ class RealTimeEventHandler:
                             names.append(n)
                     elif isinstance(occ, str):
                         names.append(occ)
+                # Convert room_id to string for JSON serialization
+                room_id_str = str(event.room_id) if event.room_id else ""
+
                 personal = {
                     "event_type": "room_occupants",
                     "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                     "sequence_number": self._get_next_sequence(),
-                    "room_id": event.room_id,
+                    "room_id": room_id_str,
                     "data": {"occupants": names, "count": len(names)},
                 }
                 await self.connection_manager.send_personal_message(event.player_id, personal)
@@ -172,8 +175,8 @@ class RealTimeEventHandler:
             # Unsubscribe player from the room
             await self.connection_manager.unsubscribe_from_room(event.player_id, event.room_id)
 
-            # Broadcast to remaining room occupants
-            await self.connection_manager.broadcast_to_room(event.room_id, message)
+            # Broadcast to remaining room occupants (excluding the leaving player)
+            await self.connection_manager.broadcast_to_room(event.room_id, message, exclude_player=event.player_id)
 
             # Send room occupants update to remaining players
             await self._send_room_occupants_update(event.room_id)
@@ -194,13 +197,17 @@ class RealTimeEventHandler:
         Returns:
             dict: The formatted message
         """
+        # Convert UUIDs to strings for JSON serialization
+        player_id = str(event.player_id) if event.player_id else ""
+        room_id = str(event.room_id) if event.room_id else ""
+
         return {
             "event_type": "player_entered",
             "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
             "sequence_number": self._get_next_sequence(),
-            "room_id": event.room_id,
+            "room_id": room_id,
             "data": {
-                "player_id": event.player_id,
+                "player_id": player_id,
                 "player_name": player_name,
                 "message": f"{player_name} enters the room.",
             },
@@ -217,13 +224,17 @@ class RealTimeEventHandler:
         Returns:
             dict: The formatted message
         """
+        # Convert UUIDs to strings for JSON serialization
+        player_id = str(event.player_id) if event.player_id else ""
+        room_id = str(event.room_id) if event.room_id else ""
+
         return {
             "event_type": "player_left",
             "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
             "sequence_number": self._get_next_sequence(),
-            "room_id": event.room_id,
+            "room_id": room_id,
             "data": {
-                "player_id": event.player_id,
+                "player_id": player_id,
                 "player_name": player_name,
                 "message": f"{player_name} leaves the room.",
             },
@@ -252,11 +263,14 @@ class RealTimeEventHandler:
                     occupant_names.append(occ)
 
             # Create occupants update message
+            # Convert room_id to string for JSON serialization
+            room_id_str = str(room_id) if room_id else ""
+
             message = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
-                "room_id": room_id,
+                "room_id": room_id_str,
                 "data": {"occupants": occupant_names, "count": len(occupant_names)},
             }
 

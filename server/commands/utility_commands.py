@@ -277,10 +277,9 @@ async def handle_emote_command(
             # Get the emote definition and format messages
             self_message, other_message = emote_service.format_emote_messages(action, player_name)
 
-            # For now, return the self message
-            # In a full implementation, this would broadcast to other players in the room
+            # Return both messages for broadcasting
             logger.debug("Predefined emote executed", player=player_name, emote=action, message=self_message)
-            return {"result": self_message}
+            return {"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}
         else:
             # Custom emote - use the action as provided
             logger.debug("Custom emote executed", player=player_name, action=action)

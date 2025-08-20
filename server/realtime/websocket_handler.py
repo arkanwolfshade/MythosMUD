@@ -296,6 +296,18 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         # Send the result back to the player
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
 
+        # Handle broadcasting if the command result includes broadcast data
+        if result.get("broadcast") and result.get("broadcast_type"):
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
+            player = connection_manager._get_player(player_id)
+            if player and hasattr(player, "current_room_id"):
+                room_id = player.current_room_id
+                broadcast_event = build_event("command_response", {"result": result["broadcast"]}, player_id=player_id)
+                await connection_manager.broadcast_to_room(room_id, broadcast_event, exclude_player=player_id)
+                logger.debug(f"Broadcasted {result.get('broadcast_type')} message to room {room_id}")
+            else:
+                logger.warning(f"Player not found or missing current_room_id for broadcast: {player_id}")
+
         # Broadcast room updates if the command affected the room
         logger.debug(f"Command result: {result}")
         if result.get("room_changed"):
