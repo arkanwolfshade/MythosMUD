@@ -159,6 +159,38 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           }
           break;
         }
+        case 'player_entered_game': {
+          const playerName = event.data.player_name as string;
+          if (playerName) {
+            const message = {
+              text: `${playerName} has entered the game.`,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system',
+            };
+            setGameState(prev => ({
+              ...prev,
+              messages: [...prev.messages, message],
+            }));
+          }
+          break;
+        }
+        case 'player_left_game': {
+          const playerName = event.data.player_name as string;
+          if (playerName) {
+            const message = {
+              text: `${playerName} has left the game.`,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system',
+            };
+            setGameState(prev => ({
+              ...prev,
+              messages: [...prev.messages, message],
+            }));
+          }
+          break;
+        }
       }
     },
     onConnect: () => {

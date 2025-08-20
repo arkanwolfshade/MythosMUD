@@ -97,15 +97,15 @@ class RealTimeEventHandler:
             # Create real-time message
             message = self._create_player_entered_message(event, player_name)
 
-            # Subscribe player to the room so they will receive subsequent broadcasts
-            await self.connection_manager.subscribe_to_room(event.player_id, event.room_id)
-
             # Broadcast to room occupants (excluding the entering player)
             await self.connection_manager.broadcast_to_room(event.room_id, message, exclude_player=event.player_id)
 
+            # Subscribe player to the room so they will receive subsequent broadcasts
+            await self.connection_manager.subscribe_to_room(event.player_id, event.room_id)
+
             # Send room occupants update to the entering player as a personal message
             # so they immediately see who is present on joining
-            await self._send_room_occupants_update(event.room_id)
+            await self._send_room_occupants_update(event.room_id, exclude_player=event.player_id)
             try:
                 # Also send a direct occupants snapshot to the entering player
                 occupants_info = self._get_room_occupants(event.room_id)
@@ -179,7 +179,7 @@ class RealTimeEventHandler:
             await self.connection_manager.broadcast_to_room(event.room_id, message, exclude_player=event.player_id)
 
             # Send room occupants update to remaining players
-            await self._send_room_occupants_update(event.room_id)
+            await self._send_room_occupants_update(event.room_id, exclude_player=event.player_id)
 
             self._logger.info(f"Player {player_name} left room {event.room_id}")
 

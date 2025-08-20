@@ -798,6 +798,10 @@ class ConnectionManager:
             self.online_players[player_id] = player_info
             self.mark_player_seen(player_id)
 
+            # Clear any pending messages to ensure fresh game state
+            if player_id in self.pending_messages:
+                del self.pending_messages[player_id]
+
             # Update room occupants using canonical room id
             room_id = getattr(player, "current_room_id", None)
             if self.persistence and room_id:
@@ -827,6 +831,16 @@ class ConnectionManager:
 
                 # Send initial game_state event to the player
                 await self._send_initial_game_state(player_id, player, room_id)
+
+                # Notify current room that player entered the game
+                from .envelope import build_event
+
+                entered_event = build_event(
+                    "player_entered_game",
+                    {"player_id": player_id, "player_name": player_info["player_name"]},
+                    room_id=room_id,
+                )
+                await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
 
             logger.info(f"Player {player_id} presence tracked as connected")
 

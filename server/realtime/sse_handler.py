@@ -40,7 +40,11 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
         # Send immediate heartbeat to confirm connection is working
         yield sse_line(build_event("heartbeat", {"message": "Connection established"}, player_id=player_id_str))
 
-        # Send pending messages
+        # Clear any pending messages to ensure fresh game state
+        if player_id_str in connection_manager.pending_messages:
+            del connection_manager.pending_messages[player_id_str]
+
+        # Send pending messages (should be empty now)
         pending_messages = connection_manager.get_pending_messages(player_id_str)
         for message in pending_messages:
             yield sse_line(build_event("pending_message", message, player_id=player_id_str))

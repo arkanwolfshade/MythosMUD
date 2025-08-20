@@ -55,7 +55,8 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     added_to_room = False
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
-                        room.player_entered(player_id_str)
+                        # Add player to room without triggering events (for initial setup)
+                        room._players.add(player_id_str)
                         added_to_room = True
 
                     # Use canonical room id for subscriptions and broadcasts
