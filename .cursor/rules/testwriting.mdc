@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+Avoid Mock-Only Tests: Always ensure tests exercise real production code paths
+Test Configuration Separately: Keep configuration testing separate from production code testing
