@@ -27,7 +27,7 @@ vi.mock('../utils/logger', () => ({
 }));
 
 import { useGameConnection } from '../hooks/useGameConnection';
-import GameTerminalWithPanels from './GameTerminalWithPanels';
+import { GameTerminalWithPanels } from './GameTerminalWithPanels';
 
 describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
   const defaultGameState = {
@@ -58,6 +58,14 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
       gameState: defaultGameState,
       sendCommand: vi.fn(),
       isConnected: true,
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      isConnecting: false,
+      error: null,
+      reconnectAttempts: 0,
+      sseConnected: false,
+      websocketConnected: false,
+      lastEvent: null,
       ...mockConnectionHandlers,
     });
   });
@@ -81,11 +89,19 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: gameStateWithMessages,
         sendCommand: vi.fn(),
         isConnected: true,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
       // Render component
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate connection event
       const onConnect = mockConnectionHandlers.onConnect;
@@ -115,21 +131,37 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: gameStateWithMessages,
         sendCommand: vi.fn(),
         isConnected: false, // Start disconnected
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
       // Render component
-      const { rerender } = render(<GameTerminalWithPanels />);
+      const { rerender } = render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate reconnection
       (useGameConnection as ReturnType<typeof vi.fn>).mockReturnValue({
         gameState: { ...defaultGameState, messages: [] }, // Messages cleared
         sendCommand: vi.fn(),
         isConnected: true,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
-      rerender(<GameTerminalWithPanels />);
+      rerender(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Verify that messages are cleared on reconnection
       // This would be verified by checking that the chat panel shows no messages
@@ -140,7 +172,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should display player_entered events as human-readable messages', async () => {
       const onEvent = mockConnectionHandlers.onEvent;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate a player_entered event
       const playerEnteredEvent = {
@@ -165,7 +197,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should display player_left events as human-readable messages', async () => {
       const onEvent = mockConnectionHandlers.onEvent;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate a player_left event
       const playerLeftEvent = {
@@ -190,7 +222,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should handle missing player_name in room events gracefully', async () => {
       const onEvent = mockConnectionHandlers.onEvent;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate a player_entered event without player_name
       const invalidEvent = {
@@ -229,10 +261,18 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: gameStateWithPlayer,
         sendCommand: vi.fn(),
         isConnected: true,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate Ithaqua entering the room (should not be displayed to Ithaqua)
       const selfEnterEvent = {
@@ -270,10 +310,18 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: gameStateWithPlayer,
         sendCommand: vi.fn(),
         isConnected: true,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate ArkanWolfshade entering the room (should be displayed to Ithaqua)
       const otherPlayerEnterEvent = {
@@ -306,10 +354,18 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: defaultGameState,
         sendCommand: vi.fn(),
         isConnected: false,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate connection
       onConnect();
@@ -327,7 +383,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should handle connection errors gracefully', async () => {
       const onError = mockConnectionHandlers.onError;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate connection error
       const errorEvent = {
@@ -350,7 +406,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should format room events with correct message type', async () => {
       const onEvent = mockConnectionHandlers.onEvent;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate a player_entered event
       const playerEnteredEvent = {
@@ -381,7 +437,7 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     it('should handle malformed events gracefully', async () => {
       const onEvent = mockConnectionHandlers.onEvent;
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate a malformed event
       const malformedEvent = {
@@ -408,18 +464,30 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
         gameState: defaultGameState,
         sendCommand,
         isConnected: true,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        isConnecting: false,
+        error: null,
+        reconnectAttempts: 0,
+        sseConnected: false,
+        websocketConnected: false,
+        lastEvent: null,
         ...mockConnectionHandlers,
       });
 
-      render(<GameTerminalWithPanels />);
+      render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
       // Simulate sending a movement command
-      const commandInput = screen.getByRole('textbox');
+      const commandInput = screen.getByPlaceholderText("Enter command (e.g., 'look' or '/look')...");
       fireEvent.change(commandInput, { target: { value: 'go north' } });
-      fireEvent.keyPress(commandInput, { key: 'Enter', code: 'Enter' });
+
+      // Find the form and submit it
+      const form = commandInput.closest('form');
+      expect(form).toBeTruthy();
+      fireEvent.submit(form!);
 
       // Verify command was sent
-      expect(sendCommand).toHaveBeenCalledWith('go north');
+      expect(sendCommand).toHaveBeenCalledWith('go', ['north']);
 
       // Simulate the resulting room events
       const playerLeftEvent = {
