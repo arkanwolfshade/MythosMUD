@@ -311,6 +311,11 @@ class TestUUIDSerializationIntegration:
         event_handler.connection_manager.persistence = Mock()
         event_handler.connection_manager._get_player = Mock(return_value=Mock(name="TestPlayer"))
 
+        # Mock the room to return an empty list of players
+        mock_room = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+
         # Create event with UUID objects
         player_id = uuid4()
         room_id = uuid4()
@@ -329,9 +334,9 @@ class TestUUIDSerializationIntegration:
 
         # Verify UUIDs were converted to strings
         assert isinstance(message["data"]["player_id"], str)
-        assert isinstance(message["data"]["room_id"], str)
+        assert isinstance(message["room_id"], str)  # room_id is at top level
         assert message["data"]["player_id"] == str(player_id)
-        assert message["data"]["room_id"] == str(room_id)
+        assert message["room_id"] == str(room_id)  # room_id is at top level
 
     @pytest.mark.asyncio
     async def test_connection_manager_serializes_uuids_in_messages(self):

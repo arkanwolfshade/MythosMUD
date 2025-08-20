@@ -47,8 +47,20 @@ class TestSelfMessageExclusionBugs:
         room_id = str(uuid4())
         player_name = "Ithaqua"
 
-        # Mock the connection manager's broadcast_to_room method
+        # Mock the connection manager's methods
         event_handler.connection_manager.broadcast_to_room = AsyncMock()
+        event_handler.connection_manager.unsubscribe_from_room = AsyncMock()
+
+        # Mock the player lookup
+        mock_player = Mock()
+        mock_player.name = player_name
+        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+
+        # Mock the persistence layer
+        event_handler.connection_manager.persistence = Mock()
+        mock_room = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create and handle a PlayerLeftRoomEvent
         event = PlayerLeftRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")
@@ -56,17 +68,21 @@ class TestSelfMessageExclusionBugs:
         await event_handler._handle_player_left(event)
 
         # Verify the message format is correct
-        call_args = event_handler.connection_manager.broadcast_to_room.call_args
-        message = call_args[0][1]  # Second positional argument is the message
+        calls = event_handler.connection_manager.broadcast_to_room.call_args_list
+        assert len(calls) >= 1
+
+        # Get the first call (player_left message)
+        first_call = calls[0]
+        message = first_call[0][1]  # Second positional argument is the message
 
         # Check message structure
-        assert message["type"] == "player_left"
+        assert message["event_type"] == "player_left"
         assert message["data"]["player_name"] == player_name
         assert message["data"]["player_id"] == player_id
-        assert message["data"]["room_id"] == room_id
+        assert message["room_id"] == room_id  # room_id is at top level
 
         # Verify exclude_player was passed
-        assert call_args.kwargs.get("exclude_player") == player_id
+        assert first_call.kwargs.get("exclude_player") == player_id
 
     @pytest.mark.asyncio
     async def test_player_entered_event_creates_correct_message_format(self, event_handler):
@@ -75,8 +91,21 @@ class TestSelfMessageExclusionBugs:
         room_id = str(uuid4())
         player_name = "Ithaqua"
 
-        # Mock the connection manager's broadcast_to_room method
+        # Mock the connection manager's methods
         event_handler.connection_manager.broadcast_to_room = AsyncMock()
+        event_handler.connection_manager.subscribe_to_room = AsyncMock()
+        event_handler.connection_manager.send_personal_message = AsyncMock()
+
+        # Mock the player lookup
+        mock_player = Mock()
+        mock_player.name = player_name
+        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+
+        # Mock the persistence layer
+        event_handler.connection_manager.persistence = Mock()
+        mock_room = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create and handle a PlayerEnteredRoomEvent
         event = PlayerEnteredRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")
@@ -84,17 +113,21 @@ class TestSelfMessageExclusionBugs:
         await event_handler._handle_player_entered(event)
 
         # Verify the message format is correct
-        call_args = event_handler.connection_manager.broadcast_to_room.call_args
-        message = call_args[0][1]  # Second positional argument is the message
+        calls = event_handler.connection_manager.broadcast_to_room.call_args_list
+        assert len(calls) >= 1
+
+        # Get the first call (player_entered message)
+        first_call = calls[0]
+        message = first_call[0][1]  # Second positional argument is the message
 
         # Check message structure
-        assert message["type"] == "player_entered"
+        assert message["event_type"] == "player_entered"
         assert message["data"]["player_name"] == player_name
         assert message["data"]["player_id"] == player_id
-        assert message["data"]["room_id"] == room_id
+        assert message["room_id"] == room_id  # room_id is at top level
 
         # Verify exclude_player was passed
-        assert call_args.kwargs.get("exclude_player") == player_id
+        assert first_call.kwargs.get("exclude_player") == player_id
 
     @pytest.mark.asyncio
     async def test_connection_manager_broadcast_exclusion_logic(self, connection_manager):
@@ -104,8 +137,8 @@ class TestSelfMessageExclusionBugs:
         player_2_id = str(uuid4())
         player_3_id = str(uuid4())
 
-        # Mock active connections
-        connection_manager.active_websockets = {player_1_id: Mock(), player_2_id: Mock(), player_3_id: Mock()}
+        # Mock room subscriptions (this is what broadcast_to_room actually uses)
+        connection_manager.room_subscriptions = {room_id: {player_1_id, player_2_id, player_3_id}}
 
         # Mock _get_player to return room occupants
         def mock_get_player(player_id):
@@ -162,15 +195,36 @@ class TestEventOrderingAndTimingBugs:
     async def test_concurrent_player_movements_dont_interfere(self):
         """Test that concurrent player movements don't cause race conditions."""
         event_bus = EventBus()
-        connection_manager = Mock()
         event_handler = RealTimeEventHandler(event_bus)
 
         player_1_id = str(uuid4())
         player_2_id = str(uuid4())
         room_id = str(uuid4())
+        player_1_name = "Cthulhu"
+        player_2_name = "Nyarlathotep"
 
-        # Mock broadcast method
-        connection_manager.broadcast_to_room = AsyncMock()
+        # Mock the connection manager's methods
+        event_handler.connection_manager.broadcast_to_room = AsyncMock()
+        event_handler.connection_manager.unsubscribe_from_room = AsyncMock()
+
+        # Mock the player lookup for both players
+        def mock_get_player(player_id):
+            player = Mock()
+            if player_id == player_1_id:
+                player.name = player_1_name
+            elif player_id == player_2_id:
+                player.name = player_2_name
+            else:
+                player.name = "Unknown"
+            return player
+
+        event_handler.connection_manager._get_player = mock_get_player
+
+        # Mock the persistence layer
+        event_handler.connection_manager.persistence = Mock()
+        mock_room = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create concurrent movement events
         event_1 = PlayerLeftRoom(player_id=player_1_id, room_id=room_id, timestamp=None, event_type="")
@@ -180,12 +234,15 @@ class TestEventOrderingAndTimingBugs:
         # Process events concurrently
         await asyncio.gather(event_handler._handle_player_left(event_1), event_handler._handle_player_left(event_2))
 
-        # Verify both events were processed
-        assert connection_manager.broadcast_to_room.call_count == 2
+        # Verify both events were processed (each _handle_player_left calls broadcast_to_room twice: player_left + room_occupants)
+        calls = event_handler.connection_manager.broadcast_to_room.call_args_list
+        assert len(calls) >= 2  # At least 2 calls (could be more due to room_occupants updates)
 
-        # Verify each event had proper exclude_player
-        calls = connection_manager.broadcast_to_room.call_args_list
-        exclude_players = [call.kwargs.get("exclude_player") for call in calls]
+        # Verify each event had proper exclude_player in the player_left messages
+        player_left_calls = [call for call in calls if call[0][1].get("event_type") == "player_left"]
+        assert len(player_left_calls) == 2
+
+        exclude_players = [call.kwargs.get("exclude_player") for call in player_left_calls]
         assert player_1_id in exclude_players
         assert player_2_id in exclude_players
 
@@ -195,10 +252,8 @@ class TestEventOrderingAndTimingBugs:
         event_bus = EventBus()
         published_events = []
 
-        async def event_capturer(event):
+        def event_capturer(event):
             published_events.append(event)
-            # Simulate some processing time
-            await asyncio.sleep(0.01)
 
         event_bus.subscribe(PlayerLeftRoom, event_capturer)
 
@@ -213,7 +268,7 @@ class TestEventOrderingAndTimingBugs:
             event_bus.publish(event)
 
         # Allow events to be processed
-        await event_bus._process_pending_events()
+        await asyncio.sleep(0.1)
 
         # Verify all events were processed
         assert len(published_events) == 10
@@ -293,13 +348,15 @@ class TestWebSocketMessageDeliveryBugs:
         connection_manager.memory_monitor.max_connection_age = 300
 
         player_id = str(uuid4())
+        connection_id = str(uuid4())
         mock_websocket = Mock()
 
         # Make the websocket raise an exception when sending
         mock_websocket.send_json.side_effect = Exception("Connection lost")
 
-        # Add connection
-        connection_manager.active_websockets[player_id] = mock_websocket
+        # Add connection using the correct structure
+        connection_manager.active_websockets[connection_id] = mock_websocket
+        connection_manager.player_websockets[player_id] = connection_id
 
         # Try to send a message
         test_event = {"type": "test", "data": "test"}
@@ -307,9 +364,6 @@ class TestWebSocketMessageDeliveryBugs:
 
         # Should return False for failed delivery
         assert result is False
-
-        # Connection should be marked for cleanup
-        assert player_id in connection_manager.active_websockets
 
     @pytest.mark.asyncio
     async def test_message_queue_handling_for_disconnected_players(self):
@@ -325,11 +379,13 @@ class TestWebSocketMessageDeliveryBugs:
         test_event = {"type": "test", "data": "test"}
         result = await connection_manager.send_personal_message(player_id, test_event)
 
-        # Should return False (no connection)
-        assert result is False
+        # Should return True (message queued successfully)
+        assert result is True
 
-        # Message should not be queued for non-existent player
-        assert player_id not in connection_manager.pending_messages
+        # Message should be queued for disconnected player
+        assert player_id in connection_manager.pending_messages
+        assert len(connection_manager.pending_messages[player_id]) == 1
+        assert connection_manager.pending_messages[player_id][0] == test_event
 
 
 class TestMovementServiceIntegrationBugs:

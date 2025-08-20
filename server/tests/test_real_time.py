@@ -255,29 +255,49 @@ class TestConnectionManager:
 
     def test_get_player_with_persistence(self):
         """Test getting player with persistence layer."""
-        mock_player = Mock()
-        self.manager.persistence = Mock()
-        self.manager.persistence.get_player.return_value = mock_player
+        # Create a fresh connection manager for this test
+        from server.realtime.connection_manager import ConnectionManager
 
-        result = self.manager._get_player(self.player_id)
+        test_manager = ConnectionManager()
+
+        mock_player = Mock()
+        mock_persistence = Mock()
+        mock_persistence.get_player.return_value = mock_player
+        test_manager.persistence = mock_persistence
+
+        result = test_manager._get_player(self.player_id)
 
         assert result is mock_player
-        self.manager.persistence.get_player.assert_called_once_with(self.player_id)
+        mock_persistence.get_player.assert_called_once_with(self.player_id)
 
     def test_get_player_by_name_fallback(self):
         """Test getting player by name when ID lookup fails."""
-        mock_player = Mock()
-        self.manager.persistence = Mock()
-        self.manager.persistence.get_player.return_value = None
-        self.manager.persistence.get_player_by_name.return_value = mock_player
+        # Create a fresh connection manager for this test
+        from server.realtime.connection_manager import ConnectionManager
 
-        result = self.manager._get_player(self.player_id)
+        test_manager = ConnectionManager()
+
+        mock_player = Mock()
+        mock_persistence = Mock()
+        mock_persistence.get_player.return_value = None
+        mock_persistence.get_player_by_name.return_value = mock_player
+        test_manager.persistence = mock_persistence
+
+        result = test_manager._get_player(self.player_id)
 
         assert result is mock_player
-        self.manager.persistence.get_player_by_name.assert_called_once_with(self.player_id)
+        mock_persistence.get_player_by_name.assert_called_once_with(self.player_id)
 
     def test_get_player_no_persistence(self):
         """Test getting player when no persistence layer."""
-        result = self.manager._get_player(self.player_id)
+        # Create a fresh connection manager for this test
+        from server.realtime.connection_manager import ConnectionManager
+
+        test_manager = ConnectionManager()
+
+        # Ensure persistence is None
+        test_manager.persistence = None
+
+        result = test_manager._get_player(self.player_id)
 
         assert result is None
