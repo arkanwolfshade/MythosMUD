@@ -76,6 +76,51 @@ class CommandService:
             "inventory": handle_inventory_command,
         }
 
+    async def process_validated_command(
+        self,
+        command_data: dict,
+        current_user: dict,
+        request: Any,
+        alias_storage: AliasStorage,
+        player_name: str,
+    ) -> dict[str, str]:
+        """
+        Process a validated command with routing.
+
+        Args:
+            command_data: The validated command data dictionary
+            current_user: Current user information
+            request: FastAPI request object
+            alias_storage: Alias storage instance
+            player_name: Player name for logging
+
+        Returns:
+            dict: Command result with 'result' key
+        """
+        logger.debug("Processing validated command", player=player_name, command_data=command_data)
+
+        command_type = command_data.get("command_type")
+        if not command_type:
+            logger.error("No command type in validated command data", player=player_name, command_data=command_data)
+            return {"result": "Invalid command format"}
+
+        # Get the appropriate handler
+        handler = self.command_handlers.get(command_type)
+        if not handler:
+            logger.error("No handler found for command type", player=player_name, command_type=command_type)
+            return {"result": f"Unknown command: {command_type}"}
+
+        try:
+            # Call the handler with the command data
+            result = await handler(command_data, current_user, request, alias_storage, player_name)
+            logger.debug("Command processed successfully", player=player_name, command_type=command_type)
+            return result
+        except Exception as e:
+            logger.error(
+                "Error in command handler", player=player_name, command_type=command_type, error=str(e), exc_info=True
+            )
+            return {"result": f"Error processing {command_type} command"}
+
     async def process_command(
         self,
         command: str,

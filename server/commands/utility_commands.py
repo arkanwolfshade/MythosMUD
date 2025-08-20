@@ -234,13 +234,13 @@ async def handle_inventory_command(
 
 
 async def handle_emote_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    args_or_data: dict | list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the emote command for performing emotes.
 
     Args:
-        args: Command arguments
+        args_or_data: Either command data dictionary (new format) or args list (old format)
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -249,15 +249,48 @@ async def handle_emote_command(
     Returns:
         dict: Emote command result
     """
-    logger.debug("Processing emote command", player=player_name, args=args)
+    logger.debug("Processing emote command", player=player_name, args_or_data=args_or_data)
 
-    if not args:
-        logger.warning("Emote command with no action", player=player_name)
-        return {"result": "Emote what? Usage: emote <action>"}
-
-    action = " ".join(args)
+    # Handle both old format (args list) and new format (command_data dict)
+    if isinstance(args_or_data, dict):
+        # New format: command_data dictionary
+        action = args_or_data.get("action")
+        if not action:
+            logger.warning("Emote command with no action", player=player_name)
+            return {"result": "Emote what? Usage: emote <action>"}
+    else:
+        # Old format: args list
+        if not args_or_data:
+            logger.warning("Emote command with no action", player=player_name)
+            return {"result": "Emote what? Usage: emote <action>"}
+        action = " ".join(args_or_data)
     logger.debug("Player performing emote", player=player_name, action=action)
 
-    # For now, return a simple response
-    # In a full implementation, this would broadcast to other players in the room
-    return {"result": f"{player_name} {action}"}
+    try:
+        # Import and use the emote service
+        from ..game.emote_service import EmoteService
+
+        emote_service = EmoteService()
+
+        # Check if this is a predefined emote
+        if emote_service.is_emote_alias(action):
+            # Get the emote definition and format messages
+            self_message, other_message = emote_service.format_emote_messages(action, player_name)
+
+            # For now, return the self message
+            # In a full implementation, this would broadcast to other players in the room
+            logger.debug("Predefined emote executed", player=player_name, emote=action, message=self_message)
+            return {"result": self_message}
+        else:
+            # Custom emote - use the action as provided
+            logger.debug("Custom emote executed", player=player_name, action=action)
+            return {"result": f"{player_name} {action}"}
+
+    except Exception as e:
+        import traceback
+
+        logger.error(
+            "Emote command error", player=player_name, action=action, error=str(e), traceback=traceback.format_exc()
+        )
+        # Fallback to simple emote if emote service fails
+        return {"result": f"{player_name} {action}"}
