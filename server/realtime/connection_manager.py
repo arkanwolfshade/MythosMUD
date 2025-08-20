@@ -509,7 +509,7 @@ class ConnectionManager:
                 except (ValueError, AttributeError):
                     # If parsing fails, assume it's old
                     return False
-            elif isinstance(timestamp, (int, float)):
+            elif isinstance(timestamp, int | float):
                 msg_ts = float(timestamp)
             else:
                 # Unknown timestamp format, assume it's old

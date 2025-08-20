@@ -261,7 +261,7 @@ class TestConnectionManager:
 
         result = self.manager._get_player(self.player_id)
 
-        assert result == mock_player
+        assert result is mock_player
         self.manager.persistence.get_player.assert_called_once_with(self.player_id)
 
     def test_get_player_by_name_fallback(self):
@@ -273,7 +273,7 @@ class TestConnectionManager:
 
         result = self.manager._get_player(self.player_id)
 
-        assert result == mock_player
+        assert result is mock_player
         self.manager.persistence.get_player_by_name.assert_called_once_with(self.player_id)
 
     def test_get_player_no_persistence(self):

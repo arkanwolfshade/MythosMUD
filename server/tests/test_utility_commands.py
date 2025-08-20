@@ -711,7 +711,7 @@ class TestEmoteCommand:
     async def test_emote_command_with_action(self, mock_request, mock_alias_storage):
         """Test emote command with a single action."""
         result = await handle_emote_command(
-            args=["adjusts", "spectacles"],
+            args_or_data=["adjusts", "spectacles"],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -724,7 +724,7 @@ class TestEmoteCommand:
     async def test_emote_command_complex_action(self, mock_request, mock_alias_storage):
         """Test emote command with complex multi-word action."""
         result = await handle_emote_command(
-            args=["opens", "the", "forbidden", "tome", "with", "trembling", "hands"],
+            args_or_data=["opens", "the", "forbidden", "tome", "with", "trembling", "hands"],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -737,7 +737,7 @@ class TestEmoteCommand:
     async def test_emote_command_no_args(self, mock_request, mock_alias_storage):
         """Test emote command with no arguments."""
         result = await handle_emote_command(
-            args=[],
+            args_or_data=[],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -750,7 +750,7 @@ class TestEmoteCommand:
     async def test_emote_command_empty_string_args(self, mock_request, mock_alias_storage):
         """Test emote command with empty string arguments."""
         result = await handle_emote_command(
-            args=["", ""],
+            args_or_data=["", ""],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -763,7 +763,7 @@ class TestEmoteCommand:
     async def test_emote_command_special_characters(self, mock_request, mock_alias_storage):
         """Test emote command with special characters in action."""
         result = await handle_emote_command(
-            args=["whispers", "something", "in", "an", "ancient", "tongue..."],
+            args_or_data=["whispers", "something", "in", "an", "ancient", "tongue..."],
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,

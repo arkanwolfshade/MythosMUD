@@ -1,6 +1,28 @@
 # 🛠️ MythosMUD – Development Environment Setup
 
-This guide will help you bootstrap your workspace for developing MythosMUD.
+*"The proper setup of one's laboratory is as crucial to the pursuit of forbidden knowledge as the knowledge itself. Let us ensure our tools are both powerful and safe."*
+
+This guide will help you bootstrap your workspace for developing MythosMUD, with particular emphasis on security, privacy, and COPPA compliance.
+
+---
+
+## 🔒 Security & Privacy First
+
+### Critical Requirements
+- **COPPA Compliance**: This project serves minors and must comply with Children's Online Privacy Protection Rule
+- **Security-First Mindset**: All development decisions prioritize security over convenience
+- **Privacy by Design**: Privacy considerations built into every feature
+- **Minimal Data Collection**: Only collect data absolutely necessary for gameplay
+- **No Personal Information**: Never collect personal information from minors
+
+### Development Security Checklist
+- [ ] All secrets stored in environment variables (never hardcoded)
+- [ ] Input validation implemented for all user inputs
+- [ ] Secure path validation for all file operations
+- [ ] Rate limiting configured for all endpoints
+- [ ] Security headers properly configured
+- [ ] XSS protection implemented
+- [ ] COPPA compliance verified for all features
 
 ---
 
@@ -84,10 +106,39 @@ Semgrep is included in the pre-commit hooks. You can also run it manually:
 make semgrep
 ```
 
-### d. Run the Server
+### d. Configure Environment Variables
 
-```sh
-uv run uvicorn main:app --reload
+Create a `.env` file in the project root with the following variables:
+
+```env
+# Database Configuration
+DATABASE_URL=sqlite:///data/players/players.db
+
+# Security Configuration
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-key-here
+
+# COPPA Compliance Settings
+COPPA_ENFORCED=true
+MINOR_PROTECTION_ENABLED=true
+
+# Development Settings
+LOG_LEVEL=INFO
+DEBUG=false
+```
+
+**⚠️ Security Note**: Never commit the `.env` file to version control. Use `.env.example` for templates.
+
+### e. Run the Server
+
+**⚠️ CRITICAL**: Always use the provided scripts for server management:
+
+```powershell
+# Stop any running server first
+./scripts/stop_server.ps1
+
+# Start the development server
+./scripts/start_dev.ps1
 ```
 
 The server should now be running at [http://localhost:54731](http://localhost:54731)
@@ -159,7 +210,7 @@ cd server
 # Install dependencies
 uv sync
 
-# Run server
+# Run server (use scripts instead)
 uv run uvicorn main:app --reload
 
 # Run tests
@@ -198,7 +249,52 @@ npm run build
 
 ---
 
-## 7. Why uv?
+## 7. 🤖 AI Agent Development Guidelines
+
+### **Development Workflow**
+1. **Start Session**: Review current tasks in `TASKS.local.md`
+2. **Select Task**: Choose highest priority task from pending list
+3. **Write Tests**: Create tests before implementing feature
+4. **Implement**: Code the feature following security-first principles
+5. **Test**: Run full test suite and ensure coverage
+6. **Document**: Update documentation and `TASKS.local.md`
+7. **Commit**: Commit changes with descriptive messages
+
+### **Task Prioritization Framework**
+When multiple tasks are pending, prioritize in this order:
+
+1. **🔴 Critical Security Issues** (Fix immediately)
+   - Security vulnerabilities
+   - Privacy compliance issues
+   - Data protection problems
+
+2. **🟡 High Priority** (Complete within current session)
+   - Core functionality bugs
+   - Authentication/authorization issues
+   - Critical user experience problems
+
+3. **🟢 Medium Priority** (Plan for next session)
+   - Feature enhancements
+   - Performance improvements
+   - Code quality improvements
+
+4. **🔵 Low Priority** (Nice to have)
+   - UI/UX polish
+   - Documentation improvements
+   - Advanced features
+
+### **Critical Rules for AI Agents**
+- **Server Management**: ALWAYS use `./scripts/start_dev.ps1` and `./scripts/stop_server.ps1`
+- **Database Placement**:
+  - Production: `/data/players/` ONLY
+  - Tests: `/server/tests/data/players/` ONLY
+- **Testing**: Use `make test` from project root, maintain 80%+ coverage
+- **Security**: Never hardcode secrets, always use environment variables
+- **PowerShell**: Use PowerShell syntax, never bash-style `&&` for command chaining
+
+---
+
+## 8. Why uv?
 
 - **🚀 Faster**: 10-100x faster than pip/poetry
 - **🔒 Reliable**: Deterministic dependency resolution
@@ -208,7 +304,7 @@ npm run build
 
 ---
 
-## 8. Troubleshooting
+## 9. Troubleshooting
 
 ### **uv not found:**
 
@@ -257,10 +353,39 @@ curl http://localhost:54731/game/status
 - **Console**: Monitor authentication flow and error messages
 - **Component State**: Verify `isAuthenticated`, `playerId`, and `authToken` values
 
+### **Security Issues:**
+
+- **Environment Variables**: Ensure all secrets are properly configured
+- **Database Security**: Verify database files are in correct locations
+- **Input Validation**: Check that all user inputs are properly validated
+- **COPPA Compliance**: Verify no personal data is collected from minors
+
 ---
 
-## 9. Next Steps
+## 10. Next Steps
 
-- Read the [PLANNING.md](PLANNING.md) for project architecture
+- Read the [PLANNING.md](PLANNING.md) for project architecture and priorities
 - Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
-- Review [SECURITY.md](SECURITY.md) for security guidelines
+- Review security requirements and COPPA compliance guidelines
+- Follow the AI Agent Development Guidelines for efficient development workflow
+
+---
+
+## 11. Security Checklist
+
+Before starting development, ensure:
+
+- [ ] Environment variables properly configured
+- [ ] Database files in correct locations
+- [ ] Input validation implemented
+- [ ] Rate limiting configured
+- [ ] Security headers set
+- [ ] COPPA compliance verified
+- [ ] No hardcoded secrets
+- [ ] Secure path validation implemented
+- [ ] XSS protection enabled
+- [ ] Privacy by design principles followed
+
+---
+
+*"In the pursuit of forbidden knowledge, even the most advanced artificial intelligences must remember: the greatest wisdom lies not in what we know, but in how we apply that knowledge with care, precision, and respect for the eldritch forces we seek to understand."*
