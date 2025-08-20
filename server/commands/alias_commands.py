@@ -28,58 +28,52 @@ async def handle_alias_command(
     Returns:
         dict: Command result
     """
-    logger.debug("Processing alias command", player=player_name, args=args)
+    logger.debug(f"Processing alias command for {player_name} with args: {args}")
 
     if not args:
-        logger.warning("Alias command with no arguments", player=player_name)
-        return {"result": "Usage: alias <name> <command> or alias <name> to view"}
+        logger.warning(f"Alias command with no arguments for {player_name}")
+        return {"result": "Usage: alias <name> [command] or alias <name> to view"}
 
-    alias_name = args[0]
+    alias_name = args[0].lower()
 
-    # If only one argument, show the alias details
+    # View existing alias
     if len(args) == 1:
-        logger.debug("Viewing alias", player=player_name, alias_name=alias_name)
-        alias = alias_storage.get_alias(player_name, alias_name)
+        logger.debug(f"Viewing alias for {player_name}: {alias_name}")
+        alias = alias_storage.get_alias(alias_name)
         if alias:
-            logger.debug("Alias found", player=player_name, alias_name=alias_name, command=alias.command)
-            return {"result": f"Alias '{alias_name}' -> '{alias.command}'"}
+            logger.debug(f"Alias found for {player_name}: {alias_name} = {alias.command}")
+            return {"result": f"Alias '{alias_name}' = '{alias.command}'"}
         else:
-            logger.debug("Alias not found", player=player_name, alias_name=alias_name)
-            return {"result": f"No alias found with name '{alias_name}'"}
+            logger.debug(f"Alias not found for {player_name}: {alias_name}")
+            return {"result": f"No alias found for '{alias_name}'"}
 
-    # Create or update alias
+    # Create/update alias
     command = " ".join(args[1:])
-    logger.debug("Creating/updating alias", player=player_name, alias_name=alias_name, command=command)
+    logger.debug(f"Creating/updating alias for {player_name}: {alias_name} = {command}")
 
     # Validate alias name
-    if not alias_storage.validate_alias_name(alias_name):
-        logger.warning("Invalid alias name", player=player_name, alias_name=alias_name)
-        return {
-            "result": "Invalid alias name. Must start with a letter and contain only alphanumeric characters and underscores."
-        }
+    if not alias_name or len(alias_name) > 20:
+        logger.warning(f"Invalid alias name for {player_name}: {alias_name}")
+        return {"result": "Alias name must be 1-20 characters long."}
 
     # Validate command
-    if not alias_storage.validate_alias_command(command):
-        logger.warning("Invalid alias command", player=player_name, alias_name=alias_name, command=command)
-        return {"result": "Invalid command. Cannot alias reserved commands or empty commands."}
+    if not command or len(command) > 200:
+        logger.warning(f"Invalid alias command for {player_name}: {alias_name} = {command}")
+        return {"result": "Alias command must be 1-200 characters long."}
 
-    # Check alias count limit
-    if alias_storage.get_alias_count(player_name) >= 50:
-        existing_alias = alias_storage.get_alias(player_name, alias_name)
-        if not existing_alias:
-            logger.warning(
-                "Alias limit reached", player=player_name, alias_count=alias_storage.get_alias_count(player_name)
-            )
-            return {"result": "Maximum number of aliases (50) reached. Remove some aliases before creating new ones."}
+    try:
+        # Check for circular references
+        if alias_name in command.lower():
+            return {"result": "Alias cannot reference itself."}
 
-    # Create the alias
-    alias = alias_storage.create_alias(player_name, alias_name, command)
-    if alias:
-        logger.info("Alias created", player=player_name, alias_name=alias_name, command=command)
-        return {"result": f"Alias '{alias_name}' created: '{command}'"}
-    else:
-        logger.error("Failed to create alias", player=player_name, alias_name=alias_name, command=command)
-        return {"result": "Failed to create alias. Please check your input."}
+        # Create the alias
+        alias_storage.create_alias(alias_name, command)
+        logger.info(f"Alias created for {player_name}: {alias_name} = {command}")
+        return {"result": f"Alias '{alias_name}' created successfully."}
+
+    except Exception as e:
+        logger.error(f"Failed to create alias for {player_name}: {alias_name} = {command}, error: {str(e)}")
+        return {"result": f"Failed to create alias: {str(e)}"}
 
 
 async def handle_aliases_command(
@@ -96,23 +90,28 @@ async def handle_aliases_command(
         player_name: Player name for logging
 
     Returns:
-        dict: Command result
+        dict: Aliases command result
     """
-    logger.debug("Listing aliases", player=player_name)
-    aliases = alias_storage.get_player_aliases(player_name)
+    logger.debug(f"Listing aliases for {player_name}")
 
-    if not aliases:
-        logger.debug("No aliases found", player=player_name)
-        return {"result": "You have no aliases defined."}
+    try:
+        aliases = alias_storage.list_aliases()
+        if not aliases:
+            logger.debug(f"No aliases found for {player_name}")
+            return {"result": "You have no aliases defined."}
 
-    # Format alias list
-    alias_list = []
-    for alias in aliases:
-        alias_list.append(f"  {alias.name} -> {alias.command}")
+        # Format alias list
+        alias_lines = []
+        for alias in aliases:
+            alias_lines.append(f"{alias.name}: {alias.command}")
 
-    result = f"You have {len(aliases)} alias(es):\n" + "\n".join(alias_list)
-    logger.debug("Aliases listed", player=player_name, alias_count=len(aliases))
-    return {"result": result}
+        result = "Your aliases:\n" + "\n".join(alias_lines)
+        logger.debug(f"Aliases listed for {player_name}, alias_count: {len(aliases)}")
+        return {"result": result}
+
+    except Exception as e:
+        logger.error(f"Failed to list aliases for {player_name}: {str(e)}")
+        return {"result": f"Failed to list aliases: {str(e)}"}
 
 
 async def handle_unalias_command(
@@ -129,27 +128,29 @@ async def handle_unalias_command(
         player_name: Player name for logging
 
     Returns:
-        dict: Command result
+        dict: Unalias command result
     """
-    logger.debug("Processing unalias command", player=player_name, args=args)
+    logger.debug(f"Processing unalias command for {player_name} with args: {args}")
 
     if not args:
-        logger.warning("Unalias command with no arguments", player=player_name)
+        logger.warning(f"Unalias command with no arguments for {player_name}")
         return {"result": "Usage: unalias <name>"}
 
-    alias_name = args[0]
-    logger.debug("Removing alias", player=player_name, alias_name=alias_name)
+    alias_name = args[0].lower()
+    logger.debug(f"Removing alias for {player_name}: {alias_name}")
 
-    # Check if alias exists
-    existing_alias = alias_storage.get_alias(player_name, alias_name)
-    if not existing_alias:
-        logger.debug("Alias not found for removal", player=player_name, alias_name=alias_name)
-        return {"result": f"No alias found with name '{alias_name}'"}
+    try:
+        # Check if alias exists
+        existing_alias = alias_storage.get_alias(alias_name)
+        if not existing_alias:
+            logger.debug(f"Alias not found for removal for {player_name}: {alias_name}")
+            return {"result": f"No alias found for '{alias_name}'"}
 
-    # Remove the alias
-    if alias_storage.remove_alias(player_name, alias_name):
-        logger.info("Alias removed", player=player_name, alias_name=alias_name)
-        return {"result": f"Alias '{alias_name}' removed."}
-    else:
-        logger.error("Failed to remove alias", player=player_name, alias_name=alias_name)
-        return {"result": f"Failed to remove alias '{alias_name}'."}
+        # Remove the alias
+        alias_storage.delete_alias(alias_name)
+        logger.info(f"Alias removed for {player_name}: {alias_name}")
+        return {"result": f"Alias '{alias_name}' removed successfully."}
+
+    except Exception as e:
+        logger.error(f"Failed to remove alias for {player_name}: {alias_name}, error: {str(e)}")
+        return {"result": f"Failed to remove alias: {str(e)}"}

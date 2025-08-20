@@ -39,10 +39,14 @@ def get_username_from_user(user_obj) -> str:
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 class CommandRequest(BaseModel):
@@ -55,7 +59,7 @@ def clean_command_input(command: str) -> str:
     """Clean and normalize command input by collapsing multiple spaces and stripping whitespace."""
     cleaned = re.sub(r"\s+", " ", command).strip()
     if cleaned != command:
-        logger.debug("Command input cleaned", original=command, cleaned=cleaned)
+        logger.debug(f"Command input cleaned: '{command}' -> '{cleaned}'")
     return cleaned
 
 
@@ -81,7 +85,7 @@ def normalize_command(command: str) -> str:
     # Remove leading slash if present
     if command.startswith("/"):
         normalized = command[1:].strip()
-        logger.debug("Slash prefix removed from command", original=command, normalized=normalized)
+        logger.debug(f"Slash prefix removed from command: '{command}' -> '{normalized}'")
         return normalized
 
     return command
@@ -134,7 +138,7 @@ async def process_command_unified(
     if not player_name:
         player_name = get_username_from_user(current_user)
 
-    logger.debug("=== UNIFIED COMMAND HANDLER: Processing command ===", command=command_line)
+    logger.debug(f"=== UNIFIED COMMAND HANDLER: Processing command '{command_line}' ===")
 
     # Step 1: Basic validation
     if not command_line:
@@ -143,7 +147,7 @@ async def process_command_unified(
 
     if len(command_line) > MAX_COMMAND_LENGTH:
         logger.warning(
-            "Command too long rejected", player=player_name, length=len(command_line), max_length=MAX_COMMAND_LENGTH
+            f"Command too long rejected for {player_name}", length=len(command_line), max_length=MAX_COMMAND_LENGTH
         )
         return {"result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)"}
 
@@ -164,7 +168,7 @@ async def process_command_unified(
             alias_storage = AliasStorage()
             logger.debug("AliasStorage initialized")
         except Exception as e:
-            logger.error("Failed to initialize AliasStorage", error=str(e))
+            logger.error(f"Failed to initialize AliasStorage: {str(e)}")
             alias_storage = None
 
     # Step 4: Parse command and arguments
@@ -172,18 +176,18 @@ async def process_command_unified(
     cmd = parts[0].lower()
     args = parts[1:]
 
-    logger.debug("Command parsed", command=cmd, args=args, original_command=command_line)
+    logger.debug(f"Command parsed: cmd='{cmd}', args={args}, original='{command_line}'")
 
     # Step 5: Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
-        logger.debug("Processing alias management command", command=cmd)
+        logger.debug(f"Processing alias management command: {cmd}")
         return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
 
     # Step 6: Check for alias expansion
     if alias_storage:
         alias = alias_storage.get_alias(player_name, cmd)
         if alias:
-            logger.debug("Alias found, expanding", alias_name=alias.name, original_command=cmd)
+            logger.debug(f"Alias found, expanding: '{alias.name}' -> '{alias.command}' (original: {cmd})")
             # Expand the alias
             expanded_command = alias.get_expanded_command(args)
             # Recursively process the expanded command (with depth limit to prevent loops)
@@ -197,13 +201,13 @@ async def process_command_unified(
 
     # Step 6.5: Check if single word command is an emote
     if not args and _is_predefined_emote(cmd):
-        logger.debug("Single word emote detected, converting to emote command", emote=cmd)
+        logger.debug(f"Single word emote detected, converting to emote command: {cmd}")
         emote_command = f"emote {cmd}"
         # Use the command service directly to avoid recursion
         return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
 
     # Step 7: Process command with new validation system
-    logger.debug("Processing command with validation system", command=cmd)
+    logger.debug(f"Processing command with validation system: {cmd}")
     return await process_command_with_validation(command_line, current_user, request, alias_storage, player_name)
 
 
@@ -211,9 +215,7 @@ async def process_command_with_validation(
     command_line: str, current_user: dict, request: Request, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, Any]:
     """Process a command using the new Pydantic + Click validation system."""
-    logger.debug(
-        "=== UNIFIED COMMAND HANDLER: Processing with validation ===", player=player_name, command=command_line
-    )
+    logger.debug(f"=== UNIFIED COMMAND HANDLER: Processing with validation for {player_name}: '{command_line}' ===")
 
     try:
         # Use our new command processor for validation
@@ -222,7 +224,7 @@ async def process_command_with_validation(
         )
 
         if error_message:
-            logger.warning("Command validation failed", error=error_message)
+            logger.warning(f"Command validation failed: {error_message}")
             return {"result": error_message}
 
         if not validated_command:
@@ -233,14 +235,14 @@ async def process_command_with_validation(
         command_data = command_processor.extract_command_data(validated_command)
         command_data["player_name"] = player_name
 
-        logger.debug("Command validated successfully", command_type=command_type, data=command_data)
+        logger.debug(f"Command validated successfully: type={command_type}, data={command_data}")
 
         # Use the command service for processing with validated data
         result = await command_service.process_validated_command(
             command_data, current_user, request, alias_storage, player_name
         )
 
-        logger.debug("Command processed successfully", command_type=command_type)
+        logger.debug(f"Command processed successfully: type={command_type}")
         return result
 
     except Exception as e:
@@ -260,11 +262,11 @@ async def handle_expanded_command(
     alias_chain: list[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     """Handle command processing with alias expansion and loop detection."""
-    logger.debug("Handling expanded command", command_line=command_line, depth=depth)
+    logger.debug(f"Handling expanded command: '{command_line}' (depth={depth})")
 
     # Prevent infinite loops
     if depth > 10:
-        logger.warning("Alias expansion depth limit exceeded", depth=depth)
+        logger.warning(f"Alias expansion depth limit exceeded: depth={depth}")
         return {"result": "Alias expansion too deep - possible loop detected"}
 
     # Initialize alias chain if not provided
@@ -290,12 +292,12 @@ async def handle_command(
         raise HTTPException(status_code=401, detail="Authentication required")
 
     player_name = get_username_from_user(current_user)
-    logger.info("HTTP command received", command=command_line, length=len(command_line))
+    logger.info(f"HTTP command received: '{command_line}' (length={len(command_line)})")
 
     # Process command using unified handler
     result = await process_command_unified(command_line, current_user, request, player_name=player_name)
 
-    logger.debug("HTTP command processed successfully", result=result)
+    logger.debug(f"HTTP command processed successfully: {result}")
     return result
 
 
@@ -309,7 +311,7 @@ async def process_command(
     This function maintains compatibility with existing code that expects
     the old command signature while delegating to the new unified system.
     """
-    logger.debug("Using legacy command processing", command=cmd, args=args)
+    logger.debug(f"Using legacy command processing: cmd='{cmd}', args={args}")
 
     # Reconstruct the command line
     command_line = f"{cmd} {' '.join(args)}".strip()

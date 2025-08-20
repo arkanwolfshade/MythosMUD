@@ -25,10 +25,14 @@ def get_username_from_user(user_obj):
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 class CommandRequest(BaseModel):
@@ -49,7 +53,7 @@ async def handle_command(
     """
     try:
         player_name = get_username_from_user(current_user)
-        logger.debug("Command request received", player=player_name, command=request_data.command)
+        logger.debug(f"Command request received for {player_name}", command=request_data.command)
 
         # Get alias storage from request app state
         app = request.app if request else None
@@ -68,7 +72,7 @@ async def handle_command(
             player_name,
         )
 
-        logger.debug("Command processed successfully", player=player_name, result=result)
+        logger.debug(f"Command processed successfully for {player_name}", result=result)
         return result
 
     except Exception as e:
@@ -93,13 +97,13 @@ async def handle_expanded_command(
     MAX_ALIAS_DEPTH = 10
 
     if depth >= MAX_ALIAS_DEPTH:
-        logger.warning("Maximum alias depth exceeded", player=player_name, depth=depth)
+        logger.warning(f"Maximum alias depth exceeded for {player_name}", depth=depth)
         return {"result": "Alias chain too deep. Possible circular alias."}
 
     # Check for alias
     alias = alias_storage.get_alias(player_name, command)
     if alias:
-        logger.debug("Alias found, expanding", player=player_name, alias=command, expanded=alias.command)
+        logger.debug(f"Alias found, expanding for {player_name}", alias=command, expanded=alias.command)
 
         # Recursively expand the alias
         expanded_result = await handle_expanded_command(

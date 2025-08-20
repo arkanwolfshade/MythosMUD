@@ -16,10 +16,14 @@ def get_username_from_user(user_obj):
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 async def handle_say_command(
@@ -38,21 +42,21 @@ async def handle_say_command(
     Returns:
         dict: Say command result
     """
-    logger.debug("Processing say command", player=player_name, args=args)
+    logger.debug(f"Processing say command for {player_name} with args: {args}")
 
     if not args:
-        logger.warning("Say command with no message", player=player_name)
+        logger.warning(f"Say command with no message for {player_name}")
         return {"result": "Say what? Usage: say <message>"}
 
     message = " ".join(args)
-    logger.debug("Player saying message", player=player_name, message=message)
+    logger.debug(f"Player {player_name} saying message: {message}")
 
     # Get app state services for broadcasting
     app = request.app if request else None
     player_service = app.state.player_service if app else None
 
     if not player_service:
-        logger.warning("Say command failed - no player service", player=player_name)
+        logger.warning(f"Say command failed - no player service for {player_name}")
         return {"result": "Chat functionality is not available."}
 
     try:
@@ -78,29 +82,28 @@ async def handle_say_command(
 
         # Get other players in the room
         room_players = room.get_players()
-        other_players = [p for p in room_players if p.id != current_user_id]
+        other_players = [p for p in room_players if p != current_user_id]
 
         # Broadcast message to other players in the room
         if other_players:
             broadcast_message = f"{player_name} says: {message}"
-            for other_player in other_players:
+            for other_player_id in other_players:
                 await connection_manager.send_personal_message(
-                    other_player.id, {"type": "chat_message", "message": broadcast_message}
+                    other_player_id, {"type": "chat_message", "message": broadcast_message}
                 )
             logger.info(
-                "Say message broadcasted to room",
-                player=player_name,
+                f"Say message broadcasted to room for {player_name}",
                 room=current_room_id,
                 recipients=len(other_players),
             )
         else:
-            logger.debug("No other players in room to broadcast to", player=player_name, room=current_room_id)
+            logger.debug(f"No other players in room {current_room_id} to broadcast to for {player_name}")
 
         # Return local confirmation
         return {"result": f"You say: {message}"}
 
     except Exception as e:
-        logger.error("Say command error", player=player_name, error=str(e))
+        logger.error(f"Say command error for {player_name}: {str(e)}")
         return {"result": f"Error sending message: {str(e)}"}
 
 
@@ -120,14 +123,14 @@ async def handle_me_command(
     Returns:
         dict: Me command result
     """
-    logger.debug("Processing me command", player=player_name, args=args)
+    logger.debug(f"Processing me command for {player_name} with args: {args}")
 
     if not args:
-        logger.warning("Me command with no action", player=player_name)
+        logger.warning(f"Me command with no action for {player_name}")
         return {"result": "Do what? Usage: me <action>"}
 
     action = " ".join(args)
-    logger.debug("Player performing action", player=player_name, action=action)
+    logger.debug(f"Player {player_name} performing action: {action}")
 
     # For now, return a simple response
     # In a full implementation, this would broadcast to other players in the room
@@ -150,33 +153,33 @@ async def handle_pose_command(
     Returns:
         dict: Pose command result
     """
-    logger.debug("Processing pose command", player=player_name, args=args)
+    logger.debug(f"Processing pose command for {player_name} with args: {args}")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning("Pose command failed - no persistence layer", player=player_name)
+        logger.warning(f"Pose command failed - no persistence layer for {player_name}")
         return {"result": "You cannot set your pose right now."}
 
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Pose command failed - player not found", player=player_name)
+        logger.warning(f"Pose command failed - player not found for {player_name}")
         return {"result": "You cannot set your pose right now."}
 
     if not args:
         # Clear pose
         player.pose = None
         persistence.save_player(player)
-        logger.info("Player cleared pose", player=player_name)
+        logger.info(f"Player {player_name} cleared pose")
         return {"result": "Your pose has been cleared."}
 
     pose_description = " ".join(args)
-    logger.debug("Player setting pose", player=player_name, pose=pose_description)
+    logger.debug(f"Player {player_name} setting pose: {pose_description}")
 
     # Set the pose
     player.pose = pose_description
     persistence.save_player(player)
 
-    logger.info("Player pose set", player=player_name, pose=pose_description)
+    logger.info(f"Player {player_name} pose set: {pose_description}")
     return {"result": f"Your pose is now: {pose_description}"}

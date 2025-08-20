@@ -52,12 +52,7 @@ class CommandProcessor:
             # Extract command type for routing
             command_type = validated_command.command_type.value
 
-            logger.debug(
-                "Command successfully validated",
-                player=player_name,
-                command_type=command_type,
-                command_line=command_line,
-            )
+            logger.debug(f"Command successfully validated for {player_name}: type={command_type}, cmd='{command_line}'")
 
             return validated_command, None, command_type
 
@@ -70,9 +65,7 @@ class CommandProcessor:
                 error_details.append(f"{field}: {message}")
 
             error_message = "; ".join(error_details)
-            logger.warning(
-                "Command validation failed", player=player_name, command_line=command_line, errors=error_details
-            )
+            logger.warning(f"Command validation failed for {player_name}: cmd='{command_line}', errors={error_details}")
 
             return None, f"Invalid command: {error_message}", None
 
@@ -89,10 +82,7 @@ class CommandProcessor:
             # Handle unexpected errors
             error_message = f"Unexpected error processing command: {str(e)}"
             logger.error(
-                "Unexpected error in command processing",
-                player=player_name,
-                command_line=command_line,
-                error=str(e),
+                f"Unexpected error in command processing for {player_name}: cmd='{command_line}', error={str(e)}",
                 exc_info=True,
             )
 
@@ -142,9 +132,10 @@ class CommandProcessor:
         if hasattr(validated_command, "reason"):
             command_data["reason"] = validated_command.reason
 
-        logger.debug(
-            "Extracted command data", command_type=command_data["command_type"], data_keys=list(command_data.keys())
-        )
+        if hasattr(validated_command, "player_name"):
+            command_data["target_player"] = validated_command.player_name
+
+        logger.debug(f"Extracted command data: type={command_data['command_type']}, keys={list(command_data.keys())}")
 
         return command_data
 

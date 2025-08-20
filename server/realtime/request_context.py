@@ -74,9 +74,12 @@ class WebSocketRequestContext:
             player_service: Player service instance
             user_manager: User manager instance
         """
+        logger.debug(f"Setting app state services - player_service: {player_service}, user_manager: {user_manager}")
         self.app.state.player_service = player_service
         self.app.state.user_manager = user_manager
         logger.debug("App state services set in request context")
+        logger.debug(f"After setting - app.state.player_service: {self.app.state.player_service}")
+        logger.debug(f"After setting - app.state.user_manager: {self.app.state.user_manager}")
 
     def get_persistence(self) -> Any:
         """Get the persistence layer from the request context."""

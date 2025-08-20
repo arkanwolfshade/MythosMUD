@@ -19,10 +19,14 @@ def get_username_from_user(user_obj):
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 class CommandRequest(BaseModel):
@@ -781,42 +785,34 @@ async def handle_command(
 
     player_name = get_username_from_user(current_user)
 
-    logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
+    logger.info(f"Command received for {player_name}: {command_line} (length: {len(command_line)})")
 
+    # Basic length validation
     if len(command_line) > MAX_COMMAND_LENGTH:
-        logger.warning(
-            "Command too long rejected",
-            player=player_name,
-            command=command_line,
-            length=len(command_line),
-            max_length=MAX_COMMAND_LENGTH,
-        )
+        logger.warning(f"Command too long rejected for {player_name}: {command_line}")
         raise HTTPException(
             status_code=400,
             detail=f"Command too long (max {MAX_COMMAND_LENGTH} characters)",
         )
 
-    if is_suspicious_input(command_line):
-        logger.warning("Suspicious command rejected", player=player_name, command=command_line)
-        raise HTTPException(status_code=400, detail="Invalid characters or suspicious input detected")
-
+    # Clean and normalize the command
     command_line = clean_command_input(command_line)
     if not command_line:
-        logger.debug("Empty command after cleaning", player=player_name)
+        logger.debug(f"Empty command after cleaning for {player_name}")
         return {"result": ""}
 
     # Normalize command by removing optional slash prefix
     command_line = normalize_command(command_line)
     if not command_line:
-        logger.debug("Empty command after normalization", player=player_name)
+        logger.debug(f"Empty command after normalization for {player_name}")
         return {"result": ""}
 
     # Initialize alias storage
     try:
         alias_storage = AliasStorage()
-        logger.debug("AliasStorage initialized successfully", player=player_name)
+        logger.debug(f"AliasStorage initialized successfully for {player_name}")
     except Exception as e:
-        logger.error("Failed to initialize AliasStorage", player=player_name, error=str(e))
+        logger.error(f"Failed to initialize AliasStorage for {player_name}: {str(e)}")
         # Continue without alias storage
         alias_storage = None
 
@@ -825,30 +821,31 @@ async def handle_command(
     cmd = parts[0].lower()
     args = parts[1:]
 
-    logger.debug("Command parsed", player=player_name, command=cmd, args=args, original_command=command_line)
+    logger.debug(f"Command parsed for {player_name}: command={cmd}, args={args}, original={command_line}")
 
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
-        logger.debug("Processing alias management command", player=player_name, command=cmd)
+        logger.debug(f"Processing alias management command for {player_name}: {cmd}")
         return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check if this is an alias
-    alias = alias_storage.get_alias(player_name, cmd)
-    if alias:
-        logger.debug("Alias found, expanding", player=player_name, alias_name=alias.name, original_command=cmd)
-        # Expand the alias
-        expanded_command = alias.get_expanded_command(args)
-        # Recursively process the expanded command (with depth limit to prevent loops)
-        result = await handle_expanded_command(
-            expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
-        )
-        # Add alias chain information to the result
-        if "alias_chain" not in result:
-            result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
-        return result
+    if alias_storage:
+        alias = alias_storage.get_alias(player_name, cmd)
+        if alias:
+            logger.debug(f"Alias found, expanding for {player_name}: {alias.name}, original_command: {cmd}")
+            # Expand the alias
+            expanded_command = alias.get_expanded_command(args)
+            # Recursively process the expanded command (with depth limit to prevent loops)
+            result = await handle_expanded_command(
+                expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
+            )
+            # Add alias chain information to the result
+            if "alias_chain" not in result:
+                result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
+            return result
 
-    # Process command normally
-    logger.debug("Processing standard command", player=player_name, command=cmd)
+    # Process standard command
+    logger.debug(f"Processing standard command for {player_name}: {cmd}")
     return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
 
@@ -862,11 +859,11 @@ async def handle_expanded_command(
     alias_chain: list[dict] = None,
 ) -> dict:
     """Handle command processing with alias expansion and loop detection."""
-    logger.debug("Handling expanded command", player=player_name, command=command_line, depth=depth)
+    logger.debug(f"Handling expanded command for {player_name}", command=command_line, depth=depth)
 
     # Prevent infinite loops
     if depth > 10:
-        logger.error("Alias loop detected", player=player_name, depth=depth, command=command_line)
+        logger.error(f"Alias loop detected for {player_name}", depth=depth, command=command_line)
         return {"result": "Error: Alias loop detected. Maximum recursion depth exceeded."}
 
     # Initialize alias chain if not provided
@@ -879,13 +876,13 @@ async def handle_expanded_command(
     args = parts[1:]
 
     if cmd in ["alias", "aliases", "unalias"]:
-        logger.debug("Processing alias management command in expanded context", player=player_name, command=cmd)
+        logger.debug(f"Processing alias management command in expanded context for {player_name}", command=cmd)
         return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check for alias expansion
     alias = alias_storage.get_alias(player_name, cmd)
     if alias:
-        logger.debug("Alias expansion in recursive call", player=player_name, alias_name=alias.name, depth=depth)
+        logger.debug(f"Alias expansion in recursive call for {player_name}", alias_name=alias.name, depth=depth)
         # Track alias usage for client display
         alias_info = {
             "original": cmd,
@@ -920,50 +917,50 @@ async def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command with alias management support."""
-    logger.debug("=== COMMAND HANDLER DEBUG: Processing command ===", player=player_name, command=cmd, args=args)
+    logger.debug(f"=== COMMAND HANDLER DEBUG: Processing command for {player_name} ===", command=cmd, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     # Handle help command first
     if cmd == "help":
-        logger.debug("Processing help command", player=player_name, args=args)
+        logger.debug(f"Processing help command for {player_name}", args=args)
         if len(args) > 1:
-            logger.warning("Help command with too many arguments", player=player_name, args=args)
+            logger.warning(f"Help command with too many arguments for {player_name}", args=args)
             return {"result": "Too many arguments. Usage: help [command]"}
         command_name = args[0] if args else None
         return {"result": get_help_content(command_name)}
 
     # Handle alias management commands
     if cmd == "alias":
-        logger.debug("Processing alias command", player=player_name, args=args)
+        logger.debug(f"Processing alias command for {player_name}", args=args)
         return handle_alias_command(args, alias_storage, player_name)
 
     if cmd == "aliases":
-        logger.debug("Processing aliases command", player=player_name)
+        logger.debug(f"Processing aliases command for {player_name}")
         return handle_aliases_command(alias_storage, player_name)
 
     if cmd == "unalias":
-        logger.debug("Processing unalias command", player=player_name, args=args)
+        logger.debug(f"Processing unalias command for {player_name}", args=args)
         return handle_unalias_command(args, alias_storage, player_name)
 
     if cmd == "look":
-        logger.debug("Processing look command", player=player_name, args=args)
+        logger.debug(f"Processing look command for {player_name}", args=args)
         if not persistence:
-            logger.warning("Look command failed - no persistence layer", player=player_name)
+            logger.warning(f"Look command failed - no persistence layer for {player_name}")
             return {"result": "You see nothing special."}
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Look command failed - player not found", player=player_name)
+            logger.warning(f"Look command failed - player not found for {player_name}")
             return {"result": "You see nothing special."}
         room_id = player.current_room_id
         room = persistence.get_room(room_id)
         if not room:
-            logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
+            logger.warning(f"Look command failed - room not found for {player_name}", room_id=room_id)
             return {"result": "You see nothing special."}
         if args:
             direction = args[0].lower()
-            logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
+            logger.debug(f"Looking in direction for {player_name}", direction=direction, room_id=room_id)
             exits = room.exits
             target_room_id = exits.get(direction)
             if target_room_id:
@@ -972,13 +969,12 @@ async def process_command(
                     name = target_room.name
                     desc = target_room.description
                     logger.debug(
-                        "Looked at room in direction",
-                        player=player_name,
+                        f"Looked at room in direction for {player_name}",
                         direction=direction,
                         target_room_id=target_room_id,
                     )
                     return {"result": f"{name}\n{desc}"}
-            logger.debug("No valid exit in direction", player=player_name, direction=direction, room_id=room_id)
+            logger.debug(f"No valid exit in direction for {player_name}", direction=direction, room_id=room_id)
             return {"result": "You see nothing special that way."}
         name = room.name
         desc = room.description
@@ -986,38 +982,38 @@ async def process_command(
         # Only include exits that have valid room IDs (not null)
         valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
+        logger.debug(f"Looked at current room for {player_name}", room_id=room_id, exits=valid_exits)
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "go":
-        logger.debug("Processing go command", player=player_name, args=args, args_length=len(args))
+        logger.debug(f"Processing go command for {player_name}", args=args, args_length=len(args))
         if not persistence:
-            logger.warning("Go command failed - no persistence layer", player=player_name)
+            logger.warning(f"Go command failed - no persistence layer for {player_name}")
             return {"result": "You can't go that way"}
         if not args:
             logger.warning(
-                "Go command failed - no direction specified", player=player_name, args=args, args_type=type(args)
+                f"Go command failed - no direction specified for {player_name}", args=args, args_type=type(args)
             )
             return {"result": "Go where? Usage: go <direction>"}
         direction = args[0].lower()
-        logger.debug("Player attempting to move", player=player_name, direction=direction)
+        logger.debug(f"Player attempting to move for {player_name}", direction=direction)
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Go command failed - player not found", player=player_name)
+            logger.warning(f"Go command failed - player not found for {player_name}")
             return {"result": "You can't go that way"}
         room_id = player.current_room_id
         room = persistence.get_room(room_id)
         if not room:
-            logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
+            logger.warning(f"Go command failed - current room not found for {player_name}", room_id=room_id)
             return {"result": "You can't go that way"}
         exits = room.exits
         target_room_id = exits.get(direction)
         if not target_room_id:
-            logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
+            logger.debug(f"No exit in direction for {player_name}", direction=direction, room_id=room_id)
             return {"result": "You can't go that way"}
         target_room = persistence.get_room(target_room_id)
         if not target_room:
             logger.warning(
-                "Go command failed - target room not found", player=player_name, target_room_id=target_room_id
+                f"Go command failed - target room not found for {player_name}", target_room_id=target_room_id
             )
             return {"result": "You can't go that way"}
 
@@ -1027,7 +1023,7 @@ async def process_command(
         movement_service = MovementService(event_bus)
         success = movement_service.move_player(player.player_id, room_id, target_room_id)
         if not success:
-            logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)
+            logger.warning(f"Movement failed for {player_name}", from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way"}
 
         # Room ID is updated in the Player object via MovementService
@@ -1041,14 +1037,14 @@ async def process_command(
         exit_list = ", ".join(valid_exits) if valid_exits else "none"
         return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
     elif cmd == "say":
-        logger.debug("=== COMMAND HANDLER DEBUG: Processing say command ===", player=player_name, args=args)
+        logger.debug(f"=== COMMAND HANDLER DEBUG: Processing say command for {player_name} ===", args=args)
 
         if not persistence:
-            logger.warning("Say command failed - no persistence layer", player=player_name)
+            logger.warning(f"Say command failed - no persistence layer for {player_name}")
             return {"result": "You cannot speak right now."}
 
         if not args:
-            logger.warning("Say command failed - no message provided", player=player_name)
+            logger.warning(f"Say command failed - no message provided for {player_name}")
             return {"result": "Say what? Usage: say <message>"}
 
         message = " ".join(args).strip()
@@ -1058,7 +1054,7 @@ async def process_command(
         # Get player information
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Say command failed - player not found", player=player_name)
+            logger.warning(f"Say command failed - player not found for {player_name}")
             return {"result": "You cannot speak right now."}
 
         # Initialize chat service
@@ -1081,21 +1077,21 @@ async def process_command(
         if result["success"]:
             # Format the message for display
             formatted_message = f"{player.name} says: {message}"
-            logger.info("Say message sent successfully", player=player_name, message_length=len(message))
+            logger.info(f"Say message sent successfully for {player_name}", message_length=len(message))
             return {"result": formatted_message}
         else:
-            logger.warning("Say message failed", player=player_name, error=result.get("error"))
+            logger.warning(f"Say message failed for {player_name}", error=result.get("error"))
             return {"result": result.get("error", "You cannot speak right now.")}
 
     elif cmd in ["emote", "me"]:
-        logger.debug("=== COMMAND HANDLER DEBUG: Processing emote command ===", player=player_name, args=args)
+        logger.debug(f"=== COMMAND HANDLER DEBUG: Processing emote command for {player_name} ===", args=args)
 
         if not persistence:
-            logger.warning("Emote command failed - no persistence layer", player=player_name)
+            logger.warning(f"Emote command failed - no persistence layer for {player_name}")
             return {"result": "You cannot emote right now."}
 
         if not args:
-            logger.warning("Emote command failed - no action provided", player=player_name)
+            logger.warning(f"Emote command failed - no action provided for {player_name}")
             return {"result": "Emote what? Usage: emote <action>"}
 
         action = " ".join(args).strip()
@@ -1108,7 +1104,7 @@ async def process_command(
         # Get player information
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Emote command failed - player not found", player=player_name)
+            logger.warning(f"Emote command failed - player not found for {player_name}")
             return {"result": "You cannot emote right now."}
 
         # Initialize chat service
@@ -1131,26 +1127,24 @@ async def process_command(
         if result["success"]:
             # Format the message for display
             formatted_message = f"{player.name} {action}"
-            logger.info("Emote message sent successfully", player=player_name, action_length=len(action))
+            logger.info(f"Emote message sent successfully for {player_name}", action_length=len(action))
             return {"result": formatted_message}
         else:
-            logger.warning("Emote message failed", player=player_name, error=result.get("error"))
+            logger.warning(f"Emote message failed for {player_name}", error=result.get("error"))
             return {"result": result.get("error", "You cannot emote right now.")}
 
     # Check for predefined emotes (like 'twibble', 'dance', etc.)
     elif _is_predefined_emote(cmd):
-        logger.debug(
-            "=== COMMAND HANDLER DEBUG: Processing predefined emote command ===", player=player_name, emote=cmd
-        )
+        logger.debug(f"=== COMMAND HANDLER DEBUG: Processing predefined emote command for {player_name} ===", emote=cmd)
 
         if not persistence:
-            logger.warning("Predefined emote command failed - no persistence layer", player=player_name)
+            logger.warning(f"Predefined emote command failed - no persistence layer for {player_name}")
             return {"result": "You cannot emote right now."}
 
         # Get player information
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Predefined emote command failed - player not found", player=player_name)
+            logger.warning(f"Predefined emote command failed - player not found for {player_name}")
             return {"result": "You cannot emote right now."}
 
         # Initialize chat service
@@ -1172,23 +1166,23 @@ async def process_command(
 
         if result["success"]:
             # Return the self message for the player
-            logger.info("Predefined emote message sent successfully", player=player_name, emote=cmd)
+            logger.info(f"Predefined emote message sent successfully for {player_name}", emote=cmd)
             return {"result": result["self_message"]}
         else:
-            logger.warning("Predefined emote message failed", player=player_name, error=result.get("error"))
+            logger.warning(f"Predefined emote message failed for {player_name}", error=result.get("error"))
             return {"result": result.get("error", "You cannot emote right now.")}
 
     elif cmd == "pose":
-        logger.debug("=== COMMAND HANDLER DEBUG: Processing pose command ===", player=player_name, args=args)
+        logger.debug(f"=== COMMAND HANDLER DEBUG: Processing pose command for {player_name} ===", args=args)
 
         if not persistence:
-            logger.warning("Pose command failed - no persistence layer", player=player_name)
+            logger.warning(f"Pose command failed - no persistence layer for {player_name}")
             return {"result": "You cannot pose right now."}
 
         # Get player information
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Pose command failed - player not found", player=player_name)
+            logger.warning(f"Pose command failed - player not found for {player_name}")
             return {"result": "You cannot pose right now."}
 
         # Initialize chat service
@@ -1226,15 +1220,15 @@ async def process_command(
 
             if result["success"]:
                 formatted_message = f"{player.name} {pose}"
-                logger.info("Pose set successfully", player=player_name, pose_length=len(pose))
+                logger.info(f"Pose set successfully for {player_name}", pose_length=len(pose))
                 return {"result": formatted_message}
             else:
-                logger.warning("Pose set failed", player=player_name, error=result.get("error"))
+                logger.warning(f"Pose set failed for {player_name}", error=result.get("error"))
                 return {"result": result.get("error", "You cannot pose right now.")}
 
     # User management commands
     elif cmd == "mute":
-        logger.debug("Processing mute command", player=player_name, args=args)
+        logger.debug(f"Processing mute command for {player_name}", args=args)
         if not args:
             return {"result": "Usage: mute <player_name> [duration_minutes] [reason]"}
 
@@ -1279,7 +1273,7 @@ async def process_command(
             return {"result": f"Failed to mute {target_name}."}
 
     elif cmd == "unmute":
-        logger.debug("Processing unmute command", player=player_name, args=args)
+        logger.debug(f"Processing unmute command for {player_name}", args=args)
         if not args:
             return {"result": "Usage: unmute <player_name>"}
 
@@ -1311,7 +1305,7 @@ async def process_command(
             return {"result": f"Failed to unmute {target_name}."}
 
     elif cmd == "mute_global":
-        logger.debug("Processing mute_global command", player=player_name, args=args)
+        logger.debug(f"Processing mute_global command for {player_name}", args=args)
         if not args:
             return {"result": "Usage: mute_global <player_name> [duration_minutes] [reason]"}
 
@@ -1356,7 +1350,7 @@ async def process_command(
             return {"result": f"Failed to globally mute {target_name}."}
 
     elif cmd == "unmute_global":
-        logger.debug("Processing unmute_global command", player=player_name, args=args)
+        logger.debug(f"Processing unmute_global command for {player_name}", args=args)
         if not args:
             return {"result": "Usage: unmute_global <player_name>"}
 
@@ -1388,7 +1382,7 @@ async def process_command(
             return {"result": f"Failed to globally unmute {target_name}."}
 
     elif cmd == "add_admin":
-        logger.debug("Processing add_admin command", player=player_name, args=args)
+        logger.debug(f"Processing add_admin command for {player_name}", args=args)
         if not args:
             return {"result": "Usage: add_admin <player_name>"}
 
@@ -1420,7 +1414,7 @@ async def process_command(
             return {"result": f"Failed to add {target_name} as admin."}
 
     elif cmd == "mutes":
-        logger.debug("Processing mutes command", player=player_name, args=args)
+        logger.debug(f"Processing mutes command for {player_name}", args=args)
 
         # Get player information
         player = persistence.get_player_by_name(get_username_from_user(current_user))
@@ -1445,39 +1439,39 @@ async def process_command(
 
 def handle_alias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the alias command for creating and viewing aliases."""
-    logger.debug("Processing alias command", player=player_name, args=args)
+    logger.debug(f"Processing alias command for {player_name}", args=args)
 
     if not args:
-        logger.warning("Alias command with no arguments", player=player_name)
+        logger.warning(f"Alias command with no arguments for {player_name}")
         return {"result": "Usage: alias <name> <command> or alias <name> to view"}
 
     alias_name = args[0]
 
     # If only one argument, show the alias details
     if len(args) == 1:
-        logger.debug("Viewing alias", player=player_name, alias_name=alias_name)
+        logger.debug(f"Viewing alias for {player_name}", alias_name=alias_name)
         alias = alias_storage.get_alias(player_name, alias_name)
         if alias:
-            logger.debug("Alias found", player=player_name, alias_name=alias_name, command=alias.command)
+            logger.debug(f"Alias found for {player_name}", alias_name=alias_name, command=alias.command)
             return {"result": f"Alias '{alias_name}' -> '{alias.command}'"}
         else:
-            logger.debug("Alias not found", player=player_name, alias_name=alias_name)
+            logger.debug(f"Alias not found for {player_name}", alias_name=alias_name)
             return {"result": f"No alias found with name '{alias_name}'"}
 
     # Create or update alias
     command = " ".join(args[1:])
-    logger.debug("Creating/updating alias", player=player_name, alias_name=alias_name, command=command)
+    logger.debug(f"Creating/updating alias for {player_name}", alias_name=alias_name, command=command)
 
     # Validate alias name
     if not alias_storage.validate_alias_name(alias_name):
-        logger.warning("Invalid alias name", player=player_name, alias_name=alias_name)
+        logger.warning(f"Invalid alias name for {player_name}", alias_name=alias_name)
         return {
             "result": "Invalid alias name. Must start with a letter and contain only alphanumeric characters and underscores."
         }
 
     # Validate command
     if not alias_storage.validate_alias_command(command):
-        logger.warning("Invalid alias command", player=player_name, alias_name=alias_name, command=command)
+        logger.warning(f"Invalid alias command for {player_name}", alias_name=alias_name, command=command)
         return {"result": "Invalid command. Cannot alias reserved commands or empty commands."}
 
     # Check alias count limit
@@ -1485,27 +1479,27 @@ def handle_alias_command(args: list, alias_storage: AliasStorage, player_name: s
         existing_alias = alias_storage.get_alias(player_name, alias_name)
         if not existing_alias:
             logger.warning(
-                "Alias limit reached", player=player_name, alias_count=alias_storage.get_alias_count(player_name)
+                f"Alias limit reached for {player_name}", alias_count=alias_storage.get_alias_count(player_name)
             )
             return {"result": "Maximum number of aliases (50) reached. Remove some aliases before creating new ones."}
 
     # Create the alias
     alias = alias_storage.create_alias(player_name, alias_name, command)
     if alias:
-        logger.info("Alias created", player=player_name, alias_name=alias_name, command=command)
+        logger.info(f"Alias created for {player_name}", alias_name=alias_name, command=command)
         return {"result": f"Alias '{alias_name}' created: '{command}'"}
     else:
-        logger.error("Failed to create alias", player=player_name, alias_name=alias_name, command=command)
+        logger.error(f"Failed to create alias for {player_name}", alias_name=alias_name, command=command)
         return {"result": "Failed to create alias. Please check your input."}
 
 
 def handle_aliases_command(alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the aliases command for listing all aliases."""
-    logger.debug("Listing aliases", player=player_name)
+    logger.debug(f"Listing aliases for {player_name}")
     aliases = alias_storage.get_player_aliases(player_name)
 
     if not aliases:
-        logger.debug("No aliases found", player=player_name)
+        logger.debug(f"No aliases found for {player_name}")
         return {"result": "You have no aliases defined."}
 
     # Format alias list
@@ -1514,31 +1508,31 @@ def handle_aliases_command(alias_storage: AliasStorage, player_name: str) -> dic
         alias_list.append(f"  {alias.name} -> {alias.command}")
 
     result = f"You have {len(aliases)} alias(es):\n" + "\n".join(alias_list)
-    logger.debug("Aliases listed", player=player_name, alias_count=len(aliases))
+    logger.debug(f"Aliases listed for {player_name}", alias_count=len(aliases))
     return {"result": result}
 
 
 def handle_unalias_command(args: list, alias_storage: AliasStorage, player_name: str) -> dict:
     """Handle the unalias command for removing aliases."""
-    logger.debug("Processing unalias command", player=player_name, args=args)
+    logger.debug(f"Processing unalias command for {player_name}", args=args)
 
     if not args:
-        logger.warning("Unalias command with no arguments", player=player_name)
+        logger.warning(f"Unalias command with no arguments for {player_name}")
         return {"result": "Usage: unalias <name>"}
 
     alias_name = args[0]
-    logger.debug("Removing alias", player=player_name, alias_name=alias_name)
+    logger.debug(f"Removing alias for {player_name}", alias_name=alias_name)
 
     # Check if alias exists
     existing_alias = alias_storage.get_alias(player_name, alias_name)
     if not existing_alias:
-        logger.debug("Alias not found for removal", player=player_name, alias_name=alias_name)
+        logger.debug(f"Alias not found for removal for {player_name}", alias_name=alias_name)
         return {"result": f"No alias found with name '{alias_name}'"}
 
     # Remove the alias
     if alias_storage.remove_alias(player_name, alias_name):
-        logger.info("Alias removed", player=player_name, alias_name=alias_name)
+        logger.info(f"Alias removed for {player_name}", alias_name=alias_name)
         return {"result": f"Alias '{alias_name}' removed."}
     else:
-        logger.error("Failed to remove alias", player=player_name, alias_name=alias_name)
+        logger.error(f"Failed to remove alias for {player_name}", alias_name=alias_name)
         return {"result": f"Failed to remove alias '{alias_name}'."}

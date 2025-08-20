@@ -34,10 +34,14 @@ def get_username_from_user(user_obj):
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 class CommandRequest(BaseModel):
@@ -122,16 +126,12 @@ async def handle_command(
 
     player_name = get_username_from_user(current_user)
 
-    logger.info("Command received", player=player_name, command=command_line, length=len(command_line))
+    logger.info(f"Command received for {player_name}: {command_line} (length: {len(command_line)})")
 
     # Basic length validation
     if len(command_line) > MAX_COMMAND_LENGTH:
         logger.warning(
-            "Command too long rejected",
-            player=player_name,
-            command=command_line,
-            length=len(command_line),
-            max_length=MAX_COMMAND_LENGTH,
+            f"Command too long rejected for {player_name}: {command_line} (length: {len(command_line)}, max: {MAX_COMMAND_LENGTH})"
         )
         raise HTTPException(
             status_code=400,
@@ -141,21 +141,21 @@ async def handle_command(
     # Clean and normalize the command
     command_line = clean_command_input(command_line)
     if not command_line:
-        logger.debug("Empty command after cleaning", player=player_name)
+        logger.debug(f"Empty command after cleaning for {player_name}")
         return {"result": ""}
 
     # Normalize command by removing optional slash prefix
     command_line = normalize_command(command_line)
     if not command_line:
-        logger.debug("Empty command after normalization", player=player_name)
+        logger.debug(f"Empty command after normalization for {player_name}")
         return {"result": ""}
 
     # Initialize alias storage
     try:
         alias_storage = AliasStorage()
-        logger.debug("AliasStorage initialized successfully", player=player_name)
+        logger.debug(f"AliasStorage initialized successfully for {player_name}")
     except Exception as e:
-        logger.error("Failed to initialize AliasStorage", player=player_name, error=str(e))
+        logger.error(f"Failed to initialize AliasStorage for {player_name}: {str(e)}")
         # Continue without alias storage
         alias_storage = None
 
@@ -164,18 +164,18 @@ async def handle_command(
     cmd = parts[0].lower()
     args = parts[1:]
 
-    logger.debug("Command parsed", player=player_name, command=cmd, args=args, original_command=command_line)
+    logger.debug(f"Command parsed for {player_name}: command={cmd}, args={args}, original={command_line}")
 
     # Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
-        logger.debug("Processing alias management command", player=player_name, command=cmd)
+        logger.debug(f"Processing alias management command for {player_name}: {cmd}")
         return await process_command(cmd, args, current_user, request, alias_storage, player_name)
 
     # Check if this is an alias
     if alias_storage:
         alias = alias_storage.get_alias(player_name, cmd)
         if alias:
-            logger.debug("Alias found, expanding", player=player_name, alias_name=alias.name, original_command=cmd)
+            logger.debug(f"Alias found, expanding for {player_name}: {alias.name}, original_command: {cmd}")
             # Expand the alias
             expanded_command = alias.get_expanded_command(args)
             # Recursively process the expanded command (with depth limit to prevent loops)
@@ -188,7 +188,7 @@ async def handle_command(
             return result
 
     # Process command with new validation system
-    logger.debug("Processing command with new validation system", player=player_name, command=cmd)
+    logger.debug(f"Processing command with new validation system for {player_name}: {cmd}")
     return await process_command_with_validation(command_line, current_user, request, alias_storage, player_name)
 
 
@@ -196,7 +196,7 @@ async def process_command_with_validation(
     command_line: str, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Process a command using the new Pydantic + Click validation system."""
-    logger.debug("=== COMMAND HANDLER V2 DEBUG: Processing command ===", player=player_name, command=command_line)
+    logger.debug(f"=== COMMAND HANDLER V2 DEBUG: Processing command for {player_name} ===", command=command_line)
 
     try:
         # Use our new command processor for validation
@@ -205,18 +205,18 @@ async def process_command_with_validation(
         )
 
         if error_message:
-            logger.warning("Command validation failed", player=player_name, error=error_message)
+            logger.warning(f"Command validation failed for {player_name}: {error_message}")
             return {"result": error_message}
 
         if not validated_command:
-            logger.warning("No validated command returned", player=player_name)
+            logger.warning(f"No validated command returned for {player_name}")
             return {"result": "Invalid command format"}
 
         # Extract command data for processing
         command_data = command_processor.extract_command_data(validated_command)
         command_data["player_name"] = player_name
 
-        logger.debug("Command validated successfully", player=player_name, command_type=command_type, data=command_data)
+        logger.debug(f"Command validated successfully for {player_name}: type={command_type}, data={command_data}")
 
         # Route to appropriate handler based on command type
         app = request.app if request else None
@@ -245,17 +245,17 @@ async def process_command_with_validation(
         elif command_type in ["mute", "unmute", "mute_global", "unmute_global", "add_admin", "mutes"]:
             return await handle_admin_command(validated_command, command_data, current_user, persistence, player_name)
         else:
-            logger.warning("Unknown command type", player=player_name, command_type=command_type)
+            logger.warning(f"Unknown command type for {player_name}: {command_type}")
             return {"result": f"Unknown command: {command_type}"}
 
     except Exception as e:
-        logger.error("Error processing command", player=player_name, error=str(e), exc_info=True)
+        logger.error(f"Error processing command for {player_name}: {str(e)}", exc_info=True)
         return {"result": "An error occurred while processing your command."}
 
 
 async def handle_help_command(validated_command: Any, command_data: dict[str, Any], player_name: str) -> dict:
     """Handle help command with new validation system."""
-    logger.debug("Processing help command", player=player_name)
+    logger.debug(f"Processing help command for {player_name}")
 
     # Get help content using our new system
     help_content = command_processor.get_command_help()
@@ -266,27 +266,27 @@ async def handle_look_command(
     validated_command: Any, command_data: dict[str, Any], current_user: dict, persistence: Any, player_name: str
 ) -> dict:
     """Handle look command with new validation system."""
-    logger.debug("Processing look command", player=player_name, direction=command_data.get("direction"))
+    logger.debug(f"Processing look command for {player_name}, direction: {command_data.get('direction')}")
 
     if not persistence:
-        logger.warning("Look command failed - no persistence layer", player=player_name)
+        logger.warning(f"Look command failed - no persistence layer for {player_name}")
         return {"result": "You see nothing special."}
 
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Look command failed - player not found", player=player_name)
+        logger.warning(f"Look command failed - player not found for {player_name}")
         return {"result": "You see nothing special."}
 
     room_id = player.current_room_id
     room = persistence.get_room(room_id)
     if not room:
-        logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
+        logger.warning(f"Look command failed - room not found for {player_name}, room_id: {room_id}")
         return {"result": "You see nothing special."}
 
     # Handle looking in a specific direction
     if command_data.get("direction"):
         direction = command_data["direction"]
-        logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
+        logger.debug(f"Looking in direction for {player_name}: {direction}, room_id: {room_id}")
         exits = room.exits
         target_room_id = exits.get(direction)
         if target_room_id:
@@ -295,13 +295,10 @@ async def handle_look_command(
                 name = target_room.name
                 desc = target_room.description
                 logger.debug(
-                    "Looked at room in direction",
-                    player=player_name,
-                    direction=direction,
-                    target_room_id=target_room_id,
+                    f"Looked at room in direction for {player_name}: {direction}, target_room_id: {target_room_id}"
                 )
                 return {"result": f"{name}\n{desc}"}
-        logger.debug("No valid exit in direction", player=player_name, direction=direction, room_id=room_id)
+        logger.debug(f"No valid exit in direction for {player_name}: {direction}, room_id: {room_id}")
         return {"result": "You see nothing special that way."}
 
     # Look at current room
@@ -311,7 +308,7 @@ async def handle_look_command(
     # Only include exits that have valid room IDs (not null)
     valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
     exit_list = ", ".join(valid_exits) if valid_exits else "none"
-    logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
+    logger.debug(f"Looked at current room for {player_name}, room_id: {room_id}, exits: {valid_exits}")
     return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
 
 
@@ -324,39 +321,39 @@ async def handle_go_command(
     player_name: str,
 ) -> dict:
     """Handle go command with new validation system."""
-    logger.debug("Processing go command", player=player_name, direction=command_data.get("direction"))
+    logger.debug(f"Processing go command for {player_name}, direction: {command_data.get('direction')}")
 
     if not persistence:
-        logger.warning("Go command failed - no persistence layer", player=player_name)
+        logger.warning(f"Go command failed - no persistence layer for {player_name}")
         return {"result": "You can't go that way"}
 
     if not command_data.get("direction"):
-        logger.warning("Go command failed - no direction specified", player=player_name)
+        logger.warning(f"Go command failed - no direction specified for {player_name}")
         return {"result": "Go where? Usage: go <direction>"}
 
     direction = command_data["direction"]
-    logger.debug("Player attempting to move", player=player_name, direction=direction)
+    logger.debug(f"Player attempting to move for {player_name}: {direction}")
 
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Go command failed - player not found", player=player_name)
+        logger.warning(f"Go command failed - player not found for {player_name}")
         return {"result": "You can't go that way"}
 
     room_id = player.current_room_id
     room = persistence.get_room(room_id)
     if not room:
-        logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
+        logger.warning(f"Go command failed - current room not found for {player_name}, room_id: {room_id}")
         return {"result": "You can't go that way"}
 
     exits = room.exits
     target_room_id = exits.get(direction)
     if not target_room_id:
-        logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
+        logger.debug(f"No exit in direction for {player_name}: {direction}, room_id: {room_id}")
         return {"result": "You can't go that way"}
 
     target_room = persistence.get_room(target_room_id)
     if not target_room:
-        logger.warning("Go command failed - target room not found", player=player_name, target_room_id=target_room_id)
+        logger.warning(f"Go command failed - target room not found for {player_name}, target_room_id: {target_room_id}")
         return {"result": "You can't go that way"}
 
     # Use MovementService for atomic movement
@@ -365,7 +362,7 @@ async def handle_go_command(
     movement_service = MovementService(event_bus)
     success = movement_service.move_player(player.player_id, room_id, target_room_id)
     if not success:
-        logger.warning("Movement failed", player=player_name, from_room=room_id, to_room=target_room_id)
+        logger.warning(f"Movement failed for {player_name}: from {room_id} to {target_room_id}")
         return {"result": "You can't go that way"}
 
     # Return room description
@@ -382,14 +379,14 @@ async def handle_say_command(
     validated_command: Any, command_data: dict[str, Any], current_user: dict, persistence: Any, player_name: str
 ) -> dict:
     """Handle say command with new validation system."""
-    logger.debug("Processing say command", player=player_name, message=command_data.get("message"))
+    logger.debug(f"Processing say command for {player_name}, message: {command_data.get('message')}")
 
     if not persistence:
-        logger.warning("Say command failed - no persistence layer", player=player_name)
+        logger.warning(f"Say command failed - no persistence layer for {player_name}")
         return {"result": "You cannot speak right now."}
 
     if not command_data.get("message"):
-        logger.warning("Say command failed - no message provided", player=player_name)
+        logger.warning(f"Say command failed - no message provided for {player_name}")
         return {"result": "Say what? Usage: say <message>"}
 
     message = command_data["message"]
@@ -399,7 +396,7 @@ async def handle_say_command(
     # Get player information
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Say command failed - player not found", player=player_name)
+        logger.warning(f"Say command failed - player not found for {player_name}")
         return {"result": "You cannot speak right now."}
 
     # Initialize chat service
@@ -412,20 +409,18 @@ async def handle_say_command(
 
     # Send the message
     logger.debug(
-        "About to call chat_service.send_say_message",
-        player_id=str(player.player_id),
-        message=message,
+        f"About to call chat_service.send_say_message for player_id: {str(player.player_id)}, message: {message}"
     )
     result = await chat_service.send_say_message(str(player.player_id), message)
-    logger.debug("chat_service.send_say_message completed", result=result)
+    logger.debug(f"chat_service.send_say_message completed, result: {result}")
 
     if result["success"]:
         # Format the message for display
         formatted_message = f"{player.name} says: {message}"
-        logger.info("Say message sent successfully", player=player_name, message_length=len(message))
+        logger.info(f"Say message sent successfully for {player_name}, message_length: {len(message)}")
         return {"result": formatted_message}
     else:
-        logger.warning("Say message failed", player=player_name, error=result.get("error"))
+        logger.warning(f"Say message failed for {player_name}, error: {result.get('error')}")
         return {"result": result.get("error", "You cannot speak right now.")}
 
 
@@ -433,14 +428,14 @@ async def handle_emote_command(
     validated_command: Any, command_data: dict[str, Any], current_user: dict, persistence: Any, player_name: str
 ) -> dict:
     """Handle emote command with new validation system."""
-    logger.debug("Processing emote command", player=player_name, action=command_data.get("action"))
+    logger.debug(f"Processing emote command for {player_name}, action: {command_data.get('action')}")
 
     if not persistence:
-        logger.warning("Emote command failed - no persistence layer", player=player_name)
+        logger.warning(f"Emote command failed - no persistence layer for {player_name}")
         return {"result": "You cannot emote right now."}
 
     if not command_data.get("action"):
-        logger.warning("Emote command failed - no action provided", player=player_name)
+        logger.warning(f"Emote command failed - no action provided for {player_name}")
         return {"result": "Emote what? Usage: emote <action>"}
 
     action = command_data["action"]
@@ -450,7 +445,7 @@ async def handle_emote_command(
     # Get player information
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Emote command failed - player not found", player=player_name)
+        logger.warning(f"Emote command failed - player not found for {player_name}")
         return {"result": "You cannot emote right now."}
 
     # Initialize chat service
@@ -465,10 +460,10 @@ async def handle_emote_command(
     result = await chat_service.send_emote_message(str(player.player_id), action)
     if result["success"]:
         formatted_message = f"{player.name} {action}"
-        logger.info("Emote message sent successfully", player=player_name, action=action)
+        logger.info(f"Emote message sent successfully for {player_name}, action: {action}")
         return {"result": formatted_message}
     else:
-        logger.warning("Emote message failed", player=player_name, error=result.get("error"))
+        logger.warning(f"Emote message failed for {player_name}, error: {result.get('error')}")
         return {"result": result.get("error", "You cannot emote right now.")}
 
 
@@ -476,16 +471,16 @@ async def handle_pose_command(
     validated_command: Any, command_data: dict[str, Any], current_user: dict, persistence: Any, player_name: str
 ) -> dict:
     """Handle pose command with new validation system."""
-    logger.debug("Processing pose command", player=player_name, pose=command_data.get("pose"))
+    logger.debug(f"Processing pose command for {player_name}, pose: {command_data.get('pose')}")
 
     if not persistence:
-        logger.warning("Pose command failed - no persistence layer", player=player_name)
+        logger.warning(f"Pose command failed - no persistence layer for {player_name}")
         return {"result": "You cannot pose right now."}
 
     # Get player information
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning("Pose command failed - player not found", player=player_name)
+        logger.warning(f"Pose command failed - player not found for {player_name}")
         return {"result": "You cannot pose right now."}
 
     pose = command_data.get("pose")
@@ -493,13 +488,13 @@ async def handle_pose_command(
         # Set the pose
         player.pose = pose
         persistence.update_player(player)
-        logger.info("Pose set successfully", player=player_name, pose=pose)
+        logger.info(f"Pose set successfully for {player_name}: {pose}")
         return {"result": f"Your pose is now: {pose}"}
     else:
         # Clear the pose
         player.pose = None
         persistence.update_player(player)
-        logger.info("Pose cleared successfully", player=player_name)
+        logger.info(f"Pose cleared successfully for {player_name}")
         return {"result": "Your pose has been cleared."}
 
 
@@ -507,7 +502,7 @@ async def handle_alias_command(
     validated_command: Any, command_data: dict[str, Any], alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Handle alias command with new validation system."""
-    logger.debug("Processing alias command", player=player_name, alias_name=command_data.get("alias_name"))
+    logger.debug(f"Processing alias command for {player_name}, alias_name: {command_data.get('alias_name')}")
 
     if not alias_storage:
         return {"result": "Alias system is not available."}
@@ -524,10 +519,10 @@ async def handle_alias_command(
     # Create the alias
     try:
         alias_storage.create_alias(player_name, alias_name, alias_command)
-        logger.info("Alias created successfully", player=player_name, alias_name=alias_name)
+        logger.info(f"Alias created successfully for {player_name}: {alias_name}")
         return {"result": f"Alias '{alias_name}' created for '{alias_command}'"}
     except Exception as e:
-        logger.error("Failed to create alias", player=player_name, alias_name=alias_name, error=str(e))
+        logger.error(f"Failed to create alias for {player_name}: {alias_name}", error=str(e))
         return {"result": f"Failed to create alias: {str(e)}"}
 
 
@@ -535,7 +530,7 @@ async def handle_aliases_command(
     validated_command: Any, command_data: dict[str, Any], alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Handle aliases command with new validation system."""
-    logger.debug("Processing aliases command", player=player_name)
+    logger.debug(f"Processing aliases command for {player_name}")
 
     if not alias_storage:
         return {"result": "Alias system is not available."}
@@ -550,10 +545,10 @@ async def handle_aliases_command(
             alias_list.append(f"{alias.name}: {alias.command}")
 
         result = "Your aliases:\n" + "\n".join(alias_list)
-        logger.info("Aliases retrieved successfully", player=player_name, count=len(aliases))
+        logger.info(f"Aliases retrieved successfully for {player_name}, count: {len(aliases)}")
         return {"result": result}
     except Exception as e:
-        logger.error("Failed to retrieve aliases", player=player_name, error=str(e))
+        logger.error(f"Failed to retrieve aliases for {player_name}", error=str(e))
         return {"result": f"Failed to retrieve aliases: {str(e)}"}
 
 
@@ -561,7 +556,7 @@ async def handle_unalias_command(
     validated_command: Any, command_data: dict[str, Any], alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Handle unalias command with new validation system."""
-    logger.debug("Processing unalias command", player=player_name, alias_name=command_data.get("alias_name"))
+    logger.debug(f"Processing unalias command for {player_name}, alias_name: {command_data.get('alias_name')}")
 
     if not alias_storage:
         return {"result": "Alias system is not available."}
@@ -572,10 +567,10 @@ async def handle_unalias_command(
 
     try:
         alias_storage.delete_alias(player_name, alias_name)
-        logger.info("Alias deleted successfully", player=player_name, alias_name=alias_name)
+        logger.info(f"Alias deleted successfully for {player_name}: {alias_name}")
         return {"result": f"Alias '{alias_name}' deleted."}
     except Exception as e:
-        logger.error("Failed to delete alias", player=player_name, alias_name=alias_name, error=str(e))
+        logger.error(f"Failed to delete alias for {player_name}: {alias_name}", error=str(e))
         return {"result": f"Failed to delete alias: {str(e)}"}
 
 
@@ -583,7 +578,7 @@ async def handle_admin_command(
     validated_command: Any, command_data: dict[str, Any], current_user: dict, persistence: Any, player_name: str
 ) -> dict:
     """Handle admin commands with new validation system."""
-    logger.debug("Processing admin command", player=player_name, command_type=command_data.get("command_type"))
+    logger.debug(f"Processing admin command for {player_name}, command_type: {command_data.get('command_type')}")
 
     # For now, return a placeholder response
     # TODO: Implement proper admin command handling
@@ -600,11 +595,11 @@ async def handle_expanded_command(
     alias_chain: list[dict] = None,
 ) -> dict:
     """Handle command processing with alias expansion and loop detection."""
-    logger.debug("Handling expanded command", player=player_name, command_line=command_line, depth=depth)
+    logger.debug(f"Handling expanded command for {player_name}, command_line: {command_line}, depth: {depth}")
 
     # Prevent infinite loops
     if depth > 10:
-        logger.warning("Alias expansion depth limit exceeded", player=player_name, depth=depth)
+        logger.warning(f"Alias expansion depth limit exceeded for {player_name}, depth: {depth}")
         return {"result": "Alias expansion too deep - possible loop detected"}
 
     # Process the expanded command
@@ -616,7 +611,7 @@ async def process_command(
     cmd: str, args: list, current_user: dict, request: Request, alias_storage: AliasStorage, player_name: str
 ) -> dict:
     """Legacy command processing function for backward compatibility."""
-    logger.debug("Using legacy command processing", player=player_name, command=cmd, args=args)
+    logger.debug(f"Using legacy command processing for {player_name}, command: {cmd}, args: {args}")
 
     # Reconstruct the command line
     command_line = f"{cmd} {' '.join(args)}".strip()

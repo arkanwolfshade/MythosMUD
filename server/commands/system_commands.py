@@ -29,14 +29,14 @@ async def handle_help_command(
     Returns:
         dict: Help content result
     """
-    logger.debug("Processing help command", player=player_name, args=args)
+    logger.debug(f"Processing help command for {player_name} with args: {args}")
 
     if len(args) > 1:
-        logger.warning("Help command with too many arguments", player=player_name, args=args)
-        return {"result": "Too many arguments. Usage: help [command]"}
+        logger.warning(f"Help command with too many arguments for {player_name}: {args}")
+        return {"result": "Usage: help [command]"}
 
     command_name = args[0] if args else None
     help_content = get_help_content(command_name)
 
-    logger.debug("Help content generated", player=player_name, command=command_name)
+    logger.debug(f"Help content generated for {player_name}, command: {command_name}")
     return {"result": help_content}

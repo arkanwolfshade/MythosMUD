@@ -7,12 +7,16 @@
 .DESCRIPTION
     This script provides robust server shutdown functionality for MythosMUD by:
     - Terminating processes using port 54731
-    - Killing processes by name patterns (uvicorn, python)
-    - Terminating processes by command line patterns
-    - Force killing all Python processes if Force flag is set
+    - Killing processes by name patterns (uvicorn only)
+    - Terminating processes by command line patterns (MythosMUD-specific)
+    - Force killing MythosMUD-related Python processes if Force flag is set
     - Verifying port is free after shutdown
     - Terminating PowerShell processes that spawned the server
     - Cleaning up orphaned terminal windows
+
+    SECURITY NOTE: This script is designed to preserve non-MythosMUD Python processes
+    (such as Playwright MCP servers) by using command line pattern matching instead
+    of broad process name termination.
 
 .PARAMETER Force
     When specified, forces termination of all Python processes regardless of command line.
@@ -114,7 +118,8 @@ function Stop-NatsServerForMythosMUD {
     if (Test-Path $natsManagerPath) {
         . $natsManagerPath
         Stop-NatsServer
-    } else {
+    }
+    else {
         Write-Host "Warning: NATS manager not found, stopping NATS processes manually..." -ForegroundColor Yellow
         # Manual NATS process cleanup
         $natsProcesses = Get-Process | Where-Object {
@@ -296,7 +301,8 @@ try {
 
     # Method 3: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
-    Stop-ProcessesByName -NamePattern "*python*"
+    # Note: Removed broad Python process killing to avoid affecting Playwright MCP server
+    # Python processes are now targeted more specifically via command line patterns below
 
     # Method 4: Kill processes by command line patterns
     Stop-ProcessesByCommandLine -CommandPattern "uvicorn"
@@ -307,17 +313,31 @@ try {
     # Method 5: Close orphaned terminal windows
     Close-OrphanedTerminalWindows
 
-    # Method 6: Force kill all Python processes if Force flag is set
+    # Method 6: Force kill MythosMUD-related Python processes if Force flag is set
     if ($Force) {
-        Write-Host "Force mode: Terminating all Python processes..." -ForegroundColor Red
+        Write-Host "Force mode: Terminating MythosMUD-related Python processes..." -ForegroundColor Red
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
-            Write-Host "Force terminating: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
             try {
-                Stop-ProcessTree -ProcessId $process.Id
+                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                # Only kill Python processes that are running MythosMUD-related code
+                if ($commandLine -and (
+                        $commandLine -like "*uvicorn*" -or
+                        $commandLine -like "*main:app*" -or
+                        $commandLine -like "*start_server.ps1*" -or
+                        $commandLine -like "*uv run*" -or
+                        $commandLine -like "*mythosmud*" -or
+                        $commandLine -like "*server.main*"
+                    )) {
+                    Write-Host "Force terminating MythosMUD process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Stop-ProcessTree -ProcessId $process.Id
+                }
+                else {
+                    Write-Host "Skipping non-MythosMUD Python process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Cyan
+                }
             }
             catch {
-                Write-Host "Could not force terminate: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
+                Write-Host "Could not check command line for process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
             }
         }
     }

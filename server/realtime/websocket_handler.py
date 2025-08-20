@@ -287,7 +287,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
-            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room for player {player_id}")
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
@@ -473,11 +473,23 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Get the real app state services from the connection manager
     # The connection manager should have access to the app state
-    if hasattr(connection_manager, "app") and connection_manager.app:
-        request_context.set_app_state_services(
-            connection_manager.app.state.player_service, connection_manager.app.state.user_manager
-        )
-        logger.debug("App state services added to WebSocket request context")
+    logger.debug(f"Connection manager has app attribute: {hasattr(connection_manager, 'app')}")
+    if hasattr(connection_manager, "app"):
+        logger.debug(f"Connection manager app is: {connection_manager.app}")
+        if connection_manager.app:
+            logger.debug(f"Connection manager app.state: {connection_manager.app.state}")
+            logger.debug(
+                f"Connection manager app.state.player_service: {getattr(connection_manager.app.state, 'player_service', 'NOT_FOUND')}"
+            )
+            logger.debug(
+                f"Connection manager app.state.user_manager: {getattr(connection_manager.app.state, 'user_manager', 'NOT_FOUND')}"
+            )
+            request_context.set_app_state_services(
+                connection_manager.app.state.player_service, connection_manager.app.state.user_manager
+            )
+            logger.debug("App state services added to WebSocket request context")
+        else:
+            logger.warning("Connection manager app is None")
     else:
         logger.warning("Connection manager does not have access to app state services")
 
