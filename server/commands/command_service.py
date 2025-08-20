@@ -113,12 +113,10 @@ class CommandService:
         try:
             # Call the handler with the command data
             result = await handler(command_data, current_user, request, alias_storage, player_name)
-            logger.debug("Command processed successfully", player=player_name, command_type=command_type)
+            logger.debug("Command processed successfully", command_type=command_type)
             return result
         except Exception as e:
-            logger.error(
-                "Error in command handler", player=player_name, command_type=command_type, error=str(e), exc_info=True
-            )
+            logger.error("Error in command handler", command_type=command_type, error=str(e), exc_info=True)
             return {"result": f"Error processing {command_type} command"}
 
     async def process_command(
@@ -142,12 +140,12 @@ class CommandService:
         Returns:
             dict: Command result with 'result' key
         """
-        logger.debug("Processing command", player=player_name, command=command)
+        logger.debug("Processing command", command=command)
 
         # Step 1: Validate and clean command
         validation_result, error_message = validate_command_format(command)
         if not validation_result:
-            logger.warning("Command validation failed", player=player_name, error=error_message)
+            logger.warning("Command validation failed", error=error_message)
             return {"result": f"Invalid command: {error_message}"}
 
         # Step 2: Normalize command
@@ -155,32 +153,32 @@ class CommandService:
         cleaned_command = clean_command_input(normalized_command)
 
         if not cleaned_command:
-            logger.debug("Empty command after cleaning", player=player_name)
+            logger.debug("Empty command after cleaning")
             return {"result": "Empty command"}
 
         # Step 3: Parse command and arguments
         parts = cleaned_command.split()
         if not parts:
-            logger.debug("No command parts after splitting", player=player_name)
+            logger.debug("No command parts after splitting")
             return {"result": "Empty command"}
 
         cmd = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
 
-        logger.debug("Command parsed", player=player_name, command=cmd, args=args)
+        logger.debug("Command parsed", command=cmd, args=args)
 
         # Step 4: Route to appropriate handler
         if cmd in self.command_handlers:
             handler = self.command_handlers[cmd]
             try:
                 result = await handler(args, current_user, request, alias_storage, player_name)
-                logger.debug("Command processed successfully", player=player_name, command=cmd)
+                logger.debug("Command processed successfully", command=cmd)
                 return result
             except Exception as e:
-                logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
+                logger.error("Command processing error", command=cmd, error=str(e))
                 return {"result": f"Error processing command: {str(e)}"}
         else:
-            logger.warning("Unknown command", player=player_name, command=cmd)
+            logger.warning("Unknown command", command=cmd)
             return {"result": f"Unknown command: {cmd}. Use 'help' for available commands."}
 
     def get_available_commands(self) -> list[str]:

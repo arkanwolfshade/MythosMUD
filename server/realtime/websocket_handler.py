@@ -141,7 +141,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     # Note: Removed synthetic player_entered event to prevent duplicate events
                     # Connection Manager events (player_entered_game) will handle player visibility
                     if not added_to_room:
-                        logger.debug(f"Player {player_id_str} was already in room {canonical_room_id} (no synthetic event needed)")
+                        logger.debug(
+                            f"Player {player_id_str} was already in room {canonical_room_id} (no synthetic event needed)"
+                        )
 
         # Send welcome message
         welcome_event = build_event(
@@ -472,8 +474,9 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     # Get the real app state services from the connection manager
     # The connection manager should have access to the app state
     if hasattr(connection_manager, "app") and connection_manager.app:
-        request_context.app.state.player_service = connection_manager.app.state.player_service
-        request_context.app.state.user_manager = connection_manager.app.state.user_manager
+        request_context.set_app_state_services(
+            connection_manager.app.state.player_service, connection_manager.app.state.user_manager
+        )
         logger.debug("App state services added to WebSocket request context")
     else:
         logger.warning("Connection manager does not have access to app state services")

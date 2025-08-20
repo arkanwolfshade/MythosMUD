@@ -66,6 +66,18 @@ class WebSocketRequestContext:
         self.app.state.alias_storage = alias_storage
         logger.debug("Alias storage set in request context")
 
+    def set_app_state_services(self, player_service: Any, user_manager: Any) -> None:
+        """
+        Set the app state services in the request context.
+
+        Args:
+            player_service: Player service instance
+            user_manager: User manager instance
+        """
+        self.app.state.player_service = player_service
+        self.app.state.user_manager = user_manager
+        logger.debug("App state services set in request context")
+
     def get_persistence(self) -> Any:
         """Get the persistence layer from the request context."""
         return self.app.state.persistence
