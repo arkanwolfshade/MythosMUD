@@ -46,6 +46,19 @@ async def lifespan(app: FastAPI):
     connection_manager.persistence = app.state.persistence
     # Ensure connection manager exposes the same EventBus for command handlers
     connection_manager._event_bus = app.state.event_handler.event_bus
+    # Give connection manager access to app for WebSocket command processing
+    connection_manager.app = app
+
+    # Initialize critical services and add to app.state
+    from ..game.player_service import PlayerService
+    from ..services.user_manager import UserManager
+
+    app.state.player_service = PlayerService(app.state.persistence)
+    app.state.user_manager = UserManager()
+
+    logger.info("Critical services (player_service, user_manager) added to app.state")
+    logger.info(f"app.state.player_service: {app.state.player_service}")
+    logger.info(f"app.state.user_manager: {app.state.user_manager}")
 
     # Set the main event loop for the EventBus to handle async event handlers
     main_loop = asyncio.get_running_loop()

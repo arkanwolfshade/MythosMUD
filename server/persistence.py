@@ -439,8 +439,12 @@ class PersistenceLayer:
                     if row:
                         current_room_id = row["current_room_id"]
                         if current_room_id == room.id:
-                            room.player_entered(player_id)
-                            self._log(f"Synced player {player_id} to room {room.id} from database")
+                            # Use direct room state update instead of player_entered() to avoid triggering events
+                            # during initial sync - events should only be triggered for actual movement
+                            room._players.add(player_id)
+                            self._log(
+                                f"Synced player {player_id} to room {room.id} from database (direct state update)"
+                            )
                         else:
                             self._log(
                                 f"Skipped syncing player {player_id} to room {room.id} (in room {current_room_id})"

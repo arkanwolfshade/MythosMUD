@@ -55,7 +55,27 @@ async def handle_mute_command(
     duration = int(args[1]) if len(args) > 1 else None  # None means permanent
 
     try:
-        success = user_manager.mute_player(target_player, duration, get_username_from_user(current_user))
+        # Get current user ID and name
+        current_user_id = get_username_from_user(current_user)
+
+        # Get player service from app state
+        player_service = app.state.player_service if app else None
+        if not player_service:
+            return {"result": "Player service not available."}
+
+        # Resolve target player name to Player object
+        target_player_obj = player_service.resolve_player_name(target_player)
+        if not target_player_obj:
+            return {"result": f"Player '{target_player}' not found."}
+
+        success = user_manager.mute_player(
+            muter_id=current_user_id,
+            muter_name=player_name,
+            target_id=target_player_obj.id,
+            target_name=target_player,
+            duration_minutes=duration,
+            reason="",
+        )
         if success:
             duration_text = f"for {duration} minutes" if duration else "permanently"
             logger.info("Player muted successfully", player=player_name, target=target_player, duration=duration_text)
@@ -100,7 +120,25 @@ async def handle_unmute_command(
     target_player = args[0]
 
     try:
-        success = user_manager.unmute_player(target_player, get_username_from_user(current_user))
+        # Get current user ID and name
+        current_user_id = get_username_from_user(current_user)
+
+        # Get player service from app state
+        player_service = app.state.player_service if app else None
+        if not player_service:
+            return {"result": "Player service not available."}
+
+        # Resolve target player name to Player object
+        target_player_obj = player_service.resolve_player_name(target_player)
+        if not target_player_obj:
+            return {"result": f"Player '{target_player}' not found."}
+
+        success = user_manager.unmute_player(
+            unmuter_id=current_user_id,
+            unmuter_name=player_name,
+            target_id=target_player_obj.id,
+            target_name=target_player,
+        )
         if success:
             logger.info("Player unmuted successfully", player=player_name, target=target_player)
             return {"result": f"You have unmuted {target_player}."}

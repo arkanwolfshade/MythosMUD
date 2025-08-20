@@ -200,8 +200,9 @@ class MovementService:
             player = self._persistence.get_player(player_id)
             if player and player.current_room_id == from_room_id:
                 # Player should be in this room, add them to the in-memory state
-                self._logger.info(f"Adding player {player_id} to room {from_room_id} in-memory state")
-                from_room.player_entered(player_id)
+                # Use direct state update to avoid triggering events during validation
+                self._logger.info(f"Adding player {player_id} to room {from_room_id} in-memory state (direct update)")
+                from_room._players.add(player_id)
             else:
                 self._logger.error(
                     f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid"
@@ -275,8 +276,8 @@ class MovementService:
                     self._logger.warning(f"Player {player_id} already in room {room_id}")
                     return True  # Consider this a success
 
-                # Add player to room
-                room.player_entered(player_id)
+                # Add player to room (direct addition to avoid triggering movement events during initial setup)
+                room._players.add(player_id)
 
                 # Update player's room in persistence
                 player = self._persistence.get_player(player_id)

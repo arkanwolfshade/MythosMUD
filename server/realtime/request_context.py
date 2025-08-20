@@ -38,6 +38,8 @@ class WebSocketRequestContext:
                 "persistence": persistence,
                 "event_bus": event_bus,
                 "alias_storage": None,  # Will be set separately
+                "player_service": None,  # Will be set from real app state
+                "user_manager": None,  # Will be set from real app state
             },
         )()
 

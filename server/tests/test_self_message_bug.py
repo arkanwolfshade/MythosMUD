@@ -46,12 +46,7 @@ class TestSelfMessageBug:
         # Create event for Ithaqua entering a room
         player_id = "ithaqua_player_id"
         room_id = "test_room_001"
-        event = PlayerEnteredRoom(
-            timestamp=None,
-            event_type="",
-            player_id=player_id,
-            room_id=room_id
-        )
+        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
 
         # Handle the event
         await event_handler._handle_player_entered(event)

@@ -5,6 +5,7 @@ This module handles WebSocket and SSE connection management,
 including connection tracking, rate limiting, and room subscriptions.
 """
 
+import asyncio
 import gc
 import time
 import uuid
@@ -100,6 +101,12 @@ class ConnectionManager:
         self.room_occupants: dict[str, set[str]] = {}
         # player_id -> last seen unix timestamp
         self.last_seen: dict[str, float] = {}
+        # Track players currently being disconnected to prevent duplicate events
+        self.disconnecting_players: set[str] = set()
+        self.disconnect_lock = asyncio.Lock()
+        # Track players whose disconnect has already been processed to prevent duplicate _track_player_disconnected calls
+        self.processed_disconnects: set[str] = set()
+        self.processed_disconnect_lock = asyncio.Lock()
 
         # Rate limiting for connections
         self.connection_attempts: dict[str, list[float]] = {}
@@ -129,64 +136,69 @@ class ConnectionManager:
             player_id: The player's ID
 
         Returns:
-            bool: True if connection successful, False otherwise
+            bool: True if connection was successful, False otherwise
         """
         try:
-            logger.info(f"Attempting to accept WebSocket for player {player_id}")
-
             # Check if player already has an active connection and terminate it
             if player_id in self.player_websockets or player_id in self.active_sse_connections:
                 logger.info(f"Player {player_id} has existing connection, terminating it")
+                # Clear pending messages BEFORE force disconnect to prevent stale messages
+                if player_id in self.pending_messages:
+                    del self.pending_messages[player_id]
                 await self.force_disconnect_player(player_id)
 
             await websocket.accept()
-            logger.info(f"WebSocket accepted for player {player_id}")
-
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
             self.player_websockets[player_id] = connection_id
-            self.connection_timestamps[connection_id] = time.time()
-
-            # Subscribe to player's current room (canonical room id)
-            player = self._get_player(player_id)
-            if player:
-                canonical_room_id = None
-                if self.persistence:
-                    room = self.persistence.get_room(player.current_room_id)
-                    if room:
-                        canonical_room_id = getattr(room, "id", None) or player.current_room_id
-                await self.subscribe_to_room(player_id, canonical_room_id or player.current_room_id)
-
-                # Track player presence
-                await self._track_player_connected(player_id, player)
-
-            # Check if cleanup is needed
-            await self._check_and_cleanup()
-
             logger.info(f"WebSocket connected for player {player_id}")
-            return True
+
+            # Get player and room information
+            player = self._get_player(player_id)
+            if not player:
+                logger.error(f"Player {player_id} not found")
+                return False
+
+            canonical_room_id = getattr(player, "current_room_id", None)
+            if canonical_room_id:
+                await self.subscribe_to_room(player_id, canonical_room_id)
+
+            # Track player presence - only call _track_player_connected if this is the first connection
+            # (either WebSocket or SSE) for this player
+            if player_id not in self.online_players:
+                await self._track_player_connected(player_id, player)
+            else:
+                logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
+
         except Exception as e:
-            logger.error(
-                f"Failed to connect WebSocket for player {player_id}: {e}",
-                exc_info=True,
-            )
-            # Clean up any partial state in case of failure
-            if player_id in self.player_websockets:
-                await self.disconnect_websocket(player_id)
+            logger.error(f"Error connecting WebSocket for {player_id}: {e}", exc_info=True)
             return False
 
-    async def disconnect_websocket(self, player_id: str):
+        return True
+
+    async def disconnect_websocket(self, player_id: str, is_force_disconnect: bool = False):
         """
         Disconnect a WebSocket for a player.
 
         Args:
             player_id: The player's ID
+            is_force_disconnect: If True, don't broadcast player_left_game (used during force disconnect)
         """
         try:
             if player_id in self.player_websockets:
                 connection_id = self.player_websockets[player_id]
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
+                    # Only track disconnection if it's not a force disconnect
+                    if not is_force_disconnect:
+                        # Check if disconnect has already been processed for this player
+                        async with self.processed_disconnect_lock:
+                            if player_id not in self.processed_disconnects:
+                                self.processed_disconnects.add(player_id)
+                                await self._track_player_disconnected(player_id)
+                            else:
+                                logger.debug(f"Disconnect already processed for player {player_id}, skipping")
+
                     # Properly close the WebSocket connection
                     try:
                         await websocket.close(code=1000, reason="New connection established")
@@ -194,9 +206,6 @@ class ConnectionManager:
                         logger.warning(f"Error closing WebSocket for {player_id}: {e}")
                     del self.active_websockets[connection_id]
                 del self.player_websockets[player_id]
-
-                # Track player disconnection
-                await self._track_player_disconnected(player_id)
 
                 # Unsubscribe from all rooms
                 for room_id in list(self.room_subscriptions.keys()):
@@ -232,19 +241,19 @@ class ConnectionManager:
         try:
             logger.info(f"Force disconnecting player {player_id} from all connections")
 
-            # Disconnect WebSocket if active
+            # Disconnect WebSocket if active (without broadcasting player_left_game)
             if player_id in self.player_websockets:
-                await self.disconnect_websocket(player_id)
+                await self.disconnect_websocket(player_id, is_force_disconnect=True)
 
             # Disconnect SSE if active
             if player_id in self.active_sse_connections:
-                self.disconnect_sse(player_id)
+                self.disconnect_sse(player_id, is_force_disconnect=True)
 
             logger.info(f"Player {player_id} force disconnected from all connections")
         except Exception as e:
             logger.error(f"Error force disconnecting player {player_id}: {e}", exc_info=True)
 
-    def connect_sse(self, player_id: str) -> str:
+    async def connect_sse(self, player_id: str) -> str:
         """
         Connect an SSE connection for a player.
 
@@ -252,66 +261,67 @@ class ConnectionManager:
             player_id: The player's ID
 
         Returns:
-            str: The SSE connection ID
+            str: The connection ID
         """
-        # Check if player already has an active connection and terminate it
-        if player_id in self.player_websockets or player_id in self.active_sse_connections:
-            logger.info(f"Player {player_id} has existing connection, terminating it")
-            # Use async version if we're in an async context
-            try:
-                import asyncio
+        try:
+            # Check if player already has an active connection and terminate it
+            if player_id in self.player_websockets or player_id in self.active_sse_connections:
+                logger.info(f"Player {player_id} has existing connection, terminating it")
+                # Wait for force disconnect to complete to prevent race conditions
+                try:
+                    import asyncio
 
-                loop = asyncio.get_running_loop()
-                loop.create_task(self.force_disconnect_player(player_id))
-            except RuntimeError:
-                # No running loop, run synchronously
-                import asyncio
+                    loop = asyncio.get_running_loop()
+                    # Create task and wait for it to complete instead of running in background
+                    task = loop.create_task(self.force_disconnect_player(player_id))
+                    await task
+                except RuntimeError:
+                    # No running loop, run synchronously
+                    import asyncio
 
-                asyncio.run(self.force_disconnect_player(player_id))
+                    asyncio.create_task(self.force_disconnect_player(player_id))
+
+        except Exception as e:
+            logger.error(f"Error force disconnecting player {player_id}: {e}", exc_info=True)
 
         connection_id = str(uuid.uuid4())
         self.active_sse_connections[player_id] = connection_id
         logger.info(f"SSE connected for player {player_id}")
 
+        # Clear pending messages to prevent stale messages from previous connections
+        if player_id in self.pending_messages:
+            del self.pending_messages[player_id]
+
         # Track presence on SSE as well so occupants reflect players who have only SSE connected
         try:
             player = self._get_player(player_id)
             if player:
-                # Resolve canonical room id
-                room_id = getattr(player, "current_room_id", None)
-                if self.persistence and room_id:
-                    try:
-                        room = self.persistence.get_room(room_id)
-                        if room and getattr(room, "id", None):
-                            room_id = room.id
-                    except Exception as e:
-                        logger.error(f"Error resolving canonical room for SSE connect {player_id}: {e}")
+                canonical_room_id = None
+                if self.persistence:
+                    room = self.persistence.get_room(player.current_room_id)
+                    if room:
+                        canonical_room_id = getattr(room, "id", None) or player.current_room_id
+                await self.subscribe_to_room(player_id, canonical_room_id or player.current_room_id)
 
-                # Schedule async presence updates
-                import asyncio
+                # Track player presence - only call _track_player_connected if this is the first connection
+                # (either WebSocket or SSE) for this player
+                if player_id not in self.online_players:
+                    await self._track_player_connected(player_id, player)
+                else:
+                    logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
 
-                try:
-                    loop = asyncio.get_running_loop()
-                    # Subscribe to room first so subsequent broadcasts reach this player
-                    if room_id:
-                        loop.create_task(self.subscribe_to_room(player_id, room_id))
-                    loop.create_task(self._track_player_connected(player_id, player))
-                except RuntimeError:
-                    # No running loop; run synchronously
-                    if room_id:
-                        asyncio.run(self.subscribe_to_room(player_id, room_id))
-                    asyncio.run(self._track_player_connected(player_id, player))
         except Exception as e:
-            logger.error(f"Error tracking SSE connect for {player_id}: {e}", exc_info=True)
+            logger.error(f"Error tracking SSE presence for {player_id}: {e}", exc_info=True)
 
         return connection_id
 
-    def disconnect_sse(self, player_id: str):
+    def disconnect_sse(self, player_id: str, is_force_disconnect: bool = False):
         """
         Disconnect an SSE connection for a player.
 
         Args:
             player_id: The player's ID
+            is_force_disconnect: If True, don't broadcast player_left_game (used during force disconnect)
         """
         try:
             if player_id in self.active_sse_connections:
@@ -329,18 +339,21 @@ class ConnectionManager:
             if player_id in self.last_seen:
                 del self.last_seen[player_id]
 
-            # Delegate to unified disconnect logic. If no running loop, run synchronously.
-            try:
-                import asyncio
-
+            # Only track disconnection if it's not a force disconnect
+            if not is_force_disconnect:
+                # Check if disconnect has already been processed for this player
                 try:
-                    loop = asyncio.get_running_loop()
-                    loop.create_task(self._track_player_disconnected(player_id))
-                except RuntimeError:
-                    # No running loop in this thread; execute synchronously
-                    asyncio.run(self._track_player_disconnected(player_id))
-            except Exception as e:
-                logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
+                    import asyncio
+
+                    try:
+                        loop = asyncio.get_running_loop()
+                        # Use create_task to run the check asynchronously
+                        loop.create_task(self._check_and_process_disconnect(player_id))
+                    except RuntimeError:
+                        # No running loop in this thread; execute synchronously
+                        asyncio.run(self._check_and_process_disconnect(player_id))
+                except Exception as e:
+                    logger.error(f"Error handling SSE disconnect for {player_id}: {e}")
 
             logger.info(f"SSE disconnected for player {player_id}")
         except Exception as e:
@@ -802,6 +815,10 @@ class ConnectionManager:
             if player_id in self.pending_messages:
                 del self.pending_messages[player_id]
 
+            # Clear processed disconnect flag to allow future disconnect processing
+            async with self.processed_disconnect_lock:
+                self.processed_disconnects.discard(player_id)
+
             # Update room occupants using canonical room id
             room_id = getattr(player, "current_room_id", None)
             if self.persistence and room_id:
@@ -840,6 +857,7 @@ class ConnectionManager:
                     {"player_id": player_id, "player_name": player_info["player_name"]},
                     room_id=room_id,
                 )
+                logger.info(f"🔍 DEBUG: Broadcasting player_entered_game for {player_id} in room {room_id}")
                 await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
 
             logger.info(f"Player {player_id} presence tracked as connected")
@@ -855,6 +873,16 @@ class ConnectionManager:
             player_id: The player's ID
         """
         try:
+            # Prevent duplicate disconnect events for the same player using async lock
+            async with self.disconnect_lock:
+                if player_id in self.disconnecting_players:
+                    logger.debug(f"🔍 DEBUG: Player {player_id} already being disconnected, skipping duplicate event")
+                    return
+
+                # Mark player as being disconnected
+                self.disconnecting_players.add(player_id)
+                logger.debug(f"🔍 DEBUG: Marked player {player_id} as disconnecting")
+
             # Resolve player using flexible lookup (ID or name)
             pl = self._get_player(player_id)
             room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
@@ -895,7 +923,9 @@ class ConnectionManager:
                     {"player_id": player_id, "player_name": player_name or player_id},
                     room_id=room_id,
                 )
-                await self.broadcast_to_room(room_id, left_event)
+                # Exclude the disconnecting player from their own "left game" message to prevent stale messages
+                logger.info(f"🔍 DEBUG: Broadcasting player_left_game for {player_id} in room {room_id}")
+                await self.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
                 # 2) occupants update (names only)
                 occ_infos = self.get_room_occupants(room_id)
@@ -915,6 +945,25 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(f"Error tracking player disconnection: {e}", exc_info=True)
+        finally:
+            # Always remove player from disconnecting set, even on error
+            async with self.disconnect_lock:
+                self.disconnecting_players.discard(player_id)
+
+    async def _check_and_process_disconnect(self, player_id: str):
+        """
+        Check if disconnect has already been processed for a player and process it if not.
+        This is used by SSE disconnect to prevent duplicate _track_player_disconnected calls.
+
+        Args:
+            player_id: The player's ID
+        """
+        async with self.processed_disconnect_lock:
+            if player_id not in self.processed_disconnects:
+                self.processed_disconnects.add(player_id)
+                await self._track_player_disconnected(player_id)
+            else:
+                logger.debug(f"Disconnect already processed for player {player_id}, skipping")
 
     def get_online_players(self) -> list[dict]:
         """

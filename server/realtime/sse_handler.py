@@ -31,7 +31,7 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
     player_id_str = str(player_id)
 
     # Connect the SSE connection
-    connection_manager.connect_sse(player_id_str)
+    await connection_manager.connect_sse(player_id_str)
 
     try:
         # Send initial connection event
