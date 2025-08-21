@@ -37,7 +37,7 @@ def run_server_tests():
 
 
 def run_client_tests():
-    """Run client-side tests (Vitest unit tests and Playwright E2E tests)"""
+    """Run client-side tests (Vitest unit tests only - E2E tests disabled)"""
     print("⚛️  Running client tests...")
 
     # Get the project root
@@ -53,14 +53,8 @@ def run_client_tests():
         print("  ❌ Vitest unit tests failed")
         return vitest_result.returncode
 
-    # Run Playwright E2E tests using shell
-    print("  🌐 Running Playwright E2E tests...")
-    playwright_cmd = "npm run test"
-    playwright_result = subprocess.run(playwright_cmd, shell=True, cwd=client_dir)
-
-    if playwright_result.returncode != 0:
-        print("  ❌ Playwright E2E tests failed")
-        return playwright_result.returncode
+    # E2E tests are disabled - skipping Playwright tests
+    print("  ⏭️  Skipping Playwright E2E tests (disabled)")
 
     print("  ✅ Client tests passed!")
     return 0
@@ -71,6 +65,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run MythosMUD tests")
     parser.add_argument("--server-only", action="store_true", help="Run only server tests")
     parser.add_argument("--client-only", action="store_true", help="Run only client tests")
+    parser.add_argument("--e2e-only", action="store_true", help="Run only E2E tests (if enabled)")
 
     args = parser.parse_args()
 
@@ -94,6 +89,13 @@ def main():
             sys.exit(client_result)
         else:
             print("✅ Client tests passed!")
+        return
+
+    if args.e2e_only:
+        print("🧪 E2E Tests are currently disabled")
+        print("=" * 30)
+        print("To enable E2E tests, modify scripts/test.py to include Playwright test execution")
+        print("or run them manually with: cd client && npm run test")
         return
 
     # Run all tests

@@ -217,7 +217,7 @@ async def login_user(
     logger.info(f"User lookup result: {user}")
 
     if not user:
-        logger.warning(f"User not found: {request.username}")
+        logger.info(f"User not found: {request.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     # Verify password using FastAPI Users with email lookup
