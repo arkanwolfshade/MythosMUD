@@ -735,9 +735,19 @@ class ConnectionManager:
             targets.update(self.room_subscriptions[canonical_id])
         if room_id != canonical_id and room_id in self.room_subscriptions:
             targets.update(self.room_subscriptions[room_id])
+
+        # Debug logging for self-message exclusion
+        logger.debug(
+            f"broadcast_to_room: room_id={room_id}, canonical_id={canonical_id}, exclude_player={exclude_player}"
+        )
+        logger.debug(f"broadcast_to_room: targets={targets}")
+
         for pid in targets:
             if pid != exclude_player:
+                logger.debug(f"broadcast_to_room: sending to player {pid}")
                 await self.send_personal_message(pid, event)
+            else:
+                logger.debug(f"broadcast_to_room: excluding player {pid} (self-message exclusion)")
 
     async def broadcast_global(self, event: dict, exclude_player: str = None):
         """
