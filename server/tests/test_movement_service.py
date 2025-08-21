@@ -191,8 +191,9 @@ class TestMovementService:
             result = service.add_player_to_room("player1", "room1")
 
             assert result is True
-            mock_room.player_entered.assert_called_once_with("player1")
-            mock_player.current_room_id = "room1"
+            # add_player_to_room does direct assignment to _players, not through player_entered
+            assert "player1" in mock_room._players
+            assert mock_player.current_room_id == "room1"
             mock_persistence.save_player.assert_called_once_with(mock_player)
 
     def test_add_player_to_room_already_in_room(self):

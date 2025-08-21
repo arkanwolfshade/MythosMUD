@@ -377,6 +377,8 @@ class TestGameEventStream:
         mock_connection_manager.get_pending_messages = Mock(return_value=[])
         mock_connection_manager.mark_player_seen = Mock()
         mock_connection_manager.prune_stale_players = Mock()
+        # Make pending_messages iterable for the "in" operator
+        mock_connection_manager.pending_messages = {}
 
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             # Execute
@@ -411,6 +413,8 @@ class TestGameEventStream:
         mock_connection_manager.get_pending_messages = Mock(return_value=pending_messages)
         mock_connection_manager.mark_player_seen = Mock()
         mock_connection_manager.prune_stale_players = Mock()
+        # Make pending_messages iterable for the "in" operator
+        mock_connection_manager.pending_messages = {player_id: pending_messages}
 
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             # Execute
@@ -438,6 +442,8 @@ class TestGameEventStream:
         mock_connection_manager.get_pending_messages = Mock(return_value=[])
         mock_connection_manager.mark_player_seen = Mock()
         mock_connection_manager.prune_stale_players = Mock()
+        # Make pending_messages iterable for the "in" operator
+        mock_connection_manager.pending_messages = {}
 
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
