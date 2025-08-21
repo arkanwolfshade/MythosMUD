@@ -147,7 +147,7 @@ class CommandService:
         # Step 1: Validate and clean command
         validation_result, error_message = validate_command_format(command)
         if not validation_result:
-            logger.warning("Command validation failed", player=player_name, error=error_message)
+            logger.info("Command validation failed", error=error_message)
             return {"result": f"Invalid command: {error_message}"}
 
         # Step 2: Normalize command
@@ -180,7 +180,7 @@ class CommandService:
                 logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
                 return {"result": f"Error processing command: {str(e)}"}
         else:
-            logger.warning("Unknown command", player=player_name, command=cmd)
+            logger.info("Unknown command", command=cmd)
             return {"result": f"Unknown command: {cmd}. Use 'help' for available commands."}
 
     def get_available_commands(self) -> list[str]:
