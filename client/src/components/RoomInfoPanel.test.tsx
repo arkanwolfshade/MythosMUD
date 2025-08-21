@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoomInfoPanel } from './RoomInfoPanel';
 
 // Mock console.log to avoid noise in tests
@@ -183,7 +183,7 @@ describe('RoomInfoPanel', () => {
         id: 'test-room-8',
         name: 'Null Exits Room',
         description: 'A room with null exits.',
-        exits: null,
+        exits: undefined,
         occupants: [],
       };
 
@@ -198,7 +198,7 @@ describe('RoomInfoPanel', () => {
         name: 'Null Occupants Room',
         description: 'A room with null occupants.',
         exits: {},
-        occupants: null,
+        occupants: undefined,
       };
 
       render(<RoomInfoPanel room={roomWithNullOccupants} />);
