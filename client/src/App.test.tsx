@@ -21,8 +21,6 @@ vi.mock('./components/StatsRollingScreen', () => ({
     characterName,
     onStatsAccepted,
     onError,
-    _baseUrl,
-    _authToken,
   }: {
     characterName: string;
     onStatsAccepted: (stats: Record<string, unknown>) => void;

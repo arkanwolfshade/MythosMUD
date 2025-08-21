@@ -33,7 +33,6 @@ vi.mock('./ui/MythosPanel', () => ({
     children,
     variant,
     size,
-    _showEldritchBorder,
   }: {
     title: string;
     subtitle?: string;

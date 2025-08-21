@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EldritchEffectsDemo } from './EldritchEffectsDemo';
 
 // Mock the child components
 vi.mock('./ui/EldritchIcon', () => ({
-  EldritchIcon: ({ name, _size, className }: { name: string; _size: number; className?: string }) => (
+  EldritchIcon: ({ name, className }: { name: string; _size: number; className?: string }) => (
     <div data-testid={`eldritch-icon-${name}`} className={className}>
       Icon: {name}
     </div>
@@ -31,10 +31,6 @@ vi.mock('./ui/MythosPanel', () => ({
     title,
     subtitle,
     children,
-    _variant,
-    _size,
-    _interactive,
-    _showEldritchBorder,
     className,
   }: {
     title: string;
@@ -57,8 +53,6 @@ vi.mock('./ui/MythosPanel', () => ({
 vi.mock('./ui/TerminalButton', () => ({
   TerminalButton: ({
     onClick,
-    _variant,
-    _size,
     className,
     children,
   }: {

@@ -29,17 +29,7 @@ vi.mock('./panels/CommandPanel', () => ({
 }));
 
 vi.mock('./ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    className,
-    _variant,
-  }: {
-    name: string;
-    _size?: number;
-    className?: string;
-    _variant?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; _size?: number; className?: string; _variant?: string }) => (
     <div data-testid={`eldritch-icon-${name}`} className={className}>
       {name}
     </div>
@@ -59,8 +49,6 @@ vi.mock('./ui/MythosPanel', () => ({
   MythosPanel: ({
     title,
     children,
-    _variant,
-    _size,
     className,
   }: {
     title?: string;
@@ -80,8 +68,6 @@ vi.mock('./ui/TerminalButton', () => ({
   TerminalButton: ({
     children,
     onClick,
-    _variant,
-    _size,
     disabled,
     className,
   }: {
