@@ -8,7 +8,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 
 - **ArkanWolfshade** (AW) - password: Cthulhu1
 - **Ithaqua** - password: Cthulhu1
-- **Default Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer)
+- **Default Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer) - update SQLite directly if necessary
 
 ## Scenario Validation Requirements
 
@@ -98,16 +98,19 @@ Tests that players don't see stale/previous game state information when connecti
 ### Status: ✅ FIXES IMPLEMENTED - Ready for Testing
 
 **Fixes Applied:**
+
 - ✅ **Duplicate Message Prevention**: Implemented `processed_disconnects` tracking with `asyncio.Lock`
 - ✅ **Command Processing**: Fixed WebSocket request context service injection
 - ✅ **Logger Errors**: Resolved `structlog` keyword argument issues
 - ✅ **Indentation Errors**: Corrected syntax errors in command handlers
 
 **Expected Behavior:**
+
 - Exactly one "entered game" message per player connection
 - Exactly one "left game" message per player disconnection
 - No stale messages on reconnection
 - Clean game state for new connections
+
 1. **Stale Message Persistence**: "X has left the game" messages persist across sessions
 2. **Duplicate Event Broadcasting**: Multiple "entered game" messages appearing
 3. **Self-Movement Messages**: Players see their own movement messages
@@ -115,6 +118,7 @@ Tests that players don't see stale/previous game state information when connecti
 5. **Event Ordering Issues**: Complex timing problems in event processing
 
 **Root Cause Analysis Completed**:
+
 - ✅ Event broadcasting system audit - **DUPLICATE EVENT SYSTEMS**
 - ✅ Player service integration investigation - **MISSING APP STATE SERVICES**
 - ✅ Message persistence system overhaul - **STALE MESSAGE PERSISTENCE**
