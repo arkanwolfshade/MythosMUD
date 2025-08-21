@@ -98,13 +98,13 @@ async def handle_mute_command(
 
 
 async def handle_unmute_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the unmute command for unmuting other players.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -113,7 +113,7 @@ async def handle_unmute_command(
     Returns:
         dict: Unmute command result
     """
-    logger.debug(f"Processing unmute command for {player_name} with args: {args}")
+    logger.debug(f"Processing unmute command for {player_name} with command_data: {command_data}")
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
@@ -122,11 +122,13 @@ async def handle_unmute_command(
         logger.warning(f"Unmute command failed - no user manager for {player_name}")
         return {"result": "Unmute functionality is not available."}
 
-    if len(args) < 1:
-        logger.warning(f"Unmute command with insufficient arguments for {player_name}, args: {args}")
-        return {"result": "Usage: unmute <player_name>"}
+    # Extract target player from command_data
+    target_player = command_data.get("target_player")
 
-    target_player = args[0]
+    if not target_player:
+        # If target player is not in command_data, this is a validation issue
+        logger.warning(f"Unmute command with no target player for {player_name}, command_data: {command_data}")
+        return {"result": "Usage: unmute <player_name>"}
 
     try:
         # Get current user ID and name

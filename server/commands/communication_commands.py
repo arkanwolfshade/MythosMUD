@@ -27,13 +27,13 @@ def get_username_from_user(user_obj):
 
 
 async def handle_say_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the say command for speaking to other players.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -42,13 +42,15 @@ async def handle_say_command(
     Returns:
         dict: Say command result
     """
-    logger.debug(f"Processing say command for {player_name} with args: {args}")
+    logger.debug(f"Processing say command for {player_name} with command_data: {command_data}")
 
-    if not args:
-        logger.warning(f"Say command with no message for {player_name}")
+    # Extract message from command data
+    message = command_data.get("message")
+    if not message:
+        logger.warning(f"Say command with no message for {player_name}, command_data: {command_data}")
         return {"result": "Say what? Usage: say <message>"}
 
-    message = " ".join(args)
+    # message is already a complete string from the validation system
     logger.debug(f"Player {player_name} saying message: {message}")
 
     # Get app state services for broadcasting
@@ -108,13 +110,13 @@ async def handle_say_command(
 
 
 async def handle_me_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the me command for performing actions/emotes.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -123,13 +125,15 @@ async def handle_me_command(
     Returns:
         dict: Me command result
     """
-    logger.debug(f"Processing me command for {player_name} with args: {args}")
+    logger.debug(f"Processing me command for {player_name} with command_data: {command_data}")
 
-    if not args:
-        logger.warning(f"Me command with no action for {player_name}")
+    # Extract action from command data
+    action = command_data.get("action")
+    if not action:
+        logger.warning(f"Me command with no action for {player_name}, command_data: {command_data}")
         return {"result": "Do what? Usage: me <action>"}
 
-    action = " ".join(args)
+    # action is already a complete string from the validation system
     logger.debug(f"Player {player_name} performing action: {action}")
 
     # For now, return a simple response
@@ -138,13 +142,13 @@ async def handle_me_command(
 
 
 async def handle_pose_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the pose command for setting character description.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -153,7 +157,7 @@ async def handle_pose_command(
     Returns:
         dict: Pose command result
     """
-    logger.debug(f"Processing pose command for {player_name} with args: {args}")
+    logger.debug(f"Processing pose command for {player_name} with command_data: {command_data}")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -167,14 +171,16 @@ async def handle_pose_command(
         logger.warning(f"Pose command failed - player not found for {player_name}")
         return {"result": "You cannot set your pose right now."}
 
-    if not args:
+    # Extract pose from command data
+    pose = command_data.get("pose")
+    if not pose:
         # Clear pose
         player.pose = None
         persistence.save_player(player)
         logger.info(f"Player {player_name} cleared pose")
         return {"result": "Your pose has been cleared."}
 
-    pose_description = " ".join(args)
+    pose_description = pose
     logger.debug(f"Player {player_name} setting pose: {pose_description}")
 
     # Set the pose
