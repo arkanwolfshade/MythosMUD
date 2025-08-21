@@ -25,10 +25,14 @@ class TestGetUsernameFromUser:
     """Test the get_username_from_user utility function."""
 
     def test_get_username_from_user_object(self):
-        """Test extracting username from user object with username attribute."""
-        user_obj = MagicMock()
-        user_obj.username = "testuser"
+        """Test extracting username from object with username attribute."""
 
+        # Create a simple object with username attribute
+        class UserObject:
+            def __init__(self, username):
+                self.username = username
+
+        user_obj = UserObject("testuser")
         result = get_username_from_user(user_obj)
         assert result == "testuser"
 
@@ -39,23 +43,37 @@ class TestGetUsernameFromUser:
         result = get_username_from_user(user_dict)
         assert result == "testuser"
 
-    def test_get_username_from_user_invalid_object(self):
-        """Test that ValueError is raised for invalid user object."""
-        user_obj = MagicMock()
-        # Remove username attribute
-        del user_obj.username
-        # Remove name attribute as well
-        del user_obj.name
+    def test_get_username_from_user_name_attr(self):
+        """Test extracting username from object with name attribute."""
 
+        # Create a simple object with name attribute
+        class UserObject:
+            def __init__(self, name):
+                self.name = name
+
+        user_obj = UserObject("testuser")
+        result = get_username_from_user(user_obj)
+        assert result == "testuser"
+
+    def test_get_username_from_user_invalid_dict(self):
+        """Test extracting username from invalid dictionary."""
+        user_dict = {"invalid_key": "testuser"}
+        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+            get_username_from_user(user_dict)
+
+    def test_get_username_from_user_invalid_object(self):
+        """Test extracting username from invalid object."""
+
+        # Create a simple object without username or name attributes
+        class InvalidUserObject:
+            def __init__(self):
+                self.email = "test@example.com"  # Different attribute
+
+        user_obj = InvalidUserObject()
         with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
-    def test_get_username_from_user_invalid_dict(self):
-        """Test that ValueError is raised for dictionary without username key."""
-        user_dict = {"id": "123", "email": "test@example.com"}
 
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
-            get_username_from_user(user_dict)
 
     def test_get_username_from_user_none(self):
         """Test that ValueError is raised for None input."""
