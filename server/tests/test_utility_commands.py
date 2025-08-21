@@ -43,6 +43,12 @@ class TestGetUsernameFromUser:
         result = get_username_from_user(user_dict)
         assert result == "testuser"
 
+    def test_get_username_from_user_name_key(self):
+        """Test extracting username from dictionary with name key."""
+        user_dict = {"name": "testuser"}
+        result = get_username_from_user(user_dict)
+        assert result == "testuser"
+
     def test_get_username_from_user_name_attr(self):
         """Test extracting username from object with name attribute."""
 

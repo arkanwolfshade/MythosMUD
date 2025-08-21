@@ -154,13 +154,18 @@ async def handle_go_command(
     # Use movement service for the actual movement
     from ..game.movement_service import MovementService
 
-    # Pass the same event bus that persistence uses to ensure events are published correctly
-    movement_service = MovementService(persistence._event_bus)
-    success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
+    try:
+        # Pass the same event bus that persistence uses to ensure events are published correctly
+        movement_service = MovementService(persistence._event_bus)
+        success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
 
-    if success:
-        logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
-        return {"result": f"You move {direction} to {target_room.name}."}
-    else:
-        logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
-        return {"result": "You can't go that way"}
+        if success:
+            logger.info(f"Player moved successfully for {player_name}: from {room_id} to {target_room_id}")
+            return {"result": "You move to the new location."}
+        else:
+            logger.warning(f"Movement service failed for {player_name}: from {room_id} to {target_room_id}")
+            return {"result": "You can't go that way."}
+
+    except Exception as e:
+        logger.error(f"Go command error for {player_name}: {str(e)}")
+        return {"result": f"Error during movement: {str(e)}"}
