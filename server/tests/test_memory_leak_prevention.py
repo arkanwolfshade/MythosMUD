@@ -269,21 +269,27 @@ class TestMemoryLeakPreventionIntegration:
         # For now, we'll test the connection manager directly
         connection_manager = ConnectionManager()
 
-        # Simulate connection and disconnection
-        mock_websocket = Mock()
-        # Make the mock websocket awaitable
-        mock_websocket.accept = AsyncMock()
-        player_id = "test_player"
+        # Mock the _get_player method to return a mock player
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_player.name = "test_player"
 
-        # Connect
-        success = await connection_manager.connect_websocket(mock_websocket, player_id)
-        assert success is True
-        assert player_id in connection_manager.player_websockets
+        with patch.object(connection_manager, "_get_player", return_value=mock_player):
+            # Simulate connection and disconnection
+            mock_websocket = Mock()
+            # Make the mock websocket awaitable
+            mock_websocket.accept = AsyncMock()
+            player_id = "test_player"
 
-        # Disconnect
-        await connection_manager.disconnect_websocket(player_id)
-        assert player_id not in connection_manager.player_websockets
-        assert len(connection_manager.active_websockets) == 0
+            # Connect
+            success = await connection_manager.connect_websocket(mock_websocket, player_id)
+            assert success is True
+            assert player_id in connection_manager.player_websockets
+
+            # Disconnect
+            await connection_manager.disconnect_websocket(player_id)
+            assert player_id not in connection_manager.player_websockets
+            assert len(connection_manager.active_websockets) == 0
 
     @pytest.mark.asyncio
     async def test_memory_monitoring_end_to_end(self):

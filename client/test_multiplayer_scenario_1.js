@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+import { chromium } from 'playwright';
 
 async function testMultiplayerScenario1() {
   const browser = await chromium.launch({ headless: false });
@@ -98,13 +98,17 @@ async function testMultiplayerScenario1() {
     console.log(`AW sees Ithaqua left: ${ithaquaLeftMessage ? '✅ PASS' : '❌ FAIL'}`);
 
     // Keep browser open for manual inspection
-    console.log('\n🔍 Browser will remain open for 30 seconds for manual inspection...');
-    await page1.waitForTimeout(30000);
+    console.log('\n🔍 Browser will remain open for manual inspection...');
+    console.log('Press Ctrl+C to close the browser and end the test.');
+
+    // Keep the browser open
+    await new Promise(() => {}); // This will keep the process running
   } catch (error) {
-    console.error('❌ Test failed:', error);
-  } finally {
+    console.error('❌ Test failed with error:', error);
     await browser.close();
+    process.exit(1);
   }
 }
 
-testMultiplayerScenario1();
+// Run the test
+testMultiplayerScenario1().catch(console.error);

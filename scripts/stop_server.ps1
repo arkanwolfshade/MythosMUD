@@ -212,8 +212,9 @@ function Stop-PowerShellServerProcesses {
         foreach ($process in $powerShellProcesses) {
             try {
                 $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*")) {
+                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*" -or $commandLine -like "*uv run*")) {
                     Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-ProcessTree -ProcessId $process.Id
                 }
             }
@@ -240,8 +241,9 @@ function Close-OrphanedTerminalWindows {
         foreach ($process in $processes) {
             try {
                 $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*server*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*")) {
+                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main*")) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-ProcessTree -ProcessId $process.Id
                 }
             }
@@ -330,10 +332,14 @@ try {
                         $commandLine -like "*server.main*"
                     )) {
                     Write-Host "Force terminating MythosMUD process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-ProcessTree -ProcessId $process.Id
                 }
                 else {
                     Write-Host "Skipping non-MythosMUD Python process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Cyan
+                    if ($commandLine) {
+                        Write-Host "  Command line: $commandLine" -ForegroundColor Gray
+                    }
                 }
             }
             catch {

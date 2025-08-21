@@ -179,6 +179,8 @@ class TestMovementService:
         mock_room = Mock(spec=Room)
         mock_player = Mock()
 
+        # Configure the mock room to have a _players set
+        mock_room._players = set()
         mock_persistence.get_room.return_value = mock_room
         mock_persistence.get_player.return_value = mock_player
         mock_room.has_player.return_value = False

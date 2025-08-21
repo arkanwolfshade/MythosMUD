@@ -142,18 +142,20 @@ class TestConnectionManager:
         assert self.player_id not in self.manager.player_websockets
         assert self.room_id not in self.manager.room_subscriptions
 
-    def test_connect_sse(self):
+    @pytest.mark.asyncio
+    async def test_connect_sse(self):
         """Test SSE connection."""
-        connection_id = self.manager.connect_sse(self.player_id)
+        connection_id = await self.manager.connect_sse(self.player_id)
 
         assert connection_id is not None
         assert self.player_id in self.manager.active_sse_connections
         assert self.manager.active_sse_connections[self.player_id] == connection_id
 
-    def test_disconnect_sse(self):
+    @pytest.mark.asyncio
+    async def test_disconnect_sse(self):
         """Test SSE disconnection."""
         # First connect
-        self.manager.connect_sse(self.player_id)
+        await self.manager.connect_sse(self.player_id)
 
         # Then disconnect
         self.manager.disconnect_sse(self.player_id)

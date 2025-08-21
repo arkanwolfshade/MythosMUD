@@ -372,7 +372,7 @@ class TestGameEventStream:
         player_id = "test_player_123"
 
         mock_connection_manager = Mock()
-        mock_connection_manager.connect_sse = Mock()
+        mock_connection_manager.connect_sse = AsyncMock()
         mock_connection_manager.disconnect_sse = Mock()
         mock_connection_manager.get_pending_messages = Mock(return_value=[])
         mock_connection_manager.mark_player_seen = Mock()
@@ -406,7 +406,7 @@ class TestGameEventStream:
         ]
 
         mock_connection_manager = Mock()
-        mock_connection_manager.connect_sse = Mock()
+        mock_connection_manager.connect_sse = AsyncMock()
         mock_connection_manager.disconnect_sse = Mock()
         mock_connection_manager.get_pending_messages = Mock(return_value=pending_messages)
         mock_connection_manager.mark_player_seen = Mock()
@@ -433,7 +433,7 @@ class TestGameEventStream:
         player_id = "test_player_123"
 
         mock_connection_manager = Mock()
-        mock_connection_manager.connect_sse = Mock()
+        mock_connection_manager.connect_sse = AsyncMock()
         mock_connection_manager.disconnect_sse = Mock()
         mock_connection_manager.get_pending_messages = Mock(return_value=[])
         mock_connection_manager.mark_player_seen = Mock()

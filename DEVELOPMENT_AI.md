@@ -205,10 +205,7 @@ server/
 │   │   └── players/           # Test player database
 │   └── [test_*.py]            # Test modules
 │
-├── command_handler.py         # Legacy command handler (maintained)
-├── command_handler_v2.py      # Enhanced command handler
-├── command_handler_new.py     # New command handler
-├── command_handler_unified.py # Unified command handler
+├── command_handler_unified.py # Unified command handler (replaces all previous versions)
 ├── alias_storage.py           # Alias storage system
 ├── error_handlers.py          # Error handling
 ├── error_types.py             # Error type definitions

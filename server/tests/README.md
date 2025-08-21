@@ -51,7 +51,7 @@ The test database contains:
 
 ### Usage in Tests
 
-Tests automatically use the test database through the `patch_persistence_layer` fixture in `test_command_handler.py`. This ensures:
+Tests automatically use the test database through the `patch_persistence_layer` fixture in `test_command_handler_unified.py`. This ensures:
 
 - Consistent test data across all tests
 - Isolation from production data
@@ -74,7 +74,7 @@ server/tests/
 │   └── test_persistence.log # Test log file
 ├── init_test_db.py          # Database initialization script
 ├── verify_test_db.py        # Database verification script
-├── test_command_handler.py  # Command handler tests
+├── test_command_handler_unified.py  # Unified command handler tests
 └── README.md               # This file
 ```
 

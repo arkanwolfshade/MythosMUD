@@ -37,9 +37,9 @@ MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
 
 def get_username_from_user(user_obj) -> str:
     """Safely extract username from user object or dictionary."""
-    if hasattr(user_obj, "username"):
+    if hasattr(user_obj, "username") and user_obj.username is not None:
         return user_obj.username
-    elif hasattr(user_obj, "name"):
+    elif hasattr(user_obj, "name") and user_obj.name is not None:
         return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
