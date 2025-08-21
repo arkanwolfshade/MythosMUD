@@ -55,8 +55,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     added_to_room = False
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
-                        # Add player to room without triggering events (for initial setup)
-                        room._players.add(player_id_str)
+                        room.player_entered(player_id_str)
                         added_to_room = True
 
                     # Use canonical room id for subscriptions and broadcasts
@@ -138,12 +137,24 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     except Exception as e:
                         logger.error(f"Error broadcasting initial room update for {player_id_str}: {e}")
 
-                    # Note: Removed synthetic player_entered event to prevent duplicate events
-                    # Connection Manager events (player_entered_game) will handle player visibility
+                    # If player was already present (reconnect without a leave event),
+                    # explicitly notify other occupants they (re)entered to surface the event in UI
                     if not added_to_room:
-                        logger.debug(
-                            f"Player {player_id_str} was already in room {canonical_room_id} (no synthetic event needed)"
-                        )
+                        try:
+                            synthetic_event = build_event(
+                                "player_entered",
+                                {
+                                    "player_id": player_id_str,
+                                    "player_name": getattr(player, "name", player_id_str),
+                                    "message": f"{getattr(player, 'name', player_id_str)} entered the room.",
+                                },
+                                room_id=canonical_room_id,
+                            )
+                            await connection_manager.broadcast_to_room(
+                                canonical_room_id, synthetic_event, exclude_player=player_id_str
+                            )
+                        except Exception as e:
+                            logger.error(f"Error sending synthetic player_entered for {player_id_str}: {e}")
 
         # Send welcome message
         welcome_event = build_event(
@@ -287,7 +298,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
-            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room for player {player_id}")
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
@@ -471,28 +482,6 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         user=player,
     )
 
-    # Get the real app state services from the connection manager
-    # The connection manager should have access to the app state
-    logger.debug(f"Connection manager has app attribute: {hasattr(connection_manager, 'app')}")
-    if hasattr(connection_manager, "app"):
-        logger.debug(f"Connection manager app is: {connection_manager.app}")
-        if connection_manager.app:
-            logger.debug(f"Connection manager app.state: {connection_manager.app.state}")
-            logger.debug(
-                f"Connection manager app.state.player_service: {getattr(connection_manager.app.state, 'player_service', 'NOT_FOUND')}"
-            )
-            logger.debug(
-                f"Connection manager app.state.user_manager: {getattr(connection_manager.app.state, 'user_manager', 'NOT_FOUND')}"
-            )
-            request_context.set_app_state_services(
-                connection_manager.app.state.player_service, connection_manager.app.state.user_manager
-            )
-            logger.debug("App state services added to WebSocket request context")
-        else:
-            logger.warning("Connection manager app is None")
-    else:
-        logger.warning("Connection manager does not have access to app state services")
-
     # Get player name for the command handler
     player_name = getattr(player, "name", "Unknown")
 
@@ -647,9 +636,9 @@ async def broadcast_room_update(player_id: str, room_id: str):
             # Update player's current room
             player.current_room_id = room_id
 
-        # Broadcast to room (excluding the player who triggered the update)
+        # Broadcast to room
         logger.debug(f"Broadcasting room update to room: {room_id}")
-        await connection_manager.broadcast_to_room(room_id, update_event, exclude_player=player_id)
+        await connection_manager.broadcast_to_room(room_id, update_event)
         logger.debug(f"Room update broadcast completed for room: {room_id}")
 
     except Exception as e:

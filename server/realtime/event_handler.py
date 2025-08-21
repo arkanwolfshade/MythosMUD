@@ -125,6 +125,8 @@ class RealTimeEventHandler:
                             names.append(n)
                     elif isinstance(occ, str):
                         names.append(occ)
+                # Convert room_id to string for JSON serialization
+                room_id_str = str(event.room_id) if event.room_id else ""
 
                 personal = {
                     "event_type": "room_occupants",
