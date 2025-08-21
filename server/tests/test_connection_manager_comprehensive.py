@@ -940,13 +940,10 @@ class TestConnectionManagerComprehensive:
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = "sse_conn_id"
 
-        # Create a mock that returns a completed coroutine but asyncio.run fails
-        async def mock_track_async(player_id):
-            return None
-
-        with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-            with patch("asyncio.run", side_effect=Exception("Tracking failed")):
-                with patch.object(connection_manager, "_track_player_disconnected", side_effect=mock_track_async):
+        # Mock the _check_and_process_disconnect method to avoid creating unawaited coroutines
+        with patch.object(connection_manager, "_check_and_process_disconnect"):
+            with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
+                with patch("asyncio.run", side_effect=Exception("Tracking failed")):
                     connection_manager.disconnect_sse("test_player")
                     # Should not raise exception
 
