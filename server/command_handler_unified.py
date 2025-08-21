@@ -201,7 +201,7 @@ async def process_command_unified(
 
     # Step 6.5: Check if single word command is an emote
     if not args and _is_predefined_emote(cmd):
-        logger.debug(f"Single word emote detected, converting to emote command: {cmd}")
+        logger.debug("Single word emote detected, converting to emote command", player=player_name, emote=cmd)
         emote_command = f"emote {cmd}"
         # Use the command service directly to avoid recursion
         return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)

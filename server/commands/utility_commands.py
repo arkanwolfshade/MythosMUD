@@ -253,27 +253,26 @@ async def handle_emote_command(
     Returns:
         dict: Emote command result
     """
-    logger.debug(f"Processing emote command for {player_name} with args_or_data: {args_or_data}")
+    logger.debug("Processing emote command", player=player_name, args_or_data=args_or_data)
 
     # Handle both old format (args list) and new format (command_data dict)
     if isinstance(args_or_data, dict):
         # New format: command_data dictionary
         action = args_or_data.get("action")
         if not action:
-            logger.warning(f"Emote command with no action for {player_name}")
+            logger.warning("Emote command with no action", player=player_name)
             return {"result": "Emote what? Usage: emote <action>"}
     else:
         # Old format: args list
         if not args_or_data:
-            logger.warning(f"Emote command with no action for {player_name}")
+            logger.warning("Emote command with no action", player=player_name)
             return {"result": "Emote what? Usage: emote <action>"}
         action = " ".join(args_or_data)
-    logger.debug(f"Player {player_name} performing emote: {action}")
+    logger.debug("Player performing emote", player=player_name, action=action)
 
     try:
         # Import and use the emote service
         from ..game.emote_service import EmoteService
-
         emote_service = EmoteService()
 
         # Check if this is a predefined emote
@@ -282,18 +281,18 @@ async def handle_emote_command(
             self_message, other_message = emote_service.format_emote_messages(action, player_name)
 
             # Return both messages for broadcasting
-            logger.debug(f"Predefined emote executed for {player_name}: {action}, message: {self_message}")
+            logger.debug("Predefined emote executed", player=player_name, emote=action, message=self_message)
             return {"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}
         else:
             # Custom emote - use the action as provided
-            logger.debug(f"Custom emote executed for {player_name}: {action}")
+            logger.debug("Custom emote executed", player=player_name, action=action)
             return {"result": f"{player_name} {action}"}
 
     except Exception as e:
         import traceback
 
         logger.error(
-            f"Emote command error for {player_name}: action={action}, error={str(e)}, traceback={traceback.format_exc()}"
+            "Emote command error", player=player_name, action=action, error=str(e), traceback=traceback.format_exc()
         )
         # Fallback to simple emote if emote service fails
         return {"result": f"{player_name} {action}"}
