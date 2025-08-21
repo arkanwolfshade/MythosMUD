@@ -117,16 +117,11 @@ vi.mock('./ui/TerminalInput', () => ({
 }));
 
 // Mock global objects
-const mockCreateElement = vi.fn();
 const mockClick = vi.fn();
 const mockCreateObjectURL = vi.fn();
 const mockRevokeObjectURL = vi.fn();
 
-Object.defineProperty(document, 'createElement', {
-  value: mockCreateElement,
-  writable: true,
-});
-
+// Mock URL methods
 Object.defineProperty(URL, 'createObjectURL', {
   value: mockCreateObjectURL,
   writable: true,
@@ -141,11 +136,17 @@ describe('ChatPanelTest', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Mock document.createElement to return a mock anchor element
-    mockCreateElement.mockReturnValue({
-      href: '',
-      download: '',
-      click: mockClick,
+    // Mock document.createElement for specific tests that need it
+    const originalCreateElement = document.createElement;
+    document.createElement = vi.fn((tagName: string) => {
+      if (tagName === 'a') {
+        return {
+          href: '',
+          download: '',
+          click: mockClick,
+        } as unknown as HTMLAnchorElement;
+      }
+      return originalCreateElement.call(document, tagName);
     });
 
     mockCreateObjectURL.mockReturnValue('mock-url');
@@ -181,7 +182,8 @@ describe('ChatPanelTest', () => {
       render(<ChatPanelTest />);
 
       expect(screen.getByText('Message Type:')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('chat')).toBeInTheDocument();
+      expect(screen.getByRole('combobox')).toBeInTheDocument();
+      expect(screen.getByText('Chat')).toBeInTheDocument();
     });
 
     it('should render message input', () => {
@@ -193,7 +195,7 @@ describe('ChatPanelTest', () => {
     it('should handle message type changes', () => {
       render(<ChatPanelTest />);
 
-      const select = screen.getByDisplayValue('chat');
+      const select = screen.getByRole('combobox');
       fireEvent.change(select, { target: { value: 'whisper' } });
 
       expect(select).toHaveValue('whisper');
@@ -268,7 +270,7 @@ describe('ChatPanelTest', () => {
       const downloadButton = screen.getByTestId('download-logs');
       fireEvent.click(downloadButton);
 
-      expect(mockCreateElement).toHaveBeenCalledWith('a');
+      expect(document.createElement).toHaveBeenCalledWith('a');
       expect(mockCreateObjectURL).toHaveBeenCalled();
       expect(mockClick).toHaveBeenCalled();
       expect(mockRevokeObjectURL).toHaveBeenCalled();

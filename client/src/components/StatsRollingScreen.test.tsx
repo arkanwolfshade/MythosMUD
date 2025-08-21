@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { StatsRollingScreen } from './StatsRollingScreen';
 
@@ -197,7 +197,9 @@ describe('StatsRollingScreen', () => {
       });
 
       const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      await act(async () => {
+        fireEvent.click(acceptButton);
+      });
 
       await waitFor(() => {
         expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith({
@@ -236,7 +238,9 @@ describe('StatsRollingScreen', () => {
       });
 
       const rerollButton = screen.getByText('Reroll Stats');
-      fireEvent.click(rerollButton);
+      await act(async () => {
+        fireEvent.click(rerollButton);
+      });
 
       // Should make another API call
       expect(mockFetch).toHaveBeenCalledTimes(2);

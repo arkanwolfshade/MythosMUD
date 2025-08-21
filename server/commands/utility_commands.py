@@ -273,6 +273,7 @@ async def handle_emote_command(
     try:
         # Import and use the emote service
         from ..game.emote_service import EmoteService
+
         emote_service = EmoteService()
 
         # Check if this is a predefined emote

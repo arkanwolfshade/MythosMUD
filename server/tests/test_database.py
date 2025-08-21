@@ -203,7 +203,9 @@ class TestInitDB:
 
             # Mock the imports to ensure they're called
             with patch("builtins.__import__") as mock_import:
-                await init_db()
+                # Mock the global connection_manager instance to avoid creating unawaited coroutines
+                with patch("server.realtime.connection_manager.connection_manager"):
+                    await init_db()
 
                 # Verify that models were imported
                 assert mock_import.called
