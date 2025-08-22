@@ -418,7 +418,7 @@ class TestTeleportConfirmation:
         mock_connection_manager = MagicMock()
         mock_connection_manager.online_players = {
             "target_id": {"display_name": "TestPlayer", "room_id": "target_room"},
-            "admin_user": {"display_name": "AdminUser", "room_id": "admin_room"}
+            "admin_user": {"display_name": "AdminUser", "room_id": "admin_room"},
         }
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_app.state.connection_manager = mock_connection_manager

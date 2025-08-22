@@ -8,6 +8,7 @@ teleport and goto functionality with proper validation and security.
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -38,20 +39,86 @@ async def validate_admin_permission(player, player_name: str) -> bool:
     Returns:
         bool: True if player has admin permissions, False otherwise
     """
-    if not player:
-        logger.warning(f"Admin permission check failed - no player object for {player_name}")
-        return False
+    try:
+        if not player:
+            logger.warning(f"Admin permission check failed - no player object for {player_name}")
 
-    if not hasattr(player, "is_admin"):
-        logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
-        return False
+            # Log the failed permission check
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_permission_check(
+                player_name=player_name,
+                action="admin_teleport",
+                has_permission=False,
+                additional_data={"error": "No player object"}
+            )
+            return False
 
-    if not player.is_admin:
-        logger.info(f"Admin permission denied for {player_name}")
-        return False
+        if not hasattr(player, "is_admin"):
+            logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
 
-    logger.debug(f"Admin permission granted for {player_name}")
-    return True
+            # Log the failed permission check
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_permission_check(
+                player_name=player_name,
+                action="admin_teleport",
+                has_permission=False,
+                additional_data={
+                    "error": "No is_admin attribute",
+                    "player_type": type(player).__name__
+                }
+            )
+            return False
+
+        if not player.is_admin:
+            logger.info(f"Admin permission denied for {player_name}")
+
+            # Log the failed permission check
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_permission_check(
+                player_name=player_name,
+                action="admin_teleport",
+                has_permission=False,
+                additional_data={
+                    "player_type": type(player).__name__,
+                    "is_admin_value": player.is_admin
+                }
+            )
+            return False
+
+        # Log the successful permission check
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_permission_check(
+            player_name=player_name,
+            action="admin_teleport",
+            has_permission=True,
+            additional_data={
+                "player_type": type(player).__name__,
+                "is_admin_value": player.is_admin
+            }
+        )
+
+        logger.debug(f"Admin permission granted for {player_name}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error checking admin permissions for {player_name}: {str(e)}")
+
+        # Log the failed permission check
+        try:
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_permission_check(
+                player_name=player_name,
+                action="admin_teleport",
+                has_permission=False,
+                additional_data={
+                    "error": str(e),
+                    "player_type": type(player).__name__ if player else "None"
+                }
+            )
+        except Exception as log_error:
+            logger.error(f"Failed to log permission check error: {str(log_error)}")
+
+        return False
 
 
 async def get_online_player_by_display_name(display_name: str, connection_manager) -> dict | None:
@@ -101,11 +168,7 @@ def create_teleport_effect_message(player_name: str, effect_type: str) -> str:
 
 
 async def broadcast_teleport_effects(
-    connection_manager,
-    player_name: str,
-    from_room_id: str,
-    to_room_id: str,
-    teleport_type: str
+    connection_manager, player_name: str, from_room_id: str, to_room_id: str, teleport_type: str
 ) -> None:
     """
     Broadcast teleport visual effects to players in affected rooms.
@@ -125,20 +188,12 @@ async def broadcast_teleport_effects(
         arrival_message = create_teleport_effect_message(player_name, "arrival")
 
         # Broadcast departure effect to source room
-        if hasattr(connection_manager, 'broadcast_to_room'):
-            await connection_manager.broadcast_to_room(
-                from_room_id,
-                departure_message,
-                exclude_player=player_name
-            )
+        if hasattr(connection_manager, "broadcast_to_room"):
+            await connection_manager.broadcast_to_room(from_room_id, departure_message, exclude_player=player_name)
 
         # Broadcast arrival effect to destination room
-        if hasattr(connection_manager, 'broadcast_to_room'):
-            await connection_manager.broadcast_to_room(
-                to_room_id,
-                arrival_message,
-                exclude_player=player_name
-            )
+        if hasattr(connection_manager, "broadcast_to_room"):
+            await connection_manager.broadcast_to_room(to_room_id, arrival_message, exclude_player=player_name)
 
         logger.debug(f"Teleport effects broadcast for {player_name} from {from_room_id} to {to_room_id}")
 
@@ -147,10 +202,7 @@ async def broadcast_teleport_effects(
 
 
 async def notify_player_of_teleport(
-    connection_manager,
-    target_player_name: str,
-    admin_name: str,
-    notification_type: str
+    connection_manager, target_player_name: str, admin_name: str, notification_type: str
 ) -> None:
     """
     Notify a player that they are being teleported by an admin.
@@ -171,7 +223,7 @@ async def notify_player_of_teleport(
         for player_id, player_info in connection_manager.online_players.items():
             if player_info.get("display_name", "").lower() == target_player_name.lower():
                 # Send system notification to the target player
-                if hasattr(connection_manager, 'send_to_player'):
+                if hasattr(connection_manager, "send_to_player"):
                     await connection_manager.send_to_player(player_id, message)
                 break
 
@@ -250,7 +302,9 @@ async def handle_teleport_command(
     command_data["target_player"] = target_player_name
 
     logger.info(f"Teleport confirmation requested - {player_name} wants to teleport {target_player_name}")
-    return {"result": f"Are you sure you want to teleport {target_player_name} to your location? Type 'confirm teleport {target_player_name}' to proceed."}
+    return {
+        "result": f"Are you sure you want to teleport {target_player_name} to your location? Type 'confirm teleport {target_player_name}' to proceed."
+    }
 
 
 async def handle_goto_command(
@@ -322,7 +376,9 @@ async def handle_goto_command(
     command_data["target_player"] = target_player_name
 
     logger.info(f"Goto confirmation requested - {player_name} wants to goto {target_player_name}")
-    return {"result": f"Are you sure you want to teleport to {target_player_name}'s location? Type 'confirm goto {target_player_name}' to proceed."}
+    return {
+        "result": f"Are you sure you want to teleport to {target_player_name}'s location? Type 'confirm goto {target_player_name}' to proceed."
+    }
 
 
 async def handle_confirm_teleport_command(
@@ -413,20 +469,49 @@ async def handle_confirm_teleport_command(
 
         # Broadcast visual effects
         await broadcast_teleport_effects(
-            connection_manager,
-            target_player_name,
-            original_room_id,
-            target_room_id,
-            "teleport"
+            connection_manager, target_player_name, original_room_id, target_room_id, "teleport"
         )
 
         # Notify target player
         await notify_player_of_teleport(connection_manager, target_player_name, player_name, "teleported_to")
 
-        logger.info(f"Teleport executed successfully - {player_name} teleported {target_player_name} to {target_room_id}")
+        # Log the successful teleport action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="teleport",
+            from_room=original_room_id,
+            to_room=target_room_id,
+            success=True,
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            }
+        )
+
+        logger.info(
+            f"Teleport executed successfully - {player_name} teleported {target_player_name} to {target_room_id}"
+        )
         return {"result": f"You have successfully teleported {target_player_name} to your location."}
 
     except Exception as e:
+        # Log the failed teleport action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="teleport",
+            from_room=target_player.current_room_id,
+            to_room=current_player.current_room_id,
+            success=False,
+            error_message=str(e),
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            }
+        )
+
         logger.error(f"Teleport execution failed - {player_name} tried to teleport {target_player_name}: {str(e)}")
         return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
 
@@ -519,17 +604,44 @@ async def handle_confirm_goto_command(
             admin_player_info["room_id"] = target_room_id
 
         # Broadcast visual effects
-        await broadcast_teleport_effects(
-            connection_manager,
-            player_name,
-            original_room_id,
-            target_room_id,
-            "goto"
+        await broadcast_teleport_effects(connection_manager, player_name, original_room_id, target_room_id, "goto")
+
+        # Log the successful goto action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="goto",
+            from_room=original_room_id,
+            to_room=target_room_id,
+            success=True,
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            }
         )
 
-        logger.info(f"Goto executed successfully - {player_name} teleported to {target_player_name} at {target_room_id}")
+        logger.info(
+            f"Goto executed successfully - {player_name} teleported to {target_player_name} at {target_room_id}"
+        )
         return {"result": f"You have successfully teleported to {target_player_name}'s location."}
 
     except Exception as e:
+        # Log the failed goto action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="goto",
+            from_room=current_player.current_room_id,
+            to_room=target_player.current_room_id,
+            success=False,
+            error_message=str(e),
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            }
+        )
+
         logger.error(f"Goto execution failed - {player_name} tried to goto {target_player_name}: {str(e)}")
         return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
