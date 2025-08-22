@@ -73,8 +73,6 @@ class TestGetUsernameFromUser:
         with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
-
-
     def test_get_username_from_user_none(self):
         """Test that ValueError is raised for None input."""
         with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
