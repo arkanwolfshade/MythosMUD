@@ -41,6 +41,9 @@ async def lifespan(app: FastAPI):
     # Make EventBus available directly on app.state for easier access
     app.state.event_bus = app.state.event_handler.event_bus
 
+    # Make connection_manager available directly on app.state for command handlers
+    app.state.connection_manager = connection_manager
+
     # Initialize persistence with the same EventBus so Rooms publish to it
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
     connection_manager.persistence = app.state.persistence

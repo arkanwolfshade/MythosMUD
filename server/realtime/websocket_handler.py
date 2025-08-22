@@ -458,10 +458,14 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     from ..command_handler_unified import process_command_unified
     from ..realtime.request_context import create_websocket_request_context
 
-    # Create proper request context for WebSocket
+    # Create proper request context for WebSocket using real app state
+    app_state = connection_manager.app.state if hasattr(connection_manager, "app") and connection_manager.app else None
+    if not app_state:
+        logger.error("No app state available for WebSocket request context")
+        return {"result": "Server configuration error. Please try again."}
+
     request_context = create_websocket_request_context(
-        persistence=connection_manager.persistence,
-        event_bus=getattr(connection_manager, "event_bus", None),
+        app_state=app_state,
         user=player,
     )
 
@@ -471,6 +475,14 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     # Create alias storage
     alias_storage = AliasStorage()
     request_context.set_alias_storage(alias_storage)
+
+    # Verify app state services are available (they should already be in the real app state)
+    player_service = getattr(app_state, "player_service", None)
+    user_manager = getattr(app_state, "user_manager", None)
+    logger.debug(f"App state services available - player_service: {player_service}, user_manager: {user_manager}")
+
+    if not player_service or not user_manager:
+        logger.warning("Missing required app state services - player_service or user_manager not available")
 
     # Process the command using the unified command handler
     result = await process_command_unified(

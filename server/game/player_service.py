@@ -405,6 +405,38 @@ class PlayerService:
 
         return True, f"Player {player_name} has been deleted"
 
+    def update_player_location(self, player_name: str, new_room_id: str) -> bool:
+        """
+        Update a player's current room location and save to database.
+
+        Args:
+            player_name: Name of the player to update
+            new_room_id: New room ID to move player to
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # Get the raw SQLAlchemy player object for modification
+            player = self.persistence.get_player_by_name(player_name)
+            if not player:
+                logger.warning(f"Cannot update location - player not found: {player_name}")
+                return False
+
+            # Update location
+            old_room = player.current_room_id
+            player.current_room_id = new_room_id
+
+            # Save to database
+            self.persistence.save_player(player)
+
+            logger.info(f"Player location updated: {player_name} moved from {old_room} to {new_room_id}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to update player location: {player_name} -> {new_room_id}: {str(e)}")
+            return False
+
     def _convert_player_to_schema(self, player) -> PlayerRead:
         """
         Convert a player object to PlayerRead schema.
@@ -428,6 +460,7 @@ class PlayerService:
                 status_effects=player.get_status_effects(),
                 created_at=player.created_at,
                 last_active=player.last_active,
+                is_admin=bool(player.is_admin),  # Convert integer to boolean
             )
         else:  # Dictionary
             return PlayerRead(
@@ -442,4 +475,5 @@ class PlayerService:
                 status_effects=player["status_effects"],
                 created_at=player["created_at"],
                 last_active=player["last_active"],
+                is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
             )

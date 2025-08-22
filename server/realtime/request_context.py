@@ -21,38 +21,24 @@ class WebSocketRequestContext:
     logic as HTTP requests, ensuring consistency across all interfaces.
     """
 
-    def __init__(self, persistence: Any, event_bus: Any | None = None, user: Any | None = None):
+    def __init__(self, app_state: Any, user: Any | None = None):
         """
         Initialize the WebSocket request context.
 
         Args:
-            persistence: Database persistence layer
-            event_bus: Event bus for inter-service communication
+            app_state: Real application state object
             user: User object with authentication context
         """
-        # Create a mock app state with required attributes
-        mock_state = type(
-            "MockState",
-            (),
-            {
-                "persistence": persistence,
-                "event_bus": event_bus,
-                "alias_storage": None,  # Will be set separately
-                "player_service": None,  # Will be set from real app state
-                "user_manager": None,  # Will be set from real app state
-            },
-        )()
-
-        # Create a mock app with the state
-        self.app = type("MockApp", (), {"state": mock_state})()
+        # Use the real app state instead of creating a mock
+        self.app = type("WebSocketApp", (), {"state": app_state})()
 
         # Store user context
         self.user = user
 
         logger.debug(
-            "WebSocket request context created",
-            has_persistence=persistence is not None,
-            has_event_bus=event_bus is not None,
+            "WebSocket request context created with real app state",
+            has_persistence=hasattr(app_state, "persistence"),
+            has_event_bus=hasattr(app_state, "event_bus"),
             has_user=user is not None,
         )
 
@@ -69,17 +55,23 @@ class WebSocketRequestContext:
     def set_app_state_services(self, player_service: Any, user_manager: Any) -> None:
         """
         Set the app state services in the request context.
+        Note: This method is kept for backward compatibility but services
+        should already be available in the real app state.
 
         Args:
             player_service: Player service instance
             user_manager: User manager instance
         """
-        logger.debug(f"Setting app state services - player_service: {player_service}, user_manager: {user_manager}")
-        self.app.state.player_service = player_service
-        self.app.state.user_manager = user_manager
-        logger.debug("App state services set in request context")
-        logger.debug(f"After setting - app.state.player_service: {self.app.state.player_service}")
-        logger.debug(f"After setting - app.state.user_manager: {self.app.state.user_manager}")
+        logger.debug(
+            f"App state services already available - player_service: {self.app.state.player_service}, user_manager: {self.app.state.user_manager}"
+        )
+        # Services should already be available in the real app state
+        # Only override if explicitly provided and different
+        if player_service is not None:
+            self.app.state.player_service = player_service
+        if user_manager is not None:
+            self.app.state.user_manager = user_manager
+        logger.debug("App state services verified in request context")
 
     def get_persistence(self) -> Any:
         """Get the persistence layer from the request context."""
@@ -94,18 +86,15 @@ class WebSocketRequestContext:
         return getattr(self.app.state, "alias_storage", None)
 
 
-def create_websocket_request_context(
-    persistence: Any, event_bus: Any | None = None, user: Any | None = None
-) -> WebSocketRequestContext:
+def create_websocket_request_context(app_state: Any, user: Any | None = None) -> WebSocketRequestContext:
     """
     Factory function to create a WebSocket request context.
 
     Args:
-        persistence: Database persistence layer
-        event_bus: Event bus for inter-service communication
+        app_state: Real application state object
         user: User object with authentication context
 
     Returns:
         WebSocketRequestContext: Configured request context
     """
-    return WebSocketRequestContext(persistence, event_bus, user)
+    return WebSocketRequestContext(app_state, user)

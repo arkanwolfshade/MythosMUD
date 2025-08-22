@@ -52,7 +52,7 @@ class TestAdminTeleportSecurity:
 
         # Test with player without is_admin attribute
         player_no_attr = MagicMock()
-        delattr(player_no_attr, 'is_admin')
+        delattr(player_no_attr, "is_admin")
         result = await validate_admin_permission(player_no_attr, "Attacker")
         assert result is False
 
@@ -96,10 +96,7 @@ class TestAdminTeleportSecurity:
         current_user = {"username": "AdminUser"}
 
         # Test SQL injection attempt in target player name
-        malicious_command = {
-            "command_type": "teleport",
-            "target_player": "TargetPlayer'; DROP TABLE players; --"
-        }
+        malicious_command = {"command_type": "teleport", "target_player": "TargetPlayer'; DROP TABLE players; --"}
 
         result = await handle_teleport_command(
             malicious_command, current_user, mock_request, mock_alias_storage, "AdminUser"
@@ -119,7 +116,7 @@ class TestAdminTeleportSecurity:
             "<script>alert('xss')</script>",
             "Player<img src=x onerror=alert('xss')>",
             "Player';alert('xss');//",
-            "Player<script>document.location='http://evil.com'</script>"
+            "Player<script>document.location='http://evil.com'</script>",
         ]
 
         for malicious_name in malicious_names:
@@ -158,7 +155,7 @@ class TestAdminTeleportSecurity:
             "../../../etc/passwd",
             "..\\..\\..\\windows\\system32\\config\\sam",
             "....//....//....//etc/passwd",
-            "..%2F..%2F..%2Fetc%2Fpasswd"
+            "..%2F..%2F..%2Fetc%2Fpasswd",
         ]
 
         for traversal_attempt in traversal_attempts:
@@ -248,8 +245,9 @@ class TestAdminTeleportSecurity:
             # Should handle gracefully
             assert "result" in result
             # Should either fail validation or not find the player
-            assert any(keyword in result["result"].lower() for keyword in
-                      ["not found", "not online", "invalid", "usage"])
+            assert any(
+                keyword in result["result"].lower() for keyword in ["not found", "not online", "invalid", "usage"]
+            )
 
     @pytest.mark.asyncio
     async def test_concurrent_admin_privilege_checks(self, mock_app_state):
@@ -272,7 +270,7 @@ class TestAdminTeleportSecurity:
             "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
         }
 
-                # Test concurrent permission checks
+        # Test concurrent permission checks
         async def check_permission():
             return await validate_admin_permission(admin_player, "AdminUser")
 
@@ -392,8 +390,7 @@ class TestAdminTeleportSecurity:
 
         # Mock connection manager with multiple online players
         mock_app_state.connection_manager.online_players = {
-            f"target_{i}_id": {"display_name": f"TargetPlayer{i}", "room_id": f"target_room_{i}"}
-            for i in range(5)
+            f"target_{i}_id": {"display_name": f"TargetPlayer{i}", "room_id": f"target_room_{i}"} for i in range(5)
         }
 
         mock_request = MagicMock()
@@ -448,7 +445,7 @@ class TestAdminTeleportSecurity:
     @pytest.mark.asyncio
     async def test_log_injection_prevention(self, mock_app_state):
         """Test prevention of log injection attacks."""
-        with patch('server.commands.admin_teleport_commands.get_admin_actions_logger') as mock_logger:
+        with patch("server.commands.admin_teleport_commands.get_admin_actions_logger") as mock_logger:
             # Mock admin player
             admin_player = MagicMock()
             admin_player.is_admin = True

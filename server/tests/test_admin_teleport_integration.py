@@ -132,15 +132,13 @@ class TestAdminTeleportIntegration:
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
             "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"},
-            "admin_id": {"display_name": "AdminUser", "room_id": "admin_room"}
+            "admin_id": {"display_name": "AdminUser", "room_id": "admin_room"},
         }
 
         mock_alias_storage = MagicMock()
 
         # Step 1: Initial goto command
-        result = await handle_goto_command(
-            command_data, current_user, mock_request, mock_alias_storage, "AdminUser"
-        )
+        result = await handle_goto_command(command_data, current_user, mock_request, mock_alias_storage, "AdminUser")
 
         assert "result" in result
         assert "confirm goto" in result["result"].lower()
@@ -287,7 +285,9 @@ class TestAdminTeleportIntegration:
         assert "Database error" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_teleport_workflow_with_connection_manager_error(self, mock_app_state, mock_admin_player, mock_target_player):
+    async def test_teleport_workflow_with_connection_manager_error(
+        self, mock_app_state, mock_admin_player, mock_target_player
+    ):
         """Test teleport workflow when connection manager operations fail."""
         # Setup
         command_data = {"command_type": "confirm_teleport", "target_player": "TargetPlayer"}
@@ -335,7 +335,7 @@ class TestAdminTeleportIntegration:
 
         # Test player without is_admin attribute
         player_no_attr = MagicMock()
-        delattr(player_no_attr, 'is_admin')
+        delattr(player_no_attr, "is_admin")
         result = await validate_admin_permission(player_no_attr, "UnknownUser")
         assert result is False
 
@@ -346,7 +346,7 @@ class TestAdminTeleportIntegration:
     @pytest.mark.asyncio
     async def test_audit_logging_integration(self, mock_app_state, mock_admin_player, mock_target_player):
         """Test that audit logging is properly integrated into teleport workflow."""
-        with patch('server.commands.admin_teleport_commands.get_admin_actions_logger') as mock_logger:
+        with patch("server.commands.admin_teleport_commands.get_admin_actions_logger") as mock_logger:
             # Setup
             command_data = {"command_type": "confirm_teleport", "target_player": "TargetPlayer"}
             current_user = {"username": "AdminUser"}
@@ -382,10 +382,10 @@ class TestAdminTeleportIntegration:
 
             # Verify the log call parameters
             call_args = mock_logger_instance.log_teleport_action.call_args
-            assert call_args[1]['admin_name'] == "AdminUser"
-            assert call_args[1]['target_player'] == "TargetPlayer"
-            assert call_args[1]['action_type'] == "teleport"
-            assert call_args[1]['success'] is True
+            assert call_args[1]["admin_name"] == "AdminUser"
+            assert call_args[1]["target_player"] == "TargetPlayer"
+            assert call_args[1]["action_type"] == "teleport"
+            assert call_args[1]["success"] is True
 
     @pytest.mark.asyncio
     async def test_concurrent_teleport_operations(self, mock_app_state, mock_admin_player):
@@ -416,7 +416,7 @@ class TestAdminTeleportIntegration:
         # Mock connection manager with multiple online players
         mock_app_state.connection_manager.online_players = {
             "target1_id": {"display_name": "Target1", "room_id": "room_1"},
-            "target2_id": {"display_name": "Target2", "room_id": "room_2"}
+            "target2_id": {"display_name": "Target2", "room_id": "room_2"},
         }
 
         mock_request = MagicMock()
@@ -476,10 +476,8 @@ class TestAdminTeleportIntegration:
 
         mock_alias_storage = MagicMock()
 
-                # Execute teleport command
-        await handle_confirm_teleport_command(
-            command_data, current_user, mock_request, mock_alias_storage, "AdminUser"
-        )
+        # Execute teleport command
+        await handle_confirm_teleport_command(command_data, current_user, mock_request, mock_alias_storage, "AdminUser")
 
         # Verify database was still updated
         mock_app_state.persistence.save_player.assert_called_once()
@@ -499,19 +497,17 @@ class TestAdminTeleportPerformance:
         for i in range(1000):
             connection_manager.online_players[f"player_{i}"] = {
                 "display_name": f"Player{i}",
-                "room_id": f"room_{i % 10}"
+                "room_id": f"room_{i % 10}",
             }
 
         # Add target player at the end
-        connection_manager.online_players["target_id"] = {
-            "display_name": "TargetPlayer",
-            "room_id": "target_room"
-        }
+        connection_manager.online_players["target_id"] = {"display_name": "TargetPlayer", "room_id": "target_room"}
 
         # Test player lookup performance
         import time
 
         from server.commands.admin_teleport_commands import get_online_player_by_display_name
+
         start_time = time.time()
 
         result = await get_online_player_by_display_name("TargetPlayer", connection_manager)

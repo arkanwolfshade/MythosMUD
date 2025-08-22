@@ -53,6 +53,13 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             )
             return False
 
+        # Debug logging to see player object details
+        logger.debug(f"Admin permission check for {player_name} - player type: {type(player).__name__}")
+        logger.debug(f"Player has is_admin attribute: {hasattr(player, 'is_admin')}")
+        if hasattr(player, "is_admin"):
+            logger.debug(f"Player is_admin value: {player.is_admin} (type: {type(player.is_admin)})")
+            logger.debug(f"bool(player.is_admin): {bool(player.is_admin)}")
+
         if not hasattr(player, "is_admin"):
             logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
 
@@ -66,8 +73,9 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             )
             return False
 
+        # Check if player has admin privileges (PlayerRead schema uses boolean)
         if not player.is_admin:
-            logger.info(f"Admin permission denied for {player_name}")
+            logger.info(f"Admin permission denied for {player_name} - is_admin value: {player.is_admin}")
 
             # Log the failed permission check
             admin_logger = get_admin_actions_logger()
@@ -88,7 +96,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             additional_data={"player_type": type(player).__name__, "is_admin_value": player.is_admin},
         )
 
-        logger.debug(f"Admin permission granted for {player_name}")
+        logger.info(f"Admin permission granted for {player_name} - is_admin value: {player.is_admin}")
         return True
 
     except Exception as e:
@@ -128,7 +136,7 @@ async def get_online_player_by_display_name(display_name: str, connection_manage
     display_name_lower = display_name.lower()
 
     for player_id, player_info in connection_manager.online_players.items():
-        if player_info.get("display_name", "").lower() == display_name_lower:
+        if player_info.get("player_name", "").lower() == display_name_lower:
             logger.debug(f"Found online player {display_name} with ID {player_id}")
             return player_info
 
@@ -209,7 +217,7 @@ async def notify_player_of_teleport(
 
         # Find the target player's connection and send them a direct message
         for player_id, player_info in connection_manager.online_players.items():
-            if player_info.get("display_name", "").lower() == target_player_name.lower():
+            if player_info.get("player_name", "").lower() == target_player_name.lower():
                 # Send system notification to the target player
                 if hasattr(connection_manager, "send_to_player"):
                     await connection_manager.send_to_player(player_id, message)
@@ -239,60 +247,64 @@ async def handle_teleport_command(
     """
     logger.debug(f"Processing teleport command for {player_name} with command_data: {command_data}")
 
-    app = request.app if request else None
-    if not app:
-        logger.warning(f"Teleport command failed - no app context for {player_name}")
-        return {"result": "Teleport functionality is not available."}
+    try:
+        app = request.app if request else None
+        if not app:
+            logger.warning(f"Teleport command failed - no app context for {player_name}")
+            return {"result": "Teleport functionality is not available."}
 
-    # Get player service
-    player_service = app.state.player_service if app else None
-    if not player_service:
-        logger.warning(f"Teleport command failed - no player service for {player_name}")
-        return {"result": "Player service not available."}
+        # Get player service
+        player_service = app.state.player_service if app else None
+        if not player_service:
+            logger.warning(f"Teleport command failed - no player service for {player_name}")
+            return {"result": "Player service not available."}
 
-    # Get current player and validate admin permissions
-    current_player = player_service.get_player_by_name(player_name)
-    if not current_player:
-        logger.warning(f"Teleport command failed - current player not found for {player_name}")
-        return {"result": "Player not found."}
+        # Get current player and validate admin permissions
+        current_player = player_service.get_player_by_name(player_name)
+        if not current_player:
+            logger.warning(f"Teleport command failed - current player not found for {player_name}")
+            return {"result": "Player not found."}
 
-    is_admin = await validate_admin_permission(current_player, player_name)
-    if not is_admin:
-        return {"result": "You do not have permission to use teleport commands."}
+        is_admin = await validate_admin_permission(current_player, player_name)
+        if not is_admin:
+            return {"result": "You do not have permission to use teleport commands."}
 
-    # Extract target player from command data
-    target_player_name = command_data.get("target_player")
-    if not target_player_name:
-        return {"result": "Usage: teleport <player_name>"}
+        # Extract target player from command data
+        target_player_name = command_data.get("target_player")
+        if not target_player_name:
+            return {"result": "Usage: teleport <player_name>"}
 
-    # Get connection manager
-    connection_manager = app.state.connection_manager if app else None
-    if not connection_manager:
-        logger.warning(f"Teleport command failed - no connection manager for {player_name}")
-        return {"result": "Connection manager not available."}
+        # Get connection manager
+        connection_manager = app.state.connection_manager if app else None
+        if not connection_manager:
+            logger.warning(f"Teleport command failed - no connection manager for {player_name}")
+            return {"result": "Connection manager not available."}
 
-    # Find target player online
-    target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
-    if not target_player_info:
-        return {"result": f"Player '{target_player_name}' is not online or not found."}
+        # Find target player online
+        target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
+        if not target_player_info:
+            return {"result": f"Player '{target_player_name}' is not online or not found."}
 
-    # Get target player object
-    target_player = player_service.get_player_by_name(target_player_name)
-    if not target_player:
-        logger.warning(f"Teleport command failed - target player not found in database: {target_player_name}")
-        return {"result": f"Player '{target_player_name}' not found in database."}
+        # Get target player object
+        target_player = player_service.get_player_by_name(target_player_name)
+        if not target_player:
+            logger.warning(f"Teleport command failed - target player not found in database: {target_player_name}")
+            return {"result": f"Player '{target_player_name}' not found in database."}
 
-    # Check if target is already in the same room
-    if target_player.current_room_id == current_player.current_room_id:
-        return {"result": f"{target_player_name} is already in your location."}
+        # Check if target is already in the same room
+        if target_player.current_room_id == current_player.current_room_id:
+            return {"result": f"{target_player_name} is already in your location."}
 
-    # Store target player for confirmation
-    command_data["target_player"] = target_player_name
+        # Store target player for confirmation
+        command_data["target_player"] = target_player_name
 
-    logger.info(f"Teleport confirmation requested - {player_name} wants to teleport {target_player_name}")
-    return {
-        "result": f"Are you sure you want to teleport {target_player_name} to your location? Type 'confirm teleport {target_player_name}' to proceed."
-    }
+        logger.info(f"Teleport confirmation requested - {player_name} wants to teleport {target_player_name}")
+        return {
+            "result": f"Are you sure you want to teleport {target_player_name} to your location? Type 'confirm teleport {target_player_name}' to proceed."
+        }
+    except Exception as e:
+        logger.error(f"Exception in teleport command handler: {str(e)}", exc_info=True)
+        return {"result": f"Error processing teleport command: {str(e)}"}
 
 
 async def handle_goto_command(
@@ -434,22 +446,16 @@ async def handle_confirm_teleport_command(
     if target_player.current_room_id == current_player.current_room_id:
         return {"result": f"{target_player_name} is already in your location."}
 
-    # Get persistence layer
-    persistence = app.state.persistence if app else None
-    if not persistence:
-        logger.warning(f"Confirm teleport command failed - no persistence layer for {player_name}")
-        return {"result": "Persistence layer not available."}
-
     try:
         # Store original location for visual effects
         original_room_id = target_player.current_room_id
         target_room_id = current_player.current_room_id
 
-        # Update target player's location
-        target_player.current_room_id = target_room_id
-
-        # Persist the change to database
-        persistence.save_player(target_player)
+        # Update target player's location using PlayerService
+        success = player_service.update_player_location(target_player_name, target_room_id)
+        if not success:
+            logger.error(f"Failed to update target player location: {target_player_name}")
+            return {"result": f"Failed to teleport {target_player_name}: database update failed."}
 
         # Update connection manager's online player info
         if target_player_info:
@@ -569,22 +575,16 @@ async def handle_confirm_goto_command(
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}
 
-    # Get persistence layer
-    persistence = app.state.persistence if app else None
-    if not persistence:
-        logger.warning(f"Confirm goto command failed - no persistence layer for {player_name}")
-        return {"result": "Persistence layer not available."}
-
     try:
         # Store original location for visual effects
         original_room_id = current_player.current_room_id
         target_room_id = target_player.current_room_id
 
-        # Update admin player's location
-        current_player.current_room_id = target_room_id
-
-        # Persist the change to database
-        persistence.save_player(current_player)
+        # Update admin player's location using PlayerService
+        success = player_service.update_player_location(player_name, target_room_id)
+        if not success:
+            logger.error(f"Failed to update admin player location: {player_name}")
+            return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
 
         # Update connection manager's online player info for admin
         admin_player_info = connection_manager.online_players.get(player_name, {})

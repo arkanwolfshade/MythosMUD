@@ -16,8 +16,11 @@ from ..models.command import (
     AliasesCommand,
     Command,
     CommandType,
+    ConfirmGotoCommand,
+    ConfirmTeleportCommand,
     EmoteCommand,
     GoCommand,
+    GotoCommand,
     HelpCommand,
     LookCommand,
     MeCommand,
@@ -26,6 +29,7 @@ from ..models.command import (
     MutesCommand,
     PoseCommand,
     SayCommand,
+    TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
@@ -169,6 +173,14 @@ class CommandParser:
                 return self._create_add_admin_command(args)
             elif command == CommandType.MUTES.value:
                 return self._create_mutes_command(args)
+            elif command == CommandType.TELEPORT.value:
+                return self._create_teleport_command(args)
+            elif command == CommandType.GOTO.value:
+                return self._create_goto_command(args)
+            elif command == CommandType.CONFIRM_TELEPORT.value:
+                return self._create_confirm_teleport_command(args)
+            elif command == CommandType.CONFIRM_GOTO.value:
+                return self._create_confirm_goto_command(args)
             else:
                 raise ValueError(f"Unsupported command: {command}")
 
@@ -327,6 +339,34 @@ class CommandParser:
         if args:
             raise ValueError("Mutes command takes no arguments")
         return MutesCommand()
+
+    def _create_teleport_command(self, args: list[str]) -> TeleportCommand:
+        """Create TeleportCommand from arguments."""
+        if not args:
+            raise ValueError("Teleport command requires a player name")
+        player_name = args[0]
+        return TeleportCommand(player_name=player_name)
+
+    def _create_goto_command(self, args: list[str]) -> GotoCommand:
+        """Create GotoCommand from arguments."""
+        if not args:
+            raise ValueError("Goto command requires a player name")
+        player_name = args[0]
+        return GotoCommand(player_name=player_name)
+
+    def _create_confirm_teleport_command(self, args: list[str]) -> ConfirmTeleportCommand:
+        """Create ConfirmTeleportCommand from arguments."""
+        if not args:
+            raise ValueError("Confirm teleport command requires a player name")
+        player_name = args[0]
+        return ConfirmTeleportCommand(player_name=player_name)
+
+    def _create_confirm_goto_command(self, args: list[str]) -> ConfirmGotoCommand:
+        """Create ConfirmGotoCommand from arguments."""
+        if not args:
+            raise ValueError("Confirm goto command requires a player name")
+        player_name = args[0]
+        return ConfirmGotoCommand(player_name=player_name)
 
     def get_command_help(self, command_name: str | None = None) -> str:
         """

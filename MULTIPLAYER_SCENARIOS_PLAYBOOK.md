@@ -11,7 +11,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 
 ## Rules
 
-- **Default Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer) - update SQLite directly if necessary
+- **Starting Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer) - update SQLite directly if necessary
 - **Stop the client/server using stop_server.ps1**
 - **Use Playwright MCP**
 - **Use the credentials provided in this playbook**
@@ -355,7 +355,134 @@ Tests chat message broadcasting between players in the same room.
 
 ---
 
-## Scenario 5: Player Commands and Interactions (PLANNED)
+## Scenario 5: Admin Teleportation System
+
+### Description
+
+Tests the admin teleportation system functionality, including both `/teleport` and `/goto` commands with confirmation steps, error handling, and audit logging validation.
+
+### Prerequisites
+
+- **ArkanWolfshade** must have admin privileges in the database
+- Both players should be online and in different rooms
+- Run scenarios 1-4 first to ensure clean multiplayer state
+
+### Steps
+
+#### Phase 1: Initial Setup and Error Testing
+
+1. **AW enters the game** (Main Foyer - `earth_arkham_city_sanitarium_room_foyer_001`)
+2. **Ithaqua enters the game** (East Hallway - `earth_arkham_city_sanitarium_room_hallway_001`)
+3. **Ithaqua attempts admin command**: `teleport ArkanWolfshade`
+   - **Expected**: `"You do not have permission to use teleport commands."`
+   - **Validates**: Non-admin permission rejection
+
+4. **Ithaqua attempts admin command**: `goto ArkanWolfshade`
+   - **Expected**: `"You do not have permission to use teleport commands."`
+   - **Validates**: Non-admin permission rejection
+
+5. **AW attempts to teleport offline player**: `teleport NonexistentPlayer`
+   - **Expected**: `"Player 'NonexistentPlayer' is not online or not found."`
+   - **Validates**: Offline player handling
+
+#### Phase 2: Teleport Command Testing (AW brings Ithaqua to Main Foyer)
+
+6. **AW uses teleport command**: `teleport Ithaqua`
+   - **AW should see**: `"You are about to teleport Ithaqua to your location. Type 'confirm teleport Ithaqua' to proceed."`
+   - **Validates**: Confirmation prompt for teleport command
+
+7. **AW confirms teleportation**: `confirm teleport Ithaqua`
+   - **AW should see**: `"You have successfully teleported Ithaqua to your location."`
+   - **Ithaqua should see**: `"You have been teleported to ArkanWolfshade's location by an administrator."`
+   - **Validates**: Successful teleport execution and player notification
+
+8. **Verify room state**:
+   - **Both players should be in Main Foyer**
+   - **AW should see**: `"Ithaqua enters the room."`
+   - **Ithaqua should see**: `"ArkanWolfshade enters the room."` (if AW was in a different room)
+   - **Validates**: Room occupant updates and movement messages
+
+#### Phase 3: Goto Command Testing (AW goes to Ithaqua's location)
+
+9. **Ithaqua moves east** to East Hallway (`earth_arkham_city_sanitarium_room_hallway_001`)
+10. **AW uses goto command**: `goto Ithaqua`
+    - **AW should see**: `"You are about to teleport yourself to Ithaqua's location. Type 'confirm goto Ithaqua' to proceed."`
+    - **Validates**: Confirmation prompt for goto command
+
+11. **AW confirms goto**: `confirm goto Ithaqua`
+    - **AW should see**: `"You have successfully teleported yourself to Ithaqua's location."`
+    - **Ithaqua should see**: `"ArkanWolfshade has teleported to your location."`
+    - **Validates**: Successful goto execution and notification
+
+12. **Verify room state**:
+    - **Both players should be in East Hallway**
+    - **Ithaqua should see**: `"ArkanWolfshade enters the room."`
+    - **Validates**: Room occupant updates and movement messages
+
+#### Phase 4: Final Teleportation to Foyer Entrance
+
+13. **AW teleports both players to Foyer Entrance**: `teleport Ithaqua`
+    - **AW confirms**: `confirm teleport Ithaqua`
+    - **Both players should end up in Foyer Entrance** (`earth_arkham_city_sanitarium_room_foyer_001`)
+    - **Validates**: Final destination teleportation
+
+#### Phase 5: Audit Logging Verification
+
+14. **Check admin actions log** (`logs/admin_actions/` directory)
+    - **Verify**: Teleport actions are logged with proper JSON structure
+    - **Verify**: Permission checks are logged
+    - **Verify**: Success/failure status is recorded
+    - **Validates**: Audit trail completeness
+
+### Technical Components Tested
+
+- ✅ Admin permission validation (`server/commands/admin_teleport_commands.py`)
+- ✅ Online player lookup (`get_online_player_by_display_name`)
+- ✅ Teleport command processing (`handle_teleport_command`)
+- ✅ Goto command processing (`handle_goto_command`)
+- ✅ Confirmation command processing (`handle_confirm_teleport_command`, `handle_confirm_goto_command`)
+- ✅ Database persistence (`persistence.save_player`)
+- ✅ Connection manager updates (`connection_manager.online_players`)
+- ✅ Visual effects broadcasting (`broadcast_teleport_effects`)
+- ✅ Player notifications (`notify_player_of_teleport`)
+- ✅ Audit logging (`AdminActionsLogger`)
+- ✅ Error handling for offline players
+- ✅ Error handling for non-admin users
+- ✅ Room occupant tracking updates
+- ✅ Movement message broadcasting
+
+### Expected Messages and Effects
+
+#### Teleport Effects (to other players)
+
+- **Departure room**: `"*Ithaqua materializes in a swirl of eldritch energy and vanishes!*"`
+- **Arrival room**: `"*Ithaqua materializes in a swirl of eldritch energy!*"`
+
+#### Player Notifications
+
+- **Teleported player**: `"You have been teleported to [AdminName]'s location by an administrator."`
+- **Admin (goto)**: `"You have successfully teleported yourself to [PlayerName]'s location."`
+- **Target player (goto)**: `"[AdminName] has teleported to your location."`
+
+#### Error Messages
+
+- **Permission denied**: `"You do not have permission to use teleport commands."`
+- **Player not found**: `"Player '[Name]' is not online or not found."`
+- **Already in location**: `"[PlayerName] is already in your location."`
+
+### Status: 🔄 READY FOR TESTING
+
+**Integration Requirements:**
+
+- Must run after scenarios 1-4 to ensure clean multiplayer state
+- Requires admin privileges for ArkanWolfshade
+- Tests both teleport and goto functionality
+- Validates audit logging system
+- Includes comprehensive error condition testing
+
+---
+
+## Scenario 6: Player Commands and Interactions (PLANNED)
 
 ### Description
 
@@ -378,7 +505,7 @@ Tests visibility of player commands and interactions.
 
 ---
 
-## Scenario 6: Reconnection Handling (PLANNED)
+## Scenario 7: Reconnection Handling (PLANNED)
 
 ### Description
 
@@ -402,7 +529,7 @@ Tests proper handling when players reconnect after disconnection.
 
 ---
 
-## Scenario 7: Multiple Players in Different Rooms (PLANNED)
+## Scenario 8: Multiple Players in Different Rooms (PLANNED)
 
 ### Description
 

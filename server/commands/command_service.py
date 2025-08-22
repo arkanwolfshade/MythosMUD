@@ -122,10 +122,19 @@ class CommandService:
             return {"result": f"Unknown command: {command_type}"}
 
         try:
-            # Call the handler with the command data
-            result = await handler(command_data, current_user, request, alias_storage, player_name)
-            logger.debug("Command processed successfully", player=player_name, command_type=command_type)
-            return result
+            # Try calling with command_data first (newer handlers)
+            try:
+                result = await handler(command_data, current_user, request, alias_storage, player_name)
+                logger.debug(
+                    "Command processed successfully with command_data", player=player_name, command_type=command_type
+                )
+                return result
+            except TypeError:
+                # If that fails, try calling with args (older handlers)
+                args = command_data.get("args", [])
+                result = await handler(args, current_user, request, alias_storage, player_name)
+                logger.debug("Command processed successfully with args", player=player_name, command_type=command_type)
+                return result
         except Exception as e:
             logger.error(
                 "Error in command handler", player=player_name, command_type=command_type, error=str(e), exc_info=True
@@ -184,9 +193,21 @@ class CommandService:
         if cmd in self.command_handlers:
             handler = self.command_handlers[cmd]
             try:
-                result = await handler(args, current_user, request, alias_storage, player_name)
-                logger.debug("Command processed successfully", player=player_name, command=cmd)
-                return result
+                # Try calling with command_data first (newer handlers)
+                command_data = {
+                    "command_type": cmd,
+                    "args": args,
+                    "target_player": args[0] if args else None,
+                }
+                try:
+                    result = await handler(command_data, current_user, request, alias_storage, player_name)
+                    logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+                    return result
+                except TypeError:
+                    # If that fails, try calling with args (older handlers)
+                    result = await handler(args, current_user, request, alias_storage, player_name)
+                    logger.debug("Command processed successfully with args", player=player_name, command=cmd)
+                    return result
             except Exception as e:
                 logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
                 return {"result": f"Error processing command: {str(e)}"}

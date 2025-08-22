@@ -1,10 +1,9 @@
 import os
 import sqlite3
 import threading
-import uuid
 from collections.abc import Callable
 
-from .models import Player
+from .models.player import Player
 from .models.room import Room
 
 
@@ -110,17 +109,21 @@ class PersistenceLayer:
         # Convert string UUIDs back to UUID objects
         if data.get("player_id"):
             try:
-                data["player_id"] = uuid.UUID(data["player_id"])
+                data["player_id"] = str(data["player_id"])
             except (ValueError, TypeError):
                 self._log(f"Invalid player_id format: {data['player_id']}")
                 data["player_id"] = None
 
         if data.get("user_id"):
             try:
-                data["user_id"] = uuid.UUID(data["user_id"])
+                data["user_id"] = str(data["user_id"])
             except (ValueError, TypeError):
                 self._log(f"Invalid user_id format: {data['user_id']}")
                 data["user_id"] = None
+
+        # Convert is_admin from integer to boolean
+        if "is_admin" in data:
+            data["is_admin"] = bool(data["is_admin"])
 
         # Convert datetime strings back to datetime objects if needed
         # (Player model handles this internally, but we could add explicit conversion here)

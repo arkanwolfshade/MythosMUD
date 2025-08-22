@@ -50,7 +50,13 @@ class TestUnifiedCommandHandler:
     @pytest.fixture
     def websocket_request_context(self, mock_persistence, mock_event_bus, mock_user):
         """Create a WebSocket request context."""
-        return create_websocket_request_context(mock_persistence, mock_event_bus, mock_user)
+        # Create a mock app state with the required components
+        mock_app_state = MagicMock()
+        mock_app_state.persistence = mock_persistence
+        mock_app_state.event_bus = mock_event_bus
+        mock_app_state.player_service = MagicMock()
+        mock_app_state.user_manager = MagicMock()
+        return create_websocket_request_context(mock_app_state, mock_user)
 
     @pytest.mark.asyncio
     async def test_process_command_unified_basic_validation(self, mock_user, mock_request):
@@ -92,7 +98,14 @@ class TestUnifiedCommandHandler:
     @pytest.mark.asyncio
     async def test_websocket_request_context_creation(self, mock_persistence, mock_event_bus, mock_user):
         """Test WebSocket request context creation."""
-        context = create_websocket_request_context(mock_persistence, mock_event_bus, mock_user)
+        # Create a mock app state with the required components
+        mock_app_state = MagicMock()
+        mock_app_state.persistence = mock_persistence
+        mock_app_state.event_bus = mock_event_bus
+        mock_app_state.player_service = MagicMock()
+        mock_app_state.user_manager = MagicMock()
+
+        context = create_websocket_request_context(mock_app_state, mock_user)
 
         assert context.app.state.persistence == mock_persistence
         assert context.app.state.event_bus == mock_event_bus

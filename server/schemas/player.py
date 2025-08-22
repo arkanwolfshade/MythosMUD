@@ -57,6 +57,7 @@ class PlayerRead(PlayerBase):
     status_effects: list[dict[str, Any]] = Field(..., description="Player status effects")
     created_at: datetime = Field(..., description="Player creation timestamp")
     last_active: datetime = Field(..., description="Player last active timestamp")
+    is_admin: bool = Field(default=False, description="Whether player has admin privileges")
 
     model_config = ConfigDict(
         from_attributes=True,

@@ -234,6 +234,9 @@ class Player(BaseModel):
     experience_points: int = Field(ge=0, default=0)
     level: int = Field(ge=1, default=1)
 
+    # Admin privileges
+    is_admin: bool = Field(default=False, description="Whether the player has administrator privileges")
+
     def add_item(self, item_id: str, quantity: int = 1, custom_properties: dict[str, Any] = None) -> bool:
         """Add an item to the player's inventory."""
         if custom_properties is None:
