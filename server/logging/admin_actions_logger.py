@@ -193,10 +193,7 @@ class AdminActionsLogger:
             logger.error(f"Failed to write admin action log entry: {str(e)}")
 
     def get_recent_actions(
-        self,
-        hours: int = 24,
-        action_type: str | None = None,
-        admin_name: str | None = None
+        self, hours: int = 24, action_type: str | None = None, admin_name: str | None = None
     ) -> list[dict[str, Any]]:
         """
         Retrieve recent admin actions from the log files.

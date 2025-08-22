@@ -49,7 +49,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 player_name=player_name,
                 action="admin_teleport",
                 has_permission=False,
-                additional_data={"error": "No player object"}
+                additional_data={"error": "No player object"},
             )
             return False
 
@@ -62,10 +62,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 player_name=player_name,
                 action="admin_teleport",
                 has_permission=False,
-                additional_data={
-                    "error": "No is_admin attribute",
-                    "player_type": type(player).__name__
-                }
+                additional_data={"error": "No is_admin attribute", "player_type": type(player).__name__},
             )
             return False
 
@@ -78,10 +75,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 player_name=player_name,
                 action="admin_teleport",
                 has_permission=False,
-                additional_data={
-                    "player_type": type(player).__name__,
-                    "is_admin_value": player.is_admin
-                }
+                additional_data={"player_type": type(player).__name__, "is_admin_value": player.is_admin},
             )
             return False
 
@@ -91,10 +85,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             player_name=player_name,
             action="admin_teleport",
             has_permission=True,
-            additional_data={
-                "player_type": type(player).__name__,
-                "is_admin_value": player.is_admin
-            }
+            additional_data={"player_type": type(player).__name__, "is_admin_value": player.is_admin},
         )
 
         logger.debug(f"Admin permission granted for {player_name}")
@@ -110,10 +101,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 player_name=player_name,
                 action="admin_teleport",
                 has_permission=False,
-                additional_data={
-                    "error": str(e),
-                    "player_type": type(player).__name__ if player else "None"
-                }
+                additional_data={"error": str(e), "player_type": type(player).__name__ if player else "None"},
             )
         except Exception as log_error:
             logger.error(f"Failed to log permission check error: {str(log_error)}")
@@ -487,7 +475,7 @@ async def handle_confirm_teleport_command(
             additional_data={
                 "admin_room_id": current_player.current_room_id,
                 "target_room_id": target_player.current_room_id,
-            }
+            },
         )
 
         logger.info(
@@ -509,7 +497,7 @@ async def handle_confirm_teleport_command(
             additional_data={
                 "admin_room_id": current_player.current_room_id,
                 "target_room_id": target_player.current_room_id,
-            }
+            },
         )
 
         logger.error(f"Teleport execution failed - {player_name} tried to teleport {target_player_name}: {str(e)}")
@@ -618,7 +606,7 @@ async def handle_confirm_goto_command(
             additional_data={
                 "admin_room_id": current_player.current_room_id,
                 "target_room_id": target_player.current_room_id,
-            }
+            },
         )
 
         logger.info(
@@ -640,7 +628,7 @@ async def handle_confirm_goto_command(
             additional_data={
                 "admin_room_id": current_player.current_room_id,
                 "target_room_id": target_player.current_room_id,
-            }
+            },
         )
 
         logger.error(f"Goto execution failed - {player_name} tried to goto {target_player_name}: {str(e)}")

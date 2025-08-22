@@ -27,6 +27,7 @@ class TestAdminActionsLogger:
         """Clean up test environment."""
         # Remove temporary directory and files
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_logger_initialization(self):
@@ -68,7 +69,7 @@ class TestAdminActionsLogger:
             from_room="room_1",
             to_room="room_2",
             success=True,
-            additional_data={"test": "data"}
+            additional_data={"test": "data"},
         )
 
         # Check that log file was created
@@ -104,7 +105,7 @@ class TestAdminActionsLogger:
             to_room="room_2",
             success=False,
             error_message="Player not found",
-            additional_data={"error_code": 404}
+            additional_data={"error_code": 404},
         )
 
         log_file = self.logger._get_log_file_path()
@@ -126,7 +127,7 @@ class TestAdminActionsLogger:
             command="mute TestPlayer",
             target_player="TestPlayer",
             success=True,
-            additional_data={"duration": "1h"}
+            additional_data={"duration": "1h"},
         )
 
         log_file = self.logger._get_log_file_path()
@@ -148,7 +149,7 @@ class TestAdminActionsLogger:
             player_name="TestPlayer",
             action="admin_teleport",
             has_permission=False,
-            additional_data={"reason": "Not admin"}
+            additional_data={"reason": "Not admin"},
         )
 
         log_file = self.logger._get_log_file_path()
@@ -174,7 +175,7 @@ class TestAdminActionsLogger:
                 action_type="teleport",
                 from_room="room_1",
                 to_room="room_2",
-                success=True
+                success=True,
             )
 
     def test_get_recent_actions(self):
@@ -186,7 +187,7 @@ class TestAdminActionsLogger:
             action_type="teleport",
             from_room="room_1",
             to_room="room_2",
-            success=True
+            success=True,
         )
 
         self.logger.log_teleport_action(
@@ -195,7 +196,7 @@ class TestAdminActionsLogger:
             action_type="goto",
             from_room="room_3",
             to_room="room_4",
-            success=True
+            success=True,
         )
 
         # Get recent actions
@@ -220,7 +221,7 @@ class TestAdminActionsLogger:
             action_type="teleport",
             from_room="room_1",
             to_room="room_2",
-            success=True
+            success=True,
         )
 
         self.logger.log_teleport_action(
@@ -229,7 +230,7 @@ class TestAdminActionsLogger:
             action_type="goto",
             from_room="room_3",
             to_room="room_4",
-            success=True
+            success=True,
         )
 
         self.logger.log_teleport_action(
@@ -238,7 +239,7 @@ class TestAdminActionsLogger:
             action_type="teleport",
             from_room="room_5",
             to_room="room_6",
-            success=False
+            success=False,
         )
 
         # Get statistics
@@ -270,7 +271,7 @@ class TestAdminActionsLogger:
                 action_type="teleport",
                 from_room="room_1",
                 to_room="room_2",
-                success=True
+                success=True,
             )
 
             # Second logger with second date
@@ -283,7 +284,7 @@ class TestAdminActionsLogger:
                 action_type="goto",
                 from_room="room_3",
                 to_room="room_4",
-                success=True
+                success=True,
             )
 
             # Check that both log files exist
@@ -318,7 +319,7 @@ class TestGlobalAdminActionsLogger:
                     action_type="teleport",
                     from_room="room_1",
                     to_room="room_2",
-                    success=True
+                    success=True,
                 )
 
                 # Verify log was written
@@ -341,21 +342,12 @@ class TestAdminActionsLoggerIntegration:
                 action_type="teleport",
                 from_room="room_1",
                 to_room="room_2",
-                success=True
+                success=True,
             )
 
-            logger.log_admin_command(
-                admin_name="Admin2",
-                command="mute Player2",
-                target_player="Player2",
-                success=True
-            )
+            logger.log_admin_command(admin_name="Admin2", command="mute Player2", target_player="Player2", success=True)
 
-            logger.log_permission_check(
-                player_name="Player3",
-                action="admin_teleport",
-                has_permission=False
-            )
+            logger.log_permission_check(player_name="Player3", action="admin_teleport", has_permission=False)
 
             # Retrieve and verify all actions
             actions = logger.get_recent_actions(hours=24)
@@ -384,7 +376,7 @@ class TestAdminActionsLoggerIntegration:
                 action_type="teleport",
                 from_room="room_1",
                 to_room="room_2",
-                success=True
+                success=True,
             )
 
             # Simulate a file system error
@@ -396,7 +388,7 @@ class TestAdminActionsLoggerIntegration:
                     action_type="goto",
                     from_room="room_3",
                     to_room="room_4",
-                    success=True
+                    success=True,
                 )
 
             # Should still be able to log after error
@@ -406,7 +398,7 @@ class TestAdminActionsLoggerIntegration:
                 action_type="teleport",
                 from_room="room_5",
                 to_room="room_6",
-                success=True
+                success=True,
             )
 
             # Verify logs were written
