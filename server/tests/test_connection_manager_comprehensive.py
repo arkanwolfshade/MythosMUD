@@ -166,15 +166,17 @@ class TestConnectionManagerComprehensive:
         assert "test_player" not in connection_manager.player_websockets
         assert "test_player" not in connection_manager.active_sse_connections
 
-    def test_connect_sse_success(self, connection_manager):
+    @pytest.mark.asyncio
+    async def test_connect_sse_success(self, connection_manager):
         """Test successful SSE connection."""
-        connection_id = connection_manager.connect_sse("test_player")
+        connection_id = await connection_manager.connect_sse("test_player")
 
         assert connection_id is not None
         assert "test_player" in connection_manager.active_sse_connections
         assert connection_manager.active_sse_connections["test_player"] == connection_id
 
-    def test_connect_sse_with_existing_websocket(self, connection_manager, mock_websocket):
+    @pytest.mark.asyncio
+    async def test_connect_sse_with_existing_websocket(self, connection_manager, mock_websocket):
         """Test SSE connection when player has existing WebSocket."""
         # Setup existing WebSocket
         connection_id = str(uuid.uuid4())
@@ -184,7 +186,7 @@ class TestConnectionManagerComprehensive:
         with patch.object(
             connection_manager, "force_disconnect_player", new_callable=AsyncMock
         ) as mock_force_disconnect:
-            sse_connection_id = connection_manager.connect_sse("test_player")
+            sse_connection_id = await connection_manager.connect_sse("test_player")
 
             assert sse_connection_id is not None
             mock_force_disconnect.assert_called_once_with("test_player")
@@ -857,7 +859,8 @@ class TestConnectionManagerComprehensive:
         assert "stale_conn" not in connection_manager.active_websockets
         assert "stale_conn" not in connection_manager.connection_timestamps
 
-    def test_connect_sse_with_existing_sse_connection(self, connection_manager):
+    @pytest.mark.asyncio
+    async def test_connect_sse_with_existing_sse_connection(self, connection_manager):
         """Test SSE connection when player has existing SSE connection."""
         # Setup existing SSE connection
         connection_manager.active_sse_connections["test_player"] = "existing_sse_id"
@@ -865,12 +868,13 @@ class TestConnectionManagerComprehensive:
         with patch.object(
             connection_manager, "force_disconnect_player", new_callable=AsyncMock
         ) as mock_force_disconnect:
-            sse_connection_id = connection_manager.connect_sse("test_player")
+            sse_connection_id = await connection_manager.connect_sse("test_player")
 
             assert sse_connection_id is not None
             mock_force_disconnect.assert_called_once_with("test_player")
 
-    def test_connect_sse_with_player_tracking(self, connection_manager, mock_player, mock_persistence):
+    @pytest.mark.asyncio
+    async def test_connect_sse_with_player_tracking(self, connection_manager, mock_player, mock_persistence):
         """Test SSE connection with player tracking."""
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
@@ -882,19 +886,20 @@ class TestConnectionManagerComprehensive:
 
         with patch.object(connection_manager, "subscribe_to_room", new_callable=AsyncMock) as mock_subscribe:
             with patch.object(connection_manager, "_track_player_connected", new_callable=AsyncMock) as mock_track:
-                sse_connection_id = connection_manager.connect_sse("test_player")
+                sse_connection_id = await connection_manager.connect_sse("test_player")
 
                 assert sse_connection_id is not None
                 mock_subscribe.assert_called_once_with("test_player", "test_room_001")
                 mock_track.assert_called_once_with("test_player", mock_player)
 
-    def test_connect_sse_with_room_resolution_exception(self, connection_manager, mock_player, mock_persistence):
+    @pytest.mark.asyncio
+    async def test_connect_sse_with_room_resolution_exception(self, connection_manager, mock_player, mock_persistence):
         """Test SSE connection with room resolution exception."""
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
         mock_persistence.get_room.side_effect = Exception("Room resolution failed")
 
-        sse_connection_id = connection_manager.connect_sse("test_player")
+        sse_connection_id = await connection_manager.connect_sse("test_player")
 
         assert sse_connection_id is not None
         # Should not raise exception
@@ -924,15 +929,21 @@ class TestConnectionManagerComprehensive:
 
                 mock_run.assert_called_once()
 
+    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     def test_disconnect_sse_with_tracking_exception(self, connection_manager):
         """Test SSE disconnection with tracking exception."""
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = "sse_conn_id"
 
-        # Mock the _check_and_process_disconnect method to avoid creating unawaited coroutines
-        with patch.object(connection_manager, "_check_and_process_disconnect"):
-            with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-                with patch("asyncio.run", side_effect=Exception("Tracking failed")):
+        # Mock the entire async context to avoid unawaited coroutine warnings
+        with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
+            # Mock asyncio.run to prevent the actual coroutine execution
+            with patch("asyncio.run") as mock_run:
+                mock_run.side_effect = Exception("Tracking failed")
+                # Mock the method to prevent any coroutine creation
+                with patch.object(connection_manager, "_check_and_process_disconnect") as mock_check:
+                    # Set the mock to do nothing when called
+                    mock_check.return_value = None
                     connection_manager.disconnect_sse("test_player")
                     # Should not raise exception
 
