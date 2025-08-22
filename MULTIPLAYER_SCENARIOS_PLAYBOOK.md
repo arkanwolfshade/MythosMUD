@@ -10,6 +10,12 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - **Ithaqua** - password: Cthulhu1
 - **Default Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer) - update SQLite directly if necessary
 
+## RUles
+
+- **Use Playwright MCP**
+- **Use the credentials provided in this playbook**
+- **ONLY USE start_dev.ps1**
+
 ## Scenario Validation Requirements
 
 - ✅ **Sequential Testing**: All scenarios must work back-to-back without server/client restarts
