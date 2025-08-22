@@ -23,8 +23,8 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .admin_teleport_commands import (
-    handle_confirm_goto_command,
-    handle_confirm_teleport_command,
+    # Confirmation handlers removed - teleport commands now execute immediately
+    # TODO: Add confirmation dialogs as future feature for enhanced safety
     handle_goto_command,
     handle_teleport_command,
 )
@@ -75,11 +75,9 @@ class CommandService:
             "unmute_global": handle_unmute_global_command,
             "add_admin": handle_add_admin_command,
             "mutes": handle_mutes_command,
-            # Admin teleport commands
+            # Admin teleport commands (confirmation removed for immediate execution)
             "teleport": handle_teleport_command,
             "goto": handle_goto_command,
-            "confirm_teleport": handle_confirm_teleport_command,
-            "confirm_goto": handle_confirm_goto_command,
             # Utility commands
             "who": handle_who_command,
             "quit": handle_quit_command,

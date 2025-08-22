@@ -295,13 +295,71 @@ async def handle_teleport_command(
         if target_player.current_room_id == current_player.current_room_id:
             return {"result": f"{target_player_name} is already in your location."}
 
-        # Store target player for confirmation
-        command_data["target_player"] = target_player_name
+        # TODO: Add confirmation dialog as future feature for enhanced safety
+        # For now, execute teleport immediately for testing and development
 
-        logger.info(f"Teleport confirmation requested - {player_name} wants to teleport {target_player_name}")
-        return {
-            "result": f"Are you sure you want to teleport {target_player_name} to your location? Type 'confirm teleport {target_player_name}' to proceed."
-        }
+        try:
+            # Store original location for visual effects
+            original_room_id = target_player.current_room_id
+            target_room_id = current_player.current_room_id
+
+            # Update target player's location using PlayerService
+            success = player_service.update_player_location(target_player_name, target_room_id)
+            if not success:
+                logger.error(f"Failed to update target player location: {target_player_name}")
+                return {"result": f"Failed to teleport {target_player_name}: database update failed."}
+
+            # Update connection manager's online player info
+            if target_player_info:
+                target_player_info["room_id"] = target_room_id
+
+            # Broadcast visual effects
+            await broadcast_teleport_effects(
+                connection_manager, target_player_name, original_room_id, target_room_id, "teleport"
+            )
+
+            # Notify target player
+            await notify_player_of_teleport(connection_manager, target_player_name, player_name, "teleported_to")
+
+            # Log the successful teleport action
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_teleport_action(
+                admin_name=player_name,
+                target_player=target_player_name,
+                action_type="teleport",
+                from_room=original_room_id,
+                to_room=target_room_id,
+                success=True,
+                additional_data={
+                    "admin_room_id": current_player.current_room_id,
+                    "target_room_id": target_player.current_room_id,
+                },
+            )
+
+            logger.info(
+                f"Teleport executed successfully - {player_name} teleported {target_player_name} to {target_room_id}"
+            )
+            return {"result": f"You have successfully teleported {target_player_name} to your location."}
+
+        except Exception as e:
+            # Log the failed teleport action
+            admin_logger = get_admin_actions_logger()
+            admin_logger.log_teleport_action(
+                admin_name=player_name,
+                target_player=target_player_name,
+                action_type="teleport",
+                from_room=target_player.current_room_id,
+                to_room=current_player.current_room_id,
+                success=False,
+                error_message=str(e),
+                additional_data={
+                    "admin_room_id": current_player.current_room_id,
+                    "target_room_id": target_player.current_room_id,
+                },
+            )
+
+            logger.error(f"Teleport execution failed - {player_name} tried to teleport {target_player_name}: {str(e)}")
+            return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
     except Exception as e:
         logger.error(f"Exception in teleport command handler: {str(e)}", exc_info=True)
         return {"result": f"Error processing teleport command: {str(e)}"}
@@ -372,13 +430,65 @@ async def handle_goto_command(
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}
 
-    # Store target player for confirmation
-    command_data["target_player"] = target_player_name
+    # Execute goto immediately without confirmation
+    try:
+        # Store original location for visual effects
+        original_room_id = current_player.current_room_id
+        target_room_id = target_player.current_room_id
 
-    logger.info(f"Goto confirmation requested - {player_name} wants to goto {target_player_name}")
-    return {
-        "result": f"Are you sure you want to teleport to {target_player_name}'s location? Type 'confirm goto {target_player_name}' to proceed."
-    }
+        # Update admin player's location using PlayerService
+        success = player_service.update_player_location(player_name, target_room_id)
+        if not success:
+            logger.error(f"Failed to update admin player location: {player_name}")
+            return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
+
+        # Update connection manager's online player info for admin
+        admin_player_info = connection_manager.online_players.get(player_name, {})
+        if admin_player_info:
+            admin_player_info["room_id"] = target_room_id
+
+        # Broadcast visual effects
+        await broadcast_teleport_effects(connection_manager, player_name, original_room_id, target_room_id, "goto")
+
+        # Log the successful goto action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="goto",
+            from_room=original_room_id,
+            to_room=target_room_id,
+            success=True,
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            },
+        )
+
+        logger.info(
+            f"Goto executed successfully - {player_name} teleported to {target_player_name} at {target_room_id}"
+        )
+        return {"result": f"You have successfully teleported to {target_player_name}'s location."}
+
+    except Exception as e:
+        # Log the failed goto action
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_teleport_action(
+            admin_name=player_name,
+            target_player=target_player_name,
+            action_type="goto",
+            from_room=current_player.current_room_id,
+            to_room=target_player.current_room_id,
+            success=False,
+            error_message=str(e),
+            additional_data={
+                "admin_room_id": current_player.current_room_id,
+                "target_room_id": target_player.current_room_id,
+            },
+        )
+
+        logger.error(f"Goto execution failed - {player_name} tried to goto {target_player_name}: {str(e)}")
+        return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
 
 
 async def handle_confirm_teleport_command(

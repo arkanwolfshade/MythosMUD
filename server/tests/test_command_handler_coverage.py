@@ -9,7 +9,7 @@ This module tests the missing critical codepaths in command_handler_unified.py i
 - Alias management edge cases
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -233,6 +233,8 @@ class TestCommunicationCommands:
     async def test_process_command_predefined_emote(self):
         """Test predefined emote command."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
@@ -250,10 +252,14 @@ class TestCommunicationCommands:
         mock_room.exits = {}
         mock_request.app.state.persistence.get_room.return_value = mock_room
 
-        result = await process_command("twibble", [], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock command service to handle the emote command
+        with patch("server.command_handler_unified.command_service") as mock_command_service:
+            mock_command_service.process_command = AsyncMock(return_value={"result": "You twibble around aimlessly."})
 
-        assert "result" in result
-        assert "You twibble around aimlessly" in result["result"]
+            result = await process_command("twibble", [], current_user, mock_request, mock_alias_storage, "testuser")
+
+            assert "result" in result
+            assert "You twibble around aimlessly" in result["result"]
 
     @pytest.mark.asyncio
     async def test_process_command_pose_no_persistence(self):

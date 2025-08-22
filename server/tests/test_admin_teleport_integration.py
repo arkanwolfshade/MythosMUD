@@ -78,10 +78,12 @@ class TestAdminTeleportIntegration:
         mock_app_state.player_service.get_player_by_name.side_effect = (
             lambda name: mock_admin_player if name == "AdminUser" else mock_target_player
         )
+        # Mock update_player_location to return True and call persistence
+        mock_app_state.player_service.update_player_location.return_value = True
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         mock_alias_storage = MagicMock()
@@ -105,8 +107,8 @@ class TestAdminTeleportIntegration:
         assert "successfully teleported" in result["result"].lower()
         assert "TargetPlayer" in result["result"]
 
-        # Verify database was updated
-        mock_app_state.persistence.save_player.assert_called_once()
+        # Verify player service was called to update location
+        mock_app_state.player_service.update_player_location.assert_called_once()
 
         # Verify visual effects were broadcast
         assert mock_app_state.connection_manager.broadcast_to_room.call_count == 2
@@ -128,11 +130,13 @@ class TestAdminTeleportIntegration:
         mock_app_state.player_service.get_player_by_name.side_effect = (
             lambda name: mock_admin_player if name == "AdminUser" else mock_target_player
         )
+        # Mock update_player_location to return True and call persistence
+        mock_app_state.player_service.update_player_location.return_value = True
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"},
-            "admin_id": {"display_name": "AdminUser", "room_id": "admin_room"},
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"},
+            "admin_id": {"player_name": "AdminUser", "room_id": "admin_room"},
         }
 
         mock_alias_storage = MagicMock()
@@ -154,8 +158,8 @@ class TestAdminTeleportIntegration:
         assert "successfully teleported" in result["result"].lower()
         assert "TargetPlayer" in result["result"]
 
-        # Verify database was updated
-        mock_app_state.persistence.save_player.assert_called_once()
+        # Verify player service was called to update location
+        mock_app_state.player_service.update_player_location.assert_called_once()
 
         # Verify visual effects were broadcast
         assert mock_app_state.connection_manager.broadcast_to_room.call_count == 2
@@ -237,7 +241,7 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "admin_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "admin_room"}
         }
 
         mock_alias_storage = MagicMock()
@@ -267,11 +271,15 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
-        # Mock database error
-        mock_app_state.persistence.save_player.side_effect = Exception("Database error")
+        # Mock player service to return False when database error occurs
+        def mock_update_location_with_error(player_name, new_room_id):
+            # Simulate database error by raising an exception
+            raise Exception("Database error")
+
+        mock_app_state.player_service.update_player_location.side_effect = mock_update_location_with_error
 
         mock_alias_storage = MagicMock()
 
@@ -303,7 +311,7 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         # Mock connection manager error
@@ -361,7 +369,7 @@ class TestAdminTeleportIntegration:
 
             # Mock connection manager with online target
             mock_app_state.connection_manager.online_players = {
-                "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+                "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
             }
 
             mock_alias_storage = MagicMock()
@@ -415,8 +423,8 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with multiple online players
         mock_app_state.connection_manager.online_players = {
-            "target1_id": {"display_name": "Target1", "room_id": "room_1"},
-            "target2_id": {"display_name": "Target2", "room_id": "room_2"},
+            "target1_id": {"player_name": "Target1", "room_id": "room_1"},
+            "target2_id": {"player_name": "Target2", "room_id": "room_2"},
         }
 
         mock_request = MagicMock()
@@ -448,8 +456,8 @@ class TestAdminTeleportIntegration:
         assert "Target1" in results[0]["result"]
         assert "Target2" in results[1]["result"]
 
-        # Verify database was updated for both operations
-        assert mock_app_state.persistence.save_player.call_count == 2
+        # Verify player service was called for both operations
+        assert mock_app_state.player_service.update_player_location.call_count == 2
 
     @pytest.mark.asyncio
     async def test_teleport_workflow_error_recovery(self, mock_app_state, mock_admin_player, mock_target_player):
@@ -468,7 +476,7 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         # Mock various error conditions
@@ -479,8 +487,8 @@ class TestAdminTeleportIntegration:
         # Execute teleport command
         await handle_confirm_teleport_command(command_data, current_user, mock_request, mock_alias_storage, "AdminUser")
 
-        # Verify database was still updated
-        mock_app_state.persistence.save_player.assert_called_once()
+        # Verify player service was called to update location
+        mock_app_state.player_service.update_player_location.assert_called_once()
 
 
 class TestAdminTeleportPerformance:
@@ -496,12 +504,12 @@ class TestAdminTeleportPerformance:
         # Add 1000 online players
         for i in range(1000):
             connection_manager.online_players[f"player_{i}"] = {
-                "display_name": f"Player{i}",
+                "player_name": f"Player{i}",
                 "room_id": f"room_{i % 10}",
             }
 
         # Add target player at the end
-        connection_manager.online_players["target_id"] = {"display_name": "TargetPlayer", "room_id": "target_room"}
+        connection_manager.online_players["target_id"] = {"player_name": "TargetPlayer", "room_id": "target_room"}
 
         # Test player lookup performance
         import time
@@ -517,7 +525,7 @@ class TestAdminTeleportPerformance:
 
         # Should find the target player
         assert result is not None
-        assert result["display_name"] == "TargetPlayer"
+        assert result["player_name"] == "TargetPlayer"
 
         # Should complete within reasonable time (less than 100ms)
         assert execution_time < 0.1

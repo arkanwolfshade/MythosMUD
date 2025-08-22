@@ -16,8 +16,6 @@ from ..models.command import (
     AliasesCommand,
     Command,
     CommandType,
-    ConfirmGotoCommand,
-    ConfirmTeleportCommand,
     EmoteCommand,
     GoCommand,
     GotoCommand,
@@ -177,10 +175,7 @@ class CommandParser:
                 return self._create_teleport_command(args)
             elif command == CommandType.GOTO.value:
                 return self._create_goto_command(args)
-            elif command == CommandType.CONFIRM_TELEPORT.value:
-                return self._create_confirm_teleport_command(args)
-            elif command == CommandType.CONFIRM_GOTO.value:
-                return self._create_confirm_goto_command(args)
+            # Confirmation commands removed - teleport commands now execute immediately
             else:
                 raise ValueError(f"Unsupported command: {command}")
 
@@ -354,19 +349,8 @@ class CommandParser:
         player_name = args[0]
         return GotoCommand(player_name=player_name)
 
-    def _create_confirm_teleport_command(self, args: list[str]) -> ConfirmTeleportCommand:
-        """Create ConfirmTeleportCommand from arguments."""
-        if not args:
-            raise ValueError("Confirm teleport command requires a player name")
-        player_name = args[0]
-        return ConfirmTeleportCommand(player_name=player_name)
-
-    def _create_confirm_goto_command(self, args: list[str]) -> ConfirmGotoCommand:
-        """Create ConfirmGotoCommand from arguments."""
-        if not args:
-            raise ValueError("Confirm goto command requires a player name")
-        player_name = args[0]
-        return ConfirmGotoCommand(player_name=player_name)
+    # Confirmation command creators removed - teleport commands now execute immediately
+    # TODO: Add confirmation command creators as future feature for enhanced safety
 
     def get_command_help(self, command_name: str | None = None) -> str:
         """

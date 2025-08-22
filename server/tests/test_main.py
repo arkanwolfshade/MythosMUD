@@ -106,6 +106,7 @@ class TestEndpoints:
                 mock_player.status_effects = []
                 mock_player.created_at = "2024-01-01T00:00:00Z"
                 mock_player.last_active = "2024-01-01T00:00:00Z"
+                mock_player.is_admin = False
                 mock_service_instance.create_player.return_value = mock_player
                 mock_player_service.return_value = mock_service_instance
 
@@ -147,6 +148,7 @@ class TestEndpoints:
                 "current_room_id": "earth_arkham_city_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
+                "is_admin": False,
             },
             {
                 "player_id": test_uuid2,
@@ -160,6 +162,7 @@ class TestEndpoints:
                 "current_room_id": "earth_arkham_city_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
+                "is_admin": False,
             },
         ]
         with patch.object(client.app.state.persistence, "list_players") as mock_list_players:
@@ -193,6 +196,7 @@ class TestEndpoints:
             "current_room_id": "earth_arkham_city_intersection_derby_high",
             "experience_points": 0,
             "level": 1,
+            "is_admin": False,
         }
         with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
             mock_get_player.return_value = mock_player
@@ -232,6 +236,7 @@ class TestEndpoints:
             "current_room_id": "earth_arkham_city_intersection_derby_high",
             "experience_points": 0,
             "level": 1,
+            "is_admin": False,
         }
         with patch.object(client.app.state.persistence, "get_player_by_name") as mock_get_player:
             mock_get_player.return_value = mock_player

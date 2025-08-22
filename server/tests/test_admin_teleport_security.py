@@ -86,7 +86,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         mock_request = MagicMock()
@@ -187,7 +187,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         mock_request = MagicMock()
@@ -267,7 +267,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         # Test concurrent permission checks
@@ -298,11 +298,15 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
-        # Mock database error to simulate injection attempt
-        mock_app_state.persistence.save_player.side_effect = Exception("SQL injection detected")
+        # Mock player service to return False when database error occurs
+        def mock_update_location_with_error(player_name, new_room_id):
+            # Simulate database error by raising an exception
+            raise Exception("SQL injection detected")
+
+        mock_app_state.player_service.update_player_location.side_effect = mock_update_location_with_error
 
         mock_request = MagicMock()
         mock_request.app = MagicMock()
@@ -338,7 +342,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"display_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         mock_request = MagicMock()
@@ -390,7 +394,7 @@ class TestAdminTeleportSecurity:
 
         # Mock connection manager with multiple online players
         mock_app_state.connection_manager.online_players = {
-            f"target_{i}_id": {"display_name": f"TargetPlayer{i}", "room_id": f"target_room_{i}"} for i in range(5)
+            f"target_{i}_id": {"player_name": f"TargetPlayer{i}", "room_id": f"target_room_{i}"} for i in range(5)
         }
 
         mock_request = MagicMock()
@@ -461,7 +465,7 @@ class TestAdminTeleportSecurity:
             )
 
             mock_app_state.connection_manager.online_players = {
-                "target_id": {"display_name": "TargetPlayer\n[ERROR] Log injection", "room_id": "target_room"}
+                "target_id": {"player_name": "TargetPlayer\n[ERROR] Log injection", "room_id": "target_room"}
             }
 
             mock_request = MagicMock()

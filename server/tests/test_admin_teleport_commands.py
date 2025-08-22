@@ -59,21 +59,21 @@ class TestOnlinePlayerLookup:
         """Test successful online player lookup."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.online_players = {
-            "player1": {"display_name": "TestPlayer", "room_id": "room1"},
-            "player2": {"display_name": "OtherPlayer", "room_id": "room2"},
+            "player1": {"player_name": "TestPlayer", "room_id": "room1"},
+            "player2": {"player_name": "OtherPlayer", "room_id": "room2"},
         }
 
         result = await get_online_player_by_display_name("TestPlayer", mock_connection_manager)
 
         assert result is not None
-        assert result["display_name"] == "TestPlayer"
+        assert result["player_name"] == "TestPlayer"
         assert result["room_id"] == "room1"
 
     @pytest.mark.asyncio
     async def test_get_online_player_by_display_name_not_found(self):
         """Test online player lookup when player not found."""
         mock_connection_manager = MagicMock()
-        mock_connection_manager.online_players = {"player1": {"display_name": "TestPlayer", "room_id": "room1"}}
+        mock_connection_manager.online_players = {"player1": {"player_name": "TestPlayer", "room_id": "room1"}}
 
         result = await get_online_player_by_display_name("NonExistentPlayer", mock_connection_manager)
 
@@ -83,12 +83,12 @@ class TestOnlinePlayerLookup:
     async def test_get_online_player_by_display_name_case_insensitive(self):
         """Test online player lookup is case insensitive."""
         mock_connection_manager = MagicMock()
-        mock_connection_manager.online_players = {"player1": {"display_name": "TestPlayer", "room_id": "room1"}}
+        mock_connection_manager.online_players = {"player1": {"player_name": "TestPlayer", "room_id": "room1"}}
 
         result = await get_online_player_by_display_name("testplayer", mock_connection_manager)
 
         assert result is not None
-        assert result["display_name"] == "TestPlayer"
+        assert result["player_name"] == "TestPlayer"
 
 
 class TestTeleportEffectMessages:
@@ -151,7 +151,7 @@ class TestTeleportCommand:
 
         # Mock connection manager
         mock_connection_manager = MagicMock()
-        mock_connection_manager.online_players = {"target_id": {"display_name": "TestPlayer", "room_id": "target_room"}}
+        mock_connection_manager.online_players = {"target_id": {"player_name": "TestPlayer", "room_id": "target_room"}}
         mock_app.state.connection_manager = mock_connection_manager
 
         # Mock persistence
@@ -270,7 +270,7 @@ class TestGotoCommand:
 
         # Mock connection manager with target player
         mock_connection_manager = MagicMock()
-        mock_connection_manager.online_players = {"target_id": {"display_name": "TestPlayer", "room_id": "target_room"}}
+        mock_connection_manager.online_players = {"target_id": {"player_name": "TestPlayer", "room_id": "target_room"}}
         mock_app.state.connection_manager = mock_connection_manager
 
         # Mock persistence
@@ -371,7 +371,7 @@ class TestTeleportConfirmation:
 
         # Mock connection manager
         mock_connection_manager = MagicMock()
-        mock_connection_manager.online_players = {"target_id": {"display_name": "TestPlayer", "room_id": "target_room"}}
+        mock_connection_manager.online_players = {"target_id": {"player_name": "TestPlayer", "room_id": "target_room"}}
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.send_to_player = AsyncMock()
         mock_app.state.connection_manager = mock_connection_manager
@@ -417,8 +417,8 @@ class TestTeleportConfirmation:
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.online_players = {
-            "target_id": {"display_name": "TestPlayer", "room_id": "target_room"},
-            "admin_user": {"display_name": "AdminUser", "room_id": "admin_room"},
+            "target_id": {"player_name": "TestPlayer", "room_id": "target_room"},
+            "admin_user": {"player_name": "AdminUser", "room_id": "admin_room"},
         }
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_app.state.connection_manager = mock_connection_manager

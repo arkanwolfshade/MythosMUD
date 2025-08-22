@@ -104,6 +104,7 @@ class TestUnifiedCommandHandler:
         mock_app_state.event_bus = mock_event_bus
         mock_app_state.player_service = MagicMock()
         mock_app_state.user_manager = MagicMock()
+        mock_app_state.alias_storage = None
 
         context = create_websocket_request_context(mock_app_state, mock_user)
 

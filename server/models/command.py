@@ -44,11 +44,9 @@ class CommandType(str, Enum):
     UNMUTE_GLOBAL = "unmute_global"
     ADD_ADMIN = "add_admin"
     MUTES = "mutes"
-    # Admin teleport commands
+    # Admin teleport commands (confirmation removed for immediate execution)
     TELEPORT = "teleport"
     GOTO = "goto"
-    CONFIRM_TELEPORT = "confirm_teleport"
-    CONFIRM_GOTO = "confirm_goto"
 
 
 class BaseCommand(BaseModel):
@@ -453,38 +451,8 @@ class GotoCommand(BaseCommand):
         return v
 
 
-class ConfirmTeleportCommand(BaseCommand):
-    """Command for confirming a teleport action."""
-
-    command_type: Literal[CommandType.CONFIRM_TELEPORT] = CommandType.CONFIRM_TELEPORT
-    player_name: str = Field(..., min_length=1, max_length=50, description="Player to teleport")
-
-    @field_validator("player_name")
-    @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
-
-
-class ConfirmGotoCommand(BaseCommand):
-    """Command for confirming a goto action."""
-
-    command_type: Literal[CommandType.CONFIRM_GOTO] = CommandType.CONFIRM_GOTO
-    player_name: str = Field(..., min_length=1, max_length=50, description="Player to teleport to")
-
-    @field_validator("player_name")
-    @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+# Confirmation command classes removed - teleport commands now execute immediately
+# TODO: Add ConfirmTeleportCommand and ConfirmGotoCommand as future feature for enhanced safety
 
 
 # Union type for all commands
@@ -507,6 +475,4 @@ Command = (
     | MutesCommand
     | TeleportCommand
     | GotoCommand
-    | ConfirmTeleportCommand
-    | ConfirmGotoCommand
 )
