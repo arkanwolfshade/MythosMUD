@@ -22,6 +22,12 @@ from .admin_commands import (
     handle_unmute_command,
     handle_unmute_global_command,
 )
+from .admin_teleport_commands import (
+    handle_confirm_goto_command,
+    handle_confirm_teleport_command,
+    handle_goto_command,
+    handle_teleport_command,
+)
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
 from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
 from .exploration_commands import handle_go_command, handle_look_command
@@ -69,6 +75,11 @@ class CommandService:
             "unmute_global": handle_unmute_global_command,
             "add_admin": handle_add_admin_command,
             "mutes": handle_mutes_command,
+            # Admin teleport commands
+            "teleport": handle_teleport_command,
+            "goto": handle_goto_command,
+            "confirm_teleport": handle_confirm_teleport_command,
+            "confirm_goto": handle_confirm_goto_command,
             # Utility commands
             "who": handle_who_command,
             "quit": handle_quit_command,
