@@ -156,19 +156,23 @@ class ConnectionManager:
             # Get player and room information
             player = self._get_player(player_id)
             if not player:
-                logger.error(f"Player {player_id} not found")
-                return False
-
-            canonical_room_id = getattr(player, "current_room_id", None)
-            if canonical_room_id:
-                await self.subscribe_to_room(player_id, canonical_room_id)
-
-            # Track player presence - only call _track_player_connected if this is the first connection
-            # (either WebSocket or SSE) for this player
-            if player_id not in self.online_players:
-                await self._track_player_connected(player_id, player)
+                if self.persistence is None:
+                    # When persistence is not available, still allow connection but skip player tracking
+                    logger.warning(f"Persistence not available, connecting without player tracking for {player_id}")
+                else:
+                    logger.error(f"Player {player_id} not found")
+                    return False
             else:
-                logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
+                canonical_room_id = getattr(player, "current_room_id", None)
+                if canonical_room_id:
+                    await self.subscribe_to_room(player_id, canonical_room_id)
+
+                # Track player presence - only call _track_player_connected if this is the first connection
+                # (either WebSocket or SSE) for this player
+                if player_id not in self.online_players:
+                    await self._track_player_connected(player_id, player)
+                else:
+                    logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
 
         except Exception as e:
             logger.error(f"Error connecting WebSocket for {player_id}: {e}", exc_info=True)
@@ -309,6 +313,9 @@ class ConnectionManager:
                     await self._track_player_connected(player_id, player)
                 else:
                     logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
+            elif self.persistence is None:
+                # When persistence is not available, still allow SSE connection but skip player tracking
+                logger.warning(f"Persistence not available, SSE connecting without player tracking for {player_id}")
 
         except Exception as e:
             logger.error(f"Error tracking SSE presence for {player_id}: {e}", exc_info=True)
@@ -735,9 +742,19 @@ class ConnectionManager:
             targets.update(self.room_subscriptions[canonical_id])
         if room_id != canonical_id and room_id in self.room_subscriptions:
             targets.update(self.room_subscriptions[room_id])
+
+        # Debug logging for self-message exclusion
+        logger.debug(
+            f"broadcast_to_room: room_id={room_id}, canonical_id={canonical_id}, exclude_player={exclude_player}"
+        )
+        logger.debug(f"broadcast_to_room: targets={targets}")
+
         for pid in targets:
             if pid != exclude_player:
+                logger.debug(f"broadcast_to_room: sending to player {pid}")
                 await self.send_personal_message(pid, event)
+            else:
+                logger.debug(f"broadcast_to_room: excluding player {pid} (self-message exclusion)")
 
     async def broadcast_global(self, event: dict, exclude_player: str = None):
         """

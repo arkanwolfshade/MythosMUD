@@ -1,7 +1,9 @@
 """
-Tests for utility commands in MythosMUD.
+Tests for utility_commands.py - Utility command handlers.
 
-This module contains tests for utility command handlers like who, quit, status, inventory, and emote.
+This module tests the utility command handlers including who, quit, status,
+inventory, and emote commands. Tests cover both success and error scenarios
+to ensure robust error handling and edge case coverage.
 """
 
 from datetime import UTC, datetime, timedelta
@@ -9,7 +11,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from server.commands.utility_commands import (
+from ..commands.utility_commands import (
     get_username_from_user,
     handle_emote_command,
     handle_inventory_command,
@@ -22,12 +24,6 @@ from server.commands.utility_commands import (
 class TestGetUsernameFromUser:
     """Test the get_username_from_user utility function."""
 
-    def test_get_username_from_user_dict(self):
-        """Test extracting username from dictionary with username key."""
-        user_dict = {"username": "testuser"}
-        result = get_username_from_user(user_dict)
-        assert result == "testuser"
-
     def test_get_username_from_user_object(self):
         """Test extracting username from object with username attribute."""
 
@@ -38,6 +34,13 @@ class TestGetUsernameFromUser:
 
         user_obj = UserObject("testuser")
         result = get_username_from_user(user_obj)
+        assert result == "testuser"
+
+    def test_get_username_from_user_dict(self):
+        """Test extracting username from user dictionary."""
+        user_dict = {"username": "testuser", "id": "123"}
+
+        result = get_username_from_user(user_dict)
         assert result == "testuser"
 
     def test_get_username_from_user_name_key(self):
@@ -77,7 +80,7 @@ class TestGetUsernameFromUser:
             get_username_from_user(user_obj)
 
     def test_get_username_from_user_none(self):
-        """Test extracting username from None."""
+        """Test that ValueError is raised for None input."""
         with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(None)
 

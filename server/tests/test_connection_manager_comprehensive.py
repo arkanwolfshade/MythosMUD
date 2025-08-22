@@ -110,18 +110,12 @@ class TestConnectionManagerComprehensive:
     @pytest.mark.asyncio
     async def test_connect_websocket_without_persistence(self, connection_manager, mock_websocket):
         """Test WebSocket connection when persistence is not set."""
-        # Mock the _get_player method to return a mock player when persistence is None
-        mock_player = Mock()
-        mock_player.current_room_id = "test_room_001"
-        mock_player.name = "test_player"
+        connection_manager.persistence = None
 
-        with patch.object(connection_manager, "_get_player", return_value=mock_player):
-            connection_manager.persistence = None
+        success = await connection_manager.connect_websocket(mock_websocket, "test_player")
 
-            success = await connection_manager.connect_websocket(mock_websocket, "test_player")
-
-            assert success is True
-            assert "test_player" in connection_manager.player_websockets
+        assert success is True
+        assert "test_player" in connection_manager.player_websockets
 
     @pytest.mark.asyncio
     async def test_disconnect_websocket_success(self, connection_manager, mock_websocket):
@@ -935,15 +929,21 @@ class TestConnectionManagerComprehensive:
 
                 mock_run.assert_called_once()
 
+    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     def test_disconnect_sse_with_tracking_exception(self, connection_manager):
         """Test SSE disconnection with tracking exception."""
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = "sse_conn_id"
 
-        # Mock the _check_and_process_disconnect method to avoid creating unawaited coroutines
-        with patch.object(connection_manager, "_check_and_process_disconnect"):
-            with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-                with patch("asyncio.run", side_effect=Exception("Tracking failed")):
+        # Mock the entire async context to avoid unawaited coroutine warnings
+        with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
+            # Mock asyncio.run to prevent the actual coroutine execution
+            with patch("asyncio.run") as mock_run:
+                mock_run.side_effect = Exception("Tracking failed")
+                # Mock the method to prevent any coroutine creation
+                with patch.object(connection_manager, "_check_and_process_disconnect") as mock_check:
+                    # Set the mock to do nothing when called
+                    mock_check.return_value = None
                     connection_manager.disconnect_sse("test_player")
                     # Should not raise exception
 

@@ -142,7 +142,7 @@ class CommandService:
         Returns:
             dict: Command result with 'result' key
         """
-        logger.debug("Processing command", command=command)
+        logger.debug("Processing command", player=player_name, command=command)
 
         # Step 1: Validate and clean command
         validation_result, error_message = validate_command_format(command)
@@ -155,29 +155,29 @@ class CommandService:
         cleaned_command = clean_command_input(normalized_command)
 
         if not cleaned_command:
-            logger.debug("Empty command after cleaning")
+            logger.debug("Empty command after cleaning", player=player_name)
             return {"result": "Empty command"}
 
         # Step 3: Parse command and arguments
         parts = cleaned_command.split()
         if not parts:
-            logger.debug("No command parts after splitting")
+            logger.debug("No command parts after splitting", player=player_name)
             return {"result": "Empty command"}
 
         cmd = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
 
-        logger.debug("Command parsed", command=cmd, args=args)
+        logger.debug("Command parsed", player=player_name, command=cmd, args=args)
 
         # Step 4: Route to appropriate handler
         if cmd in self.command_handlers:
             handler = self.command_handlers[cmd]
             try:
                 result = await handler(args, current_user, request, alias_storage, player_name)
-                logger.debug("Command processed successfully", command=cmd)
+                logger.debug("Command processed successfully", player=player_name, command=cmd)
                 return result
             except Exception as e:
-                logger.error("Command processing error", command=cmd, error=str(e))
+                logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
                 return {"result": f"Error processing command: {str(e)}"}
         else:
             logger.info("Unknown command", command=cmd)

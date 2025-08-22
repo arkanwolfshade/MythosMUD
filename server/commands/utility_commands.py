@@ -42,13 +42,13 @@ async def handle_who_command(
     Returns:
         dict: Who command result
     """
-    logger.debug(f"Processing who command for {player_name} with args: {args}")
+    logger.debug("Processing who command", player=player_name, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Who command failed - no persistence layer for {player_name}")
+        logger.warning("Who command failed - no persistence layer", player=player_name)
         return {"result": "Player information is not available."}
 
     try:
@@ -68,16 +68,16 @@ async def handle_who_command(
             if online_players:
                 player_list = ", ".join(sorted(online_players))
                 result = f"Online players ({len(online_players)}): {player_list}"
-                logger.debug(f"Who command successful for {player_name} - found {len(online_players)} online players")
+                logger.debug("Who command successful", player=player_name, count=len(online_players))
                 return {"result": result}
             else:
-                logger.debug(f"No online players found for {player_name}")
+                logger.debug("No online players found", player=player_name)
                 return {"result": "No players are currently online."}
         else:
-            logger.debug(f"No players found for {player_name}")
+            logger.debug("No players found", player=player_name)
             return {"result": "No players found."}
     except Exception as e:
-        logger.error(f"Who command error for {player_name}: {str(e)}")
+        logger.error("Who command error", player=player_name, error=str(e))
         return {"result": f"Error retrieving player information: {str(e)}"}
 
 
@@ -97,7 +97,7 @@ async def handle_quit_command(
     Returns:
         dict: Quit command result
     """
-    logger.debug(f"Processing quit command for {player_name} with args: {args}")
+    logger.debug("Processing quit command", player=player_name, args=args)
 
     # Update last active timestamp before quitting
     app = request.app if request else None
@@ -111,11 +111,11 @@ async def handle_quit_command(
 
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
-                logger.info(f"Player quit - updated last active for {player_name}")
+                logger.info("Player quit - updated last active", player=player_name)
         except Exception as e:
-            logger.error(f"Error updating last active on quit for {player_name}: {str(e)}")
+            logger.error("Error updating last active on quit", player=player_name, error=str(e))
 
-    logger.info(f"Player quitting: {player_name}")
+    logger.info("Player quitting", player=player_name)
     return {"result": "Goodbye! You have been disconnected from the game."}
 
 
@@ -135,19 +135,19 @@ async def handle_status_command(
     Returns:
         dict: Status command result
     """
-    logger.debug(f"Processing status command for {player_name} with args: {args}")
+    logger.debug("Processing status command", player=player_name, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Status command failed - no persistence layer for {player_name}")
+        logger.warning("Status command failed - no persistence layer", player=player_name)
         return {"result": "Status information is not available."}
 
     try:
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning(f"Status command failed - player not found for {player_name}")
+            logger.warning("Status command failed - player not found", player=player_name)
             return {"result": "Player information not found."}
 
         # Get current room information
@@ -177,10 +177,10 @@ async def handle_status_command(
             status_lines.append(f"Pose: {player.pose}")
 
         result = "\n".join(status_lines)
-        logger.debug(f"Status command successful for {player_name}")
+        logger.debug("Status command successful", player=player_name)
         return {"result": result}
     except Exception as e:
-        logger.error(f"Status command error for {player_name}: {str(e)}")
+        logger.error("Status command error", player=player_name, error=str(e))
         return {"result": f"Error retrieving status information: {str(e)}"}
 
 
@@ -200,19 +200,19 @@ async def handle_inventory_command(
     Returns:
         dict: Inventory command result
     """
-    logger.debug(f"Processing inventory command for {player_name} with args: {args}")
+    logger.debug("Processing inventory command", player=player_name, args=args)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Inventory command failed - no persistence layer for {player_name}")
+        logger.warning("Inventory command failed - no persistence layer", player=player_name)
         return {"result": "Inventory information is not available."}
 
     try:
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning(f"Inventory command failed - player not found for {player_name}")
+            logger.warning("Inventory command failed - player not found", player=player_name)
             return {"result": "Player information not found."}
 
         if player.inventory:
@@ -227,13 +227,13 @@ async def handle_inventory_command(
                 item_list.append(item_desc)
 
             result = "You are carrying:\n" + "\n".join(item_list)
-            logger.debug(f"Inventory command successful for {player_name} - found {len(player.inventory)} items")
+            logger.debug("Inventory command successful", player=player_name, count=len(player.inventory))
             return {"result": result}
         else:
-            logger.debug(f"Empty inventory for {player_name}")
+            logger.debug("Empty inventory", player=player_name)
             return {"result": "You are not carrying anything."}
     except Exception as e:
-        logger.error(f"Inventory command error for {player_name}: {str(e)}")
+        logger.error("Inventory command error", player=player_name, error=str(e))
         return {"result": f"Error retrieving inventory: {str(e)}"}
 
 

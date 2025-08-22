@@ -27,13 +27,13 @@ def get_username_from_user(user_obj):
 
 
 async def handle_look_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the look command for examining surroundings.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -42,76 +42,67 @@ async def handle_look_command(
     Returns:
         dict: Look command result
     """
-    logger.debug(f"Processing look command for {player_name} with args: {args}")
+    logger.debug("Processing look command", player=player_name, args=command_data)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Look command failed - no persistence layer for {player_name}")
-        return {"result": "Room information is not available."}
+        logger.warning("Look command failed - no persistence layer", player=player_name)
+        return {"result": "You see nothing special."}
 
-    try:
-        player = persistence.get_player_by_name(get_username_from_user(current_user))
-        if not player:
-            logger.warning(f"Look command failed - player not found for {player_name}")
-            return {"result": "Player information not found."}
+    player = persistence.get_player_by_name(get_username_from_user(current_user))
+    if not player:
+        logger.warning("Look command failed - player not found", player=player_name)
+        return {"result": "You see nothing special."}
 
-        room_id = player.current_room_id
-        room = persistence.get_room(room_id)
-        if not room:
-            logger.warning(f"Look command failed - room not found for {player_name}, room_id: {room_id}")
-            return {"result": "You are in an unknown location."}
+    room_id = player.current_room_id
+    room = persistence.get_room(room_id)
+    if not room:
+        logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
+        return {"result": "You see nothing special."}
 
-        # Check if looking in a specific direction
-        if args:
-            direction = args[0].lower()
-            logger.debug(f"Looking in direction for {player_name}: {direction}, room_id: {room_id}")
-
-            # Check if the direction is valid
-            if direction not in room.exits:
-                logger.debug(f"No valid exit in direction for {player_name}: {direction}, room_id: {room_id}")
-                return {"result": "You don't see an exit in that direction."}
-
-            # Get the target room
-            target_room_id = room.exits[direction]
+    # Extract direction from command_data
+    direction = command_data.get("direction")
+    if direction:
+        direction = direction.lower()
+        logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
+        exits = room.exits
+        target_room_id = exits.get(direction)
+        if target_room_id:
             target_room = persistence.get_room(target_room_id)
             if target_room:
-                result = f"You look {direction} and see:\n{target_room.name}\n{target_room.description}"
-                return {"result": result}
-            else:
-                return {"result": f"You look {direction} but see only darkness."}
+                name = target_room.name
+                desc = target_room.description
+                logger.debug(
+                    "Looked at room in direction",
+                    player=player_name,
+                    direction=direction,
+                    target_room_id=target_room_id,
+                )
+                return {"result": f"{name}\n{desc}"}
+        logger.debug("No valid exit in direction", player=player_name, direction=direction, room_id=room_id)
+        return {"result": "You see nothing special that way."}
 
-        # Looking at current room
-        valid_exits = list(room.exits.keys())
-        logger.debug(f"Looked at current room for {player_name}, room_id: {room_id}, exits: {valid_exits}")
-
-        # Build room description
-        result_lines = [room.name, room.description]
-
-        # Add exit information
-        if valid_exits:
-            exit_list = ", ".join(valid_exits)
-            result_lines.append(f"\nExits: {exit_list}")
-        else:
-            result_lines.append("\nThere are no visible exits.")
-
-        result = "\n".join(result_lines)
-        return {"result": result}
-
-    except Exception as e:
-        logger.error(f"Look command error for {player_name}: {str(e)}")
-        return {"result": f"Error retrieving room information: {str(e)}"}
+    # Look at current room
+    name = room.name
+    desc = room.description
+    exits = room.exits
+    # Only include exits that have valid room IDs (not null)
+    valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
+    exit_list = ", ".join(valid_exits) if valid_exits else "none"
+    logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
+    return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
 
 
 async def handle_go_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
-    Handle the go command for moving between rooms.
+    Handle the go command for movement.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -120,50 +111,50 @@ async def handle_go_command(
     Returns:
         dict: Go command result
     """
-    logger.debug(f"Processing go command for {player_name} with args: {args}, args_length: {len(args)}")
+    logger.debug("Processing go command", player=player_name, args=command_data)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Go command failed - no persistence layer for {player_name}")
-        return {"result": "Movement is not available."}
+        logger.warning("Go command failed - no persistence layer", player=player_name)
+        return {"result": "You can't go that way"}
 
-    if not args:
+    # Extract direction from command_data
+    direction = command_data.get("direction")
+    if not direction:
+        logger.warning("Go command failed - no direction specified", player=player_name, command_data=command_data)
         return {"result": "Go where? Usage: go <direction>"}
 
-    direction = args[0].lower()
-    logger.debug(f"Player attempting to move for {player_name}: {direction}")
+    direction = direction.lower()
+    logger.debug("Player attempting to move", player=player_name, direction=direction)
+
+    player = persistence.get_player_by_name(get_username_from_user(current_user))
+    if not player:
+        logger.warning("Go command failed - player not found", player=player_name)
+        return {"result": "You can't go that way"}
+
+    room_id = player.current_room_id
+    room = persistence.get_room(room_id)
+    if not room:
+        logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
+        return {"result": "You can't go that way"}
+
+    exits = room.exits
+    target_room_id = exits.get(direction)
+    if not target_room_id:
+        logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
+        return {"result": "You can't go that way"}
+
+    target_room = persistence.get_room(target_room_id)
+    if not target_room:
+        logger.warning("Go command failed - target room not found", player=player_name, target_room_id=target_room_id)
+        return {"result": "You can't go that way"}
+
+    # Use movement service for the actual movement
+    from ..game.movement_service import MovementService
 
     try:
-        player = persistence.get_player_by_name(get_username_from_user(current_user))
-        if not player:
-            logger.warning(f"Go command failed - player not found for {player_name}")
-            return {"result": "Player information not found."}
-
-        room_id = player.current_room_id
-        room = persistence.get_room(room_id)
-        if not room:
-            logger.warning(f"Go command failed - current room not found for {player_name}, room_id: {room_id}")
-            return {"result": "You are in an unknown location."}
-
-        # Check if the direction is valid
-        if direction not in room.exits:
-            logger.debug(f"No exit in direction for {player_name}: {direction}, room_id: {room_id}")
-            return {"result": "You don't see an exit in that direction."}
-
-        # Get the target room
-        target_room_id = room.exits[direction]
-        target_room = persistence.get_room(target_room_id)
-        if not target_room:
-            logger.warning(
-                f"Go command failed - target room not found for {player_name}, target_room_id: {target_room_id}"
-            )
-            return {"result": "You cannot go that way."}
-
-        # Move the player
-        from ..game.movement_service import MovementService
-
         # Pass the same event bus that persistence uses to ensure events are published correctly
         movement_service = MovementService(persistence._event_bus)
         success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
