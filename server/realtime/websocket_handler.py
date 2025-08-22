@@ -52,11 +52,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 room = persistence.get_room(player.current_room_id)
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
-                    added_to_room = False
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
                         room.player_entered(player_id_str)
-                        added_to_room = True
 
                     # Use canonical room id for subscriptions and broadcasts
                     canonical_room_id = getattr(room, "id", None) or player.current_room_id
@@ -137,24 +135,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     except Exception as e:
                         logger.error(f"Error broadcasting initial room update for {player_id_str}: {e}")
 
-                    # If player was already present (reconnect without a leave event),
-                    # explicitly notify other occupants they (re)entered to surface the event in UI
-                    if not added_to_room:
-                        try:
-                            synthetic_event = build_event(
-                                "player_entered",
-                                {
-                                    "player_id": player_id_str,
-                                    "player_name": getattr(player, "name", player_id_str),
-                                    "message": f"{getattr(player, 'name', player_id_str)} entered the room.",
-                                },
-                                room_id=canonical_room_id,
-                            )
-                            await connection_manager.broadcast_to_room(
-                                canonical_room_id, synthetic_event, exclude_player=player_id_str
-                            )
-                        except Exception as e:
-                            logger.error(f"Error sending synthetic player_entered for {player_id_str}: {e}")
+                    # Note: Removed synthetic player_entered event generation to prevent duplicates
+                    # The natural PlayerEnteredRoom event from Room.player_entered() will handle
+                    # the notification to other players when a player is added to the room
 
         # Send welcome message
         welcome_event = build_event(

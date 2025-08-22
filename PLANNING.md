@@ -6,7 +6,7 @@
 
 ## 📋 Document Information
 
-**Document Version**: 3.1 (Updated with System Audit Completion)
+**Document Version**: 3.2 (Updated with Multiplayer Messaging Investigation Plan)
 **Last Updated**: 2025-01-27
 **Next Review**: After each feature completion
 **Primary Audience**: Developers and AI Agents
@@ -741,6 +741,69 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
+## 🔍 Multiplayer Messaging System Investigation
+
+### Critical Issues Identified (2025-01-27)
+
+**Scenario Testing Results**: Systematic validation of multiplayer scenarios 1-4 revealed critical messaging system anomalies:
+
+1. **Disconnection Messages Not Displayed**: Players do not see "has left the game" messages when others disconnect
+2. **Duplicate Connection Messages**: Multiple "enters the room" messages appear for the same connection event
+3. **Inconsistent Movement Broadcasting**: "leaves" messages work but "enters" messages are not properly broadcast
+4. **Self-Message Exclusion**: Working correctly for movement but may have issues with connection events
+
+### Investigation Plan: 7-Phase Approach
+
+#### **Phase 1: Message Broadcasting Architecture Analysis**
+- **Objective**: Map the complete message flow from server events to client display
+- **Target Areas**:
+  - Server-side event generation (`server/server/game/`)
+  - WebSocket message broadcasting (connection handlers)
+  - Client-side event processing (`client/src/`)
+  - Player exclusion mechanisms and event type routing
+
+#### **Phase 2: Specific Issue Investigation**
+- **Disconnection Message Issue**: Trace `player_left` event handling
+- **Movement Message Broadcasting**: Analyze `move`/`movement`/`room` event flows
+- **Message Deduplication**: Investigate `player_joined`/`connect`/`enter` event handling
+
+#### **Phase 3: Code Path Tracing**
+- **Server Event Flow**: Connection → Movement → Disconnection → Broadcasting
+- **Client Event Flow**: WebSocket reception → Event parsing → Chat log update → UI rendering
+
+#### **Phase 4: Debugging Strategy**
+- **Comprehensive Logging**: Add logging at all message flow points
+- **Test Cases**: Unit tests, integration tests, multiplayer scenario tests
+- **Performance Analysis**: Latency, event queue processing, memory usage
+
+#### **Phase 5: Implementation Plan**
+- **Immediate Fixes**: Disconnection display, message deduplication, movement broadcasting
+- **Long-term Improvements**: Message queuing, validation, error handling, performance optimization
+
+#### **Phase 6: Testing and Validation**
+- **Automated Testing**: Unit tests, integration tests, performance benchmarks, stress testing
+- **Manual Testing**: Re-run scenarios 1-4, edge cases, message consistency validation
+
+#### **Phase 7: Documentation and Monitoring**
+- **Code Documentation**: Message flow architecture, debugging guides, API documentation
+- **Monitoring**: Message failure detection, performance monitoring, alerting, logging aggregation
+
+### Success Criteria
+- All scenarios 1-4 pass completely
+- No duplicate messages in chat logs
+- Consistent movement message broadcasting
+- Proper disconnection message display
+- Self-message exclusion working correctly
+- Performance remains acceptable under load
+
+### Current Status
+- **Phase**: Ready to begin Phase 1
+- **Priority**: Critical - Multiplayer functionality compromised
+- **Impact**: Core multiplayer experience affected
+- **Timeline**: Immediate investigation required
+
+---
+
 ## 🚨 Risk Assessment
 
 ### High Risk Items
@@ -748,6 +811,7 @@ When multiple tasks are pending, prioritize in this order:
 - **COPPA Compliance**: Failure to comply could result in legal issues
 - **Security Vulnerabilities**: Could compromise user safety
 - **Data Privacy**: Improper data handling could violate privacy laws
+- **Multiplayer Messaging Failures**: Core functionality compromised, user experience degraded
 
 ### Mitigation Strategies
 
@@ -755,12 +819,14 @@ When multiple tasks are pending, prioritize in this order:
 - **Privacy by Design**: Build privacy into every feature
 - **Legal Compliance**: Regular review of privacy law compliance
 - **Testing**: Comprehensive testing for security and privacy
+- **Message System Monitoring**: Continuous monitoring of multiplayer messaging functionality
 
 ### Contingency Plans
 
 - **Security Incident**: Immediate feature disablement and investigation
 - **Privacy Breach**: Immediate data deletion and notification
 - **Technical Failure**: Rollback to last stable version
+- **Messaging System Failure**: Fallback to basic multiplayer functionality
 
 ---
 
@@ -768,7 +834,7 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-**Document Version**: 3.1 (Updated with System Audit Completion)
+**Document Version**: 3.2 (Updated with Multiplayer Messaging Investigation Plan)
 **Last Updated**: 2025-01-27
 **Next Review**: After each feature completion
 **Primary Audience**: Developers and AI Agents

@@ -8,10 +8,11 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 
 - **ArkanWolfshade** (AW) - password: Cthulhu1
 - **Ithaqua** - password: Cthulhu1
+
+## Rules
+
 - **Default Room**: `earth_arkham_city_sanitarium_room_foyer_001` (Main Foyer) - update SQLite directly if necessary
-
-## RUles
-
+- **Stop the client/server using stop_server.ps1**
 - **Use Playwright MCP**
 - **Use the credentials provided in this playbook**
 - **ONLY USE start_dev.ps1**
