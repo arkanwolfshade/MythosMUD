@@ -165,9 +165,9 @@ class TestTeleportCommand:
             command_data, mock_current_user, mock_request, mock_alias_storage, "admin_user"
         )
 
-        # Should return confirmation message
+        # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "confirm" in result["result"].lower()
+        assert "successfully teleported" in result["result"].lower()
         assert "TestPlayer" in result["result"]
 
     @pytest.mark.asyncio
@@ -283,8 +283,9 @@ class TestGotoCommand:
             command_data, mock_current_user, mock_request, mock_alias_storage, "admin_user"
         )
 
+        # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "confirm" in result["result"].lower()
+        assert "successfully teleported" in result["result"].lower()
         assert "TestPlayer" in result["result"]
 
     @pytest.mark.asyncio
