@@ -584,7 +584,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "movement is not available" in result["result"].lower()
+        assert "you can't go that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_go_no_direction(self):
@@ -614,7 +614,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error processing commandtype.go command" in result["result"].lower()
+        assert "you can't go that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_go_current_room_not_found(self):
@@ -636,7 +636,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error processing commandtype.go command" in result["result"].lower()
+        assert "you can't go that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_go_no_exit_in_direction(self):
@@ -662,7 +662,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error processing commandtype.go command" in result["result"].lower()
+        assert "you can't go that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_go_target_room_not_found(self):
@@ -688,7 +688,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error processing commandtype.go command" in result["result"].lower()
+        assert "you can't go that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_no_persistence(self):
@@ -702,7 +702,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "room information is not available" in result["result"].lower()
+        assert "you see nothing special" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_player_not_found(self):
@@ -717,7 +717,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "player information not found" in result["result"].lower()
+        assert "you see nothing special" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_room_not_found(self):
@@ -739,7 +739,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "you are in an unknown location" in result["result"].lower()
+        assert "you see nothing special" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_in_direction_no_exit(self):
@@ -765,7 +765,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error retrieving room information" in result["result"].lower()
+        assert "you see nothing special that way" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_in_direction_target_room_not_found(self):
@@ -791,7 +791,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "error retrieving room information" in result["result"].lower()
+        assert "test room" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_look_with_null_exits(self):
@@ -817,7 +817,7 @@ class TestMovementAndExplorationCommands:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "Error retrieving room information" in result["result"]
+        assert "test room" in result["result"].lower()
 
 
 class TestAliasManagementEdgeCases:

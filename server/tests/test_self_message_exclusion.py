@@ -36,6 +36,9 @@ class TestSelfMessageExclusion:
     @pytest.mark.asyncio
     async def test_player_entered_excludes_self(self, event_handler, connection_manager):
         """Test that PlayerEnteredRoom event excludes the entering player."""
+        # Mock broadcast_to_room for this test
+        connection_manager.broadcast_to_room = AsyncMock()
+
         # Create a PlayerEnteredRoom event
         event = PlayerEnteredRoom(
             timestamp=None, event_type="player_entered", player_id="test_player_123", room_id="test_room_456"
@@ -57,6 +60,9 @@ class TestSelfMessageExclusion:
     @pytest.mark.asyncio
     async def test_player_left_excludes_self(self, event_handler, connection_manager):
         """Test that PlayerLeftRoom event excludes the leaving player."""
+        # Mock broadcast_to_room for this test
+        connection_manager.broadcast_to_room = AsyncMock()
+
         # Create a PlayerLeftRoom event
         event = PlayerLeftRoom(
             timestamp=None, event_type="player_left", player_id="test_player_123", room_id="test_room_456"

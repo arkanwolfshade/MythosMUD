@@ -155,7 +155,9 @@ class TestCommandProcessing:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "Error retrieving room information" in result["result"]
+        assert "Test Room" in result["result"]
+        assert "A test room" in result["result"]
+        assert "Exits: north" in result["result"]
 
     @pytest.mark.asyncio
     async def test_process_command_go(self):

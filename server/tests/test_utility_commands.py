@@ -44,20 +44,22 @@ class TestGetUsernameFromUser:
         user_obj = MagicMock()
         # Remove username attribute
         del user_obj.username
+        # Remove name attribute as well
+        del user_obj.name
 
-        with pytest.raises(ValueError, match="User object must have username attribute or key"):
+        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
     def test_get_username_from_user_invalid_dict(self):
         """Test that ValueError is raised for dictionary without username key."""
         user_dict = {"id": "123", "email": "test@example.com"}
 
-        with pytest.raises(ValueError, match="User object must have username attribute or key"):
+        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_dict)
 
     def test_get_username_from_user_none(self):
         """Test that ValueError is raised for None input."""
-        with pytest.raises(ValueError, match="User object must have username attribute or key"):
+        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
             get_username_from_user(None)
 
 

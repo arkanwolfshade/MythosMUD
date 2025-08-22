@@ -71,7 +71,7 @@ class TestCommandHandlerV2:
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "Error retrieving room information" in result["result"]
+        assert "test room" in result["result"].lower()
 
     def test_clean_command_input(self):
         """Test command input cleaning."""

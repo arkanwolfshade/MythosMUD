@@ -16,20 +16,24 @@ def get_username_from_user(user_obj):
     """Safely extract username from user object or dictionary."""
     if hasattr(user_obj, "username"):
         return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
     elif isinstance(user_obj, dict) and "username" in user_obj:
         return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
     else:
-        raise ValueError("User object must have username attribute or key")
+        raise ValueError("User object must have username or name attribute or key")
 
 
 async def handle_look_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the look command for examining surroundings.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -38,7 +42,7 @@ async def handle_look_command(
     Returns:
         dict: Look command result
     """
-    logger.debug("Processing look command", player=player_name, args=args)
+    logger.debug("Processing look command", player=player_name, args=command_data)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -58,8 +62,10 @@ async def handle_look_command(
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return {"result": "You see nothing special."}
 
-    if args:
-        direction = args[0].lower()
+    # Extract direction from command_data
+    direction = command_data.get("direction")
+    if direction:
+        direction = direction.lower()
         logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
         exits = room.exits
         target_room_id = exits.get(direction)
@@ -90,13 +96,13 @@ async def handle_look_command(
 
 
 async def handle_go_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the go command for movement.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -105,7 +111,7 @@ async def handle_go_command(
     Returns:
         dict: Go command result
     """
-    logger.debug("Processing go command", player=player_name, args=args, args_length=len(args))
+    logger.debug("Processing go command", player=player_name, args=command_data)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -114,13 +120,13 @@ async def handle_go_command(
         logger.warning("Go command failed - no persistence layer", player=player_name)
         return {"result": "You can't go that way"}
 
-    if not args:
-        logger.warning(
-            "Go command failed - no direction specified", player=player_name, args=args, args_type=type(args)
-        )
+    # Extract direction from command_data
+    direction = command_data.get("direction")
+    if not direction:
+        logger.warning("Go command failed - no direction specified", player=player_name, command_data=command_data)
         return {"result": "Go where? Usage: go <direction>"}
 
-    direction = args[0].lower()
+    direction = direction.lower()
     logger.debug("Player attempting to move", player=player_name, direction=direction)
 
     player = persistence.get_player_by_name(get_username_from_user(current_user))
