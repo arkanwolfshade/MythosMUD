@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.commands.admin_teleport_commands import (
+from server.commands.admin_commands import (
     handle_confirm_teleport_command,
     handle_goto_command,
     handle_teleport_command,
@@ -335,7 +335,7 @@ class TestAdminTeleportIntegration:
     @pytest.mark.asyncio
     async def test_audit_logging_integration(self, mock_app_state, mock_admin_player, mock_target_player):
         """Test that audit logging is properly integrated into teleport workflow."""
-        with patch("server.commands.admin_teleport_commands.get_admin_actions_logger") as mock_logger:
+        with patch("server.commands.admin_commands.get_admin_actions_logger") as mock_logger:
             # Setup
             command_data = {"command_type": "confirm_teleport", "target_player": "TargetPlayer"}
             current_user = {"username": "AdminUser"}

@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.admin_teleport_commands import (
+from server.commands.admin_commands import (
     create_teleport_effect_message,
     get_online_player_by_display_name,
     handle_confirm_goto_command,

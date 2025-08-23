@@ -7,9 +7,12 @@ command handlers for the MythosMUD game system.
 
 from .admin_commands import (
     handle_add_admin_command,
+    # Teleport commands now consolidated into admin_commands.py
+    handle_goto_command,
     handle_mute_command,
     handle_mute_global_command,
     handle_mutes_command,
+    handle_teleport_command,
     handle_unmute_command,
     handle_unmute_global_command,
 )
@@ -53,6 +56,9 @@ __all__ = [
     "handle_unmute_global_command",
     "handle_add_admin_command",
     "handle_mutes_command",
+    # Admin teleport commands
+    "handle_teleport_command",
+    "handle_goto_command",
     # Utility commands
     "handle_who_command",
     "handle_quit_command",

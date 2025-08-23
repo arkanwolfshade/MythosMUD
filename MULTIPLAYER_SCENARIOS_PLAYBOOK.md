@@ -436,7 +436,7 @@ Tests the admin teleportation system functionality, including both `/teleport` a
 
 ### Technical Components Tested
 
-- ✅ Admin permission validation (`server/commands/admin_teleport_commands.py`)
+- ✅ Admin permission validation (`server/commands/admin_commands.py`)
 - ✅ Online player lookup (`get_online_player_by_display_name`)
 - ✅ Teleport command processing (`handle_teleport_command`)
 - ✅ Goto command processing (`handle_goto_command`)

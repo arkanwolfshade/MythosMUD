@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.admin_teleport_commands import (
+from server.commands.admin_commands import (
     handle_confirm_teleport_command,
     handle_teleport_command,
     validate_admin_permission,
@@ -107,7 +107,7 @@ class TestAdminTeleportSecurity:
     @pytest.mark.asyncio
     async def test_xss_prevention_in_teleport_messages(self, mock_app_state):
         """Test XSS prevention in teleport effect messages."""
-        from server.commands.admin_teleport_commands import create_teleport_effect_message
+        from server.commands.admin_commands import create_teleport_effect_message
 
         # Test with malicious player names
         malicious_names = [

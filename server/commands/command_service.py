@@ -16,17 +16,14 @@ from ..validators.command_validator import (
 )
 from .admin_commands import (
     handle_add_admin_command,
+    # Teleport commands now consolidated into admin_commands.py
+    handle_goto_command,
     handle_mute_command,
     handle_mute_global_command,
     handle_mutes_command,
+    handle_teleport_command,
     handle_unmute_command,
     handle_unmute_global_command,
-)
-from .admin_teleport_commands import (
-    # Confirmation handlers removed - teleport commands now execute immediately
-    # TODO: Add confirmation dialogs as future feature for enhanced safety
-    handle_goto_command,
-    handle_teleport_command,
 )
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
 from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
