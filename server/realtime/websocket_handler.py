@@ -207,34 +207,10 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         message: The message data
     """
     try:
-        message_type = message.get("type", "unknown")
-        data = message.get("data", {})
+        # Use the message handler factory to route messages
+        from .message_handler_factory import message_handler_factory
 
-        if message_type == "command":
-            # Handle game command
-            command = data.get("command", "")
-            args = data.get("args", [])
-            await handle_game_command(websocket, player_id, command, args)
-
-        elif message_type == "chat":
-            # Handle chat message
-            chat_message = data.get("message", "")
-            await handle_chat_message(websocket, player_id, chat_message)
-
-        elif message_type == "ping":
-            # Handle ping (keep-alive)
-            await websocket.send_json({"type": "pong"})
-
-        else:
-            # Unknown message type
-            logger.warning(f"Unknown message type '{message_type}' from player {player_id}")
-            error_response = create_websocket_error_response(
-                ErrorType.INVALID_COMMAND,
-                f"Unknown message type: {message_type}",
-                ErrorMessages.INVALID_COMMAND,
-                {"message_type": message_type, "player_id": player_id},
-            )
-            await websocket.send_json(error_response)
+        await message_handler_factory.handle_message(websocket, player_id, message)
 
     except Exception as e:
         logger.error(f"Error processing WebSocket message for {player_id}: {e}")
