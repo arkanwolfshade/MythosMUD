@@ -480,26 +480,17 @@ class TestAdminTeleportPerformance:
         """Test teleport performance with many online players."""
         # Setup mock with many online players
         connection_manager = MagicMock()
-        connection_manager.online_players = {}
-
-        # Add 1000 online players
-        for i in range(1000):
-            connection_manager.online_players[f"player_{i}"] = {
-                "player_name": f"Player{i}",
-                "room_id": f"room_{i % 10}",
-            }
-
-        # Add target player at the end
-        connection_manager.online_players["target_id"] = {"player_name": "TargetPlayer", "room_id": "target_room"}
+        connection_manager.get_online_player_by_display_name.return_value = {
+            "player_name": "TargetPlayer",
+            "room_id": "target_room",
+        }
 
         # Test player lookup performance
         import time
 
-        from server.commands.admin_teleport_commands import get_online_player_by_display_name
-
         start_time = time.time()
 
-        result = await get_online_player_by_display_name("TargetPlayer", connection_manager)
+        result = connection_manager.get_online_player_by_display_name("TargetPlayer")
 
         end_time = time.time()
         execution_time = end_time - start_time

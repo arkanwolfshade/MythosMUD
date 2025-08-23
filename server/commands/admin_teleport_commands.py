@@ -39,29 +39,17 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             )
             return False
 
-        # Debug logging to see player object details
-        logger.debug(f"Admin permission check for {player_name} - player type: {type(player).__name__}")
-        logger.debug(f"Player has is_admin attribute: {hasattr(player, 'is_admin')}")
-        if hasattr(player, "is_admin"):
-            logger.debug(f"Player is_admin value: {player.is_admin} (type: {type(player.is_admin)})")
-            logger.debug(f"bool(player.is_admin): {bool(player.is_admin)}")
-
-        if not hasattr(player, "is_admin"):
-            logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
-
-            # Log the failed permission check
-            admin_logger = get_admin_actions_logger()
-            admin_logger.log_permission_check(
-                player_name=player_name,
-                action="admin_teleport",
-                has_permission=False,
-                additional_data={"error": "No is_admin attribute", "player_type": type(player).__name__},
-            )
-            return False
-
-        # Check if player has admin privileges (PlayerRead schema uses boolean)
-        if not player.is_admin:
-            logger.info(f"Admin permission denied for {player_name} - is_admin value: {player.is_admin}")
+        # Check if player has admin privileges
+        if not hasattr(player, "is_admin") or not player.is_admin:
+            # Determine the specific reason for failure
+            if not hasattr(player, "is_admin"):
+                error_msg = "No is_admin attribute"
+                logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
+                additional_data = {"error": error_msg, "player_type": type(player).__name__}
+            else:
+                error_msg = f"is_admin value: {player.is_admin}"
+                logger.info(f"Admin permission denied for {player_name} - {error_msg}")
+                additional_data = {"player_type": type(player).__name__, "is_admin_value": player.is_admin}
 
             # Log the failed permission check
             admin_logger = get_admin_actions_logger()
@@ -69,7 +57,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 player_name=player_name,
                 action="admin_teleport",
                 has_permission=False,
-                additional_data={"player_type": type(player).__name__, "is_admin_value": player.is_admin},
+                additional_data=additional_data,
             )
             return False
 
@@ -114,20 +102,11 @@ async def get_online_player_by_display_name(display_name: str, connection_manage
     Returns:
         dict: Player information if found, None otherwise
     """
-    if not connection_manager or not hasattr(connection_manager, "online_players"):
+    if not connection_manager:
         logger.warning("Connection manager not available for online player lookup")
         return None
 
-    # Case-insensitive search
-    display_name_lower = display_name.lower()
-
-    for player_id, player_info in connection_manager.online_players.items():
-        if player_info.get("player_name", "").lower() == display_name_lower:
-            logger.debug(f"Found online player {display_name} with ID {player_id}")
-            return player_info
-
-    logger.debug(f"Online player {display_name} not found")
-    return None
+    return connection_manager.get_online_player_by_display_name(display_name)
 
 
 def create_teleport_effect_message(player_name: str, effect_type: str) -> str:
@@ -169,12 +148,11 @@ async def broadcast_teleport_effects(
         # Create arrival message for destination room
         arrival_message = create_teleport_effect_message(player_name, "arrival")
 
-        # Broadcast departure effect to source room
+        # Broadcast teleport effects to rooms
         if hasattr(connection_manager, "broadcast_to_room"):
+            # Broadcast departure effect to source room
             await connection_manager.broadcast_to_room(from_room_id, departure_message, exclude_player=player_name)
-
-        # Broadcast arrival effect to destination room
-        if hasattr(connection_manager, "broadcast_to_room"):
+            # Broadcast arrival effect to destination room
             await connection_manager.broadcast_to_room(to_room_id, arrival_message, exclude_player=player_name)
 
         logger.debug(f"Teleport effects broadcast for {player_name} from {from_room_id} to {to_room_id}")
@@ -202,12 +180,11 @@ async def notify_player_of_teleport(
             message = f"You have been teleported away from {admin_name} by an administrator."
 
         # Find the target player's connection and send them a direct message
-        for player_id, player_info in connection_manager.online_players.items():
-            if player_info.get("player_name", "").lower() == target_player_name.lower():
-                # Send system notification to the target player
-                if hasattr(connection_manager, "send_to_player"):
-                    await connection_manager.send_to_player(player_id, message)
-                break
+        target_player_info = connection_manager.get_online_player_by_display_name(target_player_name)
+        if target_player_info:
+            player_id = target_player_info.get("player_id")
+            if player_id and hasattr(connection_manager, "send_to_player"):
+                await connection_manager.send_to_player(player_id, message)
 
         logger.debug(f"Teleport notification sent to {target_player_name} by {admin_name}")
 

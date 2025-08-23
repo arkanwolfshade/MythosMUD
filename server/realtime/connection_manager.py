@@ -824,6 +824,27 @@ class ConnectionManager:
         """
         return list(self.online_players.values())
 
+    def get_online_player_by_display_name(self, display_name: str) -> dict[str, Any] | None:
+        """
+        Get online player information by display name.
+
+        Args:
+            display_name: Display name to search for (case-insensitive)
+
+        Returns:
+            dict: Player information if found, None otherwise
+        """
+        # Case-insensitive search
+        display_name_lower = display_name.lower()
+
+        for player_id, player_info in self.online_players.items():
+            if player_info.get("player_name", "").lower() == display_name_lower:
+                logger.debug(f"Found online player {display_name} with ID {player_id}")
+                return player_info
+
+        logger.debug(f"Online player {display_name} not found")
+        return None
+
     def get_room_occupants(self, room_id: str) -> list[dict[str, Any]]:
         """
         Get list of occupants in a room.
