@@ -144,7 +144,7 @@ class NATSMessageHandler:
         self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str
     ):
         """
-        Broadcast message based on channel type.
+        Broadcast message based on channel type using strategy pattern.
 
         Args:
             channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
@@ -155,51 +155,12 @@ class NATSMessageHandler:
             sender_id: Sender player ID
         """
         try:
-            if channel in ["say", "local", "emote", "pose"]:
-                # Room-based channels - implement server-side filtering
-                if room_id:
-                    await self._broadcast_to_room_with_filtering(room_id, chat_event, sender_id, channel)
-                    logger.debug(
-                        "Broadcasted room message with server-side filtering",
-                        channel=channel,
-                        room_id=room_id,
-                        sender_id=sender_id,
-                    )
-                else:
-                    logger.warning("Room-based message missing room_id", channel=channel)
+            # Import here to avoid circular imports
+            from .channel_broadcasting_strategies import channel_strategy_factory
 
-            elif channel == "global":
-                # Global channel - broadcast to all connected players
-                await connection_manager.broadcast_to_all(chat_event, exclude_player=sender_id)
-                logger.debug("Broadcasted global message", sender_id=sender_id)
-
-            elif channel == "party":
-                # Party channel - broadcast to party members
-                if party_id:
-                    # TODO: Implement party-based broadcasting when party system is available
-                    logger.debug("Party message received", party_id=party_id, sender_id=sender_id)
-                else:
-                    logger.warning("Party message missing party_id")
-
-            elif channel == "whisper":
-                # Whisper channel - send to specific player
-                if target_player_id:
-                    await connection_manager.send_to_player(target_player_id, chat_event)
-                    logger.debug(
-                        "Sent whisper message",
-                        sender_id=sender_id,
-                        target_player_id=target_player_id,
-                    )
-                else:
-                    logger.warning("Whisper message missing target_player_id")
-
-            elif channel in ["system", "admin"]:
-                # System/Admin channels - broadcast to all players
-                await connection_manager.broadcast_to_all(chat_event, exclude_player=sender_id)
-                logger.debug(f"Broadcasted {channel} message", sender_id=sender_id)
-
-            else:
-                logger.warning("Unknown channel type", channel=channel)
+            # Get strategy for channel type and execute broadcast
+            strategy = channel_strategy_factory.get_strategy(channel)
+            await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
         except Exception as e:
             logger.error(
