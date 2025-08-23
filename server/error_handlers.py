@@ -122,60 +122,57 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
 
 def _map_error_type(error: MythosMUDError) -> ErrorType:
     """Map MythosMUD error types to standardized error types."""
-    if isinstance(error, AuthenticationError):
-        return ErrorType.AUTHENTICATION_FAILED
-    elif isinstance(error, ValidationError):
-        return ErrorType.VALIDATION_ERROR
-    elif isinstance(error, ResourceNotFoundError):
-        return ErrorType.RESOURCE_NOT_FOUND
-    elif isinstance(error, RateLimitError):
-        return ErrorType.RATE_LIMIT_EXCEEDED
-    elif isinstance(error, GameLogicError):
-        return ErrorType.GAME_LOGIC_ERROR
-    elif isinstance(error, DatabaseError):
-        return ErrorType.DATABASE_ERROR
-    elif isinstance(error, NetworkError):
-        return ErrorType.NETWORK_ERROR
-    elif isinstance(error, ConfigurationError):
-        return ErrorType.CONFIGURATION_ERROR
-    else:
-        return ErrorType.INTERNAL_ERROR
+    # Error type mapping factory - provides O(1) lookup and easy extensibility
+    # As noted in the restricted archives, this pattern eliminates the need for
+    # lengthy if/elif chains while maintaining type safety
+    error_type_mapping = {
+        AuthenticationError: ErrorType.AUTHENTICATION_FAILED,
+        ValidationError: ErrorType.VALIDATION_ERROR,
+        ResourceNotFoundError: ErrorType.RESOURCE_NOT_FOUND,
+        RateLimitError: ErrorType.RATE_LIMIT_EXCEEDED,
+        GameLogicError: ErrorType.GAME_LOGIC_ERROR,
+        DatabaseError: ErrorType.DATABASE_ERROR,
+        NetworkError: ErrorType.NETWORK_ERROR,
+        ConfigurationError: ErrorType.CONFIGURATION_ERROR,
+    }
+
+    return error_type_mapping.get(type(error), ErrorType.INTERNAL_ERROR)
 
 
 def _get_severity_for_error(error: MythosMUDError) -> ErrorSeverity:
     """Get appropriate severity level for error type."""
-    if isinstance(error, AuthenticationError | ValidationError | ResourceNotFoundError):
-        return ErrorSeverity.LOW
-    elif isinstance(error, GameLogicError | RateLimitError):
-        return ErrorSeverity.MEDIUM
-    elif isinstance(error, DatabaseError | NetworkError):
-        return ErrorSeverity.HIGH
-    elif isinstance(error, ConfigurationError):
-        return ErrorSeverity.CRITICAL
-    else:
-        return ErrorSeverity.MEDIUM
+    # Severity mapping factory - maps error types to their appropriate severity levels
+    # This pattern allows for easy adjustment of severity levels without code changes
+    severity_mapping = {
+        AuthenticationError: ErrorSeverity.LOW,
+        ValidationError: ErrorSeverity.LOW,
+        ResourceNotFoundError: ErrorSeverity.LOW,
+        GameLogicError: ErrorSeverity.MEDIUM,
+        RateLimitError: ErrorSeverity.MEDIUM,
+        DatabaseError: ErrorSeverity.HIGH,
+        NetworkError: ErrorSeverity.HIGH,
+        ConfigurationError: ErrorSeverity.CRITICAL,
+    }
+
+    return severity_mapping.get(type(error), ErrorSeverity.MEDIUM)
 
 
 def _get_status_code_for_error(error: MythosMUDError) -> int:
     """Get appropriate HTTP status code for error type."""
-    if isinstance(error, AuthenticationError):
-        return 401
-    elif isinstance(error, ValidationError):
-        return 400
-    elif isinstance(error, ResourceNotFoundError):
-        return 404
-    elif isinstance(error, RateLimitError):
-        return 429
-    elif isinstance(error, GameLogicError):
-        return 422
-    elif isinstance(error, DatabaseError):
-        return 503  # Service unavailable for database errors
-    elif isinstance(error, NetworkError):
-        return 503
-    elif isinstance(error, ConfigurationError):
-        return 500
-    else:
-        return 500
+    # Status code mapping factory - provides consistent HTTP status code mapping
+    # This eliminates the need for repetitive if/elif chains and centralizes status code logic
+    status_code_mapping = {
+        AuthenticationError: 401,
+        ValidationError: 400,
+        ResourceNotFoundError: 404,
+        RateLimitError: 429,
+        GameLogicError: 422,
+        DatabaseError: 503,  # Service unavailable for database errors
+        NetworkError: 503,
+        ConfigurationError: 500,
+    }
+
+    return status_code_mapping.get(type(error), 500)
 
 
 async def mythos_exception_handler(request: Request, exc: MythosMUDError) -> JSONResponse:

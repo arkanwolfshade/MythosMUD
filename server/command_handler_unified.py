@@ -21,6 +21,7 @@ from .auth.users import get_current_user
 from .commands.command_service import CommandService
 from .config_loader import get_config
 from .logging_config import get_logger
+from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
 
 logger = get_logger(__name__)
@@ -33,20 +34,6 @@ command_processor = get_command_processor()
 
 # Configuration
 MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
-
-
-def get_username_from_user(user_obj) -> str:
-    """Safely extract username from user object or dictionary."""
-    if hasattr(user_obj, "username"):
-        return user_obj.username
-    elif hasattr(user_obj, "name"):
-        return user_obj.name
-    elif isinstance(user_obj, dict) and "username" in user_obj:
-        return user_obj["username"]
-    elif isinstance(user_obj, dict) and "name" in user_obj:
-        return user_obj["name"]
-    else:
-        raise ValueError("User object must have username or name attribute or key")
 
 
 class CommandRequest(BaseModel):

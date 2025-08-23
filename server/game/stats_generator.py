@@ -56,23 +56,28 @@ class StatsGenerator:
 
     def roll_stats(self, method: str = "3d6") -> Stats:
         """
-        Generate random stats using the specified method.
+        Roll character stats using the specified method.
 
         Args:
-            method: The rolling method to use ("3d6", "4d6_drop_lowest",
-                    "point_buy")
+            method: Rolling method ("3d6", "4d6_drop_lowest", "point_buy")
 
         Returns:
             Stats: A new Stats object with randomly generated values
         """
         logger.info("Rolling stats", method=method)
 
-        if method == "3d6":
-            stats = self._roll_3d6()
-        elif method == "4d6_drop_lowest":
-            stats = self._roll_4d6_drop_lowest()
-        elif method == "point_buy":
-            stats = self._roll_point_buy()
+        # Stats rolling method factory - maps method names to their implementation functions
+        # This pattern eliminates the if/elif chain and provides O(1) lookup
+        # As noted in the restricted archives, this approach scales better as new methods are added
+        rolling_methods = {
+            "3d6": self._roll_3d6,
+            "4d6_drop_lowest": self._roll_4d6_drop_lowest,
+            "point_buy": self._roll_point_buy,
+        }
+
+        roll_method = rolling_methods.get(method)
+        if roll_method:
+            stats = roll_method()
         else:
             logger.warning("Unknown rolling method, using 3d6", method=method)
             stats = self._roll_3d6()

@@ -47,6 +47,29 @@ class CommandParser:
         self.max_command_length = 1000
         self.valid_commands = {cmd.value for cmd in CommandType}
 
+        # Command factory mapping - maps command types to their creation methods
+        # This eliminates the if/elif chain and provides O(1) lookup
+        self._command_factory = {
+            CommandType.LOOK.value: self._create_look_command,
+            CommandType.GO.value: self._create_go_command,
+            CommandType.SAY.value: self._create_say_command,
+            CommandType.EMOTE.value: self._create_emote_command,
+            CommandType.ME.value: self._create_me_command,
+            CommandType.POSE.value: self._create_pose_command,
+            CommandType.ALIAS.value: self._create_alias_command,
+            CommandType.ALIASES.value: self._create_aliases_command,
+            CommandType.UNALIAS.value: self._create_unalias_command,
+            CommandType.HELP.value: self._create_help_command,
+            CommandType.MUTE.value: self._create_mute_command,
+            CommandType.UNMUTE.value: self._create_unmute_command,
+            CommandType.MUTE_GLOBAL.value: self._create_mute_global_command,
+            CommandType.UNMUTE_GLOBAL.value: self._create_unmute_global_command,
+            CommandType.ADD_ADMIN.value: self._create_add_admin_command,
+            CommandType.MUTES.value: self._create_mutes_command,
+            CommandType.TELEPORT.value: self._create_teleport_command,
+            CommandType.GOTO.value: self._create_goto_command,
+        }
+
     def parse_command(self, command_string: str) -> Command:
         """
         Parse and validate a command string.
@@ -139,43 +162,10 @@ class CommandParser:
             ValidationError: If command validation fails
         """
         try:
-            if command == CommandType.LOOK.value:
-                return self._create_look_command(args)
-            elif command == CommandType.GO.value:
-                return self._create_go_command(args)
-            elif command == CommandType.SAY.value:
-                return self._create_say_command(args)
-            elif command == CommandType.EMOTE.value:
-                return self._create_emote_command(args)
-            elif command == CommandType.ME.value:
-                return self._create_me_command(args)
-            elif command == CommandType.POSE.value:
-                return self._create_pose_command(args)
-            elif command == CommandType.ALIAS.value:
-                return self._create_alias_command(args)
-            elif command == CommandType.ALIASES.value:
-                return self._create_aliases_command(args)
-            elif command == CommandType.UNALIAS.value:
-                return self._create_unalias_command(args)
-            elif command == CommandType.HELP.value:
-                return self._create_help_command(args)
-            elif command == CommandType.MUTE.value:
-                return self._create_mute_command(args)
-            elif command == CommandType.UNMUTE.value:
-                return self._create_unmute_command(args)
-            elif command == CommandType.MUTE_GLOBAL.value:
-                return self._create_mute_global_command(args)
-            elif command == CommandType.UNMUTE_GLOBAL.value:
-                return self._create_unmute_global_command(args)
-            elif command == CommandType.ADD_ADMIN.value:
-                return self._create_add_admin_command(args)
-            elif command == CommandType.MUTES.value:
-                return self._create_mutes_command(args)
-            elif command == CommandType.TELEPORT.value:
-                return self._create_teleport_command(args)
-            elif command == CommandType.GOTO.value:
-                return self._create_goto_command(args)
-            # Confirmation commands removed - teleport commands now execute immediately
+            # Use the factory to get the creation method
+            create_method = self._command_factory.get(command)
+            if create_method:
+                return create_method(args)
             else:
                 raise ValueError(f"Unsupported command: {command}")
 
@@ -498,3 +488,35 @@ Available Commands:
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.
 """
+
+
+def get_username_from_user(user_obj) -> str:
+    """
+    Safely extract username from user object or dictionary.
+
+    This utility function eliminates code duplication across command handlers
+    by providing a centralized way to extract usernames from various user object formats.
+    As noted in the restricted archives, this pattern reduces maintenance burden
+    and ensures consistent behavior across all command implementations.
+
+    Args:
+        user_obj: User object that may be a dict, object with attributes, or other format
+
+    Returns:
+        str: The username/name from the user object
+
+    Raises:
+        ValueError: If no username or name can be extracted from the user object
+    """
+    # User object attribute extraction factory - maps common attribute patterns
+    # This eliminates the need for repetitive if/elif chains across command files
+    if hasattr(user_obj, "username"):
+        return user_obj.username
+    elif hasattr(user_obj, "name"):
+        return user_obj.name
+    elif isinstance(user_obj, dict) and "username" in user_obj:
+        return user_obj["username"]
+    elif isinstance(user_obj, dict) and "name" in user_obj:
+        return user_obj["name"]
+    else:
+        raise ValueError("User object must have username or name attribute or key")
