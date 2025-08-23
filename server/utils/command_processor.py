@@ -135,6 +135,9 @@ class CommandProcessor:
         if hasattr(validated_command, "player_name"):
             command_data["target_player"] = validated_command.player_name
 
+        if hasattr(validated_command, "filter_name"):
+            command_data["filter_name"] = validated_command.filter_name
+
         logger.debug(f"Extracted command data: type={command_data['command_type']}, keys={list(command_data.keys())}")
 
         return command_data

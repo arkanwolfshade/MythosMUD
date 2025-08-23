@@ -20,17 +20,21 @@ from ..models.command import (
     GoCommand,
     GotoCommand,
     HelpCommand,
+    InventoryCommand,
     LookCommand,
     MeCommand,
     MuteCommand,
     MuteGlobalCommand,
     MutesCommand,
     PoseCommand,
+    QuitCommand,
     SayCommand,
+    StatusCommand,
     TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
+    WhoCommand,
 )
 
 logger = get_logger(__name__)
@@ -68,6 +72,11 @@ class CommandParser:
             CommandType.MUTES.value: self._create_mutes_command,
             CommandType.TELEPORT.value: self._create_teleport_command,
             CommandType.GOTO.value: self._create_goto_command,
+            # Utility commands
+            CommandType.WHO.value: self._create_who_command,
+            CommandType.STATUS.value: self._create_status_command,
+            CommandType.INVENTORY.value: self._create_inventory_command,
+            CommandType.QUIT.value: self._create_quit_command,
         }
 
     def parse_command(self, command_string: str) -> Command:
@@ -339,6 +348,29 @@ class CommandParser:
         player_name = args[0]
         return GotoCommand(player_name=player_name)
 
+    def _create_who_command(self, args: list[str]) -> WhoCommand:
+        """Create WhoCommand from arguments."""
+        filter_name = args[0] if args else None
+        return WhoCommand(filter_name=filter_name)
+
+    def _create_status_command(self, args: list[str]) -> StatusCommand:
+        """Create StatusCommand from arguments."""
+        if args:
+            raise ValueError("Status command takes no arguments")
+        return StatusCommand()
+
+    def _create_inventory_command(self, args: list[str]) -> InventoryCommand:
+        """Create InventoryCommand from arguments."""
+        if args:
+            raise ValueError("Inventory command takes no arguments")
+        return InventoryCommand()
+
+    def _create_quit_command(self, args: list[str]) -> QuitCommand:
+        """Create QuitCommand from arguments."""
+        if args:
+            raise ValueError("Quit command takes no arguments")
+        return QuitCommand()
+
     # Confirmation command creators removed - teleport commands now execute immediately
     # TODO: Add confirmation command creators as future feature for enhanced safety
 
@@ -461,6 +493,10 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.UNMUTE_GLOBAL.value: "unmute_global <player> - Globally unmute a player",
             CommandType.ADD_ADMIN.value: "add_admin <player> - Make a player an admin",
             CommandType.MUTES.value: "mutes - Show your mute status",
+            CommandType.WHO.value: "who [player] - List online players with optional filtering",
+            CommandType.STATUS.value: "status - Show your character status",
+            CommandType.INVENTORY.value: "inventory - Show your inventory",
+            CommandType.QUIT.value: "quit - Quit the game",
         }
 
         return help_texts.get(command_type, f"No help available for: {command_type}")
@@ -484,6 +520,10 @@ Available Commands:
 - unmute_global <player> - Globally unmute a player
 - add_admin <player> - Make a player an admin
 - mutes - Show your mute status
+- who [player] - List online players with optional filtering
+- status - Show your character status
+- inventory - Show your inventory
+- quit - Quit the game
 
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.

@@ -111,11 +111,11 @@ class TestWhoCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "Player information is not available."
@@ -127,11 +127,11 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = []
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "No players found."
@@ -144,17 +144,29 @@ class TestWhoCommand:
         # Create players with old last_active timestamps
         old_time = datetime.now(UTC) - timedelta(minutes=10)
         offline_players = [
-            MagicMock(username="user1", last_active=old_time),
-            MagicMock(username="user2", last_active=old_time),
+            MagicMock(
+                name="user1",
+                level=1,
+                current_room_id="earth_arkham_city_northside_intersection_derby_high",
+                is_admin=False,
+                last_active=old_time,
+            ),
+            MagicMock(
+                name="user2",
+                level=1,
+                current_room_id="earth_arkham_city_northside_room_derby_st_001",
+                is_admin=False,
+                last_active=old_time,
+            ),
         ]
         mock_persistence.list_players.return_value = offline_players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "No players are currently online."
@@ -166,22 +178,47 @@ class TestWhoCommand:
 
         # Create players with recent last_active timestamps
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
-        online_players = [
-            MagicMock(username="alice", last_active=recent_time),
-            MagicMock(username="bob", last_active=recent_time),
-            MagicMock(username="charlie", last_active=recent_time),
-        ]
+
+        # Create mock players with proper comparison behavior
+        alice = MagicMock(
+            name="alice", level=5, current_room_id="earth_arkham_city_northside_intersection_derby_high", is_admin=False
+        )
+        alice.last_active = recent_time
+        alice.__lt__ = lambda self, other: self.name < other.name
+        alice.__gt__ = lambda self, other: self.name > other.name
+        alice.__eq__ = lambda self, other: self.name == other.name
+
+        bob = MagicMock(
+            name="bob", level=3, current_room_id="earth_arkham_city_northside_room_derby_st_001", is_admin=False
+        )
+        bob.last_active = recent_time
+        bob.__lt__ = lambda self, other: self.name < other.name
+        bob.__gt__ = lambda self, other: self.name > other.name
+        bob.__eq__ = lambda self, other: self.name == other.name
+
+        charlie = MagicMock(
+            name="charlie", level=7, current_room_id="earth_arkham_city_northside_room_high_ln_002", is_admin=False
+        )
+        charlie.last_active = recent_time
+        charlie.__lt__ = lambda self, other: self.name < other.name
+        charlie.__gt__ = lambda self, other: self.name > other.name
+        charlie.__eq__ = lambda self, other: self.name == other.name
+
+        online_players = [alice, bob, charlie]
         mock_persistence.list_players.return_value = online_players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert "Online players (3): alice, bob, charlie" in result["result"]
+        assert (
+            "Online players (3): alice [5] - Arkham: City: Northside Intersection Derby High, bob [3] - Arkham: City: Northside Room Derby St 001, charlie [7] - Arkham: City: Northside Room High Ln 002"
+            in result["result"]
+        )
 
     @pytest.mark.asyncio
     async def test_who_command_mixed_online_offline(self, mock_request, mock_alias_storage, mock_persistence):
@@ -191,22 +228,47 @@ class TestWhoCommand:
         # Create mix of online and offline players
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
         old_time = datetime.now(UTC) - timedelta(minutes=10)
-        players = [
-            MagicMock(username="alice", last_active=recent_time),  # Online
-            MagicMock(username="bob", last_active=old_time),  # Offline
-            MagicMock(username="charlie", last_active=recent_time),  # Online
-        ]
+
+        # Create mock players with proper comparison behavior
+        alice = MagicMock(
+            name="alice", level=5, current_room_id="earth_arkham_city_northside_intersection_derby_high", is_admin=False
+        )  # Online
+        alice.last_active = recent_time
+        alice.__lt__ = lambda self, other: self.name < other.name
+        alice.__gt__ = lambda self, other: self.name > other.name
+        alice.__eq__ = lambda self, other: self.name == other.name
+
+        bob = MagicMock(
+            name="bob", level=3, current_room_id="earth_arkham_city_northside_room_derby_st_001", is_admin=False
+        )  # Offline
+        bob.last_active = old_time
+        bob.__lt__ = lambda self, other: self.name < other.name
+        bob.__gt__ = lambda self, other: self.name > other.name
+        bob.__eq__ = lambda self, other: self.name == other.name
+
+        charlie = MagicMock(
+            name="charlie", level=7, current_room_id="earth_arkham_city_northside_room_high_ln_002", is_admin=False
+        )  # Online
+        charlie.last_active = recent_time
+        charlie.__lt__ = lambda self, other: self.name < other.name
+        charlie.__gt__ = lambda self, other: self.name > other.name
+        charlie.__eq__ = lambda self, other: self.name == other.name
+
+        players = [alice, bob, charlie]
         mock_persistence.list_players.return_value = players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert "Online players (2): alice, charlie" in result["result"]
+        assert (
+            "Online players (2): alice [5] - Arkham: City: Northside Intersection Derby High, charlie [7] - Arkham: City: Northside Room High Ln 002"
+            in result["result"]
+        )
 
     @pytest.mark.asyncio
     async def test_who_command_persistence_exception(self, mock_request, mock_alias_storage, mock_persistence):
@@ -215,14 +277,102 @@ class TestWhoCommand:
         mock_persistence.list_players.side_effect = Exception("Database error")
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert "Error retrieving player information: Database error" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_who_command_enhanced_functionality(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test enhanced who command functionality with real Player objects."""
+        from server.models import Player
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create real Player objects
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        old_time = datetime.now(UTC) - timedelta(minutes=10)
+
+        alice = Player(
+            name="alice",
+            level=5,
+            current_room_id="earth_arkham_city_northside_intersection_derby_high",
+            is_admin=False,
+            last_active=recent_time,
+        )
+
+        bob = Player(
+            name="bob",
+            level=3,
+            current_room_id="earth_arkham_city_northside_room_derby_st_001",
+            is_admin=False,
+            last_active=recent_time,
+        )
+
+        charlie = Player(
+            name="charlie",
+            level=7,
+            current_room_id="earth_arkham_city_northside_room_high_ln_002",
+            is_admin=True,  # Test admin indicator
+            last_active=recent_time,
+        )
+
+        offline_player = Player(
+            name="offline",
+            level=1,
+            current_room_id="earth_arkham_city_northside_room_derby_st_002",
+            is_admin=False,
+            last_active=old_time,
+        )
+
+        players = [alice, bob, charlie, offline_player]
+        mock_persistence.list_players.return_value = players
+
+        # Test basic who command (no filter)
+        result = await handle_who_command(
+            [],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should show 3 online players (alice, bob, charlie) with enhanced formatting
+        assert "Online players (3): " in result["result"]
+        assert "alice [5] - Arkham: City: Northside Intersection Derby High" in result["result"]
+        assert "bob [3] - Arkham: City: Northside Room Derby St 001" in result["result"]
+        assert "charlie [7] [ADMIN] - Arkham: City: Northside Room High Ln 002" in result["result"]
+        assert "offline" not in result["result"]  # Should not show offline player
+
+        # Test filtering
+        result = await handle_who_command(
+            ["al"],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should show only alice
+        assert "Players matching 'al' (1): " in result["result"]
+        assert "alice [5] - Arkham: City: Northside Intersection Derby High" in result["result"]
+        assert "bob" not in result["result"]
+        assert "charlie" not in result["result"]
+
+        # Test no matches
+        result = await handle_who_command(
+            ["xyz"],
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "No players found matching 'xyz'. Try 'who' to see all online players." in result["result"]
 
 
 class TestQuitCommand:

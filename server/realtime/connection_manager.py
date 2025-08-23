@@ -667,6 +667,17 @@ class ConnectionManager:
             self.online_players[player_id] = player_info
             self.mark_player_seen(player_id)
 
+            # Update last_active timestamp in database when player connects
+            if self.persistence:
+                try:
+                    from datetime import UTC, datetime
+
+                    player.last_active = datetime.now(UTC)
+                    self.persistence.save_player(player)
+                    logger.debug(f"Updated last_active for player {player_id} on connection")
+                except Exception as e:
+                    logger.warning(f"Failed to update last_active for player {player_id}: {e}")
+
             # Clear any pending messages to ensure fresh game state
             self.message_queue.remove_player_messages(player_id)
 

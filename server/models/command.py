@@ -47,6 +47,11 @@ class CommandType(str, Enum):
     # Admin teleport commands (confirmation removed for immediate execution)
     TELEPORT = "teleport"
     GOTO = "goto"
+    # Utility commands
+    WHO = "who"
+    STATUS = "status"
+    INVENTORY = "inventory"
+    QUIT = "quit"
 
 
 class BaseCommand(BaseModel):
@@ -455,6 +460,47 @@ class GotoCommand(BaseCommand):
 # TODO: Add ConfirmTeleportCommand and ConfirmGotoCommand as future feature for enhanced safety
 
 
+class WhoCommand(BaseCommand):
+    """Command for listing online players."""
+
+    command_type: Literal[CommandType.WHO] = CommandType.WHO
+    filter_name: str | None = Field(None, max_length=50, description="Optional player name filter")
+
+    @field_validator("filter_name")
+    @classmethod
+    def validate_filter_name(cls, v):
+        """Validate filter name format using existing validation infrastructure."""
+        if v is None:
+            return v
+
+        # Use existing command safety validation
+        from ..utils.command_parser import validate_command_safety
+
+        if not validate_command_safety(v):
+            logger.warning("Dangerous content detected in who filter", filter_preview=v[:50])
+            raise ValueError("Filter contains dangerous content")
+
+        return v.strip()
+
+
+class StatusCommand(BaseCommand):
+    """Command for viewing player status."""
+
+    command_type: Literal[CommandType.STATUS] = CommandType.STATUS
+
+
+class InventoryCommand(BaseCommand):
+    """Command for viewing player inventory."""
+
+    command_type: Literal[CommandType.INVENTORY] = CommandType.INVENTORY
+
+
+class QuitCommand(BaseCommand):
+    """Command for quitting the game."""
+
+    command_type: Literal[CommandType.QUIT] = CommandType.QUIT
+
+
 # Union type for all commands
 Command = (
     LookCommand
@@ -475,4 +521,8 @@ Command = (
     | MutesCommand
     | TeleportCommand
     | GotoCommand
+    | WhoCommand
+    | StatusCommand
+    | InventoryCommand
+    | QuitCommand
 )
