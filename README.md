@@ -4,13 +4,13 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ---
 
-[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
+[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml) [![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml) [![Semgrep](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/semgrep.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/semgrep.yml)
 ---
 
 ## Table of Contents
 
 - [🐙 MythosMUD](#-mythosmud)
-  - [](#)
+  - [  ](#--)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Getting Started](#getting-started)

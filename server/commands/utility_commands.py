@@ -86,13 +86,13 @@ def format_player_entry(player) -> str:
 
 
 async def handle_who_command(
-    args_or_data: dict | list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
-    Enhanced who command for listing online players with filtering and detailed formatting.
+    Handle the who command for listing online players.
 
     Args:
-        args_or_data: Either command data dictionary (new format) or args list (old format)
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -101,15 +101,10 @@ async def handle_who_command(
     Returns:
         dict: Who command result
     """
-    logger.debug("Processing who command", player=player_name, args_or_data=args_or_data)
+    logger.debug("Processing who command", player=player_name, command_data=command_data)
 
-    # Handle both old format (args list) and new format (command_data dict)
-    if isinstance(args_or_data, dict):
-        # New format: command_data dictionary
-        filter_term = args_or_data.get("filter_name", "")
-    else:
-        # Old format: args list
-        filter_term = " ".join(args_or_data) if args_or_data else ""
+    # Extract filter term from command_data
+    filter_term = command_data.get("filter_name", "")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -202,11 +197,11 @@ async def handle_who_command(
                 logger.debug("No online players found", player=player_name)
                 return {"result": "No players are currently online."}
         else:
-            logger.debug("No players found", player=player_name)
+            logger.debug("No players found in database", player=player_name)
             return {"result": "No players found."}
     except Exception as e:
         logger.error("Who command error", player=player_name, error=str(e))
-        return {"result": f"Error retrieving player information: {str(e)}"}
+        return {"result": f"Error retrieving player list: {str(e)}"}
 
 
 async def handle_quit_command(
@@ -366,13 +361,13 @@ async def handle_inventory_command(
 
 
 async def handle_emote_command(
-    args_or_data: dict | list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the emote command for performing emotes.
 
     Args:
-        args_or_data: Either command data dictionary (new format) or args list (old format)
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -381,21 +376,14 @@ async def handle_emote_command(
     Returns:
         dict: Emote command result
     """
-    logger.debug("Processing emote command", player=player_name, args_or_data=args_or_data)
+    logger.debug("Processing emote command", player=player_name, command_data=command_data)
 
-    # Handle both old format (args list) and new format (command_data dict)
-    if isinstance(args_or_data, dict):
-        # New format: command_data dictionary
-        action = args_or_data.get("action")
-        if not action:
-            logger.warning("Emote command with no action", player=player_name)
-            return {"result": "Emote what? Usage: emote <action>"}
-    else:
-        # Old format: args list
-        if not args_or_data:
-            logger.warning("Emote command with no action", player=player_name)
-            return {"result": "Emote what? Usage: emote <action>"}
-        action = " ".join(args_or_data)
+    # Extract action from command_data
+    action = command_data.get("action")
+    if not action:
+        logger.warning("Emote command with no action", player=player_name)
+        return {"result": "Emote what? Usage: emote <action>"}
+
     logger.debug("Player performing emote", player=player_name, action=action)
 
     try:

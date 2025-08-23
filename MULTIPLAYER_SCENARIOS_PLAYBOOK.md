@@ -175,7 +175,7 @@ Tests multiplayer visibility when players move between different rooms.
 
 ---
 
-## Scenario 3.5: Muting System and Emotes
+## Scenario 4: Muting System and Emotes
 
 ### Description
 
@@ -223,7 +223,7 @@ Tests the muting system and emote functionality across game sessions.
 
 ---
 
-## Scenario 3: Movement Between Rooms
+## Scenario 5: Movement Between Rooms
 
 ### Description
 
@@ -254,7 +254,7 @@ All requirements validated via Playwright testing.
 
 ---
 
-## Scenario 3.5: Muting System Validation
+## Scenario 6: Muting System Validation
 
 ### Description
 
@@ -288,7 +288,7 @@ Tests the muting system functionality and persistence across game sessions.
 
 ---
 
-## Scenario 3: Movement Between Rooms (PLANNED)
+## Scenario 7: Movement Between Rooms
 
 ### Description
 
@@ -315,7 +315,7 @@ Tests multiplayer visibility when players move between different rooms.
 
 ---
 
-## Scenario 4: Chat Messages Between Players
+## Scenario 8: Chat Messages Between Players
 
 ### Description
 
@@ -355,7 +355,7 @@ Tests chat message broadcasting between players in the same room.
 
 ---
 
-## Scenario 5: Admin Teleportation System
+## Scenario 9: Admin Teleportation System
 
 ### Description
 
@@ -482,7 +482,7 @@ Tests the admin teleportation system functionality, including both `/teleport` a
 
 ---
 
-## Scenario 6: Player Commands and Interactions (PLANNED)
+## Scenario 10:Player Commands and Interactions
 
 ### Description
 
@@ -505,7 +505,7 @@ Tests visibility of player commands and interactions.
 
 ---
 
-## Scenario 7: Reconnection Handling (PLANNED)
+## Scenario 11: Reconnection Handling
 
 ### Description
 
@@ -529,7 +529,7 @@ Tests proper handling when players reconnect after disconnection.
 
 ---
 
-## Scenario 8: Multiple Players in Different Rooms (PLANNED)
+## Scenario 12: Multiple Players in Different Rooms
 
 ### Description
 
@@ -549,6 +549,146 @@ Tests event isolation between different rooms.
 - Room-based event isolation
 - Multi-player state management
 - Event broadcasting scope
+
+---
+
+## Scenario 13: Who Command Validation
+
+### Description
+
+Tests the enhanced "who" command functionality, including online player filtering, detailed player information display, and proper formatting across different game states.
+
+### Prerequisites
+
+- Both test players should have different levels and room locations for comprehensive testing
+- ArkanWolfshade should be set to admin status for admin indicator testing
+- Players should be in different rooms to test room display functionality
+
+### Steps
+
+#### Phase 1: Basic Who Command Testing
+
+1. **AW enters the game** (Main Foyer - `earth_arkham_city_sanitarium_room_foyer_001`)
+2. **AW uses who command**: `who`
+   - **Expected**: `"Online players (1): ArkanWolfshade [level] [ADMIN] - Arkham: City: Sanitarium Room Foyer 001"`
+   - **Validates**: Single player display with admin indicator and room information
+
+3. **Ithaqua enters the game** (Main Foyer)
+4. **AW uses who command**: `who`
+   - **Expected**: `"Online players (2): ArkanWolfshade [level] [ADMIN] - [location], Ithaqua [level] - [location]"`
+   - **Validates**: Multiple players displayed in alphabetical order
+
+#### Phase 2: Player Filtering Testing
+
+5. **AW tests name filtering**: `who arka`
+   - **Expected**: `"Players matching 'arka' (1): ArkanWolfshade [level] [ADMIN] - [location]"`
+   - **Validates**: Case-insensitive partial name matching
+
+6. **AW tests name filtering**: `who ith`
+   - **Expected**: `"Players matching 'ith' (1): Ithaqua [level] - [location]"`
+   - **Validates**: Partial name matching for different player
+
+7. **AW tests non-matching filter**: `who xyz`
+   - **Expected**: `"No players found matching 'xyz'. Try 'who' to see all online players."`
+   - **Validates**: No match handling with helpful message
+
+#### Phase 3: Room-Based Display Testing
+
+8. **Ithaqua moves east** to East Hallway (`earth_arkham_city_sanitarium_room_hallway_001`)
+9. **AW uses who command**: `who`
+   - **Expected**: Different room locations displayed for each player
+   - **Validates**: Real-time room location tracking
+
+10. **Ithaqua uses who command**: `who`
+    - **Expected**: Same player list with current room information
+    - **Validates**: Consistent who command results across players
+
+#### Phase 4: Online Status Testing
+
+11. **Ithaqua disconnects** (close browser/tab)
+12. **AW uses who command**: `who` (wait 6+ minutes for offline threshold)
+    - **Expected**: `"Online players (1): ArkanWolfshade [level] [ADMIN] - [location]"`
+    - **Validates**: Offline players not shown in who command
+
+13. **Ithaqua reconnects**
+14. **AW uses who command**: `who`
+    - **Expected**: Both players shown as online again
+    - **Validates**: Online status updates properly
+
+#### Phase 5: Edge Case Testing
+
+15. **AW tests empty filter**: `who ""`
+    - **Expected**: Same as `who` (all online players)
+    - **Validates**: Empty filter handling
+
+16. **Multiple rapid who commands**: Execute `who` command 3 times quickly
+    - **Expected**: Consistent results for all executions
+    - **Validates**: Command stability and performance
+
+### Technical Components Tested
+
+- ✅ Enhanced who command handler (`server/commands/utility_commands.py`)
+- ✅ Online player detection with time-based filtering
+- ✅ Player name filtering with case-insensitive partial matching
+- ✅ Admin status indicator display
+- ✅ Room location parsing and display
+- ✅ Player level information display
+- ✅ Alphabetical sorting of player results
+- ✅ Real-time room tracking integration
+- ✅ Online threshold management (5-minute timeout)
+- ✅ Error handling for edge cases
+
+### Expected Output Format
+
+#### Standard Who Command
+
+```
+Online players (2): ArkanWolfshade [5] [ADMIN] - Arkham: City: Sanitarium Room Foyer 001, Ithaqua [3] - Arkham: City: Sanitarium Room Hallway 001
+```
+
+#### Filtered Results
+
+```
+Players matching 'arka' (1): ArkanWolfshade [5] [ADMIN] - Arkham: City: Sanitarium Room Foyer 001
+```
+
+#### No Results
+
+```
+No players found matching 'xyz'. Try 'who' to see all online players.
+```
+
+#### No Online Players
+
+```
+No players are currently online.
+```
+
+### Room ID Format Parsing
+
+The enhanced who command should properly parse room IDs like:
+
+- `earth_arkham_city_sanitarium_room_foyer_001` → "Arkham: City: Sanitarium Room Foyer 001"
+- `earth_arkham_city_northside_intersection_derby_high` → "Arkham: City: Northside Intersection Derby High"
+
+### Status: ✅ IMPLEMENTED - Ready for Testing
+
+**Implementation Details:**
+
+1. **Enhanced Format**: Shows level, admin status, and readable room names
+2. **Online Detection**: 5-minute activity threshold for online status
+3. **Name Filtering**: Case-insensitive partial matching with feedback
+4. **Room Parsing**: Converts technical room IDs to human-readable names
+5. **Admin Indicators**: [ADMIN] tag for administrative players
+6. **Alphabetical Sorting**: Consistent player ordering in results
+
+**Expected Behavior:**
+
+1. **Real-time Updates**: Who command reflects current online status
+2. **Accurate Filtering**: Partial name matching works correctly
+3. **Readable Output**: Room names are properly formatted
+4. **Admin Indication**: Admin players clearly marked
+5. **Performance**: Quick response time even with filtering
 
 ---
 
@@ -576,54 +716,6 @@ Between scenarios, ensure:
 - Room occupancy is accurate
 - No stale event subscriptions
 - Clean WebSocket connections
-
----
-
-## Implementation Status
-
-### Completed Components
-
-- ✅ Event-to-Real-Time Bridge (`server/realtime/event_handler.py`)
-- ✅ Connection Manager (`server/realtime/connection_manager.py`)
-- ✅ WebSocket Handler (`server/realtime/websocket_handler.py`)
-- ✅ Client-side event handling (`client/src/components/GameTerminalWithPanels.tsx`)
-- ✅ Room occupant tracking
-- ✅ `player_entered_game` and `player_left_game` events
-
-### 🚨 CRITICAL ISSUES IDENTIFIED (TESTING PAUSED)
-
-**Root Cause Analysis Required:**
-
-1. **Self-Movement Message Bug**: Players see their own movement messages
-   - `exclude_player` logic not working correctly in movement broadcasts
-   - Issue in `server/realtime/event_handler.py` movement handling
-   - Affects both initial connection and regular movement
-
-2. **Stale Message Persistence**: "X has left the game" messages persist on reconnection
-   - Pending message clearing logic incomplete
-   - Issue in `server/realtime/connection_manager.py` and `server/realtime/sse_handler.py`
-   - Multiple attempts to fix have been insufficient
-
-3. **Duplicate Message Issues**: Multiple "entered game" messages appearing
-   - Event ordering and broadcast timing problems
-   - Initial connection setup triggering unintended events
-
-4. **Initial Connection Event Cascade**: Self-movement messages on first connect
-   - `room.player_entered()` vs `room._players.add()` distinction not working
-   - Connection setup in `server/realtime/websocket_handler.py` needs review
-
-**Impact**: All multiplayer scenarios failing basic requirements
-
-### Previous Known Issues (Less Critical)
-
-- 🔧 Need better session isolation between scenarios
-
-### Next Steps
-
-1. Complete Scenario 2 fixes for clean game state
-2. Implement Scenario 3 movement testing
-3. Add comprehensive chat testing (Scenario 4)
-4. Build automated test suite for all scenarios
 
 ---
 
