@@ -39,12 +39,13 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 **Estimated Time**: 1-2 hours
 **Risk Level**: Low
 
-#### 1.1 Remove `server/check_routes.py`
+#### 1.1 Remove `server/check_routes.py` ✅ **COMPLETED**
 
 - **Reason**: Standalone utility script with no imports
 - **Action**: Delete file entirely
 - **Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
+- **Status**: ✅ Completed - File and associated test file deleted, all tests pass
 
 #### 1.2 Remove `server/check_invites.py`
 
@@ -52,6 +53,7 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 - **Action**: Delete file entirely
 - **Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
+- **Status**: ✅ Completed - File deleted, all tests pass
 
 #### 1.3 Remove `server/test_integration.py`
 
