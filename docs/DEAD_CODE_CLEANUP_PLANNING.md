@@ -101,16 +101,7 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 - **Files to modify**: `server/logging_config.py`
 - **Status**: ✅ Completed - Class removed, all tests pass, no linting errors
 
-#### 3.2 Remove `CircuitBreaker` class from `server/error_handlers.py`
-
-- **Reason**: Used only in tests, not in production
-- **Action**: Remove class definition and related tests
-- **Verification**: Run test suite to ensure no impact
-- **Files to modify**:
-  - `server/error_handlers.py`
-  - `server/tests/test_exceptions.py` (remove CircuitBreaker tests)
-
-#### 3.3 Remove `benchmark_hash_time()` function from `server/auth/argon2_utils.py`
+#### 3.3 Remove `benchmark_hash_time()` function from `server/auth/argon2_utils.py` ✅ **COMPLETED**
 
 - **Reason**: Used only in tests, not in production
 - **Action**: Remove function definition and related tests
@@ -118,6 +109,7 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 - **Files to modify**:
   - `server/auth/argon2_utils.py`
   - `server/tests/test_argon2_utils.py` (remove benchmark tests)
+- **Status**: ✅ Completed - Function and benchmark tests removed, all tests pass, no linting errors
 
 #### 3.4 Remove `graceful_degradation()` function from `server/error_handlers.py`
 
@@ -173,10 +165,10 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 ### Phase 3 Tasks
 
 - [x] Remove `MultiFileHandler` class from `server/logging_config.py`
-- [ ] Remove `CircuitBreaker` class from `server/error_handlers.py`
-- [ ] Remove `CircuitBreaker` tests from `server/tests/test_exceptions.py`
-- [ ] Remove `benchmark_hash_time()` function from `server/auth/argon2_utils.py`
-- [ ] Remove benchmark tests from `server/tests/test_argon2_utils.py`
+- [x] CircuitBreaker implementation planning completed
+- [x] CircuitBreaker implementation document created
+- [x] Remove `benchmark_hash_time()` function from `server/auth/argon2_utils.py`
+- [x] Remove benchmark tests from `server/tests/test_argon2_utils.py`
 - [ ] Remove `graceful_degradation()` function from `server/error_handlers.py`
 - [ ] Remove graceful_degradation tests from `server/tests/test_exceptions.py`
 - [ ] Run test suite and verify no regressions
