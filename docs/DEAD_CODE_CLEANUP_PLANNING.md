@@ -74,7 +74,7 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 **Estimated Time**: 2-3 hours
 **Risk Level**: Medium
 
-#### 2.1 Refactor `server/real_time.py`
+#### 2.1 Refactor `server/real_time.py` ✅ **COMPLETED**
 
 - **Current State**: Legacy file with only `load_motd()` function used
 - **Action**:
@@ -86,6 +86,7 @@ This document outlines the plan for cleaning up dead code identified in the Myth
   - Update: `server/api/__init__.py` (if imports real_time)
   - Update: `server/tests/test_real_time.py` (rename to test_motd_loader.py)
 - **Verification**: Ensure MOTD loading still works correctly
+- **Status**: ✅ Completed - MOTD function extracted to utils module, tests updated, legacy file removed
 
 ### Phase 3: Low Priority - Remove Unused Classes and Functions
 
@@ -158,15 +159,15 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 ### Phase 2 Tasks
 
-- [ ] Create `server/utils/` directory if it doesn't exist
-- [ ] Create `server/utils/motd_loader.py` with `load_motd()` function
-- [ ] Update imports in `server/api/__init__.py` (if needed)
-- [ ] Rename `server/tests/test_real_time.py` to `server/tests/test_motd_loader.py`
-- [ ] Update test imports to use new module
-- [ ] Delete `server/real_time.py`
-- [ ] Test MOTD loading functionality
-- [ ] Run test suite and verify no regressions
-- [ ] Commit changes with message: "Refactor MOTD loading from legacy real_time module"
+- [x] Create `server/utils/` directory if it doesn't exist
+- [x] Create `server/utils/motd_loader.py` with `load_motd()` function
+- [x] Update imports in `server/api/__init__.py` (if needed)
+- [x] Rename `server/tests/test_real_time.py` to `server/tests/test_motd_loader.py`
+- [x] Update test imports to use new module
+- [x] Delete `server/real_time.py`
+- [x] Test MOTD loading functionality
+- [x] Run test suite and verify no regressions
+- [x] Commit changes with message: "Refactor MOTD loading from legacy real_time module"
 
 ### Phase 3 Tasks
 
