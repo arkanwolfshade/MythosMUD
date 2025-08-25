@@ -19,13 +19,7 @@ class ChannelBroadcastingStrategy(ABC):
 
     @abstractmethod
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """
         Broadcast message according to channel strategy.
@@ -54,13 +48,7 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast room-based message with server-side filtering."""
         if room_id:
@@ -79,17 +67,12 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for global channel broadcasting."""
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast global message to all connected players."""
         # Import here to avoid circular imports
         from ..realtime.connection_manager import connection_manager
+
         await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
         logger.debug("Broadcasted global message", sender_id=sender_id)
 
@@ -98,13 +81,7 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for party channel broadcasting."""
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast party message to party members."""
         if party_id:
@@ -118,18 +95,13 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for whisper channel broadcasting."""
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Send whisper message to specific player."""
         if target_player_id:
             # Import here to avoid circular imports
             from ..realtime.connection_manager import connection_manager
+
             await connection_manager.send_personal_message(target_player_id, chat_event)
             logger.debug(
                 "Sent whisper message",
@@ -153,17 +125,12 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast system/admin message to all players."""
         # Import here to avoid circular imports
         from ..realtime.connection_manager import connection_manager
+
         await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
         logger.debug(f"Broadcasted {self.channel_type} message", sender_id=sender_id)
 
@@ -181,13 +148,7 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self,
-        chat_event: dict,
-        room_id: str,
-        party_id: str,
-        target_player_id: str,
-        sender_id: str,
-        nats_handler
+        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Handle unknown channel type."""
         logger.warning("Unknown channel type", channel=self.channel_type)
@@ -205,16 +166,12 @@ class ChannelBroadcastingStrategyFactory:
             "local": RoomBasedChannelStrategy("local"),
             "emote": RoomBasedChannelStrategy("emote"),
             "pose": RoomBasedChannelStrategy("pose"),
-
             # Global channel
             "global": GlobalChannelStrategy(),
-
             # Party channel
             "party": PartyChannelStrategy(),
-
             # Whisper channel
             "whisper": WhisperChannelStrategy(),
-
             # System/Admin channels
             "system": SystemAdminChannelStrategy("system"),
             "admin": SystemAdminChannelStrategy("admin"),

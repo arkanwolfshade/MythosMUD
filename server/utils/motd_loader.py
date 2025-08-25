@@ -1,15 +1,14 @@
 """
-Legacy real-time communication utilities for MythosMUD.
+MOTD (Message of the Day) loading utilities for MythosMUD.
 
-NOTE: All real-time connection, WebSocket, and SSE logic has been migrated to
-`realtime/` package. This file now only contains utility functions still
-required by other modules.
+This module provides functionality for loading and displaying the Message of the Day
+from configured files, with fallback handling for missing or corrupted files.
 """
 
 import os
 
-from .config_loader import get_config
-from .logging_config import get_logger
+from ..config_loader import get_config
+from ..logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -27,7 +26,7 @@ def load_motd() -> str:
 
         # Resolve relative path from server directory to project root
         server_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(server_dir)
+        project_root = os.path.dirname(os.path.dirname(server_dir))  # Go up two levels from utils/
         motd_path = os.path.join(project_root, motd_file.replace("./", ""))
 
         if os.path.exists(motd_path):

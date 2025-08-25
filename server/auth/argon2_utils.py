@@ -5,9 +5,6 @@ This module implements the gold standard for password hashing using Argon2id,
 as documented in the restricted archives of Miskatonic University.
 """
 
-import time
-from typing import Any
-
 from argon2 import PasswordHasher, exceptions
 from argon2.exceptions import HashingError, VerificationError
 
@@ -169,40 +166,3 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
         return params
     except Exception:
         return None
-
-
-def benchmark_hash_time(
-    password: str = "test_password",  # Safe for benchmarking only
-    iterations: int = 3,
-    time_cost: int = TIME_COST,
-    memory_cost: int = MEMORY_COST,
-    parallelism: int = PARALLELISM,
-) -> dict[str, Any]:
-    """Benchmark hashing performance with given parameters.
-
-    Note: The default password is intentionally hardcoded for benchmarking purposes only.
-    This function is not used for actual password hashing in production.
-    """
-    hasher = create_hasher_with_params(
-        time_cost=time_cost,
-        memory_cost=memory_cost,
-        parallelism=parallelism,
-    )
-
-    times = []
-    for _ in range(iterations):
-        start_time = time.time()
-        hasher.hash(password)
-        end_time = time.time()
-        times.append((end_time - start_time) * 1000)  # Convert to milliseconds
-
-    return {
-        "iterations": iterations,
-        "time_cost": time_cost,
-        "memory_cost": memory_cost,
-        "parallelism": parallelism,
-        "average_time_ms": sum(times) / len(times),
-        "min_time_ms": min(times),
-        "max_time_ms": max(times),
-        "times_ms": times,
-    }
