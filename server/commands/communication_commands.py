@@ -43,15 +43,17 @@ async def handle_say_command(
     # Get app state services for broadcasting
     app = request.app if request else None
     player_service = app.state.player_service if app else None
+    chat_service = app.state.chat_service if app else None
 
     if not player_service:
         logger.warning(f"Say command failed - no player service for {player_name}")
         return {"result": "Chat functionality is not available."}
 
-    try:
-        # Get current user ID
-        current_user_id = get_username_from_user(current_user)
+    if not chat_service:
+        logger.warning(f"Say command failed - no chat service for {player_name}")
+        return {"result": "Chat functionality is not available."}
 
+    try:
         # Get player object to find current room
         player_obj = player_service.resolve_player_name(player_name)
         if not player_obj:
@@ -62,34 +64,26 @@ async def handle_say_command(
         if not current_room_id:
             return {"result": "You are not in a room."}
 
-        # Get the room to find other players
-        from ..realtime.connection_manager import connection_manager
+        # Use the chat service to send the say message
+        # This will handle NATS publishing and proper broadcasting
+        # Use the player object's ID instead of the username
+        player_id = getattr(player_obj, "id", None) or getattr(player_obj, "player_id", None)
+        if not player_id:
+            return {"result": "Player ID not found."}
 
-        room = connection_manager.persistence.get_room(current_room_id)
-        if not room:
-            return {"result": "Room not found."}
+        result = await chat_service.send_say_message(player_id, message)
 
-        # Get other players in the room
-        room_players = room.get_players()
-        other_players = [p for p in room_players if p != current_user_id]
-
-        # Broadcast message to other players in the room
-        if other_players:
-            broadcast_message = f"{player_name} says: {message}"
-            for other_player_id in other_players:
-                await connection_manager.send_personal_message(
-                    other_player_id, {"type": "chat_message", "message": broadcast_message}
-                )
+        if result.get("success"):
             logger.info(
-                f"Say message broadcasted to room for {player_name}",
+                f"Say message sent successfully for {player_name}",
                 room=current_room_id,
-                recipients=len(other_players),
+                message_id=result.get("message", {}).get("id"),
             )
+            return {"result": f"You say: {message}"}
         else:
-            logger.debug(f"No other players in room {current_room_id} to broadcast to for {player_name}")
-
-        # Return local confirmation
-        return {"result": f"You say: {message}"}
+            error_msg = result.get("error", "Unknown error")
+            logger.warning(f"Say command failed for {player_name}: {error_msg}")
+            return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
         logger.error(f"Say command error for {player_name}: {str(e)}")

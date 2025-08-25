@@ -120,10 +120,11 @@ class SayCommand(BaseCommand):
             raise ValueError(f"Message contains invalid characters: {found_chars}")
 
         # Check for command injection patterns
+        # Use more specific patterns to avoid false positives on legitimate text
         injection_patterns = [
-            r"\b(and|or)\s*=\s*",  # SQL injection
-            r"__import__|eval|exec|system|os\.",  # Python injection
-            r"%[a-zA-Z]",  # Format string injection
+            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
+            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
+            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
         ]
 
         for pattern in injection_patterns:
@@ -155,10 +156,11 @@ class EmoteCommand(BaseCommand):
             raise ValueError(f"Action contains invalid characters: {found_chars}")
 
         # Check for command injection patterns
+        # Use more specific patterns to avoid false positives on legitimate text
         injection_patterns = [
-            r"\b(and|or)\s*=\s*",  # SQL injection
-            r"__import__|eval|exec|system|os\.",  # Python injection
-            r"%[a-zA-Z]",  # Format string injection
+            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
+            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
+            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
         ]
 
         for pattern in injection_patterns:

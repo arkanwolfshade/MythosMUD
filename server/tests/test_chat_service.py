@@ -7,7 +7,7 @@ including message handling, channel management, and real-time communication.
 
 import uuid
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -117,7 +117,7 @@ class TestChatService:
         self.mock_user_manager.is_globally_muted.return_value = False
         self.mock_user_manager.can_send_message.return_value = True
         self.mock_nats_service.is_connected.return_value = True
-        self.mock_nats_service.publish.return_value = True
+        self.mock_nats_service.publish = AsyncMock(return_value=True)
 
         # Execute
         result = await self.chat_service.send_say_message(player_id, message)
@@ -352,45 +352,6 @@ class TestChatService:
 
         # Verify
         assert result is False
-
-    @pytest.mark.asyncio
-    async def test_broadcast_chat_message_directly_success(self):
-        """Test successful direct WebSocket broadcasting."""
-        # Setup
-        chat_message = ChatMessage("sender_id", "TestPlayer", "say", "Hello")
-        room_id = "room_001"
-
-        # Mock the connection manager
-        mock_connection_manager = Mock()
-        mock_connection_manager.broadcast_to_room = AsyncMock()
-
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
-            with patch("server.realtime.envelope.build_event") as mock_build_event:
-                mock_build_event.return_value = {"type": "chat_message", "data": {}}
-
-                # Execute
-                await self.chat_service._broadcast_chat_message_directly(chat_message, room_id)
-
-                # Verify
-                mock_connection_manager.broadcast_to_room.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_broadcast_chat_message_directly_exception(self):
-        """Test direct broadcasting when an exception occurs."""
-        # Setup
-        chat_message = ChatMessage("sender_id", "TestPlayer", "say", "Hello")
-        room_id = "room_001"
-
-        # Mock the connection manager to raise an exception
-        mock_connection_manager = Mock()
-        mock_connection_manager.broadcast_to_room = AsyncMock(side_effect=Exception("WebSocket error"))
-
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
-            with patch("server.realtime.envelope.build_event") as mock_build_event:
-                mock_build_event.return_value = {"type": "chat_message", "data": {}}
-
-                # Execute - should not raise exception
-                await self.chat_service._broadcast_chat_message_directly(chat_message, room_id)
 
     def test_mute_channel_success(self):
         """Test successful channel muting."""

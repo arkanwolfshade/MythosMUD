@@ -58,7 +58,8 @@ class ChatService:
     Chat service for handling real-time communication between players.
 
     This service manages chat messages, channels, and player communication
-            using direct WebSocket broadcasting for real-time message distribution.
+    using NATS for real-time message distribution. NATS is mandatory for
+    all chat functionality - no fallback to WebSocket broadcasting is provided.
     """
 
     def __init__(self, persistence, room_service, player_service):
@@ -98,8 +99,8 @@ class ChatService:
         """
         Send a say message to players in the same room.
 
-        This method broadcasts the message directly via WebSocket, which will then
-        be broadcast to all players in the room via WebSocket.
+        This method publishes the message to NATS for real-time distribution
+        to all players in the room. NATS is mandatory for this functionality.
 
         Args:
             player_id: ID of the player sending the message
@@ -208,9 +209,9 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # Fallback to direct WebSocket broadcasting if NATS fails
-            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
-            await self._broadcast_chat_message_directly(chat_message, room_id)
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
@@ -219,8 +220,8 @@ class ChatService:
         """
         Send an emote message to players in the same room.
 
-        This method broadcasts the emote directly via WebSocket, which will then
-        be broadcast to all players in the room via WebSocket.
+        This method publishes the emote to NATS for real-time distribution
+        to all players in the room. NATS is mandatory for this functionality.
 
         Args:
             player_id: ID of the player sending the emote
@@ -331,9 +332,9 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish emote message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # Fallback to direct WebSocket broadcasting if NATS fails
-            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
-            await self._broadcast_chat_message_directly(chat_message, room_id)
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
@@ -393,9 +394,9 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish pose message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # Fallback to direct WebSocket broadcasting if NATS fails
-            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
-            await self._broadcast_chat_message_directly(chat_message, room_id)
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "pose": pose.strip(), "room_id": room_id}
@@ -556,9 +557,9 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # Fallback to direct WebSocket broadcasting if NATS fails
-            logger.warning("NATS publishing failed, falling back to direct WebSocket broadcasting")
-            await self._broadcast_chat_message_directly(chat_message, room_id)
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {
@@ -586,7 +587,7 @@ class ChatService:
         try:
             # Check if NATS service is available and connected
             if not self.nats_service or not self.nats_service.is_connected():
-                logger.warning("NATS service not available or not connected")
+                logger.error("NATS service not available or not connected - NATS is mandatory for chat functionality")
                 return False
 
             # Create message data for NATS
@@ -630,52 +631,6 @@ class ChatService:
                 room_id=room_id,
             )
             return False
-
-    async def _broadcast_chat_message_directly(self, chat_message: ChatMessage, room_id: str):
-        """
-        Broadcast a chat message directly to all players in the room via WebSocket.
-
-        This method replaces the Redis-based broadcasting with direct WebSocket
-        broadcasting for immediate message delivery.
-
-        Args:
-            chat_message: The chat message to broadcast
-            room_id: The room ID for the message
-        """
-        try:
-            # Import required modules for direct broadcasting
-            from ..realtime.connection_manager import connection_manager
-            from ..realtime.envelope import build_event
-
-            # Create WebSocket event for broadcasting
-            chat_event = build_event(
-                "chat_message",
-                {
-                    "sender_id": str(chat_message.sender_id),
-                    "player_name": chat_message.sender_name,
-                    "channel": chat_message.channel,
-                    "message": chat_message.content,
-                    "message_id": chat_message.id,
-                    "timestamp": chat_message.timestamp.isoformat(),
-                },
-                player_id=str(chat_message.sender_id),
-            )
-
-            # Broadcast directly to room
-            await connection_manager.broadcast_to_room(room_id, chat_event, exclude_player=chat_message.sender_id)
-
-            logger.info(
-                "Chat message broadcasted directly to room",
-                message_id=chat_message.id,
-                sender_id=chat_message.sender_id,
-                player_name=chat_message.sender_name,
-                room_id=room_id,
-            )
-
-        except Exception as e:
-            logger.error(
-                "Failed to broadcast chat message directly", error=str(e), message_id=chat_message.id, room_id=room_id
-            )
 
     def mute_channel(self, player_id: str, channel: str) -> bool:
         """Mute a specific channel for a player."""
