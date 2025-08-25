@@ -16,6 +16,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - **Use Playwright MCP**
 - **Use the credentials provided in this playbook**
 - **ONLY USE start_dev.ps1**
+- **The server and client ports are defined in** /server/server_config.yaml
 
 ## Scenario Validation Requirements
 

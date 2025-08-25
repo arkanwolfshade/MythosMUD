@@ -650,6 +650,18 @@ wheels = [
 ]
 
 [[package]]
+name = "ftfy"
+version = "6.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a5/d3/8650919bc3c7c6e90ee3fa7fd618bf373cbbe55dff043bd67353dbb20cd8/ftfy-6.3.1.tar.gz", hash = "sha256:9b3c3d90f84fb267fe64d375a07b7f8912d817cf86009ae134aa03e1819506ec", size = 308927, upload-time = "2024-10-26T00:50:35.149Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ab/6e/81d47999aebc1b155f81eca4477a616a70f238a2549848c38983f3c22a82/ftfy-6.3.1-py3-none-any.whl", hash = "sha256:7c70eb532015cd2f9adb53f101fb6c7945988d023a085d127d1573dc49dd0083", size = 44821, upload-time = "2024-10-26T00:50:33.425Z" },
+]
+
+[[package]]
 name = "glom"
 version = "22.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1001,6 +1013,7 @@ dependencies = [
     { name = "faker" },
     { name = "fastapi" },
     { name = "fastapi-users", extra = ["sqlalchemy"] },
+    { name = "ftfy" },
     { name = "httpx" },
     { name = "jsonschema" },
     { name = "nats-py" },
@@ -1016,6 +1029,7 @@ dependencies = [
     { name = "requests" },
     { name = "setuptools" },
     { name = "sqlalchemy" },
+    { name = "strip-ansi" },
     { name = "structlog" },
     { name = "tqdm" },
     { name = "uvicorn", extra = ["standard"] },
@@ -1055,6 +1069,7 @@ requires-dist = [
     { name = "faker", specifier = ">=37.5.3" },
     { name = "fastapi", specifier = "==0.116.1" },
     { name = "fastapi-users", extras = ["sqlalchemy"], specifier = ">=14.0.0" },
+    { name = "ftfy", specifier = ">=6.1.3" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "jsonschema", specifier = ">=4.21.0" },
     { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.10.5" },
@@ -1079,6 +1094,7 @@ requires-dist = [
     { name = "semgrep", marker = "extra == 'dev'", specifier = ">=1.132.0" },
     { name = "setuptools", specifier = "<81" },
     { name = "sqlalchemy", specifier = ">=2.0.42" },
+    { name = "strip-ansi", specifier = ">=0.1.1" },
     { name = "structlog", specifier = ">=25.4.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.35.0" },
@@ -1989,6 +2005,15 @@ wheels = [
 ]
 
 [[package]]
+name = "strip-ansi"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/bd/273a435b7f9fd111b22f740b2661b6b734938c93d86531f9689747323c43/strip-ansi-0.1.1.tar.gz", hash = "sha256:5d60f239cc8a37fdd52b43c3e66e893d45ba0423115db59eca0d2eef83b07729", size = 1733, upload-time = "2020-06-20T22:24:49.349Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/22/a1/077deda41f949b3412434fda858396ee9927a3260a43537c2ae333bd688c/strip_ansi-0.1.1-py3-none-any.whl", hash = "sha256:9f55280e1b0ba84dac49d4f18aa6b51b90ff766b22e4918ffc01cc87b394ecd1", size = 1815, upload-time = "2020-06-20T22:24:50.453Z" },
+]
+
+[[package]]
 name = "structlog"
 version = "25.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2192,6 +2217,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ea/c4/55e0d36da61d7b8b2a49fd273e6b296fd5e8471c72ebbe438635d1af3968/wcmatch-8.5.2.tar.gz", hash = "sha256:a70222b86dea82fb382dd87b73278c10756c138bd6f8f714e2183128887b9eb2", size = 114983, upload-time = "2024-05-15T12:51:08.054Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/09/78/533ef890536e5ba0fd4f7df37482b5800ecaaceae9afc30978a1a7f88ff1/wcmatch-8.5.2-py3-none-any.whl", hash = "sha256:17d3ad3758f9d0b5b4dedc770b65420d4dac62e680229c287bf24c9db856a478", size = 39397, upload-time = "2024-05-15T12:51:06.2Z" },
+]
+
+[[package]]
+name = "wcwidth"
+version = "0.2.13"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6c/63/53559446a878410fc5a5974feb13d31d78d752eb18aeba59c7fef1af7598/wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5", size = 101301, upload-time = "2024-01-06T02:10:57.829Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fd/84/fd2ba7aafacbad3c4201d395674fc6348826569da3c0937e75505ead3528/wcwidth-0.2.13-py2.py3-none-any.whl", hash = "sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859", size = 34166, upload-time = "2024-01-06T02:10:55.763Z" },
 ]
 
 [[package]]
