@@ -23,14 +23,27 @@ class ChatLogger:
     and log shipping to external moderation systems.
     """
 
-    def __init__(self, log_dir: str = "logs"):
+    def __init__(self, log_dir: str = None):
         """
         Initialize chat logger.
 
         Args:
-            log_dir: Directory for log files
+            log_dir: Directory for log files (if None, uses environment-based path)
         """
-        self.log_dir = Path(log_dir)
+        if log_dir is None:
+            # Use environment-based configuration like the rest of the system
+            from ..config_loader import get_config
+            from ..logging_config import _resolve_log_base, detect_environment
+
+            config = get_config()
+            log_base = config.get("logging", {}).get("log_base", "logs")
+            environment = config.get("logging", {}).get("environment", detect_environment())
+
+            resolved_log_base = _resolve_log_base(log_base)
+            self.log_dir = resolved_log_base / environment
+        else:
+            self.log_dir = Path(log_dir)
+
         self._ensure_log_directories()
 
         # Create subdirectories for different log types

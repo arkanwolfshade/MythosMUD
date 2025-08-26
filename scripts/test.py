@@ -18,8 +18,10 @@ def run_server_tests():
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Legacy logging environment variables no longer needed -
-    # logging is handled by centralized system
+    # Set test environment variables for logging
+    env["MYTHOSMUD_ENV"] = "test"
+    env["MYTHOSMUD_TEST_MODE"] = "true"
+    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "tests" / "test_server_config.yaml")
     env["ALIASES_DIR"] = "server/tests/data/players/aliases"
 
     clean_result = subprocess.run(clean_cmd, env=env)

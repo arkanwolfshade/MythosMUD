@@ -19,7 +19,7 @@ $NatsServerPath = "E:\nats-server\nats-server.exe"
 $NatsConfigPath = "E:\nats-server\nats-server.conf"
 $NatsPort = 4222
 $NatsHttpPort = 8222
-$NatsLogPath = "E:/projects/GitHub/MythosMUD/logs/nats/nats-server.log"
+$NatsLogPath = "E:/projects/GitHub/MythosMUD/logs/development/nats/nats-server.log"
 
 # Function to check if NATS server is installed
 function Test-NatsServerInstalled {

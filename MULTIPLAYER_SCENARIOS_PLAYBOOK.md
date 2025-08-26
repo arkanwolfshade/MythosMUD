@@ -429,7 +429,7 @@ Tests the admin teleportation system functionality, including both `/teleport` a
 
 #### Phase 5: Audit Logging Verification
 
-14. **Check admin actions log** (`logs/admin_actions/` directory)
+14. **Check admin actions log** (`logs/development/admin_actions/` directory)
     - **Verify**: Teleport actions are logged with proper JSON structure
     - **Verify**: Permission checks are logged
     - **Verify**: Success/failure status is recorded

@@ -9,12 +9,12 @@ logging:
   environment: test
   level: DEBUG  # Most verbose logging level
   format: colored  # json, human, colored (colored = human-readable with colors)
-  log_base: server/tests/logs  # Test logs stay in test directory
+  log_base: server/tests/logs  # Test logs stay in test directory (relative to project root)
   rotation:
     max_size: 10MB
     backup_count: 2
   compression: false
-  disable_logging: true
+  disable_logging: false
 
 # --- Network ---
 host: 127.0.0.1  # Test server bind address

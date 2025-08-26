@@ -144,12 +144,42 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error("Error disconnecting NATS service", error=str(e))
 
-    if hasattr(app.state, "tick_task"):
+    # Cancel and await the game tick task
+    if hasattr(app.state, "tick_task") and app.state.tick_task:
+        logger.info("Cancelling game tick task")
         app.state.tick_task.cancel()
         try:
             await app.state.tick_task
         except asyncio.CancelledError:
-            pass
+            logger.info("Game tick task cancelled successfully")
+        except Exception as e:
+            logger.error(f"Error cancelling game tick task: {e}")
+
+    # Clean up any remaining tasks in the connection manager
+    if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+        logger.info("Cleaning up connection manager tasks")
+        try:
+            await app.state.connection_manager.force_cleanup()
+        except Exception as e:
+            logger.error(f"Error during connection manager cleanup: {e}")
+
+    # Cancel any remaining tasks in the event loop
+    try:
+        # Get all running tasks and cancel them (except the current one)
+        current_task = asyncio.current_task()
+        tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
+
+        if tasks:
+            logger.info(f"Cancelling {len(tasks)} remaining tasks")
+            for task in tasks:
+                task.cancel()
+
+            # Wait for all tasks to complete
+            await asyncio.gather(*tasks, return_exceptions=True)
+            logger.info("All remaining tasks cancelled successfully")
+    except Exception as e:
+        logger.error(f"Error during task cleanup: {e}")
+
     logger.info("MythosMUD server shutdown complete")
 
 

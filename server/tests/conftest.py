@@ -8,6 +8,7 @@ for all tests in the MythosMUD server.
 import os
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 from dotenv import load_dotenv
@@ -140,3 +141,43 @@ def test_client():
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
 
     return TestClient(app)
+
+
+@pytest.fixture
+def mock_string():
+    """Create a mock that behaves like a string for command parser tests."""
+
+    def _create_mock_string(value: str):
+        """Create a mock that behaves like a string."""
+        mock = MagicMock()
+        mock.__str__ = MagicMock(return_value=value)
+        mock.__len__ = MagicMock(return_value=len(value))
+        mock.strip = MagicMock(return_value=value.strip())
+        mock.startswith = MagicMock(return_value=value.startswith)
+        mock.split = MagicMock(return_value=value.split())
+        mock.lower = MagicMock(return_value=value.lower())
+        # Make the mock itself return the string value when used as a string
+        mock._mock_return_value = value
+        return mock
+
+    return _create_mock_string
+
+
+@pytest.fixture
+def mock_command_string():
+    """Create a mock command string for testing."""
+
+    def _create_mock_command_string(command: str):
+        """Create a mock that behaves like a command string."""
+        mock = MagicMock()
+        mock.__str__ = MagicMock(return_value=command)
+        mock.__len__ = MagicMock(return_value=len(command))
+        mock.strip = MagicMock(return_value=command.strip())
+        mock.startswith = MagicMock(return_value=command.startswith)
+        mock.split = MagicMock(return_value=command.split())
+        mock.lower = MagicMock(return_value=command.lower())
+        # Make the mock itself return the string value when used as a string
+        mock._mock_return_value = command
+        return mock
+
+    return _create_mock_command_string

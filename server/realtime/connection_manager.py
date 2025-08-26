@@ -992,6 +992,18 @@ class ConnectionManager:
         """Force immediate cleanup of all orphaned data."""
         try:
             logger.info("Forcing immediate cleanup")
+
+            # Cancel any running cleanup tasks
+            if hasattr(self, "_cleanup_task") and self._cleanup_task and not self._cleanup_task.done():
+                logger.info("Cancelling existing cleanup task")
+                self._cleanup_task.cancel()
+                try:
+                    await self._cleanup_task
+                except asyncio.CancelledError:
+                    pass
+                except Exception as e:
+                    logger.error(f"Error cancelling cleanup task: {e}")
+
             await self.cleanup_orphaned_data()
             self.prune_stale_players()
             self.memory_monitor.force_garbage_collection()

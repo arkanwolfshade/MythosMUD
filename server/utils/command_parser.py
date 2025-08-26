@@ -145,6 +145,11 @@ class CommandParser:
         Returns:
             Tuple of (command, arguments)
         """
+        # Defensive programming: Handle mock objects during testing
+        if hasattr(command_string, "_mock_name") or hasattr(command_string, "_mock_return_value"):
+            logger.warning("Mock object passed to _parse_command_parts - this should not happen in production")
+            raise ValueError("Mock object passed to command parser - test setup issue")
+
         parts = command_string.split()
         if not parts:
             raise ValueError("Empty command after parsing")
