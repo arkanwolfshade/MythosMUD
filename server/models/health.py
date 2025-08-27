@@ -11,7 +11,7 @@ and chaos in our digital realm.
 
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthStatus(str, Enum):
@@ -66,10 +66,8 @@ class HealthResponse(BaseModel):
     components: HealthComponents = Field(..., description="Individual component health status")
     alerts: list[str] = Field(default_factory=list, description="List of active alerts")
 
-    class Config:
-        """Pydantic configuration for the health response."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status": "healthy",
                 "timestamp": "2025-08-27T15:30:45.123456Z",
@@ -93,6 +91,7 @@ class HealthResponse(BaseModel):
                 "alerts": [],
             }
         }
+    )
 
 
 class HealthErrorResponse(BaseModel):
