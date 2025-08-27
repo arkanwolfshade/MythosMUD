@@ -8,12 +8,16 @@ As noted in the Pnakotic Manuscripts, proper monitoring APIs
 are essential for maintaining oversight of our eldritch systems.
 """
 
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from ..game.movement_monitor import get_movement_monitor
+from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
+from ..services.health_service import get_health_service
 
 router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 
@@ -215,3 +219,29 @@ async def force_memory_cleanup():
         return {"message": "Memory cleanup completed successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during memory cleanup: {str(e)}") from e
+
+
+@router.get("/health", response_model=HealthResponse)
+async def get_health_status():
+    """Get comprehensive system health status."""
+    try:
+        health_service = get_health_service()
+        health_response = health_service.get_health_status()
+
+        # Return appropriate HTTP status code based on health status
+        if health_response.status == HealthStatus.HEALTHY:
+            return health_response
+        elif health_response.status == HealthStatus.DEGRADED:
+            # Return 200 with degraded status in response body
+            return health_response
+        else:  # UNHEALTHY
+            # Return 503 Service Unavailable for unhealthy status
+            from fastapi.responses import JSONResponse
+
+            return JSONResponse(status_code=503, content=health_response.model_dump())
+    except Exception as e:
+        # Return 500 Internal Server Error if health check itself fails
+        error_response = HealthErrorResponse(
+            error="Health check failed", detail=str(e), timestamp=datetime.now(UTC).isoformat()
+        )
+        raise HTTPException(status_code=500, detail=error_response.model_dump()) from e
