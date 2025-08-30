@@ -919,6 +919,445 @@ The who command system is fully functional with comprehensive filtering capabili
 
 ---
 
+## Scenario 8: Local Channel Communication
+
+### Description
+Tests the new local channel system that allows players to communicate within their sub-zone (geographical area) rather than just their current room.
+
+### Prerequisites
+- Two players connected (AW and Ithaqua)
+- Both players in the same sub-zone (Arkham City)
+- Local channel system implemented (Tasks 1-5 completed)
+
+### Cursor Execution Steps
+
+#### Step 1: Verify Players in Same Sub-Zone
+```javascript
+// Ensure both players are in Arkham City sub-zone
+// AW should be on tab 0, Ithaqua on tab 1
+// Both should be in rooms with "arkham_city" in the room ID
+```
+
+#### Step 2: AW Sends Local Channel Message
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Type local channel command
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Hello to everyone in Arkham City!"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation message
+await mcp_playwright_browser_wait_for({text: "You say (local): Hello to everyone in Arkham City!"});
+```
+
+#### Step 3: Verify Ithaqua Receives Local Message
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for local message
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says (local): Hello to everyone in Arkham City!"});
+
+// Verify message appears with local channel formatting
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesLocalMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says (local): Hello to everyone in Arkham City!'));
+console.log('Ithaqua sees local message:', seesLocalMessage);
+```
+
+#### Step 4: Test Local Channel Alias
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Use /l alias for local channel
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "l Testing the local channel alias"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation message
+await mcp_playwright_browser_wait_for({text: "You say (local): Testing the local channel alias"});
+```
+
+#### Step 5: Verify Alias Message Received
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for alias message
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says (local): Testing the local channel alias"});
+
+// Verify alias works correctly
+const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesAliasMessage = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade says (local): Testing the local channel alias'));
+console.log('Ithaqua sees alias message:', seesAliasMessage);
+```
+
+#### Step 6: Test Empty Local Message Rejection
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Try to send empty local message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for error message
+await mcp_playwright_browser_wait_for({text: "Say what? Usage: local <message> or /l <message>"});
+
+// Verify error message appears
+const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesErrorMessage = awMessages.some(msg => msg.includes('Say what? Usage: local <message> or /l <message>'));
+console.log('AW sees error message for empty local:', seesErrorMessage);
+```
+
+### Expected Results
+- ✅ AW sees "You say (local): Hello to everyone in Arkham City!"
+- ✅ Ithaqua sees "ArkanWolfshade says (local): Hello to everyone in Arkham City!"
+- ✅ /l alias works correctly for local channel
+- ✅ Empty local messages are rejected with helpful error message
+- ✅ Local messages are properly formatted with "(local)" indicator
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 9: Local Channel Sub-Zone Isolation
+
+### Description
+Tests that local channel messages are properly isolated by sub-zone, ensuring players in different sub-zones don't see each other's local messages.
+
+### Prerequisites
+- Two players connected (AW and Ithaqua)
+- Players in different sub-zones (AW in Arkham City, Ithaqua in different sub-zone)
+
+### Cursor Execution Steps
+
+#### Step 1: Move Players to Different Sub-Zones
+```javascript
+// Move AW to Arkham City sub-zone (if not already there)
+await mcp_playwright_browser_tab_select({index: 0});
+// Verify AW is in arkham_city sub-zone
+
+// Move Ithaqua to a different sub-zone
+await mcp_playwright_browser_tab_select({index: 1});
+// Navigate Ithaqua to a room in a different sub-zone (e.g., campus, docks, etc.)
+// This may require multiple movement commands depending on world layout
+```
+
+#### Step 2: AW Sends Local Message in Arkham City
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Send local message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local This message should only be seen in Arkham City"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation
+await mcp_playwright_browser_wait_for({text: "You say (local): This message should only be seen in Arkham City"});
+```
+
+#### Step 3: Verify Ithaqua Does NOT Receive Local Message
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Check that Ithaqua does NOT see the local message
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesLocalMessage = ithaquaMessages.some(msg => msg.includes('This message should only be seen in Arkham City'));
+console.log('Ithaqua sees local message (should be false):', !seesLocalMessage);
+```
+
+#### Step 4: Ithaqua Sends Local Message in Different Sub-Zone
+```javascript
+// Send local message from Ithaqua's sub-zone
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local This message is from a different sub-zone"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation
+await mcp_playwright_browser_wait_for({text: "You say (local): This message is from a different sub-zone"});
+```
+
+#### Step 5: Verify AW Does NOT Receive Ithaqua's Local Message
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Check that AW does NOT see Ithaqua's local message
+const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesIthaquaLocalMessage = awMessages.some(msg => msg.includes('This message is from a different sub-zone'));
+console.log('AW sees Ithaqua local message (should be false):', !seesIthaquaLocalMessage);
+```
+
+### Expected Results
+- ✅ AW sees their local message in Arkham City
+- ✅ Ithaqua does NOT see AW's local message (different sub-zone)
+- ✅ Ithaqua sees their local message in their sub-zone
+- ✅ AW does NOT see Ithaqua's local message (different sub-zone)
+- ✅ Sub-zone isolation works correctly
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 10: Local Channel with Player Movement
+
+### Description
+Tests that local channel messages are sent to the destination sub-zone when a player is moving between rooms during message composition.
+
+### Prerequisites
+- Two players connected (AW and Ithaqua)
+- Both players in same sub-zone initially
+
+### Cursor Execution Steps
+
+#### Step 1: Setup Players in Same Sub-Zone
+```javascript
+// Ensure both players are in the same sub-zone initially
+// AW should be on tab 0, Ithaqua on tab 1
+```
+
+#### Step 2: AW Moves to Different Sub-Zone
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Move AW to a different sub-zone
+// This may require multiple movement commands
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "east"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You move east"});
+
+// Continue moving until AW is in a different sub-zone
+```
+
+#### Step 3: AW Sends Local Message from New Sub-Zone
+```javascript
+// Send local message from new sub-zone
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Hello from my new sub-zone!"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation
+await mcp_playwright_browser_wait_for({text: "You say (local): Hello from my new sub-zone!"});
+```
+
+#### Step 4: Verify Ithaqua Does NOT Receive Message
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Check that Ithaqua does NOT see the message (different sub-zone)
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesMessage = ithaquaMessages.some(msg => msg.includes('Hello from my new sub-zone!'));
+console.log('Ithaqua sees message from different sub-zone (should be false):', !seesMessage);
+```
+
+#### Step 5: Ithaqua Moves to AW's Sub-Zone
+```javascript
+// Move Ithaqua to the same sub-zone as AW
+// This may require multiple movement commands
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "east"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You move east"});
+
+// Continue moving until Ithaqua is in the same sub-zone as AW
+```
+
+#### Step 6: AW Sends Another Local Message
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Send another local message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Now we're in the same sub-zone!"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation
+await mcp_playwright_browser_wait_for({text: "You say (local): Now we're in the same sub-zone!"});
+```
+
+#### Step 7: Verify Ithaqua Now Receives Message
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for message
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says (local): Now we're in the same sub-zone!"});
+
+// Verify message appears
+const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesMessageAfter = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade says (local): Now we\'re in the same sub-zone!'));
+console.log('Ithaqua sees message from same sub-zone:', seesMessageAfter);
+```
+
+### Expected Results
+- ✅ AW's local message from different sub-zone is NOT seen by Ithaqua
+- ✅ AW's local message from same sub-zone IS seen by Ithaqua
+- ✅ Sub-zone-based message routing works correctly during player movement
+- ✅ Local channel respects current player location for message delivery
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 11: Local Channel Error Handling
+
+### Description
+Tests error handling for local channel commands including invalid room IDs, missing services, and edge cases.
+
+### Prerequisites
+- One player connected (AW)
+- Local channel system implemented
+
+### Cursor Execution Steps
+
+#### Step 1: Test Invalid Room ID Handling
+```javascript
+// This test may require database manipulation or special setup
+// For now, we'll test basic error handling
+
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Try to send a very long local message
+const longMessage = "a".repeat(501); // Exceeds 500 character limit
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: `local ${longMessage}`});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for error message
+await mcp_playwright_browser_wait_for({text: "Message too long"});
+
+// Verify error message appears
+const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesErrorMessage = awMessages.some(msg => msg.includes('Message too long'));
+console.log('AW sees error message for long message:', seesErrorMessage);
+```
+
+#### Step 2: Test Whitespace-Only Message Rejection
+```javascript
+// Try to send whitespace-only message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local    "});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for error message
+await mcp_playwright_browser_wait_for({text: "Say what? Usage: local <message> or /l <message>"});
+
+// Verify error message appears
+const awMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesWhitespaceError = awMessagesAfter.some(msg => msg.includes('Say what? Usage: local <message> or /l <message>'));
+console.log('AW sees error message for whitespace-only:', seesWhitespaceError);
+```
+
+#### Step 3: Test Special Characters in Local Messages
+```javascript
+// Send local message with special characters
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing special chars: <>&\"'!@#$%^&*()"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for confirmation
+await mcp_playwright_browser_wait_for({text: "You say (local): Testing special chars: <>&\"'!@#$%^&*()"});
+
+// Verify message appears correctly
+const awMessagesSpecial = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesSpecialChars = awMessagesSpecial.some(msg => msg.includes('Testing special chars: <>&"\'!@#$%^&*()'));
+console.log('AW sees special characters message:', seesSpecialChars);
+```
+
+### Expected Results
+- ✅ Long messages (>500 chars) are rejected with error message
+- ✅ Whitespace-only messages are rejected with helpful error message
+- ✅ Special characters are handled correctly in local messages
+- ✅ Error messages are clear and helpful
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 12: Local Channel Integration with Existing Systems
+
+### Description
+Tests that local channel system integrates properly with existing chat, movement, and moderation systems.
+
+### Prerequisites
+- Two players connected (AW and Ithaqua)
+- Both players in same sub-zone
+- Existing systems (say, movement, muting) working
+
+### Cursor Execution Steps
+
+#### Step 1: Test Local Channel with Regular Say Commands
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Send regular say message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "say This is a regular say message"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You say: This is a regular say message"});
+
+// Send local message
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local This is a local channel message"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You say (local): This is a local channel message"});
+```
+
+#### Step 2: Verify Both Message Types Work Independently
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for both messages
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says: This is a regular say message"});
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says (local): This is a local channel message"});
+
+// Verify both messages appear
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesRegularSay = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says: This is a regular say message'));
+const seesLocalMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says (local): This is a local channel message'));
+console.log('Ithaqua sees regular say:', seesRegularSay);
+console.log('Ithaqua sees local message:', seesLocalMessage);
+```
+
+#### Step 3: Test Local Channel with Movement Messages
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Move to different room in same sub-zone
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "east"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You move east"});
+
+// Send local message from new room
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Hello from the new room!"});
+await mcp_playwright_browser_press_key({key: "Enter"});
+await mcp_playwright_browser_wait_for({text: "You say (local): Hello from the new room!"});
+```
+
+#### Step 4: Verify Local Message Still Works After Movement
+```javascript
+// Switch to Ithaqua's tab
+await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for local message from new room
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says (local): Hello from the new room!"});
+
+// Verify message appears
+const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesLocalAfterMovement = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade says (local): Hello from the new room!'));
+console.log('Ithaqua sees local message after AW movement:', seesLocalAfterMovement);
+```
+
+### Expected Results
+- ✅ Regular say commands work alongside local channel commands
+- ✅ Local messages work correctly after player movement within sub-zone
+- ✅ Both message types are properly formatted and distinguishable
+- ✅ Local channel integrates seamlessly with existing movement system
+
+### Status: ✅ READY FOR TESTING
+
+---
+
 ## Post-Scenario Cleanup
 
 ### Step 1: Close All Browser Tabs

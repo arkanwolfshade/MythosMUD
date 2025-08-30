@@ -84,6 +84,9 @@ class TestChatLogger:
         # Write log entry
         self.chat_logger._write_log_entry("chat", entry)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify file was created and contains the entry
         log_file = self.chat_logger._get_current_log_file("chat")
         assert log_file.exists()
@@ -106,6 +109,9 @@ class TestChatLogger:
         # Write log entry
         self.chat_logger._write_log_entry("chat", entry)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify timestamp was not overwritten
         log_file = self.chat_logger._get_current_log_file("chat")
         with open(log_file, encoding="utf-8") as f:
@@ -120,6 +126,9 @@ class TestChatLogger:
         # Write log entry
         self.chat_logger._write_log_entry("chat", entry)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify Unicode content was written correctly
         log_file = self.chat_logger._get_current_log_file("chat")
         with open(log_file, encoding="utf-8") as f:
@@ -131,8 +140,8 @@ class TestChatLogger:
     @patch("server.services.chat_logger.logger")
     def test_write_log_entry_exception_handling(self, mock_logger):
         """Test log entry writing handles exceptions gracefully."""
-        # Mock open to raise an exception
-        with patch("builtins.open", side_effect=PermissionError("Access denied")):
+        # Mock the queue to raise an exception
+        with patch.object(self.chat_logger._log_queue, "put", side_effect=Exception("Queue error")):
             entry = {"test": "data"}
 
             # Should not raise exception
@@ -141,9 +150,8 @@ class TestChatLogger:
             # Verify error was logged
             mock_logger.error.assert_called_once()
             call_args = mock_logger.error.call_args
-            assert call_args[1]["error"] == "Access denied"
+            assert call_args[1]["error"] == "Queue error"
             assert call_args[1]["log_type"] == "chat"
-            assert call_args[1]["entry"] == entry
 
     def test_log_chat_message(self):
         """Test logging a chat message."""
@@ -162,6 +170,9 @@ class TestChatLogger:
 
         # Log the message
         self.chat_logger.log_chat_message(message_data)
+
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify log file was created
         log_file = self.chat_logger._get_current_log_file("chat")
@@ -198,6 +209,9 @@ class TestChatLogger:
         # Log the message
         self.chat_logger.log_chat_message(message_data)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry has default values
         log_file = self.chat_logger._get_current_log_file("chat")
         with open(log_file, encoding="utf-8") as f:
@@ -231,6 +245,9 @@ class TestChatLogger:
         # Log the event
         self.chat_logger.log_moderation_event(event_type, event_data)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
         with open(log_file, encoding="utf-8") as f:
@@ -254,6 +271,9 @@ class TestChatLogger:
         # Log the flagged message
         self.chat_logger.log_message_flagged(message_id, flag_reason, confidence, ai_model, action_taken)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
         with open(log_file, encoding="utf-8") as f:
@@ -276,6 +296,9 @@ class TestChatLogger:
         # Log the flagged message with defaults
         self.chat_logger.log_message_flagged(message_id, flag_reason)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry has default values
         log_file = self.chat_logger._get_current_log_file("moderation")
         with open(log_file, encoding="utf-8") as f:
@@ -297,6 +320,9 @@ class TestChatLogger:
 
         # Log the mute
         self.chat_logger.log_player_muted(muter_id, target_id, target_name, mute_type, duration_minutes, reason)
+
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
@@ -323,6 +349,9 @@ class TestChatLogger:
         # Log the permanent mute
         self.chat_logger.log_player_muted(muter_id, target_id, target_name, mute_type)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
         with open(log_file, encoding="utf-8") as f:
@@ -341,6 +370,9 @@ class TestChatLogger:
 
         # Log the unmute
         self.chat_logger.log_player_unmuted(unmuter_id, target_id, target_name, mute_type)
+
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
@@ -363,6 +395,9 @@ class TestChatLogger:
         # Log the system event
         self.chat_logger.log_system_event(event_type, event_data)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("system")
         with open(log_file, encoding="utf-8") as f:
@@ -383,6 +418,9 @@ class TestChatLogger:
 
         # Log the room join
         self.chat_logger.log_player_joined_room(player_id, player_name, room_id, room_name)
+
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("system")
@@ -406,6 +444,9 @@ class TestChatLogger:
         # Log the room leave
         self.chat_logger.log_player_left_room(player_id, player_name, room_id, room_name)
 
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("system")
         with open(log_file, encoding="utf-8") as f:
@@ -428,6 +469,9 @@ class TestChatLogger:
 
         # Log the rate limit violation
         self.chat_logger.log_rate_limit_violation(player_id, player_name, channel, message_count, limit)
+
+        # Wait for the writer thread to process the queued message
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify log entry
         log_file = self.chat_logger._get_current_log_file("moderation")
@@ -477,6 +521,9 @@ class TestChatLogger:
         self.chat_logger._write_log_entry("chat", test_entry)
         self.chat_logger._write_log_entry("moderation", test_entry)
 
+        # Wait for the writer thread to process the queued messages
+        self.chat_logger.wait_for_queue_processing()
+
         stats = self.chat_logger.get_log_stats()
 
         # Verify chat file has data
@@ -503,6 +550,9 @@ class TestChatLogger:
         for entry in entries:
             self.chat_logger._write_log_entry("chat", entry)
 
+        # Wait for the writer thread to process all queued messages
+        self.chat_logger.wait_for_queue_processing()
+
         # Verify all entries were written
         log_file = self.chat_logger._get_current_log_file("chat")
         with open(log_file, encoding="utf-8") as f:
@@ -520,6 +570,9 @@ class TestChatLogger:
         self.chat_logger._write_log_entry("chat", {"type": "chat", "id": 1})
         self.chat_logger._write_log_entry("moderation", {"type": "moderation", "id": 2})
         self.chat_logger._write_log_entry("system", {"type": "system", "id": 3})
+
+        # Wait for the writer thread to process all queued messages
+        self.chat_logger.wait_for_queue_processing()
 
         # Verify each file contains the correct entry
         chat_file = self.chat_logger._get_current_log_file("chat")

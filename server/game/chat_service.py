@@ -163,7 +163,9 @@ class ChatService:
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
-        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="say", content=message.strip())
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="say", content=message.strip()
+        )
 
         # Log the chat message for AI processing
         self.chat_logger.log_chat_message(
@@ -215,6 +217,373 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
+
+    async def send_local_message(self, player_id: str, message: str) -> dict[str, Any]:
+        """
+        Send a local message to players in the same sub-zone.
+
+        This method publishes the message to NATS for real-time distribution
+        to all players in the same sub-zone. NATS is mandatory for this functionality.
+
+        Args:
+            player_id: ID of the player sending the message
+            message: Message content
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        logger.debug("=== CHAT SERVICE DEBUG: send_local_message called ===", player_id=player_id, message=message)
+        logger.debug("Processing local message", player_id=player_id, message_length=len(message))
+
+        # Validate input
+        if not message or not message.strip():
+            logger.debug("=== CHAT SERVICE DEBUG: Empty message ===")
+            return {"success": False, "error": "Message cannot be empty"}
+
+        if len(message.strip()) > 500:  # Reasonable limit for MVP
+            logger.debug("=== CHAT SERVICE DEBUG: Message too long ===")
+            return {"success": False, "error": "Message too long (max 500 characters)"}
+
+        # Get player information
+        player = self.player_service.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Player not found for local message", player_id=player_id)
+            return {"success": False, "error": "Player not found"}
+
+        # Load player's mute data to ensure it's available for permission checks
+        self.user_manager.load_player_mutes(player_id)
+
+        # Check rate limits before allowing message
+        if not self.rate_limiter.check_rate_limit(player_id, "local", player.name):
+            logger.warning("Rate limit exceeded for local message", player_id=player_id, player_name=player.name)
+            return {
+                "success": False,
+                "error": "Rate limit exceeded. Please wait before sending another message.",
+                "rate_limited": True,
+            }
+
+        # Get player's current room
+        room_id = player.current_room_id
+        if not room_id:
+            logger.warning("Player not in a room", player_id=player_id)
+            return {"success": False, "error": "Player not in a room"}
+
+        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
+
+        # Check if player is muted in local channel
+        if self.user_manager.is_channel_muted(player_id, "local"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", player_id=player_id)
+            return {"success": False, "error": "You are muted in the local channel"}
+
+        # Check if player is globally muted
+        if self.user_manager.is_globally_muted(player_id):
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", player_id=player_id)
+            return {"success": False, "error": "You are globally muted and cannot send messages"}
+
+        # Check if player can send messages (admin check, etc.)
+        if not self.user_manager.can_send_message(player_id, channel="local"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", player_id=player_id)
+            return {"success": False, "error": "You cannot send messages at this time"}
+
+        # Create chat message
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="local", content=message.strip()
+        )
+
+        # Log the chat message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "room_id": room_id,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Record message for rate limiting
+        self.rate_limiter.record_message(player_id, "local", player.name)
+
+        # Also log to communications log (existing behavior)
+        chat_message.log_message()
+
+        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===", message_id=chat_message.id)
+
+        # Store message in room history
+        if room_id not in self._room_messages:
+            self._room_messages[room_id] = []
+
+        self._room_messages[room_id].append(chat_message)
+
+        # Maintain message history limit
+        if len(self._room_messages[room_id]) > self._max_messages_per_room:
+            self._room_messages[room_id] = self._room_messages[room_id][-self._max_messages_per_room :]
+
+        logger.info(
+            "Local message created successfully",
+            player_id=player_id,
+            player_name=player.name,
+            room_id=room_id,
+            message_id=chat_message.id,
+        )
+
+        # Publish message to NATS for real-time distribution
+        logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        if not success:
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
+        logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
+
+        return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
+
+    async def send_global_message(self, player_id: str, message: str) -> dict[str, Any]:
+        """
+        Send a global message to all players.
+
+        This method publishes the global message to NATS for real-time distribution
+        to all players. Global messages require level 1+ and are subject to rate limiting.
+
+        Args:
+            player_id: ID of the player sending the global message
+            message: Message content
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===", player_id=player_id)
+        logger.debug("Processing global message", player_id=player_id, message_length=len(message))
+
+        # Validate input
+        if not message or not message.strip():
+            logger.debug("=== CHAT SERVICE DEBUG: Empty message ===")
+            return {"success": False, "error": "Message cannot be empty"}
+
+        if len(message.strip()) > 1000:  # Limit for global messages
+            logger.debug("=== CHAT SERVICE DEBUG: Message too long ===")
+            return {"success": False, "error": "Message too long (max 1000 characters)"}
+
+        # Get player information
+        player = self.player_service.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Player not found for global message", player_id=player_id)
+            return {"success": False, "error": "Player not found"}
+
+        # Check level requirement (minimum level 1 for global chat)
+        if player.level < 1:
+            logger.debug("=== CHAT SERVICE DEBUG: Player level too low ===", player_id=player_id, level=player.level)
+            return {"success": False, "error": "You must be level 1 or higher to use global chat"}
+
+        # Load player's mute data to ensure it's available for permission checks
+        self.user_manager.load_player_mutes(player_id)
+
+        # Check rate limits before allowing global message
+        if not self.rate_limiter.check_rate_limit(player_id, "global", player.name):
+            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===", player_id=player_id)
+            return {"success": False, "error": "Rate limit exceeded for global chat", "rate_limited": True}
+
+        # Check if player is muted from global channel
+        if self.user_manager.is_channel_muted(player_id, "global"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player muted from global channel ===", player_id=player_id)
+            return {"success": False, "error": "You are muted from global chat"}
+
+        # Check if player is globally muted
+        if self.user_manager.is_globally_muted(player_id):
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", player_id=player_id)
+            return {"success": False, "error": "You are globally muted and cannot send messages"}
+
+        # Check if player can send messages (admin check, etc.)
+        if not self.user_manager.can_send_message(player_id, channel="global"):
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", player_id=player_id)
+            return {"success": False, "error": "You cannot send messages at this time"}
+
+        # Create chat message
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="global", content=message.strip()
+        )
+
+        # Log the chat message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "room_id": None,  # Global messages don't have a specific room
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Log to global channel specific log file
+        self.chat_logger.log_global_channel_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Record message for rate limiting
+        self.rate_limiter.record_message(player_id, "global", player.name)
+
+        # Also log to communications log (existing behavior)
+        chat_message.log_message()
+
+        logger.debug("=== CHAT SERVICE DEBUG: Global chat message created ===", message_id=chat_message.id)
+
+        # Store message in global history
+        if "global" not in self._room_messages:
+            self._room_messages["global"] = []
+
+        self._room_messages["global"].append(chat_message)
+
+        # Maintain message history limit
+        if len(self._room_messages["global"]) > self._max_messages_per_room:
+            self._room_messages["global"] = self._room_messages["global"][-self._max_messages_per_room :]
+
+        logger.info(
+            "Global message created successfully",
+            player_id=player_id,
+            player_name=player.name,
+            message_id=chat_message.id,
+        )
+
+        # Publish message to NATS for real-time distribution
+        logger.debug("=== CHAT SERVICE DEBUG: About to publish global message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, None)  # Global messages don't have room_id
+        if not success:
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
+        logger.debug("=== CHAT SERVICE DEBUG: Global NATS publishing completed ===")
+
+        return {"success": True, "message": chat_message.to_dict()}
+
+    async def send_system_message(self, player_id: str, message: str) -> dict[str, Any]:
+        """
+        Send a system message to all players.
+
+        This method publishes the system message to NATS for real-time distribution
+        to all players. System messages require admin privileges and are subject to rate limiting.
+
+        Args:
+            player_id: ID of the player sending the system message
+            message: Message content
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===", player_id=player_id)
+        logger.debug("Processing system message", player_id=player_id, message_length=len(message))
+
+        # Validate input
+        if not message or not message.strip():
+            logger.debug("=== CHAT SERVICE DEBUG: Empty message ===")
+            return {"success": False, "error": "Message cannot be empty"}
+
+        if len(message.strip()) > 2000:  # Limit for system messages
+            logger.debug("=== CHAT SERVICE DEBUG: Message too long ===")
+            return {"success": False, "error": "Message too long (max 2000 characters)"}
+
+        # Get player information
+        player = self.player_service.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Player not found for system message", player_id=player_id)
+            return {"success": False, "error": "Player not found"}
+
+        # Check admin requirement
+        if not self.user_manager.is_admin(player_id):
+            logger.debug("=== CHAT SERVICE DEBUG: Player not admin ===", player_id=player_id)
+            return {"success": False, "error": "You must be an admin to send system messages"}
+
+        # Load player's mute data to ensure it's available for permission checks
+        self.user_manager.load_player_mutes(player_id)
+
+        # Check rate limits before allowing system message
+        if not self.rate_limiter.check_rate_limit(player_id, "system", player.name):
+            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===", player_id=player_id)
+            return {"success": False, "error": "Rate limit exceeded for system messages", "rate_limited": True}
+
+        # Note: Admins can send system messages even when globally muted
+        # This ensures admins can always communicate important system information
+
+        # Create chat message
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="system", content=message.strip()
+        )
+
+        # Log the chat message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "room_id": None,  # System messages don't have a specific room
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Log to system channel specific log file
+        self.chat_logger.log_system_channel_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "content": chat_message.content,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Record message for rate limiting
+        self.rate_limiter.record_message(player_id, "system", player.name)
+
+        # Also log to communications log (existing behavior)
+        chat_message.log_message()
+
+        logger.debug("=== CHAT SERVICE DEBUG: System chat message created ===", message_id=chat_message.id)
+
+        # Store message in system history
+        if "system" not in self._room_messages:
+            self._room_messages["system"] = []
+
+        self._room_messages["system"].append(chat_message)
+
+        # Maintain message history limit
+        if len(self._room_messages["system"]) > self._max_messages_per_room:
+            self._room_messages["system"] = self._room_messages["system"][-self._max_messages_per_room :]
+
+        logger.info(
+            "System message created successfully",
+            player_id=player_id,
+            player_name=player.name,
+            message_id=chat_message.id,
+        )
+
+        # Publish message to NATS for real-time distribution
+        logger.debug("=== CHAT SERVICE DEBUG: About to publish system message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, None)  # System messages don't have room_id
+        if not success:
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
+        logger.debug("=== CHAT SERVICE DEBUG: System NATS publishing completed ===")
+
+        return {"success": True, "message": chat_message.to_dict()}
 
     async def send_emote_message(self, player_id: str, action: str) -> dict[str, Any]:
         """
@@ -285,7 +654,7 @@ class ChatService:
 
         # Create chat message for emote
         chat_message = ChatMessage(
-            sender_id=player_id, sender_name=player.name, channel="emote", content=action.strip()
+            sender_id=str(player_id), sender_name=player.name, channel="emote", content=action.strip()
         )
 
         # Log the emote message for AI processing
@@ -380,7 +749,9 @@ class ChatService:
         self._player_poses[player_id] = pose.strip()
 
         # Create a chat message to notify room of pose change
-        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="pose", content=pose.strip())
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="pose", content=pose.strip()
+        )
 
         logger.info(
             "Player pose set successfully",
@@ -528,7 +899,9 @@ class ChatService:
             return {"success": False, "error": str(e)}
 
         # Create chat message for the predefined emote
-        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="emote", content=other_message)
+        chat_message = ChatMessage(
+            sender_id=str(player_id), sender_name=player.name, channel="emote", content=other_message
+        )
 
         # Log the emote message for AI processing
         self.chat_logger.log_chat_message(
@@ -586,6 +959,14 @@ class ChatService:
         """
         try:
             # Check if NATS service is available and connected
+            logger.debug("=== CHAT SERVICE DEBUG: Checking NATS service ===")
+            logger.debug(f"NATS service object: {self.nats_service}")
+            logger.debug(f"NATS service type: {type(self.nats_service)}")
+            if self.nats_service:
+                logger.debug(f"NATS service is_connected(): {self.nats_service.is_connected()}")
+            else:
+                logger.debug("NATS service is None")
+
             if not self.nats_service or not self.nats_service.is_connected():
                 logger.error("NATS service not available or not connected - NATS is mandatory for chat functionality")
                 return False
@@ -602,7 +983,27 @@ class ChatService:
             }
 
             # Determine NATS subject based on channel
-            subject = f"chat.{chat_message.channel}.{room_id}"
+            if chat_message.channel == "local":
+                # For local channel, use sub-zone level subject
+                from ..utils.room_utils import extract_subzone_from_room_id
+
+                subzone = extract_subzone_from_room_id(room_id)
+                if not subzone:
+                    subzone = "unknown"
+                subject = f"chat.local.subzone.{subzone}"
+                logger.debug(f"=== CHAT SERVICE DEBUG: Local channel subject: {subject} ===")
+            elif chat_message.channel == "global":
+                # For global channel, use global subject
+                subject = "chat.global"
+                logger.debug(f"=== CHAT SERVICE DEBUG: Global channel subject: {subject} ===")
+            elif chat_message.channel == "system":
+                # For system channel, use system subject
+                subject = "chat.system"
+                logger.debug(f"=== CHAT SERVICE DEBUG: System channel subject: {subject} ===")
+            else:
+                # For other channels, use room level subject
+                subject = f"chat.{chat_message.channel}.{room_id}"
+                logger.debug(f"=== CHAT SERVICE DEBUG: Other channel subject: {subject} ===")
 
             # Publish to NATS
             success = await self.nats_service.publish(subject, message_data)

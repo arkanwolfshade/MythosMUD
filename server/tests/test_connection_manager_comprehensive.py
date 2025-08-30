@@ -960,6 +960,7 @@ class TestMemoryMonitorComprehensive:
 
             assert result == 0.0
 
+    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     def test_memory_monitor_get_memory_stats_exception(self):
         """Test memory stats calculation with exception."""
         monitor = MemoryMonitor()

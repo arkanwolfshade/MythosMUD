@@ -26,7 +26,14 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
-from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
+from .communication_commands import (
+    handle_global_command,
+    handle_local_command,
+    handle_me_command,
+    handle_pose_command,
+    handle_say_command,
+    handle_system_command,
+)
 from .exploration_commands import handle_go_command, handle_look_command
 from .system_commands import handle_help_command
 from .utility_commands import (
@@ -64,6 +71,11 @@ class CommandService:
             "say": handle_say_command,
             "me": handle_me_command,
             "pose": handle_pose_command,
+            "local": handle_local_command,
+            "l": handle_local_command,  # Alias for local
+            "global": handle_global_command,
+            "g": handle_global_command,  # Alias for global
+            "system": handle_system_command,
             "emote": handle_emote_command,
             # Administrative commands
             "mute": handle_mute_command,

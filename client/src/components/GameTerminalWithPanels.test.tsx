@@ -477,9 +477,9 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
 
       render(<GameTerminalWithPanels playerName="TestPlayer" authToken="test-token" />);
 
-      // Simulate sending a movement command
+      // Simulate sending a movement command (use / prefix to bypass channel logic)
       const commandInput = screen.getByPlaceholderText("Enter command (e.g., 'look' or '/look')...");
-      fireEvent.change(commandInput, { target: { value: 'go north' } });
+      fireEvent.change(commandInput, { target: { value: '/go north' } });
 
       // Find the form and submit it
       const form = commandInput.closest('form');

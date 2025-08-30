@@ -21,6 +21,7 @@ from ..models.command import (
     GotoCommand,
     HelpCommand,
     InventoryCommand,
+    LocalCommand,
     LookCommand,
     MeCommand,
     MuteCommand,
@@ -30,6 +31,7 @@ from ..models.command import (
     QuitCommand,
     SayCommand,
     StatusCommand,
+    SystemCommand,
     TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
@@ -57,6 +59,8 @@ class CommandParser:
             CommandType.LOOK.value: self._create_look_command,
             CommandType.GO.value: self._create_go_command,
             CommandType.SAY.value: self._create_say_command,
+            CommandType.LOCAL.value: self._create_local_command,
+            CommandType.SYSTEM.value: self._create_system_command,
             CommandType.EMOTE.value: self._create_emote_command,
             CommandType.ME.value: self._create_me_command,
             CommandType.POSE.value: self._create_pose_command,
@@ -212,6 +216,20 @@ class CommandParser:
             raise ValueError("Say command requires a message")
         message = " ".join(args)
         return SayCommand(message=message)
+
+    def _create_local_command(self, args: list[str]) -> LocalCommand:
+        """Create LocalCommand from arguments."""
+        if not args:
+            raise ValueError("Local command requires a message")
+        message = " ".join(args)
+        return LocalCommand(message=message)
+
+    def _create_system_command(self, args: list[str]) -> SystemCommand:
+        """Create SystemCommand from arguments."""
+        if not args:
+            raise ValueError("System command requires a message")
+        message = " ".join(args)
+        return SystemCommand(message=message)
 
     def _create_emote_command(self, args: list[str]) -> EmoteCommand:
         """Create EmoteCommand from arguments."""
@@ -485,6 +503,7 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.LOOK.value: "look [direction] - Look around or in a specific direction",
             CommandType.GO.value: "go <direction> - Move in a specific direction",
             CommandType.SAY.value: "say <message> - Say something to other players",
+            CommandType.LOCAL.value: "local <message> - Send message to local channel (sub-zone)",
             CommandType.EMOTE.value: "emote <action> - Perform an action",
             CommandType.ME.value: "me <action> - Describe an action",
             CommandType.POSE.value: "pose [description] - Set or display your pose",
@@ -512,6 +531,7 @@ Available Commands:
 - look [direction] - Look around or in a specific direction
 - go <direction> - Move in a specific direction
 - say <message> - Say something to other players
+- local <message> - Send message to local channel (sub-zone)
 - emote <action> - Perform an action
 - me <action> - Describe an action
 - pose [description] - Set or display your pose
