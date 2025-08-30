@@ -159,7 +159,7 @@ describe('ChannelSelector', () => {
     expect(button).toBeDisabled();
   });
 
-  it('shows disabled channels as disabled in dropdown', async () => {
+  it('shows enabled whisper channel in dropdown', async () => {
     render(<ChannelSelector {...defaultProps} />);
 
     const button = screen.getByRole('button');
@@ -167,7 +167,7 @@ describe('ChannelSelector', () => {
 
     await waitFor(() => {
       const whisperButton = screen.getByText('Whisper').closest('button');
-      expect(whisperButton).toBeDisabled();
+      expect(whisperButton).not.toBeDisabled();
     });
   });
 

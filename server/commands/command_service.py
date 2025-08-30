@@ -31,8 +31,10 @@ from .communication_commands import (
     handle_local_command,
     handle_me_command,
     handle_pose_command,
+    handle_reply_command,
     handle_say_command,
     handle_system_command,
+    handle_whisper_command,
 )
 from .exploration_commands import handle_go_command, handle_look_command
 from .system_commands import handle_help_command
@@ -76,6 +78,8 @@ class CommandService:
             "global": handle_global_command,
             "g": handle_global_command,  # Alias for global
             "system": handle_system_command,
+            "whisper": handle_whisper_command,
+            "reply": handle_reply_command,
             "emote": handle_emote_command,
             # Administrative commands
             "mute": handle_mute_command,

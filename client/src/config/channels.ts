@@ -34,8 +34,17 @@ export const AVAILABLE_CHANNELS: Channel[] = [
     description: 'Private message to a specific player',
     icon: MythosIcons.whisper,
     color: 'text-mythos-terminal-secondary',
-    shortcut: 'w',
-    disabled: true, // Not implemented yet
+    shortcut: 'whisper',
+    disabled: false, // Now implemented
+  },
+  {
+    id: 'reply',
+    name: 'Reply',
+    description: 'Reply to the last whisper received',
+    icon: MythosIcons.whisper,
+    color: 'text-mythos-terminal-secondary',
+    shortcut: 'reply',
+    disabled: false, // Now implemented
   },
   {
     id: 'system',

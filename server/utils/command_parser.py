@@ -29,6 +29,7 @@ from ..models.command import (
     MutesCommand,
     PoseCommand,
     QuitCommand,
+    ReplyCommand,
     SayCommand,
     StatusCommand,
     SystemCommand,
@@ -36,6 +37,7 @@ from ..models.command import (
     UnaliasCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
+    WhisperCommand,
     WhoCommand,
 )
 
@@ -81,6 +83,9 @@ class CommandParser:
             CommandType.STATUS.value: self._create_status_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.QUIT.value: self._create_quit_command,
+            # Communication commands
+            CommandType.WHISPER.value: self._create_whisper_command,
+            CommandType.REPLY.value: self._create_reply_command,
         }
 
     def parse_command(self, command_string: str) -> Command:
@@ -112,8 +117,9 @@ class CommandParser:
         # Parse command and arguments
         command, args = self._parse_command_parts(normalized)
 
-        # Validate command type
-        if command not in self.valid_commands:
+        # Validate command type (including aliases)
+        valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
+        if command not in valid_commands_with_aliases:
             raise ValueError(f"Unknown command: {command}")
 
         # Create and validate command object
@@ -180,6 +186,14 @@ class CommandParser:
             ValidationError: If command validation fails
         """
         try:
+            # Handle command aliases
+            if command == "w":
+                command = "whisper"
+            elif command == "l":
+                command = "local"
+            elif command == "g":
+                command = "global"
+
             # Use the factory to get the creation method
             create_method = self._command_factory.get(command)
             if create_method:
@@ -394,6 +408,31 @@ class CommandParser:
             raise ValueError("Quit command takes no arguments")
         return QuitCommand()
 
+    def _create_whisper_command(self, args: list[str]) -> WhisperCommand:
+        """Create a WhisperCommand from parsed arguments."""
+        if len(args) < 2:
+            raise ValueError("Usage: whisper <player> <message>")
+
+        target = args[0]
+        message = " ".join(args[1:])
+
+        if not message.strip():
+            raise ValueError("Usage: whisper <player> <message>")
+
+        return WhisperCommand(target=target, message=message)
+
+    def _create_reply_command(self, args: list[str]) -> ReplyCommand:
+        """Create a ReplyCommand from parsed arguments."""
+        if not args:
+            raise ValueError("Usage: reply <message>")
+
+        message = " ".join(args)
+
+        if not message.strip():
+            raise ValueError("Usage: reply <message>")
+
+        return ReplyCommand(message=message)
+
     # Confirmation command creators removed - teleport commands now execute immediately
     # TODO: Add confirmation command creators as future feature for enhanced safety
 
@@ -504,6 +543,8 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.GO.value: "go <direction> - Move in a specific direction",
             CommandType.SAY.value: "say <message> - Say something to other players",
             CommandType.LOCAL.value: "local <message> - Send message to local channel (sub-zone)",
+            CommandType.WHISPER.value: "whisper <player> <message> - Send private message to player",
+            CommandType.REPLY.value: "reply <message> - Reply to last whisper received",
             CommandType.EMOTE.value: "emote <action> - Perform an action",
             CommandType.ME.value: "me <action> - Describe an action",
             CommandType.POSE.value: "pose [description] - Set or display your pose",
@@ -532,6 +573,8 @@ Available Commands:
 - go <direction> - Move in a specific direction
 - say <message> - Say something to other players
 - local <message> - Send message to local channel (sub-zone)
+- whisper <player> <message> - Send private message to player
+- reply <message> - Reply to last whisper received
 - emote <action> - Perform an action
 - me <action> - Describe an action
 - pose [description] - Set or display your pose

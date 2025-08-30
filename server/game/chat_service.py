@@ -106,6 +106,9 @@ class ChatService:
         # Message limits
         self._max_messages_per_room = 100
 
+        # Last whisper tracking for reply functionality
+        self._last_whisper_senders: dict[str, str] = {}  # player_name -> last_sender_name
+
         # NATS service for real-time messaging
         self.nats_service = nats_service
 
@@ -706,6 +709,10 @@ class ChatService:
 
         # Record message for rate limiting
         self.rate_limiter.record_message(sender_id, "whisper", sender_name)
+
+        # Store last whisper sender for reply functionality
+        target_name = getattr(target_obj, "name", "UnknownPlayer")
+        self.store_last_whisper_sender(target_name, sender_name)
 
         # Also log to communications log (existing behavior)
         chat_message.log_message()
@@ -1473,3 +1480,39 @@ class ChatService:
         except Exception as e:
             logger.error("Error getting mute status", error=str(e), player_id=player_id)
             return "Error retrieving mute status."
+
+    def store_last_whisper_sender(self, receiver_name: str, sender_name: str) -> None:
+        """
+        Store the last whisper sender for a player to enable reply functionality.
+
+        Args:
+            receiver_name: Name of the player who received the whisper
+            sender_name: Name of the player who sent the whisper
+        """
+        self._last_whisper_senders[receiver_name] = sender_name
+        logger.debug("Stored last whisper sender", receiver=receiver_name, sender=sender_name)
+
+    def get_last_whisper_sender(self, player_name: str) -> str | None:
+        """
+        Get the last whisper sender for a player.
+
+        Args:
+            player_name: Name of the player
+
+        Returns:
+            Name of the last whisper sender, or None if no whisper received
+        """
+        sender = self._last_whisper_senders.get(player_name)
+        logger.debug("Retrieved last whisper sender", player=player_name, sender=sender)
+        return sender
+
+    def clear_last_whisper_sender(self, player_name: str) -> None:
+        """
+        Clear the last whisper sender for a player.
+
+        Args:
+            player_name: Name of the player
+        """
+        if player_name in self._last_whisper_senders:
+            del self._last_whisper_senders[player_name]
+            logger.debug("Cleared last whisper sender", player=player_name)

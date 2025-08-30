@@ -318,8 +318,8 @@ describe('CommandPanel', () => {
     });
   });
 
-  describe('Disabled Channels', () => {
-    it('shows disabled channels as disabled in dropdown', async () => {
+  describe('Whisper Channel', () => {
+    it('allows selecting whisper channel', async () => {
       render(<CommandPanel {...defaultProps} />);
 
       const channelButton = screen.getByText('Say');
@@ -327,25 +327,30 @@ describe('CommandPanel', () => {
 
       await waitFor(() => {
         const whisperOption = screen.getByText('Whisper').closest('button');
-        expect(whisperOption).toBeDisabled();
-      });
-    });
-
-    it('does not allow selecting disabled channels', async () => {
-      render(<CommandPanel {...defaultProps} />);
-
-      const channelButton = screen.getByText('Say');
-      fireEvent.click(channelButton);
-
-      await waitFor(() => {
-        const whisperOption = screen.getByText('Whisper').closest('button');
+        expect(whisperOption).not.toBeDisabled();
         fireEvent.click(whisperOption!);
       });
 
-      // Verify the channel didn't change (should still be Say)
-      // Use a more specific selector to avoid ambiguity
-      const channelButtons = screen.getAllByText('Say');
-      expect(channelButtons.length).toBeGreaterThan(0);
+      // Verify the channel changed to whisper
+      expect(screen.getByText('Whisper')).toBeInTheDocument();
+      expect(screen.getByText('/whisper')).toBeInTheDocument();
+    });
+
+    it('shows whisper channel quick commands', async () => {
+      render(<CommandPanel {...defaultProps} />);
+
+      // Switch to Whisper channel
+      const channelButton = screen.getByText('Say');
+      fireEvent.click(channelButton);
+
+      await waitFor(() => {
+        const whisperOption = screen.getByText('Whisper');
+        fireEvent.click(whisperOption);
+      });
+
+      // Check for whisper channel quick commands
+      expect(screen.getByText('Whisper Channel:')).toBeInTheDocument();
+      expect(screen.getByText('/whisper Hello!')).toBeInTheDocument();
     });
   });
 

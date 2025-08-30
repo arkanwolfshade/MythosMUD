@@ -408,3 +408,174 @@ async def handle_system_command(
     except Exception as e:
         logger.error(f"System command error for {player_name}: {str(e)}")
         return {"result": f"Error sending system message: {str(e)}"}
+
+
+async def handle_whisper_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+) -> dict[str, str]:
+    """
+    Handle the whisper command for private messaging between players.
+
+    Args:
+        command_data: Command data dictionary containing validated command information
+        current_user: Current user information
+        request: FastAPI request object
+        alias_storage: Alias storage instance
+        player_name: Player name for logging
+
+    Returns:
+        dict: Whisper command result
+    """
+    logger.debug(f"Processing whisper command for {player_name} with command_data: {command_data}")
+
+    # Extract target and message from command data
+    target = command_data.get("target")
+    message = command_data.get("message")
+
+    if not target or not message:
+        logger.warning(
+            f"Whisper command with missing target or message for {player_name}, command_data: {command_data}"
+        )
+        return {"result": "Say what? Usage: whisper <player> <message>"}
+
+    # message is already a complete string from the validation system
+    logger.debug(f"Player {player_name} whispering to {target}: {message}")
+
+    # Get app state services for broadcasting
+    app = request.app if request else None
+    player_service = app.state.player_service if app else None
+    chat_service = app.state.chat_service if app else None
+
+    if not player_service:
+        logger.warning(f"Whisper command failed - no player service for {player_name}")
+        return {"result": "Chat functionality is not available."}
+
+    if not chat_service:
+        logger.warning(f"Whisper command failed - no chat service for {player_name}")
+        return {"result": "Chat functionality is not available."}
+
+    try:
+        # Get sender player object
+        sender_obj = player_service.resolve_player_name(player_name)
+        if not sender_obj:
+            return {"result": "Player not found."}
+
+        # Get target player object
+        target_obj = player_service.resolve_player_name(target)
+        if not target_obj:
+            return {"result": "You whisper into the aether."}
+
+        # Check if trying to whisper to self
+        if sender_obj.id == target_obj.id:
+            return {"result": "You cannot whisper to yourself"}
+
+        # Use the player object's ID instead of the username
+        sender_id = getattr(sender_obj, "id", None) or getattr(sender_obj, "player_id", None)
+        target_id = getattr(target_obj, "id", None) or getattr(target_obj, "player_id", None)
+
+        if not sender_id or not target_id:
+            return {"result": "Player ID not found."}
+
+        # Use the chat service to send the whisper message
+        # This will handle NATS publishing and proper broadcasting
+        result = await chat_service.send_whisper_message(sender_id, target_id, message)
+
+        if result.get("success"):
+            logger.info(
+                f"Whisper message sent successfully for {player_name} to {target}",
+                message_id=result.get("message", {}).get("id"),
+            )
+            return {"result": f"You whisper to {target}: {message}"}
+        else:
+            error_msg = result.get("error", "Unknown error")
+            logger.warning(f"Whisper command failed for {player_name}: {error_msg}")
+            return {"result": f"Error sending whisper: {error_msg}"}
+
+    except Exception as e:
+        logger.error(f"Whisper command error for {player_name}: {str(e)}")
+        return {"result": f"Error sending whisper: {str(e)}"}
+
+
+async def handle_reply_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+) -> dict[str, str]:
+    """
+    Handle the reply command for responding to the last whisper received.
+
+    Args:
+        command_data: Command data dictionary containing validated command information
+        current_user: Current user information
+        request: FastAPI request object
+        alias_storage: Alias storage instance
+        player_name: Player name for logging
+
+    Returns:
+        dict: Reply command result
+    """
+    logger.debug(f"Processing reply command for {player_name} with command_data: {command_data}")
+
+    # Extract message from command data
+    message = command_data.get("message")
+
+    if not message:
+        logger.warning(f"Reply command with no message for {player_name}, command_data: {command_data}")
+        return {"result": "Say what? Usage: reply <message>"}
+
+    # message is already a complete string from the validation system
+    logger.debug(f"Player {player_name} replying to last whisper: {message}")
+
+    # Get app state services for broadcasting
+    app = request.app if request else None
+    player_service = app.state.player_service if app else None
+    chat_service = app.state.chat_service if app else None
+
+    if not player_service:
+        logger.warning(f"Reply command failed - no player service for {player_name}")
+        return {"result": "Chat functionality is not available."}
+
+    if not chat_service:
+        logger.warning(f"Reply command failed - no chat service for {player_name}")
+        return {"result": "Chat functionality is not available."}
+
+    try:
+        # Get sender player object
+        sender_obj = player_service.resolve_player_name(player_name)
+        if not sender_obj:
+            return {"result": "Player not found."}
+
+        # Get the last whisper sender for this player
+        # This would need to be implemented in the chat service or a separate tracking service
+        last_whisper_sender = chat_service.get_last_whisper_sender(player_name)
+        if not last_whisper_sender:
+            return {"result": "No one has whispered to you recently."}
+
+        # Get target player object
+        target_obj = player_service.resolve_player_name(last_whisper_sender)
+        if not target_obj:
+            return {"result": "The player you're trying to reply to is no longer available."}
+
+        # Use the player object's ID instead of the username
+        sender_id = getattr(sender_obj, "id", None) or getattr(sender_obj, "player_id", None)
+        target_id = getattr(target_obj, "id", None) or getattr(target_obj, "player_id", None)
+
+        if not sender_id or not target_id:
+            return {"result": "Player ID not found."}
+
+        # Use the chat service to send the whisper message
+        # This will handle NATS publishing and proper broadcasting
+        result = await chat_service.send_whisper_message(sender_id, target_id, message)
+
+        if result.get("success"):
+            logger.info(
+                f"Reply message sent successfully for {player_name} to {last_whisper_sender}",
+                message_id=result.get("message", {}).get("id"),
+            )
+            return {"result": f"You whisper to {last_whisper_sender}: {message}"}
+        else:
+            error_msg = result.get("error", "Unknown error")
+            logger.warning(f"Reply command failed for {player_name}: {error_msg}")
+            return {"result": f"Error sending reply: {error_msg}"}
+
+    except Exception as e:
+        logger.error(f"Reply command error for {player_name}: {str(e)}")
+        return {"result": f"Error sending reply: {str(e)}"}

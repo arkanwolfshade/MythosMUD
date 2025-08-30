@@ -21,7 +21,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - **Movement**: `go <direction>` or direction shortcuts (e.g., `go east`, `east`, `e`, `go west`, `west`, `w`)
 - **Say**: `say <message>` or `/say <message>` or just `<message>` (defaults to say channel)
 - **Local**: `local <message>` or `/l <message>`
-- **Whisper**: `whisper <player> <message>` or `/w <player> <message>`
+- **Whisper**: `whisper <player> <message>`
 - **Who**: `who` or `who <filter>`
 - **Teleport**: `teleport <player>` (admin only)
 - **Other**: `look`, `inventory`, `help`, `mute`, `unmute`, `dance`, etc.
@@ -1483,30 +1483,30 @@ const seesWhisperReply = awMessages.some(msg => msg.includes('Ithaqua whispers t
 console.log('AW sees whisper reply:', seesWhisperReply);
 ```
 
-#### Step 5: Test Whisper Alias
+#### Step 5: Test Whisper Command (No Alias)
 
 ```javascript
-// Use /w alias for whisper
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "w Ithaqua Testing the whisper alias"});
+// Use full whisper command (no /w alias to avoid confusion with movement)
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing the whisper command"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation message
-await mcp_playwright_browser_wait_for({text: "You whisper to Ithaqua: Testing the whisper alias"});
+await mcp_playwright_browser_wait_for({text: "You whisper to Ithaqua: Testing the whisper command"});
 ```
 
-#### Step 6: Verify Alias Message Received
+#### Step 6: Verify Command Message Received
 
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
 
-// Wait for alias message
-await mcp_playwright_browser_wait_for({text: "ArkanWolfshade whispers to you: Testing the whisper alias"});
+// Wait for command message
+await mcp_playwright_browser_wait_for({text: "ArkanWolfshade whispers to you: Testing the whisper command"});
 
-// Verify alias works correctly
+// Verify command works correctly
 const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-const seesAliasMessage = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade whispers to you: Testing the whisper alias'));
-console.log('Ithaqua sees alias message:', seesAliasMessage);
+const seesCommandMessage = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade whispers to you: Testing the whisper command'));
+console.log('Ithaqua sees command message:', seesCommandMessage);
 ```
 
 ### Expected Results
@@ -1515,8 +1515,9 @@ console.log('Ithaqua sees alias message:', seesAliasMessage);
 - ✅ Ithaqua sees "ArkanWolfshade whispers to you: Hello, this is a private message"
 - ✅ Ithaqua sees "You whisper to ArkanWolfshade: Thank you for the private message"
 - ✅ AW sees "Ithaqua whispers to you: Thank you for the private message"
-- ✅ /w alias works correctly for whisper channel
+- ✅ Full "whisper" command works correctly (no /w alias to avoid movement conflicts)
 - ✅ Whisper messages are properly formatted with "whispers to you" indicator
+- ✅ Clear distinction between outgoing ("You whisper to") and incoming ("whispers to you") messages
 
 ### Status: ✅ READY FOR TESTING
 
@@ -1578,11 +1579,11 @@ await mcp_playwright_browser_type({element: "Command input field", ref: "command
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for error message
-await mcp_playwright_browser_wait_for({text: "Say what? Usage: whisper <player> <message> or /w <player> <message>"});
+await mcp_playwright_browser_wait_for({text: "Say what? Usage: whisper <player> <message>"});
 
 // Verify error message appears
 const awMessagesEmpty = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-const seesEmptyError = awMessagesEmpty.some(msg => msg.includes('Say what? Usage: whisper <player> <message> or /w <player> <message>'));
+const seesEmptyError = awMessagesEmpty.some(msg => msg.includes('Say what? Usage: whisper <player> <message>'));
 console.log('AW sees error for empty whisper:', seesEmptyError);
 ```
 
@@ -1594,11 +1595,11 @@ await mcp_playwright_browser_type({element: "Command input field", ref: "command
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for error message
-await mcp_playwright_browser_wait_for({text: "Say what? Usage: whisper <player> <message> or /w <player> <message>"});
+await mcp_playwright_browser_wait_for({text: "Say what? Usage: whisper <player> <message>"});
 
 // Verify error message appears
 const awMessagesWhitespace = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-const seesWhitespaceError = awMessagesWhitespace.some(msg => msg.includes('Say what? Usage: whisper <player> <message> or /w <player> <message>'));
+const seesWhitespaceError = awMessagesWhitespace.some(msg => msg.includes('Say what? Usage: whisper <player> <message>'));
 console.log('AW sees error for whitespace-only whisper:', seesWhitespaceError);
 ```
 
@@ -1623,10 +1624,11 @@ console.log('AW sees error for long whisper:', seesLongError);
 
 - ✅ Whisper to non-existent player returns helpful error message
 - ✅ Whisper to self returns appropriate error message
-- ✅ Empty whisper messages are rejected with usage instructions
+- ✅ Empty whisper messages are rejected with usage instructions (no /w alias)
 - ✅ Whitespace-only whisper messages are rejected
 - ✅ Long whisper messages (>500 chars) are rejected with error message
 - ✅ All error messages are clear and helpful
+- ✅ Error messages use full "whisper" command syntax (no /w alias)
 
 ### Status: ✅ READY FOR TESTING
 

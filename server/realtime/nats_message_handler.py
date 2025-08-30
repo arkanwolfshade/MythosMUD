@@ -126,6 +126,8 @@ class NATSMessageHandler:
             content = message_data.get("content")
             message_id = message_data.get("message_id")
             timestamp = message_data.get("timestamp")
+            target_id = message_data.get("target_id")
+            target_name = message_data.get("target_name")
 
             # Validate required fields
             if not all([channel, sender_id, sender_name, content, message_id]):
@@ -145,6 +147,8 @@ class NATSMessageHandler:
                     "message": formatted_message,
                     "message_id": message_id,
                     "timestamp": timestamp,
+                    "target_id": target_id,
+                    "target_name": target_name,
                 },
                 player_id=str(sender_id),
             )

@@ -174,6 +174,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     'local',
     'global',
     'whisper',
+    'reply',
     'shout',
     'n',
     's',

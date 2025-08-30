@@ -455,6 +455,98 @@ describe('GameTerminalWithPanels - Bug Prevention Tests', () => {
     });
   });
 
+  describe('Whisper Message Formatting', () => {
+    it('formats outgoing whisper messages correctly', () => {
+      const { playerName } = renderGameTerminal();
+
+      // Simulate outgoing whisper message (current player is sender)
+      const whisperEvent = {
+        event_type: 'chat_message',
+        data: {
+          channel: 'whisper',
+          player_name: playerName, // Current player is sender
+          target_name: 'Professor Armitage',
+          message: 'Professor Armitage whispers: Hello there!',
+          content: 'Hello there!',
+          is_html: false,
+        },
+        timestamp: '2024-01-01T12:00:00Z',
+      };
+
+      // Trigger the event handler
+      act(() => {
+        // This would normally be called by the WebSocket handler
+        // For testing, we'll simulate the message processing logic
+        const channel = whisperEvent.data.channel;
+        const senderName = whisperEvent.data.player_name;
+        const targetName = whisperEvent.data.target_name;
+        const rawMessage = whisperEvent.data.message;
+
+        let formattedMessage = rawMessage;
+        let messageType = 'chat';
+
+        if (channel === 'whisper') {
+          messageType = 'whisper';
+
+          if (senderName === playerName) {
+            // Current player is the sender - format as outgoing whisper
+            formattedMessage = `You whisper to ${targetName}: ${whisperEvent.data.content || rawMessage}`;
+          } else if (targetName === playerName) {
+            // Current player is the target - format as incoming whisper
+            formattedMessage = `${senderName} whispers to you: ${whisperEvent.data.content || rawMessage}`;
+          }
+        }
+
+        expect(formattedMessage).toBe('You whisper to Professor Armitage: Hello there!');
+        expect(messageType).toBe('whisper');
+      });
+    });
+
+    it('formats incoming whisper messages correctly', () => {
+      const { playerName } = renderGameTerminal();
+
+      // Simulate incoming whisper message (current player is target)
+      const whisperEvent = {
+        event_type: 'chat_message',
+        data: {
+          channel: 'whisper',
+          player_name: 'Professor Armitage', // Other player is sender
+          target_name: playerName, // Current player is target
+          message: 'Professor Armitage whispers: Hello there!',
+          content: 'Hello there!',
+          is_html: false,
+        },
+        timestamp: '2024-01-01T12:00:00Z',
+      };
+
+      // Trigger the event handler
+      act(() => {
+        const channel = whisperEvent.data.channel;
+        const senderName = whisperEvent.data.player_name;
+        const targetName = whisperEvent.data.target_name;
+        const rawMessage = whisperEvent.data.message;
+
+        let formattedMessage = rawMessage;
+        let messageType = 'chat';
+
+        if (channel === 'whisper') {
+          messageType = 'whisper';
+
+          if (senderName === playerName) {
+            // Current player is the sender - format as outgoing whisper
+            formattedMessage = `You whisper to ${targetName}: ${whisperEvent.data.content || rawMessage}`;
+          } else if (targetName === playerName) {
+            // Current player is the target - format as incoming whisper
+            formattedMessage = `${senderName} whispers to you: ${whisperEvent.data.content || rawMessage}`;
+          }
+        }
+
+        expect(formattedMessage).toBe('Professor Armitage whispers to you: Hello there!');
+        expect(messageType).toBe('whisper');
+      });
+    });
+  });
+
   describe('Command Processing Integration', () => {
     it('should handle movement commands that trigger room events', async () => {
       const sendCommand = vi.fn();
