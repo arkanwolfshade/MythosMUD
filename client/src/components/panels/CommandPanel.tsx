@@ -39,9 +39,54 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
     const command = commandInput.trim();
 
-    // If the command doesn't start with a slash, prepend the channel command
+    // Define game commands that should NOT use channel routing
+    const gameCommands = [
+      'look',
+      'l',
+      'inventory',
+      'i',
+      'help',
+      'h',
+      'who',
+      'w',
+      'go',
+      'n',
+      's',
+      'e',
+      'w',
+      'north',
+      'south',
+      'east',
+      'west',
+      'up',
+      'down',
+      'u',
+      'd',
+      'northeast',
+      'ne',
+      'northwest',
+      'nw',
+      'southeast',
+      'se',
+      'southwest',
+      'sw',
+      'teleport',
+      'tp',
+      'mute',
+      'unmute',
+      'dance',
+      'emote',
+      'status',
+      'stats',
+    ];
+
+    // Check if this is a game command (first word matches game commands)
+    const firstWord = command.split(' ')[0].toLowerCase();
+    const isGameCommand = gameCommands.includes(firstWord);
+
+    // If the command doesn't start with a slash and is NOT a game command, prepend the channel command
     let finalCommand = command;
-    if (!command.startsWith('/')) {
+    if (!command.startsWith('/') && !isGameCommand) {
       const channel = AVAILABLE_CHANNELS.find(c => c.id === selectedChannel);
       if (channel?.shortcut) {
         finalCommand = `/${channel.shortcut} ${command}`;
@@ -320,7 +365,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {getChannelQuickCommands().map(({ command, icon, description }) => (
+                {getChannelQuickCommands().map(({ command, icon }) => (
                   <TerminalButton
                     key={command}
                     variant="secondary"
@@ -331,7 +376,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
                     }}
                     disabled={disabled || !isConnected}
                     className="flex items-center gap-2 text-xs"
-                    title={description}
                   >
                     <EldritchIcon name={icon} size={12} variant="primary" />
                     <span className="truncate">{command}</span>

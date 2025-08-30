@@ -21,17 +21,27 @@ logger = get_logger("communications.chat_service")
 class ChatMessage:
     """Represents a chat message with metadata."""
 
-    def __init__(self, sender_id: str, sender_name: str, channel: str, content: str):
+    def __init__(
+        self,
+        sender_id: str,
+        sender_name: str,
+        channel: str,
+        content: str,
+        target_id: str = None,
+        target_name: str = None,
+    ):
         self.id = str(uuid.uuid4())
         self.sender_id = sender_id
         self.sender_name = sender_name
         self.channel = channel
         self.content = content
+        self.target_id = target_id
+        self.target_name = target_name
         self.timestamp = datetime.now(UTC)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert message to dictionary for serialization."""
-        return {
+        result = {
             "id": self.id,
             "sender_id": self.sender_id,
             "sender_name": self.sender_name,
@@ -40,17 +50,32 @@ class ChatMessage:
             "timestamp": self.timestamp.isoformat(),
         }
 
+        # Add target information for whisper messages
+        if self.target_id:
+            result["target_id"] = self.target_id
+        if self.target_name:
+            result["target_name"] = self.target_name
+
+        return result
+
     def log_message(self):
         """Log this chat message to the communications log."""
-        logger.info(
-            "CHAT MESSAGE",
-            message_id=self.id,
-            sender_id=self.sender_id,
-            sender_name=self.sender_name,
-            channel=self.channel,
-            content=self.content,
-            timestamp=self.timestamp.isoformat(),
-        )
+        log_data = {
+            "message_id": self.id,
+            "sender_id": self.sender_id,
+            "sender_name": self.sender_name,
+            "channel": self.channel,
+            "content": self.content,
+            "timestamp": self.timestamp.isoformat(),
+        }
+
+        # Add target information for whisper messages
+        if self.target_id:
+            log_data["target_id"] = self.target_id
+        if self.target_name:
+            log_data["target_name"] = self.target_name
+
+        logger.info("CHAT MESSAGE", **log_data)
 
 
 class ChatService:
@@ -585,6 +610,138 @@ class ChatService:
 
         return {"success": True, "message": chat_message.to_dict()}
 
+    async def send_whisper_message(self, sender_id: str, target_id: str, message: str) -> dict[str, Any]:
+        """
+        Send a whisper message from one player to another.
+
+        This method publishes the whisper message to NATS for real-time distribution
+        to the target player. Whisper messages are subject to rate limiting.
+
+        Args:
+            sender_id: ID of the player sending the whisper
+            target_id: ID of the player receiving the whisper
+            message: Message content
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: send_whisper_message called ===", sender_id=sender_id, target_id=target_id
+        )
+        logger.debug(
+            "Processing whisper message", sender_id=sender_id, target_id=target_id, message_length=len(message)
+        )
+
+        # Validate input
+        if not message or not message.strip():
+            logger.debug("=== CHAT SERVICE DEBUG: Empty whisper message ===")
+            return {"success": False, "error": "Message content cannot be empty"}
+
+        # Strip whitespace
+        message = message.strip()
+
+        # Check message length
+        if len(message) > 2000:
+            logger.debug("=== CHAT SERVICE DEBUG: Whisper message too long ===")
+            return {"success": False, "error": "Message too long (maximum 2000 characters)"}
+
+        # Get sender player object
+        sender_obj = self.player_service.get_player_by_id(sender_id)
+        if not sender_obj:
+            logger.debug("=== CHAT SERVICE DEBUG: Sender not found ===")
+            return {"success": False, "error": "Sender not found"}
+
+        # Get target player object
+        target_obj = self.player_service.get_player_by_id(target_id)
+        if not target_obj:
+            logger.debug("=== CHAT SERVICE DEBUG: Target not found ===")
+            return {"success": False, "error": "Target player not found"}
+
+        # Check rate limiting
+        sender_name = getattr(sender_obj, "name", "UnknownPlayer")
+        if not self.rate_limiter.check_rate_limit(sender_id, "whisper", sender_name):
+            logger.debug("=== CHAT SERVICE DEBUG: Whisper rate limited ===")
+            return {"success": False, "error": "You are sending messages too quickly. Please wait a moment."}
+
+        # Create chat message
+        chat_message = ChatMessage(
+            sender_id=str(sender_id),
+            sender_name=sender_name,
+            target_id=str(target_id),
+            target_name=getattr(target_obj, "name", "UnknownPlayer"),
+            channel="whisper",
+            content=message,
+        )
+
+        # Log the whisper message for AI processing
+        self.chat_logger.log_chat_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "target_id": chat_message.target_id,
+                "target_name": chat_message.target_name,
+                "content": chat_message.content,
+                "room_id": None,  # Whisper messages don't have a specific room
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Log to whisper channel specific log file
+        self.chat_logger.log_whisper_channel_message(
+            {
+                "message_id": chat_message.id,
+                "channel": chat_message.channel,
+                "sender_id": chat_message.sender_id,
+                "sender_name": chat_message.sender_name,
+                "target_id": chat_message.target_id,
+                "target_name": chat_message.target_name,
+                "content": chat_message.content,
+                "filtered": False,
+                "moderation_notes": None,
+            }
+        )
+
+        # Record message for rate limiting
+        self.rate_limiter.record_message(sender_id, "whisper", sender_name)
+
+        # Also log to communications log (existing behavior)
+        chat_message.log_message()
+
+        logger.debug("=== CHAT SERVICE DEBUG: Whisper chat message created ===", message_id=chat_message.id)
+
+        # Store message in whisper history
+        if "whisper" not in self._room_messages:
+            self._room_messages["whisper"] = []
+
+        self._room_messages["whisper"].append(chat_message)
+
+        # Maintain message history limit
+        if len(self._room_messages["whisper"]) > self._max_messages_per_room:
+            self._room_messages["whisper"] = self._room_messages["whisper"][-self._max_messages_per_room :]
+
+        logger.info(
+            "Whisper message created successfully",
+            sender_id=sender_id,
+            target_id=target_id,
+            sender_name=sender_name,
+            target_name=getattr(target_obj, "name", "UnknownPlayer"),
+            message_id=chat_message.id,
+        )
+
+        # Publish message to NATS for real-time distribution
+        logger.debug("=== CHAT SERVICE DEBUG: About to publish whisper message to NATS ===")
+        success = await self._publish_chat_message_to_nats(chat_message, None)  # Whisper messages don't have room_id
+        if not success:
+            # NATS publishing failed - this should not happen as NATS is mandatory
+            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
+            return {"success": False, "error": "Chat system temporarily unavailable"}
+        logger.debug("=== CHAT SERVICE DEBUG: Whisper NATS publishing completed ===")
+
+        return {"success": True, "message": chat_message.to_dict()}
+
     async def send_emote_message(self, player_id: str, action: str) -> dict[str, Any]:
         """
         Send an emote message to players in the same room.
@@ -982,6 +1139,12 @@ class ChatService:
                 "room_id": room_id,
             }
 
+            # Add target information for whisper messages
+            if hasattr(chat_message, "target_id") and chat_message.target_id:
+                message_data["target_id"] = chat_message.target_id
+            if hasattr(chat_message, "target_name") and chat_message.target_name:
+                message_data["target_name"] = chat_message.target_name
+
             # Determine NATS subject based on channel
             if chat_message.channel == "local":
                 # For local channel, use sub-zone level subject
@@ -1000,6 +1163,14 @@ class ChatService:
                 # For system channel, use system subject
                 subject = "chat.system"
                 logger.debug(f"=== CHAT SERVICE DEBUG: System channel subject: {subject} ===")
+            elif chat_message.channel == "whisper":
+                # For whisper channel, use whisper subject with target player
+                target_id = getattr(chat_message, "target_id", None)
+                if target_id:
+                    subject = f"chat.whisper.{target_id}"
+                else:
+                    subject = "chat.whisper"
+                logger.debug(f"=== CHAT SERVICE DEBUG: Whisper channel subject: {subject} ===")
             else:
                 # For other channels, use room level subject
                 subject = f"chat.{chat_message.channel}.{room_id}"

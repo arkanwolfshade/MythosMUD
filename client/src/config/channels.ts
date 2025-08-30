@@ -1,4 +1,4 @@
-import { Channel } from '../components/ui/ChannelSelector';
+import type { Channel } from '../components/ui/ChannelSelector';
 import { MythosIcons } from '../components/ui/EldritchIcon';
 
 // Channel configuration for MythosMUD

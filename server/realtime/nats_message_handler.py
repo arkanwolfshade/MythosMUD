@@ -61,7 +61,7 @@ class NATSMessageHandler:
         """Subscribe to all chat-related NATS subjects."""
         subjects = [
             "chat.say.*",  # Say messages per room
-            "chat.local.*",  # Local messages per room
+            "chat.local.subzone.*",  # Local messages per subzone
             "chat.emote.*",  # Emote messages per room
             "chat.pose.*",  # Pose messages per room
             "chat.global",  # Global messages
@@ -132,6 +132,9 @@ class NATSMessageHandler:
                 logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
                 return
 
+            # Format message content based on channel type
+            formatted_message = self._format_message_content(channel, sender_name, content)
+
             # Create WebSocket event
             chat_event = build_event(
                 "chat_message",
@@ -139,7 +142,7 @@ class NATSMessageHandler:
                     "sender_id": str(sender_id),
                     "player_name": sender_name,
                     "channel": channel,
-                    "message": content,
+                    "message": formatted_message,
                     "message_id": message_id,
                     "timestamp": timestamp,
                 },
@@ -570,6 +573,43 @@ class NATSMessageHandler:
                 old_room_id=old_room_id,
                 new_room_id=new_room_id,
             )
+
+    def _format_message_content(self, channel: str, sender_name: str, content: str) -> str:
+        """
+        Format message content based on channel type and sender name.
+
+        Args:
+            channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
+            sender_name: Name of the message sender
+            content: Raw message content
+
+        Returns:
+            Formatted message content with sender name
+        """
+        try:
+            if channel == "say":
+                return f"{sender_name} says: {content}"
+            elif channel == "local":
+                return f"{sender_name} (local): {content}"
+            elif channel == "global":
+                return f"{sender_name} (global): {content}"
+            elif channel == "emote":
+                return f"{sender_name} {content}"
+            elif channel == "pose":
+                return f"{sender_name} {content}"
+            elif channel == "whisper":
+                return f"{sender_name} whispers: {content}"
+            elif channel == "system":
+                return f"[SYSTEM] {content}"
+            elif channel == "admin":
+                return f"[ADMIN] {sender_name}: {content}"
+            else:
+                # Default format for unknown channels
+                return f"{sender_name} ({channel}): {content}"
+
+        except Exception as e:
+            logger.error("Error formatting message content", error=str(e), channel=channel, sender_name=sender_name)
+            return content  # Return original content if formatting fails
 
     async def cleanup_empty_subzone_subscriptions(self) -> None:
         """Clean up sub-zone subscriptions that have no active players."""

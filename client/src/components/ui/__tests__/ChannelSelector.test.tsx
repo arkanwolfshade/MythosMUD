@@ -114,6 +114,25 @@ describe('ChannelSelector', () => {
     expect(onChannelSelect).toHaveBeenCalledWith('local');
   });
 
+  it('closes dropdown after selecting a channel', async () => {
+    const onChannelSelect = vi.fn();
+    render(<ChannelSelector {...defaultProps} onChannelSelect={onChannelSelect} />);
+
+    const button = screen.getByRole('button');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      const localButton = screen.getByText('Local');
+      fireEvent.click(localButton);
+    });
+
+    // Verify dropdown is closed after selection
+    await waitFor(() => {
+      expect(screen.queryByText('Global')).not.toBeInTheDocument();
+      expect(screen.queryByText('Whisper')).not.toBeInTheDocument();
+    });
+  });
+
   it('closes dropdown when clicking outside', async () => {
     render(<ChannelSelector {...defaultProps} />);
 
@@ -124,9 +143,13 @@ describe('ChannelSelector', () => {
       expect(screen.getByText('Local')).toBeInTheDocument();
     });
 
-    // Note: Backdrop click functionality is tested in integration tests
-    // This test verifies the dropdown opens correctly
-    expect(screen.getByText('Local')).toBeInTheDocument();
+    // Click the backdrop to close the dropdown
+    const backdrop = screen.getByTestId('dropdown-backdrop');
+    fireEvent.click(backdrop);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Local')).not.toBeInTheDocument();
+    });
   });
 
   it('disables the selector when disabled prop is true', () => {

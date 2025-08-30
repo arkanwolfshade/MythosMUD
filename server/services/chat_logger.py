@@ -644,6 +644,66 @@ class ChatLogger:
         except Exception as e:
             logger.error("Failed to log system channel message", error=str(e), message_data=message_data)
 
+    def log_whisper_channel_message(self, message_data: dict[str, Any]):
+        """
+        Log a whisper channel message to whisper.log file.
+
+        Args:
+            message_data: Whisper channel message data including:
+                - message_id: Unique message identifier
+                - channel: Should be "whisper"
+                - sender_id: Player ID of sender
+                - sender_name: Player name of sender
+                - target_id: Player ID of target
+                - target_name: Player name of target
+                - content: Message content
+                - filtered: Whether message was filtered
+                - moderation_notes: Any moderation notes
+        """
+        try:
+            log_file = self._get_whisper_channel_log_file()
+
+            # Ensure directory exists
+            log_file.parent.mkdir(parents=True, exist_ok=True)
+
+            entry = {
+                "event_type": "whisper_channel_message",
+                "message_id": message_data.get("message_id"),
+                "channel": message_data.get("channel", "whisper"),
+                "sender_id": message_data.get("sender_id"),
+                "sender_name": message_data.get("sender_name"),
+                "target_id": message_data.get("target_id"),
+                "target_name": message_data.get("target_name"),
+                "content": message_data.get("content"),
+                "filtered": message_data.get("filtered", False),
+                "moderation_notes": message_data.get("moderation_notes"),
+            }
+
+            # Use provided timestamp or current time
+            if "timestamp" in message_data:
+                entry["timestamp"] = message_data["timestamp"]
+            else:
+                entry["timestamp"] = datetime.now(UTC).isoformat()
+
+            # Queue the log entry for thread-safe writing
+            content = json.dumps(entry, ensure_ascii=False)
+            self._queue_log_entry("whisper_channel", log_file, content)
+
+            logger.debug("Whisper channel message queued", message_id=message_data.get("message_id"))
+
+        except Exception as e:
+            logger.error("Failed to log whisper channel message", error=str(e), message_data=message_data)
+
+    def _get_whisper_channel_log_file(self) -> Path:
+        """
+        Get the whisper channel log file path.
+
+        Returns:
+            Path to the whisper channel log file
+        """
+        today = datetime.now(UTC).strftime("%Y-%m-%d")
+        return self.log_dir / "chat" / "whisper" / f"whisper_{today}.log"
+
     def _get_system_channel_log_file(self) -> Path:
         """
         Get the system channel log file path.

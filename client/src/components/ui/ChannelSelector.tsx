@@ -5,7 +5,7 @@ export interface Channel {
   id: string;
   name: string;
   description: string;
-  icon: MythosIcons;
+  icon: keyof typeof MythosIcons;
   color: string;
   shortcut?: string;
   disabled?: boolean;
@@ -41,14 +41,23 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
     }
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    // Prevent event bubbling to avoid triggering other click handlers
+    e.stopPropagation();
+    setIsOpen(false);
+  };
+
   return (
     <div className={`relative ${className}`}>
+      {/* Backdrop to close dropdown when clicking outside - positioned BEFORE dropdown */}
+      {isOpen && <div className="fixed inset-0 z-10" onClick={handleBackdropClick} data-testid="dropdown-backdrop" />}
+
       {/* Channel Selector Button */}
       <button
         onClick={toggleDropdown}
         disabled={disabled}
         className={`
-          flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded
+          relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded
           text-sm font-mono transition-all duration-200 min-w-[140px]
           ${
             disabled
@@ -77,9 +86,9 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
         />
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Dropdown Menu - positioned AFTER backdrop but with higher z-index */}
       {isOpen && !disabled && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-20 max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto">
           {channels.map(channel => (
             <button
               key={channel.id}
@@ -123,9 +132,6 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
           ))}
         </div>
       )}
-
-      {/* Backdrop to close dropdown when clicking outside */}
-      {isOpen && <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />}
     </div>
   );
 };
