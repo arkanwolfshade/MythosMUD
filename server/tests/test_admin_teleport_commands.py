@@ -153,6 +153,7 @@ class TestTeleportCommand:
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "test-player-123",
             "player_name": "TestPlayer",
             "room_id": "target_room",
         }
@@ -277,6 +278,7 @@ class TestGotoCommand:
         # Mock connection manager with target player
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "test-player-123",
             "player_name": "TestPlayer",
             "room_id": "target_room",
         }
@@ -384,6 +386,7 @@ class TestTeleportConfirmation:
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "test-player-123",
             "player_name": "TestPlayer",
             "room_id": "target_room",
         }
@@ -432,6 +435,7 @@ class TestTeleportConfirmation:
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "test-player-123",
             "player_name": "TestPlayer",
             "room_id": "target_room",
         }

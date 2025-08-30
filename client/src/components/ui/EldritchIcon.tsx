@@ -1,5 +1,5 @@
-import React from 'react';
 import * as LucideIcons from 'lucide-react';
+import React from 'react';
 
 // Define the icon names as string literals
 export const MythosIcons = {
@@ -44,6 +44,14 @@ export const MythosIcons = {
   room: 'room',
   eldritch: 'eldritch',
   horror: 'horror',
+
+  // Channel-specific icons
+  global: 'global',
+  local: 'local',
+  whisper: 'whisper',
+  system: 'system',
+  users: 'users',
+  megaphone: 'megaphone',
 } as const;
 
 // Map icon names to Lucide icon components
@@ -89,6 +97,14 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   room: 'Home',
   eldritch: 'Moon',
   horror: 'Skull',
+
+  // Channel-specific icons
+  global: 'Globe',
+  local: 'MapPin',
+  whisper: 'MessageSquare',
+  system: 'Settings',
+  users: 'Users',
+  megaphone: 'Megaphone',
 };
 
 interface EldritchIconProps {

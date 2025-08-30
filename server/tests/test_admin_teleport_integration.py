@@ -457,7 +457,7 @@ class TestAdminTeleportIntegration:
 
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
-            "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
+            "target_id": {"player_id": "target_id", "player_name": "TargetPlayer", "room_id": "target_room"}
         }
 
         # Mock various error conditions
@@ -481,6 +481,7 @@ class TestAdminTeleportPerformance:
         # Setup mock with many online players
         connection_manager = MagicMock()
         connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target-player-123",
             "player_name": "TargetPlayer",
             "room_id": "target_room",
         }

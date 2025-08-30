@@ -12,6 +12,7 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging_config import get_logger
+from ..realtime.websocket_handler import broadcast_room_update
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -592,6 +593,9 @@ async def handle_teleport_command(
             if target_player_info:
                 target_player_info["room_id"] = target_room_id
 
+            # Broadcast room update to the teleported player
+            await broadcast_room_update(target_player_info["player_id"], target_room_id)
+
             # Broadcast visual effects
             await broadcast_teleport_effects(
                 connection_manager, target_player_name, original_room_id, target_room_id, "teleport"
@@ -722,9 +726,12 @@ async def handle_goto_command(
             return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
 
         # Update connection manager's online player info for admin
-        admin_player_info = connection_manager.online_players.get(player_name, {})
+        admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
         if admin_player_info:
             admin_player_info["room_id"] = target_room_id
+
+        # Broadcast room update to the admin player
+        await broadcast_room_update(admin_player_info["player_id"], target_room_id)
 
         # Broadcast visual effects
         await broadcast_teleport_effects(connection_manager, player_name, original_room_id, target_room_id, "goto")
@@ -849,6 +856,9 @@ async def handle_confirm_teleport_command(
         # Update connection manager's online player info
         if target_player_info:
             target_player_info["room_id"] = target_room_id
+
+        # Broadcast room update to the teleported player
+        await broadcast_room_update(target_player_info["player_id"], target_room_id)
 
         # Broadcast visual effects
         await broadcast_teleport_effects(
@@ -976,9 +986,12 @@ async def handle_confirm_goto_command(
             return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
 
         # Update connection manager's online player info for admin
-        admin_player_info = connection_manager.online_players.get(player_name, {})
+        admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
         if admin_player_info:
             admin_player_info["room_id"] = target_room_id
+
+        # Broadcast room update to the admin player
+        await broadcast_room_update(admin_player_info["player_id"], target_room_id)
 
         # Broadcast visual effects
         await broadcast_teleport_effects(connection_manager, player_name, original_room_id, target_room_id, "goto")

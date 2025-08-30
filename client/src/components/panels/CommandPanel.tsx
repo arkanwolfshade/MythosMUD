@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { AVAILABLE_CHANNELS, DEFAULT_CHANNEL } from '../../config/channels';
+import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
 import { TerminalInput } from '../ui/TerminalInput';
@@ -23,6 +25,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   const [commandInput, setCommandInput] = useState('');
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState(DEFAULT_CHANNEL);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Focus input on mount
@@ -35,7 +38,62 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     if (!commandInput.trim() || disabled) return;
 
     const command = commandInput.trim();
-    onSendCommand(command);
+
+    // Define game commands that should NOT use channel routing
+    const gameCommands = [
+      'look',
+      'l',
+      'inventory',
+      'i',
+      'help',
+      'h',
+      'who',
+      'w',
+      'go',
+      'n',
+      's',
+      'e',
+      'w',
+      'north',
+      'south',
+      'east',
+      'west',
+      'up',
+      'down',
+      'u',
+      'd',
+      'northeast',
+      'ne',
+      'northwest',
+      'nw',
+      'southeast',
+      'se',
+      'southwest',
+      'sw',
+      'teleport',
+      'tp',
+      'mute',
+      'unmute',
+      'dance',
+      'emote',
+      'status',
+      'stats',
+    ];
+
+    // Check if this is a game command (first word matches game commands)
+    const firstWord = command.split(' ')[0].toLowerCase();
+    const isGameCommand = gameCommands.includes(firstWord);
+
+    // If the command doesn't start with a slash and is NOT a game command, prepend the channel command
+    let finalCommand = command;
+    if (!command.startsWith('/') && !isGameCommand) {
+      const channel = AVAILABLE_CHANNELS.find(c => c.id === selectedChannel);
+      if (channel?.shortcut) {
+        finalCommand = `/${channel.shortcut} ${command}`;
+      }
+    }
+
+    onSendCommand(finalCommand);
     setCommandInput('');
     setHistoryIndex(-1);
     setShowSuggestions(false);
@@ -88,13 +146,35 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     { command: 'w', icon: MythosIcons.exit, description: 'Go west' },
   ];
 
+  // Channel-specific quick commands based on selected channel
+  const getChannelQuickCommands = () => {
+    const channel = AVAILABLE_CHANNELS.find(c => c.id === selectedChannel);
+    if (!channel || channel.disabled) return [];
+
+    return [
+      {
+        command: `/${channel.shortcut} Hello!`,
+        icon: channel.icon,
+        description: `Send message to ${channel.name} channel`,
+      },
+      {
+        command: `/${channel.shortcut} How is everyone?`,
+        icon: channel.icon,
+        description: `Greet ${channel.name} channel`,
+      },
+    ];
+  };
+
   const commonCommands = [
     'look',
     'inventory',
     'help',
     'who',
     'say',
+    'local',
+    'global',
     'whisper',
+    'reply',
     'shout',
     'n',
     's',
@@ -150,6 +230,18 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       {/* Command Input Area */}
       <div className="p-3 border-b border-gray-700 bg-mythos-terminal-surface">
         <form onSubmit={handleCommandSubmit} className="space-y-3">
+          {/* Channel Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-mythos-terminal-text-secondary font-mono">Channel:</span>
+            <ChannelSelector
+              channels={AVAILABLE_CHANNELS}
+              selectedChannel={selectedChannel}
+              onChannelSelect={setSelectedChannel}
+              disabled={disabled || !isConnected}
+              className="flex-1"
+            />
+          </div>
+
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <TerminalInput
@@ -263,6 +355,36 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
               </TerminalButton>
             ))}
           </div>
+
+          {/* Channel-specific quick commands */}
+          {getChannelQuickCommands().length > 0 && (
+            <>
+              <div className="flex items-center gap-2 mt-4">
+                <EldritchIcon name={MythosIcons.chat} size={14} variant="primary" />
+                <span className="text-sm text-mythos-terminal-text-secondary font-bold">
+                  {AVAILABLE_CHANNELS.find(c => c.id === selectedChannel)?.name} Channel:
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {getChannelQuickCommands().map(({ command, icon }) => (
+                  <TerminalButton
+                    key={command}
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setCommandInput(command);
+                      inputRef.current?.focus();
+                    }}
+                    disabled={disabled || !isConnected}
+                    className="flex items-center gap-2 text-xs"
+                  >
+                    <EldritchIcon name={icon} size={12} variant="primary" />
+                    <span className="truncate">{command}</span>
+                  </TerminalButton>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="text-xs text-mythos-terminal-text-secondary">
             <span className="font-bold">Tip:</span> Use Tab for auto-completion, ↑↓ for history navigation

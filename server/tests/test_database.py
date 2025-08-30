@@ -187,14 +187,17 @@ class TestInitDB:
             mock_conn = AsyncMock()
             mock_engine.begin.return_value.__aenter__.return_value = mock_conn
 
-            await init_db()
+            # Mock the connection manager to prevent unawaited coroutines
+            with patch("server.realtime.connection_manager.connection_manager"):
+                await init_db()
 
-            # Verify that create_all was called
-            mock_conn.run_sync.assert_called_once()
-            call_args = mock_conn.run_sync.call_args[0]
-            assert call_args[0] == metadata.create_all
+                # Verify that create_all was called
+                mock_conn.run_sync.assert_called_once()
+                call_args = mock_conn.run_sync.call_args[0]
+                assert call_args[0] == metadata.create_all
 
     @pytest.mark.asyncio
+    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     async def test_init_db_imports_models(self):
         """Test that init_db imports all required models."""
         with patch("server.database.engine") as mock_engine:

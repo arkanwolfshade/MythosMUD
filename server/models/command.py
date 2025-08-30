@@ -31,6 +31,9 @@ class CommandType(str, Enum):
     LOOK = "look"
     GO = "go"
     SAY = "say"
+    LOCAL = "local"
+    GLOBAL = "global"
+    SYSTEM = "system"
     EMOTE = "emote"
     ME = "me"
     POSE = "pose"
@@ -52,6 +55,9 @@ class CommandType(str, Enum):
     STATUS = "status"
     INVENTORY = "inventory"
     QUIT = "quit"
+    # Communication commands
+    WHISPER = "whisper"
+    REPLY = "reply"
 
 
 class BaseCommand(BaseModel):
@@ -131,6 +137,78 @@ class SayCommand(BaseCommand):
             if re.search(pattern, v, re.IGNORECASE):
                 logger.warning(
                     "Command injection pattern detected in say message", pattern=pattern, message_preview=v[:50]
+                )
+                raise ValueError("Message contains suspicious patterns")
+
+        return v.strip()
+
+
+class LocalCommand(BaseCommand):
+    """Command for speaking in the local channel (sub-zone)."""
+
+    command_type: Literal[CommandType.LOCAL] = CommandType.LOCAL
+    message: str = Field(..., min_length=1, max_length=500, description="Message to send to local channel")
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v):
+        """Validate message content for security (same as say command)."""
+        # Check for potentially dangerous characters
+        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+        found_chars = [char for char in dangerous_chars if char in v]
+
+        if found_chars:
+            logger.warning("Dangerous characters detected in local message", chars=found_chars, message_preview=v[:50])
+            raise ValueError(f"Message contains invalid characters: {found_chars}")
+
+        # Check for command injection patterns
+        # Use more specific patterns to avoid false positives on legitimate text
+        injection_patterns = [
+            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
+            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
+            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
+        ]
+
+        for pattern in injection_patterns:
+            if re.search(pattern, v, re.IGNORECASE):
+                logger.warning(
+                    "Command injection pattern detected in local message", pattern=pattern, message_preview=v[:50]
+                )
+                raise ValueError("Message contains suspicious patterns")
+
+        return v.strip()
+
+
+class SystemCommand(BaseCommand):
+    """Command for sending system messages (admin only)."""
+
+    command_type: Literal[CommandType.SYSTEM] = CommandType.SYSTEM
+    message: str = Field(..., min_length=1, max_length=2000, description="System message to broadcast")
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v):
+        """Validate system message content for security."""
+        # Check for potentially dangerous characters
+        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+        found_chars = [char for char in dangerous_chars if char in v]
+
+        if found_chars:
+            logger.warning("Dangerous characters detected in system message", chars=found_chars, message_preview=v[:50])
+            raise ValueError(f"Message contains invalid characters: {found_chars}")
+
+        # Check for command injection patterns
+        # Use more specific patterns to avoid false positives on legitimate text
+        injection_patterns = [
+            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
+            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
+            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
+        ]
+
+        for pattern in injection_patterns:
+            if re.search(pattern, v, re.IGNORECASE):
+                logger.warning(
+                    "Command injection pattern detected in system message", pattern=pattern, message_preview=v[:50]
                 )
                 raise ValueError("Message contains suspicious patterns")
 
@@ -503,11 +581,82 @@ class QuitCommand(BaseCommand):
     command_type: Literal[CommandType.QUIT] = CommandType.QUIT
 
 
+class WhisperCommand(BaseCommand):
+    """Command for whispering to a specific player."""
+
+    command_type: Literal[CommandType.WHISPER] = CommandType.WHISPER
+    target: str = Field(..., min_length=1, max_length=50, description="Target player name")
+    message: str = Field(..., min_length=1, max_length=2000, description="Whisper message content")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls, v):
+        """Validate target player name format."""
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
+            raise ValueError(
+                "Target player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
+            )
+        return v
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v):
+        """Validate message content for security."""
+        # Check for potentially dangerous characters
+        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+        found_chars = [char for char in dangerous_chars if char in v]
+        if found_chars:
+            logger.warning("Dangerous content detected in whisper message", dangerous_chars=found_chars)
+            raise ValueError(f"Message contains dangerous characters: {found_chars}")
+
+        # Check for command injection attempts
+        if re.search(
+            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
+            v,
+            re.IGNORECASE,
+        ):
+            logger.warning("Potential command injection detected in whisper message", message_preview=v[:50])
+            raise ValueError("Message contains potential command injection")
+
+        return v.strip()
+
+
+class ReplyCommand(BaseCommand):
+    """Command for replying to the last whisper received."""
+
+    command_type: Literal[CommandType.REPLY] = CommandType.REPLY
+    message: str = Field(..., min_length=1, max_length=2000, description="Reply message content")
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v):
+        """Validate message content for security."""
+        # Check for potentially dangerous characters
+        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+        found_chars = [char for char in dangerous_chars if char in v]
+        if found_chars:
+            logger.warning("Dangerous content detected in reply message", dangerous_chars=found_chars)
+            raise ValueError(f"Message contains dangerous characters: {found_chars}")
+
+        # Check for command injection attempts
+        if re.search(
+            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
+            v,
+            re.IGNORECASE,
+        ):
+            logger.warning("Potential command injection detected in reply message", message_preview=v[:50])
+            raise ValueError("Message contains potential command injection")
+
+        return v.strip()
+
+
 # Union type for all commands
 Command = (
     LookCommand
     | GoCommand
     | SayCommand
+    | LocalCommand
+    | SystemCommand
     | EmoteCommand
     | MeCommand
     | PoseCommand
@@ -527,4 +676,6 @@ Command = (
     | StatusCommand
     | InventoryCommand
     | QuitCommand
+    | WhisperCommand
+    | ReplyCommand
 )

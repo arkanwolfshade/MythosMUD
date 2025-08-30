@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.build.tsbuildinfo",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -20,5 +20,14 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}", "src/test/**/*", "tests/**/*"]
+  "exclude": [
+    "src/**/*.test.{ts,tsx}",
+    "src/**/*.spec.{ts,tsx}",
+    "src/test/**/*",
+    "tests/**/*",
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "src/**/__tests__/**/*",
+    "src/**/__tests__/*"
+  ]
 }

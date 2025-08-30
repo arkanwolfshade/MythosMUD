@@ -23,6 +23,7 @@ function App() {
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
+
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);

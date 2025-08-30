@@ -100,11 +100,37 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           break;
         case 'chat_message':
         case 'system_message': {
+          // Extract channel and target information for proper message formatting
+          const channel = event.data.channel as string;
+          const senderName = event.data.player_name as string;
+          const targetName = event.data.target_name as string;
+          const rawMessage = event.data.message as string;
+
+          // Determine if this is a whisper message and format accordingly
+          let formattedMessage = rawMessage;
+          let messageType = event.event_type === 'chat_message' ? 'chat' : 'system';
+
+          if (channel === 'whisper') {
+            messageType = 'whisper';
+
+            // Check if current player is the sender or target
+            if (senderName === playerName) {
+              // Current player is the sender - format as outgoing whisper
+              formattedMessage = `You whisper to ${targetName}: ${event.data.content || rawMessage}`;
+            } else if (targetName === playerName) {
+              // Current player is the target - format as incoming whisper
+              formattedMessage = `${senderName} whispers to you: ${event.data.content || rawMessage}`;
+            } else {
+              // This shouldn't happen, but fallback to generic whisper format
+              formattedMessage = `${senderName} whispers: ${event.data.content || rawMessage}`;
+            }
+          }
+
           const message = {
-            text: event.data.message as string,
+            text: formattedMessage,
             timestamp: event.timestamp,
             isHtml: (event.data.is_html as boolean) || false,
-            messageType: event.event_type === 'chat_message' ? 'chat' : 'system',
+            messageType: messageType,
           };
           setGameState(prev => ({
             ...prev,

@@ -87,6 +87,14 @@ const commands: Command[] = [
     icon: <EmoteIcon />,
   },
   {
+    name: 'reply',
+    description: 'Reply to the last whisper received',
+    syntax: 'reply <message>',
+    examples: ['reply Hello back!', 'reply "Thanks for the info"'],
+    category: 'Communication',
+    icon: <EmoteIcon />,
+  },
+  {
     name: 'shout',
     description: 'Shout a message to all connected players',
     syntax: 'shout <message>',
