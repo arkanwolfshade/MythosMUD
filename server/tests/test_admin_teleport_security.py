@@ -186,6 +186,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target-player-123",
             "player_name": "TargetPlayer",
             "room_id": "target_room",
         }
@@ -225,6 +226,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target-player-123",
             "player_name": "TargetPlayer",
             "room_id": "target_room",
         }
@@ -305,6 +307,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target-player-123",
             "player_name": "TargetPlayer",
             "room_id": "target_room",
         }
@@ -355,6 +358,7 @@ class TestAdminTeleportSecurity:
         )
 
         mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target-player-123",
             "player_name": "TargetPlayer",
             "room_id": "target_room",
         }
