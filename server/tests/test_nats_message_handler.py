@@ -54,6 +54,7 @@ class TestNATSMessageHandler:
         expected_subjects = [
             "chat.say.*",
             "chat.local.*",
+            "chat.local.subzone.*",
             "chat.emote.*",
             "chat.pose.*",
             "chat.global",

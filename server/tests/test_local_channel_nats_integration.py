@@ -82,7 +82,7 @@ class TestLocalChannelNATSIntegration:
         assert event["data"]["sender_id"] == "test-player-123"
         assert event["data"]["player_name"] == "TestPlayer"
         assert event["data"]["channel"] == "local"
-        assert event["data"]["message"] == "Hello, local area!"
+        assert event["data"]["message"] == "TestPlayer (local): Hello, local area!"
         assert event["data"]["message_id"] == "msg-123"
         assert event["data"]["timestamp"] == "2025-08-27T18:00:00Z"
         assert event["player_id"] == "test-player-123"

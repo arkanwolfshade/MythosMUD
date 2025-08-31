@@ -146,7 +146,7 @@ describe('CommandPanel', () => {
       });
 
       // Enter a message without slash
-      const input = screen.getByPlaceholderText(/Enter command/);
+      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
       fireEvent.change(input, { target: { value: 'Hello world!' } });
 
       // Send the message
@@ -171,7 +171,7 @@ describe('CommandPanel', () => {
       });
 
       // Enter a message with slash
-      const input = screen.getByPlaceholderText(/Enter command/);
+      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
       fireEvent.change(input, { target: { value: '/look' } });
 
       // Send the message
@@ -240,7 +240,7 @@ describe('CommandPanel', () => {
       fireEvent.click(quickCommand);
 
       // Verify the command was sent (the quick command sets the input value)
-      const input = screen.getByPlaceholderText(/Enter command/);
+      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
       expect(input).toHaveValue('/g Hello!');
     });
 
@@ -258,7 +258,7 @@ describe('CommandPanel', () => {
       });
 
       // Type a message
-      const input = screen.getByPlaceholderText(/Enter command/);
+      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
       fireEvent.change(input, { target: { value: 'Testing global chat' } });
 
       // Send the message
@@ -371,7 +371,7 @@ describe('CommandPanel', () => {
       const historyItem = screen.getByText('> /g Hello world');
       fireEvent.click(historyItem);
 
-      const input = screen.getByPlaceholderText(/Enter command/);
+      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
       expect(input).toHaveValue('/g Hello world');
     });
   });

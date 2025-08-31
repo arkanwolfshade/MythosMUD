@@ -63,7 +63,6 @@ const mockChannels: Channel[] = [
     icon: MythosIcons.whisper,
     color: 'text-mythos-terminal-secondary',
     shortcut: 'w',
-    disabled: true,
   },
 ];
 

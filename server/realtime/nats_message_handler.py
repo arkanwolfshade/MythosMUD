@@ -61,6 +61,7 @@ class NATSMessageHandler:
         """Subscribe to all chat-related NATS subjects."""
         subjects = [
             "chat.say.*",  # Say messages per room
+            "chat.local.*",  # Local messages per room (for backward compatibility)
             "chat.local.subzone.*",  # Local messages per subzone
             "chat.emote.*",  # Emote messages per room
             "chat.pose.*",  # Pose messages per room

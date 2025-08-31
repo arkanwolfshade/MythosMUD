@@ -272,11 +272,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
       down: 'down',
     };
 
-    // Normalize slash prefix
-    if (lower.startsWith('/')) {
-      normalized = normalized.slice(1).trim();
-    }
-
     // Expand shorthand for movement and look
     const parts = normalized.split(/\s+/);
     if (parts.length === 1 && dirMap[lower]) {
@@ -300,6 +295,19 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     const success = await sendCommand(commandName, commandArgs);
     if (!success) {
       logger.error('GameTerminalWithPanels', 'Failed to send command', { command: commandName, args: commandArgs });
+    }
+  };
+
+  const handleChatMessage = async (message: string, channel: string) => {
+    if (!message.trim() || !isConnected) return;
+
+    // Add to command history
+    setCommandHistory(prev => [...prev, message]);
+
+    // Send chat message to server
+    const success = await sendCommand('chat', [channel, message]);
+    if (!success) {
+      logger.error('GameTerminalWithPanels', 'Failed to send chat message', { channel, message });
     }
   };
 
@@ -333,6 +341,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         onLogout={handleLogout}
         onDownloadLogs={() => logger.downloadLogs()}
         onSendCommand={handleCommandSubmit}
+        onSendChatMessage={handleChatMessage}
         onClearMessages={handleClearMessages}
         onClearHistory={handleClearHistory}
       />

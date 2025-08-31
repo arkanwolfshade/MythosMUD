@@ -3,6 +3,7 @@ import { DraggablePanel } from './DraggablePanel';
 import { MotdContent } from './MotdContent';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
+import { GameLogPanel } from './panels/GameLogPanel';
 import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 
 interface Player {
@@ -63,6 +64,7 @@ interface GameTerminalProps {
   onLogout: () => void;
   onDownloadLogs: () => void;
   onSendCommand: (command: string) => void;
+  onSendChatMessage: (message: string, channel: string) => void;
   onClearMessages: () => void;
   onClearHistory: () => void;
 }
@@ -79,6 +81,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   commandHistory,
   onDownloadLogs,
   onSendCommand,
+  onSendChatMessage,
   onClearMessages,
   onClearHistory,
 }) => {
@@ -140,13 +143,34 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
           onMinimize={() => console.log('Chat panel minimized')}
           onMaximize={() => console.log('Chat panel maximized')}
         >
-          <ChatPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
+          <ChatPanel
+            messages={messages}
+            onSendChatMessage={onSendChatMessage}
+            onClearMessages={onClearMessages}
+            onDownloadLogs={onDownloadLogs}
+            isConnected={isConnected}
+          />
+        </DraggablePanel>
+
+        {/* Game Log Panel */}
+        <DraggablePanel
+          title="Game Log"
+          defaultPosition={{ x: 500, y: 50 }}
+          defaultSize={{ width: 450, height: 400 }}
+          minSize={{ width: 300, height: 200 }}
+          maxSize={{ width: 800, height: 700 }}
+          variant="default"
+          onClose={() => console.log('Game Log panel closed')}
+          onMinimize={() => console.log('Game Log panel minimized')}
+          onMaximize={() => console.log('Game Log panel maximized')}
+        >
+          <GameLogPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
         </DraggablePanel>
 
         {/* Command Panel */}
         <DraggablePanel
           title="Commands"
-          defaultPosition={{ x: 500, y: 50 }}
+          defaultPosition={{ x: 1000, y: 50 }}
           defaultSize={{ width: 350, height: 250 }}
           minSize={{ width: 200, height: 150 }}
           maxSize={{ width: 600, height: 500 }}
@@ -212,7 +236,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         {/* Player Status Panel */}
         <DraggablePanel
           title="Status"
-          defaultPosition={{ x: 400, y: 400 }}
+          defaultPosition={{ x: 1000, y: 400 }}
           defaultSize={{ width: 300, height: 200 }}
           minSize={{ width: 200, height: 100 }}
           maxSize={{ width: 500, height: 400 }}

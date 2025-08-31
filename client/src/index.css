@@ -158,6 +158,17 @@
   }
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Animation Classes */
 .animate-eldritch-glow {
   animation: eldritch-glow 1.5s ease-in-out infinite alternate;
@@ -197,6 +208,57 @@
 
 .animate-eldritch-border {
   animation: eldritch-border 2s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .mythos-terminal-primary {
+    color: #ffffff !important;
+    background-color: #000000 !important;
+    border-color: #ffffff !important;
+  }
+
+  .mythos-terminal-secondary {
+    color: #ffffff !important;
+    background-color: #333333 !important;
+    border-color: #ffffff !important;
+  }
+
+  .mythos-terminal-success {
+    color: #ffffff !important;
+    background-color: #006600 !important;
+  }
+
+  .mythos-terminal-warning {
+    color: #000000 !important;
+    background-color: #ffff00 !important;
+  }
+
+  .mythos-terminal-error {
+    color: #ffffff !important;
+    background-color: #cc0000 !important;
+  }
+
+  .mythos-terminal-text-primary {
+    color: #ffffff !important;
+  }
+
+  .mythos-terminal-text-secondary {
+    color: #cccccc !important;
+  }
+
+  .mythos-terminal-background {
+    background-color: #000000 !important;
+  }
+
+  .mythos-terminal-surface {
+    background-color: #111111 !important;
+    border-color: #ffffff !important;
+  }
 }
 
 /* MythosMUD Client Styles - TailwindCSS Enhanced */
