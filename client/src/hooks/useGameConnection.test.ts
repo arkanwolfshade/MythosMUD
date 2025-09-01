@@ -12,7 +12,15 @@ const mockWebSocket = {
 };
 
 // Mock WebSocket constructor
-global.WebSocket = vi.fn(() => mockWebSocket) as unknown as typeof WebSocket;
+global.WebSocket = vi.fn(() => {
+  // Simulate connection failure by triggering onerror after a short delay
+  setTimeout(() => {
+    if (mockWebSocket.onerror) {
+      mockWebSocket.onerror(new Event('error'));
+    }
+  }, 10);
+  return mockWebSocket;
+}) as unknown as typeof WebSocket;
 
 // Mock EventSource
 const mockEventSource = {
@@ -22,7 +30,15 @@ const mockEventSource = {
   readyState: 0,
 };
 
-global.EventSource = vi.fn(() => mockEventSource) as unknown as typeof EventSource;
+global.EventSource = vi.fn(() => {
+  // Simulate connection failure by triggering onerror after a short delay
+  setTimeout(() => {
+    if (mockEventSource.onerror) {
+      mockEventSource.onerror(new Event('error'));
+    }
+  }, 10);
+  return mockEventSource;
+}) as unknown as typeof EventSource;
 
 // Mock logger
 vi.mock('../utils/logger', () => ({
@@ -45,7 +61,7 @@ describe('useGameConnection', () => {
     vi.restoreAllMocks();
   });
 
-  it('should initialize with default state', () => {
+  it('should initialize and handle auto-connect gracefully', async () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
@@ -53,9 +69,20 @@ describe('useGameConnection', () => {
       })
     );
 
+    // Initially, the hook should start connecting automatically
+    expect(result.current.isConnecting).toBe(true);
+
+    // Wait for the connection attempt to complete and fail
+    await act(async () => {
+      // Wait for the connection attempt to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    // After the auto-connect attempt fails, we should be back to default state
+    // but with an error indicating the connection failed
     expect(result.current.isConnected).toBe(false);
     expect(result.current.isConnecting).toBe(false);
-    expect(result.current.error).toBe(null);
+    expect(result.current.error).toBe('Connection failed');
     expect(result.current.sseConnected).toBe(false);
     expect(result.current.websocketConnected).toBe(false);
   });

@@ -25,7 +25,7 @@ interface GameLogPanelProps {
 export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMessages, onDownloadLogs }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messageFilter, setMessageFilter] = useState<string>('all');
-  const [showMessageGroups, setShowMessageGroups] = useState(true);
+  // showMessageGroups and setShowMessageGroups removed - not used in current implementation
   const [searchQuery, setSearchQuery] = useState('');
   const [timeFilter, setTimeFilter] = useState<string>('all');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -123,315 +123,157 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
     return true;
   });
 
-  // Group messages by time periods (last 5 minutes, last hour, etc.)
-  const groupMessagesByTime = (messages: ChatMessage[]) => {
-    const now = new Date();
-    const groups: { [key: string]: ChatMessage[] } = {
-      'Last 5 minutes': [],
-      'Last hour': [],
-      Today: [],
-      Earlier: [],
-    };
+  // groupMessagesByTime removed - not used in current implementation
+  // TODO: Implement message grouping by time periods
 
-    messages.forEach(message => {
-      const messageTime = new Date(message.timestamp);
-      const diffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
-
-      if (diffMinutes <= 5) {
-        groups['Last 5 minutes'].push(message);
-      } else if (diffMinutes <= 60) {
-        groups['Last hour'].push(message);
-      } else if (messageTime.toDateString() === now.toDateString()) {
-        groups['Today'].push(message);
-      } else {
-        groups['Earlier'].push(message);
-      }
-    });
-
-    return groups;
-  };
-
-  // Calculate message statistics
-  const messageStats = {
-    total: messages.length,
-    filtered: filteredMessages.length,
-    byType: {
-      chat: messages.filter(m => m.messageType === 'chat').length,
-      system: messages.filter(m => m.messageType === 'system').length,
-      error: messages.filter(m => m.messageType === 'error').length,
-      emote: messages.filter(m => m.messageType === 'emote').length,
-      whisper: messages.filter(m => m.messageType === 'whisper').length,
-      shout: messages.filter(m => m.messageType === 'shout').length,
-    },
-  };
+  // messageStats removed - not used in current implementation
+  // TODO: Implement message statistics display
 
   return (
-    <div className="h-full flex flex-col font-mono">
-      {/* Game Log Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-surface">
-        <div className="flex items-center gap-2">
-          <EldritchIcon name={MythosIcons.system} size={20} variant="primary" />
-          <h3 className="text-mythos-terminal-primary font-bold">Game Log ({messageStats.filtered} messages)</h3>
+    <div className="game-log-panel h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background">
+        <div className="flex items-center space-x-2">
+          <EldritchIcon name={MythosIcons.log} size={20} className="text-mythos-terminal-primary" />
+          <span className="text-sm font-bold text-mythos-terminal-primary">Game Log</span>
         </div>
-        <div className="flex items-center gap-2">
-          {onClearMessages && (
-            <TerminalButton variant="secondary" size="sm" onClick={onClearMessages} className="p-2 h-8 w-8">
-              <EldritchIcon name={MythosIcons.clear} size={14} variant="error" />
-            </TerminalButton>
-          )}
-          {onDownloadLogs && (
-            <TerminalButton variant="secondary" size="sm" onClick={onDownloadLogs} className="p-2 h-8 w-8">
-              <EldritchIcon name={MythosIcons.download} size={14} variant="primary" />
-            </TerminalButton>
-          )}
-        </div>
-      </div>
-
-      {/* Filter Controls */}
-      <div className="p-3 border-b border-gray-700 bg-mythos-terminal-surface">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-mythos-terminal-text-secondary">Type:</span>
-            <select
-              value={messageFilter}
-              onChange={e => setMessageFilter(e.target.value)}
-              className="bg-mythos-terminal-background border border-gray-700 rounded px-2 py-1 text-xs text-mythos-terminal-text"
-            >
-              <option value="all">All Messages</option>
-              <option value="chat">Chat</option>
-              <option value="system">System</option>
-              <option value="error">Errors</option>
-              <option value="emote">Emotes</option>
-              <option value="whisper">Whispers</option>
-              <option value="shout">Shouts</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-mythos-terminal-text-secondary">Time:</span>
-            <select
-              value={timeFilter}
-              onChange={e => setTimeFilter(e.target.value)}
-              className="bg-mythos-terminal-background border border-gray-700 rounded px-2 py-1 text-xs text-mythos-terminal-text"
-            >
-              <option value="all">All Time</option>
-              <option value="last5min">Last 5 min</option>
-              <option value="lastHour">Last hour</option>
-              <option value="today">Today</option>
-              <option value="thisWeek">This week</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2 relative">
-            <span className="text-sm text-mythos-terminal-text-secondary">Search:</span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  handleSearch(searchQuery);
-                }
-              }}
-              placeholder="Search messages..."
-              className="bg-mythos-terminal-background border border-gray-700 rounded px-2 py-1 text-xs text-mythos-terminal-text w-32"
-            />
-            {searchHistory.length > 0 && (
-              <TerminalButton
-                variant="secondary"
-                size="sm"
-                onClick={() => setShowSearchHistory(!showSearchHistory)}
-                className="flex items-center gap-1 text-xs px-1"
-              >
-                <EldritchIcon name={MythosIcons.clock} size={10} variant="primary" />
-              </TerminalButton>
-            )}
-            {showSearchHistory && searchHistory.length > 0 && (
-              <div className="absolute top-full left-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-10 min-w-[200px]">
-                {searchHistory.map((query, index) => (
-                  <div
-                    key={index}
-                    className="px-3 py-2 hover:bg-mythos-terminal-background cursor-pointer text-xs"
-                    onClick={() => {
-                      setSearchQuery(query);
-                      setShowSearchHistory(false);
-                    }}
-                  >
-                    <span className="text-mythos-terminal-primary">{query}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <TerminalButton
-            variant="secondary"
-            size="sm"
-            onClick={clearFilters}
-            className="flex items-center gap-2 text-xs"
-          >
-            <EldritchIcon name={MythosIcons.clear} size={12} variant="error" />
-            <span>Clear</span>
+        <div className="flex items-center space-x-2">
+          <TerminalButton variant="secondary" size="sm" onClick={clearFilters} className="px-2 py-1 text-xs">
+            Clear Filters
           </TerminalButton>
           <TerminalButton
             variant="secondary"
             size="sm"
-            onClick={() => setShowMessageGroups(!showMessageGroups)}
-            className="flex items-center gap-2 text-xs"
+            onClick={() => onClearMessages?.()}
+            className="px-2 py-1 text-xs"
           >
-            <EldritchIcon name={MythosIcons.move} size={12} variant="primary" />
-            <span>{showMessageGroups ? 'Hide' : 'Show'} Groups</span>
+            Clear Log
+          </TerminalButton>
+          <TerminalButton
+            variant="secondary"
+            size="sm"
+            onClick={() => onDownloadLogs?.()}
+            className="px-2 py-1 text-xs"
+          >
+            Download
           </TerminalButton>
         </div>
       </div>
 
-      {/* Game Messages Display */}
-      <div className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded">
+      {/* Filters */}
+      <div className="p-3 border-b border-gray-700 bg-mythos-terminal-background space-y-2">
+        <div className="flex space-x-2">
+          <select
+            value={messageFilter}
+            onChange={e => setMessageFilter(e.target.value)}
+            className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs"
+          >
+            <option value="all">All Messages</option>
+            <option value="system">System</option>
+            <option value="chat">Chat</option>
+            <option value="emote">Emotes</option>
+            <option value="whisper">Whispers</option>
+            <option value="shout">Shouts</option>
+            <option value="error">Errors</option>
+          </select>
+          <select
+            value={timeFilter}
+            onChange={e => setTimeFilter(e.target.value)}
+            className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs"
+          >
+            <option value="all">All Time</option>
+            <option value="5">Last 5 min</option>
+            <option value="15">Last 15 min</option>
+            <option value="30">Last 30 min</option>
+            <option value="60">Last hour</option>
+          </select>
+        </div>
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            placeholder="Search messages..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs flex-1"
+          />
+          <TerminalButton
+            variant="secondary"
+            size="sm"
+            onClick={() => handleSearch(searchQuery)}
+            className="px-2 py-1 text-xs"
+          >
+            Search
+          </TerminalButton>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-[300px]" style={{ minHeight: '300px' }}>
         {filteredMessages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center space-y-2">
-              <EldritchIcon name={MythosIcons.system} size={32} variant="secondary" className="mx-auto opacity-50" />
-              <p className="text-mythos-terminal-text-secondary text-sm">
-                {messages.length === 0
-                  ? 'No game events yet. Connect to the game to see activity.'
-                  : 'No messages match the current filter.'}
-              </p>
-            </div>
+          <div className="text-center text-mythos-terminal-text-secondary py-8">
+            <EldritchIcon name={MythosIcons.log} size={32} className="mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No messages to display</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {showMessageGroups
-              ? // Grouped messages
-                Object.entries(groupMessagesByTime(filteredMessages)).map(([groupName, groupMessages]) => {
-                  if (groupMessages.length === 0) return null;
-                  return (
-                    <div key={groupName} className="space-y-2">
-                      <div className="flex items-center gap-2 p-2 bg-mythos-terminal-surface border border-gray-700 rounded">
-                        <EldritchIcon name={MythosIcons.clock} size={12} variant="primary" />
-                        <span className="text-xs text-mythos-terminal-primary font-bold">
-                          {groupName} ({groupMessages.length})
-                        </span>
-                      </div>
-                      <div className="space-y-2 ml-4">
-                        {groupMessages.map((message, index) => (
-                          <div
-                            key={index}
-                            className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-200 hover:border-mythos-terminal-primary/30"
-                          >
-                            {/* Alias Expansion Information */}
-                            {message.aliasChain && message.aliasChain.length > 0 && (
-                              <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <EldritchIcon name={MythosIcons.move} size={12} variant="warning" />
-                                  <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
-                                </div>
-                                <div className="space-y-1">
-                                  {message.aliasChain.map((alias, chainIndex) => (
-                                    <div key={chainIndex} className="flex items-center gap-2">
-                                      <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
-                                      <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" />
-                                      <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Message Timestamp */}
-                            <div className="mb-2">
-                              <span className="text-xs text-mythos-terminal-text-secondary font-mono">
-                                {formatTimestamp(message.timestamp)}
-                              </span>
-                            </div>
-
-                            {/* Message Content */}
-                            <div
-                              className={`text-sm leading-relaxed ${getMessageClass(message.messageType)}`}
-                              dangerouslySetInnerHTML={{
-                                __html: message.isHtml
-                                  ? message.isCompleteHtml
-                                    ? message.text
-                                    : ansiToHtmlWithBreaks(message.text)
-                                  : message.text,
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })
-              : // Ungrouped messages
-                filteredMessages.map((message, index) => (
-                  <div
-                    key={index}
-                    className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-200 hover:border-mythos-terminal-primary/30"
-                  >
-                    {/* Alias Expansion Information */}
-                    {message.aliasChain && message.aliasChain.length > 0 && (
-                      <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
-                        <div className="flex items-center gap-2 mb-2">
-                          <EldritchIcon name={MythosIcons.move} size={12} variant="warning" />
-                          <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
-                        </div>
-                        <div className="space-y-1">
-                          {message.aliasChain.map((alias, chainIndex) => (
-                            <div key={chainIndex} className="flex items-center gap-2">
-                              <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
-                              <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" />
-                              <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Message Timestamp */}
-                    <div className="mb-2">
-                      <span className="text-xs text-mythos-terminal-text-secondary font-mono">
-                        {formatTimestamp(message.timestamp)}
-                      </span>
-                    </div>
-
-                    {/* Message Content */}
+          filteredMessages.map((message, index) => (
+            <div key={index} className="message-item">
+              <div className="flex items-start space-x-2">
+                <span className="text-xs text-mythos-terminal-text-secondary flex-shrink-0">
+                  {formatTimestamp(message.timestamp)}
+                </span>
+                <div className={`flex-1 ${getMessageClass(message.messageType)}`}>
+                  {message.isHtml ? (
                     <div
-                      className={`text-sm leading-relaxed ${getMessageClass(message.messageType)}`}
                       dangerouslySetInnerHTML={{
-                        __html: message.isHtml
-                          ? message.isCompleteHtml
-                            ? message.text
-                            : ansiToHtmlWithBreaks(message.text)
-                          : message.text,
+                        __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
                       }}
                     />
-                  </div>
-                ))}
-            <div ref={messagesEndRef} />
-          </div>
+                  ) : (
+                    <span>{message.text}</span>
+                  )}
+                </div>
+              </div>
+              {message.aliasChain && message.aliasChain.length > 0 && (
+                <div className="text-xs text-mythos-terminal-text-secondary ml-4 mt-1">
+                  <span>Alias: {message.aliasChain.map(alias => alias.alias_name).join(' → ')}</span>
+                </div>
+              )}
+            </div>
+          ))
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Game Log Statistics */}
-      <div className="p-2 border-t border-gray-700 bg-mythos-terminal-surface">
-        <div className="flex items-center justify-between text-xs text-mythos-terminal-text-secondary">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-mythos-terminal-success rounded-full"></div>
-              <span>Connected</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <EldritchIcon name={MythosIcons.system} size={12} variant="secondary" />
-              <span>
-                {messageStats.filtered}/{messageStats.total} messages
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <EldritchIcon name={MythosIcons.chat} size={12} variant="secondary" />
-              <span>
-                C:{messageStats.byType.chat} S:{messageStats.byType.system} E:{messageStats.byType.error}
-              </span>
-            </div>
+      {/* Search History */}
+      {showSearchHistory && searchHistory.length > 0 && (
+        <div className="border-t border-gray-700 bg-mythos-terminal-background p-3">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-bold text-mythos-terminal-primary">Search History</h4>
+            <TerminalButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowSearchHistory(false)}
+              className="px-2 py-1 text-xs"
+            >
+              Close
+            </TerminalButton>
           </div>
-          <div className="text-xs opacity-75">MythosMUD Terminal</div>
+          <div className="space-y-1 max-h-24 overflow-y-auto">
+            {searchHistory.map((query, index) => (
+              <div
+                key={index}
+                className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded"
+                onClick={() => {
+                  setSearchQuery(query);
+                  setShowSearchHistory(false);
+                }}
+              >
+                {query}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

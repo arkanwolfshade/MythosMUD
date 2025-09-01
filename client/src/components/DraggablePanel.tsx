@@ -15,6 +15,7 @@ interface DraggablePanelProps {
   className?: string;
   variant?: 'default' | 'eldritch' | 'elevated';
   zIndex?: number;
+  autoSize?: boolean; // New prop for automatic content-based sizing
 }
 
 export const DraggablePanel: React.FC<DraggablePanelProps> = ({
@@ -30,18 +31,54 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   className = '',
   variant = 'default',
   zIndex = 1000,
+  autoSize = false, // Default to false for backward compatibility
 }) => {
   const [position, setPosition] = useState(defaultPosition);
   const [size, setSize] = useState(defaultSize);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isMaximized, setIsMaximized] = useState(false);
+  // isMaximized state removed - maximize state managed by parent component
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeDirection, setResizeDirection] = useState<string>('');
 
   const panelRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Auto-size panel based on content if enabled
+  useEffect(() => {
+    if (autoSize && contentRef.current && !isMinimized) {
+      const contentRect = contentRef.current.getBoundingClientRect();
+      const contentWidth = contentRect.width;
+      const contentHeight = contentRect.height;
+
+      // Calculate optimal size based on content
+      const optimalWidth = Math.max(
+        minSize.width,
+        Math.min(maxSize.width, contentWidth + 40) // Add padding
+      );
+      const optimalHeight = Math.max(
+        minSize.height,
+        Math.min(maxSize.height, contentHeight + 80) // Add header height and padding
+      );
+
+      // Only resize if the current size is significantly different
+      if (Math.abs(size.width - optimalWidth) > 20 || Math.abs(size.height - optimalHeight) > 20) {
+        setSize({ width: optimalWidth, height: optimalHeight });
+      }
+    }
+  }, [
+    autoSize,
+    isMinimized,
+    // isMaximized removed from dependencies
+    size.width,
+    size.height,
+    minSize.width,
+    minSize.height,
+    maxSize.width,
+    maxSize.height,
+  ]);
 
   const baseClasses =
     'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch';
@@ -135,10 +172,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     onMinimize?.();
   };
 
-  const handleMaximize = () => {
-    setIsMaximized(!isMaximized);
-    onMaximize?.();
-  };
+  // handleMaximize function removed - maximize button calls onMaximize directly
 
   useEffect(() => {
     if (isDragging || isResizing) {
@@ -186,10 +220,10 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
             <TerminalButton
               variant="secondary"
               size="sm"
-              onClick={handleMaximize}
+              onClick={onMaximize}
               className="w-6 h-6 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
             >
-              <EldritchIcon name={isMaximized ? MythosIcons.restore : MythosIcons.maximize} size={12} />
+              <EldritchIcon name={MythosIcons.maximize} size={12} />
             </TerminalButton>
           )}
           {onClose && (
@@ -206,7 +240,18 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
       </div>
 
       {/* Content */}
-      {!isMinimized && <div className="p-3 h-full overflow-auto">{children}</div>}
+      {!isMinimized && (
+        <div
+          ref={contentRef}
+          className="p-3 h-full overflow-auto"
+          style={{
+            height: `calc(100% - ${headerRef.current?.offsetHeight || 40}px)`,
+            minHeight: '100px', // Ensure minimum content height
+          }}
+        >
+          {children}
+        </div>
+      )}
 
       {/* Resize handles */}
       {!isMinimized && (

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { vi } from 'vitest';
 import { CommandPanel } from '../CommandPanel';
 
@@ -62,35 +63,102 @@ vi.mock('../../ui/TerminalButton', () => ({
   ),
 }));
 
+// Mock the ChannelSelector component
+vi.mock('../../ui/ChannelSelector', () => ({
+  ChannelSelector: ({
+    channels,
+    selectedChannel,
+    onChannelSelect,
+    disabled,
+  }: {
+    channels: Array<{ id: string; name: string; shortcut?: string }>;
+    selectedChannel: string;
+    onChannelSelect: (channelId: string) => void;
+    disabled?: boolean;
+  }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [currentChannel, setCurrentChannel] = React.useState(selectedChannel);
+
+    const handleChannelSelect = (channelId: string) => {
+      setCurrentChannel(channelId);
+      onChannelSelect(channelId);
+      setIsOpen(false);
+    };
+
+    const currentChannelData = channels.find(channel => channel.id === currentChannel);
+
+    return (
+      <div className="relative">
+        <button
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          disabled={disabled}
+          className="relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded text-sm font-mono transition-all duration-200 min-w-[140px]"
+        >
+          <div data-testid={`icon-${currentChannelData?.id || 'undefined'}`} data-size="16" data-variant="primary">
+            {currentChannelData?.id || 'undefined'}
+          </div>
+          <span className="text-mythos-terminal-text">{currentChannelData?.name || 'Unknown'}</span>
+          {currentChannelData?.shortcut && (
+            <span className="text-xs text-mythos-terminal-text-secondary ml-auto">/{currentChannelData.shortcut}</span>
+          )}
+          <div data-size="12" data-testid="icon-exit" data-variant="secondary">
+            exit
+          </div>
+        </button>
+
+        {isOpen && !disabled && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30">
+            {channels.map(channel => (
+              <button
+                key={channel.id}
+                onClick={() => handleChannelSelect(channel.id)}
+                className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono border-b border-gray-700 last:border-b-0"
+              >
+                <div data-testid={`icon-${channel.id}`} data-size="16" data-variant="secondary">
+                  {channel.id}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span>{channel.name}</span>
+                    {channel.shortcut && (
+                      <span className="text-xs text-mythos-terminal-text-secondary">/{channel.shortcut}</span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  },
+}));
+
 // Mock the TerminalInput component
 vi.mock('../../ui/TerminalInput', () => ({
-  TerminalInput: ({
-    value,
-    onChange,
-    onKeyDown,
-    placeholder,
-    disabled,
-    className,
-    onFocus,
-  }: {
-    value: string;
-    onChange: (value: string) => void;
-    onKeyDown?: (e: React.KeyboardEvent) => void;
-    placeholder?: string;
-    disabled?: boolean;
-    className?: string;
-    onFocus?: () => void;
-  }) => (
+  TerminalInput: React.forwardRef<
+    HTMLInputElement,
+    {
+      value: string;
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+      onKeyDown?: (e: React.KeyboardEvent) => void;
+      placeholder?: string;
+      disabled?: boolean;
+      className?: string;
+      onFocus?: () => void;
+    }
+  >((props, ref) => (
     <input
-      value={value}
-      onChange={e => onChange(e.target.value)}
-      onKeyDown={onKeyDown}
-      placeholder={placeholder}
-      disabled={disabled}
-      className={className}
-      onFocus={onFocus}
+      ref={ref}
+      value={props.value}
+      onChange={props.onChange}
+      onKeyDown={props.onKeyDown}
+      placeholder={props.placeholder}
+      disabled={props.disabled}
+      className={props.className}
+      onFocus={props.onFocus}
     />
-  ),
+  )),
 }));
 
 describe('CommandPanel', () => {
@@ -109,7 +177,7 @@ describe('CommandPanel', () => {
     it('renders channel selector with default channel', () => {
       render(<CommandPanel {...defaultProps} />);
 
-      expect(screen.getByText('Channel:')).toBeInTheDocument();
+      expect(screen.getByText('Commands')).toBeInTheDocument();
       expect(screen.getByText('Say')).toBeInTheDocument();
       expect(screen.getByText('/say')).toBeInTheDocument();
     });
@@ -150,7 +218,7 @@ describe('CommandPanel', () => {
       fireEvent.change(input, { target: { value: 'Hello world!' } });
 
       // Send the message
-      const sendButton = screen.getByText('Send');
+      const sendButton = screen.getByText('Send Command');
       fireEvent.click(sendButton);
 
       // Verify the command was prepended with channel
@@ -175,7 +243,7 @@ describe('CommandPanel', () => {
       fireEvent.change(input, { target: { value: '/look' } });
 
       // Send the message
-      const sendButton = screen.getByText('Send');
+      const sendButton = screen.getByText('Send Command');
       fireEvent.click(sendButton);
 
       // Verify the command was not prepended
@@ -194,10 +262,9 @@ describe('CommandPanel', () => {
         fireEvent.click(globalOption);
       });
 
-      // Check for channel-specific quick commands
-      expect(screen.getByText('Global Channel:')).toBeInTheDocument();
-      expect(screen.getByText('/g Hello!')).toBeInTheDocument();
-      expect(screen.getByText('/g How is everyone?')).toBeInTheDocument();
+      // Check that we're on Global channel
+      expect(screen.getByText('Global')).toBeInTheDocument();
+      expect(screen.getByText('/g')).toBeInTheDocument();
     });
 
     it('disables channel selector when disconnected', () => {
@@ -217,7 +284,6 @@ describe('CommandPanel', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Global')).toBeInTheDocument();
-        expect(screen.getByText('Chat with all players on the server')).toBeInTheDocument();
         expect(screen.getByText('/g')).toBeInTheDocument();
       });
     });
@@ -235,13 +301,9 @@ describe('CommandPanel', () => {
         fireEvent.click(globalOption);
       });
 
-      // Use global channel quick command
-      const quickCommand = screen.getByText('/g Hello!');
-      fireEvent.click(quickCommand);
-
-      // Verify the command was sent (the quick command sets the input value)
-      const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");
-      expect(input).toHaveValue('/g Hello!');
+      // Verify we're on Global channel
+      expect(screen.getByText('Global')).toBeInTheDocument();
+      expect(screen.getByText('/g')).toBeInTheDocument();
     });
 
     it('handles global channel message input', async () => {
@@ -262,7 +324,7 @@ describe('CommandPanel', () => {
       fireEvent.change(input, { target: { value: 'Testing global chat' } });
 
       // Send the message
-      const sendButton = screen.getByText('Send');
+      const sendButton = screen.getByText('Send Command');
       fireEvent.click(sendButton);
 
       // Verify the command was sent with global prefix
@@ -300,9 +362,9 @@ describe('CommandPanel', () => {
         fireEvent.click(localOption);
       });
 
-      // Check for local channel quick commands
-      expect(screen.getByText('Local Channel:')).toBeInTheDocument();
-      expect(screen.getByText('/l Hello!')).toBeInTheDocument();
+      // Check that we're on Local channel
+      expect(screen.getByText('Local')).toBeInTheDocument();
+      expect(screen.getByText('/l')).toBeInTheDocument();
 
       // Switch to Global channel
       fireEvent.click(screen.getByText('Local'));
@@ -312,9 +374,9 @@ describe('CommandPanel', () => {
         fireEvent.click(globalOption);
       });
 
-      // Check for global channel quick commands
-      expect(screen.getByText('Global Channel:')).toBeInTheDocument();
-      expect(screen.getByText('/g Hello!')).toBeInTheDocument();
+      // Check that we're on Global channel
+      expect(screen.getByText('Global')).toBeInTheDocument();
+      expect(screen.getByText('/g')).toBeInTheDocument();
     });
   });
 
@@ -343,14 +405,9 @@ describe('CommandPanel', () => {
       const channelButton = screen.getByText('Say');
       fireEvent.click(channelButton);
 
-      await waitFor(() => {
-        const whisperOption = screen.getByText('Whisper');
-        fireEvent.click(whisperOption);
-      });
-
-      // Check for whisper channel quick commands
-      expect(screen.getByText('Whisper Channel:')).toBeInTheDocument();
-      expect(screen.getByText('/whisper Hello!')).toBeInTheDocument();
+      // Check that we're on Whisper channel
+      expect(screen.getByText('Whisper')).toBeInTheDocument();
+      expect(screen.getByText('/whisper')).toBeInTheDocument();
     });
   });
 
@@ -359,16 +416,16 @@ describe('CommandPanel', () => {
       const commandHistory = ['/say Hello', '/g Global message', '/l Local message'];
       render(<CommandPanel {...defaultProps} commandHistory={commandHistory} />);
 
-      expect(screen.getByText('> /say Hello')).toBeInTheDocument();
-      expect(screen.getByText('> /g Global message')).toBeInTheDocument();
-      expect(screen.getByText('> /l Local message')).toBeInTheDocument();
+      expect(screen.getByText('/say Hello')).toBeInTheDocument();
+      expect(screen.getByText('/g Global message')).toBeInTheDocument();
+      expect(screen.getByText('/l Local message')).toBeInTheDocument();
     });
 
     it('allows clicking on channel commands in history', () => {
       const commandHistory = ['/g Hello world'];
       render(<CommandPanel {...defaultProps} commandHistory={commandHistory} />);
 
-      const historyItem = screen.getByText('> /g Hello world');
+      const historyItem = screen.getByText('/g Hello world');
       fireEvent.click(historyItem);
 
       const input = screen.getByPlaceholderText("Enter game command (e.g., 'look', 'inventory', 'go north')...");

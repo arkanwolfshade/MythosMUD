@@ -14,6 +14,7 @@ export const MythosIcons = {
   restore: 'restore',
   close: 'close',
   clock: 'clock',
+  log: 'log',
 
   // Phase 4.1: New icons for eldritch effects demo
   lightbulb: 'lightbulb',
@@ -29,6 +30,7 @@ export const MythosIcons = {
   settings: 'settings',
   panel: 'panel',
   rotate: 'rotate',
+  command: 'command', // Added missing command icon
 
   // Additional icons used throughout the codebase
   help: 'help',
@@ -58,7 +60,7 @@ export const MythosIcons = {
 const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   // Core UI icons
   chat: 'MessageCircle',
-  move: 'Move',
+  move: 'ArrowUp', // Fixed: Use 'ArrowUp' as a valid movement icon
   download: 'Download',
   clear: 'Trash2',
   connection: 'Wifi',
@@ -67,6 +69,7 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   restore: 'Minimize2',
   close: 'X',
   clock: 'Clock',
+  log: 'FileText',
 
   // Phase 4.1: New icons for eldritch effects demo
   lightbulb: 'Lightbulb',
@@ -82,6 +85,7 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   settings: 'Settings',
   panel: 'Layout',
   rotate: 'RotateCw',
+  command: 'Square', // Added missing command icon mapping
 
   // Additional icons used throughout the codebase
   help: 'HelpCircle',

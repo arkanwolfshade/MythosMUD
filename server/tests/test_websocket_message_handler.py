@@ -53,13 +53,20 @@ class TestWebSocketMessageHandler:
             mock_handler.assert_called_once_with(mock_websocket, "test_player", "Hello, world!")
 
     @pytest.mark.asyncio
-    async def test_handle_ping_message(self, mock_websocket, mock_connection_manager):
-        """Test handling of ping message type."""
+    async def test_handle_ping_message(self, mock_websocket):
+        """Test handling ping message."""
         message = {"type": "ping", "data": {}}
 
         await handle_websocket_message(mock_websocket, "test_player", message)
 
-        mock_websocket.send_json.assert_called_once_with({"type": "pong"})
+        # Verify pong event was sent with new envelope format
+        mock_websocket.send_json.assert_called_once()
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["event_type"] == "pong"
+        assert "timestamp" in call_args
+        assert "sequence_number" in call_args
+        assert call_args["data"] == {}
+        assert call_args["player_id"] == "test_player"
 
     @pytest.mark.asyncio
     async def test_handle_unknown_message_type(self, mock_websocket, mock_connection_manager):

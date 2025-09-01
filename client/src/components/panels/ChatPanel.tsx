@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AVAILABLE_CHANNELS, DEFAULT_CHANNEL } from '../../config/channels';
 import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
+import { extractChannelFromMessage, isChatContent } from '../../utils/messageTypeUtils';
 import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
@@ -12,6 +13,7 @@ interface ChatMessage {
   isHtml: boolean;
   isCompleteHtml?: boolean;
   messageType?: string;
+  channel?: string;
   aliasChain?: Array<{
     original: string;
     expanded: string;
@@ -72,13 +74,26 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   // Track channel activity from messages
   useEffect(() => {
     const newActivity: Record<string, { lastActivity: Date; messageCount: number }> = {};
-    const newUnreadCounts: Record<string, number> = { ...unreadCounts };
 
     messages.forEach(message => {
-      if (message.messageType === 'chat') {
-        // Extract channel from message (this would need server-side implementation)
-        // For now, we'll track all chat messages as current channel activity
-        const channelId = selectedChannel;
+      // Handle both 'chat' and 'command' messages that contain chat content
+      if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
+        // Extract channel from message content or use the message's channel property
+        const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
+
+        // Debug logging for ChatPanel message processing
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 ChatPanel Message Processing:', {
+            messageText: message.text.substring(0, 100) + (message.text.length > 100 ? '...' : ''),
+            messageType: message.messageType,
+            messageChannel: message.channel,
+            extractedChannel: extractChannelFromMessage(message.text),
+            selectedChannel: selectedChannel,
+            finalChannelId: channelId,
+            isChatContent: isChatContent(message.text),
+            timestamp: message.timestamp,
+          });
+        }
 
         if (!newActivity[channelId]) {
           newActivity[channelId] = { lastActivity: new Date(message.timestamp), messageCount: 0 };
@@ -86,17 +101,29 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
         newActivity[channelId].messageCount++;
         newActivity[channelId].lastActivity = new Date(message.timestamp);
-
-        // Increment unread count for other channels
-        if (channelId !== selectedChannel) {
-          newUnreadCounts[channelId] = (newUnreadCounts[channelId] || 0) + 1;
-        }
       }
     });
 
     setChannelActivity(prev => ({ ...prev, ...newActivity }));
-    setUnreadCounts(newUnreadCounts);
-  }, [messages, selectedChannel, unreadCounts]);
+
+    // Update unread counts using functional update to avoid dependency loop
+    setUnreadCounts(prev => {
+      const newUnreadCounts = { ...prev };
+
+      messages.forEach(message => {
+        // Handle both 'chat' and 'command' messages that contain chat content
+        if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
+          const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
+          // Increment unread count for other channels
+          if (channelId !== selectedChannel) {
+            newUnreadCounts[channelId] = (newUnreadCounts[channelId] || 0) + 1;
+          }
+        }
+      });
+
+      return newUnreadCounts;
+    });
+  }, [messages, selectedChannel]); // Remove unreadCounts dependency
 
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,7 +268,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     if (soundEnabled) {
       // Simple beep sound using Web Audio API
       const audioContext = new (window.AudioContext ||
-        (window as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+        (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -458,14 +485,55 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
-  // Filter messages by channel
-  const filteredMessages = messages.filter(message => {
+  // Filter messages by channel and moderation settings
+  const filteredMessages = getFilteredMessages().filter(message => {
+    // Debug logging for message filtering
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 ChatPanel Message Filtering:', {
+        messageText: message.text.substring(0, 50) + (message.text.length > 50 ? '...' : ''),
+        messageType: message.messageType,
+        messageChannel: message.channel,
+        chatFilter: chatFilter,
+        selectedChannel: selectedChannel,
+        isChatContent: isChatContent(message.text),
+        willShow:
+          chatFilter === 'all' ||
+          (chatFilter === 'current' &&
+            (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text)))),
+        timestamp: message.timestamp,
+      });
+    }
+
     if (chatFilter === 'all') return true;
     if (chatFilter === 'current') {
-      // Filter for current channel messages (this would need server-side implementation)
-      return message.messageType === 'chat';
+      // Filter for current channel messages - handle both 'chat' and 'command' messages with chat content
+      const isChatMessage =
+        message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text));
+
+      // If it's a chat message, also check if it belongs to the current channel
+      if (isChatMessage) {
+        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+        return messageChannel === selectedChannel;
+      }
+
+      return false;
     }
     return true;
+  });
+
+  // Debug logging for final filtered messages
+  console.log('🔍 ChatPanel Final Filtered Messages:', {
+    totalMessages: messages.length,
+    filteredCount: filteredMessages.length,
+    chatFilter,
+    selectedChannel,
+    filteredMessages: filteredMessages.map(m => ({
+      text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
+      messageType: m.messageType,
+      channel: m.channel,
+      timestamp: m.timestamp,
+    })),
+    timestamp: new Date().toISOString(),
   });
 
   // Calculate chat statistics
@@ -1027,6 +1095,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded"
         role="log"
         aria-label="Chat Messages"
+        style={{ minHeight: '200px' }}
       >
         {filteredMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -1039,7 +1108,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         ) : (
           <div className="space-y-3">
-            {getFilteredMessages().map((message, index) => (
+            {filteredMessages.map((message, index) => (
               <div
                 key={index}
                 className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"

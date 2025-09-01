@@ -49,6 +49,7 @@ Each panel maintains its own local state while sharing common state through prop
 The ChatPanel is responsible for all chat-related functionality.
 
 #### Features
+
 - **Channel Selection**: Switch between local, global, and other chat channels
 - **Chat Input**: Rich text input with emotes and formatting
 - **Quick Commands**: Pre-defined chat phrases for common interactions
@@ -60,6 +61,7 @@ The ChatPanel is responsible for all chat-related functionality.
 - **Export/Backup**: Export chat logs and backup settings
 
 #### Props
+
 ```typescript
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -74,6 +76,7 @@ interface ChatPanelProps {
 ```
 
 #### Usage
+
 ```tsx
 <ChatPanel
   messages={chatMessages}
@@ -92,6 +95,7 @@ interface ChatPanelProps {
 The GameLogPanel displays all game messages with advanced filtering and search capabilities.
 
 #### Features
+
 - **Message Display**: All game messages with timestamps and categorization
 - **Message Filtering**: Filter by type (chat, system, error, move)
 - **Time Filtering**: Filter by time range (last 5 minutes, hour, day, etc.)
@@ -101,6 +105,7 @@ The GameLogPanel displays all game messages with advanced filtering and search c
 - **Export**: Download game logs in various formats
 
 #### Props
+
 ```typescript
 interface GameLogPanelProps {
   messages: GameMessage[];
@@ -110,6 +115,7 @@ interface GameLogPanelProps {
 ```
 
 #### Usage
+
 ```tsx
 <GameLogPanel
   messages={gameMessages}
@@ -123,6 +129,7 @@ interface GameLogPanelProps {
 The CommandPanel handles all game command input and history.
 
 #### Features
+
 - **Command Input**: Text input for game commands
 - **Command History**: Navigable history of previous commands
 - **Quick Commands**: Common game commands as clickable buttons
@@ -130,6 +137,7 @@ The CommandPanel handles all game command input and history.
 - **Common Commands**: Categorized common commands (movement, actions)
 
 #### Props
+
 ```typescript
 interface CommandPanelProps {
   commandHistory: string[];
@@ -141,6 +149,7 @@ interface CommandPanelProps {
 ```
 
 #### Usage
+
 ```tsx
 <CommandPanel
   commandHistory={commandHistory}

@@ -234,6 +234,9 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
+        logger.info(
+            "🚨 SERVER DEBUG: handle_game_command called", {"command": command, "args": args, "player_id": player_id}
+        )
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -253,7 +256,12 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         result = await process_websocket_command(cmd, args, player_id)
 
         # Send the result back to the player
+        logger.info(
+            f"🚨 SERVER DEBUG: Sending command_response event for player {player_id}",
+            {"command": cmd, "result": result, "player_id": player_id},
+        )
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
+        logger.info(f"🚨 SERVER DEBUG: command_response event sent successfully for player {player_id}")
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
@@ -305,6 +313,9 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
+    logger.info(
+        "🚨 SERVER DEBUG: process_websocket_command called", {"command": cmd, "args": args, "player_id": player_id}
+    )
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
@@ -512,7 +523,8 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
             await connection_manager.broadcast_to_room(player.current_room_id, chat_event, exclude_player=player_id)
 
         # Send confirmation to sender
-        await websocket.send_json({"type": "chat_sent", "message": "Message sent"})
+        chat_sent_event = build_event("chat_sent", {"message": "Message sent"}, player_id=player_id)
+        await websocket.send_json(chat_sent_event)
 
     except Exception as e:
         logger.error(f"Error handling chat message for {player_id}: {e}")
@@ -626,11 +638,13 @@ async def send_system_message(websocket: WebSocket, message: str, message_type: 
         message_type: The type of message (info, warning, error)
     """
     try:
-        system_event = {
-            "type": "system",
-            "message": message,
-            "message_type": message_type,
-        }
+        system_event = build_event(
+            "system",
+            {
+                "message": message,
+                "message_type": message_type,
+            },
+        )
         await websocket.send_json(system_event)
 
     except Exception as e:

@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DraggablePanel } from './DraggablePanel';
 import { MotdContent } from './MotdContent';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
-import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 
 interface Player {
   name: string;
@@ -86,6 +85,71 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onClearHistory,
 }) => {
   const [showMotd, setShowMotd] = useState(true);
+  const [panelSizes, setPanelSizes] = useState({
+    chat: { width: 450, height: 350 },
+    gameLog: { width: 500, height: 450 },
+    command: { width: 380, height: 280 },
+    roomInfo: { width: 320, height: 220 },
+    status: { width: 320, height: 220 },
+  });
+
+  // Calculate responsive panel sizes based on viewport
+  useEffect(() => {
+    const calculatePanelSizes = () => {
+      const viewportWidth = window.innerWidth;
+      // viewportHeight removed - not used in calculations
+
+      // Responsive sizing based on viewport dimensions
+      const isLargeScreen = viewportWidth >= 1400;
+      const isMediumScreen = viewportWidth >= 1200;
+      const isSmallScreen = viewportWidth < 1200;
+
+      let newSizes = { ...panelSizes };
+
+      if (isLargeScreen) {
+        // Large screens: generous panel sizes
+        newSizes = {
+          chat: { width: 500, height: 400 },
+          gameLog: { width: 550, height: 500 },
+          command: { width: 400, height: 300 },
+          roomInfo: { width: 350, height: 250 },
+          status: { width: 350, height: 250 },
+        };
+      } else if (isMediumScreen) {
+        // Medium screens: balanced panel sizes
+        newSizes = {
+          chat: { width: 450, height: 350 },
+          gameLog: { width: 500, height: 450 },
+          command: { width: 380, height: 280 },
+          roomInfo: { width: 320, height: 220 },
+          status: { width: 320, height: 220 },
+        };
+      } else if (isSmallScreen) {
+        // Small screens: compact but usable panel sizes
+        newSizes = {
+          chat: { width: 400, height: 300 },
+          gameLog: { width: 450, height: 400 },
+          command: { width: 350, height: 250 },
+          roomInfo: { width: 300, height: 200 },
+          status: { width: 300, height: 200 },
+        };
+      }
+
+      setPanelSizes(newSizes);
+    };
+
+    // Calculate initial sizes
+    calculatePanelSizes();
+
+    // Handle window resize
+    const handleResize = () => {
+      calculatePanelSizes();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run on mount
 
   return (
     <div
@@ -94,9 +158,13 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
     >
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-10">
-        <div className="flex items-center gap-3">
-          <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} />
-          <h1 className="text-lg font-bold text-mythos-terminal-primary">MythosMUD Terminal</h1>
+        {/* Connection Status */}
+        <div className="connection-status">
+          {/* Temporarily disabled EldritchIcon to test WebSocket connection */}
+          {/* <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} /> */}
+          <span className={`status-text ${isConnected ? 'connected' : 'disconnected'}`}>
+            {isConnected ? 'Connected' : 'Disconnected'}
+          </span>
         </div>
         <div className="flex items-center gap-4 text-sm">
           <span className="text-mythos-terminal-text-secondary">Player: {playerName}</span>
@@ -135,8 +203,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         <DraggablePanel
           title="Chat"
           defaultPosition={{ x: 50, y: 50 }}
-          defaultSize={{ width: 400, height: 300 }}
-          minSize={{ width: 200, height: 150 }}
+          defaultSize={panelSizes.chat}
+          minSize={{ width: 300, height: 200 }}
           maxSize={{ width: 800, height: 600 }}
           variant="eldritch"
           onClose={() => console.log('Chat panel closed')}
@@ -155,11 +223,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         {/* Game Log Panel */}
         <DraggablePanel
           title="Game Log"
-          defaultPosition={{ x: 500, y: 50 }}
-          defaultSize={{ width: 450, height: 400 }}
-          minSize={{ width: 300, height: 200 }}
+          defaultPosition={{ x: 50 + panelSizes.chat.width + 20, y: 50 }}
+          defaultSize={panelSizes.gameLog}
+          minSize={{ width: 350, height: 250 }}
           maxSize={{ width: 800, height: 700 }}
           variant="default"
+          autoSize={true}
           onClose={() => console.log('Game Log panel closed')}
           onMinimize={() => console.log('Game Log panel minimized')}
           onMaximize={() => console.log('Game Log panel maximized')}
@@ -170,15 +239,25 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         {/* Command Panel */}
         <DraggablePanel
           title="Commands"
-          defaultPosition={{ x: 1000, y: 50 }}
-          defaultSize={{ width: 350, height: 250 }}
-          minSize={{ width: 200, height: 150 }}
+          defaultPosition={{ x: 50 + panelSizes.chat.width + panelSizes.gameLog.width + 40, y: 50 }}
+          defaultSize={panelSizes.command}
+          minSize={{ width: 250, height: 200 }}
           maxSize={{ width: 600, height: 500 }}
           variant="elevated"
           onClose={() => console.log('Command panel closed')}
           onMinimize={() => console.log('Command panel minimized')}
           onMaximize={() => console.log('Command panel maximized')}
         >
+          {/* Add critical debugging for isConnected prop passing */}
+          {(() => {
+            console.error('🚨 CRITICAL DEBUG: GameTerminal passing isConnected to CommandPanel', {
+              isConnected,
+              isConnecting,
+              error,
+              reconnectAttempts,
+            });
+            return null;
+          })()}
           <CommandPanel
             commandHistory={commandHistory}
             onSendCommand={onSendCommand}
@@ -191,9 +270,9 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         {room && (
           <DraggablePanel
             title="Room Info"
-            defaultPosition={{ x: 50, y: 400 }}
-            defaultSize={{ width: 300, height: 200 }}
-            minSize={{ width: 200, height: 100 }}
+            defaultPosition={{ x: 50, y: 50 + panelSizes.chat.height + 20 }}
+            defaultSize={panelSizes.roomInfo}
+            minSize={{ width: 250, height: 150 }}
             maxSize={{ width: 500, height: 400 }}
             variant="default"
             onClose={() => console.log('Room panel closed')}
@@ -232,13 +311,26 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             </div>
           </DraggablePanel>
         )}
+        {/* Debug Room Info */}
+        {(() => {
+          console.log('🔍 Room Info Debug:', {
+            hasRoom: !!room,
+            roomValue: room,
+            roomType: typeof room,
+            roomKeys: room ? Object.keys(room) : [],
+          });
+          return null;
+        })()}
 
         {/* Player Status Panel */}
         <DraggablePanel
           title="Status"
-          defaultPosition={{ x: 1000, y: 400 }}
-          defaultSize={{ width: 300, height: 200 }}
-          minSize={{ width: 200, height: 100 }}
+          defaultPosition={{
+            x: 50 + panelSizes.chat.width + panelSizes.gameLog.width + 40,
+            y: 50 + panelSizes.command.height + 20,
+          }}
+          defaultSize={panelSizes.status}
+          minSize={{ width: 250, height: 150 }}
           maxSize={{ width: 500, height: 400 }}
           variant="default"
           onClose={() => console.log('Status panel closed')}
@@ -249,7 +341,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             <div className="flex items-center justify-between">
               <span className="text-sm text-mythos-terminal-text-secondary">Connection:</span>
               <div className="flex items-center space-x-2">
-                <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} />
+                {/* Temporarily disabled EldritchIcon to test WebSocket connection */}
+                {/* <EldritchIcon
+                  name={MythosIcons.connection}
+                  size={20}
+                  variant={isConnected ? 'success' : 'error'}
+                /> */}
                 <span
                   className={`text-sm ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}
                 >

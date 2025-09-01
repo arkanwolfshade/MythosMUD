@@ -686,3 +686,187 @@ body {
   background-color: #95a5a6;
   border-color: #7f8c8d;
 }
+
+/* Form Element Styling for MythosMUD Theme */
+/* Radio Buttons */
+input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #00ff00;
+  border-radius: 50%;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+input[type='radio']:checked {
+  background-color: #00ff00;
+  border-color: #00ff00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+input[type='radio']:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background-color: #1a1a1a;
+  border-radius: 50%;
+}
+
+input[type='radio']:hover {
+  border-color: #00cc00;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Checkboxes */
+input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #00ff00;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+input[type='checkbox']:checked {
+  background-color: #00ff00;
+  border-color: #00ff00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+input[type='checkbox']:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+input[type='checkbox']:hover {
+  border-color: #00cc00;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Select Dropdowns */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #1a1a1a;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+select:hover {
+  border-color: #00cc00;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+select:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+select option {
+  background-color: #1a1a1a;
+  color: #00ff00;
+  padding: 8px;
+}
+
+/* Text Inputs */
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+  background-color: #1a1a1a;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+input[type='text']:hover,
+input[type='password']:hover,
+input[type='email']:hover {
+  border-color: #00cc00;
+}
+
+/* File Inputs */
+input[type='file'] {
+  background-color: #1a1a1a;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+input[type='file']:hover {
+  border-color: #00cc00;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 6px;
+  border: 2px solid #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00ff00 #1a1a1a;
+}

@@ -62,14 +62,14 @@ class TestWebSocketHandlerHelpers:
         # Execute
         await send_system_message(mock_websocket, message, message_type)
 
-        # Verify
-        mock_websocket.send_json.assert_called_once_with(
-            {
-                "type": "system",
-                "message": message,
-                "message_type": message_type,
-            }
-        )
+        # Verify system event was sent with new envelope format
+        mock_websocket.send_json.assert_called_once()
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["event_type"] == "system"
+        assert "timestamp" in call_args
+        assert "sequence_number" in call_args
+        assert call_args["data"]["message"] == "Test system message"
+        assert call_args["data"]["message_type"] == "info"
 
     @pytest.mark.asyncio
     async def test_send_system_message_default_type(self):
@@ -81,14 +81,14 @@ class TestWebSocketHandlerHelpers:
         # Execute
         await send_system_message(mock_websocket, message)
 
-        # Verify
-        mock_websocket.send_json.assert_called_once_with(
-            {
-                "type": "system",
-                "message": message,
-                "message_type": "info",
-            }
-        )
+        # Verify system event was sent with new envelope format and default type
+        mock_websocket.send_json.assert_called_once()
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["event_type"] == "system"
+        assert "timestamp" in call_args
+        assert "sequence_number" in call_args
+        assert call_args["data"]["message"] == "Test system message"
+        assert call_args["data"]["message_type"] == "info"  # Default type
 
     @pytest.mark.asyncio
     async def test_send_system_message_error(self):
@@ -148,8 +148,14 @@ class TestWebSocketMessageHandling:
         # Execute
         await handle_websocket_message(self.mock_websocket, self.player_id, message)
 
-        # Verify
-        self.mock_websocket.send_json.assert_called_once_with({"type": "pong"})
+        # Verify pong event was sent with new envelope format
+        self.mock_websocket.send_json.assert_called_once()
+        call_args = self.mock_websocket.send_json.call_args[0][0]
+        assert call_args["event_type"] == "pong"
+        assert "timestamp" in call_args
+        assert "sequence_number" in call_args
+        assert call_args["data"] == {}
+        assert call_args["player_id"] == "test_player_123"
 
     @pytest.mark.asyncio
     async def test_handle_websocket_message_unknown_type(self):

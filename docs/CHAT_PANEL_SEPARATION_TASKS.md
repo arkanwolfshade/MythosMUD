@@ -69,7 +69,7 @@ This document provides a detailed task breakdown for implementing the Chat Panel
   - Update prop names to reflect game log purpose
   - Maintain existing message display functionality
 
-- [ ] **1.2.4**: Update all references in other components
+- [x] **1.2.4**: Update all references in other components
   - Update GameTerminal.tsx imports and usage
   - Update GameTerminalWithPanels.tsx references
   - Update test files and imports
