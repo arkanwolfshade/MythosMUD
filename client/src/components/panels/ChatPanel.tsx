@@ -256,11 +256,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const getFontSizeClass = () => {
     switch (fontSize) {
       case 'small':
-        return 'text-xs';
-      case 'large':
-        return 'text-base';
-      default:
         return 'text-sm';
+      case 'large':
+        return 'text-lg';
+      default:
+        return 'text-base';
     }
   };
 

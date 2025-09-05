@@ -51,7 +51,13 @@ interface Room {
   id: string;
   name: string;
   description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
   exits: Record<string, string>;
+  occupants?: string[];
+  occupant_count?: number;
   entities?: Array<{
     name: string;
     type: string;

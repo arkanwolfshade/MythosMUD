@@ -80,8 +80,11 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     maxSize.height,
   ]);
 
-  const baseClasses =
-    'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch';
+  // Use CSS Grid positioning if className is provided, otherwise use absolute positioning
+  const isGridPositioned = className && className.includes('panel-');
+  const baseClasses = isGridPositioned
+    ? 'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg overflow-hidden transition-eldritch duration-eldritch ease-eldritch'
+    : 'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch';
 
   const variantClasses = {
     default: 'text-mythos-terminal-text',
@@ -98,7 +101,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     elevated: 'bg-mythos-terminal-background border-b border-mythos-terminal-primary cursor-move select-none',
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className}`;
+  const classes = `draggable-panel ${baseClasses} ${variantClasses[variant]} ${className}`;
 
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.preventDefault();
@@ -185,13 +188,21 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     }
   }, [isDragging, isResizing, dragOffset, resizeDirection, position, size, handleMouseMove]);
 
-  const panelStyle: React.CSSProperties = {
-    left: position.x,
-    top: position.y,
-    width: isMinimized ? size.width : size.width,
-    height: isMinimized ? 'auto' : size.height,
-    zIndex,
-  };
+  const panelStyle: React.CSSProperties = isGridPositioned
+    ? {
+        // CSS Grid positioning - no absolute positioning needed
+        width: '100%',
+        height: '100%',
+        zIndex,
+      }
+    : {
+        // Absolute positioning for draggable panels
+        left: position.x,
+        top: position.y,
+        width: isMinimized ? size.width : size.width,
+        height: isMinimized ? 'auto' : size.height,
+        zIndex,
+      };
 
   return (
     <div ref={panelRef} className={classes} style={panelStyle}>

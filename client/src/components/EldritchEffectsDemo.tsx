@@ -4,7 +4,11 @@ import { MythosPanel } from './ui/MythosPanel';
 import { TerminalButton } from './ui/TerminalButton';
 import { TerminalInput } from './ui/TerminalInput';
 
-export const EldritchEffectsDemo: React.FC = () => {
+interface EldritchEffectsDemoProps {
+  onExit?: () => void;
+}
+
+export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit }) => {
   const [activeEffects, setActiveEffects] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
 
@@ -186,6 +190,14 @@ export const EldritchEffectsDemo: React.FC = () => {
           </MythosPanel>
         </div>
       </MythosPanel>
+
+      {onExit && (
+        <div className="mt-8 flex justify-center">
+          <TerminalButton onClick={onExit} variant="secondary" size="lg">
+            Exit Demo
+          </TerminalButton>
+        </div>
+      )}
     </div>
   );
 };

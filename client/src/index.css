@@ -1,6 +1,34 @@
 @import 'tailwindcss';
 @import './styles/motd-preserved.css';
 
+/* Ensure full viewport coverage */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Ensure the main game container fills the viewport */
+.game-terminal-container {
+  flex: 1 !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
 /* Phase 4.1: Eldritch Animations - Direct CSS Implementation */
 @keyframes eldritch-glow {
   0% {
@@ -302,14 +330,14 @@ body {
 }
 
 .login-container h1 {
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 10px #00ff00;
   color: #00ff00;
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-bottom: 2rem;
   color: #888;
   font-style: italic;
@@ -344,7 +372,7 @@ body {
   background: #1a1a1a;
   color: #00ff00;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 .form-group input:focus {
@@ -360,7 +388,7 @@ body {
   color: #000;
   border: none;
   border-radius: 4px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -399,7 +427,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
 }
 
@@ -415,6 +443,7 @@ body {
   background: rgba(255, 68, 68, 0.1);
   border: 1px solid #ff4444;
   border-radius: 4px;
+  font-size: 1.1rem;
 }
 
 /* Game Header */
@@ -471,7 +500,7 @@ body {
 .status-indicator {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
@@ -487,12 +516,12 @@ body {
 
 .error-message {
   color: #ff4444;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .reconnect-info {
   color: #ffaa00;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .player-info {
@@ -511,7 +540,7 @@ body {
 .stats {
   display: flex;
   gap: 1rem;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .stats span {
@@ -571,7 +600,7 @@ body {
 
 .message {
   margin-bottom: 0.25rem;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   word-wrap: break-word;
 }
 
@@ -588,7 +617,7 @@ body {
   background: #1a1a1a;
   color: #00ff00;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 .command-input input:focus {
@@ -655,7 +684,7 @@ body {
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   transition: all 0.3s ease;
 }
 
@@ -677,8 +706,7 @@ body {
   border: 2px solid #95a5a6;
   padding: 6px 12px;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
@@ -753,7 +781,7 @@ input[type='checkbox']:checked::after {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #1a1a1a;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   line-height: 1;
 }
@@ -775,7 +803,7 @@ select {
   border-radius: 4px;
   cursor: pointer;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 16px;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
@@ -810,7 +838,7 @@ input[type='email'] {
   padding: 8px 12px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 16px;
   transition: all 0.2s ease;
 }
 
@@ -836,7 +864,7 @@ input[type='file'] {
   padding: 8px 12px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -869,4 +897,216 @@ input[type='file']:hover {
 * {
   scrollbar-width: thin;
   scrollbar-color: #00ff00 #1a1a1a;
+}
+
+/* Panel Grid Layout System - REMOVED CONFLICTING RULES */
+
+/* Responsive Grid Layouts - REMOVED CONFLICTING RULES */
+
+/* Remaining conflicting rules removed */
+
+/* Ensure panels don't overflow their grid areas */
+.panel-grid-container .draggable-panel {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  position: relative !important;
+  transform: none !important;
+}
+
+/* Panel content sizing */
+.panel-grid-container .draggable-panel .panel-content {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Responsive panel layout - Force flexible grid */
+.game-terminal-panels {
+  display: grid !important;
+  /* Use a structured 3x2 grid layout to prevent overlapping */
+  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+  gap: 15px;
+  padding: 15px;
+  padding-top: calc(var(--header-height) + 15px);
+  height: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  /* Ensure panels don't overlap */
+  grid-auto-flow: row;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+/* Force override any conflicting grid rules */
+.game-terminal-panels[class*='game-terminal-panels'] {
+  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+}
+
+/* Panel responsive sizing */
+.draggable-panel {
+  width: 100%;
+  height: 100%;
+  min-width: 300px;
+  min-height: 200px;
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+
+  /* Prevent overlapping */
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Specific panel grid positioning to prevent overlap */
+.panel-chat {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.panel-gameLog {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.panel-status {
+  grid-area: 1 / 3 / 2 / 4;
+}
+
+.panel-command {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.panel-roomInfo {
+  grid-area: 2 / 2 / 3 / 4;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1199px) {
+  .game-terminal-panels {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+
+    /* Adjust panel positioning for 2-column layout */
+    .panel-chat {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+    .panel-gameLog {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+    .panel-status {
+      grid-area: 2 / 1 / 3 / 2;
+    }
+    .panel-command {
+      grid-area: 2 / 2 / 3 / 3;
+    }
+    .panel-roomInfo {
+      grid-area: 3 / 1 / 4 / 3;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .game-terminal-panels {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 1fr);
+    gap: 15px;
+    padding: 15px;
+    padding-top: calc(var(--header-height) + 15px);
+  }
+}
+
+@media (max-width: 768px) {
+  .game-terminal-panels {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, auto);
+    gap: 15px;
+    padding: 15px;
+    padding-top: calc(var(--header-height) + 15px);
+
+    /* Single column layout */
+    .panel-chat {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+    .panel-gameLog {
+      grid-area: 2 / 1 / 3 / 2;
+    }
+    .panel-status {
+      grid-area: 3 / 1 / 4 / 2;
+    }
+    .panel-command {
+      grid-area: 4 / 1 / 5 / 2;
+    }
+    .panel-roomInfo {
+      grid-area: 5 / 1 / 6 / 2;
+    }
+  }
+}
+
+/* Button Typography Fix - Ensure all buttons match room name field size */
+button,
+.btn,
+input[type='button'],
+input[type='submit'] {
+  font-size: 1rem !important; /* 16px - same as room name field */
+  line-height: 1.4 !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+/* Specific button overrides for consistency */
+.draggable-panel button,
+.panel-content button,
+.chat-panel button,
+.command-panel button,
+.room-info-panel button,
+.status-panel button {
+  font-size: 1rem !important; /* 16px - same as room name field */
+  line-height: 1.4 !important;
+}
+
+/* Quick command buttons */
+.quick-command-button {
+  font-size: 1rem !important; /* 16px - same as room name field */
+  line-height: 1.4 !important;
+}
+
+/* Channel buttons */
+.channel-button {
+  font-size: 1rem !important; /* 16px - same as room name field */
+  line-height: 1.4 !important;
+}
+
+/* Panel header buttons */
+.panel-header button {
+  font-size: 1rem !important; /* 16px - same as room name field */
+  line-height: 1.4 !important;
+}
+
+/* Universal Font Size Standardization - All text elements use 16px */
+* {
+  font-size: 1rem !important; /* 16px - standardized to match room name field */
+}
+
+/* Override for specific elements that need different sizes */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 1rem !important; /* 16px - same as room name field */
+}
+
+p,
+span,
+div,
+label,
+input,
+textarea,
+select {
+  font-size: 1rem !important; /* 16px - same as room name field */
 }

@@ -5,7 +5,12 @@ import App from './App';
 
 // Mock the child components
 vi.mock('./components/EldritchEffectsDemo', () => ({
-  EldritchEffectsDemo: () => <div data-testid="eldritch-effects-demo">Eldritch Effects Demo</div>,
+  EldritchEffectsDemo: ({ onExit }: { onExit?: () => void }) => (
+    <div data-testid="eldritch-effects-demo">
+      Eldritch Effects Demo
+      {onExit && <button onClick={onExit}>Exit Demo</button>}
+    </div>
+  ),
 }));
 
 vi.mock('./components/GameTerminalWithPanels', () => ({
