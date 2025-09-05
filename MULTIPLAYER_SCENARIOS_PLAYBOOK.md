@@ -151,8 +151,12 @@ await mcp_playwright_browser_type({element: "Username input field", ref: "userna
 await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
 await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
 
-// Wait for game terminal
-await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+// Wait for MOTD screen and click Continue to enter game
+await mcp_playwright_browser_wait_for({text: "Continue"});
+await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
+
+// Wait for game interface to load
+await mcp_playwright_browser_wait_for({text: "Chat"});
 ```
 
 #### Step 3: Open Second Browser Tab for Ithaqua
@@ -171,8 +175,12 @@ await mcp_playwright_browser_type({element: "Username input field", ref: "userna
 await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
 await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
 
-// Wait for game terminal
-await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+// Wait for MOTD screen and click Continue to enter game
+await mcp_playwright_browser_wait_for({text: "Continue"});
+await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
+
+// Wait for game interface to load
+await mcp_playwright_browser_wait_for({text: "Chat"});
 ```
 
 #### Step 4: Verify AW Sees Ithaqua Entered Message
