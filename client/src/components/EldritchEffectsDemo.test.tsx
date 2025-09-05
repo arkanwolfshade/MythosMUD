@@ -83,7 +83,7 @@ vi.mock('./ui/TerminalInput', () => ({
     <input
       data-testid="terminal-input"
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={onChange}
       placeholder={placeholder}
       className={className}
     />

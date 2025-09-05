@@ -182,14 +182,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
-  const handleInputChange = (value: string) => {
-    setChatInput(value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChatInput(e.target.value);
 
     // Show typing indicator
-    if (value.trim() && !isTyping) {
+    if (e.target.value.trim() && !isTyping) {
       setIsTyping(true);
       setShowTypingIndicator(true);
-    } else if (!value.trim() && isTyping) {
+    } else if (!e.target.value.trim() && isTyping) {
       setIsTyping(false);
       setShowTypingIndicator(false);
     }

@@ -148,7 +148,7 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
             <div className="flex flex-col items-center space-y-4">
               <TerminalInput
                 value={inputValue}
-                onChange={setInputValue}
+                onChange={e => setInputValue(e.target.value)}
                 placeholder="Type your incantation..."
                 className={`w-full ${activeEffects.includes('eldritch-border') ? 'animate-eldritch-border' : ''} ${activeEffects.includes('eldritch-shimmer') ? 'animate-eldritch-shimmer' : ''}`}
               />

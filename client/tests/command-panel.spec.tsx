@@ -45,14 +45,14 @@ vi.mock('../src/components/ui/TerminalButton', () => ({
 
 interface TerminalInputProps {
   value: string;
-  onChange?: (value: string) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   [key: string]: unknown;
 }
 
 vi.mock('../src/components/ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
-    <input value={value} onChange={e => onChange?.(e.target.value)} onKeyDown={onKeyDown} {...props} />
+    <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),
 }));
 
