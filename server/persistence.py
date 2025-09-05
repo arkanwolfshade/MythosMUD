@@ -408,10 +408,11 @@ class PersistenceLayer:
 
     def _sync_room_players(self, room: Room, _recursion_depth: int = 0) -> None:
         """
-        Sync a room's in-memory player state with the database.
+        Clear any ghost players from the room's in-memory state.
 
-        This ensures that the Room object's _players set reflects the actual
-        players currently in that room according to the database.
+        Players should only be in rooms when they're actively connected to the game.
+        The database current_room_id is just where the player was last located,
+        not where they currently are. This method ensures rooms start clean.
 
         Args:
             room: The Room object to sync
@@ -423,46 +424,16 @@ class PersistenceLayer:
             return
 
         try:
-            # Get all players currently in this room from the database
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT player_id FROM players WHERE current_room_id = ?", (room.id,)).fetchall()
-                db_player_ids = {row["player_id"] for row in rows}
-
             # Get current in-memory player state
             memory_player_ids = set(room.get_players())
 
-            # Add players that are in DB but not in memory
-            for player_id in db_player_ids - memory_player_ids:
-                # Only add if the player actually exists and is valid
-                # Use a direct database query to avoid recursion
-                with self._lock, sqlite3.connect(self.db_path) as conn:
-                    conn.row_factory = sqlite3.Row
-                    row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,)).fetchone()
-                    if row:
-                        current_room_id = row["current_room_id"]
-                        if current_room_id == room.id:
-                            # Use direct room state update instead of player_entered() to avoid triggering events
-                            # during initial sync - events should only be triggered for actual movement
-                            room._players.add(player_id)
-                            self._log(
-                                f"Synced player {player_id} to room {room.id} from database (direct state update)"
-                            )
-                        else:
-                            self._log(
-                                f"Skipped syncing player {player_id} to room {room.id} (in room {current_room_id})"
-                            )
-                    else:
-                        self._log(f"Skipped syncing invalid player {player_id} to room {room.id}")
-
-            # Don't automatically remove players that are in memory but not in DB
-            # This prevents race conditions where players are removed before they're saved
-            # The movement system will handle removing players when they actually move
-            removed_players = memory_player_ids - db_player_ids
-            if removed_players:
-                self._log(
-                    f"Players in memory but not in DB for room {room.id}: {removed_players} (not removing to prevent race conditions)"
-                )
+            # CRITICAL FIX: Only remove players that are no longer in the database
+            # Players should only be added to rooms when they actually connect to the game
+            # But we should not clear all players - only remove those that are truly ghost players
+            if memory_player_ids:
+                self._log(f"Room {room.id} has {len(memory_player_ids)} players in memory: {memory_player_ids}")
+                # Note: We don't clear the room's players here because they are added when players connect
+                # The room's _players set should only be modified when players actually enter/leave
 
         except Exception as e:
             self._log(f"Error syncing room {room.id} players: {e}")

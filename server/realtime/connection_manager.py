@@ -191,9 +191,10 @@ class ConnectionManager:
             bool: True if connection was successful, False otherwise
         """
         try:
-            # Check if player already has an active connection and terminate it
-            if player_id in self.player_websockets or player_id in self.active_sse_connections:
-                logger.info(f"Player {player_id} has existing connection, terminating it")
+            # Check if player already has an active WebSocket connection and terminate it
+            # Allow both SSE and WebSocket connections simultaneously
+            if player_id in self.player_websockets:
+                logger.info(f"Player {player_id} has existing WebSocket connection, terminating it")
                 # Clear pending messages BEFORE force disconnect to prevent stale messages
                 self.message_queue.remove_player_messages(player_id)
                 await self.force_disconnect_player(player_id)
@@ -217,11 +218,16 @@ class ConnectionManager:
                 if canonical_room_id:
                     self.room_manager.subscribe_to_room(player_id, canonical_room_id)
 
-                # Track player presence - only call _track_player_connected if this is the first connection
+                # Track player presence - always call _track_player_connected for WebSocket connections
+                # to ensure connection messages are broadcast to other players
                 if player_id not in self.online_players:
                     await self._track_player_connected(player_id, player)
                 else:
-                    logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
+                    logger.info(
+                        f"Player {player_id} already tracked as online, but broadcasting connection message for WebSocket"
+                    )
+                    # Still broadcast connection message even if player is already tracked
+                    await self._broadcast_connection_message(player_id, player)
 
         except Exception as e:
             logger.error(f"Error connecting WebSocket for {player_id}: {e}", exc_info=True)
@@ -259,8 +265,14 @@ class ConnectionManager:
                     del self.active_websockets[connection_id]
                 del self.player_websockets[player_id]
 
-                # Unsubscribe from all rooms
-                self.room_manager.remove_player_from_all_rooms(player_id)
+                # Unsubscribe from all rooms only if it's not a force disconnect (reconnection)
+                # During reconnections, we want to preserve room membership
+                if not is_force_disconnect:
+                    self.room_manager.remove_player_from_all_rooms(player_id)
+                else:
+                    logger.debug(
+                        f"🔍 DEBUG: Preserving room membership for player {player_id} during force disconnect (reconnection)"
+                    )
 
                 # Clean up rate limiting data
                 self.rate_limiter.remove_player_data(player_id)
@@ -309,9 +321,10 @@ class ConnectionManager:
             str: The connection ID
         """
         try:
-            # Check if player already has an active connection and terminate it
-            if player_id in self.player_websockets or player_id in self.active_sse_connections:
-                logger.info(f"Player {player_id} has existing connection, terminating it")
+            # Check if player already has an active SSE connection and terminate it
+            # Allow both SSE and WebSocket connections simultaneously
+            if player_id in self.active_sse_connections:
+                logger.info(f"Player {player_id} has existing SSE connection, terminating it")
                 # Wait for force disconnect to complete to prevent race conditions
                 try:
                     loop = asyncio.get_running_loop()
@@ -729,6 +742,45 @@ class ConnectionManager:
         except Exception as e:
             logger.error(f"Error tracking player connection: {e}", exc_info=True)
 
+    async def _broadcast_connection_message(self, player_id: str, player: Player):
+        """
+        Broadcast a connection message for a player who is already tracked as online.
+        This is used when a player connects via WebSocket but is already in the online_players list.
+
+        Args:
+            player_id: The player's ID
+            player: The player object
+        """
+        try:
+            room_id = getattr(player, "current_room_id", None)
+            if self.persistence and room_id:
+                room = self.persistence.get_room(room_id)
+                if room and getattr(room, "id", None):
+                    room_id = room.id
+
+            if room_id:
+                # Debug: Check room subscriptions before broadcasting
+                subscribers = self.room_manager.get_room_subscribers(room_id)
+                logger.debug(f"🔍 DEBUG: Room {room_id} has subscribers: {subscribers}")
+                logger.debug(f"🔍 DEBUG: Room subscriptions dict: {self.room_manager.room_subscriptions}")
+
+                # Broadcast connection message to other players in the room
+                from .envelope import build_event
+
+                player_name = getattr(player, "name", player_id)
+                entered_event = build_event(
+                    "player_entered_game",
+                    {"player_id": player_id, "player_name": player_name},
+                    room_id=room_id,
+                )
+                logger.info(
+                    f"🔍 DEBUG: Broadcasting player_entered_game for {player_id} in room {room_id} (already tracked)"
+                )
+                await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
+
+        except Exception as e:
+            logger.error(f"Error broadcasting connection message for {player_id}: {e}", exc_info=True)
+
     async def _track_player_disconnected(self, player_id: str):
         """
         Track when a player disconnects.
@@ -766,6 +818,16 @@ class ConnectionManager:
                 if key in self.online_players:
                     del self.online_players[key]
                 self.room_manager.remove_player_from_all_rooms(key)
+
+                # CRITICAL FIX: Also remove player from room's internal _players set
+                if room_id and self.persistence:
+                    room = self.persistence.get_room(room_id)
+                    if room and room.has_player(key):
+                        logger.debug(f"🔍 DEBUG: Removing ghost player {key} from room {room_id}")
+                        room.player_left(key)
+
+                # CRITICAL FIX: Clean up all ghost players from all rooms
+                self._cleanup_ghost_players()
 
             # Clean up any remaining references
             if player_id in self.online_players:

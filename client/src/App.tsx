@@ -133,7 +133,11 @@ function App() {
   if (showDevMode) {
     return (
       <div className="App">
-        <GameTerminalWithPanels playerName="DevPlayer" authToken="dev-token" />
+        <div className="dev-mode-notice">
+          <h2>Development Mode Disabled</h2>
+          <p>Please use proper authentication to test the game interface.</p>
+          <button onClick={() => setShowDevMode(false)}>Return to Login</button>
+        </div>
       </div>
     );
   }

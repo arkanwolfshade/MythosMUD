@@ -69,6 +69,15 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
     occupant_count: displayRoom.occupant_count,
   });
 
+  // Debug: Log the actual occupant_count value
+  console.log(
+    '🔍 DEBUG: occupant_count value:',
+    displayRoom.occupant_count,
+    'type:',
+    typeof displayRoom.occupant_count
+  );
+  console.log('🔍 DEBUG: occupants array:', displayRoom.occupants, 'length:', displayRoom.occupants?.length);
+
   const formatLocationName = (location: string): string => {
     if (!location || location === 'Unknown') return 'Unknown';
     return location

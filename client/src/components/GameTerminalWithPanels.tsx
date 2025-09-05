@@ -108,12 +108,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
 
   // Event processing function with debouncing and deduplication
   const processEventQueue = useCallback(() => {
-    console.log('🚨 DEBUG: processEventQueue called', {
-      isProcessing: isProcessingEvent.current,
-      queueLength: eventQueue.current.length,
-      queueContents: eventQueue.current.map(e => e.event_type),
-    });
-
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
       return;
     }
@@ -152,74 +146,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           dataKeys: event.data ? Object.keys(event.data) : [],
         });
 
-        // Add critical debugging for command_response events
-        if (eventType.includes('command') || eventType.includes('response')) {
-          console.error('🚨 CRITICAL DEBUG: Potential command response event detected', {
-            originalEventType: event.event_type,
-            normalizedEventType: eventType,
-            eventTypeIncludesCommand: eventType.includes('command'),
-            eventTypeIncludesResponse: eventType.includes('response'),
-            fullEvent: event,
-          });
-        }
-
-        // Add critical debugging for ALL events to see what we're receiving
-        console.error('🚨 CRITICAL DEBUG: ALL EVENT TYPES RECEIVED', {
-          originalEventType: event.event_type,
-          normalizedEventType: eventType,
-          eventTypeLength: eventType.length,
-          eventTypeCharCodes: Array.from(eventType).map(c => c.charCodeAt(0)),
-          fullEvent: event,
-          timestamp: new Date().toISOString(),
-          willMatchCommandResponse: eventType === 'command_response',
-          willMatchWelcome: eventType === 'welcome',
-          willMatchRoomUpdate: eventType === 'room_update',
-          switchCase: 'about_to_enter_switch',
-        });
-
-        // Add specific debugging for command_response events to see if they reach processEventQueue
-        if (eventType === 'command_response') {
-          console.error('🚨 CRITICAL DEBUG: command_response event REACHED processEventQueue!', {
-            originalEventType: event.event_type,
-            normalizedEventType: eventType,
-            eventTypeExact: `"${eventType}"`,
-            eventTypeLength: eventType.length,
-            eventTypeCharCodes: Array.from(eventType).map(c => c.charCodeAt(0)),
-            commandResponseExact: '"command_response"',
-            commandResponseLength: 'command_response'.length,
-            commandResponseCharCodes: Array.from('command_response').map(c => c.charCodeAt(0)),
-            exactMatch: eventType === 'command_response',
-            switchCase: 'about_to_enter_switch',
-            timestamp: new Date().toISOString(),
-          });
-        }
-
-        // Add debugging to see if processEventQueue is being called at all
-        console.error('🚨 CRITICAL DEBUG: processEventQueue ENTRY POINT', {
-          eventType: eventType,
-          originalEventType: event.event_type,
-          queueLength: eventQueue.current?.length || 0,
-          isProcessing: isProcessingEvent,
-          timestamp: new Date().toISOString(),
-        });
-
-        // Add exact string comparison debugging
-        console.error('🚨 CRITICAL DEBUG: EXACT STRING COMPARISON', {
-          eventType: eventType,
-          eventTypeExact: `"${eventType}"`,
-          eventTypeLength: eventType.length,
-          eventTypeCharCodes: Array.from(eventType).map(c => c.charCodeAt(0)),
-          commandResponseExact: '"command_response"',
-          commandResponseLength: 'command_response'.length,
-          commandResponseCharCodes: Array.from('command_response').map(c => c.charCodeAt(0)),
-          exactMatch: eventType === 'command_response',
-          includesCommand: eventType.includes('command'),
-          includesResponse: eventType.includes('response'),
-          switchCase: 'about_to_enter_switch',
-        });
-
-        // Add default case logging to catch unmatched events
-
         switch (eventType) {
           case 'game_state': {
             const playerData = event.data.player as Player;
@@ -255,6 +181,56 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
             const roomData = event.data.room_data as Room;
             if (roomData) {
               updates.room = roomData;
+            }
+            break;
+          }
+          case 'player_entered': {
+            const playerName = event.data.player_name as string;
+            const message = event.data.message as string;
+            if (playerName && message) {
+              logger.info('GameTerminalWithPanels', 'Player entered room', {
+                playerName,
+                message,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: 'room' as const,
+              };
+
+              updates.messages.push(chatMessage);
+            }
+            break;
+          }
+          case 'player_left': {
+            const playerName = event.data.player_name as string;
+            const message = event.data.message as string;
+            if (playerName && message) {
+              logger.info('GameTerminalWithPanels', 'Player left room', {
+                playerName,
+                message,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: 'room' as const,
+              };
+
+              updates.messages.push(chatMessage);
             }
             break;
           }
@@ -431,36 +407,15 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     (event: GameEvent) => {
       logger.info('GameTerminalWithPanels', 'Received game event', { event_type: event.event_type });
 
-      // Add critical debugging for ALL events to see what's being received
-      console.error('🚨 CRITICAL DEBUG: handleGameEvent called', {
-        eventType: event.event_type,
-        eventTypeLower: event.event_type?.toString().toLowerCase(),
-        includesCommand: event.event_type?.toString().toLowerCase().includes('command'),
-        includesResponse: event.event_type?.toString().toLowerCase().includes('response'),
-        queueLength: eventQueue.current.length,
-        isProcessing: isProcessingEvent.current,
-        hasTimeout: !!processingTimeout.current,
-        fullEvent: event,
-      });
-
-      // Add critical debugging for command_response events
-      if (event.event_type && event.event_type.toString().toLowerCase().includes('command')) {
-        console.error('🚨 CRITICAL DEBUG: handleGameEvent called for command event', {
-          eventType: event.event_type,
-          eventTypeLower: event.event_type.toString().toLowerCase(),
-          includesCommand: event.event_type.toString().toLowerCase().includes('command'),
-          queueLength: eventQueue.current.length,
-          isProcessing: isProcessingEvent.current,
-          hasTimeout: !!processingTimeout.current,
-        });
-      }
-
       // Add event to queue for batched processing
       eventQueue.current.push(event);
 
       // Process queue if not already processing
       if (!isProcessingEvent.current && !processingTimeout.current) {
-        processingTimeout.current = window.setTimeout(processEventQueue, 10);
+        processingTimeout.current = window.setTimeout(() => {
+          processingTimeout.current = null;
+          processEventQueue();
+        }, 10);
       }
     },
     [processEventQueue]
@@ -497,26 +452,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
   // Important: Avoid including changing dependencies (like connect/disconnect identity or state)
   // which would trigger cleanup on every render and cause immediate disconnects.
   useEffect(() => {
-    // CRITICAL DEBUG: Log when useEffect executes
-    console.error('🚨 CRITICAL DEBUG: GameTerminalWithPanels useEffect EXECUTED', {
-      hasAttemptedConnection: hasAttemptedConnection.current,
-      hasAuthToken: !!authToken,
-      playerName,
-      timestamp: new Date().toISOString(),
-    });
-
     if (!hasAttemptedConnection.current) {
       hasAttemptedConnection.current = true;
       logger.info('GameTerminalWithPanels', 'Initiating connection', {
         hasAuthToken: !!authToken,
         playerName,
-      });
-
-      // CRITICAL DEBUG: Log before calling connect
-      console.error('🚨 CRITICAL DEBUG: About to call connect()', {
-        hasAuthToken: !!authToken,
-        playerName,
-        timestamp: new Date().toISOString(),
       });
 
       connect();

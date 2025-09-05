@@ -52,9 +52,15 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 room = persistence.get_room(player.current_room_id)
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
+                    logger.info(f"🔍 DEBUG: Room object ID before player_entered: {id(room)}")
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
                         room.player_entered(player_id_str)
+                        logger.info(f"🔍 DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}")
+                        logger.info(f"🔍 DEBUG: Room object ID after player_entered: {id(room)}")
+                    else:
+                        logger.info(f"🔍 DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}")
+                        logger.info(f"🔍 DEBUG: Room object ID (already in room): {id(room)}")
 
                     # Use canonical room id for subscriptions and broadcasts
                     canonical_room_id = getattr(room, "id", None) or player.current_room_id
@@ -558,6 +564,9 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.warning(f"Room not found for update: {room_id}")
             return
 
+        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room object ID: {id(room)}")
+        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room players before any processing: {room.get_players()}")
+
         # Get room occupants (server-side structs)
         room_occupants = connection_manager.get_room_occupants(room_id)
 
@@ -576,6 +585,14 @@ async def broadcast_room_update(player_id: str, room_id: str):
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+        # Debug: Log the room's actual occupants
+        logger.debug(f"🔍 DEBUG: Room {room_id} occupants breakdown:")
+        logger.debug(f"  - Room object ID: {id(room)}")
+        logger.debug(f"  - Players: {room.get_players()}")
+        logger.debug(f"  - Objects: {room.get_objects()}")
+        logger.debug(f"  - NPCs: {room.get_npcs()}")
+        logger.debug(f"  - Total occupant_count: {room.get_occupant_count()}")
 
         # Ensure all UUID objects are converted to strings for JSON serialization
         def convert_uuids_to_strings(obj):
