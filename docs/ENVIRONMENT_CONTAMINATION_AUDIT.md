@@ -9,6 +9,7 @@ Professor Wolfshade, I have completed a thorough investigation of our codebase f
 ### 1. **CRITICAL VIOLATION: `server/logging_config.py`**
 
 **Lines 112-114, 122-123:**
+
 ```python
 # Check if running under pytest
 if "pytest" in sys.modules or "pytest" in sys.argv[0]:
@@ -28,28 +29,36 @@ if os.getenv("MYTHOSMUD_TEST_MODE"):
 The following patterns are **ACCEPTABLE** as they represent proper configuration management rather than environment awareness:
 
 #### `server/persistence.py` (Line 68)
+
 ```python
 elif os.environ.get("DATABASE_URL"):
 ```
+
 **Status:** ✅ **ACCEPTABLE** - This is configuration injection, not environment detection.
 
 #### `server/config_loader.py` (Lines 236, 242)
+
 ```python
 if os.getenv("DATABASE_URL"):
 if os.getenv("ALIASES_DIR"):
 ```
+
 **Status:** ✅ **ACCEPTABLE** - These are configuration overrides, not environment-specific logic.
 
 #### `server/auth/users.py` (Line 42)
+
 ```python
 verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
 ```
+
 **Status:** ✅ **ACCEPTABLE** - This is secure secret management with development fallback.
 
 #### `server/alias_storage.py` (Line 29)
+
 ```python
 elif os.environ.get("ALIASES_DIR"):
 ```
+
 **Status:** ✅ **ACCEPTABLE** - Configuration injection pattern.
 
 ## Analysis
@@ -57,6 +66,7 @@ elif os.environ.get("ALIASES_DIR"):
 ### What Constitutes Environment Contamination
 
 Environment contamination occurs when production code:
+
 1. **Detects** what environment it's running in (test, dev, prod)
 2. **Behaves differently** based on that detection
 3. **Contains conditional logic** that is aware of the execution context
@@ -64,6 +74,7 @@ Environment contamination occurs when production code:
 ### What Is Acceptable
 
 The following patterns are **NOT** environment contamination:
+
 1. **Configuration injection** via environment variables
 2. **Secret management** with environment-specific values
 3. **Path resolution** based on environment variables
@@ -76,6 +87,7 @@ The following patterns are **NOT** environment contamination:
 **Target:** `server/logging_config.py`
 
 **Current Problem:**
+
 ```python
 def detect_environment() -> str:
     # Check if running under pytest
@@ -88,12 +100,14 @@ def detect_environment() -> str:
 ```
 
 **Proposed Solution:**
+
 1. Remove pytest detection logic entirely
 2. Remove `MYTHOSMUD_TEST_MODE` environment variable detection
 3. Rely solely on `MYTHOSMUD_ENV` environment variable for environment specification
 4. Default to "development" if no environment is specified
 
 **New Implementation:**
+
 ```python
 def detect_environment() -> str:
     """
@@ -116,6 +130,7 @@ def detect_environment() -> str:
 **Objective:** Ensure all environment detection goes through a single, controlled mechanism.
 
 **Implementation:**
+
 1. Create a centralized environment detection service
 2. All modules import environment from this service
 3. No direct environment variable checking in business logic
@@ -125,6 +140,7 @@ def detect_environment() -> str:
 **Current Issue:** Tests rely on automatic environment detection
 
 **Solution:**
+
 1. Tests explicitly set `MYTHOSMUD_ENV=test` in test configuration
 2. Remove any test-specific environment detection logic
 3. Ensure test configuration is explicit and controlled
@@ -132,6 +148,7 @@ def detect_environment() -> str:
 ## Security Implications
 
 The current pytest detection creates a potential security vulnerability:
+
 - An attacker could potentially trigger test mode behavior in production
 - The logging system behaves differently in test mode
 - This creates an inconsistent security posture
@@ -141,6 +158,7 @@ The current pytest detection creates a potential security vulnerability:
 **Current Status:** ❌ **NON-COMPLIANT**
 
 **Required Actions:**
+
 1. Remove pytest detection from `logging_config.py`
 2. Remove `MYTHOSMUD_TEST_MODE` environment variable
 3. Update test configuration to explicitly set environment
