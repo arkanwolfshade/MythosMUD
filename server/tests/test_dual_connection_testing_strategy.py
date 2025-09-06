@@ -23,13 +23,8 @@ from server.tests.utils.test_environment import TestCleanup, TestDataSetup, Test
 class TestDualConnectionTestingStrategy:
     """Test suite for dual connection system testing strategy"""
 
-    @pytest.fixture
-    async def test_environment(self):
-        """Set up test environment for testing strategy validation"""
-        from server.tests.utils.test_environment import test_environment
-
-        async with test_environment as env:
-            yield env
+    # Use the test_environment fixture from the utils module
+    # No need to redefine it here
 
     @pytest.fixture
     def test_data(self):

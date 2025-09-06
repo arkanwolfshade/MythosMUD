@@ -37,20 +37,20 @@ class TestWebSocketMessageHandler:
         """Test handling of command message type."""
         message = {"type": "command", "data": {"command": "look", "args": []}}
 
-        with patch("server.realtime.message_handlers.handle_game_command") as mock_handler:
+        with patch("server.realtime.message_handlers.handle_command_message") as mock_handler:
             await handle_websocket_message(mock_websocket, "test_player", message)
 
-            mock_handler.assert_called_once_with(mock_websocket, "test_player", "look", [])
+            mock_handler.assert_called_once_with(mock_websocket, "test_player", {"command": "look", "args": []})
 
     @pytest.mark.asyncio
     async def test_handle_chat_message(self, mock_websocket, mock_connection_manager):
         """Test handling of chat message type."""
         message = {"type": "chat", "data": {"message": "Hello, world!"}}
 
-        with patch("server.realtime.message_handlers.handle_chat") as mock_handler:
+        with patch("server.realtime.message_handlers.handle_chat_message") as mock_handler:
             await handle_websocket_message(mock_websocket, "test_player", message)
 
-            mock_handler.assert_called_once_with(mock_websocket, "test_player", "Hello, world!")
+            mock_handler.assert_called_once_with(mock_websocket, "test_player", {"message": "Hello, world!"})
 
     @pytest.mark.asyncio
     async def test_handle_ping_message(self, mock_websocket):
@@ -86,7 +86,7 @@ class TestWebSocketMessageHandler:
         """Test handling of message that raises an exception."""
         message = {"type": "command", "data": {"command": "look", "args": []}}
 
-        with patch("server.realtime.message_handlers.handle_game_command", side_effect=Exception("Test error")):
+        with patch("server.realtime.message_handlers.handle_command_message", side_effect=Exception("Test error")):
             await handle_websocket_message(mock_websocket, "test_player", message)
 
             # Verify error response was sent

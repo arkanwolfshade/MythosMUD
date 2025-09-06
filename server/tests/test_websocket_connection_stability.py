@@ -21,7 +21,7 @@ class TestWebSocketConnectionStability:
     @pytest.fixture(autouse=True)
     def setup_test(self):
         """Set up test environment."""
-        # Reset connection manager state
+        # Reset connection manager state for testing
         connection_manager.active_websockets.clear()
         connection_manager.player_websockets.clear()
         connection_manager.online_players.clear()

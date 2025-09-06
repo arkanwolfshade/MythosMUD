@@ -245,9 +245,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
-        logger.info(
-            "🚨 SERVER DEBUG: handle_game_command called", {"command": command, "args": args, "player_id": player_id}
-        )
+        logger.info("🚨 SERVER DEBUG: handle_game_command called", command=command, args=args, player_id=player_id)
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -324,9 +322,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
-    logger.info(
-        "🚨 SERVER DEBUG: process_websocket_command called", {"command": cmd, "args": args, "player_id": player_id}
-    )
+    logger.info("🚨 SERVER DEBUG: process_websocket_command called", command=cmd, args=args, player_id=player_id)
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
