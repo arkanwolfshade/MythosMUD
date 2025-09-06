@@ -122,7 +122,7 @@ class MessageHandlerFactory:
 
         logger.info(
             "🚨 SERVER DEBUG: message_handler_factory.handle_message called",
-            {"message_type": message_type, "data": data, "player_id": player_id, "full_message": message},
+            extra={"message_type": message_type, "data": data, "player_id": player_id, "full_message": message},
         )
 
         handler = self.get_handler(message_type)

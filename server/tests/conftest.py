@@ -41,6 +41,34 @@ os.environ["ALIASES_DIR"] = str(aliases_dir)
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
+# Import test environment fixtures to make them available to all tests
+
+
+# Create synchronous wrapper fixtures for async fixtures
+@pytest.fixture
+def sync_test_environment():
+    """Synchronous wrapper for test_environment async fixture"""
+    import asyncio
+    import uuid
+
+    from .utils.test_environment import test_env_manager
+
+    # Use unique environment name for each test
+    env_name = f"pytest_sync_{uuid.uuid4().hex[:8]}"
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        env = loop.run_until_complete(test_env_manager.create_environment(env_name))
+        yield env
+    finally:
+        try:
+            loop.run_until_complete(test_env_manager.destroy_environment(env_name))
+        except Exception:
+            pass  # Ignore cleanup errors
+        loop.close()
+
+
 # Load test environment variables from .env.test file
 TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
 if TEST_ENV_PATH.exists():

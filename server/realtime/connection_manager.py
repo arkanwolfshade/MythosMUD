@@ -1162,11 +1162,23 @@ class ConnectionManager:
                 delivery_status["sse_delivered"] = True
                 delivery_status["active_connections"] += len(self.active_sse_connections.get(player_id, []))
 
-            # Determine overall success
+            # If no active connections, queue the message for later delivery
+            if delivery_status["active_connections"] == 0:
+                if player_id not in self.message_queue.pending_messages:
+                    self.message_queue.pending_messages[player_id] = []
+                self.message_queue.pending_messages[player_id].append(serializable_event)
+                delivery_status["sse_delivered"] = True  # Mark as queued for later delivery
+
+            # Determine overall success - true if message was delivered to active connections
+            # OR if message was queued for later delivery (but not if WebSocket failed)
             delivery_status["success"] = (
                 delivery_status["websocket_delivered"] > 0
-                or delivery_status["sse_delivered"]
-                or delivery_status["active_connections"] > 0
+                or (delivery_status["sse_delivered"] and delivery_status["active_connections"] > 0)
+                or (
+                    delivery_status["active_connections"] == 0
+                    and delivery_status["sse_delivered"]
+                    and delivery_status["websocket_failed"] == 0
+                )
             )
 
             logger.debug(f"Message delivery status for player {player_id}: {delivery_status}")
@@ -1317,8 +1329,13 @@ class ConnectionManager:
             connection_id: The connection ID to clean up
         """
         try:
-            # Remove from active websockets
+            # Close the WebSocket if it's still in active_websockets
             if connection_id in self.active_websockets:
+                websocket = self.active_websockets[connection_id]
+                try:
+                    await websocket.close(code=1000, reason="Connection cleaned up")
+                except Exception as e:
+                    logger.warning(f"Error closing dead WebSocket {connection_id} for {player_id}: {e}")
                 del self.active_websockets[connection_id]
 
             # Remove from player's connection list

@@ -163,8 +163,7 @@ class TestWebSocketConnectionEvents:
         with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
             # Set up connection manager mocks
             async def mock_connect_websocket(websocket, player_id, session_id=None):
-                # Simulate the real connect_websocket behavior by calling room.player_entered
-                mock_room.player_entered(player_id)
+                # Don't call player_entered here - the real handler will do it
                 return True
 
             mock_cm.connect_websocket = mock_connect_websocket

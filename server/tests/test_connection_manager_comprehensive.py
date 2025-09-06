@@ -780,11 +780,11 @@ class TestConnectionManagerComprehensive:
         test_event = {"type": "test_message", "content": "Hello World"}
         delivery_status = await connection_manager.send_personal_message("test_player", test_event)
 
-        # Verify delivery status shows failure (connection was cleaned up during initial game state)
-        assert delivery_status["success"] is False
+        # Verify delivery status shows message was queued (connection was cleaned up during initial game state)
+        assert delivery_status["success"] is True  # Message was queued for later delivery
         assert delivery_status["websocket_delivered"] == 0
         assert delivery_status["websocket_failed"] == 0  # Connection already cleaned up
-        assert delivery_status["sse_delivered"] is False
+        assert delivery_status["sse_delivered"] is True  # Message was queued
         assert delivery_status["total_connections"] == 0  # No connections left
         assert delivery_status["active_connections"] == 0
 
@@ -2514,10 +2514,10 @@ class TestConnectionManagerComprehensive:
         event = {"type": "test_event", "data": "test_data"}
         result = await connection_manager.send_personal_message("test_player", event)
 
-        assert result["success"] is False  # No connections available
+        assert result["success"] is True  # Message was queued for later delivery
         assert result["websocket_delivered"] == 0
-        assert result["sse_delivered"] is False
-        # Note: pending messages are only added for SSE connections, not when no connections exist
+        assert result["sse_delivered"] is True  # Message was queued
+        # Note: messages are queued for later delivery when no connections exist
 
     @pytest.mark.asyncio
     async def test_send_personal_message_exception(self, connection_manager, mock_websocket):

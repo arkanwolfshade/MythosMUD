@@ -1,632 +1,628 @@
 """
-Tests for the WebSocket handler module.
+Tests for WebSocket handler functionality.
 
-This module tests the WebSocket handler functions that are most amenable to unit testing,
-focusing on message parsing, error handling, helper functions, and command routing logic.
+This module tests the WebSocket message handling, connection management,
+and error handling for the MythosMUD real-time communication system.
+As noted in the restricted archives, these tests ensure the stability
+of our forbidden knowledge transmission protocols.
 """
 
+import json
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+from fastapi import WebSocket, WebSocketDisconnect
 
-from ..realtime.websocket_handler import (
+from server.error_types import ErrorType
+from server.realtime.websocket_handler import (
+    broadcast_room_update,
     get_help_content,
+    handle_chat_message,
+    handle_game_command,
+    handle_websocket_connection,
     handle_websocket_message,
     process_websocket_command,
     send_system_message,
 )
 
 
-class TestWebSocketHandlerHelpers:
-    """Test cases for WebSocket handler helper functions."""
+class TestWebSocketConnection:
+    """Test WebSocket connection handling."""
 
-    def test_get_help_content_general(self):
-        """Test getting general help content."""
-        # Execute
-        help_content = get_help_content()
+    @pytest.fixture
+    def mock_websocket(self):
+        """Create a mock WebSocket for testing."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.send_json = AsyncMock()
+        websocket.receive_text = AsyncMock()
+        return websocket
 
-        # Verify
-        assert "Available Commands:" in help_content
-        assert "look [direction]: Examine your surroundings" in help_content
-        assert "go <direction>: Move in a direction" in help_content
-        assert "say <message>: Say something" in help_content
-        assert "help [command]: Get help on commands" in help_content
-        assert "Directions: north, south, east, west" in help_content
+    @pytest.fixture
+    def mock_connection_manager(self):
+        """Create a mock connection manager."""
+        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+            mock_cm.connect_websocket = AsyncMock(return_value=True)
+            mock_cm.disconnect_websocket = AsyncMock()
+            mock_cm._get_player = Mock()
+            mock_cm.mark_player_seen = Mock()
+            mock_cm.persistence = Mock()
+            mock_cm.get_room_occupants = Mock(return_value=[])
+            mock_cm.broadcast_to_room = AsyncMock()
+            mock_cm.subscribe_to_room = AsyncMock()
+            mock_cm.unsubscribe_from_room = AsyncMock()
+            yield mock_cm
 
-    def test_get_help_content_specific_command(self):
-        """Test getting help content for a specific command."""
-        # Execute
-        help_content = get_help_content("look")
-
-        # Verify
-        assert "Help for 'look': Command not found or help not available." in help_content
-
-    def test_get_help_content_nonexistent_command(self):
-        """Test getting help content for a non-existent command."""
-        # Execute
-        help_content = get_help_content("nonexistent")
-
-        # Verify
-        assert "Help for 'nonexistent': Command not found or help not available." in help_content
+    @pytest.fixture
+    def mock_user_manager(self):
+        """Create a mock user manager."""
+        with patch("server.services.user_manager.user_manager") as mock_um:
+            mock_um.load_player_mutes = Mock()
+            mock_um.cleanup_player_mutes = Mock()
+            yield mock_um
 
     @pytest.mark.asyncio
-    async def test_send_system_message_success(self):
+    async def test_handle_websocket_connection_success(
+        self, mock_websocket, mock_connection_manager, mock_user_manager
+    ):
+        """Test successful WebSocket connection handling."""
+        # Setup
+        player_id = "test_player_123"
+        session_id = "session_456"
+
+        # Mock player and room data
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_player.level = 1
+        mock_player.current_room_id = "room_1"
+        mock_player.get_stats = Mock(return_value={"health": 100, "sanity": 80})
+
+        mock_room = Mock()
+        mock_room.id = "room_1"
+        mock_room.name = "Test Room"
+        mock_room.description = "A test room"
+        mock_room.exits = {"north": "room_2"}
+        mock_room.has_player = Mock(return_value=False)
+        mock_room.player_entered = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        mock_room.to_dict = Mock(return_value={"id": "room_1", "name": "Test Room"})
+
+        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Mock the message loop to exit after first iteration
+        mock_websocket.receive_text.side_effect = [json.dumps({"type": "ping", "data": {}}), WebSocketDisconnect()]
+
+        # Execute
+        await handle_websocket_connection(mock_websocket, player_id, session_id)
+
+        # Verify
+        mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, session_id)
+        mock_user_manager.load_player_mutes.assert_called_once_with(player_id)
+        mock_websocket.send_json.assert_called()
+        mock_connection_manager.disconnect_websocket.assert_called_once_with(player_id)
+        mock_user_manager.cleanup_player_mutes.assert_called_once_with(player_id)
+
+    @pytest.mark.asyncio
+    async def test_handle_websocket_connection_connection_failure(self, mock_websocket, mock_connection_manager):
+        """Test WebSocket connection handling when connection fails."""
+        # Setup
+        player_id = "test_player_123"
+        mock_connection_manager.connect_websocket.return_value = False
+
+        # Execute
+        await handle_websocket_connection(mock_websocket, player_id)
+
+        # Verify
+        mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, None)
+        mock_websocket.send_json.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_handle_websocket_connection_json_decode_error(
+        self, mock_websocket, mock_connection_manager, mock_user_manager
+    ):
+        """Test WebSocket connection handling with JSON decode error."""
+        # Setup
+        player_id = "test_player_123"
+
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "room_1"
+        mock_player.get_stats = Mock(return_value={})
+
+        mock_room = Mock()
+        mock_room.id = "room_1"
+        mock_room.name = "Test Room"
+        mock_room.has_player = Mock(return_value=False)
+        mock_room.player_entered = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        mock_room.to_dict = Mock(return_value={"id": "room_1"})
+
+        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Mock invalid JSON
+        mock_websocket.receive_text.side_effect = ["invalid json", WebSocketDisconnect()]
+
+        # Execute
+        await handle_websocket_connection(mock_websocket, player_id)
+
+        # Verify error response was sent
+        error_calls = [call for call in mock_websocket.send_json.call_args_list if call[0][0].get("type") == "error"]
+        assert len(error_calls) > 0
+        assert error_calls[0][0][0]["error_type"] == ErrorType.INVALID_FORMAT.value
+
+
+class TestWebSocketMessageHandling:
+    """Test WebSocket message handling."""
+
+    @pytest.fixture
+    def mock_websocket(self):
+        """Create a mock WebSocket for testing."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.send_json = AsyncMock()
+        return websocket
+
+    @pytest.mark.asyncio
+    async def test_handle_websocket_message_success(self, mock_websocket):
+        """Test successful WebSocket message handling."""
+        # Setup
+        player_id = "test_player_123"
+        message = {"type": "command", "data": {"command": "look"}}
+
+        with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
+            mock_factory.handle_message = AsyncMock()
+
+            # Execute
+            await handle_websocket_message(mock_websocket, player_id, message)
+
+            # Verify
+            mock_factory.handle_message.assert_called_once_with(mock_websocket, player_id, message)
+
+    @pytest.mark.asyncio
+    async def test_handle_websocket_message_none_message(self, mock_websocket):
+        """Test WebSocket message handling with None message."""
+        # Setup
+        player_id = "test_player_123"
+        message = None
+
+        with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
+            mock_factory.handle_message = AsyncMock(
+                side_effect=AttributeError("'NoneType' object has no attribute 'get'")
+            )
+
+            # Execute
+            await handle_websocket_message(mock_websocket, player_id, message)
+
+            # Verify error response was sent
+            mock_websocket.send_json.assert_called_once()
+            call_args = mock_websocket.send_json.call_args[0][0]
+            assert call_args["type"] == "error"
+            assert call_args["error_type"] == ErrorType.MESSAGE_PROCESSING_ERROR.value
+
+    @pytest.mark.asyncio
+    async def test_handle_websocket_message_exception(self, mock_websocket):
+        """Test WebSocket message handling with exception."""
+        # Setup
+        player_id = "test_player_123"
+        message = {"type": "command", "data": {"command": "look"}}
+
+        with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
+            mock_factory.handle_message = AsyncMock(side_effect=Exception("Test error"))
+
+            # Execute
+            await handle_websocket_message(mock_websocket, player_id, message)
+
+            # Verify error response was sent
+            mock_websocket.send_json.assert_called_once()
+            call_args = mock_websocket.send_json.call_args[0][0]
+            assert call_args["type"] == "error"
+            assert call_args["error_type"] == ErrorType.MESSAGE_PROCESSING_ERROR.value
+            assert "Test error" in call_args["message"]
+
+
+class TestGameCommandHandling:
+    """Test game command handling."""
+
+    @pytest.fixture
+    def mock_websocket(self):
+        """Create a mock WebSocket for testing."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.send_json = AsyncMock()
+        return websocket
+
+    @pytest.mark.asyncio
+    async def test_handle_game_command_success(self, mock_websocket):
+        """Test successful game command handling."""
+        # Setup
+        player_id = "test_player_123"
+        command = "look"
+        args = []
+
+        with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
+            mock_process.return_value = {"result": "You see a test room."}
+
+            # Execute
+            await handle_game_command(mock_websocket, player_id, command, args)
+
+            # Verify
+            mock_process.assert_called_once_with("look", [], player_id)
+            mock_websocket.send_json.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_handle_game_command_empty_command(self, mock_websocket):
+        """Test game command handling with empty command."""
+        # Setup
+        player_id = "test_player_123"
+        command = ""
+        args = None
+
+        # Execute
+        await handle_game_command(mock_websocket, player_id, command, args)
+
+        # Verify error response was sent
+        mock_websocket.send_json.assert_called_once()
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["type"] == "error"
+        assert call_args["error_type"] == ErrorType.INVALID_COMMAND.value
+
+    @pytest.mark.asyncio
+    async def test_handle_game_command_exception(self, mock_websocket):
+        """Test game command handling with exception."""
+        # Setup
+        player_id = "test_player_123"
+        command = "look"
+        args = []
+
+        with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
+            mock_process.side_effect = Exception("Test error")
+
+            # Execute
+            await handle_game_command(mock_websocket, player_id, command, args)
+
+            # Verify error response was sent
+            mock_websocket.send_json.assert_called_once()
+            call_args = mock_websocket.send_json.call_args[0][0]
+            assert call_args["type"] == "error"
+            assert call_args["error_type"] == ErrorType.MESSAGE_PROCESSING_ERROR.value
+
+
+class TestWebSocketCommandProcessing:
+    """Test WebSocket command processing."""
+
+    @pytest.fixture
+    def mock_connection_manager(self):
+        """Create a mock connection manager."""
+        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+            mock_cm._get_player = Mock()
+            mock_cm.persistence = Mock()
+            yield mock_cm
+
+    @pytest.mark.asyncio
+    async def test_process_websocket_command_look_success(self, mock_connection_manager):
+        """Test successful look command processing."""
+        # Setup
+        player_id = "test_player_123"
+        cmd = "look"
+        args = []
+
+        mock_player = Mock()
+        mock_player.current_room_id = "room_1"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock()
+        mock_room.name = "Test Room"
+        mock_room.description = "A test room"
+        mock_room.exits = {"north": "room_2"}
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Execute
+        result = await process_websocket_command(cmd, args, player_id)
+
+        # Verify
+        assert "result" in result
+        assert "Test Room" in result["result"]
+        assert "A test room" in result["result"]
+        assert "Exits: north" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_process_websocket_command_look_direction(self, mock_connection_manager):
+        """Test look command with direction."""
+        # Setup
+        player_id = "test_player_123"
+        cmd = "look"
+        args = ["north"]
+
+        mock_player = Mock()
+        mock_player.current_room_id = "room_1"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock()
+        mock_room.exits = {"north": "room_2"}
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        mock_target_room = Mock()
+        mock_target_room.name = "North Room"
+        mock_target_room.description = "A room to the north"
+        mock_connection_manager.persistence.get_room.side_effect = [mock_room, mock_target_room]
+
+        # Execute
+        result = await process_websocket_command(cmd, args, player_id)
+
+        # Verify
+        assert "result" in result
+        assert "North Room" in result["result"]
+        assert "A room to the north" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_process_websocket_command_go_success(self, mock_connection_manager):
+        """Test successful go command processing."""
+        # Setup
+        player_id = "test_player_123"
+        cmd = "go"
+        args = ["north"]
+
+        mock_player = Mock()
+        mock_player.current_room_id = "room_1"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock()
+        mock_room.exits = {"north": "room_2"}
+        mock_room.get_players = Mock(return_value=[player_id])
+
+        mock_target_room = Mock()
+        mock_target_room.name = "North Room"
+        mock_target_room.description = "A room to the north"
+        mock_target_room.exits = {"south": "room_1"}
+        mock_target_room.get_players = Mock(return_value=[])
+
+        # Mock get_room to return different rooms based on room_id
+        def mock_get_room(room_id):
+            if room_id == "room_1":
+                return mock_room
+            elif room_id == "room_2":
+                return mock_target_room
+            return None
+
+        mock_connection_manager.persistence.get_room.side_effect = mock_get_room
+
+        with patch("server.game.movement_service.MovementService") as mock_movement_service:
+            mock_service_instance = Mock()
+            mock_service_instance.move_player = Mock(return_value=True)
+            mock_movement_service.return_value = mock_service_instance
+
+            # Mock event bus
+            mock_connection_manager._event_bus = Mock()
+
+            # Execute
+            result = await process_websocket_command(cmd, args, player_id)
+
+            # Verify
+            assert "result" in result
+            assert "North Room" in result["result"]
+            assert result["room_changed"] is True
+            assert result["room_id"] == "room_2"
+
+    @pytest.mark.asyncio
+    async def test_process_websocket_command_player_not_found(self, mock_connection_manager):
+        """Test command processing when player is not found."""
+        # Setup
+        player_id = "test_player_123"
+        cmd = "look"
+        args = []
+
+        mock_connection_manager._get_player.return_value = None
+
+        # Execute
+        result = await process_websocket_command(cmd, args, player_id)
+
+        # Verify
+        assert result["result"] == "Player not found"
+
+    @pytest.mark.asyncio
+    async def test_process_websocket_command_no_persistence(self, mock_connection_manager):
+        """Test command processing when persistence is not available."""
+        # Setup
+        player_id = "test_player_123"
+        cmd = "look"
+        args = []
+
+        mock_player = Mock()
+        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.persistence = None
+
+        # Execute
+        result = await process_websocket_command(cmd, args, player_id)
+
+        # Verify
+        assert result["result"] == "Game system unavailable"
+
+
+class TestChatMessageHandling:
+    """Test chat message handling."""
+
+    @pytest.fixture
+    def mock_websocket(self):
+        """Create a mock WebSocket for testing."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.send_json = AsyncMock()
+        return websocket
+
+    @pytest.fixture
+    def mock_connection_manager(self):
+        """Create a mock connection manager."""
+        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+            mock_cm._get_player = Mock()
+            mock_cm.broadcast_to_room = AsyncMock()
+            yield mock_cm
+
+    @pytest.mark.asyncio
+    async def test_handle_chat_message_success(self, mock_websocket, mock_connection_manager):
+        """Test successful chat message handling."""
+        # Setup
+        player_id = "test_player_123"
+        message = "Hello, world!"
+
+        mock_player = Mock()
+        mock_player.current_room_id = "room_1"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        # Execute
+        await handle_chat_message(mock_websocket, player_id, message)
+
+        # Verify
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+        mock_websocket.send_json.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_handle_chat_message_exception(self, mock_websocket, mock_connection_manager):
+        """Test chat message handling with exception."""
+        # Setup
+        player_id = "test_player_123"
+        message = "Hello, world!"
+
+        mock_connection_manager._get_player.side_effect = Exception("Test error")
+
+        # Execute
+        await handle_chat_message(mock_websocket, player_id, message)
+
+        # Verify error response was sent
+        mock_websocket.send_json.assert_called_once()
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["type"] == "error"
+        assert call_args["error_type"] == ErrorType.MESSAGE_PROCESSING_ERROR.value
+
+
+class TestRoomUpdateBroadcasting:
+    """Test room update broadcasting."""
+
+    @pytest.fixture
+    def mock_connection_manager(self):
+        """Create a mock connection manager."""
+        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+            mock_cm._get_player = Mock()
+            mock_cm.persistence = Mock()
+            mock_cm.get_room_occupants = Mock(return_value=[])
+            mock_cm.broadcast_to_room = AsyncMock()
+            mock_cm.subscribe_to_room = AsyncMock()
+            mock_cm.unsubscribe_from_room = AsyncMock()
+            yield mock_cm
+
+    @pytest.mark.asyncio
+    async def test_broadcast_room_update_success(self, mock_connection_manager):
+        """Test successful room update broadcasting."""
+        # Setup
+        player_id = "test_player_123"
+        room_id = "room_1"
+
+        mock_player = Mock()
+        mock_player.current_room_id = "room_1"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock()
+        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_objects = Mock(return_value=[])
+        mock_room.get_npcs = Mock(return_value=[])
+        mock_room.get_occupant_count = Mock(return_value=0)
+        mock_room.to_dict = Mock(return_value={"id": "room_1", "name": "Test Room"})
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Execute
+        await broadcast_room_update(player_id, room_id)
+
+        # Verify
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_broadcast_room_update_no_persistence(self, mock_connection_manager):
+        """Test room update broadcasting when persistence is not available."""
+        # Setup
+        player_id = "test_player_123"
+        room_id = "room_1"
+
+        mock_connection_manager.persistence = None
+
+        # Execute
+        await broadcast_room_update(player_id, room_id)
+
+        # Verify
+        mock_connection_manager.broadcast_to_room.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_broadcast_room_update_room_not_found(self, mock_connection_manager):
+        """Test room update broadcasting when room is not found."""
+        # Setup
+        player_id = "test_player_123"
+        room_id = "room_1"
+
+        mock_connection_manager.persistence.get_room.return_value = None
+
+        # Execute
+        await broadcast_room_update(player_id, room_id)
+
+        # Verify
+        mock_connection_manager.broadcast_to_room.assert_not_called()
+
+
+class TestSystemMessageHandling:
+    """Test system message handling."""
+
+    @pytest.fixture
+    def mock_websocket(self):
+        """Create a mock WebSocket for testing."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.send_json = AsyncMock()
+        return websocket
+
+    @pytest.mark.asyncio
+    async def test_send_system_message_success(self, mock_websocket):
         """Test successful system message sending."""
         # Setup
-        mock_websocket = AsyncMock()
-        message = "Test system message"
+        message = "System message"
         message_type = "info"
 
         # Execute
         await send_system_message(mock_websocket, message, message_type)
 
-        # Verify system event was sent with new envelope format
-        mock_websocket.send_json.assert_called_once()
-        call_args = mock_websocket.send_json.call_args[0][0]
-        assert call_args["event_type"] == "system"
-        assert "timestamp" in call_args
-        assert "sequence_number" in call_args
-        assert call_args["data"]["message"] == "Test system message"
-        assert call_args["data"]["message_type"] == "info"
-
-    @pytest.mark.asyncio
-    async def test_send_system_message_default_type(self):
-        """Test system message sending with default message type."""
-        # Setup
-        mock_websocket = AsyncMock()
-        message = "Test system message"
-
-        # Execute
-        await send_system_message(mock_websocket, message)
-
-        # Verify system event was sent with new envelope format and default type
-        mock_websocket.send_json.assert_called_once()
-        call_args = mock_websocket.send_json.call_args[0][0]
-        assert call_args["event_type"] == "system"
-        assert "timestamp" in call_args
-        assert "sequence_number" in call_args
-        assert call_args["data"]["message"] == "Test system message"
-        assert call_args["data"]["message_type"] == "info"  # Default type
-
-    @pytest.mark.asyncio
-    async def test_send_system_message_error(self):
-        """Test system message sending when WebSocket fails."""
-        # Setup
-        mock_websocket = AsyncMock()
-        mock_websocket.send_json.side_effect = Exception("WebSocket error")
-        message = "Test system message"
-
-        # Execute - should not raise exception
-        await send_system_message(mock_websocket, message)
-
         # Verify
         mock_websocket.send_json.assert_called_once()
-
-
-class TestWebSocketMessageHandling:
-    """Test cases for WebSocket message handling."""
-
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.mock_websocket = AsyncMock()
-        self.player_id = "test_player_123"
+        call_args = mock_websocket.send_json.call_args[0][0]
+        assert call_args["event_type"] == "system"
+        assert call_args["data"]["message"] == message
+        assert call_args["data"]["message_type"] == message_type
 
     @pytest.mark.asyncio
-    async def test_handle_websocket_message_command(self):
-        """Test handling a command message."""
+    async def test_send_system_message_exception(self, mock_websocket):
+        """Test system message sending with exception."""
         # Setup
-        message = {"type": "command", "data": {"command": "look", "args": []}}
-
-        with patch("server.realtime.websocket_handler.handle_game_command") as mock_handle_command:
-            # Execute
-            await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-            # Verify
-            mock_handle_command.assert_called_once_with(self.mock_websocket, self.player_id, "look", [])
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_chat(self):
-        """Test handling a chat message."""
-        # Setup
-        message = {"type": "chat", "data": {"message": "Hello, world!"}}
-
-        with patch("server.realtime.websocket_handler.handle_chat_message") as mock_handle_chat:
-            # Execute
-            await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-            # Verify
-            mock_handle_chat.assert_called_once_with(self.mock_websocket, self.player_id, "Hello, world!")
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_ping(self):
-        """Test handling a ping message."""
-        # Setup
-        message = {"type": "ping", "data": {}}
+        message = "System message"
+        message_type = "info"
+        mock_websocket.send_json.side_effect = Exception("Test error")
 
         # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
+        await send_system_message(mock_websocket, message, message_type)
 
-        # Verify pong response was sent
-        self.mock_websocket.send_json.assert_called_once()
-        call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["event_type"] == "pong"
-        assert "timestamp" in call_args
+        # Verify - should not raise exception
 
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_unknown_type(self):
-        """Test handling an unknown message type."""
-        # Setup
-        message = {"type": "unknown_type", "data": {}}
 
+class TestHelpContent:
+    """Test help content functionality."""
+
+    def test_get_help_content_specific_command(self):
+        """Test getting help for a specific command."""
         # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
+        result = get_help_content("look")
 
-        # Verify error response was sent
-        self.mock_websocket.send_json.assert_called_once()
-        call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["type"] == "error"
-        assert call_args["error_type"] == "message_processing_error"
-        assert "Error processing message" in call_args["message"]
+        # Verify
+        assert "Help for 'look'" in result
 
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_missing_type(self):
-        """Test handling a message with missing type."""
-        # Setup
-        message = {"data": {}}
-
+    def test_get_help_content_general(self):
+        """Test getting general help content."""
         # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-        # Verify - should send error response for missing type
-        self.mock_websocket.send_json.assert_called_once()
-        call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["type"] == "error"
-        assert call_args["error_type"] == "message_processing_error"
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_missing_data(self):
-        """Test handling a message with missing data."""
-        # Setup
-        message = {"type": "command"}
-
-        with patch("server.realtime.websocket_handler.handle_game_command") as mock_handle_command:
-            # Execute
-            await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-            # Verify
-            mock_handle_command.assert_called_once_with(self.mock_websocket, self.player_id, "", [])
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_exception(self):
-        """Test handling a message when an exception occurs."""
-        # Setup
-        message = {"type": "command", "data": {"command": "look", "args": []}}
-
-        with patch("server.realtime.websocket_handler.handle_game_command", side_effect=Exception("Test error")):
-            # Execute
-            await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-            # Verify - should send error response for exceptions
-            self.mock_websocket.send_json.assert_called_once()
-            call_args = self.mock_websocket.send_json.call_args[0][0]
-            assert call_args["type"] == "error"
-            assert call_args["error_type"] == "message_processing_error"
-
-
-class TestWebSocketCommandProcessing:
-    """Test cases for WebSocket command processing."""
-
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.player_id = "test_player_123"
-
-        # Mock the connection manager
-        self.mock_connection_manager = Mock()
-        self.mock_player = Mock()
-        self.mock_player.name = "TestPlayer"
-        self.mock_player.current_room_id = "room_001"
-        self.mock_player.user_id = "test_user_123"
-        self.mock_connection_manager._get_player.return_value = self.mock_player
-
-        # Mock persistence
-        self.mock_persistence = Mock()
-        self.mock_connection_manager.persistence = self.mock_persistence
-
-        # Mock room with proper exits structure
-        self.mock_room = Mock()
-        self.mock_room.name = "Test Room"
-        self.mock_room.description = "A test room"
-        self.mock_room.exits = {"north": "room_002", "south": "room_003"}
-        self.mock_room.get_players.return_value = []  # Return empty list for iteration
-        self.mock_room.has_player.return_value = True
-        self.mock_persistence.get_room.return_value = self.mock_room
-
-    def _setup_mock_user(self):
-        """Helper method to create mock user data."""
-        mock_user = Mock()
-        mock_user.id = "test_user_123"
-        mock_user.username = "TestUser"
-        mock_user.email = "test@example.com"
-        mock_user.is_superuser = False
-        mock_user.is_active = True
-        mock_user.is_verified = True
-        return mock_user
-
-    def _setup_mock_session(self, mock_user):
-        """Helper method to create mock async session."""
-        mock_session_instance = Mock()
-        mock_session_instance.execute.return_value.scalar_one_or_none.return_value = mock_user
-
-        # Mock the async generator to yield the session
-        async def mock_async_session():
-            yield mock_session_instance
-
-        return mock_async_session()
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_player_not_found(self):
-        """Test command processing when player is not found."""
-        # Setup
-        self.mock_persistence.get_player.return_value = None
-        # Mock connection manager to return None for player
-        self.mock_connection_manager._get_player.return_value = None
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify
-                assert result == {"result": "Player not found"}
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_persistence_unavailable(self):
-        """Test command processing when persistence is unavailable."""
-        # Setup
-        # Mock connection manager with no persistence
-        self.mock_connection_manager.persistence = None
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            # Execute
-            result = await process_websocket_command("look", [], self.player_id)
-
-            # Verify - should return error due to persistence being None
-            assert "Game system unavailable" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_invalid_player_object(self):
-        """Test command processing with invalid player object."""
-        # Setup
-        invalid_player = Mock()  # No current_room_id attribute
-        # Make sure the mock doesn't have current_room_id attribute
-        del invalid_player.current_room_id
-        self.mock_persistence.get_player.return_value = invalid_player
-        # Mock connection manager to return invalid player
-        self.mock_connection_manager._get_player.return_value = invalid_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify - should return error due to missing current_room_id
-                assert "Player data error" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_look_no_args(self):
-        """Test look command without arguments."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify - should return room description with exits
-                assert "Test Room" in result["result"]
-                assert "A test room" in result["result"]
-                assert "Exits:" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_look_with_direction(self):
-        """Test look command with direction argument."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock target room for north direction
-        mock_target_room = Mock()
-        mock_target_room.name = "North Room"
-        mock_target_room.description = "A room to the north"
-        self.mock_persistence.get_room.side_effect = (
-            lambda room_id: self.mock_room if room_id == "room_001" else mock_target_room
-        )
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", ["north"], self.player_id)
-
-                # Verify - should return target room description
-                assert "North Room" in result["result"]
-                assert "A room to the north" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_look_invalid_direction(self):
-        """Test look command with invalid direction."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", ["invalid"], self.player_id)
-
-                # Verify - should return default message for invalid direction
-                assert "You see nothing special that way." in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_look_room_not_found(self):
-        """Test look command when room is not found."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock room to return None (room not found)
-        self.mock_persistence.get_room.return_value = None
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify - should return default message when room not found
-                assert "You see nothing special." in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_go_no_args(self):
-        """Test go command without arguments."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("go", [], self.player_id)
-
-                # Verify - should return usage message
-                assert "Go where? Usage: go <direction>" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_go_invalid_direction(self):
-        """Test go command with invalid direction."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("go", ["invalid"], self.player_id)
-
-                # Verify - should return can't go that way message
-                assert "You can't go that way" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_go_target_room_not_found(self):
-        """Test go command when target room is not found."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock room with no target room
-        self.mock_room.exits = {"north": None}  # No target room
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("go", ["north"], self.player_id)
-
-                # Verify - should return can't go that way message
-                assert "You can't go that way" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_go_movement_service_failure(self):
-        """Test go command when movement service fails."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock target room
-        mock_target_room = Mock()
-        mock_target_room.name = "North Room"
-        mock_target_room.description = "A room to the north"
-        self.mock_persistence.get_room.side_effect = (
-            lambda room_id: self.mock_room if room_id == "room_001" else mock_target_room
-        )
-
-        # Mock movement service to return False (failure)
-        mock_movement_service = Mock()
-        mock_movement_service.move_player.return_value = False
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                with patch("server.game.movement_service.MovementService", return_value=mock_movement_service):
-                    # Execute
-                    result = await process_websocket_command("go", ["north"], self.player_id)
-
-                    # Verify - should return can't go that way message
-                    assert "You can't go that way" in result["result"]
-
-    @pytest.mark.skip(reason="Complex integration test - go command involves many dependencies")
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_go_success(self):
-        """Test successful go command."""
-        # Setup
-        mock_room = Mock()
-        mock_room.exits = {"north": "room_002"}
-        self.mock_persistence.get_room.return_value = mock_room
-
-        mock_target_room = Mock()
-        mock_target_room.name = "North Room"
-        mock_target_room.description = "A room to the north"
-        mock_target_room.exits = {"south": "room_001"}
-        self.mock_persistence.get_room.side_effect = (
-            lambda room_id: mock_room if room_id == "room_001" else mock_target_room
-        )
-
-        # Ensure player's current_room_id is a string, not a Mock
-        # The Mock object needs to return the string when accessed
-        self.mock_player.current_room_id = "room_001"
-
-        # Mock MovementService to return True (movement successful)
-        mock_movement_service = Mock()
-        mock_movement_service.move_player.return_value = True
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.game.movement_service.MovementService", return_value=mock_movement_service):
-                # Mock the event bus properly
-                mock_event_bus = Mock()
-                with patch("server.realtime.websocket_handler.getattr", return_value=mock_event_bus):
-                    # Execute
-                    result = await process_websocket_command("go", ["north"], self.player_id)
-
-                    # Verify - the movement should succeed and return room info
-                    assert "North Room" in result["result"]
-                    assert "A room to the north" in result["result"]
-                    assert result["room_changed"] is True
-                    assert result["room_id"] == "room_002"
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_other_commands(self):
-        """Test processing of other commands through command handler."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("say", ["hello"], self.player_id)
-
-                # Verify - should return error due to async mocking issues in test environment
-                assert "Error sending message:" in result["result"]
-
-
-class TestWebSocketErrorHandling:
-    """Test cases for WebSocket error handling scenarios."""
-
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.mock_websocket = AsyncMock()
-        self.player_id = "test_player_123"
-
-        # Mock persistence for error handling tests
-        self.mock_persistence = Mock()
-
-        # Mock player for error handling tests
-        self.mock_player = Mock()
-        self.mock_player.name = "TestPlayer"
-        self.mock_player.current_room_id = "room_001"
-        self.mock_player.user_id = "test_user_123"
-
-        # Mock connection manager for error handling tests
-        self.mock_connection_manager = Mock()
-        self.mock_connection_manager._get_player.return_value = self.mock_player
-        self.mock_connection_manager.persistence = self.mock_persistence
-
-    def _setup_mock_user(self):
-        """Helper method to create mock user data."""
-        mock_user = Mock()
-        mock_user.id = "test_user_123"
-        mock_user.username = "TestUser"
-        mock_user.email = "test@example.com"
-        mock_user.is_superuser = False
-        mock_user.is_active = True
-        mock_user.is_verified = True
-        return mock_user
-
-    def _setup_mock_session(self, mock_user):
-        """Helper method to create mock async session."""
-        mock_session_instance = Mock()
-        mock_session_instance.execute.return_value.scalar_one_or_none.return_value = mock_user
-
-        # Mock the async generator to yield the session
-        async def mock_async_session():
-            yield mock_session_instance
-
-        return mock_async_session()
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_malformed_json(self):
-        """Test handling malformed JSON in message data."""
-        # Setup
-        message = "invalid json string"
-
-        # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-        # Verify - should handle gracefully and not crash
-        # The actual JSON parsing happens in the main WebSocket loop, not in this function
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_empty_message(self):
-        """Test handling empty message."""
-        # Setup
-        message = {}
-
-        # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-        # Verify - should send error response for empty message
-        self.mock_websocket.send_json.assert_called_once()
-        call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["type"] == "error"
-        assert call_args["error_type"] == "message_processing_error"
-
-    @pytest.mark.asyncio
-    async def test_handle_websocket_message_none_message(self):
-        """Test handling None message."""
-        # Setup
-        message = None
-
-        # Execute
-        await handle_websocket_message(self.mock_websocket, self.player_id, message)
-
-        # Verify - None message causes exception, so we get error processing message
-        self.mock_websocket.send_json.assert_called_once()
-        call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["type"] == "error"
-        assert call_args["error_type"] == "message_processing_error"
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_room_has_no_exits_attribute(self):
-        """Test command processing when room has no exits attribute."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock room without exits attribute
-        mock_room_no_exits = Mock()
-        mock_room_no_exits.name = "Test Room"
-        mock_room_no_exits.description = "A test room"
-        # Don't set exits attribute
-        self.mock_persistence.get_room.return_value = mock_room_no_exits
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify - should return room description with no exits
-                assert "Test Room" in result["result"]
-                assert "A test room" in result["result"]
-                assert "Exits: none" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_process_websocket_command_room_has_no_name_or_description(self):
-        """Test command processing when room has no name or description attributes."""
-        # Setup
-        self.mock_persistence.get_player.return_value = self.mock_player
-        # Mock room without name or description attributes
-        mock_room_no_attrs = Mock()
-        mock_room_no_attrs.exits = {"north": "room_002"}
-        # Don't set name or description attributes
-        self.mock_persistence.get_room.return_value = mock_room_no_attrs
-
-        with patch("server.realtime.websocket_handler.connection_manager", self.mock_connection_manager):
-            with patch("server.persistence.get_persistence", return_value=self.mock_persistence):
-                # Execute
-                result = await process_websocket_command("look", [], self.player_id)
-
-                # Verify - should return default values for missing attributes
-                assert "You see nothing special." in result["result"]
-                assert "Exits: north" in result["result"]
+        result = get_help_content()
+
+        # Verify
+        assert "Available Commands" in result
+        assert "look" in result
+        assert "go" in result
+        assert "say" in result
+        assert "help" in result

@@ -629,7 +629,7 @@ class RiskMitigationTester:
                 self.ping_calls.append(time.time())
                 return True
 
-            async def close(self):
+            async def close(self, code=None, reason=None):
                 self.closed = True
 
             def is_closed(self):

@@ -20,7 +20,7 @@ from server.database import close_db, init_db
 from server.realtime.connection_manager import ConnectionManager
 
 
-class TestEnvironment:
+class Environment:
     """Test environment manager for dual connection system"""
 
     def __init__(self, test_name: str = "default"):
@@ -146,28 +146,26 @@ class TestEnvironment:
         return self.temp_dir
 
 
-class TestEnvironmentManager:
+class EnvironmentManager:
     """Manager for multiple test environments"""
 
     def __init__(self):
-        self.environments: dict[str, TestEnvironment] = {}
+        self.environments: dict[str, Environment] = {}
         self.logger = structlog.get_logger("test_env_manager")
 
-    async def create_environment(
-        self, test_name: str, config_override: dict[str, Any] | None = None
-    ) -> TestEnvironment:
+    async def create_environment(self, test_name: str, config_override: dict[str, Any] | None = None) -> Environment:
         """Create a new test environment"""
         if test_name in self.environments:
             raise ValueError(f"Test environment '{test_name}' already exists")
 
-        env = TestEnvironment(test_name)
+        env = Environment(test_name)
         await env.setup(config_override)
         self.environments[test_name] = env
 
         self.logger.info("Created test environment", test_name=test_name)
         return env
 
-    async def get_environment(self, test_name: str) -> TestEnvironment:
+    async def get_environment(self, test_name: str) -> Environment:
         """Get existing test environment"""
         if test_name not in self.environments:
             raise ValueError(f"Test environment '{test_name}' does not exist")
@@ -194,7 +192,7 @@ class TestEnvironmentManager:
 
 
 # Global test environment manager
-test_env_manager = TestEnvironmentManager()
+test_env_manager = EnvironmentManager()
 
 
 # Pytest fixtures
@@ -264,7 +262,7 @@ async def error_test_environment():
 
 # Context managers for test environments
 @asynccontextmanager
-async def test_environment_context(test_name: str, config_override: dict[str, Any] | None = None):
+async def create_test_environment_context(test_name: str, config_override: dict[str, Any] | None = None):
     """Context manager for test environment"""
     env = await test_env_manager.create_environment(test_name, config_override)
     try:
@@ -280,7 +278,7 @@ async def isolated_test_environment(config_override: dict[str, Any] | None = Non
 
     test_name = f"isolated_{uuid.uuid4().hex[:8]}"
 
-    async with test_environment_context(test_name, config_override) as env:
+    async with create_test_environment_context(test_name, config_override) as env:
         yield env
 
 
@@ -289,7 +287,7 @@ class TestDataSetup:
     """Utilities for setting up test data in environments"""
 
     @staticmethod
-    async def setup_dual_connection_scenario(env: TestEnvironment, player_id: str = "test_player"):
+    async def setup_dual_connection_scenario(env: Environment, player_id: str = "test_player"):
         """Set up dual connection scenario"""
         # Create WebSocket connection
         ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id, "test_session")
@@ -305,7 +303,7 @@ class TestDataSetup:
         }
 
     @staticmethod
-    async def setup_multiple_players(env: TestEnvironment, count: int = 10):
+    async def setup_multiple_players(env: Environment, count: int = 10):
         """Set up multiple players with dual connections"""
         players = []
 
@@ -317,7 +315,7 @@ class TestDataSetup:
         return players
 
     @staticmethod
-    async def setup_session_switch_scenario(env: TestEnvironment, player_id: str = "session_test_player"):
+    async def setup_session_switch_scenario(env: Environment, player_id: str = "session_test_player"):
         """Set up session switch scenario"""
         # Create initial session with connections
         initial_scenario = await TestDataSetup.setup_dual_connection_scenario(env, player_id)
@@ -367,7 +365,7 @@ class TestMonitoringSetup:
     """Utilities for setting up test monitoring"""
 
     @staticmethod
-    async def setup_monitoring_endpoints(env: TestEnvironment):
+    async def setup_monitoring_endpoints(env: Environment):
         """Set up monitoring endpoints for testing"""
         # This would typically set up Prometheus metrics, health checks, etc.
         # For now, we'll just ensure the connection manager has monitoring enabled
@@ -381,7 +379,7 @@ class TestMonitoringSetup:
         }
 
     @staticmethod
-    async def setup_performance_monitoring(env: TestEnvironment):
+    async def setup_performance_monitoring(env: Environment):
         """Set up performance monitoring for testing"""
         # Enable performance tracking
         env.connection_manager.performance_monitoring = True
@@ -399,17 +397,17 @@ class TestCleanup:
     """Utilities for cleaning up test data"""
 
     @staticmethod
-    async def cleanup_all_connections(env: TestEnvironment):
+    async def cleanup_all_connections(env: Environment):
         """Clean up all connections in test environment"""
         await env.connection_manager.cleanup_all_connections()
 
     @staticmethod
-    async def cleanup_player_data(env: TestEnvironment, player_id: str):
+    async def cleanup_player_data(env: Environment, player_id: str):
         """Clean up data for specific player"""
         await env.connection_manager.force_disconnect_player(player_id)
 
     @staticmethod
-    async def cleanup_old_sessions(env: TestEnvironment, hours: int = 1):
+    async def cleanup_old_sessions(env: Environment, hours: int = 1):
         """Clean up old sessions"""
         # This would typically clean up sessions older than specified hours
         # Implementation depends on session cleanup logic
@@ -418,14 +416,13 @@ class TestCleanup:
 
 # Export utilities
 __all__ = [
-    "TestEnvironment",
-    "TestEnvironmentManager",
+    "Environment",
+    "EnvironmentManager",
     "test_env_manager",
     "test_environment",
     "dual_connection_environment",
     "performance_test_environment",
     "error_test_environment",
-    "test_environment_context",
     "isolated_test_environment",
     "TestDataSetup",
     "TestMonitoringSetup",
