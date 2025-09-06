@@ -11,10 +11,10 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from server.auth.endpoints import LoginRequest, LoginResponse, UserCreate
+from server.exceptions import LoggedHTTPException
 from server.main import app
 
 
@@ -110,7 +110,7 @@ class TestRegistrationEndpoints:
     def test_registration_invalid_invite_code(self, mock_get_invite, test_client):
         """Test registration with invalid invite code."""
         mock_manager = AsyncMock()
-        mock_manager.validate_invite.side_effect = HTTPException(status_code=400, detail="Invalid invite code")
+        mock_manager.validate_invite.side_effect = LoggedHTTPException(status_code=400, detail="Invalid invite code")
         mock_get_invite.return_value = mock_manager
 
         response = test_client.post(

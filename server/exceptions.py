@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
 
+from fastapi import HTTPException
+
 from .logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -232,6 +234,50 @@ def create_error_context(**kwargs) -> ErrorContext:
         ErrorContext object
     """
     return ErrorContext(**kwargs)
+
+
+class LoggedHTTPException(HTTPException):
+    """
+    HTTPException with automatic logging.
+
+    This class extends FastAPI's HTTPException to include automatic logging
+    with proper context information before raising the exception.
+    """
+
+    def __init__(
+        self,
+        status_code: int,
+        detail: str,
+        context: ErrorContext | None = None,
+        logger_name: str | None = None,
+    ):
+        """
+        Initialize LoggedHTTPException.
+
+        Args:
+            status_code: HTTP status code
+            detail: Error detail message
+            context: Error context information
+            logger_name: Specific logger name to use (defaults to current module)
+        """
+        super().__init__(status_code=status_code, detail=detail)
+
+        # Use specified logger or default to current module logger
+        error_logger = get_logger(logger_name) if logger_name else logger
+
+        # Create context if not provided
+        if context is None:
+            context = create_error_context()
+
+        # Log the HTTP error with full context
+        log_data = {
+            "error_type": "LoggedHTTPException",
+            "status_code": status_code,
+            "detail": detail,
+            "context": context.to_dict(),
+        }
+
+        error_logger.warning("HTTP error logged and exception raised", **log_data)
 
 
 def handle_exception(exc: Exception, context: ErrorContext | None = None) -> MythosMUDError:

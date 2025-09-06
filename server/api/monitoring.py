@@ -10,14 +10,16 @@ are essential for maintaining oversight of our eldritch systems.
 
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request
 from pydantic import BaseModel
 
+from ..exceptions import LoggedHTTPException
 from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..services.health_service import get_health_service
+from ..utils.error_logging import create_context_from_request
 
 router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 
@@ -120,7 +122,7 @@ class ConnectionHealthStatsResponse(BaseModel):
 
 
 @router.get("/metrics", response_model=MetricsResponse)
-async def get_movement_metrics():
+async def get_movement_metrics(request: Request):
     """Get comprehensive movement system metrics."""
     try:
         monitor = get_movement_monitor()
@@ -135,11 +137,13 @@ async def get_movement_metrics():
 
         return MetricsResponse(**metrics)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_movement_metrics"
+        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}", context=context) from e
 
 
 @router.get("/integrity", response_model=IntegrityResponse)
-async def validate_room_integrity():
+async def validate_room_integrity(request: Request):
     """Validate room data integrity and return results."""
     try:
         monitor = get_movement_monitor()
@@ -156,11 +160,15 @@ async def validate_room_integrity():
 
         return IntegrityResponse(**result)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error validating integrity: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "validate_room_integrity"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error validating integrity: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/alerts", response_model=AlertsResponse)
-async def get_system_alerts():
+async def get_system_alerts(request: Request):
     """Get current system alerts."""
     try:
         monitor = get_movement_monitor()
@@ -172,11 +180,13 @@ async def get_system_alerts():
             timestamp=get_movement_monitor().get_metrics()["timestamp"].isoformat(),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_system_alerts"
+        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}", context=context) from e
 
 
 @router.post("/reset")
-async def reset_metrics():
+async def reset_metrics(request: Request):
     """Reset all movement metrics (admin only)."""
     try:
         from ..game.movement_monitor import reset_movement_monitor
@@ -184,11 +194,13 @@ async def reset_metrics():
         reset_movement_monitor()
         return {"message": "Metrics reset successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "reset_metrics"
+        raise LoggedHTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}", context=context) from e
 
 
 @router.get("/performance-summary")
-async def get_performance_summary():
+async def get_performance_summary(request: Request):
     """Get a human-readable performance summary."""
     try:
         monitor = get_movement_monitor()
@@ -212,11 +224,13 @@ async def get_performance_summary():
 
         return summary
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_performance_summary"
+        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}", context=context) from e
 
 
 @router.get("/memory", response_model=MemoryStatsResponse)
-async def get_memory_stats():
+async def get_memory_stats(request: Request):
     """Get comprehensive memory and connection statistics."""
     try:
         import datetime
@@ -226,11 +240,15 @@ async def get_memory_stats():
 
         return MemoryStatsResponse(**memory_stats)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving memory stats: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_memory_stats"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error retrieving memory stats: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/memory-alerts", response_model=MemoryAlertsResponse)
-async def get_memory_alerts():
+async def get_memory_alerts(request: Request):
     """Get memory-related alerts and warnings."""
     try:
         import datetime
@@ -241,51 +259,71 @@ async def get_memory_alerts():
             alerts=alerts, alert_count=len(alerts), timestamp=datetime.datetime.now(datetime.UTC).isoformat()
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving memory alerts: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_memory_alerts"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error retrieving memory alerts: {str(e)}", context=context
+        ) from e
 
 
 @router.post("/memory/cleanup")
-async def force_memory_cleanup():
+async def force_memory_cleanup(request: Request):
     """Force immediate memory cleanup (admin only)."""
     try:
         await connection_manager.force_cleanup()
         return {"message": "Memory cleanup completed successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during memory cleanup: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "force_memory_cleanup"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error during memory cleanup: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/dual-connections", response_model=DualConnectionStatsResponse)
-async def get_dual_connection_stats():
+async def get_dual_connection_stats(request: Request):
     """Get comprehensive dual connection statistics."""
     try:
         dual_connection_stats = connection_manager.get_dual_connection_stats()
         return DualConnectionStatsResponse(**dual_connection_stats)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving dual connection stats: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_dual_connection_stats"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error retrieving dual connection stats: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/performance", response_model=PerformanceStatsResponse)
-async def get_performance_stats():
+async def get_performance_stats(request: Request):
     """Get connection performance statistics."""
     try:
         performance_stats = connection_manager.get_performance_stats()
         return PerformanceStatsResponse(**performance_stats)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving performance stats: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_performance_stats"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error retrieving performance stats: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/connection-health", response_model=ConnectionHealthStatsResponse)
-async def get_connection_health_stats():
+async def get_connection_health_stats(request: Request):
     """Get connection health statistics."""
     try:
         health_stats = connection_manager.get_connection_health_stats()
         return ConnectionHealthStatsResponse(**health_stats)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving connection health stats: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_connection_health_stats"
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error retrieving connection health stats: {str(e)}", context=context
+        ) from e
 
 
 @router.get("/health", response_model=HealthResponse)
-async def get_health_status():
+async def get_health_status(request: Request):
     """Get comprehensive system health status."""
     try:
         health_service = get_health_service()
@@ -307,4 +345,6 @@ async def get_health_status():
         error_response = HealthErrorResponse(
             error="Health check failed", detail=str(e), timestamp=datetime.now(UTC).isoformat()
         )
-        raise HTTPException(status_code=500, detail=error_response.model_dump()) from e
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_health_status"
+        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e

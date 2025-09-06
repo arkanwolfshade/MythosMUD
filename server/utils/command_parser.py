@@ -9,6 +9,7 @@ import re
 
 from pydantic import ValidationError
 
+from ..exceptions import ValidationError as MythosValidationError
 from ..logging_config import get_logger
 from ..models.command import (
     AddAdminCommand,
@@ -40,6 +41,7 @@ from ..models.command import (
     WhisperCommand,
     WhoCommand,
 )
+from .error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
@@ -106,10 +108,19 @@ class CommandParser:
 
         # Basic input validation
         if not command_string or not command_string.strip():
-            raise ValueError("Empty command")
+            context = create_error_context()
+            context.metadata = {"command_length": len(command_string) if command_string else 0}
+            log_and_raise(MythosValidationError, "Empty command provided", context=context, logger_name=__name__)
 
         if len(command_string) > self.max_command_length:
-            raise ValueError(f"Command too long (max {self.max_command_length} characters)")
+            context = create_error_context()
+            context.metadata = {"command_length": len(command_string), "max_length": self.max_command_length}
+            log_and_raise(
+                MythosValidationError,
+                f"Command too long (max {self.max_command_length} characters)",
+                context=context,
+                logger_name=__name__,
+            )
 
         # Normalize command
         normalized = self._normalize_command(command_string)
@@ -120,7 +131,9 @@ class CommandParser:
         # Validate command type (including aliases)
         valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
         if command not in valid_commands_with_aliases:
-            raise ValueError(f"Unknown command: {command}")
+            context = create_error_context()
+            context.metadata = {"command": command, "valid_commands": list(valid_commands_with_aliases)}
+            log_and_raise(MythosValidationError, f"Unknown command: {command}", context=context, logger_name=__name__)
 
         # Create and validate command object
         return self._create_command_object(command, args)
@@ -158,11 +171,20 @@ class CommandParser:
         # Defensive programming: Handle mock objects during testing
         if hasattr(command_string, "_mock_name") or hasattr(command_string, "_mock_return_value"):
             logger.warning("Mock object passed to _parse_command_parts - this should not happen in production")
-            raise ValueError("Mock object passed to command parser - test setup issue")
+            context = create_error_context()
+            context.metadata = {"command_string": str(command_string)}
+            log_and_raise(
+                MythosValidationError,
+                "Mock object passed to command parser - test setup issue",
+                context=context,
+                logger_name=__name__,
+            )
 
         parts = command_string.split()
         if not parts:
-            raise ValueError("Empty command after parsing")
+            context = create_error_context()
+            context.metadata = {"command_string": command_string}
+            log_and_raise(MythosValidationError, "Empty command after parsing", context=context, logger_name=__name__)
 
         command = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
@@ -199,14 +221,33 @@ class CommandParser:
             if create_method:
                 return create_method(args)
             else:
-                raise ValueError(f"Unsupported command: {command}")
+                context = create_error_context()
+                context.metadata = {
+                    "command": command,
+                    "args": args,
+                    "available_commands": list(self._command_factory.keys()),
+                }
+                log_and_raise(
+                    MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
+                )
 
         except ValidationError as e:
             logger.warning("Command validation failed", command=command, args=args, errors=e.errors())
-            raise ValueError(f"Invalid command format: {e}") from e
+            context = create_error_context()
+            context.metadata = {"command": command, "args": args, "validation_errors": e.errors()}
+            log_and_raise(MythosValidationError, f"Invalid command format: {e}", context=context, logger_name=__name__)
         except Exception as e:
             logger.error("Command creation failed", command=command, args=args, error=str(e))
-            raise ValueError(f"Failed to create command: {e}") from e
+            context = create_error_context()
+            context.metadata = {
+                "command": command,
+                "args": args,
+                "error_type": type(e).__name__,
+                "error_message": str(e),
+            }
+            log_and_raise(
+                MythosValidationError, f"Failed to create command: {e}", context=context, logger_name=__name__
+            )
 
     def _create_look_command(self, args: list[str]) -> LookCommand:
         """Create LookCommand from arguments."""
@@ -219,7 +260,11 @@ class CommandParser:
     def _create_go_command(self, args: list[str]) -> GoCommand:
         """Create GoCommand from arguments."""
         if not args:
-            raise ValueError("Go command requires a direction")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Go command requires a direction", context=context, logger_name=__name__
+            )
         # Convert to lowercase for case-insensitive matching
         direction = args[0].lower()
         return GoCommand(direction=direction)
@@ -227,35 +272,53 @@ class CommandParser:
     def _create_say_command(self, args: list[str]) -> SayCommand:
         """Create SayCommand from arguments."""
         if not args:
-            raise ValueError("Say command requires a message")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Say command requires a message", context=context, logger_name=__name__
+            )
         message = " ".join(args)
         return SayCommand(message=message)
 
     def _create_local_command(self, args: list[str]) -> LocalCommand:
         """Create LocalCommand from arguments."""
         if not args:
-            raise ValueError("Local command requires a message")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Local command requires a message", context=context, logger_name=__name__
+            )
         message = " ".join(args)
         return LocalCommand(message=message)
 
     def _create_system_command(self, args: list[str]) -> SystemCommand:
         """Create SystemCommand from arguments."""
         if not args:
-            raise ValueError("System command requires a message")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "System command requires a message", context=context, logger_name=__name__
+            )
         message = " ".join(args)
         return SystemCommand(message=message)
 
     def _create_emote_command(self, args: list[str]) -> EmoteCommand:
         """Create EmoteCommand from arguments."""
         if not args:
-            raise ValueError("Emote command requires an action")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Emote command requires an action", context=context, logger_name=__name__
+            )
         action = " ".join(args)
         return EmoteCommand(action=action)
 
     def _create_me_command(self, args: list[str]) -> MeCommand:
         """Create MeCommand from arguments."""
         if not args:
-            raise ValueError("Me command requires an action")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(MythosValidationError, "Me command requires an action", context=context, logger_name=__name__)
         action = " ".join(args)
         return MeCommand(action=action)
 
@@ -267,7 +330,11 @@ class CommandParser:
     def _create_alias_command(self, args: list[str]) -> AliasCommand:
         """Create AliasCommand from arguments."""
         if not args:
-            raise ValueError("Alias command requires an alias name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Alias command requires an alias name", context=context, logger_name=__name__
+            )
 
         alias_name = args[0]
         command = " ".join(args[1:]) if len(args) > 1 else None
@@ -277,15 +344,27 @@ class CommandParser:
     def _create_aliases_command(self, args: list[str]) -> AliasesCommand:
         """Create AliasesCommand from arguments."""
         if args:
-            raise ValueError("Aliases command takes no arguments")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Aliases command takes no arguments", context=context, logger_name=__name__
+            )
         return AliasesCommand()
 
     def _create_unalias_command(self, args: list[str]) -> UnaliasCommand:
         """Create UnaliasCommand from arguments."""
         if not args:
-            raise ValueError("Unalias command requires an alias name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Unalias command requires an alias name", context=context, logger_name=__name__
+            )
         if len(args) > 1:
-            raise ValueError("Unalias command takes only one argument")
+            context = create_error_context()
+            context.metadata = {"args": args, "arg_count": len(args)}
+            log_and_raise(
+                MythosValidationError, "Unalias command takes only one argument", context=context, logger_name=__name__
+            )
 
         return UnaliasCommand(alias_name=args[0])
 
@@ -297,7 +376,11 @@ class CommandParser:
     def _create_mute_command(self, args: list[str]) -> MuteCommand:
         """Create MuteCommand from arguments."""
         if not args:
-            raise ValueError("Mute command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Mute command requires a player name", context=context, logger_name=__name__
+            )
 
         player_name = args[0]
         duration_minutes = None
@@ -319,16 +402,31 @@ class CommandParser:
     def _create_unmute_command(self, args: list[str]) -> UnmuteCommand:
         """Create UnmuteCommand from arguments."""
         if not args:
-            raise ValueError("Unmute command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Unmute command requires a player name", context=context, logger_name=__name__
+            )
         if len(args) > 1:
-            raise ValueError("Unmute command takes only one argument")
+            context = create_error_context()
+            context.metadata = {"args": args, "arg_count": len(args)}
+            log_and_raise(
+                MythosValidationError, "Unmute command takes only one argument", context=context, logger_name=__name__
+            )
 
         return UnmuteCommand(player_name=args[0])
 
     def _create_mute_global_command(self, args: list[str]) -> MuteGlobalCommand:
         """Create MuteGlobalCommand from arguments."""
         if not args:
-            raise ValueError("Mute_global command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError,
+                "Mute_global command requires a player name",
+                context=context,
+                logger_name=__name__,
+            )
 
         player_name = args[0]
         duration_minutes = None
@@ -350,38 +448,75 @@ class CommandParser:
     def _create_unmute_global_command(self, args: list[str]) -> UnmuteGlobalCommand:
         """Create UnmuteGlobalCommand from arguments."""
         if not args:
-            raise ValueError("Unmute_global command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError,
+                "Unmute_global command requires a player name",
+                context=context,
+                logger_name=__name__,
+            )
         if len(args) > 1:
-            raise ValueError("Unmute_global command takes only one argument")
+            context = create_error_context()
+            context.metadata = {"args": args, "arg_count": len(args)}
+            log_and_raise(
+                MythosValidationError,
+                "Unmute_global command takes only one argument",
+                context=context,
+                logger_name=__name__,
+            )
 
         return UnmuteGlobalCommand(player_name=args[0])
 
     def _create_add_admin_command(self, args: list[str]) -> AddAdminCommand:
         """Create AddAdminCommand from arguments."""
         if not args:
-            raise ValueError("Add_admin command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Add_admin command requires a player name", context=context, logger_name=__name__
+            )
         if len(args) > 1:
-            raise ValueError("Add_admin command takes only one argument")
+            context = create_error_context()
+            context.metadata = {"args": args, "arg_count": len(args)}
+            log_and_raise(
+                MythosValidationError,
+                "Add_admin command takes only one argument",
+                context=context,
+                logger_name=__name__,
+            )
 
         return AddAdminCommand(player_name=args[0])
 
     def _create_mutes_command(self, args: list[str]) -> MutesCommand:
         """Create MutesCommand from arguments."""
         if args:
-            raise ValueError("Mutes command takes no arguments")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Mutes command takes no arguments", context=context, logger_name=__name__
+            )
         return MutesCommand()
 
     def _create_teleport_command(self, args: list[str]) -> TeleportCommand:
         """Create TeleportCommand from arguments."""
         if not args:
-            raise ValueError("Teleport command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Teleport command requires a player name", context=context, logger_name=__name__
+            )
         player_name = args[0]
         return TeleportCommand(player_name=player_name)
 
     def _create_goto_command(self, args: list[str]) -> GotoCommand:
         """Create GotoCommand from arguments."""
         if not args:
-            raise ValueError("Goto command requires a player name")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Goto command requires a player name", context=context, logger_name=__name__
+            )
         player_name = args[0]
         return GotoCommand(player_name=player_name)
 
@@ -393,43 +528,67 @@ class CommandParser:
     def _create_status_command(self, args: list[str]) -> StatusCommand:
         """Create StatusCommand from arguments."""
         if args:
-            raise ValueError("Status command takes no arguments")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Status command takes no arguments", context=context, logger_name=__name__
+            )
         return StatusCommand()
 
     def _create_inventory_command(self, args: list[str]) -> InventoryCommand:
         """Create InventoryCommand from arguments."""
         if args:
-            raise ValueError("Inventory command takes no arguments")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Inventory command takes no arguments", context=context, logger_name=__name__
+            )
         return InventoryCommand()
 
     def _create_quit_command(self, args: list[str]) -> QuitCommand:
         """Create QuitCommand from arguments."""
         if args:
-            raise ValueError("Quit command takes no arguments")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Quit command takes no arguments", context=context, logger_name=__name__
+            )
         return QuitCommand()
 
     def _create_whisper_command(self, args: list[str]) -> WhisperCommand:
         """Create a WhisperCommand from parsed arguments."""
         if len(args) < 2:
-            raise ValueError("Usage: whisper <player> <message>")
+            context = create_error_context()
+            context.metadata = {"args": args, "arg_count": len(args)}
+            log_and_raise(
+                MythosValidationError, "Usage: whisper <player> <message>", context=context, logger_name=__name__
+            )
 
         target = args[0]
         message = " ".join(args[1:])
 
         if not message.strip():
-            raise ValueError("Usage: whisper <player> <message>")
+            context = create_error_context()
+            context.metadata = {"args": args, "message": message}
+            log_and_raise(
+                MythosValidationError, "Usage: whisper <player> <message>", context=context, logger_name=__name__
+            )
 
         return WhisperCommand(target=target, message=message)
 
     def _create_reply_command(self, args: list[str]) -> ReplyCommand:
         """Create a ReplyCommand from parsed arguments."""
         if not args:
-            raise ValueError("Usage: reply <message>")
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(MythosValidationError, "Usage: reply <message>", context=context, logger_name=__name__)
 
         message = " ".join(args)
 
         if not message.strip():
-            raise ValueError("Usage: reply <message>")
+            context = create_error_context()
+            context.metadata = {"args": args, "message": message}
+            log_and_raise(MythosValidationError, "Usage: reply <message>", context=context, logger_name=__name__)
 
         return ReplyCommand(message=message)
 
@@ -627,4 +786,11 @@ def get_username_from_user(user_obj) -> str:
     elif isinstance(user_obj, dict) and "name" in user_obj:
         return user_obj["name"]
     else:
-        raise ValueError("User object must have username or name attribute or key")
+        context = create_error_context()
+        context.metadata = {"user_obj_type": type(user_obj).__name__, "user_obj": str(user_obj)}
+        log_and_raise(
+            MythosValidationError,
+            "User object must have username or name attribute or key",
+            context=context,
+            logger_name=__name__,
+        )

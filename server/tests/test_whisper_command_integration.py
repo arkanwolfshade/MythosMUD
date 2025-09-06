@@ -7,6 +7,7 @@ command parsing, validation, and execution.
 
 import pytest
 
+from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import CommandType, ReplyCommand, WhisperCommand
 from ..utils.command_parser import parse_command
 
@@ -109,11 +110,11 @@ class TestWhisperCommandIntegration:
     def test_whisper_command_error_handling(self):
         """Test whisper command error handling."""
         # Test missing target
-        with pytest.raises(ValueError, match="Usage: whisper <player> <message>"):
+        with pytest.raises(MythosValidationError, match="Failed to create command"):
             parse_command("whisper")
 
         # Test missing message
-        with pytest.raises(ValueError, match="Usage: whisper <player> <message>"):
+        with pytest.raises(MythosValidationError, match="Failed to create command"):
             parse_command("whisper TestPlayer")
 
         # Test empty message
@@ -123,11 +124,11 @@ class TestWhisperCommandIntegration:
     def test_reply_command_error_handling(self):
         """Test reply command error handling."""
         # Test missing message
-        with pytest.raises(ValueError, match="Usage: reply <message>"):
+        with pytest.raises(MythosValidationError, match="Failed to create command"):
             parse_command("reply")
 
         # Test empty message
-        with pytest.raises(ValueError, match="Usage: reply <message>"):
+        with pytest.raises(MythosValidationError, match="Failed to create command"):
             parse_command("reply    ")
 
 

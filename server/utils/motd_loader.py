@@ -9,6 +9,7 @@ import os
 
 from ..config_loader import get_config
 from ..logging_config import get_logger
+from .error_logging import create_error_context
 
 logger = get_logger(__name__)
 
@@ -33,9 +34,18 @@ def load_motd() -> str:
             with open(motd_path, encoding="utf-8") as f:
                 return f.read().strip()
         else:
-            logger.warning(f"MOTD file not found: {motd_path}")
+            context = create_error_context()
+            context.metadata = {"motd_path": motd_path, "motd_file": motd_file}
+            logger.warning("MOTD file not found", **context.to_dict())
             return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."
 
     except Exception as e:
-        logger.error(f"Error loading MOTD: {e}")
+        context = create_error_context()
+        context.metadata = {
+            "motd_path": motd_path,
+            "motd_file": motd_file,
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+        }
+        logger.error("Error loading MOTD", **context.to_dict())
         return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."

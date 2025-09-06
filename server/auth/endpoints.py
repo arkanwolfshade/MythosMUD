@@ -9,15 +9,17 @@ custom invite code validation.
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Request
 from fastapi_users import schemas
 from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..exceptions import LoggedHTTPException
 from ..logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
+from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, auth_backend, fastapi_users, get_user_manager
@@ -82,6 +84,7 @@ class LoginResponse(BaseModel):
 @auth_router.post("/register", response_model=LoginResponse)
 async def register_user(
     user_create: UserCreate,
+    request: Request,
     invite_manager: InviteManager = Depends(get_invite_manager),
     user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session),
@@ -103,8 +106,8 @@ async def register_user(
     # Validate invite code (but don't use it yet)
     if user_create.invite_code:
         try:
-            await invite_manager.validate_invite(user_create.invite_code)
-        except HTTPException as e:
+            await invite_manager.validate_invite(user_create.invite_code, request)
+        except LoggedHTTPException as e:
             raise e
 
     # Create user without invite_code field
@@ -124,7 +127,10 @@ async def register_user(
         existing_user = result.scalar_one_or_none()
 
         if existing_user:
-            raise HTTPException(status_code=400, detail="Username already exists")
+            context = create_context_from_request(request)
+            context.metadata["username"] = user_create_clean.username
+            context.metadata["operation"] = "register_user"
+            raise LoggedHTTPException(status_code=400, detail="Username already exists", context=context)
 
         # Hash password using Argon2
         hashed_password = hash_password(user_create_clean.password)
@@ -147,13 +153,17 @@ async def register_user(
         await session.commit()
         await session.refresh(user)
 
-    except HTTPException:
+    except LoggedHTTPException:
         raise
     except Exception as e:
         # Check if it's a duplicate username error
         constraint_error = "UNIQUE constraint failed: users.username"
         if constraint_error in str(e):
-            raise HTTPException(status_code=400, detail="Username already exists") from e
+            context = create_context_from_request(request)
+            context.metadata["username"] = user_create_clean.username
+            context.metadata["operation"] = "register_user"
+            context.metadata["constraint_error"] = constraint_error
+            raise LoggedHTTPException(status_code=400, detail="Username already exists", context=context) from e
         # Re-raise other exceptions
         raise e
 
@@ -196,6 +206,7 @@ async def register_user(
 @auth_router.post("/login", response_model=LoginResponse)
 async def login_user(
     request: LoginRequest,
+    http_request: Request,
     user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session),
 ) -> LoginResponse:
@@ -218,7 +229,10 @@ async def login_user(
 
     if not user:
         logger.info(f"User not found: {request.username}")
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        context = create_context_from_request(http_request)
+        context.metadata["username"] = request.username
+        context.metadata["operation"] = "login_user"
+        raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
     # Verify password using FastAPI Users with email lookup
     try:
@@ -226,7 +240,11 @@ async def login_user(
         user_email = user.email
         if not user_email:
             logger.error(f"User {request.username} has no email address")
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            context = create_context_from_request(http_request)
+            context.metadata["username"] = request.username
+            context.metadata["user_id"] = str(user.id)
+            context.metadata["operation"] = "login_user"
+            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
         # Create OAuth2PasswordRequestForm for FastAPI Users authentication
         from fastapi.security import OAuth2PasswordRequestForm
@@ -244,15 +262,28 @@ async def login_user(
         # Use the user manager's authenticate method with email
         authenticated_user = await user_manager.authenticate(credentials)
         if not authenticated_user:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            context = create_context_from_request(http_request)
+            context.metadata["username"] = request.username
+            context.metadata["user_id"] = str(user.id)
+            context.metadata["operation"] = "login_user"
+            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
         # Verify we got the same user back
         if authenticated_user.id != user.id:
             logger.error(f"User ID mismatch: expected {user.id}, got {authenticated_user.id}")
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            context = create_context_from_request(http_request)
+            context.metadata["username"] = request.username
+            context.metadata["expected_user_id"] = str(user.id)
+            context.metadata["actual_user_id"] = str(authenticated_user.id)
+            context.metadata["operation"] = "login_user"
+            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
     except Exception as e:
         logger.error(f"Authentication failed: {str(e)}")
-        raise HTTPException(status_code=401, detail="Invalid credentials") from None
+        context = create_context_from_request(http_request)
+        context.metadata["username"] = request.username
+        context.metadata["operation"] = "login_user"
+        context.metadata["error"] = str(e)
+        raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context) from None
 
     # Generate access token using FastAPI Users approach
     import os

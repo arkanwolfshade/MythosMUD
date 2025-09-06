@@ -10,6 +10,9 @@ import json
 import logging
 from pathlib import Path
 
+from ..exceptions import ValidationError
+from ..utils.error_logging import create_error_context, log_and_raise
+
 logger = logging.getLogger(__name__)
 
 
@@ -65,8 +68,16 @@ class EmoteService:
 
         except Exception as e:
             logger.error(f"Failed to load emotes from {self.emote_file_path}: {e}")
-            self.emotes = {}
-            self.alias_to_emote = {}
+            context = create_error_context()
+            context.metadata["emote_file_path"] = str(self.emote_file_path)
+            context.metadata["operation"] = "load_emotes"
+            log_and_raise(
+                ValidationError,
+                f"Failed to load emotes from {self.emote_file_path}: {e}",
+                context=context,
+                details={"emote_file_path": str(self.emote_file_path), "error": str(e)},
+                user_friendly="Failed to load emote definitions",
+            )
 
     def is_emote_alias(self, command: str) -> bool:
         """
@@ -111,7 +122,17 @@ class EmoteService:
         """
         emote_def = self.get_emote_definition(command)
         if not emote_def:
-            raise ValueError(f"Unknown emote: {command}")
+            context = create_error_context()
+            context.metadata["command"] = command
+            context.metadata["player_name"] = player_name
+            context.metadata["operation"] = "format_emote_messages"
+            log_and_raise(
+                ValidationError,
+                f"Unknown emote: {command}",
+                context=context,
+                details={"command": command, "player_name": player_name},
+                user_friendly="Unknown emote command",
+            )
 
         self_message = emote_def["self_message"]
         other_message = emote_def["other_message"].format(player_name=player_name)

@@ -6,9 +6,11 @@ as documented in the restricted archives of Miskatonic University.
 """
 
 from argon2 import PasswordHasher, exceptions
-from argon2.exceptions import HashingError, VerificationError
+from argon2.exceptions import VerificationError
 
+from ..exceptions import AuthenticationError
 from ..logging_config import get_logger
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -68,7 +70,12 @@ def hash_password(password: str) -> str:
     """
     if not isinstance(password, str):
         logger.error("Password hashing failed - invalid type", password_type=type(password))
-        raise TypeError("Password must be a string")
+        log_and_raise(
+            AuthenticationError,
+            "Password must be a string",
+            details={"password_type": str(type(password))},
+            user_friendly="Invalid password format",
+        )
 
     logger.debug("Hashing password with Argon2id")
     try:
@@ -77,7 +84,12 @@ def hash_password(password: str) -> str:
         return hashed
     except Exception as e:
         logger.error("Password hashing failed", error=str(e))
-        raise HashingError(f"Failed to hash password: {e}") from e
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to hash password: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
 
 
 def verify_password(password: str, hashed: str) -> bool:

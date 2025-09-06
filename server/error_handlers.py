@@ -22,6 +22,7 @@ from .exceptions import (
     ConfigurationError,
     DatabaseError,
     GameLogicError,
+    LoggedHTTPException,
     MythosMUDError,
     NetworkError,
     RateLimitError,
@@ -258,6 +259,59 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
     return error_response.to_response()
 
 
+async def logged_http_exception_handler(request: Request, exc: LoggedHTTPException) -> JSONResponse:
+    """
+    Handle LoggedHTTPException instances.
+
+    Args:
+        request: FastAPI request object
+        exc: LoggedHTTPException instance
+
+    Returns:
+        JSONResponse with error details
+    """
+    # Map HTTP status codes to appropriate error types and messages
+    if exc.status_code == 401:
+        error_type = ErrorType.AUTHENTICATION_FAILED
+        user_friendly = ErrorMessages.AUTHENTICATION_REQUIRED
+    elif exc.status_code == 404:
+        error_type = ErrorType.RESOURCE_NOT_FOUND
+        user_friendly = ErrorMessages.PLAYER_NOT_FOUND
+    elif exc.status_code == 422:
+        error_type = ErrorType.VALIDATION_ERROR
+        user_friendly = ErrorMessages.INVALID_INPUT
+    elif exc.status_code == 429:
+        error_type = ErrorType.RATE_LIMIT_EXCEEDED
+        user_friendly = ErrorMessages.TOO_MANY_REQUESTS
+    else:
+        error_type = ErrorType.INTERNAL_ERROR
+        user_friendly = ErrorMessages.INTERNAL_ERROR
+
+    # Create standardized error response
+    error_response = create_standard_error_response(
+        error_type=error_type,
+        message=str(exc.detail),
+        user_friendly=user_friendly,
+        details={"status_code": exc.status_code},
+        severity=ErrorSeverity.MEDIUM,
+    )
+
+    # Handle WebSocket vs HTTP request differences
+    method = getattr(request, "method", "WEBSOCKET") if hasattr(request, "method") else "WEBSOCKET"
+
+    # LoggedHTTPException already logs the error, so we just log the handling
+    logger.info(
+        "LoggedHTTPException handled",
+        status_code=exc.status_code,
+        detail=exc.detail,
+        path=str(request.url),
+        method=method,
+        error_type=error_type.value,
+    )
+
+    return JSONResponse(status_code=exc.status_code, content=error_response)
+
+
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """
     Handle FastAPI HTTP exceptions.
@@ -347,6 +401,9 @@ def register_error_handlers(app):
     """
     # Register MythosMUD exception handler
     app.add_exception_handler(MythosMUDError, mythos_exception_handler)
+
+    # Register LoggedHTTPException handler (must be before generic HTTPException)
+    app.add_exception_handler(LoggedHTTPException, logged_http_exception_handler)
 
     # Register general exception handler
     app.add_exception_handler(Exception, general_exception_handler)

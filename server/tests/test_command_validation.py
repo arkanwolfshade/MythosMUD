@@ -7,6 +7,7 @@ This module tests the secure command parsing and validation functionality.
 import pytest
 from pydantic import ValidationError
 
+from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
     AddAdminCommand,
     AliasCommand,
@@ -398,21 +399,21 @@ class TestCommandParser:
 
     def test_parse_empty_command(self):
         """Test parsing empty command."""
-        with pytest.raises(ValueError, match="Empty command"):
+        with pytest.raises(MythosValidationError, match="Empty command provided"):
             self.parser.parse_command("")
 
-        with pytest.raises(ValueError, match="Empty command"):
+        with pytest.raises(MythosValidationError, match="Empty command provided"):
             self.parser.parse_command("   ")
 
     def test_parse_unknown_command(self):
         """Test parsing unknown command."""
-        with pytest.raises(ValueError, match="Unknown command"):
+        with pytest.raises(MythosValidationError, match="Unknown command"):
             self.parser.parse_command("unknown")
 
     def test_parse_command_too_long(self):
         """Test parsing command that's too long."""
         long_command = "say " + "x" * 1000
-        with pytest.raises(ValueError, match="Command too long"):
+        with pytest.raises(MythosValidationError, match="Command too long"):
             self.parser.parse_command(long_command)
 
     def test_parse_command_with_extra_whitespace(self):
@@ -507,11 +508,11 @@ class TestIntegration:
         assert cmd.message == "Hello, world!"
 
         # Invalid command
-        with pytest.raises(ValueError):
+        with pytest.raises(MythosValidationError):
             parse_command("say Hello<script>alert('xss')</script>")
 
         # Unknown command
-        with pytest.raises(ValueError, match="Unknown command"):
+        with pytest.raises(MythosValidationError, match="Unknown command"):
             parse_command("unknown")
 
     def test_command_safety_integration(self):

@@ -3,8 +3,11 @@ import sqlite3
 import threading
 from collections.abc import Callable
 
+from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.room import Room
+from .utils.error_logging import create_error_context, log_and_raise
+from .world_loader import ROOMS_BASE_PATH
 
 
 # --- Custom Exceptions ---
@@ -71,8 +74,14 @@ class PersistenceLayer:
 
             self.db_path = str(get_database_path())
         else:
-            raise ValueError(
-                "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+            context = create_error_context()
+            context.metadata["operation"] = "persistence_init"
+            log_and_raise(
+                ValidationError,
+                "DATABASE_URL environment variable must be set",
+                context=context,
+                details={"config_file": "server/env.example"},
+                user_friendly="Database configuration is missing",
             )
 
         # Logging is now handled by the centralized logging system
@@ -170,138 +179,110 @@ class PersistenceLayer:
             self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
             self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
         except Exception as e:
-            self._log(f"Room cache load failed: {e}")
+            context = create_error_context()
+            context.metadata["operation"] = "load_room_cache"
+            context.metadata["rooms_base_path"] = ROOMS_BASE_PATH
+            log_and_raise(
+                DatabaseError,
+                f"Room cache load failed: {e}",
+                context=context,
+                details={"rooms_base_path": ROOMS_BASE_PATH, "error": str(e)},
+                user_friendly="Failed to load world data",
+            )
 
     # --- CRUD for Players ---
     def get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
-            if row:
-                player_data = self._convert_row_to_player_data(row)
-                player = Player(**player_data)
-                # Validate and fix room placement if needed
-                self.validate_and_fix_player_room(player)
-                return player
-            return None
+        context = create_error_context()
+        context.metadata["operation"] = "get_player_by_name"
+        context.metadata["player_name"] = name
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
+                if row:
+                    player_data = self._convert_row_to_player_data(row)
+                    player = Player(**player_data)
+                    # Validate and fix room placement if needed
+                    self.validate_and_fix_player_room(player)
+                    return player
+                return None
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving player by name '{name}': {e}",
+                context=context,
+                details={"player_name": name, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
 
     def get_player(self, player_id: str) -> Player | None:
         """Get a player by ID."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            # Convert player_id to string to ensure SQLite compatibility
-            player_id_str = str(player_id) if player_id else None
-            row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
-            if row:
-                player_data = self._convert_row_to_player_data(row)
-                player = Player(**player_data)
-                # Validate and fix room placement if needed
-                self.validate_and_fix_player_room(player)
-                return player
-            return None
+        context = create_error_context()
+        context.metadata["operation"] = "get_player"
+        context.metadata["player_id"] = player_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                # Convert player_id to string to ensure SQLite compatibility
+                player_id_str = str(player_id) if player_id else None
+                row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
+                if row:
+                    player_data = self._convert_row_to_player_data(row)
+                    player = Player(**player_data)
+                    # Validate and fix room placement if needed
+                    self.validate_and_fix_player_room(player)
+                    return player
+                return None
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving player by ID '{player_id}': {e}",
+                context=context,
+                details={"player_id": player_id, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
 
     def get_player_by_user_id(self, user_id: str) -> Player | None:
         """Get a player by the owning user's ID."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            # Convert user_id to string to ensure SQLite compatibility
-            user_id_str = str(user_id) if user_id else None
-            row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
-            if row:
-                player_data = self._convert_row_to_player_data(row)
-                player = Player(**player_data)
-                # Validate and fix room placement if needed
-                self.validate_and_fix_player_room(player)
-                return player
-            return None
+        context = create_error_context()
+        context.metadata["operation"] = "get_player_by_user_id"
+        context.metadata["user_id"] = user_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                # Convert user_id to string to ensure SQLite compatibility
+                user_id_str = str(user_id) if user_id else None
+                row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
+                if row:
+                    player_data = self._convert_row_to_player_data(row)
+                    player = Player(**player_data)
+                    # Validate and fix room placement if needed
+                    self.validate_and_fix_player_room(player)
+                    return player
+                return None
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving player by user ID '{user_id}': {e}",
+                context=context,
+                details={"user_id": user_id, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
 
     def save_player(self, player: Player):
         """Save or update a player."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            try:
-                # Handle datetime fields that might be strings
-                created_at = None
-                last_active = None
+        context = create_error_context()
+        context.metadata["operation"] = "save_player"
+        context.metadata["player_name"] = player.name
+        context.metadata["player_id"] = str(player.player_id)
 
-                if player.created_at:
-                    if isinstance(player.created_at, str):
-                        created_at = player.created_at
-                    else:
-                        created_at = player.created_at.isoformat()
-
-                if player.last_active:
-                    if isinstance(player.last_active, str):
-                        last_active = player.last_active
-                    else:
-                        last_active = player.last_active.isoformat()
-
-                # Convert UUIDs to strings for SQLite compatibility
-                player_id_str = str(player.player_id) if player.player_id else None
-                user_id_str = str(player.user_id) if player.user_id else None
-
-                conn.execute(
-                    """
-                    INSERT OR REPLACE INTO players (
-                        player_id, user_id, name, stats, inventory, status_effects,
-                        current_room_id, experience_points, level, is_admin, created_at, last_active
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        player_id_str,
-                        user_id_str,
-                        player.name,
-                        player.stats,
-                        player.inventory,
-                        player.status_effects,
-                        player.current_room_id,
-                        player.experience_points,
-                        player.level,
-                        player.is_admin,
-                        created_at,
-                        last_active,
-                    ),
-                )
-                conn.commit()
-                self._log(f"Saved player {player.name} ({player.player_id})")
-                self._run_hooks("after_save_player", player)
-            except sqlite3.IntegrityError as e:
-                self._log(f"Unique constraint error saving player: {e}")
-                raise UniqueConstraintError(str(e)) from e
-
-    def list_players(self) -> list[Player]:
-        """List all players."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            rows = conn.execute("SELECT * FROM players").fetchall()
-            players = []
-            for row in rows:
-                player_data = self._convert_row_to_player_data(row)
-                player = Player(**player_data)
-                # Validate and fix room placement if needed
-                self.validate_and_fix_player_room(player)
-                players.append(player)
-            return players
-
-    def get_players_in_room(self, room_id: str) -> list[Player]:
-        """Get all players currently in a specific room."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
-            players = []
-            for row in rows:
-                player_data = self._convert_row_to_player_data(row)
-                player = Player(**player_data)
-                # Validate and fix room placement if needed
-                self.validate_and_fix_player_room(player)
-                players.append(player)
-            return players
-
-    def save_players(self, players: list[Player]):
-        """Batch save players atomically."""
-        with self._lock, sqlite3.connect(self.db_path) as conn:
-            try:
-                for player in players:
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                try:
                     # Handle datetime fields that might be strings
                     created_at = None
                     last_active = None
@@ -326,8 +307,8 @@ class PersistenceLayer:
                         """
                         INSERT OR REPLACE INTO players (
                             player_id, user_id, name, stats, inventory, status_effects,
-                            current_room_id, experience_points, level, created_at, last_active
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            current_room_id, experience_points, level, is_admin, created_at, last_active
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
                             player_id_str,
@@ -339,16 +320,170 @@ class PersistenceLayer:
                             player.current_room_id,
                             player.experience_points,
                             player.level,
+                            player.is_admin,
                             created_at,
                             last_active,
                         ),
                     )
-                conn.commit()
-                self._log(f"Batch saved {len(players)} players.")
-                self._run_hooks("after_save_players", players)
-            except sqlite3.IntegrityError as e:
-                self._log(f"Batch unique constraint error: {e}")
-                raise UniqueConstraintError(str(e)) from e
+                    conn.commit()
+                    self._log(f"Saved player {player.name} ({player.player_id})")
+                    self._run_hooks("after_save_player", player)
+                except sqlite3.IntegrityError as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Unique constraint error saving player: {e}",
+                        context=context,
+                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        user_friendly="Player name already exists",
+                    )
+                except sqlite3.Error as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Database error saving player: {e}",
+                        context=context,
+                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        user_friendly="Failed to save player",
+                    )
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Unexpected error saving player: {e}",
+                context=context,
+                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                user_friendly="Failed to save player",
+            )
+
+    def list_players(self) -> list[Player]:
+        """List all players."""
+        context = create_error_context()
+        context.metadata["operation"] = "list_players"
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute("SELECT * FROM players").fetchall()
+                players = []
+                for row in rows:
+                    player_data = self._convert_row_to_player_data(row)
+                    player = Player(**player_data)
+                    # Validate and fix room placement if needed
+                    self.validate_and_fix_player_room(player)
+                    players.append(player)
+                return players
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error listing players: {e}",
+                context=context,
+                details={"error": str(e)},
+                user_friendly="Failed to retrieve player list",
+            )
+
+    def get_players_in_room(self, room_id: str) -> list[Player]:
+        """Get all players currently in a specific room."""
+        context = create_error_context()
+        context.metadata["operation"] = "get_players_in_room"
+        context.metadata["room_id"] = room_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
+                players = []
+                for row in rows:
+                    player_data = self._convert_row_to_player_data(row)
+                    player = Player(**player_data)
+                    # Validate and fix room placement if needed
+                    self.validate_and_fix_player_room(player)
+                    players.append(player)
+                return players
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving players in room '{room_id}': {e}",
+                context=context,
+                details={"room_id": room_id, "error": str(e)},
+                user_friendly="Failed to retrieve players in room",
+            )
+
+    def save_players(self, players: list[Player]):
+        """Batch save players atomically."""
+        context = create_error_context()
+        context.metadata["operation"] = "save_players"
+        context.metadata["player_count"] = len(players)
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                try:
+                    for player in players:
+                        # Handle datetime fields that might be strings
+                        created_at = None
+                        last_active = None
+
+                        if player.created_at:
+                            if isinstance(player.created_at, str):
+                                created_at = player.created_at
+                            else:
+                                created_at = player.created_at.isoformat()
+
+                        if player.last_active:
+                            if isinstance(player.last_active, str):
+                                last_active = player.last_active
+                            else:
+                                last_active = player.last_active.isoformat()
+
+                        # Convert UUIDs to strings for SQLite compatibility
+                        player_id_str = str(player.player_id) if player.player_id else None
+                        user_id_str = str(player.user_id) if player.user_id else None
+
+                        conn.execute(
+                            """
+                            INSERT OR REPLACE INTO players (
+                                player_id, user_id, name, stats, inventory, status_effects,
+                                current_room_id, experience_points, level, created_at, last_active
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            (
+                                player_id_str,
+                                user_id_str,
+                                player.name,
+                                player.stats,
+                                player.inventory,
+                                player.status_effects,
+                                player.current_room_id,
+                                player.experience_points,
+                                player.level,
+                                created_at,
+                                last_active,
+                            ),
+                        )
+                    conn.commit()
+                    self._log(f"Batch saved {len(players)} players.")
+                    self._run_hooks("after_save_players", players)
+                except sqlite3.IntegrityError as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Batch unique constraint error: {e}",
+                        context=context,
+                        details={"player_count": len(players), "error": str(e)},
+                        user_friendly="Failed to save players - duplicate data",
+                    )
+                except sqlite3.Error as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Database error in batch save: {e}",
+                        context=context,
+                        details={"player_count": len(players), "error": str(e)},
+                        user_friendly="Failed to save players",
+                    )
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Unexpected error in batch save: {e}",
+                context=context,
+                details={"player_count": len(players), "error": str(e)},
+                user_friendly="Failed to save players",
+            )
 
     def delete_player(self, player_id: str) -> bool:
         """
@@ -384,8 +519,16 @@ class PersistenceLayer:
                     return False
 
             except sqlite3.Error as e:
-                self._log(f"Database error deleting player {player_id}: {e}")
-                raise PersistenceError(f"Failed to delete player {player_id}: {e}") from e
+                context = create_error_context()
+                context.metadata["operation"] = "delete_player"
+                context.metadata["player_id"] = player_id
+                log_and_raise(
+                    DatabaseError,
+                    f"Database error deleting player {player_id}: {e}",
+                    context=context,
+                    details={"player_id": player_id, "error": str(e)},
+                    user_friendly="Failed to delete player",
+                )
 
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> Room | None:
@@ -436,7 +579,17 @@ class PersistenceLayer:
                 # The room's _players set should only be modified when players actually enter/leave
 
         except Exception as e:
-            self._log(f"Error syncing room {room.id} players: {e}")
+            context = create_error_context()
+            context.metadata["operation"] = "sync_room_players"
+            context.metadata["room_id"] = room.id
+            context.metadata["recursion_depth"] = _recursion_depth
+            # Log as warning since this is a non-critical operation
+            self._logger.warning(
+                "Error syncing room players",
+                **context.to_dict(),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
             # Don't raise the exception - we want to continue even if sync fails
 
     def save_room(self, room: Room):
@@ -488,8 +641,18 @@ class PersistenceLayer:
             default_room = config.get("default_player_room", "earth_arkham_city_northside_intersection_derby_high")
             if default_room is None:
                 default_room = "earth_arkham_city_northside_intersection_derby_high"
-        except Exception:
+        except Exception as e:
             # Fallback to hardcoded default if config loading fails
+            context = create_error_context()
+            context.metadata["operation"] = "validate_and_fix_player_room"
+            context.metadata["player_name"] = player.name
+            context.metadata["old_room_id"] = old_room
+            self._logger.warning(
+                "Config loading failed during room validation, using fallback",
+                **context.to_dict(),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
             default_room = "earth_arkham_city_northside_intersection_derby_high"
 
         player.current_room_id = default_room

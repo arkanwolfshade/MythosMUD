@@ -9,10 +9,12 @@ import datetime
 import uuid
 
 from ..alias_storage import AliasStorage
+from ..exceptions import DatabaseError, ValidationError
 from ..logging_config import get_logger
 from ..models import Stats
 from ..models.player import Player
 from ..schemas.player import PlayerRead
+from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
@@ -51,7 +53,16 @@ class PlayerService:
         existing_player = self.persistence.get_player_by_name(name)
         if existing_player:
             logger.warning("Player creation failed - name already exists", name=name)
-            raise ValueError("Player name already exists")
+            context = create_error_context()
+            context.metadata["player_name"] = name
+            context.metadata["operation"] = "create_player"
+            log_and_raise(
+                ValidationError,
+                "Player name already exists",
+                context=context,
+                details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
+                user_friendly="A player with this name already exists",
+            )
 
         # Generate user_id if not provided
         if user_id is None:
@@ -105,7 +116,16 @@ class PlayerService:
         existing_player = self.persistence.get_player_by_name(name)
         if existing_player:
             logger.warning("Player creation failed - name already exists", name=name)
-            raise ValueError("Player name already exists")
+            context = create_error_context()
+            context.metadata["player_name"] = name
+            context.metadata["operation"] = "create_player_with_stats"
+            log_and_raise(
+                ValidationError,
+                "Player name already exists",
+                context=context,
+                details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
+                user_friendly="A player with this name already exists",
+            )
 
         # Generate user_id if not provided
         if user_id is None:
@@ -386,13 +406,31 @@ class PlayerService:
         player = self.persistence.get_player(player_id)
         if not player:
             logger.warning("Player not found for deletion", player_id=player_id)
-            return False, "Player not found"
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["operation"] = "delete_player"
+            log_and_raise(
+                ValidationError,
+                "Player not found for deletion",
+                context=context,
+                details={"player_id": player_id},
+                user_friendly="Player not found",
+            )
 
         # Delete the player from the database
         success = self.persistence.delete_player(player_id)
         if not success:
             logger.error("Failed to delete player from persistence", player_id=player_id)
-            return False, "Failed to delete player"
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["operation"] = "delete_player"
+            log_and_raise(
+                DatabaseError,
+                "Failed to delete player from persistence",
+                context=context,
+                details={"player_id": player_id},
+                user_friendly="Failed to delete player",
+            )
 
         # Safely get player name for logging
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
@@ -421,7 +459,17 @@ class PlayerService:
             player = self.persistence.get_player_by_name(player_name)
             if not player:
                 logger.warning(f"Cannot update location - player not found: {player_name}")
-                return False
+                context = create_error_context()
+                context.metadata["player_name"] = player_name
+                context.metadata["new_room_id"] = new_room_id
+                context.metadata["operation"] = "update_player_location"
+                log_and_raise(
+                    ValidationError,
+                    f"Player not found: {player_name}",
+                    context=context,
+                    details={"player_name": player_name, "new_room_id": new_room_id},
+                    user_friendly="Player not found",
+                )
 
             # Update location
             old_room = player.current_room_id
@@ -435,7 +483,17 @@ class PlayerService:
 
         except Exception as e:
             logger.error(f"Failed to update player location: {player_name} -> {new_room_id}: {str(e)}")
-            return False
+            context = create_error_context()
+            context.metadata["player_name"] = player_name
+            context.metadata["new_room_id"] = new_room_id
+            context.metadata["operation"] = "update_player_location"
+            log_and_raise(
+                DatabaseError,
+                f"Failed to update player location: {str(e)}",
+                context=context,
+                details={"player_name": player_name, "new_room_id": new_room_id, "error": str(e)},
+                user_friendly="Failed to update player location",
+            )
 
     def _convert_player_to_schema(self, player) -> PlayerRead:
         """

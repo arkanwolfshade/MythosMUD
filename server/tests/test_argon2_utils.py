@@ -21,6 +21,7 @@ from server.auth.argon2_utils import (
     needs_rehash,
     verify_password,
 )
+from server.exceptions import AuthenticationError
 
 
 class TestArgon2Configuration:
@@ -245,7 +246,7 @@ class TestArgon2ErrorHandling:
 
     def test_hash_password_invalid_type(self):
         """Test hashing with invalid password type."""
-        with pytest.raises(TypeError):
+        with pytest.raises(AuthenticationError):
             hash_password(123)
 
     def test_verify_password_invalid_types(self):

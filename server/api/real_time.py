@@ -7,13 +7,15 @@ for real-time game communication.
 
 import time
 
-from fastapi import APIRouter, HTTPException, Request, WebSocket
+from fastapi import APIRouter, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
 from ..auth_utils import decode_access_token
+from ..exceptions import LoggedHTTPException
 from ..persistence import get_persistence
 from ..realtime.sse_handler import game_event_stream
 from ..realtime.websocket_handler import handle_websocket_connection
+from ..utils.error_logging import create_context_from_request, create_context_from_websocket
 
 # Create real-time router
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
@@ -55,12 +57,15 @@ async def sse_events_token(request: Request):
 
     payload = decode_access_token(token)
     if not payload or "sub" not in payload:
-        raise HTTPException(status_code=401, detail="Invalid or missing token")
+        context = create_context_from_request(request)
+        raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
     user_id = str(payload["sub"]).strip()
     persistence = get_persistence()
     player = persistence.get_player_by_user_id(user_id)
     if not player:
-        raise HTTPException(status_code=401, detail="User has no player record")
+        context = create_context_from_request(request)
+        context.user_id = user_id
+        raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
     player_id = player.player_id
     logger.info(f"SSE connection attempt for player {player_id} with session {session_id}")
 
@@ -95,20 +100,25 @@ async def websocket_endpoint(websocket: WebSocket):
         # Fallback: allow anonymous connection only for tests (no identity)
         player_id = websocket.query_params.get("player_id")
         if not player_id:
-            raise HTTPException(status_code=401, detail="Invalid or missing token")
+            context = create_context_from_websocket(websocket)
+            raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
 
         # CRITICAL FIX: Validate that the test player exists
         persistence = get_persistence()
         player = persistence.get_player(player_id)
         if not player:
             logger.warning(f"WebSocket connection attempt for non-existent player: {player_id}")
-            raise HTTPException(status_code=404, detail=f"Player {player_id} not found")
+            context = create_context_from_websocket(websocket)
+            context.user_id = player_id
+            raise LoggedHTTPException(status_code=404, detail=f"Player {player_id} not found", context=context)
     else:
         user_id = str(payload["sub"]).strip()
         persistence = get_persistence()
         player = persistence.get_player_by_user_id(user_id)
         if not player:
-            raise HTTPException(status_code=401, detail="User has no player record")
+            context = create_context_from_websocket(websocket)
+            context.user_id = user_id
+            raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
         player_id = player.player_id
 
     logger.info(f"WebSocket connection attempt for player {player_id} with session {session_id}")
@@ -176,7 +186,9 @@ async def handle_new_game_session(player_id: str, request: Request):
         new_session_id = body.get("session_id")
 
         if not new_session_id:
-            raise HTTPException(status_code=400, detail="session_id is required")
+            context = create_context_from_request(request)
+            context.user_id = player_id
+            raise LoggedHTTPException(status_code=400, detail="session_id is required", context=context)
 
         # Handle new game session
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
@@ -185,10 +197,16 @@ async def handle_new_game_session(player_id: str, request: Request):
         return session_results
 
     except json.JSONDecodeError as e:
-        raise HTTPException(status_code=400, detail="Invalid JSON in request body") from e
+        context = create_context_from_request(request)
+        context.user_id = player_id
+        raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
     except Exception as e:
         logger.error(f"Error handling new game session for player {player_id}: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error handling new game session: {str(e)}") from e
+        context = create_context_from_request(request)
+        context.user_id = player_id
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error handling new game session: {str(e)}", context=context
+        ) from e
 
 
 @realtime_router.get("/connections/stats")
