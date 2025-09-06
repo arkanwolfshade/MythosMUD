@@ -253,7 +253,7 @@ class TestDualConnectionSystem:
         websocket_result = await connection_manager.connect_websocket(mock_websocket, player_id, session_id)
         assert websocket_result is True
 
-        sse_connection_id = await connection_manager.connect_sse(player_id, session_id)
+        await connection_manager.connect_sse(player_id, session_id)
 
         # Verify both connections exist
         assert player_id in connection_manager.player_websockets
@@ -410,7 +410,7 @@ class TestDualConnectionSystem:
         assert websocket_result is True
 
         # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse(player_id, session_id)
+        await connection_manager.connect_sse(player_id, session_id)
 
         # Create a test message
         test_message = {"type": "test", "data": "Hello from dual connection test"}
@@ -441,7 +441,7 @@ class TestDualConnectionSystem:
 
         # Test multiple WebSocket connections (should be allowed)
         websockets = []
-        for i in range(3):  # Test with 3 connections
+        for _i in range(3):  # Test with 3 connections
             websocket = AsyncMock(spec=WebSocket)
             websocket.accept = AsyncMock()
             websocket.close = AsyncMock()
@@ -458,7 +458,7 @@ class TestDualConnectionSystem:
 
         # Test multiple SSE connections (should be allowed)
         sse_connections = []
-        for i in range(2):  # Test with 2 SSE connections
+        for _i in range(2):  # Test with 2 SSE connections
             sse_connection_id = await connection_manager.connect_sse(player_id, session_id)
             sse_connections.append(sse_connection_id)
 
