@@ -200,7 +200,7 @@ export const ChatPanelTest: React.FC = () => {
                   <label className="text-sm text-mythos-terminal-text-secondary">New Message:</label>
                   <TerminalInput
                     value={newMessage}
-                    onChange={setNewMessage}
+                    onChange={e => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
                     onKeyDown={e => e.key === 'Enter' && addMessage()}
                   />
