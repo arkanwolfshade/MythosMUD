@@ -16,8 +16,8 @@ from unittest.mock import patch
 
 import pytest
 
-from server.exceptions import DatabaseError, ErrorContext
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.exceptions import DatabaseError, ErrorContext, create_error_context
+from server.utils.error_logging import log_and_raise
 
 
 class PerformanceTestMixin:
@@ -184,8 +184,8 @@ class TestLogAndRaisePerformance:
 
             def log_error():
                 try:
-                    log_and_raise(ValueError, "Performance test error")
-                except ValueError:
+                    log_and_raise(DatabaseError, "Performance test error")
+                except DatabaseError:
                     pass
 
             # Measure single log_and_raise operation
@@ -200,8 +200,8 @@ class TestLogAndRaisePerformance:
             def log_errors(count: int):
                 for i in range(count):
                     try:
-                        log_and_raise(ValueError, f"Bulk test error {i}")
-                    except ValueError:
+                        log_and_raise(DatabaseError, f"Bulk test error {i}")
+                    except DatabaseError:
                         pass
 
             # Test different batch sizes
@@ -223,9 +223,9 @@ class TestLogAndRaisePerformance:
             def log_error_with_context():
                 try:
                     log_and_raise(
-                        RuntimeError, "Context performance test error", context=context, details={"additional": "data"}
+                        DatabaseError, "Context performance test error", context=context, details={"additional": "data"}
                     )
-                except RuntimeError:
+                except DatabaseError:
                     pass
 
             # Measure log_and_raise with context
@@ -241,9 +241,9 @@ class TestLogAndRaisePerformance:
                 for i in range(1000):
                     try:
                         log_and_raise(
-                            ValueError, f"Memory test error {i}", details={"iteration": i, "data": f"test-{i}"}
+                            DatabaseError, f"Memory test error {i}", details={"iteration": i, "data": f"test-{i}"}
                         )
-                    except ValueError:
+                    except DatabaseError:
                         pass
 
             # Measure memory usage
@@ -258,8 +258,8 @@ class TestLogAndRaisePerformance:
 
             def log_error():
                 try:
-                    log_and_raise(ValueError, "Concurrent test error")
-                except ValueError:
+                    log_and_raise(DatabaseError, "Concurrent test error")
+                except DatabaseError:
                     pass
 
             # Run concurrent operations
@@ -294,12 +294,12 @@ class TestErrorLoggingSystemPerformance:
                 for i in range(50):
                     try:
                         if i % 3 == 0:
-                            log_and_raise(ValueError, f"Value error {i}")
+                            log_and_raise(DatabaseError, f"Database error {i}")
                         elif i % 3 == 1:
-                            log_and_raise(RuntimeError, f"Runtime error {i}")
+                            log_and_raise(DatabaseError, f"Database error {i}")
                         else:
-                            log_and_raise(KeyError, f"Key error {i}")
-                    except (ValueError, RuntimeError, KeyError):
+                            log_and_raise(DatabaseError, f"Database error {i}")
+                    except DatabaseError:
                         errors.append(i)
                 return errors
 
@@ -323,12 +323,12 @@ class TestErrorLoggingSystemPerformance:
 
                     try:
                         log_and_raise(
-                            ValueError,
+                            DatabaseError,
                             f"Memory leak test error {i}",
                             context=context,
                             details={"test": "memory", "iteration": i},
                         )
-                    except ValueError:
+                    except DatabaseError:
                         pass
 
                 return contexts
@@ -354,12 +354,12 @@ class TestErrorLoggingSystemPerformance:
 
         try:
             # Configure logger to write to file
-            with patch("server.utils.error_logging.error_logger"):
+            with patch("server.utils.error_logging.logger"):
 
                 def log_to_file():
                     try:
-                        log_and_raise(ValueError, "File I/O performance test error")
-                    except ValueError:
+                        log_and_raise(DatabaseError, "File I/O performance test error")
+                    except DatabaseError:
                         pass
 
                 # Measure file I/O performance
@@ -375,7 +375,7 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_network_performance(self, perf_mixin):
         """Test error logging performance with network operations."""
-        with patch("server.utils.error_logging.error_logger"):
+        with patch("server.utils.error_logging.logger"):
             # Simulate network delay
             def slow_network_operation():
                 time.sleep(0.001)  # Simulate 1ms network delay
@@ -385,9 +385,9 @@ class TestErrorLoggingSystemPerformance:
                 network_result = slow_network_operation()
                 try:
                     log_and_raise(
-                        ConnectionError, f"Network error: {network_result}", details={"network_operation": "test"}
+                        DatabaseError, f"Network error: {network_result}", details={"network_operation": "test"}
                     )
-                except ConnectionError:
+                except DatabaseError:
                     pass
 
             # Measure performance with network simulation
@@ -440,11 +440,11 @@ class TestErrorLoggingScalability:
                 for i in range(load_factor * 100):
                     try:
                         log_and_raise(
-                            ValueError,
+                            DatabaseError,
                             f"Scalability test error {i}",
                             details={"load_factor": load_factor, "iteration": i},
                         )
-                    except ValueError:
+                    except DatabaseError:
                         errors.append(i)
                 return errors
 
@@ -479,8 +479,10 @@ class TestErrorLoggingScalability:
                 errors = []
                 for i in range(1000):  # High burst of errors
                     try:
-                        log_and_raise(ValueError, f"Peak load error {i}", details={"peak_load": True, "iteration": i})
-                    except ValueError:
+                        log_and_raise(
+                            DatabaseError, f"Peak load error {i}", details={"peak_load": True, "iteration": i}
+                        )
+                    except DatabaseError:
                         errors.append(i)
                 return errors
 
@@ -505,11 +507,11 @@ class TestErrorLoggingScalability:
                 while time.time() - start_time < duration_seconds:
                     try:
                         log_and_raise(
-                            ValueError,
+                            DatabaseError,
                             f"Sustained load error {error_count}",
                             details={"sustained_load": True, "count": error_count},
                         )
-                    except ValueError:
+                    except DatabaseError:
                         error_count += 1
 
                 return error_count
