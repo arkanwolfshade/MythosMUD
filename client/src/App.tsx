@@ -23,7 +23,6 @@ function App() {
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
-  const [showDevMode, setShowDevMode] = useState(false); // Development mode for testing
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,19 +128,6 @@ function App() {
     setInviteCode('');
   };
 
-  // Development mode for testing typography and layout improvements
-  if (showDevMode) {
-    return (
-      <div className="App">
-        <div className="dev-mode-notice">
-          <h2>Development Mode Disabled</h2>
-          <p>Please use proper authentication to test the game interface.</p>
-          <button onClick={() => setShowDevMode(false)}>Return to Login</button>
-        </div>
-      </div>
-    );
-  }
-
   if (showDemo) {
     return (
       <div className="App">
@@ -215,20 +201,6 @@ function App() {
                 className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
               >
                 View Eldritch Effects Demo
-              </button>
-            </div>
-
-            {/* Development Mode Button for Testing */}
-            <div
-              className="dev-mode-button"
-              style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #333' }}
-            >
-              <button
-                onClick={() => setShowDevMode(true)}
-                className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
-                style={{ fontSize: '0.9rem', opacity: 0.8 }}
-              >
-                🧪 Development Mode - Test Game Interface
               </button>
             </div>
           </div>

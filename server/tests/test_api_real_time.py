@@ -197,11 +197,17 @@ class TestWebSocketEndpoint:
         # Mock dependencies
         with (
             patch("server.api.real_time.decode_access_token") as mock_decode,
+            patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
             patch("server.logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = None  # Invalid token
+            mock_persistence = Mock()
+            mock_get_persistence.return_value = mock_persistence
+            mock_player = Mock()
+            mock_player.player_id = "test_player_id"
+            mock_persistence.get_player.return_value = mock_player
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 

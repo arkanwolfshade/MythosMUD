@@ -13,7 +13,6 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..game.movement_service import MovementService
 from ..logging_config import get_logger
 from ..models import Player
 from .memory_monitor import MemoryMonitor
@@ -191,13 +190,39 @@ class ConnectionManager:
             bool: True if connection was successful, False otherwise
         """
         try:
-            # Check if player already has an active WebSocket connection and terminate it
-            # Allow both SSE and WebSocket connections simultaneously
-            if player_id in self.player_websockets:
-                logger.info(f"Player {player_id} has existing WebSocket connection, terminating it")
-                # Clear pending messages BEFORE force disconnect to prevent stale messages
-                self.message_queue.remove_player_messages(player_id)
-                await self.force_disconnect_player(player_id)
+            # CRITICAL FIX: Add connection lock to prevent race conditions
+            async with self.disconnect_lock:
+                # Check if player already has an active WebSocket connection
+                # Only terminate if this is a genuine reconnection (not simultaneous connection)
+                if player_id in self.player_websockets:
+                    existing_connection_id = self.player_websockets[player_id]
+                    if existing_connection_id in self.active_websockets:
+                        existing_websocket = self.active_websockets[existing_connection_id]
+                        # Check if the existing WebSocket is still open
+                        try:
+                            # CRITICAL FIX: Add timeout to ping operation to prevent hanging
+                            await asyncio.wait_for(existing_websocket.ping(), timeout=2.0)
+                            logger.info(
+                                f"Player {player_id} has existing active WebSocket connection, terminating it for reconnection"
+                            )
+                            # Clear pending messages BEFORE force disconnect to prevent stale messages
+                            self.message_queue.remove_player_messages(player_id)
+                            # Only disconnect the WebSocket, not all connections
+                            await self.disconnect_websocket(player_id, is_force_disconnect=True)
+                        except TimeoutError:
+                            logger.warning(f"Existing WebSocket for player {player_id} ping timeout, cleaning up")
+                            # Clean up the dead connection
+                            await self.disconnect_websocket(player_id, is_force_disconnect=True)
+                        except Exception as ping_error:
+                            logger.warning(
+                                f"Existing WebSocket for player {player_id} is not responding, cleaning up: {ping_error}"
+                            )
+                            # Clean up the dead connection
+                            await self.disconnect_websocket(player_id, is_force_disconnect=True)
+                    else:
+                        logger.warning(f"Player {player_id} has stale WebSocket reference, cleaning up")
+                        # Clean up stale reference
+                        del self.player_websockets[player_id]
 
             await websocket.accept()
             connection_id = str(uuid.uuid4())
@@ -321,18 +346,12 @@ class ConnectionManager:
             str: The connection ID
         """
         try:
-            # Check if player already has an active SSE connection and terminate it
-            # Allow both SSE and WebSocket connections simultaneously
+            # Check if player already has an active SSE connection
+            # Only terminate if this is a genuine reconnection (not simultaneous connection)
             if player_id in self.active_sse_connections:
-                logger.info(f"Player {player_id} has existing SSE connection, terminating it")
-                # Wait for force disconnect to complete to prevent race conditions
-                try:
-                    loop = asyncio.get_running_loop()
-                    task = loop.create_task(self.force_disconnect_player(player_id))
-                    await task
-                except RuntimeError:
-                    # No running loop, run synchronously
-                    asyncio.create_task(self.force_disconnect_player(player_id))
+                logger.info(f"Player {player_id} has existing SSE connection, terminating it for reconnection")
+                # Only disconnect the SSE connection, not all connections
+                self.disconnect_sse(player_id, is_force_disconnect=True)
 
         except Exception as e:
             logger.error(f"Error force disconnecting player {player_id}: {e}", exc_info=True)
@@ -547,8 +566,17 @@ class ConnectionManager:
                 connection_id = self.player_websockets[player_id]
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
-                    await websocket.send_json(serializable_event)
-                    return True
+                    # CRITICAL FIX: Check WebSocket state before sending
+                    try:
+                        # Check if WebSocket is still open by attempting to send
+                        await websocket.send_json(serializable_event)
+                        return True
+                    except Exception as ws_error:
+                        # WebSocket is closed or in an invalid state
+                        logger.warning(f"WebSocket send failed for player {player_id}: {ws_error}")
+                        # Clean up the dead WebSocket connection
+                        await self._cleanup_dead_websocket(player_id, connection_id)
+                        # Continue to fallback to pending messages
 
             # Fallback to pending messages - add message without timestamp for compatibility
             if player_id not in self.message_queue.pending_messages:
@@ -710,18 +738,15 @@ class ConnectionManager:
                 # Prune any stale occupant ids not currently online
                 self.room_manager.reconcile_room_presence(room_id, self.online_players)
 
-                # Add player to the Room object's _players set for movement service
+                # Add player to the Room object and trigger player_entered event
                 if self.persistence:
-                    # Create MovementService with the same persistence layer
-                    event_bus = getattr(self, "_event_bus", None)
-                    movement_service = MovementService(event_bus)
-                    # Override the persistence layer to use the same instance
-                    movement_service._persistence = self.persistence
-                    success = movement_service.add_player_to_room(player_id, room_id)
-                    if success:
-                        logger.info(f"Player {player_id} added to room {room_id} for movement service")
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        # Call room.player_entered() to ensure proper event publishing
+                        room.player_entered(player_id)
+                        logger.info(f"Player {player_id} entered room {room_id} via player_entered()")
                     else:
-                        logger.warning(f"Failed to add player {player_id} to room {room_id} for movement service")
+                        logger.warning(f"Room {room_id} not found when trying to add player {player_id}")
 
                 # Send initial game_state event to the player
                 await self._send_initial_game_state(player_id, player, room_id)
@@ -873,6 +898,124 @@ class ConnectionManager:
             # Always remove player from disconnecting set, even on error
             async with self.disconnect_lock:
                 self.disconnecting_players.discard(player_id)
+
+    def _cleanup_ghost_players(self):
+        """
+        Clean up ghost players from all rooms.
+
+        This method removes players from room's internal _players set
+        if they are no longer in the online_players set.
+        """
+        try:
+            if not self.persistence or not hasattr(self.persistence, "_room_cache"):
+                return
+
+            # Get all online player IDs
+            online_player_ids = set(self.online_players.keys())
+
+            # Get all rooms from the room cache
+            for _room_id, room in self.persistence._room_cache.items():
+                if not hasattr(room, "_players"):
+                    continue
+
+                # Get players in this room
+                room_player_ids = set(room._players)
+
+                # Find ghost players (players in room but not online)
+                ghost_players = room_player_ids - online_player_ids
+
+                if ghost_players:
+                    logger.debug(f"🔍 DEBUG: Found ghost players in room {room.id}: {ghost_players}")
+                    for ghost_player_id in ghost_players:
+                        room._players.discard(ghost_player_id)
+                        logger.debug(f"🔍 DEBUG: Removed ghost player {ghost_player_id} from room {room.id}")
+
+        except Exception as e:
+            logger.error(f"Error cleaning up ghost players: {e}", exc_info=True)
+
+    async def detect_and_handle_error_state(self, player_id: str, error_type: str, error_details: str):
+        """
+        Detect when a client is in an error state and handle it appropriately.
+
+        Args:
+            player_id: The player's ID
+            error_type: Type of error detected
+            error_details: Detailed error information
+        """
+        try:
+            import json
+            import os
+            from datetime import datetime
+
+            logger.error(f"ERROR STATE DETECTED for player {player_id}: {error_type} - {error_details}")
+
+            # Log the error state to a dedicated error log file
+            error_log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "player_id": player_id,
+                "error_type": error_type,
+                "error_details": error_details,
+                "connections": {
+                    "websocket": player_id in self.player_websockets,
+                    "sse": player_id in self.active_sse_connections,
+                    "online": player_id in self.online_players,
+                },
+            }
+
+            # Write to error log file
+            error_log_path = "logs/development/connection_errors.log"
+            os.makedirs(os.path.dirname(error_log_path), exist_ok=True)
+            with open(error_log_path, "a") as f:
+                f.write(json.dumps(error_log_entry) + "\n")
+
+            # Only terminate connections if this is a critical error
+            if error_type in ["CRITICAL_WEBSOCKET_ERROR", "CRITICAL_SSE_ERROR", "AUTHENTICATION_FAILURE"]:
+                logger.error(f"CRITICAL ERROR: Terminating all connections for player {player_id}")
+                await self.force_disconnect_player(player_id)
+            else:
+                logger.warning(f"Non-critical error: Keeping connections alive for player {player_id}")
+
+        except Exception as e:
+            logger.error(f"Error in detect_and_handle_error_state for {player_id}: {e}", exc_info=True)
+
+    async def handle_new_login(self, player_id: str):
+        """
+        Handle a new login by terminating all existing connections for the player.
+        This ensures that only one session per player is active at a time.
+
+        Args:
+            player_id: The player's ID
+        """
+        try:
+            logger.info(f"NEW LOGIN detected for player {player_id}, terminating existing connections")
+
+            # Log the new login event
+            import json
+            import os
+            from datetime import datetime
+
+            login_log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "player_id": player_id,
+                "event_type": "NEW_LOGIN",
+                "connections_before": {
+                    "websocket": player_id in self.player_websockets,
+                    "sse": player_id in self.active_sse_connections,
+                    "online": player_id in self.online_players,
+                },
+            }
+
+            # Write to login log file
+            login_log_path = "logs/development/new_logins.log"
+            os.makedirs(os.path.dirname(login_log_path), exist_ok=True)
+            with open(login_log_path, "a") as f:
+                f.write(json.dumps(login_log_entry) + "\n")
+
+            # Terminate all existing connections
+            await self.force_disconnect_player(player_id)
+
+        except Exception as e:
+            logger.error(f"Error handling new login for {player_id}: {e}", exc_info=True)
 
     async def _check_and_process_disconnect(self, player_id: str):
         """
@@ -1074,6 +1217,60 @@ class ConnectionManager:
             logger.info("Force cleanup completed")
         except Exception as e:
             logger.error(f"Error during force cleanup: {e}", exc_info=True)
+
+    async def check_connection_health(self, player_id: str) -> bool:
+        """
+        Check if a player's connections are healthy.
+
+        Args:
+            player_id: The player's ID
+
+        Returns:
+            bool: True if connections are healthy, False otherwise
+        """
+        try:
+            health_status = {"websocket_healthy": False, "sse_healthy": False, "overall_healthy": False}
+
+            # Check WebSocket health
+            if player_id in self.player_websockets:
+                connection_id = self.player_websockets[player_id]
+                if connection_id in self.active_websockets:
+                    websocket = self.active_websockets[connection_id]
+                    try:
+                        # Try to send a ping to check if connection is alive
+                        await websocket.ping()
+                        health_status["websocket_healthy"] = True
+                        logger.debug(f"WebSocket health check passed for player {player_id}")
+                    except Exception as e:
+                        logger.warning(f"WebSocket health check failed for player {player_id}: {e}")
+                        # Mark WebSocket as unhealthy and remove it
+                        await self.disconnect_websocket(player_id, is_force_disconnect=True)
+
+            # Check SSE health
+            if player_id in self.active_sse_connections:
+                try:
+                    # For SSE, we can't easily ping, so we assume it's healthy if it exists
+                    # and hasn't been explicitly disconnected
+                    health_status["sse_healthy"] = True
+                    logger.debug(f"SSE health check passed for player {player_id}")
+                except Exception as e:
+                    logger.warning(f"SSE health check failed for player {player_id}: {e}")
+                    self.disconnect_sse(player_id, is_force_disconnect=True)
+
+            # Overall health is good if at least one connection is healthy
+            health_status["overall_healthy"] = health_status["websocket_healthy"] or health_status["sse_healthy"]
+
+            if not health_status["overall_healthy"]:
+                logger.warning(f"All connections unhealthy for player {player_id}")
+                await self.detect_and_handle_error_state(
+                    player_id, "CONNECTION_HEALTH_FAILURE", f"All connections failed health check: {health_status}"
+                )
+
+            return health_status["overall_healthy"]
+
+        except Exception as e:
+            logger.error(f"Error checking connection health for player {player_id}: {e}", exc_info=True)
+            return False
 
 
 # Global connection manager instance

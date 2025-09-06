@@ -184,12 +184,14 @@ class TestConnectionManagerComprehensive:
         connection_manager.player_websockets["test_player"] = connection_id
 
         with patch.object(
-            connection_manager, "force_disconnect_player", new_callable=AsyncMock
-        ) as mock_force_disconnect:
+            connection_manager, "disconnect_websocket", new_callable=AsyncMock
+        ) as mock_disconnect_websocket:
             sse_connection_id = await connection_manager.connect_sse("test_player")
 
             assert sse_connection_id is not None
-            mock_force_disconnect.assert_called_once_with("test_player")
+            # The SSE connection should not trigger WebSocket disconnection
+            # since SSE and WebSocket can coexist
+            mock_disconnect_websocket.assert_not_called()
 
     def test_disconnect_sse_success(self, connection_manager):
         """Test successful SSE disconnection."""
@@ -865,13 +867,11 @@ class TestConnectionManagerComprehensive:
         # Setup existing SSE connection
         connection_manager.active_sse_connections["test_player"] = "existing_sse_id"
 
-        with patch.object(
-            connection_manager, "force_disconnect_player", new_callable=AsyncMock
-        ) as mock_force_disconnect:
+        with patch.object(connection_manager, "disconnect_sse", new_callable=Mock) as mock_disconnect_sse:
             sse_connection_id = await connection_manager.connect_sse("test_player")
 
             assert sse_connection_id is not None
-            mock_force_disconnect.assert_called_once_with("test_player")
+            mock_disconnect_sse.assert_called_once_with("test_player", is_force_disconnect=True)
 
     @pytest.mark.asyncio
     async def test_connect_sse_with_player_tracking(self, connection_manager, mock_player, mock_persistence):

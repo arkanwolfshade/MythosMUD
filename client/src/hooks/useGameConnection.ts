@@ -53,7 +53,8 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
       const newSseState = {
         ...state,
         sseConnected: action.payload,
-        isConnected: action.payload && state.websocketConnected,
+        // CRITICAL FIX: Connection is established if either SSE OR WebSocket is connected
+        isConnected: action.payload || state.websocketConnected,
         error: action.payload ? null : state.error,
       };
       console.error('🚨 CRITICAL DEBUG: SSE_CONNECTED reducer', {
@@ -72,8 +73,7 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
       const newWsState = {
         ...state,
         websocketConnected: action.payload,
-        // CRITICAL FIX: Allow connection if either SSE OR WebSocket is connected
-        // This ensures multiplayer works even if SSE fails
+        // CRITICAL FIX: Connection is established if either SSE OR WebSocket is connected
         isConnected: action.payload || state.sseConnected,
         error: action.payload ? null : state.error,
       };
@@ -296,16 +296,25 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
         logger.error('GameConnection', 'WebSocket error', { error: String(error) });
       };
 
-      websocket.onclose = () => {
-        logger.info('GameConnection', 'WebSocket disconnected');
+      websocket.onclose = event => {
+        logger.info('GameConnection', 'WebSocket disconnected', {
+          code: event.code,
+          reason: event.reason,
+          wasClean: event.wasClean,
+        });
         websocketRef.current = null;
         dispatch({ type: 'SET_WEBSOCKET_CONNECTED', payload: false });
         if (wsPingIntervalRef.current !== null) {
           window.clearInterval(wsPingIntervalRef.current);
           wsPingIntervalRef.current = null;
         }
+        // CRITICAL FIX: Only attempt reconnection if SSE is still connected
+        // This prevents infinite reconnection loops
         if (state.sseConnected) {
+          logger.info('GameConnection', 'SSE still connected, scheduling WebSocket reconnection');
           scheduleWsReconnect();
+        } else {
+          logger.warning('GameConnection', 'Both SSE and WebSocket disconnected, not attempting reconnection');
         }
       };
     } catch (error) {
@@ -426,24 +435,33 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
   }, [clearTimers]);
 
   const sendCommand = useCallback((command: string, args: string[] = []) => {
-    if (!websocketRef.current || websocketRef.current.readyState !== WebSocket.OPEN) {
-      logger.error('GameConnection', 'WebSocket not connected');
+    // CRITICAL FIX: Enhanced connection validation
+    if (!websocketRef.current) {
+      logger.error('GameConnection', 'WebSocket reference not available');
+      return false;
+    }
+
+    if (websocketRef.current.readyState !== WebSocket.OPEN) {
+      logger.error('GameConnection', 'WebSocket not in OPEN state', {
+        readyState: websocketRef.current.readyState,
+        readyStateText: ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][websocketRef.current.readyState],
+      });
       return false;
     }
 
     try {
       const commandData = {
-        type: 'command',
-        data: {
-          command,
-          args,
-        },
+        type: 'game_command', // CRITICAL FIX: Use correct message type
+        command,
+        args,
       };
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command, args });
       return true;
     } catch (error) {
       logger.error('GameConnection', 'Failed to send command', { error: String(error) });
+      // CRITICAL FIX: Mark WebSocket as disconnected if send fails
+      dispatch({ type: 'SET_WEBSOCKET_CONNECTED', payload: false });
       return false;
     }
   }, []);

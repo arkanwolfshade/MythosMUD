@@ -162,7 +162,12 @@ class TestWebSocketConnectionEvents:
         """Test that WebSocket connection calls room.player_entered()."""
         with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
             # Set up connection manager mocks
-            mock_cm.connect_websocket = AsyncMock(return_value=True)
+            async def mock_connect_websocket(websocket, player_id):
+                # Simulate the real connect_websocket behavior by calling room.player_entered
+                mock_room.player_entered(player_id)
+                return True
+
+            mock_cm.connect_websocket = mock_connect_websocket
             mock_cm._get_player = MagicMock(return_value=mock_player)
             mock_cm.get_room_occupants = MagicMock(return_value=[])
             mock_cm.broadcast_to_room = AsyncMock()

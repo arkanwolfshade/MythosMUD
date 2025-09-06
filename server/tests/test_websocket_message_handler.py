@@ -37,7 +37,7 @@ class TestWebSocketMessageHandler:
         """Test handling of command message type."""
         message = {"type": "command", "data": {"command": "look", "args": []}}
 
-        with patch("server.realtime.websocket_handler.handle_game_command") as mock_handler:
+        with patch("server.realtime.message_handlers.handle_game_command") as mock_handler:
             await handle_websocket_message(mock_websocket, "test_player", message)
 
             mock_handler.assert_called_once_with(mock_websocket, "test_player", "look", [])
@@ -47,7 +47,7 @@ class TestWebSocketMessageHandler:
         """Test handling of chat message type."""
         message = {"type": "chat", "data": {"message": "Hello, world!"}}
 
-        with patch("server.realtime.websocket_handler.handle_chat_message") as mock_handler:
+        with patch("server.realtime.message_handlers.handle_chat") as mock_handler:
             await handle_websocket_message(mock_websocket, "test_player", message)
 
             mock_handler.assert_called_once_with(mock_websocket, "test_player", "Hello, world!")
@@ -59,7 +59,7 @@ class TestWebSocketMessageHandler:
 
         await handle_websocket_message(mock_websocket, "test_player", message)
 
-        # Verify pong event was sent with new envelope format
+        # Verify pong event was sent with envelope format
         mock_websocket.send_json.assert_called_once()
         call_args = mock_websocket.send_json.call_args[0][0]
         assert call_args["event_type"] == "pong"
@@ -86,7 +86,7 @@ class TestWebSocketMessageHandler:
         """Test handling of message that raises an exception."""
         message = {"type": "command", "data": {"command": "look", "args": []}}
 
-        with patch("server.realtime.websocket_handler.handle_game_command", side_effect=Exception("Test error")):
+        with patch("server.realtime.message_handlers.handle_game_command", side_effect=Exception("Test error")):
             await handle_websocket_message(mock_websocket, "test_player", message)
 
             # Verify error response was sent

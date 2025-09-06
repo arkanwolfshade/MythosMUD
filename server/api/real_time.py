@@ -83,6 +83,13 @@ async def websocket_endpoint(websocket: WebSocket):
         player_id = websocket.query_params.get("player_id")
         if not player_id:
             raise HTTPException(status_code=401, detail="Invalid or missing token")
+
+        # CRITICAL FIX: Validate that the test player exists
+        persistence = get_persistence()
+        player = persistence.get_player(player_id)
+        if not player:
+            logger.warning(f"WebSocket connection attempt for non-existent player: {player_id}")
+            raise HTTPException(status_code=404, detail=f"Player {player_id} not found")
     else:
         user_id = str(payload["sub"]).strip()
         persistence = get_persistence()
