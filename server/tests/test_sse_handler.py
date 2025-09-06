@@ -394,7 +394,7 @@ class TestGameEventStream:
             assert any("heartbeat" in event for event in events)
 
             # Verify connection manager calls
-            mock_connection_manager.connect_sse.assert_called_once_with("test_player_123")
+            mock_connection_manager.connect_sse.assert_called_once_with("test_player_123", None)
             mock_connection_manager.get_pending_messages.assert_called_once_with("test_player_123")
 
     @pytest.mark.asyncio

@@ -280,9 +280,9 @@ class TestMemoryLeakPreventionIntegration:
 
         with patch.object(connection_manager, "_get_player", return_value=mock_player):
             # Simulate connection and disconnection
-            mock_websocket = Mock()
-            # Make the mock websocket awaitable
+            mock_websocket = AsyncMock()
             mock_websocket.accept = AsyncMock()
+            mock_websocket.ping = AsyncMock()
             player_id = "test_player"
 
             # Connect

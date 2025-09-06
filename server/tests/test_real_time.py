@@ -70,7 +70,7 @@ class TestConnectionManager:
         """Test WebSocket disconnection."""
         # First connect
         self.manager.active_websockets["conn1"] = self.mock_websocket
-        self.manager.player_websockets[self.player_id] = "conn1"
+        self.manager.player_websockets[self.player_id] = ["conn1"]
         self.manager.room_subscriptions[self.room_id] = {self.player_id}
 
         # Then disconnect
@@ -87,7 +87,7 @@ class TestConnectionManager:
 
         assert connection_id is not None
         assert self.player_id in self.manager.active_sse_connections
-        assert self.manager.active_sse_connections[self.player_id] == connection_id
+        assert connection_id in self.manager.active_sse_connections[self.player_id]
 
     @pytest.mark.asyncio
     async def test_disconnect_sse(self):

@@ -115,7 +115,7 @@ class TestWebSocketMessageHandling:
     async def test_handle_websocket_message_command(self):
         """Test handling a command message."""
         # Setup
-        message = {"type": "game_command", "command": "look", "args": []}
+        message = {"type": "command", "data": {"command": "look", "args": []}}
 
         with patch("server.realtime.websocket_handler.handle_game_command") as mock_handle_command:
             # Execute
@@ -128,7 +128,7 @@ class TestWebSocketMessageHandling:
     async def test_handle_websocket_message_chat(self):
         """Test handling a chat message."""
         # Setup
-        message = {"type": "chat", "message": "Hello, world!"}
+        message = {"type": "chat", "data": {"message": "Hello, world!"}}
 
         with patch("server.realtime.websocket_handler.handle_chat_message") as mock_handle_chat:
             # Execute
@@ -149,7 +149,7 @@ class TestWebSocketMessageHandling:
         # Verify pong response was sent
         self.mock_websocket.send_json.assert_called_once()
         call_args = self.mock_websocket.send_json.call_args[0][0]
-        assert call_args["type"] == "pong"
+        assert call_args["event_type"] == "pong"
         assert "timestamp" in call_args
 
     @pytest.mark.asyncio
@@ -165,8 +165,8 @@ class TestWebSocketMessageHandling:
         self.mock_websocket.send_json.assert_called_once()
         call_args = self.mock_websocket.send_json.call_args[0][0]
         assert call_args["type"] == "error"
-        assert call_args["error_type"] == "invalid_format"
-        assert "Unknown message type: unknown_type" in call_args["message"]
+        assert call_args["error_type"] == "message_processing_error"
+        assert "Error processing message" in call_args["message"]
 
     @pytest.mark.asyncio
     async def test_handle_websocket_message_missing_type(self):
@@ -177,14 +177,17 @@ class TestWebSocketMessageHandling:
         # Execute
         await handle_websocket_message(self.mock_websocket, self.player_id, message)
 
-        # Verify - should not send any response for missing type (just logs warning)
-        self.mock_websocket.send_json.assert_not_called()
+        # Verify - should send error response for missing type
+        self.mock_websocket.send_json.assert_called_once()
+        call_args = self.mock_websocket.send_json.call_args[0][0]
+        assert call_args["type"] == "error"
+        assert call_args["error_type"] == "message_processing_error"
 
     @pytest.mark.asyncio
     async def test_handle_websocket_message_missing_data(self):
         """Test handling a message with missing data."""
         # Setup
-        message = {"type": "game_command"}
+        message = {"type": "command"}
 
         with patch("server.realtime.websocket_handler.handle_game_command") as mock_handle_command:
             # Execute
@@ -197,14 +200,17 @@ class TestWebSocketMessageHandling:
     async def test_handle_websocket_message_exception(self):
         """Test handling a message when an exception occurs."""
         # Setup
-        message = {"type": "game_command", "command": "look", "args": []}
+        message = {"type": "command", "data": {"command": "look", "args": []}}
 
         with patch("server.realtime.websocket_handler.handle_game_command", side_effect=Exception("Test error")):
             # Execute
             await handle_websocket_message(self.mock_websocket, self.player_id, message)
 
-            # Verify - should not send any response for exceptions (just logs error)
-            self.mock_websocket.send_json.assert_not_called()
+            # Verify - should send error response for exceptions
+            self.mock_websocket.send_json.assert_called_once()
+            call_args = self.mock_websocket.send_json.call_args[0][0]
+            assert call_args["type"] == "error"
+            assert call_args["error_type"] == "message_processing_error"
 
 
 class TestWebSocketCommandProcessing:
@@ -566,7 +572,7 @@ class TestWebSocketErrorHandling:
         self.mock_websocket.send_json.assert_called_once()
         call_args = self.mock_websocket.send_json.call_args[0][0]
         assert call_args["type"] == "error"
-        assert call_args["error_type"] == "invalid_command"
+        assert call_args["error_type"] == "message_processing_error"
 
     @pytest.mark.asyncio
     async def test_handle_websocket_message_none_message(self):

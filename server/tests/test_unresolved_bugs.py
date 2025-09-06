@@ -356,14 +356,14 @@ class TestWebSocketMessageDeliveryBugs:
 
         # Add connection using the correct structure
         connection_manager.active_websockets[connection_id] = mock_websocket
-        connection_manager.player_websockets[player_id] = connection_id
+        connection_manager.player_websockets[player_id] = [connection_id]
 
         # Try to send a message
         test_event = {"type": "test", "data": "test"}
         result = await connection_manager.send_personal_message(player_id, test_event)
 
         # Should return False for failed delivery
-        assert result is False
+        assert result["success"] is False
 
     @pytest.mark.asyncio
     async def test_message_queue_handling_for_disconnected_players(self):
@@ -380,7 +380,7 @@ class TestWebSocketMessageDeliveryBugs:
         result = await connection_manager.send_personal_message(player_id, test_event)
 
         # Should return True (message queued successfully)
-        assert result is True
+        assert result["success"] is True
 
         # Message should be queued for disconnected player
         assert player_id in connection_manager.pending_messages
