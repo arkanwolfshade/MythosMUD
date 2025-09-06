@@ -121,15 +121,15 @@ class TestDependencyUpgradeValidation:
         # Verify all Python packages are in the log
         python_packages = [log["package"] for log in executor.upgrade_log if log["ecosystem"] == "pip"]
         expected_packages = [
-            "click@8.2.1",
-            "email-validator@2.3.0",
-            "exceptiongroup@1.3.0",
-            "pytest@8.4.2",
-            "pytest-cov@6.3.0",
-            "python-dotenv@1.1.1",
-            "requests@2.32.5",
-            "ruff@0.12.12",
-            "tomli@2.2.1",
+            "click==8.2.1",
+            "email-validator==2.3.0",
+            "exceptiongroup==1.3.0",
+            "pytest==8.4.2",
+            "pytest-cov==6.3.0",
+            "python-dotenv==1.1.1",
+            "requests==2.32.5",
+            "ruff==0.12.12",
+            "tomli==2.2.1",
         ]
 
         for package in expected_packages:
@@ -177,7 +177,13 @@ class TestDependencyUpgradeValidation:
 
         assert result is True
         mock_subprocess_success.assert_called_with(
-            ["git", "reset", "--hard", "HEAD~1"], cwd=executor.project_root, capture_output=True, text=True, shell=True, encoding="utf-8", errors="replace"
+            ["git", "reset", "--hard", "HEAD~1"],
+            cwd=executor.project_root,
+            capture_output=True,
+            text=True,
+            shell=True,
+            encoding="utf-8",
+            errors="replace",
         )
 
     def test_rollback_no_backup(self, executor):
@@ -325,20 +331,20 @@ class TestDependencyUpgradeValidation:
 
         # Test Python packages
         python_packages = [
-            "click@8.2.1",
-            "email-validator@2.3.0",
-            "exceptiongroup@1.3.0",
-            "pytest@8.4.2",
-            "pytest-cov@6.3.0",
-            "python-dotenv@1.1.1",
-            "requests@2.32.5",
-            "ruff@0.12.12",
-            "tomli@2.2.1",
+            "click==8.2.1",
+            "email-validator==2.3.0",
+            "exceptiongroup==1.3.0",
+            "pytest==8.4.2",
+            "pytest-cov==6.3.0",
+            "python-dotenv==1.1.1",
+            "requests==2.32.5",
+            "ruff==0.12.12",
+            "tomli==2.2.1",
         ]
 
         for package in python_packages:
-            assert "@" in package  # Version specified
-            assert package.count("@") == 1  # Only one @ for version
+            assert "==" in package  # Version specified
+            assert package.count("==") == 1  # Only one == for version
 
 
 class TestDependencyUpgradeIntegration:

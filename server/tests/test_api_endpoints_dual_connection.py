@@ -163,7 +163,7 @@ class TestAPIEndpointsDualConnection:
             # Make request with invalid JSON
             response = client.post(
                 "/api/connections/test_player/session",
-                data="invalid json",
+                content="invalid json",
                 headers={"Content-Type": "application/json"},
             )
 
