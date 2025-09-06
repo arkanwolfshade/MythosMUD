@@ -1,0 +1,306 @@
+# MythosMUD Dual Connection System Alert Rules
+
+groups:
+- name: mythos_connection_alerts
+  rules:
+  # Connection Health Alerts
+  - alert: LowConnectionHealth
+    expr: mythos_connection_health_percentage < 90
+    for: 1m
+    labels:
+      severity: critical
+      service: mythos-connections
+    annotations:
+      summary: "Connection health is critically low"
+      description: "Connection health is {{ $value }}% (threshold: 90%)"
+      runbook_url: "https://docs.yourdomain.com/troubleshooting/connection-health"
+
+  - alert: DegradedConnectionHealth
+    expr: mythos_connection_health_percentage < 95 and mythos_connection_health_percentage >= 90
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-connections
+    annotations:
+      summary: "Connection health is degraded"
+      description: "Connection health is {{ $value }}% (threshold: 95%)"
+
+  # Connection Failure Alerts
+  - alert: HighConnectionFailureRate
+    expr: rate(mythos_connection_failures_total[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-connections
+    annotations:
+      summary: "High connection failure rate detected"
+      description: "Connection failure rate is {{ $value }} failures per second"
+
+  - alert: CriticalConnectionFailureRate
+    expr: rate(mythos_connection_failures_total[5m]) > 0.5
+    for: 1m
+    labels:
+      severity: critical
+      service: mythos-connections
+    annotations:
+      summary: "Critical connection failure rate detected"
+      description: "Connection failure rate is {{ $value }} failures per second"
+
+  # Connection Count Alerts
+  - alert: HighConnectionCount
+    expr: mythos_connections_total > 800
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-connections
+    annotations:
+      summary: "High connection count detected"
+      description: "Total connections: {{ $value }} (threshold: 800)"
+
+  - alert: CriticalConnectionCount
+    expr: mythos_connections_total > 950
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-connections
+    annotations:
+      summary: "Critical connection count detected"
+      description: "Total connections: {{ $value }} (threshold: 950)"
+
+- name: mythos_performance_alerts
+  rules:
+  # Performance Alerts
+  - alert: SlowConnectionEstablishment
+    expr: histogram_quantile(0.95, mythos_connection_establishment_seconds) > 2
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-performance
+    annotations:
+      summary: "Slow connection establishment detected"
+      description: "95th percentile connection establishment time is {{ $value }}s"
+
+  - alert: VerySlowConnectionEstablishment
+    expr: histogram_quantile(0.95, mythos_connection_establishment_seconds) > 5
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-performance
+    annotations:
+      summary: "Very slow connection establishment detected"
+      description: "95th percentile connection establishment time is {{ $value }}s"
+
+  - alert: SlowMessageDelivery
+    expr: histogram_quantile(0.95, mythos_message_delivery_seconds) > 0.5
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-performance
+    annotations:
+      summary: "Slow message delivery detected"
+      description: "95th percentile message delivery time is {{ $value }}s"
+
+  - alert: VerySlowMessageDelivery
+    expr: histogram_quantile(0.95, mythos_message_delivery_seconds) > 1
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-performance
+    annotations:
+      summary: "Very slow message delivery detected"
+      description: "95th percentile message delivery time is {{ $value }}s"
+
+  # Message Delivery Success Rate
+  - alert: LowMessageDeliverySuccessRate
+    expr: mythos_message_delivery_success_rate < 95
+    for: 3m
+    labels:
+      severity: warning
+      service: mythos-performance
+    annotations:
+      summary: "Low message delivery success rate"
+      description: "Message delivery success rate is {{ $value }}%"
+
+  - alert: CriticalMessageDeliverySuccessRate
+    expr: mythos_message_delivery_success_rate < 90
+    for: 1m
+    labels:
+      severity: critical
+      service: mythos-performance
+    annotations:
+      summary: "Critical message delivery success rate"
+      description: "Message delivery success rate is {{ $value }}%"
+
+- name: mythos_system_alerts
+  rules:
+  # System Resource Alerts
+  - alert: HighMemoryUsage
+    expr: mythos_memory_usage_percent > 85
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-system
+    annotations:
+      summary: "High memory usage detected"
+      description: "Memory usage is {{ $value }}%"
+
+  - alert: CriticalMemoryUsage
+    expr: mythos_memory_usage_percent > 95
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-system
+    annotations:
+      summary: "Critical memory usage detected"
+      description: "Memory usage is {{ $value }}%"
+
+  - alert: HighCPUUsage
+    expr: mythos_cpu_usage_percent > 80
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-system
+    annotations:
+      summary: "High CPU usage detected"
+      description: "CPU usage is {{ $value }}%"
+
+  - alert: CriticalCPUUsage
+    expr: mythos_cpu_usage_percent > 95
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-system
+    annotations:
+      summary: "Critical CPU usage detected"
+      description: "CPU usage is {{ $value }}%"
+
+  # Error Rate Alerts
+  - alert: HighErrorRate
+    expr: rate(mythos_errors_total[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-system
+    annotations:
+      summary: "High error rate detected"
+      description: "Error rate is {{ $value }} errors per second"
+
+  - alert: CriticalErrorRate
+    expr: rate(mythos_errors_total[5m]) > 0.2
+    for: 1m
+    labels:
+      severity: critical
+      service: mythos-system
+    annotations:
+      summary: "Critical error rate detected"
+      description: "Error rate is {{ $value }} errors per second"
+
+  # Service Availability
+  - alert: ServiceDown
+    expr: up{job="mythos-server"} == 0
+    for: 1m
+    labels:
+      severity: critical
+      service: mythos-availability
+    annotations:
+      summary: "MythosMUD service is down"
+      description: "The MythosMUD server is not responding"
+
+  - alert: HealthCheckFailure
+    expr: up{job="mythos-health"} == 0
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-availability
+    annotations:
+      summary: "Health check endpoint is failing"
+      description: "The health check endpoint is not responding"
+
+- name: mythos_session_alerts
+  rules:
+  # Session Management Alerts
+  - alert: HighSessionCount
+    expr: mythos_sessions_total > 500
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-sessions
+    annotations:
+      summary: "High session count detected"
+      description: "Total sessions: {{ $value }} (threshold: 500)"
+
+  - alert: SessionCreationFailure
+    expr: rate(mythos_session_creation_failures_total[5m]) > 0.01
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-sessions
+    annotations:
+      summary: "Session creation failures detected"
+      description: "Session creation failure rate is {{ $value }} failures per second"
+
+  - alert: SessionValidationFailure
+    expr: rate(mythos_session_validation_failures_total[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-sessions
+    annotations:
+      summary: "Session validation failures detected"
+      description: "Session validation failure rate is {{ $value }} failures per second"
+
+- name: mythos_websocket_alerts
+  rules:
+  # WebSocket Specific Alerts
+  - alert: WebSocketConnectionFailure
+    expr: rate(mythos_websocket_connection_failures_total[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-websocket
+    annotations:
+      summary: "WebSocket connection failures detected"
+      description: "WebSocket connection failure rate is {{ $value }} failures per second"
+
+  - alert: WebSocketMessageFailure
+    expr: rate(mythos_websocket_message_failures_total[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-websocket
+    annotations:
+      summary: "WebSocket message delivery failures detected"
+      description: "WebSocket message failure rate is {{ $value }} failures per second"
+
+- name: mythos_sse_alerts
+  rules:
+  # SSE Specific Alerts
+  - alert: SSEConnectionFailure
+    expr: rate(mythos_sse_connection_failures_total[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-sse
+    annotations:
+      summary: "SSE connection failures detected"
+      description: "SSE connection failure rate is {{ $value }} failures per second"
+
+  - alert: SSEMessageFailure
+    expr: rate(mythos_sse_message_failures_total[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-sse
+    annotations:
+      summary: "SSE message delivery failures detected"
+      description: "SSE message failure rate is {{ $value }} failures per second"
+
+  - alert: SSEConnectionTimeout
+    expr: rate(mythos_sse_connection_timeouts_total[5m]) > 0.02
+    for: 2m
+    labels:
+      severity: warning
+      service: mythos-sse
+    annotations:
+      summary: "SSE connection timeouts detected"
+      description: "SSE connection timeout rate is {{ $value }} timeouts per second"

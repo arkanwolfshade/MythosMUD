@@ -1,0 +1,327 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "MythosMUD Dual Connection System",
+    "tags": ["mythos", "connections", "performance"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Connection Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "mythos_connections_total",
+            "legendFormat": "Total Connections",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100},
+                {"color": "red", "value": 200}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Connection Health",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "mythos_connection_health_percentage",
+            "legendFormat": "Health %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 80},
+                {"color": "green", "value": 95}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Connections by Type",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "mythos_connections_by_type",
+            "legendFormat": "{{type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Active Sessions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "mythos_sessions_total",
+            "legendFormat": "Active Sessions",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 50},
+                {"color": "red", "value": 100}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Connection Establishment Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, mythos_connection_establishment_seconds)",
+            "legendFormat": "50th percentile",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, mythos_connection_establishment_seconds)",
+            "legendFormat": "95th percentile",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, mythos_connection_establishment_seconds)",
+            "legendFormat": "99th percentile",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Time (seconds)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Message Delivery Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, mythos_message_delivery_seconds)",
+            "legendFormat": "50th percentile",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, mythos_message_delivery_seconds)",
+            "legendFormat": "95th percentile",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, mythos_message_delivery_seconds)",
+            "legendFormat": "99th percentile",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Time (seconds)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Message Delivery Success Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_message_delivery_success_rate",
+            "legendFormat": "Success Rate %",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Percentage",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Error Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(mythos_errors_total[5m])",
+            "legendFormat": "Errors per second",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Errors/sec",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 9,
+        "title": "Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_memory_usage_bytes / 1024 / 1024",
+            "legendFormat": "Memory Usage (MB)",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory (MB)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 10,
+        "title": "CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_cpu_usage_percent",
+            "legendFormat": "CPU Usage %",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Percentage",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+      },
+      {
+        "id": 11,
+        "title": "WebSocket Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_connections_by_type{type=\"websocket\"}",
+            "legendFormat": "WebSocket Connections",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Connections",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+      },
+      {
+        "id": 12,
+        "title": "SSE Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_connections_by_type{type=\"sse\"}",
+            "legendFormat": "SSE Connections",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Connections",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+      },
+      {
+        "id": 13,
+        "title": "Dual Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_connections_by_type{type=\"dual\"}",
+            "legendFormat": "Dual Connections",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Connections",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40}
+      },
+      {
+        "id": 14,
+        "title": "Connection Failures",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(mythos_connection_failures_total[5m])",
+            "legendFormat": "Connection Failures/sec",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Failures/sec",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 1,
+    "links": []
+  }
+}

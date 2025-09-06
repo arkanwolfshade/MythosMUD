@@ -17,19 +17,20 @@ from .envelope import build_event
 logger = get_logger(__name__)
 
 
-async def handle_websocket_connection(websocket: WebSocket, player_id: str):
+async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
     """
     Handle a WebSocket connection for a player.
 
     Args:
         websocket: The WebSocket connection
         player_id: The player's ID
+        session_id: Optional session ID for dual connection management
     """
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 
-    # Connect the WebSocket
-    success = await connection_manager.connect_websocket(websocket, player_id_str)
+    # Connect the WebSocket with session tracking
+    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id)
     if not success:
         logger.error(f"Failed to connect WebSocket for player {player_id_str}")
         return
@@ -56,10 +57,14 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
                         room.player_entered(player_id_str)
-                        logger.info(f"🔍 DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}")
+                        logger.info(
+                            f"🔍 DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
+                        )
                         logger.info(f"🔍 DEBUG: Room object ID after player_entered: {id(room)}")
                     else:
-                        logger.info(f"🔍 DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}")
+                        logger.info(
+                            f"🔍 DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
+                        )
                         logger.info(f"🔍 DEBUG: Room object ID (already in room): {id(room)}")
 
                     # Use canonical room id for subscriptions and broadcasts

@@ -86,6 +86,39 @@ class MemoryAlertsResponse(BaseModel):
     timestamp: str
 
 
+class DualConnectionStatsResponse(BaseModel):
+    """Response model for dual connection statistics."""
+
+    connection_distribution: dict
+    connection_health: dict
+    session_metrics: dict
+    connection_lifecycle: dict
+    performance_metrics: dict
+    timestamp: float
+
+
+class PerformanceStatsResponse(BaseModel):
+    """Response model for connection performance statistics."""
+
+    connection_establishment: dict
+    message_delivery: dict
+    disconnections: dict
+    session_management: dict
+    health_monitoring: dict
+    timestamp: float
+
+
+class ConnectionHealthStatsResponse(BaseModel):
+    """Response model for connection health statistics."""
+
+    overall_health: dict
+    connection_type_health: dict
+    connection_lifecycle: dict
+    session_health: dict
+    health_trends: dict
+    timestamp: float
+
+
 @router.get("/metrics", response_model=MetricsResponse)
 async def get_movement_metrics():
     """Get comprehensive movement system metrics."""
@@ -219,6 +252,36 @@ async def force_memory_cleanup():
         return {"message": "Memory cleanup completed successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during memory cleanup: {str(e)}") from e
+
+
+@router.get("/dual-connections", response_model=DualConnectionStatsResponse)
+async def get_dual_connection_stats():
+    """Get comprehensive dual connection statistics."""
+    try:
+        dual_connection_stats = connection_manager.get_dual_connection_stats()
+        return DualConnectionStatsResponse(**dual_connection_stats)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving dual connection stats: {str(e)}") from e
+
+
+@router.get("/performance", response_model=PerformanceStatsResponse)
+async def get_performance_stats():
+    """Get connection performance statistics."""
+    try:
+        performance_stats = connection_manager.get_performance_stats()
+        return PerformanceStatsResponse(**performance_stats)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving performance stats: {str(e)}") from e
+
+
+@router.get("/connection-health", response_model=ConnectionHealthStatsResponse)
+async def get_connection_health_stats():
+    """Get connection health statistics."""
+    try:
+        health_stats = connection_manager.get_connection_health_stats()
+        return ConnectionHealthStatsResponse(**health_stats)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving connection health stats: {str(e)}") from e
 
 
 @router.get("/health", response_model=HealthResponse)
