@@ -27,20 +27,26 @@ class Phase1UpgradeExecutor:
 
             # Create git commit point
             result = subprocess.run(
-                ['git', 'add', '.'], cwd=self.project_root, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace'
+                ["git", "add", "."],
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
             )
 
             if result.returncode != 0:
                 print(f"⚠️ Warning: Git add failed: {result.stderr}")
 
             result = subprocess.run(
-                ['git', 'commit', '-m', f'Pre-upgrade backup - {datetime.now().isoformat()}'],
+                ["git", "commit", "-m", f"Pre-upgrade backup - {datetime.now().isoformat()}"],
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
                 shell=True,
-                encoding='utf-8',
-                errors='replace',
+                encoding="utf-8",
+                errors="replace",
             )
 
             if result.returncode == 0:
@@ -61,7 +67,15 @@ class Phase1UpgradeExecutor:
             print("🧪 Running pre-upgrade tests...")
 
             # Run Python tests
-            result = subprocess.run(['make', 'test'], cwd=self.project_root, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace')
+            result = subprocess.run(
+                ["make", "test"],
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
             if result.returncode != 0:
                 print(f"❌ Python tests failed: {result.stderr}")
@@ -70,7 +84,15 @@ class Phase1UpgradeExecutor:
             print("✅ Python tests passed")
 
             # Run client tests
-            result = subprocess.run(['npm', 'test'], cwd=self.client_dir, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace')
+            result = subprocess.run(
+                ["npm", "test"],
+                cwd=self.client_dir,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
             if result.returncode != 0:
                 print(f"❌ Client tests failed: {result.stderr}")
@@ -99,7 +121,13 @@ class Phase1UpgradeExecutor:
             for package in npm_upgrades:
                 print(f"  Upgrading {package}...")
                 result = subprocess.run(
-                    ['npm', 'install', package], cwd=self.client_dir, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace'
+                    ["npm", "install", package],
+                    cwd=self.client_dir,
+                    capture_output=True,
+                    text=True,
+                    shell=True,
+                    encoding="utf-8",
+                    errors="replace",
                 )
 
                 if result.returncode != 0:
@@ -128,21 +156,27 @@ class Phase1UpgradeExecutor:
             print("🐍 Upgrading Python packages...")
 
             python_upgrades = [
-                "click@8.2.1",
-                "email-validator@2.3.0",
-                "exceptiongroup@1.3.0",
-                "pytest@8.4.2",
-                "pytest-cov@6.3.0",
-                "python-dotenv@1.1.1",
-                "requests@2.32.5",
-                "ruff@0.12.12",
-                "tomli@2.2.1",
+                "click==8.2.1",
+                "email-validator==2.3.0",
+                "exceptiongroup==1.3.0",
+                "pytest==8.4.2",
+                "pytest-cov==6.3.0",
+                "python-dotenv==1.1.1",
+                "requests==2.32.5",
+                "ruff==0.12.12",
+                "tomli==2.2.1",
             ]
 
             for package in python_upgrades:
                 print(f"  Upgrading {package}...")
                 result = subprocess.run(
-                    ['uv', 'pip', 'install', package], cwd=self.project_root, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace'
+                    ["uv", "pip", "install", package],
+                    cwd=self.project_root,
+                    capture_output=True,
+                    text=True,
+                    shell=True,
+                    encoding="utf-8",
+                    errors="replace",
                 )
 
                 if result.returncode != 0:
@@ -171,7 +205,15 @@ class Phase1UpgradeExecutor:
             print("🧪 Running post-upgrade tests...")
 
             # Run Python tests
-            result = subprocess.run(['make', 'test'], cwd=self.project_root, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace')
+            result = subprocess.run(
+                ["make", "test"],
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
             if result.returncode != 0:
                 print(f"❌ Python tests failed after upgrade: {result.stderr}")
@@ -180,7 +222,15 @@ class Phase1UpgradeExecutor:
             print("✅ Python tests passed after upgrade")
 
             # Run client tests
-            result = subprocess.run(['npm', 'test'], cwd=self.client_dir, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace')
+            result = subprocess.run(
+                ["npm", "test"],
+                cwd=self.client_dir,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
             if result.returncode != 0:
                 print(f"❌ Client tests failed after upgrade: {result.stderr}")
@@ -199,7 +249,15 @@ class Phase1UpgradeExecutor:
             print("🔍 Running linting checks...")
 
             # Run Python linting
-            result = subprocess.run(['make', 'lint'], cwd=self.project_root, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace')
+            result = subprocess.run(
+                ["make", "lint"],
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
+            )
 
             if result.returncode != 0:
                 print(f"❌ Python linting failed: {result.stderr}")
@@ -209,7 +267,13 @@ class Phase1UpgradeExecutor:
 
             # Run client linting
             result = subprocess.run(
-                ['npm', 'run', 'lint'], cwd=self.client_dir, capture_output=True, text=True, shell=True, encoding='utf-8', errors='replace'
+                ["npm", "run", "lint"],
+                cwd=self.client_dir,
+                capture_output=True,
+                text=True,
+                shell=True,
+                encoding="utf-8",
+                errors="replace",
             )
 
             if result.returncode != 0:
@@ -230,13 +294,13 @@ class Phase1UpgradeExecutor:
 
             if self.backup_created:
                 result = subprocess.run(
-                    ['git', 'reset', '--hard', 'HEAD~1'],
+                    ["git", "reset", "--hard", "HEAD~1"],
                     cwd=self.project_root,
                     capture_output=True,
                     text=True,
                     shell=True,
-                    encoding='utf-8',
-                    errors='replace',
+                    encoding="utf-8",
+                    errors="replace",
                 )
 
                 if result.returncode == 0:
