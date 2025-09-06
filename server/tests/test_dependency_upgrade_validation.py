@@ -177,7 +177,7 @@ class TestDependencyUpgradeValidation:
 
         assert result is True
         mock_subprocess_success.assert_called_with(
-            ["git", "reset", "--hard", "HEAD~1"], cwd=executor.project_root, capture_output=True, text=True, shell=True
+            ["git", "reset", "--hard", "HEAD~1"], cwd=executor.project_root, capture_output=True, text=True, shell=True, encoding="utf-8", errors="replace"
         )
 
     def test_rollback_no_backup(self, executor):
