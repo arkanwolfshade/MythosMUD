@@ -20,6 +20,7 @@ from .alias_storage import AliasStorage
 from .auth.users import get_current_user
 from .commands.command_service import CommandService
 from .config_loader import get_config
+from .exceptions import ValidationError
 from .logging_config import get_logger
 from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
@@ -234,6 +235,9 @@ async def process_command_with_validation(
         logger.debug("Command processed successfully", player=player_name, command_type=command_type)
         return result
 
+    except ValidationError as e:
+        logger.warning("Command validation error", player=player_name, error=str(e))
+        return {"result": str(e)}
     except Exception as e:
         logger.error("Error processing command", player=player_name, error=str(e), exc_info=True)
         return {"result": "An error occurred while processing your command."}

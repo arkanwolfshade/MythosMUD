@@ -22,6 +22,7 @@ from server.database import (
     init_db,
     metadata,
 )
+from server.exceptions import ValidationError
 
 
 class TestDatabaseConfiguration:
@@ -84,7 +85,7 @@ class TestGetDatabasePath:
     def test_get_database_path_unsupported_url(self):
         """Test getting database path with unsupported URL."""
         with patch("server.database.DATABASE_URL", "postgresql://user:pass@localhost/db"):
-            with pytest.raises(ValueError) as exc_info:
+            with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
             assert "Unsupported database URL" in str(exc_info.value)
@@ -92,7 +93,7 @@ class TestGetDatabasePath:
     def test_get_database_path_mysql_url(self):
         """Test getting database path with MySQL URL."""
         with patch("server.database.DATABASE_URL", "mysql://user:pass@localhost/db"):
-            with pytest.raises(ValueError) as exc_info:
+            with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
             assert "Unsupported database URL" in str(exc_info.value)
@@ -298,13 +299,13 @@ class TestEdgeCases:
     def test_get_database_path_empty_url(self):
         """Test getting database path with empty URL."""
         with patch("server.database.DATABASE_URL", ""):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValidationError):
                 get_database_path()
 
     def test_get_database_path_malformed_url(self):
         """Test getting database path with malformed URL."""
         with patch("server.database.DATABASE_URL", "not-a-url"):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValidationError):
                 get_database_path()
 
     @pytest.mark.asyncio

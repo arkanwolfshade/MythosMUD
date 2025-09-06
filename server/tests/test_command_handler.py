@@ -18,6 +18,7 @@ from server.command_handler_unified import (
     normalize_command,
     process_command,
 )
+from server.exceptions import ValidationError
 
 from ..models.room import Room
 
@@ -295,5 +296,5 @@ class TestUtilityFunctions:
         del user_obj.username
         del user_obj.name
 
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)

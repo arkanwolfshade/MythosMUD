@@ -93,15 +93,12 @@ def log_and_raise(
         context = create_error_context()
 
     # Log the error with full context
-    log_data = {
-        "error_type": exception_class.__name__,
-        "message": message,
-        "context": context.to_dict(),
-        "details": details or {},
-        "user_friendly": user_friendly,
-    }
-
-    error_logger.error("Error logged and exception raised", **log_data)
+    error_logger.error(
+        f"Error logged and exception raised: {message}",
+        error_type=exception_class.__name__,
+        details=details or {},
+        user_friendly=user_friendly,
+    )
 
     # Raise the exception
     raise exception_class(

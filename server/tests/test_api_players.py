@@ -32,7 +32,7 @@ from server.api.players import (
     roll_character_stats,
     validate_character_stats,
 )
-from server.exceptions import RateLimitError, create_error_context
+from server.exceptions import RateLimitError, ValidationError, create_error_context
 from server.game.stats_generator import StatsGenerator
 from server.models import AttributeType, Stats
 
@@ -160,7 +160,7 @@ class TestPlayerCRUD:
         """Test player creation with validation error."""
         # Setup mocks
         mock_service = Mock()
-        mock_service.create_player.side_effect = ValueError("Invalid player name")
+        mock_service.create_player.side_effect = ValidationError("Invalid player name")
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:

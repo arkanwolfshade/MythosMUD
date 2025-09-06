@@ -19,6 +19,7 @@ from ..commands.utility_commands import (
     handle_status_command,
     handle_who_command,
 )
+from ..exceptions import ValidationError
 
 
 class TestGetUsernameFromUser:
@@ -64,7 +65,7 @@ class TestGetUsernameFromUser:
     def test_get_username_from_user_invalid_dict(self):
         """Test extracting username from invalid dictionary."""
         user_dict = {"invalid_key": "testuser"}
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_dict)
 
     def test_get_username_from_user_invalid_object(self):
@@ -76,12 +77,12 @@ class TestGetUsernameFromUser:
                 self.email = "test@example.com"  # Different attribute
 
         user_obj = InvalidUserObject()
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
     def test_get_username_from_user_none(self):
         """Test that ValueError is raised for None input."""
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(None)
 
 

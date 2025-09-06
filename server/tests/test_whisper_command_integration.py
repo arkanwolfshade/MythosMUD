@@ -118,7 +118,7 @@ class TestWhisperCommandIntegration:
             parse_command("whisper TestPlayer")
 
         # Test empty message
-        with pytest.raises(ValueError, match="Usage: whisper <player> <message>"):
+        with pytest.raises(MythosValidationError, match="Usage: whisper <player> <message>"):
             parse_command("whisper TestPlayer    ")
 
     def test_reply_command_error_handling(self):

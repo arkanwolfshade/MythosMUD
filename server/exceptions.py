@@ -86,14 +86,12 @@ class MythosMUDError(Exception):
 
     def _log_error(self):
         """Log the error with structured context."""
-        log_data = {
-            "error_type": self.__class__.__name__,
-            "message": self.message,
-            "context": self.context.to_dict(),
-            "details": self.details,
-            "timestamp": self.timestamp.isoformat(),
-        }
-        logger.error("MythosMUD error occurred", **log_data)
+        logger.error(
+            f"MythosMUD error occurred: {self.message}",
+            error_type=self.__class__.__name__,
+            details=self.details,
+            timestamp=self.timestamp.isoformat(),
+        )
 
     def to_dict(self) -> dict[str, Any]:
         """Convert error to dictionary for API responses."""

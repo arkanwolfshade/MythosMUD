@@ -397,68 +397,71 @@ class TestMovementServiceIntegrationBugs:
         # This test verifies the fix we implemented
         event_bus = EventBus()
 
-        # Create MovementService with shared EventBus
-        movement_service = MovementService(event_bus)
+        # Mock persistence layer to avoid DATABASE_URL requirement
+        mock_persistence = Mock()
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            # Create MovementService with shared EventBus
+            movement_service = MovementService(event_bus)
 
-        # Verify it uses the provided EventBus
-        assert movement_service._event_bus is event_bus
+            # Verify it uses the provided EventBus
+            assert movement_service._event_bus is event_bus
 
-        # Test that movement publishes events to the correct EventBus
-        published_events = []
+            # Test that movement publishes events to the correct EventBus
+            published_events = []
 
-        def event_capturer(event):
-            published_events.append(event)
+            def event_capturer(event):
+                published_events.append(event)
 
-        event_bus.subscribe(PlayerLeftRoom, event_capturer)
-        event_bus.subscribe(PlayerEnteredRoom, event_capturer)
+            event_bus.subscribe(PlayerLeftRoom, event_capturer)
+            event_bus.subscribe(PlayerEnteredRoom, event_capturer)
 
-        # Mock persistence layer
-        with patch.object(movement_service, "_persistence") as mock_persistence:
-            player = Mock()
-            player.player_id = str(uuid4())
-            player.name = "TestPlayer"
+            # Mock persistence layer
+            with patch.object(movement_service, "_persistence") as mock_persistence:
+                player = Mock()
+                player.player_id = str(uuid4())
+                player.name = "TestPlayer"
 
-            # Create real Room objects with EventBus
-            from server.models.room import Room
+                # Create real Room objects with EventBus
+                from server.models.room import Room
 
-            old_room_data = {
-                "id": "room_1",
-                "name": "Old Room",
-                "description": "An old room",
-                "plane": "earth",
-                "zone": "test",
-                "sub_zone": "test",
-                "exits": {"south": "room_2"},
-            }
-            old_room = Room(old_room_data, event_bus)
-            # Manually add player to old room's internal state without triggering events
-            old_room._players.add(player.player_id)
+                old_room_data = {
+                    "id": "room_1",
+                    "name": "Old Room",
+                    "description": "An old room",
+                    "plane": "earth",
+                    "zone": "test",
+                    "sub_zone": "test",
+                    "exits": {"south": "room_2"},
+                }
+                old_room = Room(old_room_data, event_bus)
+                # Manually add player to old room's internal state without triggering events
+                old_room._players.add(player.player_id)
 
-            new_room_data = {
-                "id": "room_2",
-                "name": "New Room",
-                "description": "A new room",
-                "plane": "earth",
-                "zone": "test",
-                "sub_zone": "test",
-                "exits": {},
-            }
-            new_room = Room(new_room_data, event_bus)
+                new_room_data = {
+                    "id": "room_2",
+                    "name": "New Room",
+                    "description": "A new room",
+                    "plane": "earth",
+                    "zone": "test",
+                    "sub_zone": "test",
+                    "exits": {},
+                }
+                new_room = Room(new_room_data, event_bus)
 
-            mock_persistence.get_player.return_value = player
-            mock_persistence.get_room.side_effect = lambda room_id: old_room if room_id == "room_1" else new_room
-            mock_persistence.save_player.return_value = True
+                mock_persistence.get_player.return_value = player
+                mock_persistence.get_room.side_effect = lambda room_id: old_room if room_id == "room_1" else new_room
+                mock_persistence.save_player.return_value = True
 
-            # Perform movement
-            success = movement_service.move_player(str(player.player_id), "room_1", "room_2")
+                # Perform movement
+                success = movement_service.move_player(str(player.player_id), "room_1", "room_2")
 
-            assert success
+                assert success
 
-            # Allow events to be processed
-            await asyncio.sleep(0.1)
+                # Allow events to be processed
+                await asyncio.sleep(0.1)
 
-            # Verify events were published to the correct EventBus
-            assert len(published_events) == 2
+                # Verify events were published to the correct EventBus
+                assert len(published_events) == 2
 
     def test_multiple_movement_services_dont_create_event_storms(self):
         """Test that multiple MovementService instances don't create event storms."""
@@ -466,13 +469,16 @@ class TestMovementServiceIntegrationBugs:
         event_bus_1 = EventBus()
         event_bus_2 = EventBus()
 
-        # Create separate MovementService instances
-        movement_service_1 = MovementService(event_bus_1)
-        movement_service_2 = MovementService(event_bus_2)
+        # Mock persistence layer to avoid DATABASE_URL requirement
+        mock_persistence = Mock()
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            # Create separate MovementService instances
+            movement_service_1 = MovementService(event_bus_1)
+            movement_service_2 = MovementService(event_bus_2)
 
-        # Verify they use different EventBus instances
-        assert movement_service_1._event_bus is event_bus_1
-        assert movement_service_2._event_bus is event_bus_2
-        assert movement_service_1._event_bus is not movement_service_2._event_bus
+            # Verify they use different EventBus instances
+            assert movement_service_1._event_bus is event_bus_1
+            assert movement_service_2._event_bus is event_bus_2
+            assert movement_service_1._event_bus is not movement_service_2._event_bus
 
         # This prevents the event storm issue we encountered

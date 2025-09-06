@@ -21,6 +21,9 @@ def load_motd() -> str:
     Returns:
         str: The MOTD content, or a default message if file cannot be loaded
     """
+    motd_path = None
+    motd_file = None
+
     try:
         config = get_config()
         motd_file = config.get("motd_file", "./data/motd.txt")

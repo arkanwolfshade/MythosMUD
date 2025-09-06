@@ -72,7 +72,7 @@ class CommandProcessor:
                 "command_line": command_line,
                 "validation_errors": error_details,
             }
-            logger.warning("Command validation failed", **context.to_dict())
+            logger.warning(f"Command validation failed: {error_message}")
 
             return None, f"Invalid command: {error_message}", None
 
@@ -86,7 +86,7 @@ class CommandProcessor:
                 "error_type": "ValueError",
                 "error_message": error_message,
             }
-            logger.warning("Command parsing failed", **context.to_dict())
+            logger.warning(f"Command parsing failed: {error_message}")
 
             return None, error_message, None
 
@@ -100,7 +100,7 @@ class CommandProcessor:
                 "error_type": type(e).__name__,
                 "error_message": str(e),
             }
-            logger.error("Unexpected error in command processing", **context.to_dict())
+            logger.error(f"Unexpected error in command processing: {error_message}")
 
             return None, error_message, None
 
@@ -194,7 +194,7 @@ class CommandProcessor:
         except Exception as e:
             context = create_error_context()
             context.metadata = {"command_name": command_name, "error_type": type(e).__name__, "error_message": str(e)}
-            logger.error("Error getting command help", **context.to_dict())
+            logger.error(f"Error getting command help: {str(e)}")
             return "Help system temporarily unavailable."
 
 

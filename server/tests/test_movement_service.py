@@ -14,6 +14,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from server.events import EventBus
+from server.exceptions import ValidationError
 from server.game.movement_service import MovementService
 from server.models.player import Player
 from server.models.room import Room
@@ -83,24 +84,24 @@ class TestMovementService:
             assert player.current_room_id == "room2"
 
     def test_move_player_empty_player_id(self):
-        """Test that empty player ID raises ValueError."""
+        """Test that empty player ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Player ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.move_player("", "room1", "room2")
 
     def test_move_player_empty_from_room_id(self):
-        """Test that empty from room ID raises ValueError."""
+        """Test that empty from room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="From room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="From room ID cannot be empty"):
             service.move_player("player1", "", "room2")
 
     def test_move_player_empty_to_room_id(self):
-        """Test that empty to room ID raises ValueError."""
+        """Test that empty to room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="To room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="To room ID cannot be empty"):
             service.move_player("player1", "room1", "")
 
     def test_move_player_same_room(self):
@@ -225,17 +226,17 @@ class TestMovementService:
             assert result is False
 
     def test_add_player_to_room_empty_player_id(self):
-        """Test that empty player ID raises ValueError."""
+        """Test that empty player ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Player ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.add_player_to_room("", "room1")
 
     def test_add_player_to_room_empty_room_id(self):
-        """Test that empty room ID raises ValueError."""
+        """Test that empty room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.add_player_to_room("player1", "")
 
     def test_remove_player_from_room_success(self):
@@ -283,17 +284,17 @@ class TestMovementService:
             assert result is False
 
     def test_remove_player_from_room_empty_player_id(self):
-        """Test that empty player ID raises ValueError."""
+        """Test that empty player ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Player ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.remove_player_from_room("", "room1")
 
     def test_remove_player_from_room_empty_room_id(self):
-        """Test that empty room ID raises ValueError."""
+        """Test that empty room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.remove_player_from_room("player1", "")
 
     def test_get_player_room_success(self):
@@ -324,10 +325,10 @@ class TestMovementService:
             assert result is None
 
     def test_get_player_room_empty_player_id(self):
-        """Test that empty player ID raises ValueError."""
+        """Test that empty player ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Player ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.get_player_room("")
 
     def test_get_room_players_success(self):
@@ -358,10 +359,10 @@ class TestMovementService:
             assert result == []
 
     def test_get_room_players_empty_room_id(self):
-        """Test that empty room ID raises ValueError."""
+        """Test that empty room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.get_room_players("")
 
     def test_validate_player_location_success(self):
@@ -407,17 +408,17 @@ class TestMovementService:
             assert result is False
 
     def test_validate_player_location_empty_player_id(self):
-        """Test that empty player ID raises ValueError."""
+        """Test that empty player ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Player ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.validate_player_location("", "room1")
 
     def test_validate_player_location_empty_room_id(self):
-        """Test that empty room ID raises ValueError."""
+        """Test that empty room ID raises ValidationError."""
         service = MovementService()
 
-        with pytest.raises(ValueError, match="Room ID cannot be empty"):
+        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.validate_player_location("player1", "")
 
     def test_concurrent_movements(self):

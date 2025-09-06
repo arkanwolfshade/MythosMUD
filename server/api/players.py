@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 from ..auth.users import get_current_user
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging_config import get_logger
@@ -48,7 +48,7 @@ def create_player(
 
     try:
         return player_service.create_player(name, starting_room_id)
-    except ValueError:
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
@@ -120,15 +120,22 @@ def delete_player(
     persistence = request.app.state.persistence
     player_service = PlayerService(persistence)
 
-    success, message = player_service.delete_player(player_id)
-    if not success:
+    try:
+        success, message = player_service.delete_player(player_id)
+        if not success:
+            context = create_context_from_request(request)
+            if current_user:
+                context.user_id = str(current_user.id)
+            context.metadata["requested_player_id"] = player_id
+            raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+
+        return {"message": message}
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    return {"message": message}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 # Player stats and effects endpoints
