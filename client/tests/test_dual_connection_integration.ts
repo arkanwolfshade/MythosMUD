@@ -50,8 +50,8 @@ class MockEventSource {
 }
 
 // Mock global objects
-global.WebSocket = MockWebSocket as any;
-global.EventSource = MockEventSource as any;
+global.WebSocket = MockWebSocket as unknown as typeof WebSocket;
+global.EventSource = MockEventSource as unknown as typeof EventSource;
 
 describe('Dual Connection Integration Tests', () => {
   let mockWebSocket: MockWebSocket;

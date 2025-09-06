@@ -57,7 +57,7 @@ class TestDualConnectionMonitoring:
         await connection_manager.connect_websocket(mock_websocket, player_id, "session_1")
 
         # Add SSE connection
-        sse_connection_id = await connection_manager.connect_sse(player_id, "session_1")
+        await connection_manager.connect_sse(player_id, "session_1")
 
         # Add another player with only WebSocket
         player_id_2 = "test_player_2"
@@ -168,7 +168,7 @@ class TestDualConnectionMonitoring:
     def test_performance_stats_memory_management(self, connection_manager):
         """Test that performance stats don't grow indefinitely."""
         # Add many performance entries to test memory management
-        for i in range(1500):  # More than the 1000 limit
+        for _i in range(1500):  # More than the 1000 limit
             connection_manager.performance_stats["connection_establishment_times"].append(("websocket", 10.0))
 
         # The list should be capped at 1000 entries (this happens during connection establishment)

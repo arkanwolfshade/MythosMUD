@@ -286,4 +286,4 @@ class TestAPIEndpointsDualConnection:
 
             # Check timestamp
             assert "timestamp" in data
-            assert isinstance(data["timestamp"], (int, float))
+            assert isinstance(data["timestamp"], int | float)

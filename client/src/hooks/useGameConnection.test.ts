@@ -327,7 +327,7 @@ describe('useGameConnection', () => {
 
     it('should call onConnectionHealthUpdate callback when health updates', () => {
       const onConnectionHealthUpdate = vi.fn();
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
           playerName: 'test-player',

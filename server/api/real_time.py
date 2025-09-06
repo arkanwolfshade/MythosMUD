@@ -184,11 +184,11 @@ async def handle_new_game_session(player_id: str, request: Request):
         logger.info(f"New game session handled for player {player_id}: {session_results}")
         return session_results
 
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON in request body")
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail="Invalid JSON in request body") from e
     except Exception as e:
         logger.error(f"Error handling new game session for player {player_id}: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error handling new game session: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error handling new game session: {str(e)}") from e
 
 
 @realtime_router.get("/connections/stats")

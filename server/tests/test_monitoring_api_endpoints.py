@@ -295,7 +295,7 @@ class TestMonitoringAPIEndpoints:
         assert isinstance(data["session_metrics"], dict)
         assert isinstance(data["connection_lifecycle"], dict)
         assert isinstance(data["performance_metrics"], dict)
-        assert isinstance(data["timestamp"], (int, float))
+        assert isinstance(data["timestamp"], int | float)
 
         # Test performance endpoint
         response = client.get("/monitoring/performance")
@@ -307,7 +307,7 @@ class TestMonitoringAPIEndpoints:
         assert isinstance(data["disconnections"], dict)
         assert isinstance(data["session_management"], dict)
         assert isinstance(data["health_monitoring"], dict)
-        assert isinstance(data["timestamp"], (int, float))
+        assert isinstance(data["timestamp"], int | float)
 
         # Test connection health endpoint
         response = client.get("/monitoring/connection-health")
@@ -319,7 +319,7 @@ class TestMonitoringAPIEndpoints:
         assert isinstance(data["connection_lifecycle"], dict)
         assert isinstance(data["session_health"], dict)
         assert isinstance(data["health_trends"], dict)
-        assert isinstance(data["timestamp"], (int, float))
+        assert isinstance(data["timestamp"], int | float)
 
     @patch("server.api.monitoring.connection_manager")
     def test_monitoring_endpoints_with_empty_data(self, mock_conn_manager, client):

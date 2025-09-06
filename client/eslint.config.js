@@ -20,7 +20,15 @@ export default tseslint.config([
       globals: globals.browser,
     },
     rules: {
-      'max-len': ['error', { code: 120, ignoreUrls: true, ignoreStrings: true }],
+      'max-len': [
+        'error',
+        {
+          code: 120,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignorePattern: '^\\s*\\}, \\[.*\\]\\);',
+        },
+      ],
       'prefer-const': 'error',
       'no-var': 'error',
       'no-unused-vars': 'off',

@@ -369,7 +369,7 @@ class SuccessCriteriaValidator:
 
             # Establish dual connections
             ws_conn_id = await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
-            sse_conn_id = await self.connection_manager.connect_sse(player_id, session_id)
+            await self.connection_manager.connect_sse(player_id, session_id)
 
             details["initial_connections"] = 2
 

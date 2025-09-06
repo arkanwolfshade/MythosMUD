@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EldritchIcon } from '../ui/EldritchIcon';
 import './MonitoringPanel.css';
 
@@ -70,7 +70,7 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchMonitoringData = async () => {
+  const fetchMonitoringData = useCallback(async () => {
     try {
       setError(null);
 
@@ -98,7 +98,7 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [baseUrl]);
 
   useEffect(() => {
     fetchMonitoringData();
@@ -107,7 +107,7 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
       const interval = setInterval(fetchMonitoringData, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [baseUrl, refreshInterval]);
+  }, [baseUrl, refreshInterval, fetchMonitoringData]);
 
   const formatNumber = (num: number) => {
     return typeof num === 'number' ? num.toFixed(1) : '0';

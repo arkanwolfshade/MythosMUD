@@ -314,7 +314,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_dual_connection_support_validation(self, success_validator):
         """Test dual connection support validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Find dual connection support result
         dual_connection_result = None
@@ -332,7 +332,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_message_delivery_validation(self, success_validator):
         """Test message delivery validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Find message delivery result
         message_delivery_result = None
@@ -349,7 +349,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_connection_persistence_validation(self, success_validator):
         """Test connection persistence validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Find connection persistence result
         persistence_result = None
@@ -366,7 +366,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_disconnection_rules_validation(self, success_validator):
         """Test disconnection rules validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Find disconnection rules result
         disconnection_result = None
@@ -383,7 +383,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_performance_criteria_validation(self, success_validator):
         """Test performance criteria validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Check performance category results
         performance_results = [r for r in success_validator.validation_results if r.category == "performance"]
@@ -397,7 +397,7 @@ class TestDualConnectionTestingStrategy:
     @pytest.mark.asyncio
     async def test_quality_criteria_validation(self, success_validator):
         """Test quality criteria validation"""
-        summary = await success_validator.validate_all_criteria()
+        await success_validator.validate_all_criteria()
 
         # Check quality category results
         quality_results = [r for r in success_validator.validation_results if r.category == "quality"]
@@ -466,7 +466,7 @@ class TestDualConnectionTestingStrategy:
         start_time = time.time()
 
         # Run a comprehensive test scenario
-        test_data = DualConnectionTestData()
+        DualConnectionTestData()
         risk_tester = RiskMitigationTester(test_environment.connection_manager)
         success_validator = SuccessCriteriaValidator(test_environment.connection_manager)
 

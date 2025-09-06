@@ -314,7 +314,7 @@ class TestConnectionManagerComprehensive:
         await connection_manager.connect_websocket(websocket1, "test_player", "old_session")
 
         # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "old_session")
+        await connection_manager.connect_sse("test_player", "old_session")
 
         # Verify connections exist
         assert connection_manager.has_websocket_connection("test_player") is True

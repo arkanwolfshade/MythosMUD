@@ -2469,7 +2469,7 @@ class ConnectionManager:
 
             # Calculate session distribution
             session_connection_counts = {}
-            for session_id, conn_ids in self.session_connections.items():
+            for _session_id, conn_ids in self.session_connections.items():
                 count = len(conn_ids)
                 session_connection_counts[count] = session_connection_counts.get(count, 0) + 1
 
@@ -2629,7 +2629,6 @@ class ConnectionManager:
             # Analyze connection health distribution
             healthy_connections = 0
             unhealthy_connections = 0
-            unknown_health_connections = 0
 
             # Analyze connection types
             websocket_connections = 0
@@ -2642,7 +2641,7 @@ class ConnectionManager:
             # Analyze session health
             session_health = {}
 
-            for connection_id, metadata in self.connection_metadata.items():
+            for _connection_id, metadata in self.connection_metadata.items():
                 # Health analysis
                 if metadata.is_healthy:
                     healthy_connections += 1
@@ -2674,7 +2673,7 @@ class ConnectionManager:
             # Calculate session health percentages
             healthy_sessions = 0
             unhealthy_sessions = 0
-            for session_id, health in session_health.items():
+            for _session_id, health in session_health.items():
                 if health["total"] > 0:
                     health_percentage = health["healthy"] / health["total"] * 100
                     if health_percentage >= 80:  # 80% threshold for healthy session

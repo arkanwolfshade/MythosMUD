@@ -152,7 +152,7 @@ class TestDualConnectionPerformance:
         session_id = "session_1"
 
         # Get initial memory stats
-        initial_stats = connection_manager.get_memory_stats()
+        connection_manager.get_memory_stats()
 
         # Establish dual connections for all players
         for player_id in players:

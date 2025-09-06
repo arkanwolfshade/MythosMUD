@@ -142,8 +142,6 @@ class DualConnectionTestData:
 
     def _generate_sessions(self):
         """Generate test sessions"""
-        base_time = datetime.now(UTC)
-
         for player in self.players:
             if player.is_online:
                 session = TestSession(
@@ -224,7 +222,7 @@ class DualConnectionTestData:
             "emote",
         ]
 
-        for i, player in enumerate(self.players[:20]):  # Only for first 20 players
+        for _i, player in enumerate(self.players[:20]):  # Only for first 20 players
             for j in range(5):  # 5 messages per player
                 message = TestMessage(
                     message_id=f"msg_{player.player_id}_{j}",

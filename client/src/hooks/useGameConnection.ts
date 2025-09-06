@@ -580,7 +580,7 @@ export function useGameConnection({
       onErrorRef.current?.('Failed to connect');
       scheduleSseReconnect();
     }
-  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected]); // Include all dependencies
+  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected, startHealthMonitoring]); // Include all dependencies
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
