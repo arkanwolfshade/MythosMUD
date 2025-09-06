@@ -112,9 +112,18 @@ UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';
 
 ```powershell
 # Test server health
-curl http://localhost:54731/health
+$healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
+if ($healthResponse.StatusCode -eq 200) {
+    $healthData = $healthResponse.Content | ConvertFrom-Json
+    Write-Host "Server Status: $($healthData.status)"
+    Write-Host "Uptime: $([math]::Round($healthData.uptime_seconds, 2)) seconds"
+} else {
+    Write-Host "Server health check failed with status: $($healthResponse.StatusCode)"
+}
+
 # Test client accessibility
-curl http://localhost:5173
+$clientResponse = Invoke-WebRequest -Uri "http://localhost:5173" -UseBasicParsing
+Write-Host "Client Status: $($clientResponse.StatusCode)"
 ```
 
 **Expected**: Both endpoints return successful responses
