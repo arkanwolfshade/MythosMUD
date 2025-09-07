@@ -308,6 +308,28 @@ async def login_user(
     has_character = player is not None
     character_name = player.name if player else None
 
+    # CRITICAL FIX: Handle new game session to disconnect any existing connections
+    # This prevents the duplicate login bug where the same player can be logged in multiple times
+    if has_character and player:
+        import uuid
+
+        from ..realtime.connection_manager import connection_manager
+
+        # Generate a new session ID for this login
+        new_session_id = f"login_{uuid.uuid4().hex[:8]}"
+
+        # Disconnect any existing connections for this player
+        session_results = await connection_manager.handle_new_game_session(player.player_id, new_session_id)
+
+        if session_results["success"]:
+            logger.info(
+                f"Login session management: Disconnected {session_results['connections_disconnected']} existing connections for player {player.player_id}"
+            )
+        else:
+            logger.warning(
+                f"Login session management failed for player {player.player_id}: {session_results['errors']}"
+            )
+
     logger.info(f"Login successful for user {user.username}, has_character: {has_character}")
 
     return LoginResponse(

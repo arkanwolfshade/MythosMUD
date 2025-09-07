@@ -6,6 +6,21 @@ import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
 
+// Function to get activity color classes based on activity level
+const getActivityColor = (activityLevel: string): string => {
+  switch (activityLevel) {
+    case 'high':
+      return 'bg-red-500';
+    case 'medium':
+      return 'bg-yellow-500';
+    case 'low':
+      return 'bg-green-500';
+    case 'none':
+    default:
+      return 'bg-gray-500';
+  }
+};
+
 interface ChatMessage {
   text: string;
   timestamp: string;
@@ -43,6 +58,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [chatFilter, setChatFilter] = useState<string>('current');
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+
+  // Calculate chat statistics
+  const chatStats = {
+    currentChannelMessages: messages.filter(message => {
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
+      return messageChannel === selectedChannel;
+    }).length,
+    totalMessages: messages.length,
+  };
 
   // Update unread counts
   useEffect(() => {

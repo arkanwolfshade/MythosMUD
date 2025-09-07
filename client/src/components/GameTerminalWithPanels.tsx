@@ -172,8 +172,16 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
           }
           case 'room_update': {
             const roomData = event.data.room as Room;
+            const occupants = event.data.occupants as string[];
+            const occupantCount = event.data.occupant_count as number;
+
             if (roomData) {
-              updates.room = roomData;
+              // Merge room data with occupants information from the event
+              updates.room = {
+                ...roomData,
+                occupants: occupants || roomData.occupants,
+                occupant_count: occupantCount !== undefined ? occupantCount : roomData.occupant_count,
+              };
             }
             break;
           }
