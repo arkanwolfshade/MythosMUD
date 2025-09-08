@@ -403,7 +403,7 @@ async def handle_emote_command(
         else:
             # Custom emote - use the action as provided
             logger.debug("Custom emote executed", player=player_name, action=action)
-            return {"result": f"{player_name} {action}"}
+            return {"result": f"{player_name} {action}", "broadcast": f"{player_name} {action}", "broadcast_type": "emote"}
 
     except Exception as e:
         import traceback
