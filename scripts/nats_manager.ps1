@@ -15,24 +15,76 @@
 #>
 
 # NATS Server Configuration
-$NatsServerPath = "E:\nats-server\nats-server.exe"
-$NatsConfigPath = "E:\nats-server\nats-server.conf"
+# Try to find NATS server in common locations
+$NatsServerPath = $null
+$PossiblePaths = @(
+    "C:\Users\$env:USERNAME\AppData\Local\Microsoft\WinGet\Packages\NATSAuthors.NATSServer_Microsoft.Winget.Source_8wekyb3d8bbwe\nats-server-v2.10.25-windows-amd64\nats-server.exe",
+    "C:\nats-server\nats-server.exe",
+    "E:\nats-server\nats-server.exe",
+    "nats-server"  # If it's in PATH
+)
+
+foreach ($path in $PossiblePaths) {
+    if ($path -eq "nats-server") {
+        # Check if it's in PATH
+        try {
+            $null = Get-Command $path -ErrorAction Stop
+            $NatsServerPath = $path
+            break
+        } catch {
+            continue
+        }
+    } elseif (Test-Path $path) {
+        $NatsServerPath = $path
+        break
+    }
+}
+
+# If not found, use the first path as default
+if (-not $NatsServerPath) {
+    $NatsServerPath = $PossiblePaths[0]
+}
+
+# Configuration paths (relative to NATS server directory)
+$NatsServerDir = Split-Path $NatsServerPath -Parent
+$NatsConfigPath = Join-Path $NatsServerDir "nats-server.conf"
 $NatsPort = 4222
 $NatsHttpPort = 8222
-$NatsLogPath = "E:/projects/GitHub/MythosMUD/logs/development/nats/nats-server.log"
+$NatsLogPath = Join-Path $PSScriptRoot "..\logs\development\nats\nats-server.log"
 
 # Function to check if NATS server is installed
 function Test-NatsServerInstalled {
     [CmdletBinding()]
     param()
 
-    if (Test-Path $NatsServerPath) {
-        Write-Host "NATS server found at: $NatsServerPath" -ForegroundColor Green
+    # Re-detect NATS server path
+    $detectedPath = $null
+    foreach ($path in $PossiblePaths) {
+        if ($path -eq "nats-server") {
+            # Check if it's in PATH
+            try {
+                $null = Get-Command $path -ErrorAction Stop
+                $detectedPath = $path
+                break
+            } catch {
+                continue
+            }
+        } elseif (Test-Path $path) {
+            $detectedPath = $path
+            break
+        }
+    }
+
+    if ($detectedPath) {
+        Write-Host "NATS server found at: $detectedPath" -ForegroundColor Green
         return $true
     }
     else {
-        Write-Host "NATS server not found at: $NatsServerPath" -ForegroundColor Red
-        Write-Host "Please install NATS server to E:\nats-server\" -ForegroundColor Yellow
+        Write-Host "NATS server not found in any of the expected locations:" -ForegroundColor Red
+        foreach ($path in $PossiblePaths) {
+            Write-Host "  - $path" -ForegroundColor Yellow
+        }
+        Write-Host "Please install NATS server using: winget install NATSAuthors.NATSServer" -ForegroundColor Yellow
         return $false
     }
 }
@@ -83,13 +135,35 @@ function Start-NatsServer {
     Write-Host "Starting NATS server..." -ForegroundColor Cyan
 
     try {
+        # Get the actual NATS server path
+        $actualNatsPath = $null
+        foreach ($path in $PossiblePaths) {
+            if ($path -eq "nats-server") {
+                try {
+                    $null = Get-Command $path -ErrorAction Stop
+                    $actualNatsPath = $path
+                    break
+                } catch {
+                    continue
+                }
+            } elseif (Test-Path $path) {
+                $actualNatsPath = $path
+                break
+            }
+        }
+
+        if (-not $actualNatsPath) {
+            Write-Host "NATS server executable not found" -ForegroundColor Red
+            return $false
+        }
+
         if ($UseConfig -and (Test-Path $NatsConfigPath)) {
             Write-Host "Using configuration file: $NatsConfigPath" -ForegroundColor Gray
-            $command = "& '$NatsServerPath' -c '$NatsConfigPath'"
+            $command = "& '$actualNatsPath' -c '$NatsConfigPath'"
         }
         else {
             Write-Host "Using default configuration" -ForegroundColor Gray
-            $command = "& '$NatsServerPath' -p $NatsPort -m $NatsHttpPort"
+            $command = "& '$actualNatsPath' -p $NatsPort -m $NatsHttpPort"
         }
 
         if ($Background) {
@@ -102,8 +176,12 @@ function Start-NatsServer {
             Invoke-Expression $command
         }
 
-        # Wait for server to start
-        Start-Sleep -Seconds 3
+        # Wait for server to start (longer wait for background processes)
+        if ($Background) {
+            Start-Sleep -Seconds 5
+        } else {
+            Start-Sleep -Seconds 3
+        }
 
         # Verify server is running
         if (Test-NatsServerRunning) {
@@ -113,7 +191,7 @@ function Start-NatsServer {
             return $true
         }
         else {
-            Write-Host "NATS server failed to start" -ForegroundColor Red
+            Write-Host "NATS server may still be starting up. Check status with: .\scripts\nats_status.ps1" -ForegroundColor Yellow
             return $false
         }
     }
