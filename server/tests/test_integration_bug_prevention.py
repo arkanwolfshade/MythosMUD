@@ -88,14 +88,14 @@ class TestTwibbleEmoteBug:
     async def test_emote_command_handler_accepts_list_format(self):
         """Test that emote command handler accepts the old list format."""
         # Test with list format (old)
-        args = ["twibble"]
+        command_data = {"action": "twibble"}
 
         current_user = {"username": "Ithaqua"}
         request = Mock()
         alias_storage = Mock()
         player_name = "Ithaqua"
 
-        result = await handle_emote_command(args, current_user, request, alias_storage, player_name)
+        result = await handle_emote_command(command_data, current_user, request, alias_storage, player_name)
 
         # Verify result format
         assert "result" in result

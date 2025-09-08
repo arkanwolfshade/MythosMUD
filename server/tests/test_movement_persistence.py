@@ -7,6 +7,9 @@ their location is properly saved to the database.
 
 from unittest.mock import Mock, patch
 
+import pytest
+
+from server.exceptions import DatabaseError
 from server.game.movement_service import MovementService
 from server.models.player import Player
 from server.models.room import Room
@@ -160,11 +163,9 @@ class TestMovementPersistence:
             # Add player to room_1
             room_1.player_entered("unknown-player")
 
-            # Try to move player
-            success = movement_service.move_player("unknown-player", "room_1", "room_2")
-
-            # Verify movement failed
-            assert success is False
+            # Try to move player - should raise DatabaseError
+            with pytest.raises(DatabaseError, match="Error moving player unknown-player"):
+                movement_service.move_player("unknown-player", "room_1", "room_2")
 
             # Verify save_player was not called
             mock_persistence.save_player.assert_not_called()

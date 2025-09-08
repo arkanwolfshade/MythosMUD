@@ -16,6 +16,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from server.events import EventBus
+from server.exceptions import ValidationError
 from server.game.movement_service import MovementService
 from server.models.room import Room
 
@@ -298,13 +299,13 @@ class TestComprehensiveMovement:
             service = MovementService()
 
             # Test empty parameters
-            with pytest.raises(ValueError, match="Player ID cannot be empty"):
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
                 service.move_player("", "room1", "room2")
 
-            with pytest.raises(ValueError, match="From room ID cannot be empty"):
+            with pytest.raises(ValidationError, match="From room ID cannot be empty"):
                 service.move_player("player1", "", "room2")
 
-            with pytest.raises(ValueError, match="To room ID cannot be empty"):
+            with pytest.raises(ValidationError, match="To room ID cannot be empty"):
                 service.move_player("player1", "room1", "")
 
             # Test moving to same room

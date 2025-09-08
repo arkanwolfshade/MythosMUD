@@ -2,7 +2,9 @@ import json
 import os
 from typing import Any
 
+from .exceptions import ValidationError
 from .logging_config import get_logger
+from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
@@ -46,11 +48,21 @@ def load_zone_config(zone_path: str) -> dict[str, Any] | None:
         Zone configuration dictionary or None if not found
     """
     config_path = os.path.join(zone_path, "zone_config.json")
+    context = create_error_context()
+    context.metadata["operation"] = "load_zone_config"
+    context.metadata["zone_path"] = zone_path
+    context.metadata["config_path"] = config_path
 
     try:
         with open(config_path, encoding="utf-8") as f:
             return json.load(f)
-    except (OSError, json.JSONDecodeError):
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning(
+            "Could not load zone configuration",
+            **context.to_dict(),
+            error=str(e),
+            error_type=type(e).__name__,
+        )
         return None
 
 
@@ -65,11 +77,21 @@ def load_subzone_config(subzone_path: str) -> dict[str, Any] | None:
         Sub-zone configuration dictionary or None if not found
     """
     config_path = os.path.join(subzone_path, "subzone_config.json")
+    context = create_error_context()
+    context.metadata["operation"] = "load_subzone_config"
+    context.metadata["subzone_path"] = subzone_path
+    context.metadata["config_path"] = config_path
 
     try:
         with open(config_path, encoding="utf-8") as f:
             return json.load(f)
-    except (OSError, json.JSONDecodeError):
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning(
+            "Could not load sub-zone configuration",
+            **context.to_dict(),
+            error=str(e),
+            error_type=type(e).__name__,
+        )
         return None
 
 
@@ -154,11 +176,31 @@ def validate_room_data(
     try:
         errors = validator.validate_room(room_data, file_path)
         if errors and strict_validation:
-            raise ValueError(f"Room validation failed: {'; '.join(errors)}")
+            context = create_error_context()
+            context.metadata["operation"] = "validate_room_data"
+            context.metadata["file_path"] = file_path
+            context.metadata["validation_errors"] = errors
+            log_and_raise(
+                ValidationError,
+                f"Room validation failed: {'; '.join(errors)}",
+                context=context,
+                details={"file_path": file_path, "validation_errors": errors},
+                user_friendly="Room data validation failed",
+            )
         return errors
     except Exception as e:
         if strict_validation:
-            raise
+            context = create_error_context()
+            context.metadata["operation"] = "validate_room_data"
+            context.metadata["file_path"] = file_path
+            context.metadata["error_type"] = type(e).__name__
+            log_and_raise(
+                ValidationError,
+                f"Schema validation error for {file_path}: {e}",
+                context=context,
+                details={"file_path": file_path, "error": str(e), "error_type": type(e).__name__},
+                user_friendly="Room data validation failed",
+            )
         logger.warning(f"Schema validation error for {file_path}: {e}")
         return [f"Validation error: {e}"]
 
@@ -258,11 +300,30 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
                                     room_data["id"] = new_room_id
 
                             except (OSError, json.JSONDecodeError) as e:
-                                logger.warning(f"Could not load room file {file_path}: {e}")
+                                context = create_error_context()
+                                context.metadata["operation"] = "load_room_file"
+                                context.metadata["file_path"] = file_path
+                                context.metadata["error_type"] = type(e).__name__
+                                logger.warning(
+                                    "Could not load room file",
+                                    **context.to_dict(),
+                                    file_path=file_path,
+                                    error=str(e),
+                                    error_type=type(e).__name__,
+                                )
                                 continue
 
     except OSError as e:
-        logger.warning(f"Could not access rooms directory {ROOMS_BASE_PATH}: {e}")
+        context = create_error_context()
+        context.metadata["operation"] = "load_hierarchical_world"
+        context.metadata["rooms_base_path"] = ROOMS_BASE_PATH
+        logger.warning(
+            "Could not access rooms directory",
+            **context.to_dict(),
+            rooms_base_path=ROOMS_BASE_PATH,
+            error=str(e),
+            error_type=type(e).__name__,
+        )
 
     return world_data
 

@@ -22,6 +22,7 @@ from server.database import (
     init_db,
     metadata,
 )
+from server.exceptions import ValidationError
 
 
 class TestDatabaseConfiguration:
@@ -84,7 +85,7 @@ class TestGetDatabasePath:
     def test_get_database_path_unsupported_url(self):
         """Test getting database path with unsupported URL."""
         with patch("server.database.DATABASE_URL", "postgresql://user:pass@localhost/db"):
-            with pytest.raises(ValueError) as exc_info:
+            with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
             assert "Unsupported database URL" in str(exc_info.value)
@@ -92,7 +93,7 @@ class TestGetDatabasePath:
     def test_get_database_path_mysql_url(self):
         """Test getting database path with MySQL URL."""
         with patch("server.database.DATABASE_URL", "mysql://user:pass@localhost/db"):
-            with pytest.raises(ValueError) as exc_info:
+            with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
             assert "Unsupported database URL" in str(exc_info.value)
@@ -187,14 +188,17 @@ class TestInitDB:
             mock_conn = AsyncMock()
             mock_engine.begin.return_value.__aenter__.return_value = mock_conn
 
-            await init_db()
+            # Mock the connection manager to prevent unawaited coroutines
+            with patch("server.realtime.connection_manager.connection_manager"):
+                await init_db()
 
-            # Verify that create_all was called
-            mock_conn.run_sync.assert_called_once()
-            call_args = mock_conn.run_sync.call_args[0]
-            assert call_args[0] == metadata.create_all
+                # Verify that create_all was called
+                mock_conn.run_sync.assert_called_once()
+                call_args = mock_conn.run_sync.call_args[0]
+                assert call_args[0] == metadata.create_all
 
     @pytest.mark.asyncio
+    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     async def test_init_db_imports_models(self):
         """Test that init_db imports all required models."""
         with patch("server.database.engine") as mock_engine:
@@ -295,13 +299,13 @@ class TestEdgeCases:
     def test_get_database_path_empty_url(self):
         """Test getting database path with empty URL."""
         with patch("server.database.DATABASE_URL", ""):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValidationError):
                 get_database_path()
 
     def test_get_database_path_malformed_url(self):
         """Test getting database path with malformed URL."""
         with patch("server.database.DATABASE_URL", "not-a-url"):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValidationError):
                 get_database_path()
 
     @pytest.mark.asyncio

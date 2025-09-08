@@ -19,6 +19,7 @@ from ..commands.utility_commands import (
     handle_status_command,
     handle_who_command,
 )
+from ..exceptions import ValidationError
 
 
 class TestGetUsernameFromUser:
@@ -64,7 +65,7 @@ class TestGetUsernameFromUser:
     def test_get_username_from_user_invalid_dict(self):
         """Test extracting username from invalid dictionary."""
         user_dict = {"invalid_key": "testuser"}
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_dict)
 
     def test_get_username_from_user_invalid_object(self):
@@ -76,12 +77,12 @@ class TestGetUsernameFromUser:
                 self.email = "test@example.com"  # Different attribute
 
         user_obj = InvalidUserObject()
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
     def test_get_username_from_user_none(self):
         """Test that ValueError is raised for None input."""
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(None)
 
 
@@ -111,11 +112,11 @@ class TestWhoCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "Player information is not available."
@@ -127,11 +128,11 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = []
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "No players found."
@@ -144,17 +145,29 @@ class TestWhoCommand:
         # Create players with old last_active timestamps
         old_time = datetime.now(UTC) - timedelta(minutes=10)
         offline_players = [
-            MagicMock(username="user1", last_active=old_time),
-            MagicMock(username="user2", last_active=old_time),
+            MagicMock(
+                name="user1",
+                level=1,
+                current_room_id="earth_arkham_city_northside_intersection_derby_high",
+                is_admin=False,
+                last_active=old_time,
+            ),
+            MagicMock(
+                name="user2",
+                level=1,
+                current_room_id="earth_arkham_city_northside_room_derby_st_001",
+                is_admin=False,
+                last_active=old_time,
+            ),
         ]
         mock_persistence.list_players.return_value = offline_players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "No players are currently online."
@@ -166,47 +179,90 @@ class TestWhoCommand:
 
         # Create players with recent last_active timestamps
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
-        online_players = [
-            MagicMock(username="alice", last_active=recent_time),
-            MagicMock(username="bob", last_active=recent_time),
-            MagicMock(username="charlie", last_active=recent_time),
-        ]
+
+        # Create simple mock players without complex comparison methods
+        alice = MagicMock()
+        alice.name = "alice"
+        alice.level = 5
+        alice.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        alice.is_admin = False
+        alice.last_active = recent_time
+
+        bob = MagicMock()
+        bob.name = "bob"
+        bob.level = 3
+        bob.current_room_id = "earth_arkham_city_northside_room_derby_st_001"
+        bob.is_admin = False
+        bob.last_active = recent_time
+
+        charlie = MagicMock()
+        charlie.name = "charlie"
+        charlie.level = 7
+        charlie.current_room_id = "earth_arkham_city_northside_room_high_ln_002"
+        charlie.is_admin = False
+        charlie.last_active = recent_time
+
+        online_players = [alice, bob, charlie]
         mock_persistence.list_players.return_value = online_players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert "Online players (3): alice, bob, charlie" in result["result"]
+        assert "Online players (3):" in result["result"]
+        assert "alice" in result["result"]
+        assert "bob" in result["result"]
+        assert "charlie" in result["result"]
 
     @pytest.mark.asyncio
     async def test_who_command_mixed_online_offline(self, mock_request, mock_alias_storage, mock_persistence):
         """Test who command with mix of online and offline players."""
         mock_request.app.state.persistence = mock_persistence
 
-        # Create mix of online and offline players
+        # Create players with mixed last_active timestamps
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
         old_time = datetime.now(UTC) - timedelta(minutes=10)
-        players = [
-            MagicMock(username="alice", last_active=recent_time),  # Online
-            MagicMock(username="bob", last_active=old_time),  # Offline
-            MagicMock(username="charlie", last_active=recent_time),  # Online
-        ]
-        mock_persistence.list_players.return_value = players
+
+        online_player = MagicMock(
+            name="online_user",
+            level=1,
+            current_room_id="earth_arkham_city_northside_intersection_derby_high",
+            is_admin=False,
+        )
+        online_player.last_active = recent_time
+        online_player.__lt__ = lambda self, other: self.name < other.name
+        online_player.__gt__ = lambda self, other: self.name > other.name
+        online_player.__eq__ = lambda self, other: self.name == other.name
+
+        offline_player = MagicMock(
+            name="offline_user",
+            level=1,
+            current_room_id="earth_arkham_city_northside_room_derby_st_001",
+            is_admin=False,
+        )
+        offline_player.last_active = old_time
+        offline_player.__lt__ = lambda self, other: self.name < other.name
+        offline_player.__gt__ = lambda self, other: self.name > other.name
+        offline_player.__eq__ = lambda self, other: self.name == other.name
+
+        all_players = [online_player, offline_player]
+        mock_persistence.list_players.return_value = all_players
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert "Online players (2): alice, charlie" in result["result"]
+        assert "Online players (1):" in result["result"]
+        assert "online_user" in result["result"]
+        assert "offline_user" not in result["result"]
 
     @pytest.mark.asyncio
     async def test_who_command_persistence_exception(self, mock_request, mock_alias_storage, mock_persistence):
@@ -215,14 +271,71 @@ class TestWhoCommand:
         mock_persistence.list_players.side_effect = Exception("Database error")
 
         result = await handle_who_command(
-            args=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"filter_name": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert "Error retrieving player information: Database error" in result["result"]
+        assert "Error retrieving player list:" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_who_command_enhanced_functionality(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command enhanced functionality with filtering."""
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create players with recent last_active timestamps
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+
+        alice = MagicMock()
+        alice.name = "alice"
+        alice.level = 5
+        alice.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        alice.is_admin = False
+        alice.last_active = recent_time
+
+        bob = MagicMock()
+        bob.name = "bob"
+        bob.level = 3
+        bob.current_room_id = "earth_arkham_city_northside_room_derby_st_001"
+        bob.is_admin = False
+        bob.last_active = recent_time
+
+        charlie = MagicMock()
+        charlie.name = "charlie"
+        charlie.level = 7
+        charlie.current_room_id = "earth_arkham_city_northside_room_high_ln_002"
+        charlie.is_admin = False
+        charlie.last_active = recent_time
+
+        online_players = [alice, bob, charlie]
+        mock_persistence.list_players.return_value = online_players
+
+        # Test filtering
+        result = await handle_who_command(
+            {"filter_name": "al"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching 'al' (1):" in result["result"]
+        assert "alice" in result["result"]
+        assert "bob" not in result["result"]
+        assert "charlie" not in result["result"]
+
+        # Test no matches
+        result = await handle_who_command(
+            {"filter_name": "xyz"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "No players found matching 'xyz'" in result["result"]
 
 
 class TestQuitCommand:
@@ -735,11 +848,11 @@ class TestEmoteCommand:
     async def test_emote_command_with_action(self, mock_request, mock_alias_storage):
         """Test emote command with a single action."""
         result = await handle_emote_command(
-            args_or_data=["adjusts", "spectacles"],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"action": "adjusts spectacles"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "testuser adjusts spectacles"
@@ -748,11 +861,11 @@ class TestEmoteCommand:
     async def test_emote_command_complex_action(self, mock_request, mock_alias_storage):
         """Test emote command with complex multi-word action."""
         result = await handle_emote_command(
-            args_or_data=["opens", "the", "forbidden", "tome", "with", "trembling", "hands"],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"action": "opens the forbidden tome with trembling hands"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "testuser opens the forbidden tome with trembling hands"
@@ -761,11 +874,11 @@ class TestEmoteCommand:
     async def test_emote_command_no_args(self, mock_request, mock_alias_storage):
         """Test emote command with no arguments."""
         result = await handle_emote_command(
-            args_or_data=[],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"action": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "Emote what? Usage: emote <action>"
@@ -774,24 +887,24 @@ class TestEmoteCommand:
     async def test_emote_command_empty_string_args(self, mock_request, mock_alias_storage):
         """Test emote command with empty string arguments."""
         result = await handle_emote_command(
-            args_or_data=["", ""],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"action": "  "},  # Two spaces
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
-        assert result["result"] == "testuser  "  # Two spaces from empty strings
+        assert result["result"] == "testuser   "  # Two spaces from empty strings
 
     @pytest.mark.asyncio
     async def test_emote_command_special_characters(self, mock_request, mock_alias_storage):
         """Test emote command with special characters in action."""
         result = await handle_emote_command(
-            args_or_data=["whispers", "something", "in", "an", "ancient", "tongue..."],
-            current_user={"username": "testuser"},
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="testuser",
+            {"action": "whispers something in an ancient tongue..."},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
         )
 
         assert result["result"] == "testuser whispers something in an ancient tongue..."

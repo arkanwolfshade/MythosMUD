@@ -1,0 +1,231 @@
+# Alertmanager Configuration for MythosMUD Dual Connection System
+
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@yourdomain.com'
+  smtp_auth_username: 'alerts@yourdomain.com'
+  smtp_auth_password: 'your-email-password'
+  smtp_require_tls: true
+
+# The directory from which notification templates are read.
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# The root route on which each condition comes in.
+route:
+  group_by: ['alertname', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'web.hook'
+  routes:
+  # Critical alerts - immediate notification
+  - match:
+      severity: critical
+    receiver: 'critical-alerts'
+    group_wait: 5s
+    repeat_interval: 30m
+
+  # Warning alerts - less frequent
+  - match:
+      severity: warning
+    receiver: 'warning-alerts'
+    group_wait: 30s
+    repeat_interval: 2h
+
+  # Connection-specific alerts
+  - match:
+      service: mythos-connections
+    receiver: 'connection-alerts'
+    group_wait: 15s
+    repeat_interval: 1h
+
+  # Performance alerts
+  - match:
+      service: mythos-performance
+    receiver: 'performance-alerts'
+    group_wait: 20s
+    repeat_interval: 1h
+
+  # System alerts
+  - match:
+      service: mythos-system
+    receiver: 'system-alerts'
+    group_wait: 10s
+    repeat_interval: 30m
+
+# Inhibition rules allow to mute a set of alerts given that another alert is
+# firing.
+inhibit_rules:
+  # Mute any warning-level notifications if the same alert is already critical.
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'service']
+
+  # Mute connection alerts if the service is down
+  - source_match:
+      alertname: 'ServiceDown'
+    target_match_re:
+      service: 'mythos-.*'
+    equal: ['instance']
+
+receivers:
+- name: 'web.hook'
+  webhook_configs:
+  - url: 'http://localhost:5001/webhook'
+    send_resolved: true
+
+- name: 'critical-alerts'
+  email_configs:
+  - to: 'admin@yourdomain.com'
+    subject: 'CRITICAL: {{ .GroupLabels.alertname }} - {{ .GroupLabels.service }}'
+    body: |
+      {{ range .Alerts }}
+      **Alert:** {{ .Annotations.summary }}
+      **Description:** {{ .Annotations.description }}
+      **Severity:** {{ .Labels.severity }}
+      **Service:** {{ .Labels.service }}
+      **Instance:** {{ .Labels.instance }}
+      **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ if .Annotations.runbook_url }}
+      **Runbook:** {{ .Annotations.runbook_url }}
+      {{ end }}
+      ---
+      {{ end }}
+    headers:
+      X-Priority: '1'
+
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#alerts-critical'
+    title: 'CRITICAL Alert: {{ .GroupLabels.alertname }}'
+    text: |
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      *Service:* {{ .Labels.service }}
+      *Time:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ end }}
+    send_resolved: true
+
+  pagerduty_configs:
+  - routing_key: 'YOUR_PAGERDUTY_ROUTING_KEY'
+    description: '{{ .GroupLabels.alertname }} - {{ .GroupLabels.service }}'
+    details:
+      summary: '{{ .GroupLabels.alertname }}'
+      service: '{{ .GroupLabels.service }}'
+      severity: 'critical'
+
+- name: 'warning-alerts'
+  email_configs:
+  - to: 'dev-team@yourdomain.com'
+    subject: 'WARNING: {{ .GroupLabels.alertname }} - {{ .GroupLabels.service }}'
+    body: |
+      {{ range .Alerts }}
+      **Alert:** {{ .Annotations.summary }}
+      **Description:** {{ .Annotations.description }}
+      **Severity:** {{ .Labels.severity }}
+      **Service:** {{ .Labels.service }}
+      **Instance:** {{ .Labels.instance }}
+      **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ if .Annotations.runbook_url }}
+      **Runbook:** {{ .Annotations.runbook_url }}
+      {{ end }}
+      ---
+      {{ end }}
+    headers:
+      X-Priority: '3'
+
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#alerts-warning'
+    title: 'WARNING: {{ .GroupLabels.alertname }}'
+    text: |
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      *Service:* {{ .Labels.service }}
+      *Time:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ end }}
+    send_resolved: true
+
+- name: 'connection-alerts'
+  email_configs:
+  - to: 'connections-team@yourdomain.com'
+    subject: 'Connection Alert: {{ .GroupLabels.alertname }}'
+    body: |
+      {{ range .Alerts }}
+      **Connection Alert:** {{ .Annotations.summary }}
+      **Description:** {{ .Annotations.description }}
+      **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ end }}
+
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#connections'
+    title: 'Connection Alert: {{ .GroupLabels.alertname }}'
+    text: |
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      {{ end }}
+
+- name: 'performance-alerts'
+  email_configs:
+  - to: 'performance-team@yourdomain.com'
+    subject: 'Performance Alert: {{ .GroupLabels.alertname }}'
+    body: |
+      {{ range .Alerts }}
+      **Performance Alert:** {{ .Annotations.summary }}
+      **Description:** {{ .Annotations.description }}
+      **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ end }}
+
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#performance'
+    title: 'Performance Alert: {{ .GroupLabels.alertname }}'
+    text: |
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      {{ end }}
+
+- name: 'system-alerts'
+  email_configs:
+  - to: 'ops-team@yourdomain.com'
+    subject: 'System Alert: {{ .GroupLabels.alertname }}'
+    body: |
+      {{ range .Alerts }}
+      **System Alert:** {{ .Annotations.summary }}
+      **Description:** {{ .Annotations.description }}
+      **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{ end }}
+
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#ops'
+    title: 'System Alert: {{ .GroupLabels.alertname }}'
+    text: |
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      {{ end }}
+
+# Time intervals for silencing alerts
+time_intervals:
+  - name: 'maintenance-window'
+    time_intervals:
+      - times:
+          - start_time: '02:00'
+            end_time: '04:00'
+        weekdays: ['sunday']
+
+  - name: 'business-hours'
+    time_intervals:
+      - times:
+          - start_time: '09:00'
+            end_time: '17:00'
+        weekdays: ['monday:friday']

@@ -269,6 +269,10 @@ class TestMemoryLeakPreventionIntegration:
         # For now, we'll test the connection manager directly
         connection_manager = ConnectionManager()
 
+        # Mock the persistence layer
+        mock_persistence = Mock()
+        connection_manager.persistence = mock_persistence
+
         # Mock the _get_player method to return a mock player
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
@@ -276,9 +280,9 @@ class TestMemoryLeakPreventionIntegration:
 
         with patch.object(connection_manager, "_get_player", return_value=mock_player):
             # Simulate connection and disconnection
-            mock_websocket = Mock()
-            # Make the mock websocket awaitable
+            mock_websocket = AsyncMock()
             mock_websocket.accept = AsyncMock()
+            mock_websocket.ping = AsyncMock()
             player_id = "test_player"
 
             # Connect
@@ -302,9 +306,9 @@ class TestMemoryLeakPreventionIntegration:
 
         # Add some data to trigger alerts - need multiple players to exceed thresholds
         for i in range(1001):
-            connection_manager.connection_attempts[f"player{i}"] = [time.time()]
+            connection_manager.rate_limiter.connection_attempts[f"player{i}"] = [time.time()]
         for i in range(1001):
-            connection_manager.pending_messages[f"player{i}"] = [{"timestamp": time.time()}]
+            connection_manager.message_queue.pending_messages[f"player{i}"] = [{"timestamp": time.time()}]
 
         # Get updated stats and alerts
         updated_stats = connection_manager.get_memory_stats()

@@ -6,7 +6,6 @@ as documented in the restricted archives of Miskatonic University.
 """
 
 import time
-from unittest.mock import patch
 
 import pytest
 
@@ -15,7 +14,6 @@ from server.auth.argon2_utils import (
     MEMORY_COST,
     PARALLELISM,
     TIME_COST,
-    benchmark_hash_time,
     create_hasher_with_params,
     get_hash_info,
     hash_password,
@@ -23,6 +21,7 @@ from server.auth.argon2_utils import (
     needs_rehash,
     verify_password,
 )
+from server.exceptions import AuthenticationError
 
 
 class TestArgon2Configuration:
@@ -242,52 +241,12 @@ class TestArgon2CustomHasher:
         assert hasher is not None
 
 
-class TestArgon2Performance:
-    """Test Argon2 performance benchmarking."""
-
-    def test_benchmark_hash_time(self):
-        """Test benchmarking hash time."""
-        result = benchmark_hash_time(
-            password="test_password",
-            iterations=2,
-            time_cost=1,
-            memory_cost=1024,
-            parallelism=1,
-        )
-
-        assert "average_time_ms" in result
-        assert "min_time_ms" in result
-        assert "max_time_ms" in result
-        assert "times_ms" in result
-        assert result["iterations"] == 2
-        assert result["time_cost"] == 1
-        assert result["memory_cost"] == 1024
-        assert result["parallelism"] == 1
-
-    def test_benchmark_hash_time_defaults(self):
-        """Test benchmarking with default parameters."""
-        result = benchmark_hash_time()
-
-        assert "average_time_ms" in result
-        assert result["time_cost"] == TIME_COST
-        assert result["memory_cost"] == MEMORY_COST
-        assert result["parallelism"] == PARALLELISM
-
-    @pytest.mark.skip(reason="Mock timing test is complex due to logging calls - core functionality tested elsewhere")
-    @patch("time.time")
-    def test_benchmark_hash_time_mocked(self, mock_time):
-        """Test benchmarking with mocked time."""
-        # This test is skipped due to complexity of mocking time.time() with logging calls
-        # The core benchmarking functionality is tested in test_benchmark_hash_time and test_benchmark_hash_time_defaults
-        pass
-
-
 class TestArgon2ErrorHandling:
     """Test Argon2 error handling."""
 
     def test_hash_password_invalid_type(self):
         """Test hashing with invalid password type."""
-        with pytest.raises(TypeError):
+        with pytest.raises(AuthenticationError):
             hash_password(123)
 
     def test_verify_password_invalid_types(self):

@@ -21,6 +21,49 @@ port: 54731     # Main game port
 max_connections: 100
 connection_timeout: 60  # seconds
 
+# --- Dual Connection System ---
+dual_connections:
+  enabled: true
+  max_connections_per_player: 4
+  connection_timeout: 300  # seconds
+  health_check_interval: 30  # seconds
+  cleanup_interval: 60  # seconds
+  message_batch_size: 100
+  connection_pool_size: 1000
+  performance_monitoring: true
+
+  # WebSocket Configuration
+  websocket:
+    enabled: true
+    ping_interval: 30  # seconds
+    ping_timeout: 10  # seconds
+    max_message_size: 1048576  # 1MB
+
+  # Server-Sent Events Configuration
+  sse:
+    enabled: true
+    retry_timeout: 3000  # milliseconds
+    max_connections: 500
+
+  # Session Management
+  session:
+    timeout: 3600  # seconds (1 hour)
+    cleanup_interval: 300  # seconds (5 minutes)
+    max_sessions_per_player: 5
+
+  # Error Handling
+  error_handling:
+    max_retry_attempts: 3
+    retry_delay: 5  # seconds
+    error_recovery_enabled: true
+
+  # Performance Monitoring
+  monitoring:
+    enabled: true
+    metrics_interval: 30  # seconds
+    health_check_interval: 15  # seconds
+    performance_tracking: true
+
 # --- File Paths & Directories ---
 data_dir: ./data/
 player_dir: ./data/players/

@@ -22,6 +22,7 @@ from server.command_handler_unified import (
     process_command,
 )
 
+from ..exceptions import ValidationError
 from ..models.room import Room
 
 
@@ -689,7 +690,16 @@ class TestMovementAndExplorationCommands:
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "nonexistent_room"}
-        mock_request.app.state.persistence.get_room.return_value = mock_room
+
+        # Mock get_room to return the mock room for current room, but None for target room
+        def mock_get_room(room_id):
+            if room_id == "test_room_001":
+                return mock_room
+            elif room_id == "nonexistent_room":
+                return None
+            return None
+
+        mock_request.app.state.persistence.get_room.side_effect = mock_get_room
 
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
@@ -872,7 +882,7 @@ class TestUtilityFunctions:
         del user_obj.username
         del user_obj.name
 
-        with pytest.raises(ValueError, match="User object must have username or name attribute or key"):
+        with pytest.raises(ValidationError, match="User object must have username or name attribute or key"):
             get_username_from_user(user_obj)
 
     def test_normalize_command_edge_cases(self):

@@ -1,79 +1,17 @@
 """
-Tests for real_time.py module.
+Tests for real-time connection management functionality.
 
 Tests the real-time communication functionality including WebSocket connections,
 Server-Sent Events, and game event broadcasting.
 """
 
-import os
-import tempfile
 import time
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 from fastapi import WebSocket
 
-from ..real_time import load_motd
 from ..realtime.connection_manager import connection_manager
-
-
-class TestLoadMotd:
-    """Test MOTD loading functionality."""
-
-    def test_load_motd_file_exists(self):
-        """Test loading MOTD from existing file."""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
-            f.write("Welcome to the Mythos!\n\nEnter at your own risk...")
-            motd_file = f.name
-
-        try:
-            with patch("server.real_time.get_config") as mock_config:
-                mock_config.return_value = {"motd_file": motd_file}
-                result = load_motd()
-
-                assert "Welcome to the Mythos!" in result
-                assert "Enter at your own risk" in result
-        finally:
-            os.unlink(motd_file)
-
-    def test_load_motd_file_not_found(self):
-        """Test loading MOTD when file doesn't exist."""
-        with patch("server.real_time.get_config") as mock_config:
-            mock_config.return_value = {"motd_file": "./nonexistent/motd.txt"}
-            result = load_motd()
-
-            assert "Welcome to MythosMUD" in result
-
-    def test_load_motd_config_error(self):
-        """Test loading MOTD when config fails."""
-        with patch("server.real_time.get_config") as mock_config:
-            mock_config.side_effect = Exception("Config error")
-            result = load_motd()
-
-            assert "Welcome to MythosMUD" in result
-
-    def test_load_motd_file_read_error(self):
-        """Test loading MOTD when file read fails."""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
-            f.write("Test MOTD")
-            motd_file = f.name
-
-        try:
-            # On Windows, 0o000 might not prevent reading, so we'll delete the file
-            # to simulate a read error
-            os.unlink(motd_file)
-
-            with patch("server.real_time.get_config") as mock_config:
-                mock_config.return_value = {"motd_file": motd_file}
-                result = load_motd()
-
-                # The file doesn't exist, so it should return the fallback
-                assert "Welcome to MythosMUD - Enter the realm of forbidden knowledge..." in result
-        except Exception:
-            # Clean up if the file still exists
-            if os.path.exists(motd_file):
-                os.chmod(motd_file, 0o644)  # Use secure permissions
-                os.unlink(motd_file)
 
 
 class TestConnectionManager:
@@ -132,7 +70,7 @@ class TestConnectionManager:
         """Test WebSocket disconnection."""
         # First connect
         self.manager.active_websockets["conn1"] = self.mock_websocket
-        self.manager.player_websockets[self.player_id] = "conn1"
+        self.manager.player_websockets[self.player_id] = ["conn1"]
         self.manager.room_subscriptions[self.room_id] = {self.player_id}
 
         # Then disconnect
@@ -149,7 +87,7 @@ class TestConnectionManager:
 
         assert connection_id is not None
         assert self.player_id in self.manager.active_sse_connections
-        assert self.manager.active_sse_connections[self.player_id] == connection_id
+        assert connection_id in self.manager.active_sse_connections[self.player_id]
 
     @pytest.mark.asyncio
     async def test_disconnect_sse(self):

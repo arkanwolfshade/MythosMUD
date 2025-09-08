@@ -10,13 +10,14 @@ from pydantic import BaseModel
 
 from ..auth.users import get_current_user
 from ..error_types import ErrorMessages
-from ..exceptions import RateLimitError
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging_config import get_logger
 from ..models import Stats
 from ..models.user import User
 from ..schemas.player import PlayerRead
+from ..utils.error_logging import create_context_from_request
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 
 
@@ -47,8 +48,13 @@ def create_player(
 
     try:
         return player_service.create_player(name, starting_room_id)
-    except ValueError:
-        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT) from None
+    except ValidationError:
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["player_name"] = name
+        context.metadata["starting_room_id"] = starting_room_id
+        raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from None
 
 
 @player_router.get("/", response_model=list[PlayerRead])
@@ -74,7 +80,11 @@ def get_player(
 
     player = player_service.get_player_by_id(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     return player
 
@@ -91,7 +101,11 @@ def get_player_by_name(
 
     player = player_service.get_player_by_name(player_name)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_name"] = player_name
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     return player
 
@@ -106,11 +120,22 @@ def delete_player(
     persistence = request.app.state.persistence
     player_service = PlayerService(persistence)
 
-    success, message = player_service.delete_player(player_id)
-    if not success:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+    try:
+        success, message = player_service.delete_player(player_id)
+        if not success:
+            context = create_context_from_request(request)
+            if current_user:
+                context.user_id = str(current_user.id)
+            context.metadata["requested_player_id"] = player_id
+            raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-    return {"message": message}
+        return {"message": message}
+    except ValidationError as e:
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 # Player stats and effects endpoints
@@ -126,7 +151,11 @@ def apply_sanity_loss(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.apply_sanity_loss(player, amount, source)
     return {"message": f"Applied {amount} sanity loss to {player.name}"}
@@ -144,7 +173,11 @@ def apply_fear(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.apply_fear(player, amount, source)
     return {"message": f"Applied {amount} fear to {player.name}"}
@@ -162,7 +195,11 @@ def apply_corruption(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.apply_corruption(player, amount, source)
     return {"message": f"Applied {amount} corruption to {player.name}"}
@@ -180,7 +217,11 @@ def gain_occult_knowledge(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.gain_occult_knowledge(player, amount, source)
     return {"message": f"Gained {amount} occult knowledge for {player.name}"}
@@ -197,7 +238,11 @@ def heal_player(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.heal_player(player, amount)
     return {"message": f"Healed {player.name} for {amount} health"}
@@ -215,7 +260,11 @@ def damage_player(
     persistence = request.app.state.persistence
     player = persistence.get_player(player_id)
     if not player:
-        raise HTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["requested_player_id"] = player_id
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
     persistence.damage_player(player, amount, damage_type)
     return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
@@ -241,7 +290,11 @@ def roll_character_stats(
     logger.debug(f"Authentication check - current_user: {current_user}")
     if not current_user:
         logger.warning("Authentication failed: No user returned from get_current_user")
-        raise HTTPException(status_code=401, detail="Authentication required")
+        # Note: We don't have request context here, so we'll create a minimal context
+        from ..exceptions import create_error_context
+
+        context = create_error_context()
+        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
     logger.info(f"Authentication successful for user: {current_user.username} (ID: {current_user.id})")
 
@@ -249,13 +302,20 @@ def roll_character_stats(
     try:
         stats_roll_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        raise HTTPException(
+        from ..exceptions import create_error_context
+
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["rate_limit_type"] = "stats_roll"
+        raise LoggedHTTPException(
             status_code=429,
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
                 "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user.id),
             },
+            context=context,
         ) from e
 
     stats_generator = StatsGenerator()
@@ -275,7 +335,13 @@ def roll_character_stats(
             "meets_class_requirements": required_class in available_classes if required_class else True,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR) from e
+        from ..exceptions import create_error_context
+
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "roll_stats"
+        raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
 @player_router.post("/create-character")
@@ -294,19 +360,25 @@ async def create_character_with_stats(
     """
     # Check if user is authenticated
     if not current_user:
-        raise HTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED)
+        context = create_context_from_request(request)
+        raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     # Apply rate limiting
     try:
         character_creation_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        raise HTTPException(
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["rate_limit_type"] = "character_creation"
+        raise LoggedHTTPException(
             status_code=429,
             detail={
                 "message": str(e),
                 "retry_after": e.retry_after,
                 "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user.id),
             },
+            context=context,
         ) from e
 
     persistence = request.app.state.persistence
@@ -315,7 +387,12 @@ async def create_character_with_stats(
     try:
         # Validate that character name matches username
         if request_data.name != current_user.username:
-            raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT)
+            context = create_context_from_request(request)
+            if current_user:
+                context.user_id = str(current_user.id)
+            context.metadata["character_name"] = request_data.name
+            context.metadata["username"] = current_user.username
+            raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context)
 
         # Convert dict to Stats object
         stats_obj = Stats(**request_data.stats)
@@ -341,9 +418,17 @@ async def create_character_with_stats(
         # Re-raise HTTPExceptions without modification
         raise
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT) from e
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "create_character"
+        raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR) from e
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "create_character"
+        raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
 @player_router.post("/validate-stats")
@@ -381,7 +466,13 @@ def validate_character_stats(
 
             return {"available_classes": available_classes, "stat_summary": stat_summary}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT) from e
+        from ..exceptions import create_error_context
+
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "validate_stats"
+        raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT, context=context) from e
 
 
 @player_router.get("/available-classes")

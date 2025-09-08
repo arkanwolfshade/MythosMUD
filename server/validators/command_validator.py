@@ -3,12 +3,14 @@ Command input validation utilities for MythosMUD.
 
 This module provides functions for validating, cleaning, and normalizing
 command input to ensure security and consistency.
+Focuses on sanitization (cleaning) rather than validation (rejection)
+to preserve user expression freedom.
 """
 
 import re
 
 from ..logging_config import get_logger
-from .security_validator import INJECTION_PATTERNS
+from .security_validator import INJECTION_PATTERNS, comprehensive_sanitize_input
 
 logger = get_logger(__name__)
 
@@ -42,6 +44,10 @@ def is_suspicious_input(command: str) -> bool:
     """
     Check if command contains suspicious patterns that might indicate injection attempts.
 
+    This function focuses on true injection attempts rather than legitimate user expression.
+    It's designed to catch malicious patterns while avoiding false positives on
+    creative user input.
+
     Args:
         command: The command string to validate
 
@@ -57,17 +63,35 @@ def is_suspicious_input(command: str) -> bool:
 
 def clean_command_input(command: str) -> str:
     """
-    Clean and normalize command input by collapsing multiple spaces and stripping whitespace.
+    Clean and normalize command input with comprehensive sanitization.
+
+    This function applies multiple layers of sanitization:
+    1. Unicode normalization and fixing (ftfy)
+    2. ANSI code removal (strip-ansi)
+    3. Control character removal
+    4. Whitespace normalization
+
+    Focuses on sanitization (cleaning) rather than validation (rejection)
+    to preserve user expression freedom.
 
     Args:
         command: The raw command string
 
     Returns:
-        str: Cleaned command string
+        str: Fully sanitized command string
     """
-    cleaned = re.sub(r"\s+", " ", command).strip()
+    if not command:
+        return command
+
+    # Apply comprehensive sanitization first
+    sanitized = comprehensive_sanitize_input(command)
+
+    # Then apply traditional cleaning (whitespace normalization)
+    cleaned = re.sub(r"\s+", " ", sanitized).strip()
+
     if cleaned != command:
-        logger.debug("Command input cleaned", original=command, cleaned=cleaned)
+        logger.debug("Command input sanitized and cleaned", original=command, cleaned=cleaned)
+
     return cleaned
 
 

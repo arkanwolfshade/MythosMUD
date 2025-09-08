@@ -8,6 +8,7 @@ for all tests in the MythosMUD server.
 import os
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 from dotenv import load_dotenv
@@ -39,6 +40,34 @@ os.environ["ALIASES_DIR"] = str(aliases_dir)
 
 # Add the server directory to the path for imports
 sys.path.append(str(Path(__file__).parent.parent))
+
+# Import test environment fixtures to make them available to all tests
+
+
+# Create synchronous wrapper fixtures for async fixtures
+@pytest.fixture
+def sync_test_environment():
+    """Synchronous wrapper for test_environment async fixture"""
+    import asyncio
+    import uuid
+
+    from .utils.test_environment import test_env_manager
+
+    # Use unique environment name for each test
+    env_name = f"pytest_sync_{uuid.uuid4().hex[:8]}"
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        env = loop.run_until_complete(test_env_manager.create_environment(env_name))
+        yield env
+    finally:
+        try:
+            loop.run_until_complete(test_env_manager.destroy_environment(env_name))
+        except Exception:
+            pass  # Ignore cleanup errors
+        loop.close()
+
 
 # Load test environment variables from .env.test file
 TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
@@ -140,3 +169,43 @@ def test_client():
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
 
     return TestClient(app)
+
+
+@pytest.fixture
+def mock_string():
+    """Create a mock that behaves like a string for command parser tests."""
+
+    def _create_mock_string(value: str):
+        """Create a mock that behaves like a string."""
+        mock = MagicMock()
+        mock.__str__ = MagicMock(return_value=value)
+        mock.__len__ = MagicMock(return_value=len(value))
+        mock.strip = MagicMock(return_value=value.strip())
+        mock.startswith = MagicMock(return_value=value.startswith)
+        mock.split = MagicMock(return_value=value.split())
+        mock.lower = MagicMock(return_value=value.lower())
+        # Make the mock itself return the string value when used as a string
+        mock._mock_return_value = value
+        return mock
+
+    return _create_mock_string
+
+
+@pytest.fixture
+def mock_command_string():
+    """Create a mock command string for testing."""
+
+    def _create_mock_command_string(command: str):
+        """Create a mock that behaves like a command string."""
+        mock = MagicMock()
+        mock.__str__ = MagicMock(return_value=command)
+        mock.__len__ = MagicMock(return_value=len(command))
+        mock.strip = MagicMock(return_value=command.strip())
+        mock.startswith = MagicMock(return_value=command.startswith)
+        mock.split = MagicMock(return_value=command.split())
+        mock.lower = MagicMock(return_value=command.lower())
+        # Make the mock itself return the string value when used as a string
+        mock._mock_return_value = command
+        return mock
+
+    return _create_mock_command_string

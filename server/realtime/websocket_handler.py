@@ -17,19 +17,20 @@ from .envelope import build_event
 logger = get_logger(__name__)
 
 
-async def handle_websocket_connection(websocket: WebSocket, player_id: str):
+async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
     """
     Handle a WebSocket connection for a player.
 
     Args:
         websocket: The WebSocket connection
         player_id: The player's ID
+        session_id: Optional session ID for dual connection management
     """
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 
-    # Connect the WebSocket
-    success = await connection_manager.connect_websocket(websocket, player_id_str)
+    # Connect the WebSocket with session tracking
+    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id)
     if not success:
         logger.error(f"Failed to connect WebSocket for player {player_id_str}")
         return
@@ -52,9 +53,19 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str):
                 room = persistence.get_room(player.current_room_id)
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
+                    logger.info(f"🔍 DEBUG: Room object ID before player_entered: {id(room)}")
                     if not room.has_player(player_id_str):
                         logger.info(f"Adding player {player_id_str} to room {player.current_room_id}")
                         room.player_entered(player_id_str)
+                        logger.info(
+                            f"🔍 DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
+                        )
+                        logger.info(f"🔍 DEBUG: Room object ID after player_entered: {id(room)}")
+                    else:
+                        logger.info(
+                            f"🔍 DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
+                        )
+                        logger.info(f"🔍 DEBUG: Room object ID (already in room): {id(room)}")
 
                     # Use canonical room id for subscriptions and broadcasts
                     canonical_room_id = getattr(room, "id", None) or player.current_room_id
@@ -207,34 +218,10 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         message: The message data
     """
     try:
-        message_type = message.get("type", "unknown")
-        data = message.get("data", {})
+        # Use the message handler factory to route messages
+        from .message_handler_factory import message_handler_factory
 
-        if message_type == "command":
-            # Handle game command
-            command = data.get("command", "")
-            args = data.get("args", [])
-            await handle_game_command(websocket, player_id, command, args)
-
-        elif message_type == "chat":
-            # Handle chat message
-            chat_message = data.get("message", "")
-            await handle_chat_message(websocket, player_id, chat_message)
-
-        elif message_type == "ping":
-            # Handle ping (keep-alive)
-            await websocket.send_json({"type": "pong"})
-
-        else:
-            # Unknown message type
-            logger.warning(f"Unknown message type '{message_type}' from player {player_id}")
-            error_response = create_websocket_error_response(
-                ErrorType.INVALID_COMMAND,
-                f"Unknown message type: {message_type}",
-                ErrorMessages.INVALID_COMMAND,
-                {"message_type": message_type, "player_id": player_id},
-            )
-            await websocket.send_json(error_response)
+        await message_handler_factory.handle_message(websocket, player_id, message)
 
     except Exception as e:
         logger.error(f"Error processing WebSocket message for {player_id}: {e}")
@@ -258,6 +245,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
+        logger.info("🚨 SERVER DEBUG: handle_game_command called", command=command, args=args, player_id=player_id)
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -277,7 +265,12 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         result = await process_websocket_command(cmd, args, player_id)
 
         # Send the result back to the player
+        logger.info(
+            f"🚨 SERVER DEBUG: Sending command_response event for player {player_id}",
+            {"command": cmd, "result": result, "player_id": player_id},
+        )
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
+        logger.info(f"🚨 SERVER DEBUG: command_response event sent successfully for player {player_id}")
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
@@ -329,6 +322,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
+    logger.info("🚨 SERVER DEBUG: process_websocket_command called", command=cmd, args=args, player_id=player_id)
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
@@ -536,7 +530,8 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
             await connection_manager.broadcast_to_room(player.current_room_id, chat_event, exclude_player=player_id)
 
         # Send confirmation to sender
-        await websocket.send_json({"type": "chat_sent", "message": "Message sent"})
+        chat_sent_event = build_event("chat_sent", {"message": "Message sent"}, player_id=player_id)
+        await websocket.send_json(chat_sent_event)
 
     except Exception as e:
         logger.error(f"Error handling chat message for {player_id}: {e}")
@@ -570,6 +565,9 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.warning(f"Room not found for update: {room_id}")
             return
 
+        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room object ID: {id(room)}")
+        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room players before any processing: {room.get_players()}")
+
         # Get room occupants (server-side structs)
         room_occupants = connection_manager.get_room_occupants(room_id)
 
@@ -588,6 +586,14 @@ async def broadcast_room_update(player_id: str, room_id: str):
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+        # Debug: Log the room's actual occupants
+        logger.debug(f"🔍 DEBUG: Room {room_id} occupants breakdown:")
+        logger.debug(f"  - Room object ID: {id(room)}")
+        logger.debug(f"  - Players: {room.get_players()}")
+        logger.debug(f"  - Objects: {room.get_objects()}")
+        logger.debug(f"  - NPCs: {room.get_npcs()}")
+        logger.debug(f"  - Total occupant_count: {room.get_occupant_count()}")
 
         # Ensure all UUID objects are converted to strings for JSON serialization
         def convert_uuids_to_strings(obj):
@@ -650,11 +656,13 @@ async def send_system_message(websocket: WebSocket, message: str, message_type: 
         message_type: The type of message (info, warning, error)
     """
     try:
-        system_event = {
-            "type": "system",
-            "message": message,
-            "message_type": message_type,
-        }
+        system_event = build_event(
+            "system",
+            {
+                "message": message,
+                "message_type": message_type,
+            },
+        )
         await websocket.send_json(system_event)
 
     except Exception as e:

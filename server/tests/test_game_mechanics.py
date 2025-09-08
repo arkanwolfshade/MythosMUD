@@ -8,6 +8,9 @@ including sanity, fear, corruption, healing, and damage mechanics.
 import uuid
 from unittest.mock import Mock
 
+import pytest
+
+from ..exceptions import ValidationError
 from ..game.mechanics import GameMechanicsService
 
 
@@ -61,12 +64,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount, source)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for sanity loss"):
+            self.mechanics_service.apply_sanity_loss(player_id, amount, source)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.apply_sanity_loss.assert_not_called()
 
@@ -112,12 +112,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.apply_fear(player_id, amount, source)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for fear application"):
+            self.mechanics_service.apply_fear(player_id, amount, source)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.apply_fear.assert_not_called()
 
@@ -148,12 +145,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.apply_corruption(player_id, amount, source)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for corruption application"):
+            self.mechanics_service.apply_corruption(player_id, amount, source)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.apply_corruption.assert_not_called()
 
@@ -184,12 +178,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for occult knowledge gain"):
+            self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.gain_occult_knowledge.assert_not_called()
 
@@ -218,12 +209,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.heal_player(player_id, amount)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for healing"):
+            self.mechanics_service.heal_player(player_id, amount)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.heal_player.assert_not_called()
 
@@ -270,12 +258,9 @@ class TestGameMechanicsService:
 
         self.mock_persistence.get_player.return_value = None
 
-        # Execute
-        success, message = self.mechanics_service.damage_player(player_id, amount, damage_type)
-
-        # Verify
-        assert success is False
-        assert message == "Player not found"
+        # Execute & Verify
+        with pytest.raises(ValidationError, match="Player not found for damage"):
+            self.mechanics_service.damage_player(player_id, amount, damage_type)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
         self.mock_persistence.damage_player.assert_not_called()
 

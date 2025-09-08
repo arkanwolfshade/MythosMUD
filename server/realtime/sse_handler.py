@@ -17,12 +17,13 @@ from .envelope import build_event, sse_line
 logger = get_logger(__name__)
 
 
-async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
+async def game_event_stream(player_id: str, session_id: str | None = None) -> AsyncGenerator[str, None]:
     """
     Generate a stream of game events for a player.
 
     Args:
         player_id: The player's ID
+        session_id: Optional session ID for dual connection management
 
     Yields:
         str: SSE event data
@@ -30,8 +31,8 @@ async def game_event_stream(player_id: str) -> AsyncGenerator[str, None]:
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 
-    # Connect the SSE connection
-    await connection_manager.connect_sse(player_id_str)
+    # Connect the SSE connection with session tracking
+    await connection_manager.connect_sse(player_id_str, session_id)
 
     try:
         # Send initial connection event

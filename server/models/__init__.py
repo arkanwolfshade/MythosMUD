@@ -9,9 +9,21 @@ This package contains all database models including:
 
 from .alias import Alias
 from .game import AttributeType, Stats
+from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
 from .player import Player
 from .relationships import setup_relationships
 from .user import User
 
-__all__ = ["User", "Player", "Invite", "Alias", "setup_relationships", "Stats", "AttributeType"]
+__all__ = [
+    "User",
+    "Player",
+    "Invite",
+    "Alias",
+    "setup_relationships",
+    "Stats",
+    "AttributeType",
+    "HealthResponse",
+    "HealthErrorResponse",
+    "HealthStatus",
+]

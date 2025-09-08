@@ -29,8 +29,7 @@ class TestNATSMessageHandler:
 
         # Mock connection manager
         self.mock_connection_manager = Mock()
-        self.mock_connection_manager.broadcast_to_all = AsyncMock()
-        self.mock_connection_manager.send_to_player = AsyncMock()
+        self.mock_connection_manager.broadcast_global = AsyncMock()
         self.mock_connection_manager.send_personal_message = AsyncMock()
         self.mock_connection_manager._canonical_room_id = Mock(return_value=None)
         self.mock_connection_manager.room_subscriptions = {}
@@ -55,6 +54,7 @@ class TestNATSMessageHandler:
         expected_subjects = [
             "chat.say.*",
             "chat.local.*",
+            "chat.local.subzone.*",
             "chat.emote.*",
             "chat.pose.*",
             "chat.global",
@@ -180,8 +180,8 @@ class TestNATSMessageHandler:
             await self.handler._handle_nats_message(message_data)
 
             # Should not call broadcast methods
-            self.mock_connection_manager.broadcast_to_all.assert_not_called()
-            self.mock_connection_manager.send_to_player.assert_not_called()
+            self.mock_connection_manager.broadcast_global.assert_not_called()
+            self.mock_connection_manager.send_personal_message.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_handle_nats_message_with_exception(self):
@@ -230,10 +230,10 @@ class TestNATSMessageHandler:
         """Test broadcasting global messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
             await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, "player_001")
 
-            self.mock_connection_manager.broadcast_to_all.assert_called_once_with(
+            self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
 
@@ -242,22 +242,22 @@ class TestNATSMessageHandler:
         """Test broadcasting whisper messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
             await self.handler._broadcast_by_channel_type(
                 "whisper", chat_event, None, None, "target_player", "player_001"
             )
 
-            self.mock_connection_manager.send_to_player.assert_called_once_with("target_player", chat_event)
+            self.mock_connection_manager.send_personal_message.assert_called_once_with("target_player", chat_event)
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_system(self):
         """Test broadcasting system messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
             await self.handler._broadcast_by_channel_type("system", chat_event, None, None, None, "player_001")
 
-            self.mock_connection_manager.broadcast_to_all.assert_called_once_with(
+            self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
 
@@ -266,10 +266,10 @@ class TestNATSMessageHandler:
         """Test broadcasting admin messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
             await self.handler._broadcast_by_channel_type("admin", chat_event, None, None, None, "player_001")
 
-            self.mock_connection_manager.broadcast_to_all.assert_called_once_with(
+            self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
 
@@ -278,20 +278,20 @@ class TestNATSMessageHandler:
         """Test broadcasting unknown channel type."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
             await self.handler._broadcast_by_channel_type("unknown", chat_event, None, None, None, "player_001")
 
             # Should not call any broadcast methods
-            self.mock_connection_manager.broadcast_to_all.assert_not_called()
-            self.mock_connection_manager.send_to_player.assert_not_called()
+            self.mock_connection_manager.broadcast_global.assert_not_called()
+            self.mock_connection_manager.send_personal_message.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_with_exception(self):
         """Test broadcasting when an exception occurs."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
-            self.mock_connection_manager.broadcast_to_all.side_effect = Exception("Broadcast error")
+        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
+            self.mock_connection_manager.broadcast_global.side_effect = Exception("Broadcast error")
 
             # Should not raise exception
             await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, "player_001")

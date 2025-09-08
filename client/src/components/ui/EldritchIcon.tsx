@@ -1,5 +1,5 @@
-import React from 'react';
 import * as LucideIcons from 'lucide-react';
+import React from 'react';
 
 // Define the icon names as string literals
 export const MythosIcons = {
@@ -14,6 +14,7 @@ export const MythosIcons = {
   restore: 'restore',
   close: 'close',
   clock: 'clock',
+  log: 'log',
 
   // Phase 4.1: New icons for eldritch effects demo
   lightbulb: 'lightbulb',
@@ -29,6 +30,7 @@ export const MythosIcons = {
   settings: 'settings',
   panel: 'panel',
   rotate: 'rotate',
+  command: 'command', // Added missing command icon
 
   // Additional icons used throughout the codebase
   help: 'help',
@@ -44,13 +46,21 @@ export const MythosIcons = {
   room: 'room',
   eldritch: 'eldritch',
   horror: 'horror',
+
+  // Channel-specific icons
+  global: 'global',
+  local: 'local',
+  whisper: 'whisper',
+  system: 'system',
+  users: 'users',
+  megaphone: 'megaphone',
 } as const;
 
 // Map icon names to Lucide icon components
 const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   // Core UI icons
   chat: 'MessageCircle',
-  move: 'Move',
+  move: 'ArrowUp', // Fixed: Use 'ArrowUp' as a valid movement icon
   download: 'Download',
   clear: 'Trash2',
   connection: 'Wifi',
@@ -59,6 +69,7 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   restore: 'Minimize2',
   close: 'X',
   clock: 'Clock',
+  log: 'FileText',
 
   // Phase 4.1: New icons for eldritch effects demo
   lightbulb: 'Lightbulb',
@@ -74,6 +85,7 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   settings: 'Settings',
   panel: 'Layout',
   rotate: 'RotateCw',
+  command: 'Square', // Added missing command icon mapping
 
   // Additional icons used throughout the codebase
   help: 'HelpCircle',
@@ -89,6 +101,14 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   room: 'Home',
   eldritch: 'Moon',
   horror: 'Skull',
+
+  // Channel-specific icons
+  global: 'Globe',
+  local: 'MapPin',
+  whisper: 'MessageSquare',
+  system: 'Settings',
+  users: 'Users',
+  megaphone: 'Megaphone',
 };
 
 interface EldritchIconProps {

@@ -14,6 +14,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from .command_parser import CommandParser, parse_command
+from .error_logging import create_error_context
 
 logger = logging.getLogger(__name__)
 
@@ -65,26 +66,41 @@ class CommandProcessor:
                 error_details.append(f"{field}: {message}")
 
             error_message = "; ".join(error_details)
-            logger.warning(f"Command validation failed for {player_name}: cmd='{command_line}', errors={error_details}")
+            context = create_error_context()
+            context.metadata = {
+                "player_name": player_name,
+                "command_line": command_line,
+                "validation_errors": error_details,
+            }
+            logger.warning(f"Command validation failed: {error_message}")
 
             return None, f"Invalid command: {error_message}", None
 
         except ValueError as e:
             # Handle parser-specific errors (e.g., unknown commands)
             error_message = str(e)
-            logger.warning(
-                "Command parsing failed: %s", error_message, extra={"player": player_name, "command_line": command_line}
-            )
+            context = create_error_context()
+            context.metadata = {
+                "player_name": player_name,
+                "command_line": command_line,
+                "error_type": "ValueError",
+                "error_message": error_message,
+            }
+            logger.warning(f"Command parsing failed: {error_message}")
 
             return None, error_message, None
 
         except Exception as e:
             # Handle unexpected errors
             error_message = f"Unexpected error processing command: {str(e)}"
-            logger.error(
-                f"Unexpected error in command processing for {player_name}: cmd='{command_line}', error={str(e)}",
-                exc_info=True,
-            )
+            context = create_error_context()
+            context.metadata = {
+                "player_name": player_name,
+                "command_line": command_line,
+                "error_type": type(e).__name__,
+                "error_message": str(e),
+            }
+            logger.error(f"Unexpected error in command processing: {error_message}")
 
             return None, error_message, None
 
@@ -135,6 +151,9 @@ class CommandProcessor:
         if hasattr(validated_command, "player_name"):
             command_data["target_player"] = validated_command.player_name
 
+        if hasattr(validated_command, "filter_name"):
+            command_data["filter_name"] = validated_command.filter_name
+
         logger.debug(f"Extracted command data: type={command_data['command_type']}, keys={list(command_data.keys())}")
 
         return command_data
@@ -173,7 +192,9 @@ class CommandProcessor:
         try:
             return self.parser.get_command_help(command_name)
         except Exception as e:
-            logger.error("Error getting command help: %s", str(e))
+            context = create_error_context()
+            context.metadata = {"command_name": command_name, "error_type": type(e).__name__, "error_message": str(e)}
+            logger.error(f"Error getting command help: {str(e)}")
             return "Help system temporarily unavailable."
 
 

@@ -1,6 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { logger } from '../utils/logger';
+import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';
+
+// Import GameEvent interface from useGameConnection
+interface GameEvent {
+  event_type: string;
+  timestamp: string;
+  sequence_number: number;
+  player_id?: string;
+  room_id?: string;
+  data: Record<string, unknown>;
+  alias_chain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
+}
+
 import { CommandHelpDrawer } from './CommandHelpDrawer';
 import { GameTerminal } from './GameTerminal';
 
@@ -26,168 +43,417 @@ interface Player {
     cult_affiliation?: number;
   };
   level?: number;
+  experience?: number;
+  current_room_id?: string;
 }
 
 interface Room {
   id: string;
   name: string;
   description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
   exits: Record<string, string>;
+  occupants?: string[];
+  occupant_count?: number;
   entities?: Array<{
     name: string;
     type: string;
   }>;
 }
 
-interface GameState {
-  room: Room | null;
-  player: Player | null;
-  messages: Array<{
-    text: string;
-    timestamp: string;
-    isHtml: boolean;
-    messageType?: string;
+interface ChatMessage {
+  text: string;
+  timestamp: string;
+  isHtml: boolean;
+  isCompleteHtml?: boolean;
+  messageType?: string;
+  channel?: string;
+  aliasChain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
   }>;
+}
+
+interface GameState {
+  player: Player | null;
+  room: Room | null;
+  messages: ChatMessage[];
+  commandHistory: string[];
 }
 
 export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ playerName, authToken }) => {
   const [gameState, setGameState] = useState<GameState>({
-    room: null,
     player: null,
+    room: null,
     messages: [],
+    commandHistory: [],
   });
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
+
+  // Refs for stable references and event processing
   const hasAttemptedConnection = useRef(false);
+  const isProcessingEvent = useRef(false);
+  const lastProcessedEvent = useRef<string>('');
+  const eventQueue = useRef<GameEvent[]>([]);
+  const processingTimeout = useRef<number | null>(null);
+  const currentMessagesRef = useRef<ChatMessage[]>([]);
+
+  // Keep the ref in sync with the state
+  useEffect(() => {
+    currentMessagesRef.current = gameState.messages;
+  }, [gameState.messages]);
+
+  // Event processing function with debouncing and deduplication
+  const processEventQueue = useCallback(() => {
+    if (isProcessingEvent.current || eventQueue.current.length === 0) {
+      return;
+    }
+
+    isProcessingEvent.current = true;
+
+    try {
+      const events = [...eventQueue.current];
+      eventQueue.current = [];
+
+      // Process events in batch to prevent cascading updates
+      const updates: Partial<GameState> = {};
+
+      events.forEach(event => {
+        // Special handling for command_response events - don't deduplicate them
+        if (event.event_type === 'command_response') {
+          // For command responses, use timestamp to ensure uniqueness
+          const eventKey = `${event.event_type}_${Date.now()}_${Math.random()}`;
+          lastProcessedEvent.current = eventKey;
+        } else {
+          const eventKey = `${event.event_type}_${event.sequence_number}`;
+          if (eventKey === lastProcessedEvent.current) {
+            return; // Skip duplicate events
+          }
+          lastProcessedEvent.current = eventKey;
+        }
+
+        // Normalize event type for robust matching
+        const eventType = (event.event_type || '').toString().trim().toLowerCase();
+
+        logger.info('GameTerminalWithPanels', 'Processing event', {
+          originalEventType: event.event_type,
+          normalizedEventType: eventType,
+          eventTypeLength: eventType.length,
+          eventTypeCharCodes: Array.from(eventType).map(c => c.charCodeAt(0)),
+          dataKeys: event.data ? Object.keys(event.data) : [],
+        });
+
+        switch (eventType) {
+          case 'game_state': {
+            const playerData = event.data.player as Player;
+            const roomData = event.data.room as Room;
+            if (playerData && roomData) {
+              updates.player = playerData;
+              updates.room = roomData;
+              logger.info('GameTerminalWithPanels', 'Received game state', {
+                playerName: playerData.name,
+                roomName: roomData.name,
+                roomId: roomData.id,
+              });
+            }
+            break;
+          }
+          case 'welcome': {
+            const playerData = event.data.player as Player;
+            const roomData = event.data.room as Room;
+            if (playerData && roomData) {
+              updates.player = playerData;
+              updates.room = roomData;
+            }
+            break;
+          }
+          case 'room_update': {
+            const roomData = event.data.room as Room;
+            const occupants = event.data.occupants as string[];
+            const occupantCount = event.data.occupant_count as number;
+
+            if (roomData) {
+              // Merge room data with occupants information from the event
+              updates.room = {
+                ...roomData,
+                occupants: occupants || roomData.occupants,
+                occupant_count: occupantCount !== undefined ? occupantCount : roomData.occupant_count,
+              };
+            }
+            break;
+          }
+          case 'room_state': {
+            const roomData = event.data.room_data as Room;
+            if (roomData) {
+              updates.room = roomData;
+            }
+            break;
+          }
+          case 'player_entered': {
+            const playerName = event.data.player_name as string;
+            const message = event.data.message as string;
+            if (playerName && message) {
+              logger.info('GameTerminalWithPanels', 'Player entered room', {
+                playerName,
+                message,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: 'room' as const,
+              };
+
+              updates.messages.push(chatMessage);
+            }
+            break;
+          }
+          case 'player_left': {
+            const playerName = event.data.player_name as string;
+            const message = event.data.message as string;
+            if (playerName && message) {
+              logger.info('GameTerminalWithPanels', 'Player left room', {
+                playerName,
+                message,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: 'room' as const,
+              };
+
+              updates.messages.push(chatMessage);
+            }
+            break;
+          }
+          case 'command_response': {
+            console.error('🚨 CRITICAL DEBUG: command_response case MATCHED!', {
+              eventType: eventType,
+              eventData: event.data,
+              hasMessage: !!event.data?.message,
+              messageLength: (event.data?.message as string)?.length || 0,
+              timestamp: new Date().toISOString(),
+            });
+            const message = event.data.message as string;
+            const isHtml = event.data.is_html as boolean;
+            logger.info('GameTerminalWithPanels', 'Processing command response', {
+              hasMessage: !!message,
+              messageLength: message?.length || 0,
+              isHtml,
+              currentMessageCount: currentMessagesRef.current.length,
+            });
+            if (message) {
+              // Use intelligent message type categorization
+              const messageTypeResult = determineMessageType(message);
+              debugMessageCategorization(message, messageTypeResult);
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: isHtml || false,
+                messageType: messageTypeResult.type,
+                channel: messageTypeResult.channel,
+              };
+
+              // Enhanced logging for debugging
+              logger.info('GameTerminalWithPanels', 'Creating chat message', {
+                messageText: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                messageType: messageTypeResult.type,
+                channel: messageTypeResult.channel,
+                timestamp: event.timestamp,
+                isHtml: isHtml || false,
+                messageLength: message.length,
+              });
+
+              // CRITICAL DEBUG: Track message array state
+              console.log('🔍 CRITICAL DEBUG: Before adding message to updates.messages', {
+                hasUpdatesMessages: !!updates.messages,
+                updatesMessagesLength: updates.messages?.length || 0,
+                currentMessagesRefLength: currentMessagesRef.current.length,
+                messageToAdd: chatMessage,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+                console.log('🔍 CRITICAL DEBUG: Created new updates.messages array', {
+                  newLength: updates.messages.length,
+                  copiedFrom: currentMessagesRef.current.length,
+                });
+              }
+
+              updates.messages.push(chatMessage);
+
+              console.log('🔍 CRITICAL DEBUG: After adding message to updates.messages', {
+                updatesMessagesLength: updates.messages.length,
+                lastMessage: updates.messages[updates.messages.length - 1],
+                allMessages: updates.messages.map(m => ({
+                  text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
+                  messageType: m.messageType,
+                  channel: m.channel,
+                })),
+              });
+
+              // Debug logging for message routing
+              console.log('🔍 Message Processing Debug:', {
+                originalMessage: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                categorizedType: messageTypeResult.type,
+                extractedChannel: messageTypeResult.channel,
+                finalMessageType: chatMessage.messageType,
+                finalChannel: chatMessage.channel,
+                timestamp: event.timestamp,
+                totalMessages: updates.messages.length,
+              });
+            }
+            break;
+          }
+          case 'player_entered_game': {
+            const playerName = event.data.player_name as string;
+            if (playerName) {
+              const message = {
+                text: `${playerName} has entered the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+              };
+              logger.info('GameTerminalWithPanels', 'Processing player entered game', {
+                playerName,
+                messageType: 'system',
+                timestamp: event.timestamp,
+              });
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+              updates.messages.push(message);
+            }
+            break;
+          }
+          case 'player_left_game': {
+            const playerName = event.data.player_name as string;
+            if (playerName) {
+              const message = {
+                text: `${playerName} has left the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+              };
+              logger.info('GameTerminalWithPanels', 'Processing player left game', {
+                playerName,
+                messageType: 'system',
+                timestamp: event.timestamp,
+              });
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+              updates.messages.push(message);
+            }
+            break;
+          }
+          default: {
+            logger.info('GameTerminalWithPanels', 'Unhandled event type', {
+              event_type: event.event_type,
+              data_keys: event.data ? Object.keys(event.data) : [],
+              full_event: event,
+            });
+            break;
+          }
+        }
+      });
+
+      // Apply all updates in a single state update
+      if (Object.keys(updates).length > 0) {
+        logger.info('GameTerminalWithPanels', 'Applying state updates', {
+          updateKeys: Object.keys(updates),
+          messageCount: updates.messages?.length || 0,
+          currentMessageCount: currentMessagesRef.current.length,
+        });
+
+        setGameState(prev => {
+          const newState = {
+            ...prev,
+            ...updates,
+            messages: updates.messages || prev.messages,
+          };
+
+          logger.info('GameTerminalWithPanels', 'State updated', {
+            newMessageCount: newState.messages.length,
+            hasMessages: newState.messages.length > 0,
+          });
+
+          return newState;
+        });
+      }
+    } catch (error) {
+      logger.error('GameTerminalWithPanels', 'Error processing events', { error });
+    } finally {
+      isProcessingEvent.current = false;
+
+      // Process any new events that arrived during processing
+      if (eventQueue.current.length > 0) {
+        processingTimeout.current = window.setTimeout(processEventQueue, 10);
+      }
+    }
+  }, []);
+
+  // Memoize the game event handler to prevent infinite re-renders
+  const handleGameEvent = useCallback(
+    (event: GameEvent) => {
+      logger.info('GameTerminalWithPanels', 'Received game event', { event_type: event.event_type });
+
+      // Add event to queue for batched processing
+      eventQueue.current.push(event);
+
+      // Process queue if not already processing
+      if (!isProcessingEvent.current && !processingTimeout.current) {
+        processingTimeout.current = window.setTimeout(() => {
+          processingTimeout.current = null;
+          processEventQueue();
+        }, 10);
+      }
+    },
+    [processEventQueue]
+  ); // Only depend on processEventQueue
+
+  // Memoize the connect handler
+  const handleConnect = useCallback(() => {
+    logger.info('GameTerminalWithPanels', 'Connected to game server');
+    // Don't clear messages on connection - this was preventing message display
+    // setGameState(prev => ({ ...prev, messages: [] }));
+  }, []); // Empty dependency array - this function should never change
+
+  // Memoize the disconnect handler
+  const handleDisconnect = useCallback(() => {
+    logger.info('GameTerminalWithPanels', 'Disconnected from game server');
+  }, []); // Empty dependency array - this function should never change
+
+  // Memoize the error handler
+  const handleError = useCallback((error: string) => {
+    logger.error('GameTerminalWithPanels', 'Game connection error', { error });
+  }, []); // Empty dependency array - this function should never change
 
   // Use the game connection hook for real server communication
   const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
     playerName,
     authToken,
-    onEvent: event => {
-      logger.info('GameTerminalWithPanels', 'Game event received', { event_type: event.event_type });
-
-      // Handle different event types
-      switch (event.event_type) {
-        case 'game_state':
-          logger.info('GameTerminalWithPanels', 'Game state received', {
-            room_data: event.data.room,
-            room_id: (event.data.room as Room)?.id,
-            room_name: (event.data.room as Room)?.name,
-          });
-          setGameState(prev => ({
-            ...prev,
-            room: (event.data.room as Room) ?? prev.room,
-            player: (event.data.player as Player) ?? prev.player,
-          }));
-          break;
-        case 'room_update':
-          logger.info('GameTerminalWithPanels', 'Room update received', {
-            room_data: event.data.room,
-            room_id: (event.data.room as Room)?.id,
-            room_name: (event.data.room as Room)?.name,
-          });
-          setGameState(prev => ({
-            ...prev,
-            room: event.data.room as Room,
-          }));
-          break;
-        case 'player_update':
-          setGameState(prev => ({
-            ...prev,
-            player: event.data.player as Player,
-          }));
-          break;
-        case 'chat_message':
-        case 'system_message': {
-          const message = {
-            text: event.data.message as string,
-            timestamp: event.timestamp,
-            isHtml: (event.data.is_html as boolean) || false,
-            messageType: event.event_type === 'chat_message' ? 'chat' : 'system',
-          };
-          setGameState(prev => ({
-            ...prev,
-            messages: [...prev.messages, message],
-          }));
-          break;
-        }
-        case 'command_response': {
-          // Server uses `result` as the payload key
-          const resultText = (event.data.result as string) ?? '';
-          const response = {
-            text: resultText,
-            timestamp: event.timestamp,
-            isHtml: Boolean(event.data.is_html),
-            messageType: 'system',
-          };
-          setGameState(prev => ({
-            ...prev,
-            messages: [...prev.messages, response],
-          }));
-          break;
-        }
-        case 'player_entered': {
-          const playerName = event.data.player_name as string;
-          if (playerName) {
-            const message = {
-              text: `${playerName} enters the room.`,
-              timestamp: event.timestamp,
-              isHtml: false,
-              messageType: 'system',
-            };
-            setGameState(prev => ({
-              ...prev,
-              messages: [...prev.messages, message],
-            }));
-          }
-          break;
-        }
-        case 'player_left': {
-          const playerName = event.data.player_name as string;
-          if (playerName) {
-            const message = {
-              text: `${playerName} leaves the room.`,
-              timestamp: event.timestamp,
-              isHtml: false,
-              messageType: 'system',
-            };
-            setGameState(prev => ({
-              ...prev,
-              messages: [...prev.messages, message],
-            }));
-          }
-          break;
-        }
-        case 'player_left_game': {
-          const playerName = event.data.player_name as string;
-          if (playerName) {
-            const message = {
-              text: `${playerName} has left the game.`,
-              timestamp: event.timestamp,
-              isHtml: false,
-              messageType: 'system',
-            };
-            setGameState(prev => ({
-              ...prev,
-              messages: [...prev.messages, message],
-            }));
-          }
-          break;
-        }
-      }
-    },
-    onConnect: () => {
-      logger.info('GameTerminalWithPanels', 'Connected to game server');
-      // Clear messages on successful connection to start fresh
-      setGameState(prev => ({ ...prev, messages: [] }));
-    },
-    onDisconnect: () => {
-      logger.info('GameTerminalWithPanels', 'Disconnected from game server');
-    },
-    onError: error => {
-      logger.error('GameTerminalWithPanels', 'Game connection error', { error });
-    },
+    onEvent: handleGameEvent,
+    onConnect: handleConnect,
+    onDisconnect: handleDisconnect,
+    onError: handleError,
   });
 
   // Connect once on mount; disconnect on unmount.
@@ -200,6 +466,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         hasAuthToken: !!authToken,
         playerName,
       });
+
       connect();
     }
 
@@ -230,11 +497,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
       down: 'down',
     };
 
-    // Normalize slash prefix
-    if (lower.startsWith('/')) {
-      normalized = normalized.slice(1).trim();
-    }
-
     // Expand shorthand for movement and look
     const parts = normalized.split(/\s+/);
     if (parts.length === 1 && dirMap[lower]) {
@@ -247,7 +509,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     }
 
     // Add to command history
-    setCommandHistory(prev => [...prev, normalized]);
+    setGameState(prev => ({ ...prev, commandHistory: [...prev.commandHistory, normalized] }));
 
     // Parse command for sending to server
     const commandParts = normalized.split(/\s+/);
@@ -261,12 +523,25 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     }
   };
 
+  const handleChatMessage = async (message: string, channel: string) => {
+    if (!message.trim() || !isConnected) return;
+
+    // DON'T add chat messages to command history - they should only appear in ChatPanel
+    // setGameState(prev => ({ ...prev, commandHistory: [...prev.commandHistory, message] }));
+
+    // Send chat message to server
+    const success = await sendCommand('chat', [channel, message]);
+    if (!success) {
+      logger.error('GameTerminalWithPanels', 'Failed to send chat message', { channel, message });
+    }
+  };
+
   const handleClearMessages = () => {
     setGameState(prev => ({ ...prev, messages: [] }));
   };
 
   const handleClearHistory = () => {
-    setCommandHistory([]);
+    setGameState(prev => ({ ...prev, commandHistory: [] }));
   };
 
   const handleLogout = () => {
@@ -285,18 +560,19 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         room={gameState.room}
         player={gameState.player}
         messages={gameState.messages}
-        commandHistory={commandHistory}
+        commandHistory={gameState.commandHistory}
         onConnect={connect}
         onDisconnect={disconnect}
         onLogout={handleLogout}
         onDownloadLogs={() => logger.downloadLogs()}
         onSendCommand={handleCommandSubmit}
+        onSendChatMessage={handleChatMessage}
         onClearMessages={handleClearMessages}
         onClearHistory={handleClearHistory}
       />
 
       {/* Command Help Drawer */}
-      <CommandHelpDrawer open={helpDrawerOpen} onClose={() => setHelpDrawerOpen(false)} />
+      <CommandHelpDrawer open={false} onClose={() => {}} />
     </div>
   );
 };

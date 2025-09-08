@@ -2,7 +2,7 @@ import React from 'react';
 
 interface TerminalInputProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   type?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -52,7 +52,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
     <input
       type={type}
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={onChange}
       placeholder={placeholder}
       disabled={disabled}
       className={classes}

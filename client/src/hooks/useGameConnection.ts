@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { logger } from '../utils/logger';
 
 interface GameEvent {
@@ -23,41 +23,245 @@ interface GameConnectionState {
   reconnectAttempts: number;
   sseConnected: boolean;
   websocketConnected: boolean;
+  // New dual connection support
+  sessionId: string | null;
+  connectionHealth: {
+    websocket: 'healthy' | 'unhealthy' | 'unknown';
+    sse: 'healthy' | 'unhealthy' | 'unknown';
+    lastHealthCheck: number | null;
+  };
+  connectionMetadata: {
+    websocketConnectionId: string | null;
+    sseConnectionId: string | null;
+    totalConnections: number;
+    connectionTypes: string[];
+  };
+}
+
+type GameConnectionAction =
+  | { type: 'SET_CONNECTING'; payload: boolean }
+  | { type: 'SET_SSE_CONNECTED'; payload: boolean }
+  | { type: 'SET_WEBSOCKET_CONNECTED'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_LAST_EVENT'; payload: GameEvent }
+  | { type: 'INCREMENT_RECONNECT_ATTEMPTS' }
+  | { type: 'RESET_RECONNECT_ATTEMPTS' }
+  | { type: 'RESET_STATE' }
+  // New dual connection actions
+  | { type: 'SET_SESSION_ID'; payload: string | null }
+  | {
+      type: 'UPDATE_CONNECTION_HEALTH';
+      payload: { websocket?: 'healthy' | 'unhealthy' | 'unknown'; sse?: 'healthy' | 'unhealthy' | 'unknown' };
+    }
+  | {
+      type: 'UPDATE_CONNECTION_METADATA';
+      payload: {
+        websocketConnectionId?: string | null;
+        sseConnectionId?: string | null;
+        totalConnections?: number;
+        connectionTypes?: string[];
+      };
+    }
+  | { type: 'HEALTH_CHECK_COMPLETE' };
+
+const createInitialState = (sessionId?: string): GameConnectionState => ({
+  isConnected: false,
+  isConnecting: false,
+  lastEvent: null,
+  error: null,
+  reconnectAttempts: 0,
+  sseConnected: false,
+  websocketConnected: false,
+  // New dual connection support
+  sessionId: sessionId || null,
+  connectionHealth: {
+    websocket: 'unknown',
+    sse: 'unknown',
+    lastHealthCheck: null,
+  },
+  connectionMetadata: {
+    websocketConnectionId: null,
+    sseConnectionId: null,
+    totalConnections: 0,
+    connectionTypes: [],
+  },
+});
+
+function gameConnectionReducer(state: GameConnectionState, action: GameConnectionAction): GameConnectionState {
+  switch (action.type) {
+    case 'SET_CONNECTING':
+      return { ...state, isConnecting: action.payload };
+    case 'SET_SSE_CONNECTED': {
+      const newSseState = {
+        ...state,
+        sseConnected: action.payload,
+        // CRITICAL FIX: Connection is established if either SSE OR WebSocket is connected
+        isConnected: action.payload || state.websocketConnected,
+        error: action.payload ? null : state.error,
+      };
+      console.error('🚨 CRITICAL DEBUG: SSE_CONNECTED reducer', {
+        action: action.type,
+        payload: action.payload,
+        oldSseConnected: state.sseConnected,
+        oldWebsocketConnected: state.websocketConnected,
+        oldIsConnected: state.isConnected,
+        newSseConnected: newSseState.sseConnected,
+        newWebsocketConnected: newSseState.websocketConnected,
+        newIsConnected: newSseState.isConnected,
+      });
+      return newSseState;
+    }
+    case 'SET_WEBSOCKET_CONNECTED': {
+      const newWsState = {
+        ...state,
+        websocketConnected: action.payload,
+        // CRITICAL FIX: Connection is established if either SSE OR WebSocket is connected
+        isConnected: action.payload || state.sseConnected,
+        error: action.payload ? null : state.error,
+      };
+      console.error('🚨 CRITICAL DEBUG: WEBSOCKET_CONNECTED reducer', {
+        action: action.type,
+        payload: action.payload,
+        oldSseConnected: state.sseConnected,
+        oldWebsocketConnected: state.websocketConnected,
+        oldIsConnected: state.isConnected,
+        newSseConnected: newWsState.sseConnected,
+        newWebsocketConnected: newWsState.websocketConnected,
+        newIsConnected: newWsState.isConnected,
+        willUpdateIsConnected: action.payload || state.sseConnected,
+      });
+      return newWsState;
+    }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+    case 'SET_LAST_EVENT':
+      return { ...state, lastEvent: action.payload };
+    case 'INCREMENT_RECONNECT_ATTEMPTS':
+      return { ...state, reconnectAttempts: state.reconnectAttempts + 1 };
+    case 'RESET_RECONNECT_ATTEMPTS':
+      return { ...state, reconnectAttempts: 0 };
+    case 'RESET_STATE':
+      return createInitialState(state.sessionId);
+    // New dual connection cases
+    case 'SET_SESSION_ID':
+      return { ...state, sessionId: action.payload };
+    case 'UPDATE_CONNECTION_HEALTH':
+      return {
+        ...state,
+        connectionHealth: {
+          ...state.connectionHealth,
+          ...action.payload,
+          lastHealthCheck: Date.now(),
+        },
+      };
+    case 'UPDATE_CONNECTION_METADATA':
+      return {
+        ...state,
+        connectionMetadata: {
+          ...state.connectionMetadata,
+          ...action.payload,
+        },
+      };
+    case 'HEALTH_CHECK_COMPLETE':
+      return {
+        ...state,
+        connectionHealth: {
+          ...state.connectionHealth,
+          lastHealthCheck: Date.now(),
+        },
+      };
+    default:
+      return state;
+  }
 }
 
 interface UseGameConnectionOptions {
-  playerId?: string; // Optional since not currently used
+  playerId?: string;
   playerName: string;
   authToken: string;
+  sessionId?: string; // New: Optional session ID for dual connection management
   onEvent?: (event: GameEvent) => void;
   onConnect?: () => void;
   onDisconnect?: () => void;
   onError?: (error: string) => void;
+  onSessionChange?: (newSessionId: string) => void; // New: Callback for session changes
+  onConnectionHealthUpdate?: (health: { websocket: string; sse: string }) => void; // New: Health monitoring callback
 }
 
-export function useGameConnection({ authToken, onEvent, onConnect, onError, onDisconnect }: UseGameConnectionOptions) {
-  const [state, setState] = useState<GameConnectionState>({
-    isConnected: false,
-    isConnecting: false,
-    lastEvent: null,
-    error: null,
-    reconnectAttempts: 0,
-    sseConnected: false,
-    websocketConnected: false,
+export function useGameConnection({
+  authToken,
+  sessionId,
+  onEvent,
+  onConnect,
+  onDisconnect,
+  onError,
+  onSessionChange,
+  onConnectionHealthUpdate,
+}: UseGameConnectionOptions) {
+  // CRITICAL DEBUG: Log when hook is called
+  console.error('🚨 CRITICAL DEBUG: useGameConnection hook CALLED', {
+    hasAuthToken: !!authToken,
+    authTokenLength: authToken?.length || 0,
+    playerName: 'unknown',
+    timestamp: new Date().toISOString(),
   });
 
+  const [state, dispatch] = useReducer(gameConnectionReducer, createInitialState(sessionId));
+
+  // Refs for stable references
   const eventSourceRef = useRef<EventSource | null>(null);
   const websocketRef = useRef<WebSocket | null>(null);
-  const isConnectingRef = useRef(false);
   const wsPingIntervalRef = useRef<number | null>(null);
   const sseReconnectTimerRef = useRef<number | null>(null);
   const wsReconnectTimerRef = useRef<number | null>(null);
   const sseAttemptsRef = useRef(0);
   const wsAttemptsRef = useRef(0);
-  const connectRef = useRef<(() => void) | null>(null);
-  const connectWebSocketRef = useRef<(() => void) | null>(null);
-  const scheduleSseReconnectRef = useRef<(() => void) | null>(null);
-  const scheduleWsReconnectRef = useRef<(() => void) | null>(null);
+  const isConnectingRef = useRef(false);
+  const hasConnectedRef = useRef(false);
+
+  // Stable callback references
+  const onEventRef = useRef(onEvent);
+  const onConnectRef = useRef(onConnect);
+  const onDisconnectRef = useRef(onDisconnect);
+  const onErrorRef = useRef(onError);
+  const onSessionChangeRef = useRef(onSessionChange);
+  const onConnectionHealthUpdateRef = useRef(onConnectionHealthUpdate);
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onEventRef.current = onEvent;
+    onConnectRef.current = onConnect;
+    onDisconnectRef.current = onDisconnect;
+    onErrorRef.current = onError;
+    onSessionChangeRef.current = onSessionChange;
+    onConnectionHealthUpdateRef.current = onConnectionHealthUpdate;
+  }, [onEvent, onConnect, onDisconnect, onError, onSessionChange, onConnectionHealthUpdate]);
+
+  // Session management
+  const generateSessionId = useCallback(() => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
+
+  const currentSessionId = useRef<string | null>(sessionId || null);
+
+  // Initialize session ID if not provided
+  useEffect(() => {
+    if (!currentSessionId.current) {
+      currentSessionId.current = generateSessionId();
+      dispatch({ type: 'SET_SESSION_ID', payload: currentSessionId.current });
+    } else if (sessionId && currentSessionId.current !== sessionId) {
+      // Update session ID if it changed
+      currentSessionId.current = sessionId;
+      dispatch({ type: 'SET_SESSION_ID', payload: currentSessionId.current });
+    }
+  }, [generateSessionId, sessionId]);
+
+  // Sync currentSessionId with state.sessionId
+  useEffect(() => {
+    if (state.sessionId && currentSessionId.current !== state.sessionId) {
+      currentSessionId.current = state.sessionId;
+    }
+  }, [state.sessionId]);
 
   const clearTimers = useCallback(() => {
     if (wsPingIntervalRef.current !== null) {
@@ -74,18 +278,69 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     }
   }, []);
 
+  // Connection health monitoring
+  const performHealthCheck = useCallback(async () => {
+    try {
+      // Check WebSocket health
+      const wsHealthy = websocketRef.current?.readyState === WebSocket.OPEN;
+      dispatch({
+        type: 'UPDATE_CONNECTION_HEALTH',
+        payload: { websocket: wsHealthy ? 'healthy' : 'unhealthy' },
+      });
+
+      // Check SSE health
+      const sseHealthy = eventSourceRef.current?.readyState === EventSource.OPEN;
+      dispatch({
+        type: 'UPDATE_CONNECTION_HEALTH',
+        payload: { sse: sseHealthy ? 'healthy' : 'unhealthy' },
+      });
+
+      // Notify health update callback
+      onConnectionHealthUpdateRef.current?.({
+        websocket: wsHealthy ? 'healthy' : 'unhealthy',
+        sse: sseHealthy ? 'healthy' : 'unhealthy',
+      });
+
+      dispatch({ type: 'HEALTH_CHECK_COMPLETE' });
+    } catch (error) {
+      logger.error('GameConnection', 'Health check failed', { error: String(error) });
+    }
+  }, []);
+
+  // Health check interval
+  const healthCheckIntervalRef = useRef<number | null>(null);
+
+  const startHealthMonitoring = useCallback(() => {
+    if (healthCheckIntervalRef.current !== null) {
+      return; // Already monitoring
+    }
+
+    // Perform initial health check
+    performHealthCheck();
+
+    // Set up periodic health checks (every 30 seconds)
+    healthCheckIntervalRef.current = window.setInterval(performHealthCheck, 30000);
+  }, [performHealthCheck]);
+
+  const stopHealthMonitoring = useCallback(() => {
+    if (healthCheckIntervalRef.current !== null) {
+      window.clearInterval(healthCheckIntervalRef.current);
+      healthCheckIntervalRef.current = null;
+    }
+  }, []);
+
   const scheduleSseReconnect = useCallback(() => {
     if (sseReconnectTimerRef.current !== null) {
       return; // Already scheduled
     }
 
     const maxAttempts = 5;
-    const baseDelay = 1000; // 1 second
-    const maxDelay = 30000; // 30 seconds
+    const baseDelay = 1000;
+    const maxDelay = 30000;
 
     if (sseAttemptsRef.current >= maxAttempts) {
       logger.error('GameConnection', 'Max SSE reconnect attempts reached');
-      setState(prev => ({ ...prev, error: 'Max reconnect attempts reached' }));
+      dispatch({ type: 'SET_ERROR', payload: 'Max reconnect attempts reached' });
       return;
     }
 
@@ -100,10 +355,8 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     sseReconnectTimerRef.current = window.setTimeout(() => {
       sseReconnectTimerRef.current = null;
       if (!state.isConnected && !isConnectingRef.current) {
-        // Use a ref to avoid circular dependency
-        if (connectRef.current) {
-          connectRef.current();
-        }
+        // Trigger reconnect through the main connect function
+        hasConnectedRef.current = false;
       }
     }, delay);
   }, [state.isConnected]);
@@ -114,8 +367,8 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     }
 
     const maxAttempts = 5;
-    const baseDelay = 1000; // 1 second
-    const maxDelay = 30000; // 30 seconds
+    const baseDelay = 1000;
+    const maxDelay = 30000;
 
     if (wsAttemptsRef.current >= maxAttempts) {
       logger.error('GameConnection', 'Max WebSocket reconnect attempts reached');
@@ -133,17 +386,11 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     wsReconnectTimerRef.current = window.setTimeout(() => {
       wsReconnectTimerRef.current = null;
       if (state.sseConnected && !state.websocketConnected) {
-        // Use a ref to avoid circular dependency
-        if (connectWebSocketRef.current) {
-          connectWebSocketRef.current();
-        }
+        // Trigger WebSocket reconnect
+        connectWebSocket();
       }
     }, delay);
-  }, [state.sseConnected, state.websocketConnected]);
-
-  // Store schedule functions in refs to avoid circular dependencies
-  scheduleSseReconnectRef.current = scheduleSseReconnect;
-  scheduleWsReconnectRef.current = scheduleWsReconnect;
+  }, [state.sseConnected, state.websocketConnected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const connectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -153,18 +400,19 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
 
     try {
       logger.info('GameConnection', 'Connecting WebSocket');
-      const wsBase = window.location.origin.replace('http', 'ws');
-      const wsUrl = `${wsBase}/api/ws?token=${encodeURIComponent(authToken)}`;
+      // Fix: Connect directly to game server for WebSocket (Vite proxy cannot handle WebSocket)
+      // The game server runs on port 54731, not through the Vite dev server proxy
+      const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
       logger.info('GameConnection', 'Creating WebSocket connection', { url: wsUrl });
       const websocket = new WebSocket(wsUrl);
 
       websocket.onopen = () => {
         logger.info('GameConnection', 'WebSocket connected');
         websocketRef.current = websocket;
-        setState(prev => ({ ...prev, websocketConnected: true }));
-        wsAttemptsRef.current = 0; // Reset attempts on successful connection
+        dispatch({ type: 'SET_WEBSOCKET_CONNECTED', payload: true });
+        wsAttemptsRef.current = 0;
 
-        // Start periodic ping to keep presence fresh
+        // Start periodic ping
         if (wsPingIntervalRef.current === null) {
           wsPingIntervalRef.current = window.setInterval(() => {
             try {
@@ -182,8 +430,26 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
         try {
           const gameEvent: GameEvent = JSON.parse(event.data);
           logger.info('GameConnection', 'WebSocket event received', { event_type: gameEvent.event_type });
-          setState(prev => ({ ...prev, lastEvent: gameEvent }));
-          onEvent?.(gameEvent);
+          dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
+
+          // Add simple debugging for ALL events to see what we're receiving
+          console.log('🚨 DEBUG: useGameConnection received event', {
+            eventType: gameEvent.event_type,
+            hasOnEventRef: !!onEventRef.current,
+          });
+
+          // Add simple debugging to verify onEvent callback is called
+          console.log('🚨 DEBUG: About to call onEvent callback', {
+            eventType: gameEvent.event_type,
+            hasCallback: !!onEventRef.current,
+          });
+
+          onEventRef.current?.(gameEvent);
+
+          // Add debugging after callback to verify it was called
+          console.log('🚨 DEBUG: onEvent callback completed', {
+            eventType: gameEvent.event_type,
+          });
         } catch (error) {
           logger.error('GameConnection', 'Failed to parse WebSocket event', { error: String(error) });
         }
@@ -191,43 +457,52 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
 
       websocket.onerror = error => {
         logger.error('GameConnection', 'WebSocket error', { error: String(error) });
-        // Will attempt reconnect on close
       };
 
-      websocket.onclose = () => {
-        logger.info('GameConnection', 'WebSocket disconnected');
+      websocket.onclose = event => {
+        logger.info('GameConnection', 'WebSocket disconnected', {
+          code: event.code,
+          reason: event.reason,
+          wasClean: event.wasClean,
+        });
         websocketRef.current = null;
-        setState(prev => ({ ...prev, websocketConnected: false }));
+        dispatch({ type: 'SET_WEBSOCKET_CONNECTED', payload: false });
         if (wsPingIntervalRef.current !== null) {
           window.clearInterval(wsPingIntervalRef.current);
           wsPingIntervalRef.current = null;
         }
-        // If SSE is still up, try to restore WS with backoff
+        // CRITICAL FIX: Only attempt reconnection if SSE is still connected
+        // This prevents infinite reconnection loops
         if (state.sseConnected) {
-          if (scheduleWsReconnectRef.current) {
-            scheduleWsReconnectRef.current();
-          }
+          logger.info('GameConnection', 'SSE still connected, scheduling WebSocket reconnection');
+          scheduleWsReconnect();
+        } else {
+          logger.warning('GameConnection', 'Both SSE and WebSocket disconnected, not attempting reconnection');
         }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
-      if (scheduleWsReconnectRef.current) {
-        scheduleWsReconnectRef.current();
-      }
+      scheduleWsReconnect();
     }
-  }, [authToken, onEvent, state.sseConnected]);
-
-  // Store connectWebSocket function in ref to avoid circular dependency
-  connectWebSocketRef.current = connectWebSocket;
+  }, [authToken, scheduleWsReconnect, state.sseConnected]);
 
   const connect = useCallback(async () => {
+    // CRITICAL DEBUG: Log when connect function is called
+    console.error('🚨 CRITICAL DEBUG: connect function CALLED', {
+      hasAuthToken: !!authToken,
+      authTokenLength: authToken?.length || 0,
+      isConnecting: isConnectingRef.current,
+      isConnected: state.isConnected,
+      timestamp: new Date().toISOString(),
+    });
+
     if (isConnectingRef.current || state.isConnected) {
       logger.info('GameConnection', 'Already connecting or connected');
       return;
     }
 
     isConnectingRef.current = true;
-    setState(prev => ({ ...prev, isConnecting: true, error: null }));
+    dispatch({ type: 'SET_CONNECTING', payload: true });
 
     try {
       logger.info('GameConnection', 'Connecting to game server', { authToken: authToken ? 'present' : 'missing' });
@@ -238,9 +513,8 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
         eventSourceRef.current = null;
       }
 
-      // Prefer token-authenticated SSE endpoint; server resolves token -> user_id -> player_id
-      const sseUrl = `/api/events?token=${encodeURIComponent(authToken)}`;
-      logger.info('GameConnection', 'Creating SSE connection', { url: sseUrl });
+      const sseUrl = `/api/events?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
+      logger.info('GameConnection', 'Creating SSE connection', { url: sseUrl, sessionId: currentSessionId.current });
       const eventSource = new EventSource(sseUrl);
 
       eventSourceRef.current = eventSource;
@@ -248,21 +522,21 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
       eventSource.onopen = () => {
         logger.info('GameConnection', 'SSE connection established');
         isConnectingRef.current = false;
-        setState(prev => ({
-          ...prev,
-          sseConnected: true,
-          isConnecting: false,
-          error: null,
-        }));
-        // Reset SSE backoff
+        dispatch({ type: 'SET_SSE_CONNECTED', payload: true });
+        dispatch({ type: 'SET_CONNECTING', payload: false });
         sseAttemptsRef.current = 0;
         if (sseReconnectTimerRef.current !== null) {
           window.clearTimeout(sseReconnectTimerRef.current);
           sseReconnectTimerRef.current = null;
         }
-        onConnect?.();
 
-        // Connect WebSocket for commands
+        // Start health monitoring when first connection is established
+        if (!hasConnectedRef.current) {
+          hasConnectedRef.current = true;
+          startHealthMonitoring();
+          onConnectRef.current?.();
+        }
+        onConnectRef.current?.();
         connectWebSocket();
       };
 
@@ -270,8 +544,8 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
         try {
           const gameEvent: GameEvent = JSON.parse(event.data);
           logger.info('GameConnection', 'Received event', { event_type: gameEvent.event_type });
-          setState(prev => ({ ...prev, lastEvent: gameEvent }));
-          onEvent?.(gameEvent);
+          dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
+          onEventRef.current?.(gameEvent);
         } catch (error) {
           logger.error('GameConnection', 'Failed to parse SSE event', { error: String(error) });
         }
@@ -280,42 +554,33 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
       eventSource.onerror = error => {
         logger.error('GameConnection', 'SSE connection error', { error: String(error) });
         isConnectingRef.current = false;
-        setState(prev => ({
-          ...prev,
-          sseConnected: false,
-          isConnecting: false,
-          error: 'Connection failed',
-        }));
-        onError?.('Connection failed');
-        // Proactively close and schedule reconnect
+        dispatch({ type: 'SET_SSE_CONNECTED', payload: false });
+        dispatch({ type: 'SET_CONNECTING', payload: false });
+        dispatch({ type: 'SET_ERROR', payload: 'Connection failed' });
+        onErrorRef.current?.('Connection failed');
         try {
           eventSource.close();
         } catch {
           logger.info('GameConnection', 'SSE close after error');
         }
         eventSourceRef.current = null;
-        if (scheduleSseReconnectRef.current) {
-          scheduleSseReconnectRef.current();
-        }
+        scheduleSseReconnect();
       };
+
+      // CRITICAL FIX: Connect WebSocket immediately after SSE attempt
+      // Don't wait for SSE to succeed - this restores multiplayer functionality
+      logger.info('GameConnection', 'Connecting WebSocket immediately after SSE attempt');
+      connectWebSocket();
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect', { error: String(error) });
       isConnectingRef.current = false;
-      setState(prev => ({
-        ...prev,
-        sseConnected: false,
-        isConnecting: false,
-        error: 'Failed to connect',
-      }));
-      onError?.('Failed to connect');
-      if (scheduleSseReconnectRef.current) {
-        scheduleSseReconnectRef.current();
-      }
+      dispatch({ type: 'SET_SSE_CONNECTED', payload: false });
+      dispatch({ type: 'SET_CONNECTING', payload: false });
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to connect' });
+      onErrorRef.current?.('Failed to connect');
+      scheduleSseReconnect();
     }
-  }, [authToken, onConnect, onEvent, onError, state.isConnected, connectWebSocket]);
-
-  // Store connect function in ref to avoid circular dependency
-  connectRef.current = connect;
+  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected, startHealthMonitoring]); // Include all dependencies
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
@@ -331,56 +596,101 @@ export function useGameConnection({ authToken, onEvent, onConnect, onError, onDi
     }
 
     clearTimers();
+    stopHealthMonitoring();
     sseAttemptsRef.current = 0;
     wsAttemptsRef.current = 0;
     isConnectingRef.current = false;
-    setState(prev => ({
-      ...prev,
-      sseConnected: false,
-      websocketConnected: false,
-      isConnecting: false,
-    }));
-
-    onDisconnect?.();
-  }, [onDisconnect, clearTimers]);
+    hasConnectedRef.current = false;
+    dispatch({ type: 'RESET_STATE' });
+    onDisconnectRef.current?.();
+  }, [clearTimers, stopHealthMonitoring]);
 
   const sendCommand = useCallback((command: string, args: string[] = []) => {
-    if (!websocketRef.current || websocketRef.current.readyState !== WebSocket.OPEN) {
-      logger.error('GameConnection', 'WebSocket not connected');
+    // CRITICAL FIX: Enhanced connection validation
+    if (!websocketRef.current) {
+      logger.error('GameConnection', 'WebSocket reference not available');
+      return false;
+    }
+
+    if (websocketRef.current.readyState !== WebSocket.OPEN) {
+      logger.error('GameConnection', 'WebSocket not in OPEN state', {
+        readyState: websocketRef.current.readyState,
+        readyStateText: ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][websocketRef.current.readyState],
+      });
       return false;
     }
 
     try {
       const commandData = {
-        type: 'command',
-        data: {
-          command,
-          args,
-        },
+        type: 'game_command', // CRITICAL FIX: Use correct message type
+        command,
+        args,
       };
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command, args });
       return true;
     } catch (error) {
       logger.error('GameConnection', 'Failed to send command', { error: String(error) });
+      // CRITICAL FIX: Mark WebSocket as disconnected if send fails
+      dispatch({ type: 'SET_WEBSOCKET_CONNECTED', payload: false });
       return false;
     }
   }, []);
 
-  // Update isConnected when both SSE and WebSocket are ready
+  // Auto-reconnect logic
   useEffect(() => {
-    const bothConnected = state.sseConnected && state.websocketConnected;
-    setState(prev => ({ ...prev, isConnected: bothConnected }));
-
-    if (bothConnected) {
-      logger.info('GameConnection', 'Both SSE and WebSocket connected');
+    if (!hasConnectedRef.current && !state.isConnected && !state.isConnecting && !isConnectingRef.current) {
+      hasConnectedRef.current = true;
+      connect();
     }
-  }, [state.sseConnected, state.websocketConnected]);
+  }, [connect, state.isConnected, state.isConnecting]); // Include all dependencies
+
+  // Session management functions
+  const createNewSession = useCallback(() => {
+    const newSessionId = generateSessionId();
+    currentSessionId.current = newSessionId;
+    dispatch({ type: 'SET_SESSION_ID', payload: newSessionId });
+    onSessionChangeRef.current?.(newSessionId);
+    logger.info('GameConnection', 'New session created', { sessionId: newSessionId });
+    return newSessionId;
+  }, [generateSessionId]);
+
+  const switchToSession = useCallback(
+    (newSessionId: string) => {
+      if (currentSessionId.current !== newSessionId) {
+        currentSessionId.current = newSessionId;
+        dispatch({ type: 'SET_SESSION_ID', payload: newSessionId });
+        onSessionChangeRef.current?.(newSessionId);
+        logger.info('GameConnection', 'Switched to session', { sessionId: newSessionId });
+
+        // Reconnect with new session ID
+        disconnect();
+        setTimeout(() => {
+          connect();
+        }, 1000);
+      }
+    },
+    [disconnect, connect]
+  );
+
+  const getConnectionInfo = useCallback(() => {
+    return {
+      sessionId: currentSessionId.current,
+      websocketConnected: state.websocketConnected,
+      sseConnected: state.sseConnected,
+      connectionHealth: state.connectionHealth,
+      connectionMetadata: state.connectionMetadata,
+    };
+  }, [state.websocketConnected, state.sseConnected, state.connectionHealth, state.connectionMetadata]);
 
   return {
     ...state,
     connect,
     disconnect,
     sendCommand,
+    // New dual connection functions
+    createNewSession,
+    switchToSession,
+    getConnectionInfo,
   };
 }

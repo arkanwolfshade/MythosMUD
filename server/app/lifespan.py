@@ -95,18 +95,27 @@ async def lifespan(app: FastAPI):
                     logger.error("Error initializing NATS message handler", error=str(e))
                     app.state.nats_message_handler = None
             else:
-                logger.warning("Failed to connect to NATS server - falling back to direct WebSocket broadcasting")
-                app.state.nats_service = None
-                app.state.nats_message_handler = None
+                logger.error("Failed to connect to NATS server - NATS is required for chat functionality")
+                raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
         except Exception as e:
             logger.error("Error initializing NATS service", error=str(e))
-            logger.info("Falling back to direct WebSocket broadcasting for chat messages")
-            app.state.nats_service = None
-            app.state.nats_message_handler = None
+            raise RuntimeError(f"NATS initialization failed: {str(e)} - NATS is mandatory for chat system") from e
     else:
-        logger.info("NATS service disabled - using direct WebSocket broadcasting for chat messages")
-        app.state.nats_service = None
-        app.state.nats_message_handler = None
+        logger.error("NATS service disabled - NATS is mandatory for chat functionality")
+        raise RuntimeError("NATS service is disabled - NATS is mandatory for chat system")
+
+    # Initialize chat service and add to app.state (after NATS initialization)
+    from ..game.chat_service import ChatService
+
+    # Initialize chat service with required dependencies
+    app.state.chat_service = ChatService(
+        persistence=app.state.persistence,
+        room_service=app.state.persistence,  # Persistence layer provides room service functionality
+        player_service=app.state.player_service,
+    )
+
+    logger.info("Chat service added to app.state")
+    logger.info(f"app.state.chat_service: {app.state.chat_service}")
 
     # Start the game tick loop
     tick_task = asyncio.create_task(game_tick_loop(app))
@@ -135,12 +144,42 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error("Error disconnecting NATS service", error=str(e))
 
-    if hasattr(app.state, "tick_task"):
+    # Cancel and await the game tick task
+    if hasattr(app.state, "tick_task") and app.state.tick_task:
+        logger.info("Cancelling game tick task")
         app.state.tick_task.cancel()
         try:
             await app.state.tick_task
         except asyncio.CancelledError:
-            pass
+            logger.info("Game tick task cancelled successfully")
+        except Exception as e:
+            logger.error(f"Error cancelling game tick task: {e}")
+
+    # Clean up any remaining tasks in the connection manager
+    if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+        logger.info("Cleaning up connection manager tasks")
+        try:
+            await app.state.connection_manager.force_cleanup()
+        except Exception as e:
+            logger.error(f"Error during connection manager cleanup: {e}")
+
+    # Cancel any remaining tasks in the event loop
+    try:
+        # Get all running tasks and cancel them (except the current one)
+        current_task = asyncio.current_task()
+        tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
+
+        if tasks:
+            logger.info(f"Cancelling {len(tasks)} remaining tasks")
+            for task in tasks:
+                task.cancel()
+
+            # Wait for all tasks to complete
+            await asyncio.gather(*tasks, return_exceptions=True)
+            logger.info("All remaining tasks cancelled successfully")
+    except Exception as e:
+        logger.error(f"Error during task cleanup: {e}")
+
     logger.info("MythosMUD server shutdown complete")
 
 

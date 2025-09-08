@@ -5,13 +5,12 @@ This module implements the gold standard for password hashing using Argon2id,
 as documented in the restricted archives of Miskatonic University.
 """
 
-import time
-from typing import Any
-
 from argon2 import PasswordHasher, exceptions
-from argon2.exceptions import HashingError, VerificationError
+from argon2.exceptions import VerificationError
 
+from ..exceptions import AuthenticationError
 from ..logging_config import get_logger
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -71,7 +70,12 @@ def hash_password(password: str) -> str:
     """
     if not isinstance(password, str):
         logger.error("Password hashing failed - invalid type", password_type=type(password))
-        raise TypeError("Password must be a string")
+        log_and_raise(
+            AuthenticationError,
+            "Password must be a string",
+            details={"password_type": str(type(password))},
+            user_friendly="Invalid password format",
+        )
 
     logger.debug("Hashing password with Argon2id")
     try:
@@ -80,7 +84,12 @@ def hash_password(password: str) -> str:
         return hashed
     except Exception as e:
         logger.error("Password hashing failed", error=str(e))
-        raise HashingError(f"Failed to hash password: {e}") from e
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to hash password: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
 
 
 def verify_password(password: str, hashed: str) -> bool:
@@ -169,40 +178,3 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
         return params
     except Exception:
         return None
-
-
-def benchmark_hash_time(
-    password: str = "test_password",  # Safe for benchmarking only
-    iterations: int = 3,
-    time_cost: int = TIME_COST,
-    memory_cost: int = MEMORY_COST,
-    parallelism: int = PARALLELISM,
-) -> dict[str, Any]:
-    """Benchmark hashing performance with given parameters.
-
-    Note: The default password is intentionally hardcoded for benchmarking purposes only.
-    This function is not used for actual password hashing in production.
-    """
-    hasher = create_hasher_with_params(
-        time_cost=time_cost,
-        memory_cost=memory_cost,
-        parallelism=parallelism,
-    )
-
-    times = []
-    for _ in range(iterations):
-        start_time = time.time()
-        hasher.hash(password)
-        end_time = time.time()
-        times.append((end_time - start_time) * 1000)  # Convert to milliseconds
-
-    return {
-        "iterations": iterations,
-        "time_cost": time_cost,
-        "memory_cost": memory_cost,
-        "parallelism": parallelism,
-        "average_time_ms": sum(times) / len(times),
-        "min_time_ms": min(times),
-        "max_time_ms": max(times),
-        "times_ms": times,
-    }

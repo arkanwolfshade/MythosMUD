@@ -276,6 +276,53 @@ Learn about available commands and their proper usage.</p>
 </div>
 """,
     },
+    "who": {
+        "category": "Utility",
+        "description": "List online players with their levels and locations",
+        "usage": "who [name]",
+        "examples": ["who", "who alice", "who al"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>WHO Command</h3>
+<p>Peer into the shadows to see which fellow investigators are currently active
+in our realm. This command reveals the presence of other players, their levels,
+and their current locations.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>who</strong> - List all online players with levels and locations</li>
+<li><strong>who [name]</strong> - Search for specific players by name (case-insensitive partial matching)</li>
+</ul>
+
+<h4>Output Format:</h4>
+<ul>
+<li><strong>PlayerName [Level] - Zone: Sub-zone: Room</strong> - Regular player</li>
+<li><strong>PlayerName [Level] [ADMIN] - Zone: Sub-zone: Room</strong> - Administrator</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>who</li>
+<li>who alice</li>
+<li>who al</li>
+<li>who xyz</li>
+</ul>
+
+<h4>Sample Output:</h4>
+<pre>
+Online players (3): alice [5] - Arkham: City: Northside Intersection Derby High,
+bob [3] - Arkham: City: Northside Room Derby St 001,
+charlie [7] [ADMIN] - Arkham: City: Northside Room High Ln 002
+
+Players matching 'al' (1): alice [5] - Arkham: City: Northside Intersection Derby High
+
+No players found matching 'xyz'. Try 'who' to see all online players.
+</pre>
+
+<p>As the ancient texts suggest: "Knowledge of one's companions is the first step toward survival in the face of the unknown."</p>
+</div>
+""",
+    },
 }
 
 

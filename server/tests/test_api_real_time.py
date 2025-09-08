@@ -28,6 +28,8 @@ class TestSSEEvents:
         """Test successful SSE events endpoint."""
         # Mock the request
         mock_request = Mock(spec=Request)
+        mock_request.query_params = Mock()
+        mock_request.query_params.get.return_value = None  # No session_id
 
         # Mock the game_event_stream function
         with patch("server.api.real_time.game_event_stream") as mock_stream:
@@ -44,8 +46,8 @@ class TestSSEEvents:
             assert response.headers["Access-Control-Allow-Origin"] == "*"
             assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
 
-            # Verify the stream was called with correct player_id
-            mock_stream.assert_called_once_with("test_player")
+            # Verify the stream was called with correct player_id and session_id
+            mock_stream.assert_called_once_with("test_player", None)
 
 
 class TestSSEEventsToken:
@@ -87,9 +89,11 @@ class TestSSEEventsToken:
             assert response.headers["Access-Control-Allow-Origin"] == "*"
             assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
 
-            # Verify the stream was called with correct player_id
-            mock_stream.assert_called_once_with("test_player_id")
-            mock_logger.info.assert_called_once_with("SSE connection attempt for player test_player_id")
+            # Verify the stream was called with correct player_id and session_id
+            mock_stream.assert_called_once_with("test_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "SSE connection attempt for player test_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_sse_events_token_missing_token(self):
@@ -184,8 +188,10 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with correct parameters
-            mock_handle.assert_called_once_with(mock_websocket, "test_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket connection attempt for player test_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket connection attempt for player test_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_success_with_player_id_fallback(self):
@@ -197,11 +203,17 @@ class TestWebSocketEndpoint:
         # Mock dependencies
         with (
             patch("server.api.real_time.decode_access_token") as mock_decode,
+            patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
             patch("server.logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = None  # Invalid token
+            mock_persistence = Mock()
+            mock_get_persistence.return_value = mock_persistence
+            mock_player = Mock()
+            mock_player.player_id = "test_player_id"
+            mock_persistence.get_player.return_value = mock_player
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 
@@ -209,8 +221,10 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with player_id from query params
-            mock_handle.assert_called_once_with(mock_websocket, "test_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket connection attempt for player test_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket connection attempt for player test_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_no_token_no_player_id(self):
@@ -324,8 +338,10 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with resolved player_id
-            mock_handle.assert_called_once_with(mock_websocket, "resolved_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket (compat) connection attempt for player path_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "resolved_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket (compat) connection attempt for player path_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_success_without_token(self):
@@ -349,8 +365,10 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket (compat) connection attempt for player path_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket (compat) connection attempt for player path_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_without_sub(self):
@@ -374,8 +392,10 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket (compat) connection attempt for player path_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket (compat) connection attempt for player path_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_no_player_record(self):
@@ -403,8 +423,10 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id")
-            mock_logger.info.assert_called_once_with("WebSocket (compat) connection attempt for player path_player_id")
+            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_logger.info.assert_called_once_with(
+                "WebSocket (compat) connection attempt for player path_player_id with session None"
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_handle_websocket_connection_exception(self):

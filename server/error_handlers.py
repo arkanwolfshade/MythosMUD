@@ -22,6 +22,7 @@ from .exceptions import (
     ConfigurationError,
     DatabaseError,
     GameLogicError,
+    LoggedHTTPException,
     MythosMUDError,
     NetworkError,
     RateLimitError,
@@ -122,63 +123,57 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
 
 def _map_error_type(error: MythosMUDError) -> ErrorType:
     """Map MythosMUD error types to standardized error types."""
-    match error:
-        case AuthenticationError():
-            return ErrorType.AUTHENTICATION_FAILED
-        case ValidationError():
-            return ErrorType.VALIDATION_ERROR
-        case ResourceNotFoundError():
-            return ErrorType.RESOURCE_NOT_FOUND
-        case RateLimitError():
-            return ErrorType.RATE_LIMIT_EXCEEDED
-        case GameLogicError():
-            return ErrorType.GAME_LOGIC_ERROR
-        case DatabaseError():
-            return ErrorType.DATABASE_ERROR
-        case NetworkError():
-            return ErrorType.NETWORK_ERROR
-        case ConfigurationError():
-            return ErrorType.CONFIGURATION_ERROR
-        case _:
-            return ErrorType.INTERNAL_ERROR
+    # Error type mapping factory - provides O(1) lookup and easy extensibility
+    # As noted in the restricted archives, this pattern eliminates the need for
+    # lengthy if/elif chains while maintaining type safety
+    error_type_mapping = {
+        AuthenticationError: ErrorType.AUTHENTICATION_FAILED,
+        ValidationError: ErrorType.VALIDATION_ERROR,
+        ResourceNotFoundError: ErrorType.RESOURCE_NOT_FOUND,
+        RateLimitError: ErrorType.RATE_LIMIT_EXCEEDED,
+        GameLogicError: ErrorType.GAME_LOGIC_ERROR,
+        DatabaseError: ErrorType.DATABASE_ERROR,
+        NetworkError: ErrorType.NETWORK_ERROR,
+        ConfigurationError: ErrorType.CONFIGURATION_ERROR,
+    }
+
+    return error_type_mapping.get(type(error), ErrorType.INTERNAL_ERROR)
 
 
 def _get_severity_for_error(error: MythosMUDError) -> ErrorSeverity:
     """Get appropriate severity level for error type."""
-    match error:
-        case AuthenticationError() | ValidationError() | ResourceNotFoundError():
-            return ErrorSeverity.LOW
-        case GameLogicError() | RateLimitError():
-            return ErrorSeverity.MEDIUM
-        case DatabaseError() | NetworkError():
-            return ErrorSeverity.HIGH
-        case ConfigurationError():
-            return ErrorSeverity.CRITICAL
-        case _:
-            return ErrorSeverity.MEDIUM
+    # Severity mapping factory - maps error types to their appropriate severity levels
+    # This pattern allows for easy adjustment of severity levels without code changes
+    severity_mapping = {
+        AuthenticationError: ErrorSeverity.LOW,
+        ValidationError: ErrorSeverity.LOW,
+        ResourceNotFoundError: ErrorSeverity.LOW,
+        GameLogicError: ErrorSeverity.MEDIUM,
+        RateLimitError: ErrorSeverity.MEDIUM,
+        DatabaseError: ErrorSeverity.HIGH,
+        NetworkError: ErrorSeverity.HIGH,
+        ConfigurationError: ErrorSeverity.CRITICAL,
+    }
+
+    return severity_mapping.get(type(error), ErrorSeverity.MEDIUM)
 
 
 def _get_status_code_for_error(error: MythosMUDError) -> int:
     """Get appropriate HTTP status code for error type."""
-    match error:
-        case AuthenticationError():
-            return 401
-        case ValidationError():
-            return 400
-        case ResourceNotFoundError():
-            return 404
-        case RateLimitError():
-            return 429
-        case GameLogicError():
-            return 422
-        case DatabaseError():
-            return 503  # Service unavailable for database errors
-        case NetworkError():
-            return 503
-        case ConfigurationError():
-            return 500
-        case _:
-            return 500
+    # Status code mapping factory - provides consistent HTTP status code mapping
+    # This eliminates the need for repetitive if/elif chains and centralizes status code logic
+    status_code_mapping = {
+        AuthenticationError: 401,
+        ValidationError: 400,
+        ResourceNotFoundError: 404,
+        RateLimitError: 429,
+        GameLogicError: 422,
+        DatabaseError: 503,  # Service unavailable for database errors
+        NetworkError: 503,
+        ConfigurationError: 500,
+    }
+
+    return status_code_mapping.get(type(error), 500)
 
 
 async def mythos_exception_handler(request: Request, exc: MythosMUDError) -> JSONResponse:
@@ -262,6 +257,59 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
     )
 
     return error_response.to_response()
+
+
+async def logged_http_exception_handler(request: Request, exc: LoggedHTTPException) -> JSONResponse:
+    """
+    Handle LoggedHTTPException instances.
+
+    Args:
+        request: FastAPI request object
+        exc: LoggedHTTPException instance
+
+    Returns:
+        JSONResponse with error details
+    """
+    # Map HTTP status codes to appropriate error types and messages
+    if exc.status_code == 401:
+        error_type = ErrorType.AUTHENTICATION_FAILED
+        user_friendly = ErrorMessages.AUTHENTICATION_REQUIRED
+    elif exc.status_code == 404:
+        error_type = ErrorType.RESOURCE_NOT_FOUND
+        user_friendly = ErrorMessages.PLAYER_NOT_FOUND
+    elif exc.status_code == 422:
+        error_type = ErrorType.VALIDATION_ERROR
+        user_friendly = ErrorMessages.INVALID_INPUT
+    elif exc.status_code == 429:
+        error_type = ErrorType.RATE_LIMIT_EXCEEDED
+        user_friendly = ErrorMessages.TOO_MANY_REQUESTS
+    else:
+        error_type = ErrorType.INTERNAL_ERROR
+        user_friendly = ErrorMessages.INTERNAL_ERROR
+
+    # Create standardized error response
+    error_response = create_standard_error_response(
+        error_type=error_type,
+        message=str(exc.detail),
+        user_friendly=user_friendly,
+        details={"status_code": exc.status_code},
+        severity=ErrorSeverity.MEDIUM,
+    )
+
+    # Handle WebSocket vs HTTP request differences
+    method = getattr(request, "method", "WEBSOCKET") if hasattr(request, "method") else "WEBSOCKET"
+
+    # LoggedHTTPException already logs the error, so we just log the handling
+    logger.info(
+        "LoggedHTTPException handled",
+        status_code=exc.status_code,
+        detail=exc.detail,
+        path=str(request.url),
+        method=method,
+        error_type=error_type.value,
+    )
+
+    return JSONResponse(status_code=exc.status_code, content=error_response)
 
 
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
@@ -353,6 +401,9 @@ def register_error_handlers(app):
     """
     # Register MythosMUD exception handler
     app.add_exception_handler(MythosMUDError, mythos_exception_handler)
+
+    # Register LoggedHTTPException handler (must be before generic HTTPException)
+    app.add_exception_handler(LoggedHTTPException, logged_http_exception_handler)
 
     # Register general exception handler
     app.add_exception_handler(Exception, general_exception_handler)

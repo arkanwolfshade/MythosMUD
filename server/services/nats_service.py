@@ -125,6 +125,11 @@ class NATSService:
             True if published successfully, False otherwise
         """
         try:
+            logger.debug(f"=== NATS SERVICE DEBUG: Publishing to subject: {subject} ===")
+            logger.debug(f"NATS client (nc): {self.nc}")
+            logger.debug(f"NATS running: {self._running}")
+            logger.debug(f"Message data: {data}")
+
             if not self.nc or not self._running:
                 logger.error("NATS client not connected")
                 return False
@@ -150,9 +155,14 @@ class NATSService:
             logger.error(
                 "Failed to publish message to NATS subject",
                 error=str(e),
+                error_type=type(e).__name__,
                 subject=subject,
                 message_id=data.get("message_id"),
             )
+            logger.debug("=== NATS SERVICE DEBUG: Exception details ===")
+            logger.debug(f"Exception type: {type(e).__name__}")
+            logger.debug(f"Exception message: {str(e)}")
+            logger.debug(f"Exception args: {e.args}")
             return False
 
     async def subscribe(self, subject: str, callback: Callable[[dict[str, Any]], None]) -> bool:

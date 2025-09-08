@@ -88,13 +88,13 @@ vi.mock('./ui/TerminalInput', () => ({
     onKeyDown,
   }: {
     value: string;
-    onChange: (value: string) => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     onKeyDown?: (event: React.KeyboardEvent) => void;
   }) => (
     <input
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={onChange}
       placeholder={placeholder}
       onKeyDown={onKeyDown}
       data-testid="terminal-input"

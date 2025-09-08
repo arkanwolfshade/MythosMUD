@@ -8,32 +8,91 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..logging_config import get_logger
+from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
 
 
-def get_username_from_user(user_obj):
-    """Safely extract username from user object or dictionary."""
-    if hasattr(user_obj, "username"):
-        return user_obj.username
-    elif hasattr(user_obj, "name"):
-        return user_obj.name
-    elif isinstance(user_obj, dict) and "username" in user_obj:
-        return user_obj["username"]
-    elif isinstance(user_obj, dict) and "name" in user_obj:
-        return user_obj["name"]
-    else:
-        raise ValueError("User object must have username or name attribute or key")
+def filter_players_by_name(players: list, filter_term: str) -> list:
+    """
+    Filter players by case-insensitive partial name matching.
+
+    Args:
+        players: List of player objects
+        filter_term: Search term
+
+    Returns:
+        list: Filtered player list
+    """
+    if not filter_term:
+        return players
+
+    filter_lower = filter_term.lower()
+    return [player for player in players if filter_lower in player.name.lower()]
+
+
+def format_player_location(room_id: str) -> str:
+    """
+    Format player location as Zone: Sub-zone: Room from room ID.
+
+    Args:
+        room_id: Room ID in format earth_arkham_city_northside_intersection_derby_high
+
+    Returns:
+        str: Formatted location string
+    """
+    try:
+        # Parse room ID: earth_arkham_city_northside_intersection_derby_high
+        parts = room_id.split("_")
+        if len(parts) >= 4:
+            # Extract zone and sub-zone
+            zone = parts[1]  # arkham
+            sub_zone = parts[2]  # city
+            room_name = "_".join(parts[3:])  # northside_intersection_derby_high
+
+            # Convert to readable format
+            zone_display = zone.replace("_", " ").title()
+            sub_zone_display = sub_zone.replace("_", " ").title()
+            room_display = room_name.replace("_", " ").title()
+
+            return f"{zone_display}: {sub_zone_display}: {room_display}"
+        else:
+            # Fallback for unexpected format
+            return room_id.replace("_", " ").title()
+    except Exception:
+        # Fallback for any parsing errors
+        return room_id.replace("_", " ").title()
+
+
+def format_player_entry(player) -> str:
+    """
+    Format a single player entry for the who command output.
+
+    Args:
+        player: Player object
+
+    Returns:
+        str: Formatted player entry
+    """
+    # Base format: PlayerName [Level] - Location
+    location = format_player_location(player.current_room_id)
+    base_entry = f"{player.name} [{player.level}] - {location}"
+
+    # Add admin indicator if player is admin
+    if player.is_admin:
+        base_entry = f"{player.name} [{player.level}] [ADMIN] - {location}"
+
+    return base_entry
 
 
 async def handle_who_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the who command for listing online players.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -42,7 +101,10 @@ async def handle_who_command(
     Returns:
         dict: Who command result
     """
-    logger.debug("Processing who command", player=player_name, args=args)
+    logger.debug("Processing who command", player=player_name, command_data=command_data)
+
+    # Extract filter term from command_data
+    filter_term = command_data.get("filter_name", "")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -61,24 +123,85 @@ async def handle_who_command(
             online_threshold = now - timedelta(minutes=5)  # Consider players online if active in last 5 minutes
 
             online_players = []
+            logger.debug(f"Who command debugging - total players: {len(players)}, threshold: {online_threshold}")
+
             for player in players:
-                if player.last_active and player.last_active > online_threshold:
-                    online_players.append(player.username)
+                logger.debug(
+                    f"Checking player: {player.name}, last_active: {player.last_active}, type: {type(player.last_active)}"
+                )
+
+                # Ensure last_active is a datetime object for comparison
+                if player.last_active:
+                    # Handle case where last_active might be a string
+                    if isinstance(player.last_active, str):
+                        try:
+                            from datetime import datetime
+
+                            last_active = datetime.fromisoformat(player.last_active.replace("Z", "+00:00"))
+                            logger.debug(f"Converted string to datetime: {last_active}")
+                        except (ValueError, AttributeError) as e:
+                            logger.warning(f"Failed to parse last_active string for {player.name}: {e}")
+                            # Skip players with invalid last_active data
+                            continue
+                    else:
+                        last_active = player.last_active
+                        logger.debug(f"Using existing datetime: {last_active}")
+
+                    # Ensure both datetimes are timezone-aware for comparison
+                    if last_active.tzinfo is None:
+                        # Make naive datetime timezone-aware
+                        last_active = last_active.replace(tzinfo=UTC)
+                        logger.debug(f"Made timezone-aware: {last_active}")
+
+                    logger.debug(f"Comparing {last_active} > {online_threshold} = {last_active > online_threshold}")
+                    if last_active > online_threshold:
+                        online_players.append(player)
+                        logger.debug(f"Added {player.name} to online players")
+                    else:
+                        logger.debug(f"Player {player.name} not online (last_active too old)")
+                else:
+                    logger.debug(f"Player {player.name} has no last_active timestamp")
 
             if online_players:
-                player_list = ", ".join(sorted(online_players))
-                result = f"Online players ({len(online_players)}): {player_list}"
-                logger.debug("Who command successful", player=player_name, count=len(online_players))
-                return {"result": result}
+                # Apply name filtering if provided
+                if filter_term:
+                    filtered_players = filter_players_by_name(online_players, filter_term)
+                    if filtered_players:
+                        player_entries = [
+                            format_player_entry(player) for player in sorted(filtered_players, key=lambda p: p.name)
+                        ]
+                        player_list = ", ".join(player_entries)
+                        result = f"Players matching '{filter_term}' ({len(filtered_players)}): {player_list}"
+                        logger.debug(
+                            "Who command successful with filter",
+                            player=player_name,
+                            filter=filter_term,
+                            count=len(filtered_players),
+                        )
+                        return {"result": result}
+                    else:
+                        # No matches found
+                        result = f"No players found matching '{filter_term}'. Try 'who' to see all online players."
+                        logger.debug("Who command - no matches for filter", player=player_name, filter=filter_term)
+                        return {"result": result}
+                else:
+                    # No filter - show all online players
+                    player_entries = [
+                        format_player_entry(player) for player in sorted(online_players, key=lambda p: p.name)
+                    ]
+                    player_list = ", ".join(player_entries)
+                    result = f"Online players ({len(online_players)}): {player_list}"
+                    logger.debug("Who command successful", player=player_name, count=len(online_players))
+                    return {"result": result}
             else:
                 logger.debug("No online players found", player=player_name)
                 return {"result": "No players are currently online."}
         else:
-            logger.debug("No players found", player=player_name)
+            logger.debug("No players found in database", player=player_name)
             return {"result": "No players found."}
     except Exception as e:
         logger.error("Who command error", player=player_name, error=str(e))
-        return {"result": f"Error retrieving player information: {str(e)}"}
+        return {"result": f"Error retrieving player list: {str(e)}"}
 
 
 async def handle_quit_command(
@@ -238,13 +361,13 @@ async def handle_inventory_command(
 
 
 async def handle_emote_command(
-    args_or_data: dict | list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
     """
     Handle the emote command for performing emotes.
 
     Args:
-        args_or_data: Either command data dictionary (new format) or args list (old format)
+        command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -253,21 +376,14 @@ async def handle_emote_command(
     Returns:
         dict: Emote command result
     """
-    logger.debug("Processing emote command", player=player_name, args_or_data=args_or_data)
+    logger.debug("Processing emote command", player=player_name, command_data=command_data)
 
-    # Handle both old format (args list) and new format (command_data dict)
-    if isinstance(args_or_data, dict):
-        # New format: command_data dictionary
-        action = args_or_data.get("action")
-        if not action:
-            logger.warning("Emote command with no action", player=player_name)
-            return {"result": "Emote what? Usage: emote <action>"}
-    else:
-        # Old format: args list
-        if not args_or_data:
-            logger.warning("Emote command with no action", player=player_name)
-            return {"result": "Emote what? Usage: emote <action>"}
-        action = " ".join(args_or_data)
+    # Extract action from command_data
+    action = command_data.get("action")
+    if not action:
+        logger.warning("Emote command with no action", player=player_name)
+        return {"result": "Emote what? Usage: emote <action>"}
+
     logger.debug("Player performing emote", player=player_name, action=action)
 
     try:

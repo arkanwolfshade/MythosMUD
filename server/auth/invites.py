@@ -8,13 +8,15 @@ including invite creation, validation, and tracking.
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..exceptions import LoggedHTTPException
 from ..logging_config import get_logger
 from ..models.invite import Invite
+from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)
 
@@ -57,11 +59,14 @@ class InviteManager:
         logger.debug("Invites listed", count=len(invites))
         return invites
 
-    async def validate_invite(self, invite_code: str | None) -> Invite:
+    async def validate_invite(self, invite_code: str | None, request: Request = None) -> Invite:
         """Validate an invite code."""
         if not invite_code:
             logger.warning("No invite code provided")
-            raise HTTPException(status_code=400, detail="Invite code is required")
+            context = create_context_from_request(request) if request else None
+            if context:
+                context.metadata["operation"] = "validate_invite"
+            raise LoggedHTTPException(status_code=400, detail="Invite code is required", context=context)
 
         logger.debug("Validating invite code", invite_code=invite_code)
 
@@ -71,7 +76,11 @@ class InviteManager:
 
         if not invite:
             logger.warning("Invalid invite code", invite_code=invite_code)
-            raise HTTPException(status_code=400, detail="Invalid invite code")
+            context = create_context_from_request(request) if request else None
+            if context:
+                context.metadata["invite_code"] = invite_code
+                context.metadata["operation"] = "validate_invite"
+            raise LoggedHTTPException(status_code=400, detail="Invalid invite code", context=context)
 
         if not invite.is_valid():
             logger.warning(
@@ -80,7 +89,13 @@ class InviteManager:
                 used=invite.used,
                 expires_at=invite.expires_at,
             )
-            raise HTTPException(status_code=400, detail="Invite code is expired or already used")
+            context = create_context_from_request(request) if request else None
+            if context:
+                context.metadata["invite_code"] = invite_code
+                context.metadata["used"] = invite.used
+                context.metadata["expires_at"] = str(invite.expires_at)
+                context.metadata["operation"] = "validate_invite"
+            raise LoggedHTTPException(status_code=400, detail="Invite code is expired or already used", context=context)
 
         logger.debug("Invite validation successful", invite_code=invite_code)
         return invite

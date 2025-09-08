@@ -6,7 +6,9 @@ from jose import JWTError, jwt
 # Import our Argon2 implementation
 from server.auth.argon2_utils import hash_password as argon2_hash_password
 from server.auth.argon2_utils import verify_password as argon2_verify_password
+from server.exceptions import AuthenticationError
 from server.logging_config import get_logger
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -15,8 +17,11 @@ logger = get_logger(__name__)
 SECRET_KEY = os.getenv("MYTHOSMUD_JWT_SECRET")
 if not SECRET_KEY:
     logger.error("MYTHOSMUD_JWT_SECRET environment variable not set")
-    raise ValueError(
-        "MYTHOSMUD_JWT_SECRET environment variable must be set. Generate a secure random key for production deployment."
+    log_and_raise(
+        AuthenticationError,
+        "MYTHOSMUD_JWT_SECRET environment variable must be set. Generate a secure random key for production deployment.",
+        details={"missing_env_var": "MYTHOSMUD_JWT_SECRET"},
+        user_friendly="Server configuration error",
     )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -39,7 +44,12 @@ def hash_password(password: str) -> str:
         return hashed
     except Exception as e:
         logger.error("Password hashing failed", error=str(e))
-        raise
+        log_and_raise(
+            AuthenticationError,
+            f"Password hashing failed: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
 
 
 def verify_password(password: str, password_hash: str) -> bool:
@@ -81,7 +91,12 @@ def create_access_token(
         return token
     except Exception as e:
         logger.error("Failed to create access token", error=str(e), user_id=data.get("sub"))
-        raise
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to create access token: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__, "user_id": data.get("sub")},
+            user_friendly="Authentication token creation failed",
+        )
 
 
 def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str = ALGORITHM) -> dict:

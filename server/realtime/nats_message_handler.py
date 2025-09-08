@@ -31,6 +31,11 @@ class NATSMessageHandler:
         """
         self.nats_service = nats_service
         self.subscriptions = {}
+
+        # Sub-zone subscription tracking for local channels
+        self.subzone_subscriptions = {}  # subzone -> subscription_count
+        self.player_subzone_subscriptions = {}  # player_id -> subzone
+
         logger.info("NATS message handler initialized")
 
     async def start(self):
@@ -56,7 +61,8 @@ class NATSMessageHandler:
         """Subscribe to all chat-related NATS subjects."""
         subjects = [
             "chat.say.*",  # Say messages per room
-            "chat.local.*",  # Local messages per room
+            "chat.local.*",  # Local messages per room (for backward compatibility)
+            "chat.local.subzone.*",  # Local messages per subzone
             "chat.emote.*",  # Emote messages per room
             "chat.pose.*",  # Pose messages per room
             "chat.global",  # Global messages
@@ -66,7 +72,9 @@ class NATSMessageHandler:
             "chat.admin",  # Admin messages
         ]
 
+        logger.debug("=== NATS MESSAGE HANDLER DEBUG: Subscribing to subjects ===")
         for subject in subjects:
+            logger.debug(f"Attempting to subscribe to: {subject}")
             await self._subscribe_to_subject(subject)
 
     async def _subscribe_to_subject(self, subject: str):
@@ -102,7 +110,12 @@ class NATSMessageHandler:
             message_data: Message data from NATS
         """
         try:
-            logger.debug("Received NATS message", message_data=message_data)
+            logger.debug("=== NATS MESSAGE HANDLER DEBUG: Received NATS message ===")
+            logger.debug(f"Message data: {message_data}")
+            logger.debug(f"Message type: {type(message_data)}")
+            logger.debug(
+                f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}"
+            )
 
             # Extract message details
             channel = message_data.get("channel")
@@ -114,11 +127,16 @@ class NATSMessageHandler:
             content = message_data.get("content")
             message_id = message_data.get("message_id")
             timestamp = message_data.get("timestamp")
+            target_id = message_data.get("target_id")
+            target_name = message_data.get("target_name")
 
             # Validate required fields
             if not all([channel, sender_id, sender_name, content, message_id]):
                 logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
                 return
+
+            # Format message content based on channel type
+            formatted_message = self._format_message_content(channel, sender_name, content)
 
             # Create WebSocket event
             chat_event = build_event(
@@ -127,9 +145,11 @@ class NATSMessageHandler:
                     "sender_id": str(sender_id),
                     "player_name": sender_name,
                     "channel": channel,
-                    "message": content,
+                    "message": formatted_message,
                     "message_id": message_id,
                     "timestamp": timestamp,
+                    "target_id": target_id,
+                    "target_name": target_name,
                 },
                 player_id=str(sender_id),
             )
@@ -144,7 +164,7 @@ class NATSMessageHandler:
         self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str
     ):
         """
-        Broadcast message based on channel type.
+        Broadcast message based on channel type using strategy pattern.
 
         Args:
             channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
@@ -155,51 +175,12 @@ class NATSMessageHandler:
             sender_id: Sender player ID
         """
         try:
-            if channel in ["say", "local", "emote", "pose"]:
-                # Room-based channels - implement server-side filtering
-                if room_id:
-                    await self._broadcast_to_room_with_filtering(room_id, chat_event, sender_id, channel)
-                    logger.debug(
-                        "Broadcasted room message with server-side filtering",
-                        channel=channel,
-                        room_id=room_id,
-                        sender_id=sender_id,
-                    )
-                else:
-                    logger.warning("Room-based message missing room_id", channel=channel)
+            # Import here to avoid circular imports
+            from .channel_broadcasting_strategies import channel_strategy_factory
 
-            elif channel == "global":
-                # Global channel - broadcast to all connected players
-                await connection_manager.broadcast_to_all(chat_event, exclude_player=sender_id)
-                logger.debug("Broadcasted global message", sender_id=sender_id)
-
-            elif channel == "party":
-                # Party channel - broadcast to party members
-                if party_id:
-                    # TODO: Implement party-based broadcasting when party system is available
-                    logger.debug("Party message received", party_id=party_id, sender_id=sender_id)
-                else:
-                    logger.warning("Party message missing party_id")
-
-            elif channel == "whisper":
-                # Whisper channel - send to specific player
-                if target_player_id:
-                    await connection_manager.send_to_player(target_player_id, chat_event)
-                    logger.debug(
-                        "Sent whisper message",
-                        sender_id=sender_id,
-                        target_player_id=target_player_id,
-                    )
-                else:
-                    logger.warning("Whisper message missing target_player_id")
-
-            elif channel in ["system", "admin"]:
-                # System/Admin channels - broadcast to all players
-                await connection_manager.broadcast_to_all(chat_event, exclude_player=sender_id)
-                logger.debug(f"Broadcasted {channel} message", sender_id=sender_id)
-
-            else:
-                logger.warning("Unknown channel type", channel=channel)
+            # Get strategy for channel type and execute broadcast
+            strategy = channel_strategy_factory.get_strategy(channel)
+            await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
         except Exception as e:
             logger.error(
@@ -420,6 +401,237 @@ class NATSMessageHandler:
     def get_active_subjects(self) -> list[str]:
         """Get list of active subscription subjects."""
         return list(self.subscriptions.keys())
+
+    async def subscribe_to_subzone(self, subzone: str) -> bool:
+        """
+        Subscribe to local channel messages for a specific sub-zone.
+
+        Args:
+            subzone: Sub-zone name to subscribe to
+
+        Returns:
+            True if subscribed successfully, False otherwise
+        """
+        try:
+            subzone_subject = f"chat.local.subzone.{subzone}"
+
+            # Check if already subscribed
+            if subzone_subject in self.subscriptions:
+                self.subzone_subscriptions[subzone] = self.subzone_subscriptions.get(subzone, 0) + 1
+                logger.debug(
+                    "Sub-zone subscription count increased", subzone=subzone, count=self.subzone_subscriptions[subzone]
+                )
+                return True
+
+            # Subscribe to sub-zone subject
+            success = await self._subscribe_to_subject(subzone_subject)
+            if success:
+                self.subzone_subscriptions[subzone] = 1
+                logger.info("Subscribed to sub-zone local channel", subzone=subzone, subject=subzone_subject)
+                return True
+            else:
+                logger.error("Failed to subscribe to sub-zone local channel", subzone=subzone, subject=subzone_subject)
+                return False
+
+        except Exception as e:
+            logger.error("Error subscribing to sub-zone local channel", error=str(e), subzone=subzone)
+            return False
+
+    async def unsubscribe_from_subzone(self, subzone: str) -> bool:
+        """
+        Unsubscribe from local channel messages for a specific sub-zone.
+
+        Args:
+            subzone: Sub-zone name to unsubscribe from
+
+        Returns:
+            True if unsubscribed successfully, False otherwise
+        """
+        try:
+            subzone_subject = f"chat.local.subzone.{subzone}"
+
+            # Decrease subscription count
+            if subzone in self.subzone_subscriptions:
+                self.subzone_subscriptions[subzone] -= 1
+                count = self.subzone_subscriptions[subzone]
+
+                if count <= 0:
+                    # No more subscribers, unsubscribe from NATS
+                    success = await self._unsubscribe_from_subject(subzone_subject)
+                    if success:
+                        del self.subzone_subscriptions[subzone]
+                        logger.info(
+                            "Unsubscribed from sub-zone local channel", subzone=subzone, subject=subzone_subject
+                        )
+                        return True
+                    else:
+                        logger.error(
+                            "Failed to unsubscribe from sub-zone local channel",
+                            subzone=subzone,
+                            subject=subzone_subject,
+                        )
+                        return False
+                else:
+                    logger.debug("Sub-zone subscription count decreased", subzone=subzone, count=count)
+                    return True
+            else:
+                logger.warning("Not subscribed to sub-zone local channel", subzone=subzone)
+                return False
+
+        except Exception as e:
+            logger.error("Error unsubscribing from sub-zone local channel", error=str(e), subzone=subzone)
+            return False
+
+    def track_player_subzone_subscription(self, player_id: str, subzone: str) -> None:
+        """
+        Track a player's sub-zone subscription for local channels.
+
+        Args:
+            player_id: Player ID
+            subzone: Sub-zone name
+        """
+        try:
+            # Update player's sub-zone subscription
+            old_subzone = self.player_subzone_subscriptions.get(player_id)
+            if old_subzone and old_subzone != subzone:
+                # Player moved to different sub-zone, decrease count for old sub-zone
+                if old_subzone in self.subzone_subscriptions:
+                    self.subzone_subscriptions[old_subzone] = max(0, self.subzone_subscriptions[old_subzone] - 1)
+                    logger.debug(
+                        "Player moved to different sub-zone",
+                        player_id=player_id,
+                        old_subzone=old_subzone,
+                        new_subzone=subzone,
+                    )
+
+            self.player_subzone_subscriptions[player_id] = subzone
+            logger.debug("Tracked player sub-zone subscription", player_id=player_id, subzone=subzone)
+
+        except Exception as e:
+            logger.error(
+                "Error tracking player sub-zone subscription", error=str(e), player_id=player_id, subzone=subzone
+            )
+
+    def get_players_in_subzone(self, subzone: str) -> list[str]:
+        """
+        Get list of players currently in a specific sub-zone.
+
+        Args:
+            subzone: Sub-zone name
+
+        Returns:
+            List of player IDs in the sub-zone
+        """
+        try:
+            players = []
+            for player_id, player_subzone in self.player_subzone_subscriptions.items():
+                if player_subzone == subzone:
+                    players.append(player_id)
+            return players
+
+        except Exception as e:
+            logger.error("Error getting players in sub-zone", error=str(e), subzone=subzone)
+            return []
+
+    async def handle_player_movement(self, player_id: str, old_room_id: str, new_room_id: str) -> None:
+        """
+        Handle player movement between rooms and update sub-zone subscriptions.
+
+        Args:
+            player_id: Player ID
+            old_room_id: Previous room ID
+            new_room_id: New room ID
+        """
+        try:
+            from ..utils.room_utils import extract_subzone_from_room_id
+
+            old_subzone = extract_subzone_from_room_id(old_room_id) if old_room_id else None
+            new_subzone = extract_subzone_from_room_id(new_room_id) if new_room_id else None
+
+            if old_subzone != new_subzone:
+                # Player moved to different sub-zone
+                if old_subzone:
+                    await self.unsubscribe_from_subzone(old_subzone)
+
+                if new_subzone:
+                    await self.subscribe_to_subzone(new_subzone)
+                    self.track_player_subzone_subscription(player_id, new_subzone)
+
+                logger.info(
+                    "Player moved between sub-zones",
+                    player_id=player_id,
+                    old_subzone=old_subzone,
+                    new_subzone=new_subzone,
+                    old_room_id=old_room_id,
+                    new_room_id=new_room_id,
+                )
+            else:
+                # Player moved within same sub-zone, just update tracking
+                if new_subzone:
+                    self.track_player_subzone_subscription(player_id, new_subzone)
+
+        except Exception as e:
+            logger.error(
+                "Error handling player movement",
+                error=str(e),
+                player_id=player_id,
+                old_room_id=old_room_id,
+                new_room_id=new_room_id,
+            )
+
+    def _format_message_content(self, channel: str, sender_name: str, content: str) -> str:
+        """
+        Format message content based on channel type and sender name.
+
+        Args:
+            channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
+            sender_name: Name of the message sender
+            content: Raw message content
+
+        Returns:
+            Formatted message content with sender name
+        """
+        try:
+            if channel == "say":
+                return f"{sender_name} says: {content}"
+            elif channel == "local":
+                return f"{sender_name} (local): {content}"
+            elif channel == "global":
+                return f"{sender_name} (global): {content}"
+            elif channel == "emote":
+                return f"{sender_name} {content}"
+            elif channel == "pose":
+                return f"{sender_name} {content}"
+            elif channel == "whisper":
+                return f"{sender_name} whispers: {content}"
+            elif channel == "system":
+                return f"[SYSTEM] {content}"
+            elif channel == "admin":
+                return f"[ADMIN] {sender_name}: {content}"
+            else:
+                # Default format for unknown channels
+                return f"{sender_name} ({channel}): {content}"
+
+        except Exception as e:
+            logger.error("Error formatting message content", error=str(e), channel=channel, sender_name=sender_name)
+            return content  # Return original content if formatting fails
+
+    async def cleanup_empty_subzone_subscriptions(self) -> None:
+        """Clean up sub-zone subscriptions that have no active players."""
+        try:
+            subzones_to_cleanup = []
+
+            for subzone, count in self.subzone_subscriptions.items():
+                players_in_subzone = self.get_players_in_subzone(subzone)
+                if not players_in_subzone and count <= 0:
+                    subzones_to_cleanup.append(subzone)
+
+            for subzone in subzones_to_cleanup:
+                await self.unsubscribe_from_subzone(subzone)
+                logger.info("Cleaned up empty sub-zone subscription", subzone=subzone)
+
+        except Exception as e:
+            logger.error("Error cleaning up empty sub-zone subscriptions", error=str(e))
 
 
 # Global NATS message handler instance

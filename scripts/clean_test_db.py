@@ -28,7 +28,7 @@ def clean_test_database():
         raise ValueError(f"Unsupported database URL format: {test_db_url}")
 
     if not test_db_path.exists():
-        print(f"⚠️  Test database not found at {test_db_path}")
+        print(f"Warning: Test database not found at {test_db_path}")
         return
 
     try:
@@ -41,7 +41,7 @@ def clean_test_database():
             "SELECT name FROM sqlite_master WHERE type='table' AND name='players'"
         )
         if not cursor.fetchone():
-            print("⚠️  Players table not found in test database")
+            print("Warning: Players table not found in test database")
             conn.close()
             return
 
@@ -50,28 +50,28 @@ def clean_test_database():
         row_count = cursor.fetchone()[0]
 
         if row_count == 0:
-            print("ℹ️  Players table is already empty")
+            print("Info: Players table is already empty")
         else:
             # Delete all rows from the players table
             cursor.execute("DELETE FROM players")
             conn.commit()
-            print(f"🗑️  Deleted {row_count} rows from players table")
+            print(f"Deleted {row_count} rows from players table")
 
         conn.close()
-        print("✅ Test database cleaned successfully")
+        print("Test database cleaned successfully")
 
     except sqlite3.Error as e:
-        print(f"❌ Error cleaning test database: {e}")
+        print(f"Error cleaning test database: {e}")
         return False
     except Exception as e:
-        print(f"❌ Unexpected error: {e}")
+        print(f"Unexpected error: {e}")
         return False
 
     return True
 
 
 if __name__ == "__main__":
-    print("🧹 Cleaning test database...")
+    print("Cleaning test database...")
     success = clean_test_database()
     if not success:
         exit(1)

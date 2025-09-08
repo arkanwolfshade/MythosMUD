@@ -23,6 +23,7 @@ function App() {
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
+
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -108,36 +109,29 @@ function App() {
   };
 
   const handleStatsAccepted = (_stats: Stats) => {
-    // After stats are accepted and character is created, update state
     setHasCharacter(true);
-    setCharacterName(playerName); // Character name is the same as username
+    setCharacterName(playerName);
   };
 
   const handleStatsError = (error: string) => {
     setError(error);
+    setIsAuthenticated(false);
+    setAuthToken('');
   };
 
   const toggleMode = () => {
     setIsRegistering(!isRegistering);
     setError(null);
+    // Clear form fields when toggling between modes
     setPlayerName('');
     setPassword('');
     setInviteCode('');
   };
 
-  // Demo mode for testing eldritch effects (disabled for normal flow)
   if (showDemo) {
     return (
       <div className="App">
-        <div className="demo-controls fixed top-4 right-4 z-50">
-          <button
-            onClick={() => setShowDemo(false)}
-            className="bg-mythos-terminal-primary text-black px-4 py-2 rounded font-mono hover:bg-green-400 transition-colors"
-          >
-            Exit Demo
-          </button>
-        </div>
-        <EldritchEffectsDemo />
+        <EldritchEffectsDemo onExit={() => setShowDemo(false)} />
       </div>
     );
   }

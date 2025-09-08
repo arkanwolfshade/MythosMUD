@@ -9,18 +9,61 @@ logging:
   environment: test
   level: DEBUG  # Most verbose logging level
   format: colored  # json, human, colored (colored = human-readable with colors)
-  log_base: server/tests/logs  # Test logs stay in test directory
+  log_base: server/tests/logs  # Test logs stay in test directory (relative to project root)
   rotation:
     max_size: 10MB
     backup_count: 2
   compression: false
-  disable_logging: true
+  disable_logging: false
 
 # --- Network ---
 host: 127.0.0.1  # Test server bind address
 port: 4999       # Test game port
 max_connections: 10
 connection_timeout: 10  # seconds
+
+# --- Dual Connection System (Test Configuration) ---
+dual_connections:
+  enabled: true
+  max_connections_per_player: 2  # Reduced for tests
+  connection_timeout: 60  # seconds
+  health_check_interval: 10  # seconds
+  cleanup_interval: 30  # seconds
+  message_batch_size: 10  # Reduced for tests
+  connection_pool_size: 100  # Reduced for tests
+  performance_monitoring: true
+
+  # WebSocket Configuration
+  websocket:
+    enabled: true
+    ping_interval: 10  # seconds
+    ping_timeout: 5  # seconds
+    max_message_size: 1048576  # 1MB
+
+  # Server-Sent Events Configuration
+  sse:
+    enabled: true
+    retry_timeout: 1000  # milliseconds
+    max_connections: 50  # Reduced for tests
+
+  # Session Management
+  session:
+    timeout: 300  # seconds (5 minutes for tests)
+    cleanup_interval: 60  # seconds (1 minute for tests)
+    max_sessions_per_player: 3  # Reduced for tests
+
+  # Error Handling
+  error_handling:
+    max_retry_attempts: 2  # Reduced for tests
+    retry_delay: 1  # seconds
+    error_recovery_enabled: true
+
+  # Performance Monitoring
+  monitoring:
+    enabled: true
+    metrics_interval: 10  # seconds
+    health_check_interval: 5  # seconds
+    performance_tracking: true
 
 # --- File Paths & Directories ---
 data_dir: server/tests/data/

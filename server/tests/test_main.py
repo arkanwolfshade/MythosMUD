@@ -324,7 +324,7 @@ class TestWebSocketEndpoints:
             from ..api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_invalid_token(self):
@@ -337,7 +337,7 @@ class TestWebSocketEndpoints:
             from ..api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -350,7 +350,7 @@ class TestWebSocketEndpoints:
             from ..api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer")
+            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
 
 
 class TestSSEEndpoints:

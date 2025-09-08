@@ -23,14 +23,27 @@ class AdminActionsLogger:
     administrative actions with JSON-structured log entries.
     """
 
-    def __init__(self, log_directory: str = "logs/admin_actions"):
+    def __init__(self, log_directory: str = None):
         """
         Initialize the admin actions logger.
 
         Args:
-            log_directory: Directory to store admin action logs
+            log_directory: Directory to store admin action logs (if None, uses environment-based path)
         """
-        self.log_directory = Path(log_directory)
+        if log_directory is None:
+            # Use environment-based configuration like the rest of the system
+            from ..config_loader import get_config
+            from ..logging_config import _resolve_log_base, detect_environment
+
+            config = get_config()
+            log_base = config.get("logging", {}).get("log_base", "logs")
+            environment = config.get("logging", {}).get("environment", detect_environment())
+
+            resolved_log_base = _resolve_log_base(log_base)
+            self.log_directory = resolved_log_base / environment / "admin_actions"
+        else:
+            self.log_directory = Path(log_directory)
+
         self.log_directory.mkdir(parents=True, exist_ok=True)
 
         # Create today's log file

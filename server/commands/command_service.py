@@ -16,20 +16,26 @@ from ..validators.command_validator import (
 )
 from .admin_commands import (
     handle_add_admin_command,
+    # Teleport commands now consolidated into admin_commands.py
+    handle_goto_command,
     handle_mute_command,
     handle_mute_global_command,
     handle_mutes_command,
+    handle_teleport_command,
     handle_unmute_command,
     handle_unmute_global_command,
 )
-from .admin_teleport_commands import (
-    # Confirmation handlers removed - teleport commands now execute immediately
-    # TODO: Add confirmation dialogs as future feature for enhanced safety
-    handle_goto_command,
-    handle_teleport_command,
-)
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
-from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
+from .communication_commands import (
+    handle_global_command,
+    handle_local_command,
+    handle_me_command,
+    handle_pose_command,
+    handle_reply_command,
+    handle_say_command,
+    handle_system_command,
+    handle_whisper_command,
+)
 from .exploration_commands import handle_go_command, handle_look_command
 from .system_commands import handle_help_command
 from .utility_commands import (
@@ -67,6 +73,13 @@ class CommandService:
             "say": handle_say_command,
             "me": handle_me_command,
             "pose": handle_pose_command,
+            "local": handle_local_command,
+            "l": handle_local_command,  # Alias for local
+            "global": handle_global_command,
+            "g": handle_global_command,  # Alias for global
+            "system": handle_system_command,
+            "whisper": handle_whisper_command,
+            "reply": handle_reply_command,
             "emote": handle_emote_command,
             # Administrative commands
             "mute": handle_mute_command,
@@ -120,19 +133,12 @@ class CommandService:
             return {"result": f"Unknown command: {command_type}"}
 
         try:
-            # Try calling with command_data first (newer handlers)
-            try:
-                result = await handler(command_data, current_user, request, alias_storage, player_name)
-                logger.debug(
-                    "Command processed successfully with command_data", player=player_name, command_type=command_type
-                )
-                return result
-            except TypeError:
-                # If that fails, try calling with args (older handlers)
-                args = command_data.get("args", [])
-                result = await handler(args, current_user, request, alias_storage, player_name)
-                logger.debug("Command processed successfully with args", player=player_name, command_type=command_type)
-                return result
+            # Call handler with command_data (standardized format)
+            result = await handler(command_data, current_user, request, alias_storage, player_name)
+            logger.debug(
+                "Command processed successfully with command_data", player=player_name, command_type=command_type
+            )
+            return result
         except Exception as e:
             logger.error(
                 "Error in command handler", player=player_name, command_type=command_type, error=str(e), exc_info=True
@@ -191,21 +197,15 @@ class CommandService:
         if cmd in self.command_handlers:
             handler = self.command_handlers[cmd]
             try:
-                # Try calling with command_data first (newer handlers)
+                # Create command_data dictionary for handler
                 command_data = {
                     "command_type": cmd,
                     "args": args,
                     "target_player": args[0] if args else None,
                 }
-                try:
-                    result = await handler(command_data, current_user, request, alias_storage, player_name)
-                    logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
-                    return result
-                except TypeError:
-                    # If that fails, try calling with args (older handlers)
-                    result = await handler(args, current_user, request, alias_storage, player_name)
-                    logger.debug("Command processed successfully with args", player=player_name, command=cmd)
-                    return result
+                result = await handler(command_data, current_user, request, alias_storage, player_name)
+                logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+                return result
             except Exception as e:
                 logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
                 return {"result": f"Error processing command: {str(e)}"}
