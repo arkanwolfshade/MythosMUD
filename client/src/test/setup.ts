@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { afterAll, beforeAll, vi } from 'vitest';
 
 // Mock window.matchMedia for components that use media queries

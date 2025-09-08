@@ -1,6 +1,5 @@
-import { expect } from '@playwright/test';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the dependencies
 vi.mock('../src/components/ui/EldritchIcon', () => ({

@@ -102,7 +102,7 @@ def _is_predefined_emote(command: str) -> bool:
 def _should_treat_as_emote(command: str) -> bool:
     """
     Check if a single word command should be treated as an emote.
-    
+
     This function determines if a single word command is likely an emote
     rather than a system command. It excludes known system commands.
 
@@ -114,25 +114,25 @@ def _should_treat_as_emote(command: str) -> bool:
     """
     # List of known system commands that should NOT be treated as emotes
     system_commands = {
-        "look", "say", "go", "move", "quit", "help", "who", "emote", "alias", 
-        "aliases", "unalias", "mute", "mutes", "unmute", "admin", "pose", 
+        "look", "say", "go", "move", "quit", "help", "who", "emote", "alias",
+        "aliases", "unalias", "mute", "mutes", "unmute", "admin", "pose",
         "tell", "whisper", "shout", "yell", "chat", "ooc", "ic", "afk",
         "back", "inventory", "inv", "i", "examine", "ex", "get", "take",
         "drop", "put", "give", "wear", "remove", "wield", "unwield",
         "kill", "attack", "flee", "rest", "sleep", "wake", "sit", "stand",
         "north", "south", "east", "west", "up", "down", "n", "s", "e", "w",
-        "u", "d", "ne", "nw", "se", "sw", "northeast", "northwest", 
+        "u", "d", "ne", "nw", "se", "sw", "northeast", "northwest",
         "southeast", "southwest", "unknown_command"
     }
-    
+
     # If it's a known system command, don't treat as emote
     if command.lower() in system_commands:
         return False
-    
+
     # If it's a predefined emote, treat as emote
     if _is_predefined_emote(command):
         return True
-    
+
     # For unknown single words, treat as emote (this allows custom emotes like "twibble")
     # This is the original behavior that the tests expect
     return True

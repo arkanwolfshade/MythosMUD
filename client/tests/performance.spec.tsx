@@ -1,5 +1,6 @@
+import { expect } from '@playwright/test';
 import { render } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, it, vi } from 'vitest';
 import { PerformanceTester } from '../src/utils/performanceTester';
 
 // Mock the dependencies
