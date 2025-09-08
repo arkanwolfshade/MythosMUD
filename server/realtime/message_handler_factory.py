@@ -78,6 +78,7 @@ class MessageHandlerFactory:
         """Initialize the factory with registered handlers."""
         self._handlers: dict[str, MessageHandler] = {
             "command": CommandMessageHandler(),
+            "game_command": CommandMessageHandler(),  # Alias for game_command message type
             "chat": ChatMessageHandler(),
             "ping": PingMessageHandler(),
         }

@@ -72,14 +72,25 @@ class TestMessageHandlerFactory:
         """Test getting list of supported message types."""
         types = factory.get_supported_message_types()
         assert "command" in types
+        assert "game_command" in types
         assert "chat" in types
         assert "ping" in types
-        assert len(types) == 3
+        assert len(types) == 4
 
     @pytest.mark.asyncio
     async def test_handle_command_message(self, factory, mock_websocket):
         """Test handling command message through factory."""
         message = {"type": "command", "data": {"command": "look", "args": []}}
+
+        with patch("server.realtime.websocket_handler.handle_game_command") as mock_handler:
+            await factory.handle_message(mock_websocket, "test_player", message)
+
+            mock_handler.assert_called_once_with(mock_websocket, "test_player", "look", [])
+
+    @pytest.mark.asyncio
+    async def test_handle_game_command_message(self, factory, mock_websocket):
+        """Test handling game_command message through factory."""
+        message = {"type": "game_command", "data": {"command": "look", "args": []}}
 
         with patch("server.realtime.websocket_handler.handle_game_command") as mock_handler:
             await factory.handle_message(mock_websocket, "test_player", message)

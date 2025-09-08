@@ -54,20 +54,52 @@ if (Test-Path $natsManagerPath) {
         Write-Host ""
 
         # Check NATS server executable
-        $natsExePath = "E:\nats-server\nats-server.exe"
-        if (Test-Path $natsExePath) {
-            $version = & $natsExePath --version 2>$null
-            Write-Host "NATS Server Version: $version" -ForegroundColor Green
+        $natsExePath = $null
+        $possiblePaths = @(
+            "C:\Users\$env:USERNAME\AppData\Local\Microsoft\WinGet\Packages\NATSAuthors.NATSServer_Microsoft.Winget.Source_8wekyb3d8bbwe\nats-server-v2.10.25-windows-amd64\nats-server.exe",
+            "C:\nats-server\nats-server.exe",
+            "E:\nats-server\nats-server.exe",
+            "nats-server"
+        )
+
+        foreach ($path in $possiblePaths) {
+            if ($path -eq "nats-server") {
+                try {
+                    $null = Get-Command $path -ErrorAction Stop
+                    $natsExePath = $path
+                    break
+                } catch {
+                    continue
+                }
+            } elseif (Test-Path $path) {
+                $natsExePath = $path
+                break
+            }
+        }
+
+        if ($natsExePath) {
+            try {
+                $version = & $natsExePath --version 2>$null
+                Write-Host "NATS Server Version: $version" -ForegroundColor Green
+                Write-Host "NATS Server Path: $natsExePath" -ForegroundColor Green
+            } catch {
+                Write-Host "NATS Server Version: Found but version check failed" -ForegroundColor Yellow
+            }
         } else {
             Write-Host "NATS Server Version: Not installed" -ForegroundColor Red
         }
 
         # Check configuration file
-        $natsConfigPath = "E:\nats-server\nats-server.conf"
+        if ($natsExePath -and $natsExePath -ne "nats-server") {
+            $natsConfigPath = Join-Path (Split-Path $natsExePath -Parent) "nats-server.conf"
+        } else {
+            $natsConfigPath = "nats-server.conf"
+        }
+
         if (Test-Path $natsConfigPath) {
             Write-Host "Configuration File: $natsConfigPath" -ForegroundColor Green
         } else {
-            Write-Host "Configuration File: Not found" -ForegroundColor Yellow
+            Write-Host "Configuration File: Not found (using defaults)" -ForegroundColor Yellow
         }
 
         Write-Host ""
