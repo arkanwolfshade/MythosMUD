@@ -99,6 +99,45 @@ def _is_predefined_emote(command: str) -> bool:
         return False
 
 
+def _should_treat_as_emote(command: str) -> bool:
+    """
+    Check if a single word command should be treated as an emote.
+    
+    This function determines if a single word command is likely an emote
+    rather than a system command. It excludes known system commands.
+
+    Args:
+        command: The command to check
+
+    Returns:
+        True if the command should be treated as an emote, False otherwise
+    """
+    # List of known system commands that should NOT be treated as emotes
+    system_commands = {
+        "look", "say", "go", "move", "quit", "help", "who", "emote", "alias", 
+        "aliases", "unalias", "mute", "mutes", "unmute", "admin", "pose", 
+        "tell", "whisper", "shout", "yell", "chat", "ooc", "ic", "afk",
+        "back", "inventory", "inv", "i", "examine", "ex", "get", "take",
+        "drop", "put", "give", "wear", "remove", "wield", "unwield",
+        "kill", "attack", "flee", "rest", "sleep", "wake", "sit", "stand",
+        "north", "south", "east", "west", "up", "down", "n", "s", "e", "w",
+        "u", "d", "ne", "nw", "se", "sw", "northeast", "northwest", 
+        "southeast", "southwest", "unknown_command"
+    }
+    
+    # If it's a known system command, don't treat as emote
+    if command.lower() in system_commands:
+        return False
+    
+    # If it's a predefined emote, treat as emote
+    if _is_predefined_emote(command):
+        return True
+    
+    # For unknown single words, treat as emote (this allows custom emotes like "twibble")
+    # This is the original behavior that the tests expect
+    return True
+
+
 async def process_command_unified(
     command_line: str,
     current_user: dict,
@@ -188,9 +227,9 @@ async def process_command_unified(
             return result
 
     # Step 6.5: Check if single word command is an emote
-    # Treat any single word command as a potential emote
-    if not args:
-        logger.debug("Single word command detected, treating as emote", player=player_name, emote=cmd)
+    # Only treat single word commands as emotes if they are not known system commands
+    if not args and _should_treat_as_emote(cmd):
+        logger.debug("Single word emote detected, converting to emote command", player=player_name, emote=cmd)
         emote_command = f"emote {cmd}"
         # Use the command service directly to avoid recursion
         return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
