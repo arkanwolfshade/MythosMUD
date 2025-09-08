@@ -122,60 +122,63 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
 
 def _map_error_type(error: MythosMUDError) -> ErrorType:
     """Map MythosMUD error types to standardized error types."""
-    if isinstance(error, AuthenticationError):
-        return ErrorType.AUTHENTICATION_FAILED
-    elif isinstance(error, ValidationError):
-        return ErrorType.VALIDATION_ERROR
-    elif isinstance(error, ResourceNotFoundError):
-        return ErrorType.RESOURCE_NOT_FOUND
-    elif isinstance(error, RateLimitError):
-        return ErrorType.RATE_LIMIT_EXCEEDED
-    elif isinstance(error, GameLogicError):
-        return ErrorType.GAME_LOGIC_ERROR
-    elif isinstance(error, DatabaseError):
-        return ErrorType.DATABASE_ERROR
-    elif isinstance(error, NetworkError):
-        return ErrorType.NETWORK_ERROR
-    elif isinstance(error, ConfigurationError):
-        return ErrorType.CONFIGURATION_ERROR
-    else:
-        return ErrorType.INTERNAL_ERROR
+    match error:
+        case AuthenticationError():
+            return ErrorType.AUTHENTICATION_FAILED
+        case ValidationError():
+            return ErrorType.VALIDATION_ERROR
+        case ResourceNotFoundError():
+            return ErrorType.RESOURCE_NOT_FOUND
+        case RateLimitError():
+            return ErrorType.RATE_LIMIT_EXCEEDED
+        case GameLogicError():
+            return ErrorType.GAME_LOGIC_ERROR
+        case DatabaseError():
+            return ErrorType.DATABASE_ERROR
+        case NetworkError():
+            return ErrorType.NETWORK_ERROR
+        case ConfigurationError():
+            return ErrorType.CONFIGURATION_ERROR
+        case _:
+            return ErrorType.INTERNAL_ERROR
 
 
 def _get_severity_for_error(error: MythosMUDError) -> ErrorSeverity:
     """Get appropriate severity level for error type."""
-    if isinstance(error, AuthenticationError | ValidationError | ResourceNotFoundError):
-        return ErrorSeverity.LOW
-    elif isinstance(error, GameLogicError | RateLimitError):
-        return ErrorSeverity.MEDIUM
-    elif isinstance(error, DatabaseError | NetworkError):
-        return ErrorSeverity.HIGH
-    elif isinstance(error, ConfigurationError):
-        return ErrorSeverity.CRITICAL
-    else:
-        return ErrorSeverity.MEDIUM
+    match error:
+        case AuthenticationError() | ValidationError() | ResourceNotFoundError():
+            return ErrorSeverity.LOW
+        case GameLogicError() | RateLimitError():
+            return ErrorSeverity.MEDIUM
+        case DatabaseError() | NetworkError():
+            return ErrorSeverity.HIGH
+        case ConfigurationError():
+            return ErrorSeverity.CRITICAL
+        case _:
+            return ErrorSeverity.MEDIUM
 
 
 def _get_status_code_for_error(error: MythosMUDError) -> int:
     """Get appropriate HTTP status code for error type."""
-    if isinstance(error, AuthenticationError):
-        return 401
-    elif isinstance(error, ValidationError):
-        return 400
-    elif isinstance(error, ResourceNotFoundError):
-        return 404
-    elif isinstance(error, RateLimitError):
-        return 429
-    elif isinstance(error, GameLogicError):
-        return 422
-    elif isinstance(error, DatabaseError):
-        return 503  # Service unavailable for database errors
-    elif isinstance(error, NetworkError):
-        return 503
-    elif isinstance(error, ConfigurationError):
-        return 500
-    else:
-        return 500
+    match error:
+        case AuthenticationError():
+            return 401
+        case ValidationError():
+            return 400
+        case ResourceNotFoundError():
+            return 404
+        case RateLimitError():
+            return 429
+        case GameLogicError():
+            return 422
+        case DatabaseError():
+            return 503  # Service unavailable for database errors
+        case NetworkError():
+            return 503
+        case ConfigurationError():
+            return 500
+        case _:
+            return 500
 
 
 async def mythos_exception_handler(request: Request, exc: MythosMUDError) -> JSONResponse:

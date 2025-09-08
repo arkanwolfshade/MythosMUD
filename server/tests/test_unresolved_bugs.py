@@ -164,28 +164,6 @@ class TestSelfMessageExclusionBugs:
         assert player_2_id in called_player_ids
         assert player_3_id in called_player_ids
 
-    @pytest.mark.asyncio
-    async def test_websocket_handler_processes_movement_commands_correctly(self):
-        """Test that WebSocketHandler properly processes movement commands without self-messages."""
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The actual WebSocket handling is done by handle_websocket_connection function
-        # Integration testing of command processing is covered by other tests
-        pass
-
-
-class TestChatBufferPersistenceBugs:
-    """Test chat buffer persistence issues across client reconnections."""
-
-    @pytest.mark.asyncio
-    async def test_client_reconnection_clears_chat_buffer(self):
-        """Test that client reconnection properly clears the chat buffer."""
-        # This would typically be a client-side test, but we can test the server-side
-        # behavior that triggers client buffer clearing
-
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The actual WebSocket handling is done by handle_websocket_connection function
-        # Integration testing of command processing is covered by other tests
-        pass
 
 
 class TestEventOrderingAndTimingBugs:

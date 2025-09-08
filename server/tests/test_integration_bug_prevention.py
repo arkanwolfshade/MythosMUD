@@ -106,26 +106,6 @@ class TestTwibbleEmoteBug:
         assert "twibble" in result["broadcast"]
 
 
-class TestSelfMessageExclusionIntegration:
-    """Test the integration of self-message exclusion across the entire pipeline."""
-
-    @pytest.mark.asyncio
-    async def test_movement_command_excludes_self_from_broadcast(self):
-        """Test that movement commands exclude the moving player from broadcasts."""
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The actual WebSocket handling is done by handle_websocket_connection function
-        # Integration testing of command processing is covered by other tests
-        pass
-
-    @pytest.mark.asyncio
-    async def test_emote_command_excludes_self_from_broadcast(self):
-        """Test that emote commands exclude the emoting player from broadcasts."""
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The actual WebSocket handling is done by handle_websocket_connection function
-        # Integration testing of command processing is covered by other tests
-        pass
-
-
 class TestEventStormPrevention:
     """Test that prevents the event storm bug from multiple EventBus instances."""
 
@@ -365,39 +345,9 @@ class TestUUIDSerializationIntegration:
         # and the message should be serializable
 
 
-class TestChatBufferPersistenceIntegration:
-    """Test chat buffer persistence integration."""
-
-    @pytest.mark.asyncio
-    async def test_client_reconnection_triggers_buffer_clear(self):
-        """Test that client reconnection triggers chat buffer clearing."""
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The functionality is tested in the client-side tests instead
-        pass
-
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The functionality is tested in the client-side tests instead
-        pass
-
-        # The client should receive a connection event that triggers buffer clearing
-        # This is handled on the client side, but we can verify the server sends
-        # the appropriate connection confirmation
-
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The functionality is tested in the client-side tests instead
-        pass
-
-
 class TestEndToEndBugScenarios:
     """Test end-to-end scenarios that would have caught our bugs."""
 
-    @pytest.mark.asyncio
-    async def test_twibble_emote_end_to_end(self):
-        """Test the complete twibble emote flow from command to broadcast."""
-        # This test was removed because WebSocketHandler class doesn't exist
-        # The actual WebSocket handling is done by handle_websocket_connection function
-        # Integration testing of command processing is covered by other tests
-        pass
 
     @pytest.mark.asyncio
     async def test_player_movement_end_to_end(self):
