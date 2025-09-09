@@ -192,9 +192,9 @@ def _should_treat_as_emote(command: str) -> bool:
     if _is_predefined_emote(command):
         return True
 
-    # For unknown single words, treat as emote (this allows custom emotes like "twibble")
-    # This is the original behavior that the tests expect
-    return True
+    # Only treat as emote if it's a predefined emote
+    # Unknown words should go through proper command validation
+    return False
 
 
 async def process_command_unified(
