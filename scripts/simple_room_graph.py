@@ -21,32 +21,26 @@ def load_room_data(zone_path: str) -> tuple[dict, dict, set]:
     zone_dir = Path(zone_path)
 
     for subzone_dir in zone_dir.iterdir():
-        if not subzone_dir.is_dir() or subzone_dir.name == '__pycache__':
+        if not subzone_dir.is_dir() or subzone_dir.name == "__pycache__":
             continue
 
-        for file_path in subzone_dir.glob('*.json'):
-            if file_path.name == 'subzone_config.json' or file_path.name == 'zone_config.json':
+        for file_path in subzone_dir.glob("*.json"):
+            if file_path.name == "subzone_config.json" or file_path.name == "zone_config.json":
                 continue
 
             try:
-                with open(file_path, encoding='utf-8') as f:
+                with open(file_path, encoding="utf-8") as f:
                     data = json.load(f)
 
-                room_id = data['id']
-                room_name = data['name']
-                exits = data.get('exits', {})
+                room_id = data["id"]
+                room_name = data["name"]
+                exits = data.get("exits", {})
 
                 # Determine if this is an intersection or regular room
-                if 'intersection' in room_id:
-                    intersections[room_id] = {
-                        'name': room_name,
-                        'exits': exits
-                    }
+                if "intersection" in room_id:
+                    intersections[room_id] = {"name": room_name, "exits": exits}
                 else:
-                    rooms[room_id] = {
-                        'name': room_name,
-                        'exits': exits
-                    }
+                    rooms[room_id] = {"name": room_name, "exits": exits}
 
                 # Record connections
                 for direction, target in exits.items():
@@ -58,11 +52,14 @@ def load_room_data(zone_path: str) -> tuple[dict, dict, set]:
 
     return rooms, intersections, connections
 
-def generate_simple_dot_file(rooms: dict, intersections: dict, connections: set, output_path: str = "simple_room_graph.dot"):
+
+def generate_simple_dot_file(
+    rooms: dict, intersections: dict, connections: set, output_path: str = "simple_room_graph.dot"
+):
     """Generate a simplified DOT file focusing only on room nodes."""
     print(f"Generating simple DOT file: {output_path}")
 
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         f.write("digraph SimpleRoomGraph {\n")
         f.write("  rankdir=TB;\n")
         f.write("  node [shape=box, style=filled];\n\n")
@@ -70,7 +67,7 @@ def generate_simple_dot_file(rooms: dict, intersections: dict, connections: set,
         # Add room nodes (simplified names)
         for room_id, room_data in rooms.items():
             # Extract a simple name from the room ID
-            simple_name = room_data['name']
+            simple_name = room_data["name"]
             if len(simple_name) > 30:
                 simple_name = simple_name[:27] + "..."
 
@@ -78,7 +75,7 @@ def generate_simple_dot_file(rooms: dict, intersections: dict, connections: set,
 
         # Add intersection nodes (diamond shape)
         for intersection_id, intersection_data in intersections.items():
-            simple_name = intersection_data['name']
+            simple_name = intersection_data["name"]
             if len(simple_name) > 30:
                 simple_name = simple_name[:27] + "..."
 
@@ -94,35 +91,38 @@ def generate_simple_dot_file(rooms: dict, intersections: dict, connections: set,
 
     print(f"Simple DOT file saved as {output_path}")
 
-def generate_simple_html_visualization(rooms: dict, intersections: dict, connections: set, output_path: str = "simple_room_visualization.html"):
+
+def generate_simple_html_visualization(
+    rooms: dict, intersections: dict, connections: set, output_path: str = "simple_room_visualization.html"
+):
     """Generate a simplified HTML visualization."""
 
     # Generate node data for JavaScript (simplified)
     nodes = []
     for room_id, room_data in rooms.items():
-        nodes.append({
-            'id': room_id,
-            'name': room_data['name'],
-            'type': 'room',
-            'color': '#4ecdc4'  # Single color for all rooms
-        })
+        nodes.append(
+            {
+                "id": room_id,
+                "name": room_data["name"],
+                "type": "room",
+                "color": "#4ecdc4",  # Single color for all rooms
+            }
+        )
 
     for intersection_id, intersection_data in intersections.items():
-        nodes.append({
-            'id': intersection_id,
-            'name': intersection_data['name'],
-            'type': 'intersection',
-            'color': '#ffd93d'  # Single color for all intersections
-        })
+        nodes.append(
+            {
+                "id": intersection_id,
+                "name": intersection_data["name"],
+                "type": "intersection",
+                "color": "#ffd93d",  # Single color for all intersections
+            }
+        )
 
     # Generate edge data for JavaScript
     edges = []
     for source, target, direction in connections:
-        edges.append({
-            'source': source,
-            'target': target,
-            'direction': direction
-        })
+        edges.append({"source": source, "target": target, "direction": direction})
 
     # Create HTML content
     html_content = f"""<!DOCTYPE html>
@@ -465,10 +465,11 @@ def generate_simple_html_visualization(rooms: dict, intersections: dict, connect
 </html>"""
 
     # Write HTML file
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
     print(f"Simple HTML visualization saved as {output_path}")
+
 
 def print_simple_statistics(rooms: dict, intersections: dict, connections: set):
     """Print simplified statistics about the room data."""
@@ -505,6 +506,7 @@ def print_simple_statistics(rooms: dict, intersections: dict, connections: set):
     else:
         print("\nNo isolated nodes found - all nodes are connected!")
 
+
 def main():
     """Main function to generate the simplified visualization."""
     zone_path = "data/rooms/earth/arkham_city"
@@ -527,6 +529,7 @@ def main():
     print("- simple_room_graph.dot (DOT file for Graphviz)")
     print("- simple_room_visualization.html (Interactive HTML)")
     print("Focus: Only room nodes and connections, no zone/subzone metadata")
+
 
 if __name__ == "__main__":
     main()

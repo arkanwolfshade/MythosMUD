@@ -18,8 +18,7 @@ def clean_test_database():
     test_db_url = os.getenv("DATABASE_URL")
     if not test_db_url:
         raise ValueError(
-            "DATABASE_URL environment variable must be set. "
-            "See server/env.example for configuration template."
+            "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
         )
 
     if test_db_url.startswith("sqlite+aiosqlite:///"):
@@ -37,9 +36,7 @@ def clean_test_database():
         cursor = conn.cursor()
 
         # Check if the players table exists
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='players'"
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='players'")
         if not cursor.fetchone():
             print("Warning: Players table not found in test database")
             conn.close()

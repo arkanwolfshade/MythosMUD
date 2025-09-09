@@ -1116,6 +1116,65 @@ class TestLocationFormatting:
         assert result == expected
 
 
+class TestMockPlayerSorting:
+    """Test that mock players can be sorted properly (regression test for MagicMock comparison issue)."""
+
+    def create_mock_player(self, name, level, room_id, is_admin, last_active):
+        """Create a mock player with proper comparison methods."""
+        player = MagicMock()
+        player.name = name
+        player.level = level
+        player.current_room_id = room_id
+        player.is_admin = is_admin
+        player.last_active = last_active
+
+        # Add comparison methods to prevent MagicMock comparison issues
+        player.__lt__ = lambda self, other: self.name < other.name if hasattr(other, "name") else NotImplemented
+        player.__le__ = lambda self, other: self.name <= other.name if hasattr(other, "name") else NotImplemented
+        player.__gt__ = lambda self, other: self.name > other.name if hasattr(other, "name") else NotImplemented
+        player.__ge__ = lambda self, other: self.name >= other.name if hasattr(other, "name") else NotImplemented
+        player.__eq__ = lambda self, other: self.name == other.name if hasattr(other, "name") else NotImplemented
+        player.__ne__ = lambda self, other: self.name != other.name if hasattr(other, "name") else NotImplemented
+
+        return player
+
+    def test_mock_player_sorting(self):
+        """Test that mock players can be sorted without comparison errors."""
+        from datetime import UTC, datetime, timedelta
+
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+
+        # Create mock players with different names
+        players = [
+            self.create_mock_player("charlie", 3, "room1", False, recent_time),
+            self.create_mock_player("alice", 1, "room2", False, recent_time),
+            self.create_mock_player("bob", 2, "room3", False, recent_time),
+        ]
+
+        # This should not raise an exception
+        sorted_players = sorted(players, key=lambda p: (p.name, id(p)))
+
+        # Check that sorting worked correctly
+        assert sorted_players[0].name == "alice"
+        assert sorted_players[1].name == "bob"
+        assert sorted_players[2].name == "charlie"
+
+    def test_format_player_entry_with_mock(self):
+        """Test that format_player_entry works with mock players."""
+        from datetime import UTC, datetime, timedelta
+
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        player = self.create_mock_player("testuser", 5, "earth_arkham_city_center", False, recent_time)
+
+        # This should not raise an exception
+        result = format_player_entry(player)
+
+        # Check basic formatting
+        assert "testuser" in result
+        assert "[5]" in result
+        assert "Arkham: City: Center" in result
+
+
 class TestPlayerEntryFormatting:
     """Test the player entry formatting functions."""
 
@@ -1189,6 +1248,25 @@ class TestWhoCommandIntegration:
         """Create a mock persistence layer."""
         return MagicMock()
 
+    def create_mock_player(self, name, level, room_id, is_admin, last_active):
+        """Create a mock player with proper comparison methods."""
+        player = MagicMock()
+        player.name = name
+        player.level = level
+        player.current_room_id = room_id
+        player.is_admin = is_admin
+        player.last_active = last_active
+
+        # Add comparison methods to prevent MagicMock comparison issues
+        player.__lt__ = lambda self, other: self.name < other.name if hasattr(other, "name") else NotImplemented
+        player.__le__ = lambda self, other: self.name <= other.name if hasattr(other, "name") else NotImplemented
+        player.__gt__ = lambda self, other: self.name > other.name if hasattr(other, "name") else NotImplemented
+        player.__ge__ = lambda self, other: self.name >= other.name if hasattr(other, "name") else NotImplemented
+        player.__eq__ = lambda self, other: self.name == other.name if hasattr(other, "name") else NotImplemented
+        player.__ne__ = lambda self, other: self.name != other.name if hasattr(other, "name") else NotImplemented
+
+        return player
+
     @pytest.mark.asyncio
     async def test_who_command_with_real_player_data(self, mock_request, mock_alias_storage, mock_persistence):
         """Test who command with realistic player data scenarios."""
@@ -1201,37 +1279,19 @@ class TestWhoCommandIntegration:
         # Create diverse player scenarios
         players = [
             # Online admin player
-            MagicMock(
-                name="admin_user",
-                level=25,
-                current_room_id="earth_arkham_city_northside_intersection_derby_high",
-                is_admin=True,
-                last_active=recent_time,
+            self.create_mock_player(
+                "admin_user", 25, "earth_arkham_city_northside_intersection_derby_high", True, recent_time
             ),
             # Online regular player
-            MagicMock(
-                name="investigator_alice",
-                level=8,
-                current_room_id="earth_arkham_city_northside_room_derby_st_001",
-                is_admin=False,
-                last_active=recent_time,
+            self.create_mock_player(
+                "investigator_alice", 8, "earth_arkham_city_northside_room_derby_st_001", False, recent_time
             ),
             # Online player with special characters in name
-            MagicMock(
-                name="professor_whateley",
-                level=15,
-                current_room_id="earth_dunwich_village_old_man_whateley_farm",
-                is_admin=False,
-                last_active=recent_time,
+            self.create_mock_player(
+                "professor_whateley", 15, "earth_dunwich_village_old_man_whateley_farm", False, recent_time
             ),
             # Offline player (should not appear)
-            MagicMock(
-                name="offline_user",
-                level=3,
-                current_room_id="earth_arkham_city_northside_room_high_ln_002",
-                is_admin=False,
-                last_active=old_time,
-            ),
+            self.create_mock_player("offline_user", 3, "earth_arkham_city_northside_room_high_ln_002", False, old_time),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1338,34 +1398,10 @@ class TestWhoCommandIntegration:
         old = now - timedelta(minutes=10)  # Old
 
         players = [
-            MagicMock(
-                name="very_active",
-                level=5,
-                current_room_id="earth_arkham_city_center",
-                is_admin=False,
-                last_active=very_recent,
-            ),
-            MagicMock(
-                name="active",
-                level=3,
-                current_room_id="earth_arkham_city_northside",
-                is_admin=False,
-                last_active=recent,
-            ),
-            MagicMock(
-                name="borderline",
-                level=7,
-                current_room_id="earth_arkham_city_southside",
-                is_admin=False,
-                last_active=borderline,
-            ),
-            MagicMock(
-                name="inactive",
-                level=2,
-                current_room_id="earth_arkham_city_eastside",
-                is_admin=False,
-                last_active=old,
-            ),
+            self.create_mock_player("very_active", 5, "earth_arkham_city_center", False, very_recent),
+            self.create_mock_player("active", 3, "earth_arkham_city_northside", False, recent),
+            self.create_mock_player("borderline", 7, "earth_arkham_city_southside", False, borderline),
+            self.create_mock_player("inactive", 2, "earth_arkham_city_eastside", False, old),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1395,27 +1431,9 @@ class TestWhoCommandIntegration:
 
         # Create players with various admin statuses
         players = [
-            MagicMock(
-                name="super_admin",
-                level=50,
-                current_room_id="earth_arkham_city_admin_quarters",
-                is_admin=True,
-                last_active=recent_time,
-            ),
-            MagicMock(
-                name="moderator",
-                level=30,
-                current_room_id="earth_arkham_city_mod_office",
-                is_admin=True,
-                last_active=recent_time,
-            ),
-            MagicMock(
-                name="regular_user",
-                level=10,
-                current_room_id="earth_arkham_city_public_area",
-                is_admin=False,
-                last_active=recent_time,
-            ),
+            self.create_mock_player("super_admin", 50, "earth_arkham_city_admin_quarters", True, recent_time),
+            self.create_mock_player("moderator", 30, "earth_arkham_city_mod_office", True, recent_time),
+            self.create_mock_player("regular_user", 10, "earth_arkham_city_public_area", False, recent_time),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1493,37 +1511,15 @@ class TestWhoCommandIntegration:
         # Create players with edge case scenarios
         players = [
             # Player with very long name
-            MagicMock(
-                name="very_long_player_name_with_many_characters",
-                level=1,
-                current_room_id="earth_arkham_city_center",
-                is_admin=False,
-                last_active=recent_time,
+            self.create_mock_player(
+                "very_long_player_name_with_many_characters", 1, "earth_arkham_city_center", False, recent_time
             ),
             # Player with special characters
-            MagicMock(
-                name="player@#$%",
-                level=5,
-                current_room_id="earth_arkham_city_northside",
-                is_admin=False,
-                last_active=recent_time,
-            ),
+            self.create_mock_player("player@#$%", 5, "earth_arkham_city_northside", False, recent_time),
             # Player with numbers
-            MagicMock(
-                name="player123",
-                level=10,
-                current_room_id="earth_arkham_city_southside",
-                is_admin=False,
-                last_active=recent_time,
-            ),
+            self.create_mock_player("player123", 10, "earth_arkham_city_southside", False, recent_time),
             # Player with mixed case
-            MagicMock(
-                name="PlayerWithMixedCase",
-                level=15,
-                current_room_id="earth_arkham_city_eastside",
-                is_admin=False,
-                last_active=recent_time,
-            ),
+            self.create_mock_player("PlayerWithMixedCase", 15, "earth_arkham_city_eastside", False, recent_time),
         ]
 
         mock_persistence.list_players.return_value = players

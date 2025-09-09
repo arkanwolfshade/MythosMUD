@@ -6,9 +6,7 @@ success = True
 
 # Ruff linting on entire repository (matching pre-commit hooks)
 print("Running ruff linting on entire repository...")
-cmd = [
-    "uv", "run", "--active", "ruff", "check", "--fix", "--line-length=120", "."
-]
+cmd = ["uv", "run", "--active", "ruff", "check", "--fix", "--line-length=120", "."]
 result = subprocess.run(cmd, cwd=".")
 if result.returncode != 0:
     print(f"Ruff linting failed with exit code: {result.returncode}")
@@ -19,9 +17,7 @@ else:
 # Detect full path to npx
 npx_path = shutil.which("npx")
 if not npx_path:
-    msg = (
-        "npx not found in PATH. Please install Node.js and ensure npx is available."
-    )
+    msg = "npx not found in PATH. Please install Node.js and ensure npx is available."
     print(msg)
     sys.exit(1)
 

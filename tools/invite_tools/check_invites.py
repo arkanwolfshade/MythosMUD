@@ -47,13 +47,13 @@ async def list_all_invites():
             # Handle date strings from database
             if expires_at and isinstance(expires_at, str):
                 try:
-                    expires_at = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+                    expires_at = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
                 except ValueError:
                     expires_at = None
 
             if created_at and isinstance(created_at, str):
                 try:
-                    created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                    created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
                 except ValueError:
                     created_at = None
 
@@ -66,8 +66,7 @@ async def check_invite_status(invite_code: str):
     """Check the status of a specific invite code."""
     async with async_session_maker() as session:
         result = await session.execute(
-            text("SELECT used, expires_at, created_at FROM invites WHERE invite_code = :code"),
-            {"code": invite_code}
+            text("SELECT used, expires_at, created_at FROM invites WHERE invite_code = :code"), {"code": invite_code}
         )
         invite = result.fetchone()
 
@@ -81,13 +80,13 @@ async def check_invite_status(invite_code: str):
         # Handle date strings from database
         if expires_at and isinstance(expires_at, str):
             try:
-                expires_at = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+                expires_at = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
             except ValueError:
                 expires_at = None
 
         if created_at and isinstance(created_at, str):
             try:
-                created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
             except ValueError:
                 created_at = None
 
@@ -125,8 +124,7 @@ async def count_invites():
 
         # Expired count
         result = await session.execute(
-            text("SELECT COUNT(*) FROM invites WHERE expires_at < :now"),
-            {"now": datetime.now(UTC)}
+            text("SELECT COUNT(*) FROM invites WHERE expires_at < :now"), {"now": datetime.now(UTC)}
         )
         expired = result.scalar()
 

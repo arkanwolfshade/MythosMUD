@@ -42,6 +42,11 @@ def format_player_location(room_id: str) -> str:
         str: Formatted location string
     """
     try:
+        # Ensure room_id is a string
+        if not isinstance(room_id, str):
+            logger.warning(f"format_player_location received non-string room_id: {type(room_id)} - {room_id}")
+            return str(room_id)
+
         # Parse room ID: earth_arkham_city_northside_intersection_derby_high
         parts = room_id.split("_")
         if len(parts) >= 4:
@@ -74,9 +79,15 @@ def format_player_entry(player) -> str:
     Returns:
         str: Formatted player entry
     """
-    # Base format: PlayerName [Level] - Location
-    location = format_player_location(player.current_room_id)
-    base_entry = f"{player.name} [{player.level}] - {location}"
+    try:
+        # Base format: PlayerName [Level] - Location
+        location = format_player_location(player.current_room_id)
+        base_entry = f"{player.name} [{player.level}] - {location}"
+    except Exception as e:
+        logger.error(f"Error formatting player entry for {player.name}: {e}")
+        # Fallback formatting
+        location = "Unknown location"
+        base_entry = f"{player.name} [{player.level}] - {location}"
 
     # Add admin indicator if player is admin
     if player.is_admin:
@@ -167,9 +178,9 @@ async def handle_who_command(
                 if filter_term:
                     filtered_players = filter_players_by_name(online_players, filter_term)
                     if filtered_players:
-                        player_entries = [
-                            format_player_entry(player) for player in sorted(filtered_players, key=lambda p: p.name)
-                        ]
+                        # Sort by name, using a stable sort to handle ties
+                        sorted_players = sorted(filtered_players, key=lambda p: (p.name, id(p)))
+                        player_entries = [format_player_entry(player) for player in sorted_players]
                         player_list = ", ".join(player_entries)
                         result = f"Players matching '{filter_term}' ({len(filtered_players)}): {player_list}"
                         logger.debug(
@@ -186,9 +197,9 @@ async def handle_who_command(
                         return {"result": result}
                 else:
                     # No filter - show all online players
-                    player_entries = [
-                        format_player_entry(player) for player in sorted(online_players, key=lambda p: p.name)
-                    ]
+                    # Sort by name, using a stable sort to handle ties
+                    sorted_players = sorted(online_players, key=lambda p: (p.name, id(p)))
+                    player_entries = [format_player_entry(player) for player in sorted_players]
                     player_list = ", ".join(player_entries)
                     result = f"Online players ({len(online_players)}): {player_list}"
                     logger.debug("Who command successful", player=player_name, count=len(online_players))

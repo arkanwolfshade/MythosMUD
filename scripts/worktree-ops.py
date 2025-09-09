@@ -15,10 +15,7 @@ def get_project_root():
     current_dir = os.getcwd()
 
     # Check if we're in a worktree
-    worktree_indicators = [
-        "MythosMUD-server", "MythosMUD-client",
-        "MythosMUD-docs", "MythosMUD-testing"
-    ]
+    worktree_indicators = ["MythosMUD-server", "MythosMUD-client", "MythosMUD-docs", "MythosMUD-testing"]
 
     for indicator in worktree_indicators:
         if indicator in current_dir:
@@ -51,10 +48,7 @@ def run_command(cmd, cwd=None, check=True):
     print(f"🔄 Running: {' '.join(cmd)} (from {os.path.basename(cwd)})")
 
     try:
-        result = subprocess.run(
-            cmd, cwd=cwd, check=check,
-            capture_output=True, text=True
-        )
+        result = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
         if result.stdout:
             print(result.stdout)
         return result
@@ -102,9 +96,7 @@ def run_tests():
     else:
         # Run all tests
         test_script = os.path.join(project_root, "scripts", "test.py")
-        result = subprocess.run(
-            [sys.executable, test_script], cwd=project_root
-        )
+        result = subprocess.run([sys.executable, test_script], cwd=project_root)
 
     if result.returncode == 0:
         print("✅ Tests completed successfully!")
@@ -130,9 +122,7 @@ def run_lint():
     else:
         # Run all lint
         lint_script = os.path.join(project_root, "scripts", "lint.py")
-        result = subprocess.run(
-            [sys.executable, lint_script], cwd=project_root
-        )
+        result = subprocess.run([sys.executable, lint_script], cwd=project_root)
 
     if result.returncode == 0:
         print("✅ Lint completed successfully!")
@@ -158,9 +148,7 @@ def run_format():
     else:
         # Run all format
         format_script = os.path.join(project_root, "scripts", "format.py")
-        result = subprocess.run(
-            [sys.executable, format_script], cwd=project_root
-        )
+        result = subprocess.run([sys.executable, format_script], cwd=project_root)
 
     if result.returncode == 0:
         print("✅ Format completed successfully!")
@@ -182,34 +170,22 @@ def show_status():
 
     # Show git status
     print("\n🔍 Git Status:")
-    result = subprocess.run(
-        ["git", "status", "--short"],
-        cwd=current_dir, capture_output=True, text=True
-    )
+    result = subprocess.run(["git", "status", "--short"], cwd=current_dir, capture_output=True, text=True)
     if result.stdout.strip():
         print(result.stdout)
     else:
         print("   Working directory clean")
 
     # Show branch info
-    result = subprocess.run(
-        ["git", "branch", "--show-current"],
-        cwd=current_dir, capture_output=True, text=True
-    )
+    result = subprocess.run(["git", "branch", "--show-current"], cwd=current_dir, capture_output=True, text=True)
     if result.returncode == 0:
         branch = result.stdout.strip()
         print(f"   Current branch: {branch}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Worktree-aware operations for MythosMUD"
-    )
-    parser.add_argument(
-        "command",
-        choices=["install", "test", "lint", "format", "status"],
-        help="Command to run"
-    )
+    parser = argparse.ArgumentParser(description="Worktree-aware operations for MythosMUD")
+    parser.add_argument("command", choices=["install", "test", "lint", "format", "status"], help="Command to run")
 
     args = parser.parse_args()
 
