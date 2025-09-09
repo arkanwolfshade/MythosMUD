@@ -134,13 +134,9 @@ async def handle_who_command(
             online_threshold = now - timedelta(minutes=5)  # Consider players online if active in last 5 minutes
 
             online_players = []
-            logger.debug(f"Who command debugging - total players: {len(players)}, threshold: {online_threshold}")
+            logger.debug(f"Who command - checking {len(players)} players, threshold: {online_threshold}")
 
             for player in players:
-                logger.debug(
-                    f"Checking player: {player.name}, last_active: {player.last_active}, type: {type(player.last_active)}"
-                )
-
                 # Ensure last_active is a datetime object for comparison
                 if player.last_active:
                     # Handle case where last_active might be a string
@@ -149,29 +145,24 @@ async def handle_who_command(
                             from datetime import datetime
 
                             last_active = datetime.fromisoformat(player.last_active.replace("Z", "+00:00"))
-                            logger.debug(f"Converted string to datetime: {last_active}")
                         except (ValueError, AttributeError) as e:
                             logger.warning(f"Failed to parse last_active string for {player.name}: {e}")
                             # Skip players with invalid last_active data
                             continue
                     else:
                         last_active = player.last_active
-                        logger.debug(f"Using existing datetime: {last_active}")
 
                     # Ensure both datetimes are timezone-aware for comparison
                     if last_active.tzinfo is None:
                         # Make naive datetime timezone-aware
                         last_active = last_active.replace(tzinfo=UTC)
-                        logger.debug(f"Made timezone-aware: {last_active}")
 
-                    logger.debug(f"Comparing {last_active} > {online_threshold} = {last_active > online_threshold}")
                     if last_active > online_threshold:
                         online_players.append(player)
-                        logger.debug(f"Added {player.name} to online players")
-                    else:
-                        logger.debug(f"Player {player.name} not online (last_active too old)")
                 else:
                     logger.debug(f"Player {player.name} has no last_active timestamp")
+
+            logger.debug(f"Who command - found {len(online_players)} online players out of {len(players)} total")
 
             if online_players:
                 # Apply name filtering if provided
