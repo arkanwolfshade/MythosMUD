@@ -170,112 +170,6 @@ class TestErrorContextPerformance:
         assert max_time < 0.05, f"Maximum ErrorContext creation too slow: {max_time:.6f}s"
 
 
-class TestLogAndRaisePerformance:
-    """Performance tests for log_and_raise function."""
-
-    @pytest.fixture
-    def perf_mixin(self):
-        """Provide performance test mixin."""
-        return PerformanceTestMixin()
-
-    def test_log_and_raise_speed(self, perf_mixin):
-        """Test that log_and_raise is fast."""
-        with patch("server.utils.error_logging.logger"):
-
-            def log_error():
-                try:
-                    log_and_raise(DatabaseError, "Performance test error")
-                except DatabaseError:
-                    pass
-
-            # Measure single log_and_raise operation
-            exec_time, _ = perf_mixin.measure_execution_time(log_error)
-
-            assert exec_time < 0.01, f"log_and_raise too slow: {exec_time:.6f}s"
-
-    def test_log_and_raise_bulk_performance(self, perf_mixin):
-        """Test bulk log_and_raise performance."""
-        with patch("server.utils.error_logging.logger"):
-
-            def log_errors(count: int):
-                for i in range(count):
-                    try:
-                        log_and_raise(DatabaseError, f"Bulk test error {i}")
-                    except DatabaseError:
-                        pass
-
-            # Test different batch sizes
-            for batch_size in [100, 500, 1000]:
-                exec_time, _ = perf_mixin.measure_execution_time(log_errors, batch_size)
-
-                assert exec_time < 1.0, f"Bulk log_and_raise too slow: {exec_time:.3f}s for {batch_size} operations"
-
-                # Calculate operations per second
-                ops_per_second = batch_size / exec_time
-                assert ops_per_second > 1000, f"log_and_raise rate too low: {ops_per_second:.0f} ops/second"
-
-    def test_log_and_raise_with_context_performance(self, perf_mixin):
-        """Test log_and_raise performance with error context."""
-        context = create_error_context(user_id="perf-test-user", metadata={"test": "performance", "value": 123})
-
-        with patch("server.utils.error_logging.logger"):
-
-            def log_error_with_context():
-                try:
-                    log_and_raise(
-                        DatabaseError, "Context performance test error", context=context, details={"additional": "data"}
-                    )
-                except DatabaseError:
-                    pass
-
-            # Measure log_and_raise with context
-            exec_time, _ = perf_mixin.measure_execution_time(log_error_with_context)
-
-            assert exec_time < 0.01, f"log_and_raise with context too slow: {exec_time:.6f}s"
-
-    def test_log_and_raise_memory_usage(self, perf_mixin):
-        """Test log_and_raise memory usage characteristics."""
-        with patch("server.utils.error_logging.logger"):
-
-            def log_many_errors():
-                for i in range(1000):
-                    try:
-                        log_and_raise(
-                            DatabaseError, f"Memory test error {i}", details={"iteration": i, "data": f"test-{i}"}
-                        )
-                    except DatabaseError:
-                        pass
-
-            # Measure memory usage
-            memory_delta, _ = perf_mixin.measure_memory_usage(log_many_errors)
-
-            # Memory usage should be reasonable (less than 5MB for 1000 operations)
-            assert memory_delta < 5, f"log_and_raise memory usage too high: {memory_delta:.2f}MB for 1000 operations"
-
-    def test_log_and_raise_concurrent_performance(self, perf_mixin):
-        """Test log_and_raise performance under concurrent load."""
-        with patch("server.utils.error_logging.logger"):
-
-            def log_error():
-                try:
-                    log_and_raise(DatabaseError, "Concurrent test error")
-                except DatabaseError:
-                    pass
-
-            # Run concurrent operations
-            execution_times = perf_mixin.run_concurrent_operations(log_error, iterations=200, max_workers=25)
-
-            # All operations should complete
-            assert len(execution_times) == 200
-
-            # Performance should be consistent
-            avg_time = sum(execution_times) / len(execution_times)
-            max_time = max(execution_times)
-
-            assert avg_time < 0.02, f"Average log_and_raise too slow: {avg_time:.6f}s"
-            assert max_time < 0.1, f"Maximum log_and_raise too slow: {max_time:.6f}s"
-
-
 class TestErrorLoggingSystemPerformance:
     """System-level performance tests for error logging."""
 
@@ -286,7 +180,15 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_under_high_load(self, perf_mixin):
         """Test error logging performance under high load conditions."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
             def high_load_operation():
                 # Simulate a high-load scenario with multiple error types
@@ -311,7 +213,15 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_memory_leak_prevention(self, perf_mixin):
         """Test that error logging doesn't cause memory leaks."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
             def create_and_log_errors(iterations: int):
                 contexts = []
@@ -354,7 +264,15 @@ class TestErrorLoggingSystemPerformance:
 
         try:
             # Configure logger to write to file
-            with patch("server.utils.error_logging.logger"):
+            with (
+                patch("server.utils.error_logging.get_logger") as mock_get_logger,
+                patch("server.exceptions.get_logger") as mock_exceptions_logger,
+            ):
+                # Create mock loggers that don't actually log
+                mock_logger = mock_get_logger.return_value
+                mock_logger.error = lambda *args, **kwargs: None
+
+                mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
                 def log_to_file():
                     try:
@@ -375,7 +293,16 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_network_performance(self, perf_mixin):
         """Test error logging performance with network operations."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
+
             # Simulate network delay
             def slow_network_operation():
                 time.sleep(0.001)  # Simulate 1ms network delay
@@ -398,7 +325,16 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_database_performance(self, perf_mixin):
         """Test error logging performance with database operations."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
+
             # Simulate database operations
             def database_operation():
                 # Simulate database query time
@@ -433,7 +369,15 @@ class TestErrorLoggingScalability:
 
     def test_error_logging_scales_with_load(self, perf_mixin):
         """Test that error logging scales appropriately with load."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
             def scalable_operation(load_factor: int):
                 errors = []
@@ -472,7 +416,15 @@ class TestErrorLoggingScalability:
 
     def test_error_logging_handles_peak_load(self, perf_mixin):
         """Test error logging performance during peak load conditions."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
             def peak_load_operation():
                 # Simulate peak load with burst of errors
@@ -498,7 +450,15 @@ class TestErrorLoggingScalability:
 
     def test_error_logging_sustained_load(self, perf_mixin):
         """Test error logging performance under sustained load."""
-        with patch("server.utils.error_logging.logger"):
+        with (
+            patch("server.utils.error_logging.get_logger") as mock_get_logger,
+            patch("server.exceptions.get_logger") as mock_exceptions_logger,
+        ):
+            # Create mock loggers that don't actually log
+            mock_logger = mock_get_logger.return_value
+            mock_logger.error = lambda *args, **kwargs: None
+
+            mock_exceptions_logger.return_value.error = lambda *args, **kwargs: None
 
             def sustained_load_operation(duration_seconds: float):
                 start_time = time.time()

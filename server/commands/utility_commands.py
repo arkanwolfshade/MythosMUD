@@ -42,6 +42,11 @@ def format_player_location(room_id: str) -> str:
         str: Formatted location string
     """
     try:
+        # Ensure room_id is a string
+        if not isinstance(room_id, str):
+            logger.warning(f"format_player_location received non-string room_id: {type(room_id)} - {room_id}")
+            return str(room_id)
+
         # Parse room ID: earth_arkham_city_northside_intersection_derby_high
         parts = room_id.split("_")
         if len(parts) >= 4:
@@ -74,9 +79,15 @@ def format_player_entry(player) -> str:
     Returns:
         str: Formatted player entry
     """
-    # Base format: PlayerName [Level] - Location
-    location = format_player_location(player.current_room_id)
-    base_entry = f"{player.name} [{player.level}] - {location}"
+    try:
+        # Base format: PlayerName [Level] - Location
+        location = format_player_location(player.current_room_id)
+        base_entry = f"{player.name} [{player.level}] - {location}"
+    except Exception as e:
+        logger.error(f"Error formatting player entry for {player.name}: {e}")
+        # Fallback formatting
+        location = "Unknown location"
+        base_entry = f"{player.name} [{player.level}] - {location}"
 
     # Add admin indicator if player is admin
     if player.is_admin:
@@ -103,8 +114,8 @@ async def handle_who_command(
     """
     logger.debug("Processing who command", player=player_name, command_data=command_data)
 
-    # Extract filter term from command_data
-    filter_term = command_data.get("filter_name", "")
+    # Extract filter term from command_data (use target_player for consistency with command service)
+    filter_term = command_data.get("target_player", "")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -123,13 +134,9 @@ async def handle_who_command(
             online_threshold = now - timedelta(minutes=5)  # Consider players online if active in last 5 minutes
 
             online_players = []
-            logger.debug(f"Who command debugging - total players: {len(players)}, threshold: {online_threshold}")
+            logger.debug(f"Who command - checking {len(players)} players, threshold: {online_threshold}")
 
             for player in players:
-                logger.debug(
-                    f"Checking player: {player.name}, last_active: {player.last_active}, type: {type(player.last_active)}"
-                )
-
                 # Ensure last_active is a datetime object for comparison
                 if player.last_active:
                     # Handle case where last_active might be a string
@@ -138,38 +145,33 @@ async def handle_who_command(
                             from datetime import datetime
 
                             last_active = datetime.fromisoformat(player.last_active.replace("Z", "+00:00"))
-                            logger.debug(f"Converted string to datetime: {last_active}")
                         except (ValueError, AttributeError) as e:
                             logger.warning(f"Failed to parse last_active string for {player.name}: {e}")
                             # Skip players with invalid last_active data
                             continue
                     else:
                         last_active = player.last_active
-                        logger.debug(f"Using existing datetime: {last_active}")
 
                     # Ensure both datetimes are timezone-aware for comparison
                     if last_active.tzinfo is None:
                         # Make naive datetime timezone-aware
                         last_active = last_active.replace(tzinfo=UTC)
-                        logger.debug(f"Made timezone-aware: {last_active}")
 
-                    logger.debug(f"Comparing {last_active} > {online_threshold} = {last_active > online_threshold}")
                     if last_active > online_threshold:
                         online_players.append(player)
-                        logger.debug(f"Added {player.name} to online players")
-                    else:
-                        logger.debug(f"Player {player.name} not online (last_active too old)")
                 else:
                     logger.debug(f"Player {player.name} has no last_active timestamp")
+
+            logger.debug(f"Who command - found {len(online_players)} online players out of {len(players)} total")
 
             if online_players:
                 # Apply name filtering if provided
                 if filter_term:
                     filtered_players = filter_players_by_name(online_players, filter_term)
                     if filtered_players:
-                        player_entries = [
-                            format_player_entry(player) for player in sorted(filtered_players, key=lambda p: p.name)
-                        ]
+                        # Sort by name, using a stable sort to handle ties
+                        sorted_players = sorted(filtered_players, key=lambda p: (p.name, id(p)))
+                        player_entries = [format_player_entry(player) for player in sorted_players]
                         player_list = ", ".join(player_entries)
                         result = f"Players matching '{filter_term}' ({len(filtered_players)}): {player_list}"
                         logger.debug(
@@ -186,9 +188,9 @@ async def handle_who_command(
                         return {"result": result}
                 else:
                     # No filter - show all online players
-                    player_entries = [
-                        format_player_entry(player) for player in sorted(online_players, key=lambda p: p.name)
-                    ]
+                    # Sort by name, using a stable sort to handle ties
+                    sorted_players = sorted(online_players, key=lambda p: (p.name, id(p)))
+                    player_entries = [format_player_entry(player) for player in sorted_players]
                     player_list = ", ".join(player_entries)
                     result = f"Online players ({len(online_players)}): {player_list}"
                     logger.debug("Who command successful", player=player_name, count=len(online_players))
@@ -403,7 +405,11 @@ async def handle_emote_command(
         else:
             # Custom emote - use the action as provided
             logger.debug("Custom emote executed", player=player_name, action=action)
-            return {"result": f"{player_name} {action}"}
+            return {
+                "result": f"{player_name} {action}",
+                "broadcast": f"{player_name} {action}",
+                "broadcast_type": "emote",
+            }
 
     except Exception as e:
         import traceback

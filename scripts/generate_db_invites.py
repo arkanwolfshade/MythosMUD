@@ -190,20 +190,14 @@ async def create_invites_in_db(count: int = 100) -> None:
         new_codes = await generate_unique_codes(count)
 
         # Filter out any duplicates
-        unique_new_codes = [
-            code for code in new_codes if code not in existing_codes
-        ]
+        unique_new_codes = [code for code in new_codes if code not in existing_codes]
 
         # Create new invite entries
         invites_created = 0
         expires_at = datetime.now(UTC) + timedelta(days=365)  # 1 year expiration
 
         for code in unique_new_codes:
-            invite = Invite(
-                invite_code=code,
-                is_used=False,
-                expires_at=expires_at
-            )
+            invite = Invite(invite_code=code, is_used=False, expires_at=expires_at)
             session.add(invite)
             invites_created += 1
 

@@ -1,7 +1,6 @@
-import { expect } from '@playwright/test';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, it, vi } from 'vitest';
-import { DEFAULT_CHANNEL } from '../src/config/channels';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_CHANNEL } from '../../../config/channels';
 
 // Mock the dependencies
 vi.mock('../src/config/channels', () => ({

@@ -23,14 +23,14 @@ repos:
     hooks:
       - id: npm-lint
         name: npm lint (client)
-        entry: bash -c "cd client && npm run lint"
+        entry: powershell -Command "cd client; npm run lint"
         language: system
         types: [javascript, ts]
         pass_filenames: false
         always_run: true
       - id: npm-format
         name: npm format (client)
-        entry: bash -c "cd client && npm run format"
+        entry: powershell -Command "cd client; npm run format"
         language: system
         types: [javascript, ts, json, markdown]
         pass_filenames: false

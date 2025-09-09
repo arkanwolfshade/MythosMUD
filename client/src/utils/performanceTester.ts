@@ -247,5 +247,4 @@ export const usePerformanceTester = () => {
   };
 };
 
-export { PerformanceTester };
 export type { PerformanceTestConfig, PerformanceTestResult };

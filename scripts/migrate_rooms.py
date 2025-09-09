@@ -38,12 +38,12 @@ def load_existing_rooms(rooms_path: str) -> dict[str, dict]:
                 continue
 
             for filename in os.listdir(zone_path):
-                if filename.endswith('.json'):
+                if filename.endswith(".json"):
                     file_path = os.path.join(zone_path, filename)
                     try:
-                        with open(file_path, encoding='utf-8') as f:
+                        with open(file_path, encoding="utf-8") as f:
                             room_data = json.load(f)
-                            room_id = room_data.get('id')
+                            room_id = room_data.get("id")
                             if room_id:
                                 existing_rooms[room_id] = room_data
                     except (OSError, json.JSONDecodeError) as e:
@@ -75,8 +75,8 @@ def create_zone_config(zone_name: str, zone_type: str = "city") -> dict:
             "sanity_drain_rate": 0.1,
             "npc_spawn_modifier": 1.0,
             "combat_modifier": 1.0,
-            "exploration_bonus": 0.5
-        }
+            "exploration_bonus": 0.5,
+        },
     }
 
 
@@ -97,8 +97,8 @@ def create_subzone_config(subzone_name: str) -> dict:
             "sanity_drain_rate": 0.05,
             "npc_spawn_modifier": 1.0,
             "combat_modifier": 1.0,
-            "exploration_bonus": 0.3
-        }
+            "exploration_bonus": 0.3,
+        },
     }
 
 
@@ -114,27 +114,23 @@ def determine_zone_type(zone_name: str) -> str:
     """
     zone_name_lower = zone_name.lower()
 
-    if any(word in zone_name_lower for word in ['city', 'town', 'burg']):
+    if any(word in zone_name_lower for word in ["city", "town", "burg"]):
         return "city"
-    elif any(word in zone_name_lower for word in ['forest', 'woods', 'grove']):
+    elif any(word in zone_name_lower for word in ["forest", "woods", "grove"]):
         return "countryside"
-    elif any(word in zone_name_lower for word in ['mountain', 'peak', 'ridge']):
+    elif any(word in zone_name_lower for word in ["mountain", "peak", "ridge"]):
         return "mountains"
-    elif any(word in zone_name_lower for word in ['swamp', 'marsh', 'bog']):
+    elif any(word in zone_name_lower for word in ["swamp", "marsh", "bog"]):
         return "swamp"
-    elif any(word in zone_name_lower for word in ['desert', 'dune', 'waste']):
+    elif any(word in zone_name_lower for word in ["desert", "dune", "waste"]):
         return "desert"
-    elif any(word in zone_name_lower for word in ['tundra', 'ice', 'frozen']):
+    elif any(word in zone_name_lower for word in ["tundra", "ice", "frozen"]):
         return "tundra"
     else:
         return "city"  # Default
 
 
-def migrate_rooms(
-    rooms_path: str,
-    dry_run: bool = False,
-    create_backup_flag: bool = True
-) -> tuple[bool, list[str]]:
+def migrate_rooms(rooms_path: str, dry_run: bool = False, create_backup_flag: bool = True) -> tuple[bool, list[str]]:
     """
     Migrate existing rooms to the new hierarchical structure.
 
@@ -158,7 +154,7 @@ def migrate_rooms(
 
     # Create backup if requested
     if create_backup_flag and not dry_run:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_dir = f"{rooms_path}_backup_{timestamp}"
         try:
             shutil.copytree(rooms_path, backup_dir)
@@ -169,7 +165,7 @@ def migrate_rooms(
     # Group rooms by zone
     zones = {}
     for _room_id, room_info in existing_rooms.items():
-        zone = room_info['zone']
+        zone = room_info["zone"]
         if zone not in zones:
             zones[zone] = []
         zones[zone].append(room_info)
@@ -190,7 +186,7 @@ def migrate_rooms(
         zone_config_path = os.path.join(zone_path, "zone_config.json")
 
         if not dry_run:
-            with open(zone_config_path, 'w', encoding='utf-8') as f:
+            with open(zone_config_path, "w", encoding="utf-8") as f:
                 json.dump(zone_config, f, indent=2)
 
         messages.append(f"Created zone config for {zone_name}")
@@ -206,31 +202,31 @@ def migrate_rooms(
         subzone_config_path = os.path.join(subzone_path, "subzone_config.json")
 
         if not dry_run:
-            with open(subzone_config_path, 'w', encoding='utf-8') as f:
+            with open(subzone_config_path, "w", encoding="utf-8") as f:
                 json.dump(subzone_config, f, indent=2)
 
         # Move and update room files
         for room_info in zone_rooms:
-            old_room_id = room_info['id']
+            old_room_id = room_info["id"]
 
             # Generate new room ID
             new_room_id = f"earth_{zone_name}_{default_subzone}_{old_room_id}"
 
             # Update room data
-            room_info['plane'] = 'earth'
-            room_info['sub_zone'] = default_subzone
-            room_info['id'] = new_room_id
+            room_info["plane"] = "earth"
+            room_info["sub_zone"] = default_subzone
+            room_info["id"] = new_room_id
 
             # Add environment if not present
-            if 'environment' not in room_info:
-                room_info['environment'] = 'outdoors'
+            if "environment" not in room_info:
+                room_info["environment"] = "outdoors"
 
             # Create new file path
             new_filename = f"{old_room_id}.json"
             new_file_path = os.path.join(subzone_path, new_filename)
 
             if not dry_run:
-                with open(new_file_path, 'w', encoding='utf-8') as f:
+                with open(new_file_path, "w", encoding="utf-8") as f:
                     json.dump(room_info, f, indent=2)
 
             messages.append(f"Migrated {old_room_id} -> {new_room_id}")
@@ -240,23 +236,10 @@ def migrate_rooms(
 
 def main():
     """Main entry point for the migration script."""
-    parser = argparse.ArgumentParser(
-        description="Migrate MythosMUD rooms to hierarchical structure"
-    )
-    parser.add_argument(
-        "rooms_path",
-        help="Path to the rooms directory to migrate"
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be done without making changes"
-    )
-    parser.add_argument(
-        "--no-backup",
-        action="store_true",
-        help="Don't create a backup before migration"
-    )
+    parser = argparse.ArgumentParser(description="Migrate MythosMUD rooms to hierarchical structure")
+    parser.add_argument("rooms_path", help="Path to the rooms directory to migrate")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without making changes")
+    parser.add_argument("--no-backup", action="store_true", help="Don't create a backup before migration")
 
     args = parser.parse_args()
 
@@ -270,11 +253,7 @@ def main():
     print(f"Create backup: {not args.no_backup}")
     print("-" * 50)
 
-    success, messages = migrate_rooms(
-        rooms_path,
-        dry_run=args.dry_run,
-        create_backup_flag=not args.no_backup
-    )
+    success, messages = migrate_rooms(rooms_path, dry_run=args.dry_run, create_backup_flag=not args.no_backup)
 
     for message in messages:
         print(message)
