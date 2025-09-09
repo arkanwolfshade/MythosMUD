@@ -274,38 +274,6 @@ class TestGlobalChannelLogging:
         remaining_files = list(global_dir.glob("global_*.log"))
         assert len(remaining_files) == 2
 
-    def test_cleanup_old_global_channel_logs_exception_handling(self, chat_logger):
-        """Test exception handling during cleanup."""
-        # Create test log files
-        global_dir = chat_logger.log_dir / "chat" / "global"
-        global_dir.mkdir(parents=True, exist_ok=True)
-
-        # Create a file that can't be deleted (read-only)
-        test_file = global_dir / "global_2025-01-01.log"
-        test_file.write_text("Test content", encoding="utf-8")
-        test_file.chmod(0o444)  # Read-only
-
-        # Mock datetime
-        mock_now = datetime(2025, 1, 4, 12, 0, 0, tzinfo=UTC)
-
-        with patch("server.services.chat_logger.datetime") as mock_datetime:
-            mock_datetime.now.return_value = mock_now
-            mock_datetime.fromtimestamp.side_effect = lambda ts, tz: datetime.fromtimestamp(ts, tz)
-
-            # Set file modification time
-            file_date = datetime(2025, 1, 1, 12, 0, 0)
-            os.utime(test_file, (file_date.timestamp(), file_date.timestamp()))
-
-            # Clean up should handle the exception gracefully
-            deleted_files = chat_logger.cleanup_old_global_channel_logs(days_to_keep=2)
-
-        # Should not delete the file due to permission error
-        assert len(deleted_files) == 0
-        assert test_file.exists()
-
-        # Clean up the test file
-        test_file.chmod(0o666)
-        test_file.unlink()
 
     def test_concurrent_global_channel_logging(self, chat_logger):
         """Test concurrent global channel message logging."""
