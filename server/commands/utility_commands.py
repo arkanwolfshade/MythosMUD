@@ -103,8 +103,8 @@ async def handle_who_command(
     """
     logger.debug("Processing who command", player=player_name, command_data=command_data)
 
-    # Extract filter term from command_data
-    filter_term = command_data.get("filter_name", "")
+    # Extract filter term from command_data (use target_player for consistency with command service)
+    filter_term = command_data.get("target_player", "")
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
@@ -403,7 +403,11 @@ async def handle_emote_command(
         else:
             # Custom emote - use the action as provided
             logger.debug("Custom emote executed", player=player_name, action=action)
-            return {"result": f"{player_name} {action}", "broadcast": f"{player_name} {action}", "broadcast_type": "emote"}
+            return {
+                "result": f"{player_name} {action}",
+                "broadcast": f"{player_name} {action}",
+                "broadcast_type": "emote",
+            }
 
     except Exception as e:
         import traceback

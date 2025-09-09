@@ -165,7 +165,6 @@ class TestSelfMessageExclusionBugs:
         assert player_3_id in called_player_ids
 
 
-
 class TestEventOrderingAndTimingBugs:
     """Test event ordering and timing issues that can cause race conditions."""
 

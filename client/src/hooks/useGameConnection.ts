@@ -623,8 +623,10 @@ export function useGameConnection({
     try {
       const commandData = {
         type: 'game_command', // CRITICAL FIX: Use correct message type
-        command,
-        args,
+        data: {
+          command,
+          args,
+        },
       };
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command, args });

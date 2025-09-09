@@ -12,6 +12,9 @@ from unittest.mock import MagicMock
 import pytest
 
 from ..commands.utility_commands import (
+    filter_players_by_name,
+    format_player_entry,
+    format_player_location,
     get_username_from_user,
     handle_emote_command,
     handle_inventory_command,
@@ -112,7 +115,7 @@ class TestWhoCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -128,7 +131,7 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = []
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -163,7 +166,7 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = offline_players
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -206,7 +209,7 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = online_players
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -253,7 +256,7 @@ class TestWhoCommand:
         mock_persistence.list_players.return_value = all_players
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -271,7 +274,7 @@ class TestWhoCommand:
         mock_persistence.list_players.side_effect = Exception("Database error")
 
         result = await handle_who_command(
-            {"filter_name": ""},
+            {"target_player": ""},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -314,7 +317,7 @@ class TestWhoCommand:
 
         # Test filtering
         result = await handle_who_command(
-            {"filter_name": "al"},
+            {"target_player": "al"},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -328,7 +331,7 @@ class TestWhoCommand:
 
         # Test no matches
         result = await handle_who_command(
-            {"filter_name": "xyz"},
+            {"target_player": "xyz"},
             {"username": "testuser"},
             mock_request,
             mock_alias_storage,
@@ -908,3 +911,941 @@ class TestEmoteCommand:
         )
 
         assert result["result"] == "testuser whispers something in an ancient tongue..."
+
+
+class TestPlayerFilteringLogic:
+    """Test the player filtering logic functions."""
+
+    def test_filter_players_by_name_exact_match(self):
+        """Test filtering players by exact name match."""
+        # Create mock players
+        alice = MagicMock()
+        alice.name = "alice"
+
+        bob = MagicMock()
+        bob.name = "bob"
+
+        charlie = MagicMock()
+        charlie.name = "charlie"
+
+        players = [alice, bob, charlie]
+
+        # Test exact match
+        result = filter_players_by_name(players, "alice")
+        assert len(result) == 1
+        assert result[0].name == "alice"
+
+        result = filter_players_by_name(players, "bob")
+        assert len(result) == 1
+        assert result[0].name == "bob"
+
+    def test_filter_players_by_name_partial_match(self):
+        """Test filtering players by partial name match."""
+        # Create mock players
+        alice = MagicMock()
+        alice.name = "alice"
+
+        bob = MagicMock()
+        bob.name = "bob"
+
+        charlie = MagicMock()
+        charlie.name = "charlie"
+
+        players = [alice, bob, charlie]
+
+        # Test partial match
+        result = filter_players_by_name(players, "al")
+        assert len(result) == 1
+        assert result[0].name == "alice"
+
+        result = filter_players_by_name(players, "ch")
+        assert len(result) == 1
+        assert result[0].name == "charlie"
+
+    def test_filter_players_by_name_case_insensitive(self):
+        """Test filtering players with case-insensitive matching."""
+        # Create mock players
+        alice = MagicMock()
+        alice.name = "Alice"
+
+        bob = MagicMock()
+        bob.name = "BOB"
+
+        charlie = MagicMock()
+        charlie.name = "Charlie"
+
+        players = [alice, bob, charlie]
+
+        # Test case-insensitive matching
+        result = filter_players_by_name(players, "alice")
+        assert len(result) == 1
+        assert result[0].name == "Alice"
+
+        result = filter_players_by_name(players, "bob")
+        assert len(result) == 1
+        assert result[0].name == "BOB"
+
+        result = filter_players_by_name(players, "ALICE")
+        assert len(result) == 1
+        assert result[0].name == "Alice"
+
+    def test_filter_players_by_name_empty_filter(self):
+        """Test filtering players with empty filter returns all players."""
+        # Create mock players
+        alice = MagicMock()
+        alice.name = "alice"
+
+        bob = MagicMock()
+        bob.name = "bob"
+
+        players = [alice, bob]
+
+        # Test empty filter
+        result = filter_players_by_name(players, "")
+        assert len(result) == 2
+        assert result == players
+
+        result = filter_players_by_name(players, None)
+        assert len(result) == 2
+        assert result == players
+
+    def test_filter_players_by_name_no_matches(self):
+        """Test filtering players with no matches."""
+        # Create mock players
+        alice = MagicMock()
+        alice.name = "alice"
+
+        bob = MagicMock()
+        bob.name = "bob"
+
+        players = [alice, bob]
+
+        # Test no matches
+        result = filter_players_by_name(players, "xyz")
+        assert len(result) == 0
+
+        result = filter_players_by_name(players, "nonexistent")
+        assert len(result) == 0
+
+    def test_filter_players_by_name_special_characters(self):
+        """Test filtering players with special characters in names."""
+        # Create mock players with special characters
+        player1 = MagicMock()
+        player1.name = "player_123"
+
+        player2 = MagicMock()
+        player2.name = "test-user"
+
+        player3 = MagicMock()
+        player3.name = "admin@server"
+
+        players = [player1, player2, player3]
+
+        # Test filtering with special characters
+        result = filter_players_by_name(players, "123")
+        assert len(result) == 1
+        assert result[0].name == "player_123"
+
+        result = filter_players_by_name(players, "test")
+        assert len(result) == 1
+        assert result[0].name == "test-user"
+
+        result = filter_players_by_name(players, "admin")
+        assert len(result) == 1
+        assert result[0].name == "admin@server"
+
+
+class TestLocationFormatting:
+    """Test the location formatting functions."""
+
+    def test_format_player_location_standard_format(self):
+        """Test formatting player location with standard room ID format."""
+        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        result = format_player_location(room_id)
+        expected = "Arkham: City: Northside Intersection Derby High"
+        assert result == expected
+
+    def test_format_player_location_different_zones(self):
+        """Test formatting player location with different zone formats."""
+        # Test different zone
+        room_id = "earth_dunwich_village_old_man_whateley_farm"
+        result = format_player_location(room_id)
+        expected = "Dunwich: Village: Old Man Whateley Farm"
+        assert result == expected
+
+        # Test another format
+        room_id = "earth_innsmouth_waterfront_docks_warehouse_7"
+        result = format_player_location(room_id)
+        expected = "Innsmouth: Waterfront: Docks Warehouse 7"
+        assert result == expected
+
+    def test_format_player_location_edge_cases(self):
+        """Test formatting player location with edge cases."""
+        # Test minimal format
+        room_id = "earth_zone_subzone_room"
+        result = format_player_location(room_id)
+        expected = "Zone: Subzone: Room"
+        assert result == expected
+
+        # Test single word room name
+        room_id = "earth_arkham_city_center"
+        result = format_player_location(room_id)
+        expected = "Arkham: City: Center"
+        assert result == expected
+
+    def test_format_player_location_invalid_format(self):
+        """Test formatting player location with invalid format."""
+        # Test too few parts
+        room_id = "earth_arkham"
+        result = format_player_location(room_id)
+        expected = "Earth Arkham"  # Fallback formatting
+        assert result == expected
+
+        # Test empty string
+        room_id = ""
+        result = format_player_location(room_id)
+        expected = ""  # Empty string
+        assert result == expected
+
+    def test_format_player_location_special_characters(self):
+        """Test formatting player location with special characters."""
+        # Test with underscores in room names
+        room_id = "earth_arkham_city_old_man_whateley_house"
+        result = format_player_location(room_id)
+        expected = "Arkham: City: Old Man Whateley House"
+        assert result == expected
+
+
+class TestPlayerEntryFormatting:
+    """Test the player entry formatting functions."""
+
+    def test_format_player_entry_normal_player(self):
+        """Test formatting player entry for normal (non-admin) player."""
+        # Create mock player
+        player = MagicMock()
+        player.name = "alice"
+        player.level = 5
+        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.is_admin = False
+
+        result = format_player_entry(player)
+        expected = "alice [5] - Arkham: City: Northside Intersection Derby High"
+        assert result == expected
+
+    def test_format_player_entry_admin_player(self):
+        """Test formatting player entry for admin player."""
+        # Create mock admin player
+        player = MagicMock()
+        player.name = "admin"
+        player.level = 10
+        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.is_admin = True
+
+        result = format_player_entry(player)
+        expected = "admin [10] [ADMIN] - Arkham: City: Northside Intersection Derby High"
+        assert result == expected
+
+    def test_format_player_entry_different_levels(self):
+        """Test formatting player entry with different levels."""
+        # Create mock players with different levels
+        player1 = MagicMock()
+        player1.name = "newbie"
+        player1.level = 1
+        player1.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player1.is_admin = False
+
+        player2 = MagicMock()
+        player2.name = "veteran"
+        player2.level = 50
+        player2.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player2.is_admin = False
+
+        result1 = format_player_entry(player1)
+        expected1 = "newbie [1] - Arkham: City: Northside Intersection Derby High"
+        assert result1 == expected1
+
+        result2 = format_player_entry(player2)
+        expected2 = "veteran [50] - Arkham: City: Northside Intersection Derby High"
+        assert result2 == expected2
+
+
+class TestWhoCommandIntegration:
+    """Integration tests for the who command with real data scenarios."""
+
+    @pytest.fixture
+    def mock_request(self):
+        """Create a mock request object."""
+        request = MagicMock()
+        request.app = MagicMock()
+        return request
+
+    @pytest.fixture
+    def mock_alias_storage(self):
+        """Create a mock alias storage."""
+        return MagicMock()
+
+    @pytest.fixture
+    def mock_persistence(self):
+        """Create a mock persistence layer."""
+        return MagicMock()
+
+    @pytest.mark.asyncio
+    async def test_who_command_with_real_player_data(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with realistic player data scenarios."""
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create realistic player data
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        old_time = datetime.now(UTC) - timedelta(minutes=10)
+
+        # Create diverse player scenarios
+        players = [
+            # Online admin player
+            MagicMock(
+                name="admin_user",
+                level=25,
+                current_room_id="earth_arkham_city_northside_intersection_derby_high",
+                is_admin=True,
+                last_active=recent_time,
+            ),
+            # Online regular player
+            MagicMock(
+                name="investigator_alice",
+                level=8,
+                current_room_id="earth_arkham_city_northside_room_derby_st_001",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+            # Online player with special characters in name
+            MagicMock(
+                name="professor_whateley",
+                level=15,
+                current_room_id="earth_dunwich_village_old_man_whateley_farm",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+            # Offline player (should not appear)
+            MagicMock(
+                name="offline_user",
+                level=3,
+                current_room_id="earth_arkham_city_northside_room_high_ln_002",
+                is_admin=False,
+                last_active=old_time,
+            ),
+        ]
+
+        mock_persistence.list_players.return_value = players
+
+        # Test who command without filter
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should show 3 online players (excluding offline_user)
+        assert "Online players (3):" in result["result"]
+        assert "admin_user" in result["result"]
+        assert "[ADMIN]" in result["result"]  # Admin indicator
+        assert "investigator_alice" in result["result"]
+        assert "professor_whateley" in result["result"]
+        assert "offline_user" not in result["result"]
+
+        # Test filtering with partial match
+        result = await handle_who_command(
+            {"target_player": "alice"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching 'alice' (1):" in result["result"]
+        assert "investigator_alice" in result["result"]
+        assert "admin_user" not in result["result"]
+
+        # Test filtering with case-insensitive match
+        result = await handle_who_command(
+            {"target_player": "ADMIN"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching 'ADMIN' (1):" in result["result"]
+        assert "admin_user" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_who_command_large_player_list(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with a large number of players."""
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create a large list of players (100 players)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        players = []
+
+        for i in range(100):
+            player = MagicMock()
+            player.name = f"player_{i:03d}"
+            player.level = (i % 50) + 1  # Levels 1-50
+            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.is_admin = i % 10 == 0  # Every 10th player is admin
+            player.last_active = recent_time
+            players.append(player)
+
+        mock_persistence.list_players.return_value = players
+
+        # Test who command with large list
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should show all 100 players
+        assert "Online players (100):" in result["result"]
+        assert "player_000" in result["result"]
+        assert "player_099" in result["result"]
+
+        # Test filtering with large list
+        result = await handle_who_command(
+            {"target_player": "player_01"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should find players with "player_01" in name (player_010, player_011, etc.)
+        assert "Players matching 'player_01'" in result["result"]
+        assert "player_010" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_who_command_concurrent_scenarios(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with concurrent player update scenarios."""
+        mock_request.app.state.persistence = mock_persistence
+
+        # Simulate players with different last_active timestamps
+        now = datetime.now(UTC)
+        very_recent = now - timedelta(seconds=30)  # Very recent
+        recent = now - timedelta(minutes=2)  # Recent
+        borderline = now - timedelta(minutes=5, seconds=1)  # Just over threshold
+        old = now - timedelta(minutes=10)  # Old
+
+        players = [
+            MagicMock(
+                name="very_active",
+                level=5,
+                current_room_id="earth_arkham_city_center",
+                is_admin=False,
+                last_active=very_recent,
+            ),
+            MagicMock(
+                name="active",
+                level=3,
+                current_room_id="earth_arkham_city_northside",
+                is_admin=False,
+                last_active=recent,
+            ),
+            MagicMock(
+                name="borderline",
+                level=7,
+                current_room_id="earth_arkham_city_southside",
+                is_admin=False,
+                last_active=borderline,
+            ),
+            MagicMock(
+                name="inactive",
+                level=2,
+                current_room_id="earth_arkham_city_eastside",
+                is_admin=False,
+                last_active=old,
+            ),
+        ]
+
+        mock_persistence.list_players.return_value = players
+
+        # Test who command - should show only very_active and active
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        # Should show 2 online players (very_active and active)
+        assert "Online players (2):" in result["result"]
+        assert "very_active" in result["result"]
+        assert "active" in result["result"]
+        assert "borderline" not in result["result"]  # Just over threshold
+        assert "inactive" not in result["result"]  # Too old
+
+    @pytest.mark.asyncio
+    async def test_who_command_admin_privileges(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with admin privilege scenarios."""
+        mock_request.app.state.persistence = mock_persistence
+
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+
+        # Create players with various admin statuses
+        players = [
+            MagicMock(
+                name="super_admin",
+                level=50,
+                current_room_id="earth_arkham_city_admin_quarters",
+                is_admin=True,
+                last_active=recent_time,
+            ),
+            MagicMock(
+                name="moderator",
+                level=30,
+                current_room_id="earth_arkham_city_mod_office",
+                is_admin=True,
+                last_active=recent_time,
+            ),
+            MagicMock(
+                name="regular_user",
+                level=10,
+                current_room_id="earth_arkham_city_public_area",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+        ]
+
+        mock_persistence.list_players.return_value = players
+
+        # Test who command - should show all players with proper admin indicators
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Online players (3):" in result["result"]
+        assert "super_admin" in result["result"]
+        assert "moderator" in result["result"]
+        assert "regular_user" in result["result"]
+
+        # Count admin indicators
+        admin_count = result["result"].count("[ADMIN]")
+        assert admin_count == 2  # super_admin and moderator
+
+        # Test filtering admin players
+        result = await handle_who_command(
+            {"target_player": "admin"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching 'admin' (1):" in result["result"]
+        assert "super_admin" in result["result"]
+        assert "[ADMIN]" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_who_command_persistence_failures(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with persistence layer failures."""
+        mock_request.app.state.persistence = mock_persistence
+
+        # Test database connection failure
+        mock_persistence.list_players.side_effect = Exception("Database connection lost")
+
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Error retrieving player list:" in result["result"]
+        assert "Database connection lost" in result["result"]
+
+        # Test with no persistence layer
+        mock_request.app.state.persistence = None
+
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert result["result"] == "Player information is not available."
+
+    @pytest.mark.asyncio
+    async def test_who_command_edge_cases_integration(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command with various edge cases in integration scenarios."""
+        mock_request.app.state.persistence = mock_persistence
+
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+
+        # Create players with edge case scenarios
+        players = [
+            # Player with very long name
+            MagicMock(
+                name="very_long_player_name_with_many_characters",
+                level=1,
+                current_room_id="earth_arkham_city_center",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+            # Player with special characters
+            MagicMock(
+                name="player@#$%",
+                level=5,
+                current_room_id="earth_arkham_city_northside",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+            # Player with numbers
+            MagicMock(
+                name="player123",
+                level=10,
+                current_room_id="earth_arkham_city_southside",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+            # Player with mixed case
+            MagicMock(
+                name="PlayerWithMixedCase",
+                level=15,
+                current_room_id="earth_arkham_city_eastside",
+                is_admin=False,
+                last_active=recent_time,
+            ),
+        ]
+
+        mock_persistence.list_players.return_value = players
+
+        # Test who command with edge case players
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Online players (4):" in result["result"]
+        assert "very_long_player_name_with_many_characters" in result["result"]
+        assert "player@#$%" in result["result"]
+        assert "player123" in result["result"]
+        assert "PlayerWithMixedCase" in result["result"]
+
+        # Test filtering with edge cases
+        result = await handle_who_command(
+            {"target_player": "123"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching '123' (1):" in result["result"]
+        assert "player123" in result["result"]
+
+        # Test case-insensitive filtering with mixed case
+        result = await handle_who_command(
+            {"target_player": "mixedcase"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        assert "Players matching 'mixedcase' (1):" in result["result"]
+        assert "PlayerWithMixedCase" in result["result"]
+
+
+class TestWhoCommandPerformance:
+    """Performance tests for the who command."""
+
+    @pytest.fixture
+    def mock_request(self):
+        """Create a mock request object."""
+        request = MagicMock()
+        request.app = MagicMock()
+        return request
+
+    @pytest.fixture
+    def mock_alias_storage(self):
+        """Create a mock alias storage."""
+        return MagicMock()
+
+    @pytest.fixture
+    def mock_persistence(self):
+        """Create a mock persistence layer."""
+        return MagicMock()
+
+    @pytest.mark.asyncio
+    async def test_who_command_performance_large_player_list(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command performance with 1000+ players."""
+        import time
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create a large list of players (1000 players)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        players = []
+
+        for i in range(1000):
+            player = MagicMock()
+            player.name = f"player_{i:04d}"
+            player.level = (i % 50) + 1  # Levels 1-50
+            player.current_room_id = f"earth_arkham_city_room_{i:04d}"
+            player.is_admin = i % 20 == 0  # Every 20th player is admin
+            player.last_active = recent_time
+            players.append(player)
+
+        mock_persistence.list_players.return_value = players
+
+        # Measure response time
+        start_time = time.time()
+
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000  # Convert to milliseconds
+
+        # Should show all 1000 players
+        assert "Online players (1000):" in result["result"]
+
+        # Performance requirement: response time under 100ms
+        assert response_time < 100, f"Response time {response_time:.2f}ms exceeds 100ms limit"
+
+        print(f"Who command with 1000 players: {response_time:.2f}ms")
+
+    @pytest.mark.asyncio
+    async def test_who_command_performance_filtering(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command performance with filtering on large dataset."""
+        import time
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create a large list of players (500 players)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        players = []
+
+        for i in range(500):
+            player = MagicMock()
+            player.name = f"player_{i:03d}"
+            player.level = (i % 50) + 1
+            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.is_admin = i % 25 == 0
+            player.last_active = recent_time
+            players.append(player)
+
+        mock_persistence.list_players.return_value = players
+
+        # Test filtering performance
+        start_time = time.time()
+
+        result = await handle_who_command(
+            {"target_player": "player_01"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000
+
+        # Should find players with "player_01" in name
+        assert "Players matching 'player_01'" in result["result"]
+
+        # Performance requirement: response time under 100ms
+        assert response_time < 100, f"Filtering response time {response_time:.2f}ms exceeds 100ms limit"
+
+        print(f"Who command filtering with 500 players: {response_time:.2f}ms")
+
+    @pytest.mark.asyncio
+    async def test_who_command_performance_memory_usage(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command memory usage with large datasets."""
+        import os
+
+        import psutil
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Get initial memory usage
+        process = psutil.Process(os.getpid())
+        initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+
+        # Create a large list of players (2000 players)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        players = []
+
+        for i in range(2000):
+            player = MagicMock()
+            player.name = f"player_{i:04d}"
+            player.level = (i % 50) + 1
+            player.current_room_id = f"earth_arkham_city_room_{i:04d}"
+            player.is_admin = i % 50 == 0
+            player.last_active = recent_time
+            players.append(player)
+
+        mock_persistence.list_players.return_value = players
+
+        # Execute who command multiple times
+        for _ in range(10):
+            result = await handle_who_command(
+                {"target_player": ""},
+                {"username": "testuser"},
+                mock_request,
+                mock_alias_storage,
+                "testuser",
+            )
+            assert "Online players (2000):" in result["result"]
+
+        # Get final memory usage
+        final_memory = process.memory_info().rss / 1024 / 1024  # MB
+        memory_increase = final_memory - initial_memory
+
+        # Memory usage should be reasonable (less than 50MB increase)
+        assert memory_increase < 50, f"Memory increase {memory_increase:.2f}MB exceeds 50MB limit"
+
+        print(f"Memory usage increase: {memory_increase:.2f}MB")
+
+    @pytest.mark.asyncio
+    async def test_who_command_performance_consistency(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command performance consistency across multiple runs."""
+        import time
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Create a moderate list of players (200 players)
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        players = []
+
+        for i in range(200):
+            player = MagicMock()
+            player.name = f"player_{i:03d}"
+            player.level = (i % 50) + 1
+            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.is_admin = i % 20 == 0
+            player.last_active = recent_time
+            players.append(player)
+
+        mock_persistence.list_players.return_value = players
+
+        # Run multiple times and measure consistency
+        response_times = []
+
+        for _ in range(20):
+            start_time = time.time()
+
+            result = await handle_who_command(
+                {"target_player": ""},
+                {"username": "testuser"},
+                mock_request,
+                mock_alias_storage,
+                "testuser",
+            )
+
+            end_time = time.time()
+            response_time = (end_time - start_time) * 1000
+            response_times.append(response_time)
+
+            assert "Online players (200):" in result["result"]
+
+        # Calculate statistics
+        avg_response_time = sum(response_times) / len(response_times)
+        max_response_time = max(response_times)
+        min_response_time = min(response_times)
+
+        # Performance requirements
+        assert avg_response_time < 50, f"Average response time {avg_response_time:.2f}ms exceeds 50ms limit"
+        assert max_response_time < 100, f"Max response time {max_response_time:.2f}ms exceeds 100ms limit"
+
+        # Consistency requirement: max should not be more than 3x min
+        assert max_response_time < min_response_time * 3, (
+            f"Performance inconsistency: max {max_response_time:.2f}ms vs min {min_response_time:.2f}ms"
+        )
+
+        print(
+            f"Performance consistency - Avg: {avg_response_time:.2f}ms, Min: {min_response_time:.2f}ms, Max: {max_response_time:.2f}ms"
+        )
+
+    @pytest.mark.asyncio
+    async def test_who_command_performance_edge_cases(self, mock_request, mock_alias_storage, mock_persistence):
+        """Test who command performance with edge cases."""
+        import time
+
+        mock_request.app.state.persistence = mock_persistence
+
+        # Test with no players
+        mock_persistence.list_players.return_value = []
+
+        start_time = time.time()
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000
+
+        assert result["result"] == "No players found."
+        assert response_time < 10, f"Empty list response time {response_time:.2f}ms exceeds 10ms limit"
+
+        # Test with single player
+        recent_time = datetime.now(UTC) - timedelta(minutes=2)
+        single_player = MagicMock(
+            name="single_player",
+            level=1,
+            current_room_id="earth_arkham_city_center",
+            is_admin=False,
+            last_active=recent_time,
+        )
+        mock_persistence.list_players.return_value = [single_player]
+
+        start_time = time.time()
+        result = await handle_who_command(
+            {"target_player": ""},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000
+
+        assert "Online players (1):" in result["result"]
+        assert response_time < 10, f"Single player response time {response_time:.2f}ms exceeds 10ms limit"
+
+        # Test with very long filter term
+        start_time = time.time()
+        result = await handle_who_command(
+            {"target_player": "very_long_filter_term_that_should_not_match_anything"},
+            {"username": "testuser"},
+            mock_request,
+            mock_alias_storage,
+            "testuser",
+        )
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000
+
+        assert "No players found matching" in result["result"]
+        assert response_time < 10, f"Long filter response time {response_time:.2f}ms exceeds 10ms limit"
+
+        print("Edge case performance tests passed - all under 10ms")

@@ -348,7 +348,6 @@ class TestUUIDSerializationIntegration:
 class TestEndToEndBugScenarios:
     """Test end-to-end scenarios that would have caught our bugs."""
 
-
     @pytest.mark.asyncio
     async def test_player_movement_end_to_end(self):
         """Test the complete player movement flow from command to room events."""
