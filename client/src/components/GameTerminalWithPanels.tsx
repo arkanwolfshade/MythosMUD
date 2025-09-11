@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { logger } from '../utils/logger';
+import { useMemoryMonitor } from '../utils/memoryMonitor';
 import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';
 import { inputSanitizer } from '../utils/security';
 
@@ -93,6 +94,15 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     messages: [],
     commandHistory: [],
   });
+
+  // Memory monitoring for this component
+  const { detector } = useMemoryMonitor('GameTerminalWithPanels');
+
+  // Start memory monitoring for this component
+  useEffect(() => {
+    detector.start();
+    return () => detector.stop();
+  }, [detector]);
 
   // Refs for stable references and event processing
   const hasAttemptedConnection = useRef(false);

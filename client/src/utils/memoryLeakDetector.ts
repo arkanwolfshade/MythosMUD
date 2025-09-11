@@ -225,5 +225,4 @@ export const useMemoryLeakDetector = (componentName: string, options?: Partial<M
   };
 };
 
-export { MemoryLeakDetector };
 export type { MemoryLeakDetectorOptions, MemorySnapshot };

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
+import { memoryMonitor } from './utils/memoryMonitor';
 import { inputSanitizer, secureTokenStorage } from './utils/security';
 
 // Import the Stats interface from StatsRollingScreen
@@ -28,6 +29,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+
+  // Initialize memory monitoring
+  useEffect(() => {
+    memoryMonitor.start();
+
+    return () => {
+      memoryMonitor.stop();
+    };
+  }, []);
 
   const handleLoginClick = async () => {
     // Sanitize inputs

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { debugLogger } from '../utils/debugLogger';
 import { logger } from '../utils/logger';
+import { useResourceCleanup } from '../utils/resourceCleanup';
 import { csrfProtection, inputSanitizer } from '../utils/security';
 
 interface GameEvent {
@@ -207,6 +208,7 @@ export function useGameConnection({
   onConnectionHealthUpdate,
 }: UseGameConnectionOptions) {
   const debug = debugLogger('useGameConnection');
+  const resourceManager = useResourceCleanup();
 
   debug.debug('Hook called', {
     hasAuthToken: !!authToken,
@@ -275,17 +277,20 @@ export function useGameConnection({
   const clearTimers = useCallback(() => {
     if (wsPingIntervalRef.current !== null) {
       window.clearInterval(wsPingIntervalRef.current);
+      resourceManager.removeInterval(wsPingIntervalRef.current);
       wsPingIntervalRef.current = null;
     }
     if (sseReconnectTimerRef.current !== null) {
       window.clearTimeout(sseReconnectTimerRef.current);
+      resourceManager.removeTimer(sseReconnectTimerRef.current);
       sseReconnectTimerRef.current = null;
     }
     if (wsReconnectTimerRef.current !== null) {
       window.clearTimeout(wsReconnectTimerRef.current);
+      resourceManager.removeTimer(wsReconnectTimerRef.current);
       wsReconnectTimerRef.current = null;
     }
-  }, []);
+  }, [resourceManager]);
 
   // Connection health monitoring
   const performHealthCheck = useCallback(async () => {
@@ -329,14 +334,16 @@ export function useGameConnection({
 
     // Set up periodic health checks (every 30 seconds)
     healthCheckIntervalRef.current = window.setInterval(performHealthCheck, 30000);
-  }, [performHealthCheck]);
+    resourceManager.registerInterval(healthCheckIntervalRef.current);
+  }, [performHealthCheck, resourceManager]);
 
   const stopHealthMonitoring = useCallback(() => {
     if (healthCheckIntervalRef.current !== null) {
       window.clearInterval(healthCheckIntervalRef.current);
+      resourceManager.removeInterval(healthCheckIntervalRef.current);
       healthCheckIntervalRef.current = null;
     }
-  }, []);
+  }, [resourceManager]);
 
   const scheduleSseReconnect = useCallback(() => {
     if (sseReconnectTimerRef.current !== null) {
@@ -368,7 +375,8 @@ export function useGameConnection({
         hasConnectedRef.current = false;
       }
     }, delay);
-  }, [state.isConnected]);
+    resourceManager.registerTimer(sseReconnectTimerRef.current);
+  }, [state.isConnected, resourceManager]);
 
   const scheduleWsReconnect = useCallback(() => {
     if (wsReconnectTimerRef.current !== null) {
@@ -399,7 +407,8 @@ export function useGameConnection({
         connectWebSocket();
       }
     }, delay);
-  }, [state.sseConnected, state.websocketConnected]); // eslint-disable-line react-hooks/exhaustive-deps
+    resourceManager.registerTimer(wsReconnectTimerRef.current);
+  }, [state.sseConnected, state.websocketConnected, resourceManager, connectWebSocket]);
 
   const connectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -414,6 +423,7 @@ export function useGameConnection({
       const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
       logger.info('GameConnection', 'Creating WebSocket connection', { url: wsUrl });
       const websocket = new WebSocket(wsUrl);
+      resourceManager.registerWebSocket(websocket);
 
       websocket.onopen = () => {
         logger.info('GameConnection', 'WebSocket connected');
@@ -432,6 +442,7 @@ export function useGameConnection({
               logger.error('GameConnection', 'Failed to send WS ping', { error: String(err) });
             }
           }, 25000);
+          resourceManager.registerInterval(wsPingIntervalRef.current);
         }
       };
 
@@ -485,7 +496,7 @@ export function useGameConnection({
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
       scheduleWsReconnect();
     }
-  }, [authToken, scheduleWsReconnect, state.sseConnected, debug]);
+  }, [authToken, scheduleWsReconnect, state.sseConnected, debug, resourceManager]);
 
   const connect = useCallback(async () => {
     debug.debug('Connect function called', {
@@ -516,6 +527,7 @@ export function useGameConnection({
       const sseUrl = `/api/events?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
       logger.info('GameConnection', 'Creating SSE connection', { url: sseUrl, sessionId: currentSessionId.current });
       const eventSource = new EventSource(sseUrl);
+      resourceManager.registerEventSource(eventSource);
 
       eventSourceRef.current = eventSource;
 
@@ -580,7 +592,15 @@ export function useGameConnection({
       onErrorRef.current?.('Failed to connect');
       scheduleSseReconnect();
     }
-  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected, startHealthMonitoring, debug]); // Include all dependencies
+  }, [
+    authToken,
+    connectWebSocket,
+    scheduleSseReconnect,
+    state.isConnected,
+    startHealthMonitoring,
+    debug,
+    resourceManager,
+  ]); // Include all dependencies
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
