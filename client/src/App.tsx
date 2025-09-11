@@ -3,6 +3,7 @@ import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
+import { inputSanitizer, secureTokenStorage } from './utils/security';
 
 // Import the Stats interface from StatsRollingScreen
 interface Stats {
@@ -29,7 +30,11 @@ function App() {
   const [isRegistering, setIsRegistering] = useState(false);
 
   const handleLoginClick = async () => {
-    if (!playerName || !password) {
+    // Sanitize inputs
+    const sanitizedUsername = inputSanitizer.sanitizeUsername(playerName);
+    const sanitizedPassword = inputSanitizer.sanitizeCommand(password);
+
+    if (!sanitizedUsername || !sanitizedPassword) {
       setError('Username and password are required');
       return;
     }
@@ -39,7 +44,7 @@ function App() {
       const response = await fetch('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: playerName, password }),
+        body: JSON.stringify({ username: sanitizedUsername, password: sanitizedPassword }),
       });
       if (!response.ok) {
         let message = `Login failed (${response.status})`;
@@ -53,7 +58,15 @@ function App() {
       }
       const data = await response.json();
       const token = data?.access_token as string | undefined;
+      const refreshToken = data?.refresh_token as string | undefined;
+
       if (!token) throw new Error('No access_token in response');
+
+      // Store tokens securely
+      secureTokenStorage.setToken(token);
+      if (refreshToken) {
+        secureTokenStorage.setRefreshToken(refreshToken);
+      }
 
       setAuthToken(token);
       setIsAuthenticated(true);
@@ -67,7 +80,12 @@ function App() {
   };
 
   const handleRegisterClick = async () => {
-    if (!playerName || !password || !inviteCode) {
+    // Sanitize inputs
+    const sanitizedUsername = inputSanitizer.sanitizeUsername(playerName);
+    const sanitizedPassword = inputSanitizer.sanitizeCommand(password);
+    const sanitizedInviteCode = inputSanitizer.sanitizeCommand(inviteCode);
+
+    if (!sanitizedUsername || !sanitizedPassword || !sanitizedInviteCode) {
       setError('Username, password, and invite code are required');
       return;
     }
@@ -78,9 +96,9 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: playerName,
-          password,
-          invite_code: inviteCode,
+          username: sanitizedUsername,
+          password: sanitizedPassword,
+          invite_code: sanitizedInviteCode,
         }),
       });
       if (!response.ok) {
@@ -95,7 +113,15 @@ function App() {
       }
       const data = await response.json();
       const token = data?.access_token as string | undefined;
+      const refreshToken = data?.refresh_token as string | undefined;
+
       if (!token) throw new Error('No access_token in response');
+
+      // Store tokens securely
+      secureTokenStorage.setToken(token);
+      if (refreshToken) {
+        secureTokenStorage.setRefreshToken(refreshToken);
+      }
 
       setAuthToken(token);
       setIsAuthenticated(true);
@@ -117,6 +143,8 @@ function App() {
     setError(error);
     setIsAuthenticated(false);
     setAuthToken('');
+    // Clear secure tokens
+    secureTokenStorage.clearToken();
   };
 
   const toggleMode = () => {

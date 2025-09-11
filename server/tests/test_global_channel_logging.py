@@ -274,7 +274,6 @@ class TestGlobalChannelLogging:
         remaining_files = list(global_dir.glob("global_*.log"))
         assert len(remaining_files) == 2
 
-
     def test_concurrent_global_channel_logging(self, chat_logger):
         """Test concurrent global channel message logging."""
         import threading

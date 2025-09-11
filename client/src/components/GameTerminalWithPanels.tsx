@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnection';
 import { logger } from '../utils/logger';
 import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';
+import { inputSanitizer } from '../utils/security';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -532,13 +533,25 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
   const handleChatMessage = async (message: string, channel: string) => {
     if (!message.trim() || !isConnected) return;
 
+    // Sanitize chat message and channel
+    const sanitizedMessage = inputSanitizer.sanitizeChatMessage(message);
+    const sanitizedChannel = inputSanitizer.sanitizeCommand(channel);
+
+    if (!sanitizedMessage.trim()) {
+      logger.warn('GameTerminalWithPanels', 'Chat message was empty after sanitization');
+      return;
+    }
+
     // DON'T add chat messages to command history - they should only appear in ChatPanel
     // setGameState(prev => ({ ...prev, commandHistory: [...prev.commandHistory, message] }));
 
     // Send chat message to server
-    const success = await sendCommand('chat', [channel, message]);
+    const success = await sendCommand('chat', [sanitizedChannel, sanitizedMessage]);
     if (!success) {
-      logger.error('GameTerminalWithPanels', 'Failed to send chat message', { channel, message });
+      logger.error('GameTerminalWithPanels', 'Failed to send chat message', {
+        channel: sanitizedChannel,
+        message: sanitizedMessage,
+      });
     }
   };
 

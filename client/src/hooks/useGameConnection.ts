@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { debugLogger } from '../utils/debugLogger';
 import { logger } from '../utils/logger';
+import { csrfProtection, inputSanitizer } from '../utils/security';
 
 interface GameEvent {
   event_type: string;
@@ -148,7 +149,7 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
     case 'RESET_RECONNECT_ATTEMPTS':
       return { ...state, reconnectAttempts: 0 };
     case 'RESET_STATE':
-      return createInitialState(state.sessionId);
+      return createInitialState(state.sessionId || undefined);
     // New dual connection cases
     case 'SET_SESSION_ID':
       return { ...state, sessionId: action.payload };
@@ -477,14 +478,14 @@ export function useGameConnection({
           logger.info('GameConnection', 'SSE still connected, scheduling WebSocket reconnection');
           scheduleWsReconnect();
         } else {
-          logger.warning('GameConnection', 'Both SSE and WebSocket disconnected, not attempting reconnection');
+          logger.warn('GameConnection', 'Both SSE and WebSocket disconnected, not attempting reconnection');
         }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
       scheduleWsReconnect();
     }
-  }, [authToken, scheduleWsReconnect, state.sseConnected]);
+  }, [authToken, scheduleWsReconnect, state.sseConnected, debug]);
 
   const connect = useCallback(async () => {
     debug.debug('Connect function called', {
@@ -579,7 +580,7 @@ export function useGameConnection({
       onErrorRef.current?.('Failed to connect');
       scheduleSseReconnect();
     }
-  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected, startHealthMonitoring]); // Include all dependencies
+  }, [authToken, connectWebSocket, scheduleSseReconnect, state.isConnected, startHealthMonitoring, debug]); // Include all dependencies
 
   const disconnect = useCallback(() => {
     logger.info('GameConnection', 'Disconnecting');
@@ -620,15 +621,23 @@ export function useGameConnection({
     }
 
     try {
+      // Sanitize command and arguments
+      const sanitizedCommand = inputSanitizer.sanitizeCommand(command);
+      const sanitizedArgs = args.map(arg => inputSanitizer.sanitizeCommand(arg));
+
+      // Generate CSRF token for the command
+      const csrfToken = csrfProtection.generateToken();
+
       const commandData = {
         type: 'game_command', // CRITICAL FIX: Use correct message type
         data: {
-          command,
-          args,
+          command: sanitizedCommand,
+          args: sanitizedArgs,
+          csrf_token: csrfToken,
         },
       };
       websocketRef.current.send(JSON.stringify(commandData));
-      logger.info('GameConnection', 'Command sent', { command, args });
+      logger.info('GameConnection', 'Command sent', { command: sanitizedCommand, args: sanitizedArgs });
       return true;
     } catch (error) {
       logger.error('GameConnection', 'Failed to send command', { error: String(error) });
