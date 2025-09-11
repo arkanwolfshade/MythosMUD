@@ -1,5 +1,6 @@
 // Client-side logging utility for MythosMUD
 // Writes to both console and a log file for debugging
+// Updated to use the new debug system
 
 interface LogEntry {
   timestamp: string;
@@ -73,14 +74,20 @@ class ClientLogger {
     const consoleMethod =
       entry.level === 'ERROR' ? 'error' : entry.level === 'WARN' ? 'warn' : entry.level === 'DEBUG' ? 'debug' : 'log';
 
-    console[consoleMethod](
-      `[${entry.timestamp}] [${entry.level}] [${entry.component}] ${entry.message}`,
-      entry.data || ''
-    );
+    // Only log to console in development or if explicitly enabled
+    if (process.env.NODE_ENV === 'development' || entry.level === 'ERROR' || entry.level === 'WARN') {
+      console[consoleMethod](
+        `[${entry.timestamp}] [${entry.level}] [${entry.component}] ${entry.message}`,
+        entry.data || ''
+      );
+    }
   }
 
   debug(component: string, message: string, data?: unknown) {
-    this.addToBuffer(this.createLogEntry('DEBUG', component, message, data));
+    // Only log debug messages in development
+    if (process.env.NODE_ENV === 'development') {
+      this.addToBuffer(this.createLogEntry('DEBUG', component, message, data));
+    }
   }
 
   info(component: string, message: string, data?: unknown) {

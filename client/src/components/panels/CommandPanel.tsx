@@ -28,18 +28,20 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 }) => {
   const [commandInput, setCommandInput] = useState('');
 
-  // Add critical debugging for isConnected prop (after state initialization)
-  console.error('🚨 CRITICAL DEBUG: CommandPanel received isConnected prop', {
-    isConnected,
-    disabled,
-    commandInputLength: commandInput?.length || 0,
-    buttonDisabled: !commandInput?.trim() || disabled || !isConnected,
-    buttonDisabledReason: {
-      noCommand: !commandInput?.trim(),
-      panelDisabled: disabled,
-      notConnected: !isConnected,
-    },
-  });
+  // Debug logging for isConnected prop
+  if (process.env.NODE_ENV === 'development') {
+    console.debug('CommandPanel received isConnected prop', {
+      isConnected,
+      disabled,
+      commandInputLength: commandInput?.length || 0,
+      buttonDisabled: !commandInput?.trim() || disabled || !isConnected,
+      buttonDisabledReason: {
+        noCommand: !commandInput?.trim(),
+        panelDisabled: disabled,
+        notConnected: !isConnected,
+      },
+    });
+  }
   // historyIndex removed - not used in current implementation
   // showSuggestions removed - not used in current implementation
   const [currentChannel, setCurrentChannel] = useState(selectedChannel);

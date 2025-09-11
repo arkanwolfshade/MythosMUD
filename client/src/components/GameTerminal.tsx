@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
 import { MotdContent } from './MotdContent';
 import { RoomInfoPanel } from './RoomInfoPanel';
@@ -93,6 +94,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onClearHistory,
 }) => {
   const [showMotd, setShowMotd] = useState(true);
+  const debug = debugLogger('GameTerminal');
 
   // Responsive panel sizing based on viewport
   useEffect(() => {
@@ -208,9 +210,9 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             onMinimize={() => console.log('Command panel minimized')}
             onMaximize={() => console.log('Command panel maximized')}
           >
-            {/* Add critical debugging for isConnected prop passing */}
+            {/* Debug logging for isConnected prop passing */}
             {(() => {
-              console.error('🚨 CRITICAL DEBUG: GameTerminal passing isConnected to CommandPanel', {
+              debug.debug('Passing isConnected to CommandPanel', {
                 isConnected,
                 isConnecting,
                 error,

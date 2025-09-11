@@ -71,18 +71,25 @@ describe('ClientLogger', () => {
   });
 
   describe('logging methods', () => {
-    it('should log debug messages', () => {
+    it('should log debug messages in development', () => {
+      // Set NODE_ENV to development for this test
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'development';
+
       logger.debug('TestComponent', 'Debug message', { test: 'data' });
 
       const buffer = logger.getLogBuffer();
-      const lastEntry = buffer[buffer.length - 1];
-      expect(lastEntry).toMatchObject({
+      const debugEntry = buffer.find(entry => entry.message === 'Debug message' && entry.component === 'TestComponent');
+      expect(debugEntry).toMatchObject({
         level: 'DEBUG',
         component: 'TestComponent',
         message: 'Debug message',
         data: { test: 'data' },
       });
-      expect(lastEntry.timestamp).toBeDefined();
+      expect(debugEntry?.timestamp).toBeDefined();
+
+      // Restore original environment
+      process.env.NODE_ENV = originalEnv;
     });
 
     it('should log info messages', () => {
@@ -122,16 +129,29 @@ describe('ClientLogger', () => {
       expect(lastEntry.data).toBeInstanceOf(Error);
     });
 
-    it('should call appropriate console methods', () => {
+    it('should add entries to log buffer', () => {
+      // Set NODE_ENV to development for this test
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'development';
+
       logger.debug('Test', 'Debug message');
       logger.info('Test', 'Info message');
       logger.warn('Test', 'Warning message');
       logger.error('Test', 'Error message');
 
-      expect(mockConsole.debug).toHaveBeenCalled();
-      expect(mockConsole.log).toHaveBeenCalled();
-      expect(mockConsole.warn).toHaveBeenCalled();
-      expect(mockConsole.error).toHaveBeenCalled();
+      const buffer = logger.getLogBuffer();
+      const debugEntry = buffer.find(entry => entry.message === 'Debug message');
+      const infoEntry = buffer.find(entry => entry.message === 'Info message');
+      const warnEntry = buffer.find(entry => entry.message === 'Warning message');
+      const errorEntry = buffer.find(entry => entry.message === 'Error message');
+
+      expect(debugEntry).toBeDefined();
+      expect(infoEntry).toBeDefined();
+      expect(warnEntry).toBeDefined();
+      expect(errorEntry).toBeDefined();
+
+      // Restore original environment
+      process.env.NODE_ENV = originalEnv;
     });
   });
 

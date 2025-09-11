@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { debugLogger } from '../utils/debugLogger';
 import { logger } from '../utils/logger';
 
 interface GameEvent {
@@ -99,16 +100,19 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
         isConnected: action.payload || state.websocketConnected,
         error: action.payload ? null : state.error,
       };
-      console.error('🚨 CRITICAL DEBUG: SSE_CONNECTED reducer', {
-        action: action.type,
-        payload: action.payload,
-        oldSseConnected: state.sseConnected,
-        oldWebsocketConnected: state.websocketConnected,
-        oldIsConnected: state.isConnected,
-        newSseConnected: newSseState.sseConnected,
-        newWebsocketConnected: newSseState.websocketConnected,
-        newIsConnected: newSseState.isConnected,
-      });
+      // Debug logging for SSE connection state changes
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('SSE_CONNECTED reducer', {
+          action: action.type,
+          payload: action.payload,
+          oldSseConnected: state.sseConnected,
+          oldWebsocketConnected: state.websocketConnected,
+          oldIsConnected: state.isConnected,
+          newSseConnected: newSseState.sseConnected,
+          newWebsocketConnected: newSseState.websocketConnected,
+          newIsConnected: newSseState.isConnected,
+        });
+      }
       return newSseState;
     }
     case 'SET_WEBSOCKET_CONNECTED': {
@@ -119,17 +123,20 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
         isConnected: action.payload || state.sseConnected,
         error: action.payload ? null : state.error,
       };
-      console.error('🚨 CRITICAL DEBUG: WEBSOCKET_CONNECTED reducer', {
-        action: action.type,
-        payload: action.payload,
-        oldSseConnected: state.sseConnected,
-        oldWebsocketConnected: state.websocketConnected,
-        oldIsConnected: state.isConnected,
-        newSseConnected: newWsState.sseConnected,
-        newWebsocketConnected: newWsState.websocketConnected,
-        newIsConnected: newWsState.isConnected,
-        willUpdateIsConnected: action.payload || state.sseConnected,
-      });
+      // Debug logging for WebSocket connection state changes
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('WEBSOCKET_CONNECTED reducer', {
+          action: action.type,
+          payload: action.payload,
+          oldSseConnected: state.sseConnected,
+          oldWebsocketConnected: state.websocketConnected,
+          oldIsConnected: state.isConnected,
+          newSseConnected: newWsState.sseConnected,
+          newWebsocketConnected: newWsState.websocketConnected,
+          newIsConnected: newWsState.isConnected,
+          willUpdateIsConnected: action.payload || state.sseConnected,
+        });
+      }
       return newWsState;
     }
     case 'SET_ERROR':
@@ -198,8 +205,9 @@ export function useGameConnection({
   onSessionChange,
   onConnectionHealthUpdate,
 }: UseGameConnectionOptions) {
-  // CRITICAL DEBUG: Log when hook is called
-  console.error('🚨 CRITICAL DEBUG: useGameConnection hook CALLED', {
+  const debug = debugLogger('useGameConnection');
+
+  debug.debug('Hook called', {
     hasAuthToken: !!authToken,
     authTokenLength: authToken?.length || 0,
     playerName: 'unknown',
@@ -432,22 +440,14 @@ export function useGameConnection({
           logger.info('GameConnection', 'WebSocket event received', { event_type: gameEvent.event_type });
           dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
 
-          // Add simple debugging for ALL events to see what we're receiving
-          console.log('🚨 DEBUG: useGameConnection received event', {
+          debug.debug('Received WebSocket event', {
             eventType: gameEvent.event_type,
             hasOnEventRef: !!onEventRef.current,
           });
 
-          // Add simple debugging to verify onEvent callback is called
-          console.log('🚨 DEBUG: About to call onEvent callback', {
-            eventType: gameEvent.event_type,
-            hasCallback: !!onEventRef.current,
-          });
-
           onEventRef.current?.(gameEvent);
 
-          // Add debugging after callback to verify it was called
-          console.log('🚨 DEBUG: onEvent callback completed', {
+          debug.debug('onEvent callback completed', {
             eventType: gameEvent.event_type,
           });
         } catch (error) {
@@ -487,8 +487,7 @@ export function useGameConnection({
   }, [authToken, scheduleWsReconnect, state.sseConnected]);
 
   const connect = useCallback(async () => {
-    // CRITICAL DEBUG: Log when connect function is called
-    console.error('🚨 CRITICAL DEBUG: connect function CALLED', {
+    debug.debug('Connect function called', {
       hasAuthToken: !!authToken,
       authTokenLength: authToken?.length || 0,
       isConnecting: isConnectingRef.current,

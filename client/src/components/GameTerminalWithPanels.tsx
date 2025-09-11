@@ -243,16 +243,19 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
             break;
           }
           case 'command_response': {
-            console.error('🚨 CRITICAL DEBUG: command_response case MATCHED!', {
-              eventType: eventType,
-              eventData: event.data,
-              eventDataKeys: Object.keys(event.data || {}),
-              eventDataValues: Object.values(event.data || {}),
-              hasResult: !!event.data?.result,
-              resultLength: (event.data?.result as string)?.length || 0,
-              resultValue: event.data?.result,
-              timestamp: new Date().toISOString(),
-            });
+            // Debug logging for command response events
+            if (process.env.NODE_ENV === 'development') {
+              console.debug('command_response case MATCHED!', {
+                eventType: eventType,
+                eventData: event.data,
+                eventDataKeys: Object.keys(event.data || {}),
+                eventDataValues: Object.values(event.data || {}),
+                hasResult: !!event.data?.result,
+                resultLength: (event.data?.result as string)?.length || 0,
+                resultValue: event.data?.result,
+                timestamp: new Date().toISOString(),
+              });
+            }
             const message = event.data.result as string;
             const isHtml = event.data.is_html as boolean;
             logger.info('GameTerminalWithPanels', 'Processing command response', {
