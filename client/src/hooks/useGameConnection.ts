@@ -237,6 +237,8 @@ export function useGameConnection({
   const onErrorRef = useRef(onError);
   const onSessionChangeRef = useRef(onSessionChange);
   const onConnectionHealthUpdateRef = useRef(onConnectionHealthUpdate);
+  const scheduleWsReconnectRef = useRef<(() => void) | null>(null);
+  const connectWebSocketRef = useRef<(() => void) | null>(null);
 
   // Update refs when callbacks change
   useEffect(() => {
@@ -404,11 +406,14 @@ export function useGameConnection({
       wsReconnectTimerRef.current = null;
       if (state.sseConnected && !state.websocketConnected) {
         // Trigger WebSocket reconnect
-        connectWebSocket();
+        connectWebSocketRef.current?.();
       }
     }, delay);
     resourceManager.registerTimer(wsReconnectTimerRef.current);
-  }, [state.sseConnected, state.websocketConnected, resourceManager, connectWebSocket]);
+  }, [state.sseConnected, state.websocketConnected, resourceManager]);
+
+  // Store the function in ref for use by connectWebSocket
+  scheduleWsReconnectRef.current = scheduleWsReconnect;
 
   const connectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -487,16 +492,19 @@ export function useGameConnection({
         // This prevents infinite reconnection loops
         if (state.sseConnected) {
           logger.info('GameConnection', 'SSE still connected, scheduling WebSocket reconnection');
-          scheduleWsReconnect();
+          scheduleWsReconnectRef.current?.();
         } else {
           logger.warn('GameConnection', 'Both SSE and WebSocket disconnected, not attempting reconnection');
         }
       };
     } catch (error) {
       logger.error('GameConnection', 'Failed to connect WebSocket', { error: String(error) });
-      scheduleWsReconnect();
+      scheduleWsReconnectRef.current?.();
     }
-  }, [authToken, scheduleWsReconnect, state.sseConnected, debug, resourceManager]);
+  }, [authToken, state.sseConnected, debug, resourceManager]);
+
+  // Store the function in ref for use by scheduleWsReconnect
+  connectWebSocketRef.current = connectWebSocket;
 
   const connect = useCallback(async () => {
     debug.debug('Connect function called', {

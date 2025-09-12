@@ -50,9 +50,6 @@ export class MemoryLeakDetector {
     this.intervalId = window.setInterval(() => {
       this.checkMemory();
     }, this.options.checkInterval);
-
-    // Take initial snapshot
-    this.checkMemory();
   }
 
   stop(): void {
