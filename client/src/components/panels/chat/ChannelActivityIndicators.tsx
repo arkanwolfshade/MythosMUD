@@ -23,7 +23,7 @@ const getActivityColor = (activityLevel: string): string => {
 };
 
 export const ChannelActivityIndicators: React.FC<ChannelActivityIndicatorsProps> = ({
-  selectedChannel,
+  selectedChannel: _selectedChannel,
   unreadCounts,
   onChannelSelect,
 }) => {

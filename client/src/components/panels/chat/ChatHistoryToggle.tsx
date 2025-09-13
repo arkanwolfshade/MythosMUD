@@ -11,7 +11,7 @@ interface ChatHistoryToggleProps {
 }
 
 export const ChatHistoryToggle: React.FC<ChatHistoryToggleProps> = ({
-  showChatHistory,
+  showChatHistory: _showChatHistory,
   onToggleHistory,
   chatFilter,
   onFilterChange,

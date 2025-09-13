@@ -40,7 +40,18 @@ vi.mock('../../hooks/useGameConnection', () => ({
 }));
 
 vi.mock('../../components/StatsRollingScreen', () => ({
-  StatsRollingScreen: ({ onStatsAccepted }: { onStatsAccepted: (stats: any) => void }) => (
+  StatsRollingScreen: ({
+    onStatsAccepted,
+  }: {
+    onStatsAccepted: (stats: {
+      strength: number;
+      dexterity: number;
+      constitution: number;
+      intelligence: number;
+      wisdom: number;
+      charisma: number;
+    }) => void;
+  }) => (
     <div data-testid="stats-rolling-screen">
       <button
         onClick={() =>
@@ -193,7 +204,9 @@ describe('Logout Flow Integration', () => {
 
       // Mock logout handler with delay
       const { logoutHandler } = await import('../../utils/logoutHandler');
-      (logoutHandler as any).mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockImplementation(
+        () => new Promise(resolve => setTimeout(resolve, 100))
+      );
 
       render(<App />);
 
@@ -238,7 +251,7 @@ describe('Logout Flow Integration', () => {
 
       // Mock logout handler to throw error
       const { logoutHandler } = await import('../../utils/logoutHandler');
-      (logoutHandler as any).mockRejectedValueOnce(new Error('Logout failed'));
+      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockRejectedValueOnce(new Error('Logout failed'));
 
       render(<App />);
 
@@ -285,7 +298,7 @@ describe('Logout Flow Integration', () => {
 
       // Mock disconnected state
       const { useGameConnection } = await import('../../hooks/useGameConnection');
-      (useGameConnection as any).mockReturnValue({
+      (useGameConnection as jest.MockedFunction<typeof useGameConnection>).mockReturnValue({
         isConnected: false,
         isConnecting: false,
         error: 'Connection lost',

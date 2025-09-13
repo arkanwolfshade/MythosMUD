@@ -46,27 +46,6 @@ export const StyleGuide: React.FC = () => {
     level: 5,
   };
 
-  const mockRoom = {
-    id: 'room-1',
-    name: 'Test Room',
-    description: 'A test room for demonstrating the UI components.',
-    plane: 'Material',
-    zone: 'Arkham',
-    sub_zone: 'Downtown',
-    environment: 'Urban',
-    exits: {
-      north: 'room-2',
-      south: 'room-3',
-      east: 'room-4',
-    },
-    occupants: ['player-1', 'player-2'],
-    occupant_count: 2,
-    entities: [
-      { name: 'Test NPC', type: 'npc' },
-      { name: 'Test Item', type: 'item' },
-    ],
-  };
-
   const channels = [
     { id: 'local', name: 'Local', shortcut: 'say' },
     { id: 'global', name: 'Global', shortcut: 'chat' },

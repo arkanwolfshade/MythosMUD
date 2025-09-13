@@ -37,7 +37,7 @@ interface ChatPanelRefactoredProps {
 
 export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
   messages,
-  onSendChatMessage,
+  onSendChatMessage: _onSendChatMessage,
   onClearMessages,
   onDownloadLogs,
   disabled = false,

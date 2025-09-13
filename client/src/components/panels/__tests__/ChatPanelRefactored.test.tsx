@@ -1,17 +1,26 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_CHANNEL } from '../../../config/channels';
+import { ChatMessage } from '../../../stores/gameStore';
 import { ChatPanelRefactored } from '../ChatPanelRefactored';
 
 // Mock the chat sub-components
 vi.mock('../chat', () => ({
-  ChatHeader: ({ onClearMessages, onDownloadLogs }: any) => (
+  ChatHeader: ({ onClearMessages, onDownloadLogs }: { onClearMessages?: () => void; onDownloadLogs?: () => void }) => (
     <div data-testid="chat-header">
       <button onClick={onClearMessages}>Clear Messages</button>
       <button onClick={onDownloadLogs}>Download Logs</button>
     </div>
   ),
-  ChannelSelectorSection: ({ selectedChannel, onChannelSelect, disabled }: any) => (
+  ChannelSelectorSection: ({
+    selectedChannel,
+    onChannelSelect,
+    disabled,
+  }: {
+    selectedChannel: string;
+    onChannelSelect: (channel: string) => void;
+    disabled?: boolean;
+  }) => (
     <div data-testid="channel-selector">
       <button
         onClick={() => onChannelSelect('local')}
@@ -29,7 +38,15 @@ vi.mock('../chat', () => ({
       </button>
     </div>
   ),
-  ChannelActivityIndicators: ({ selectedChannel, unreadCounts, onChannelSelect }: any) => (
+  ChannelActivityIndicators: ({
+    selectedChannel: _selectedChannel,
+    unreadCounts,
+    onChannelSelect,
+  }: {
+    selectedChannel: string;
+    unreadCounts: Record<string, number>;
+    onChannelSelect: (channel: string) => void;
+  }) => (
     <div data-testid="activity-indicators">
       {Object.entries(unreadCounts).map(([channel, count]) => (
         <span key={channel} onClick={() => onChannelSelect(channel)}>
@@ -44,7 +61,13 @@ vi.mock('../chat', () => ({
     chatFilter,
     onFilterChange,
     currentChannelMessages,
-  }: any) => (
+  }: {
+    showChatHistory: boolean;
+    onToggleHistory: () => void;
+    chatFilter: string;
+    onFilterChange: (filter: string) => void;
+    currentChannelMessages: number;
+  }) => (
     <div data-testid="chat-history-toggle">
       <button onClick={onToggleHistory}>{showChatHistory ? 'Hide' : 'Show'} History</button>
       <select value={chatFilter} onChange={e => onFilterChange(e.target.value)}>
@@ -54,16 +77,24 @@ vi.mock('../chat', () => ({
       <span>Messages: {currentChannelMessages}</span>
     </div>
   ),
-  ChatMessagesList: ({ messages }: any) => (
+  ChatMessagesList: ({ messages }: { messages: ChatMessage[] }) => (
     <div data-testid="chat-messages-list">
-      {messages.map((message: any, index: number) => (
+      {messages.map((message: { text: string }, index: number) => (
         <div key={index} data-testid={`message-${index}`}>
           {message.text}
         </div>
       ))}
     </div>
   ),
-  ChatStatistics: ({ selectedChannel, currentChannelMessages, unreadCounts }: any) => (
+  ChatStatistics: ({
+    selectedChannel,
+    currentChannelMessages,
+    unreadCounts,
+  }: {
+    selectedChannel: string;
+    currentChannelMessages: number;
+    unreadCounts: Record<string, number>;
+  }) => (
     <div data-testid="chat-statistics">
       <span>Channel: {selectedChannel}</span>
       <span>Messages: {currentChannelMessages}</span>

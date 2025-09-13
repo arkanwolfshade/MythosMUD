@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useGameTerminal } from '../../hooks/useGameTerminal';
+import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminalContainer } from '../GameTerminalContainer';
 
 // Mock the useGameTerminal hook
@@ -54,7 +56,20 @@ vi.mock('../../hooks/useGameTerminal', () => ({
 
 // Mock the presentation component
 vi.mock('../GameTerminalPresentation', () => ({
-  GameTerminalPresentation: ({ playerName, isConnected, messages, commandHistory, ...props }: any) => (
+  GameTerminalPresentation: ({
+    playerName,
+    isConnected,
+    messages,
+    commandHistory,
+    ...props
+  }: {
+    playerName: string;
+    isConnected: boolean;
+    messages: ChatMessage[];
+    commandHistory: string[];
+    onSendCommand: (command: string) => void;
+    [key: string]: unknown;
+  }) => (
     <div data-testid="game-terminal-presentation">
       <div data-testid="player-name">{playerName}</div>
       <div data-testid="connection-status">{isConnected ? 'connected' : 'disconnected'}</div>
@@ -80,7 +95,7 @@ vi.mock('../GameTerminalPresentation', () => ({
 }));
 
 describe('GameTerminalContainer', () => {
-  const mockUseGameTerminal = vi.mocked(require('../../hooks/useGameTerminal').useGameTerminal);
+  const mockUseGameTerminal = vi.mocked(useGameTerminal);
 
   beforeEach(() => {
     vi.clearAllMocks();

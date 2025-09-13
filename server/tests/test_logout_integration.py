@@ -2,8 +2,9 @@
 Integration tests for logout functionality.
 """
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
 from server.command_handler_unified import process_command_unified
 

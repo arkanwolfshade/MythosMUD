@@ -153,7 +153,7 @@ const ErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 };
 
 describe('GameTerminalContext', () => {
-  let mockUseGameTerminal: any;
+  let mockUseGameTerminal: ReturnType<typeof vi.mocked<typeof useGameTerminal>>;
 
   beforeEach(() => {
     vi.clearAllMocks();

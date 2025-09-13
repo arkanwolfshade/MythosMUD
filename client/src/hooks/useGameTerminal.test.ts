@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useCommandStore, useConnectionStore, useGameStore, useSessionStore } from '../stores';
 import { useGameTerminal } from './useGameTerminal';
 
 // Mock the stores
@@ -151,7 +152,7 @@ describe('useGameTerminal', () => {
       expect(result.current.isConnected).toBe(true);
 
       // Mock updated connection state
-      vi.mocked(require('../stores').useConnectionStore).mockReturnValue({
+      vi.mocked(useConnectionStore).mockReturnValue({
         isConnected: false,
         isConnecting: true,
         error: 'Connection failed',
@@ -172,7 +173,7 @@ describe('useGameTerminal', () => {
       expect(result.current.player?.stats.current_health).toBe(100);
 
       // Mock updated game state
-      vi.mocked(require('../stores').useGameStore).mockReturnValue({
+      vi.mocked(useGameStore).mockReturnValue({
         player: {
           id: 'player-1',
           name: 'TestPlayer',
@@ -196,7 +197,7 @@ describe('useGameTerminal', () => {
       expect(result.current.playerName).toBe('TestPlayer');
 
       // Mock updated session state
-      vi.mocked(require('../stores').useSessionStore).mockReturnValue({
+      vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'NewPlayer',
         characterName: 'NewCharacter',
         isAuthenticated: true,
@@ -214,7 +215,7 @@ describe('useGameTerminal', () => {
       expect(result.current.commandHistory).toHaveLength(3);
 
       // Mock updated command state
-      vi.mocked(require('../stores').useCommandStore).mockReturnValue({
+      vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [
           { command: 'look', timestamp: Date.now(), success: true },
           { command: 'inventory', timestamp: Date.now(), success: true },
@@ -255,14 +256,14 @@ describe('useGameTerminal', () => {
 
     it('should handle empty data gracefully', () => {
       // Mock empty states
-      vi.mocked(require('../stores').useGameStore).mockReturnValue({
+      vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
         chatMessages: [],
         gameLog: [],
       });
 
-      vi.mocked(require('../stores').useCommandStore).mockReturnValue({
+      vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
@@ -280,7 +281,7 @@ describe('useGameTerminal', () => {
   describe('Error Handling', () => {
     it('should handle store errors gracefully', () => {
       // Mock store throwing error
-      vi.mocked(require('../stores').useConnectionStore).mockImplementation(() => {
+      vi.mocked(useConnectionStore).mockImplementation(() => {
         throw new Error('Store error');
       });
 
@@ -291,7 +292,7 @@ describe('useGameTerminal', () => {
 
     it('should handle missing store data gracefully', () => {
       // Mock undefined store return
-      vi.mocked(require('../stores').useGameStore).mockReturnValue(undefined);
+      vi.mocked(useGameStore).mockReturnValue(undefined);
 
       expect(() => {
         renderHook(() => useGameTerminal());

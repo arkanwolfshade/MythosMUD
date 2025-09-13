@@ -2,8 +2,9 @@
 Unit tests for the logout command handler.
 """
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
 from server.commands.utility_commands import handle_logout_command
 

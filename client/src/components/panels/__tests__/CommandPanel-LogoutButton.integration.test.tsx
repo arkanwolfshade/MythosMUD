@@ -49,8 +49,8 @@ vi.mock('../../ui/TerminalButton', () => ({
     disabled,
     className,
     title,
-    variant,
-    size,
+    variant: _variant,
+    size: _size,
     ...props
   }: {
     children: React.ReactNode;
@@ -217,6 +217,7 @@ describe('CommandPanel with LogoutButton Integration', () => {
     });
 
     it('does not render logout button when onLogout prop is not provided', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onLogout, ...propsWithoutLogout } = defaultProps;
       render(<CommandPanel {...propsWithoutLogout} />);
 

@@ -54,7 +54,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -85,7 +85,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -98,7 +98,7 @@ describe('logoutHandler', () => {
   describe('Timeout Handling', () => {
     it('should proceed with client-side logout after timeout', async () => {
       // Mock fetch to throw AbortError after timeout
-      (global.fetch as any).mockImplementation(() =>
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 
@@ -111,7 +111,7 @@ describe('logoutHandler', () => {
 
     it('should handle abort errors gracefully', async () => {
       // Mock fetch to throw AbortError
-      (global.fetch as any).mockImplementation(() =>
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 
@@ -126,7 +126,7 @@ describe('logoutHandler', () => {
 
   describe('Network Error Handling', () => {
     it('should proceed with client-side logout on network error', async () => {
-      (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(new Error('Network error'));
 
       await logoutHandler(defaultOptions);
 
@@ -136,7 +136,7 @@ describe('logoutHandler', () => {
     });
 
     it('should proceed with client-side logout on fetch rejection', async () => {
-      (global.fetch as any).mockRejectedValueOnce('Connection failed');
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce('Connection failed');
 
       await logoutHandler(defaultOptions);
 
@@ -153,7 +153,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -166,7 +166,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -179,7 +179,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -197,7 +197,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -208,7 +208,7 @@ describe('logoutHandler', () => {
     });
 
     it('should log network errors but still proceed with logout', async () => {
-      (global.fetch as any).mockRejectedValueOnce(new Error('Network timeout'));
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(new Error('Network timeout'));
 
       await logoutHandler(defaultOptions);
 
@@ -222,7 +222,7 @@ describe('logoutHandler', () => {
   describe('Custom Timeout Configuration', () => {
     it('should use custom timeout value', async () => {
       // Mock fetch to throw AbortError (simulating timeout)
-      (global.fetch as any).mockImplementation(() =>
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 

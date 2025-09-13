@@ -71,7 +71,7 @@ test.describe('Multiplayer Scenarios', () => {
         console.log('AW message count:', awMessages.length);
         console.log('AW messages:', awMessages);
       }
-    } catch (error) {
+    } catch {
       console.log('⚠️ TIMING ARTIFACT: Connection message not received within timeout');
       const awMessages = await getAllMessages(page1);
       console.log('AW message count:', awMessages.length);
@@ -108,7 +108,7 @@ test.describe('Multiplayer Scenarios', () => {
         console.log('AW message count after disconnect:', awMessagesAfter.length);
         console.log('AW messages after disconnect:', awMessagesAfter);
       }
-    } catch (error) {
+    } catch {
       console.log('⚠️ TIMING ARTIFACT: Disconnect message not received within timeout');
       const awMessagesAfter = await getAllMessages(page1);
       console.log('AW message count after disconnect:', awMessagesAfter.length);
@@ -154,7 +154,7 @@ test.describe('Multiplayer Scenarios', () => {
       const awCurrentMessages = await getAllMessages(page1);
       const hasCurrentSession = awCurrentMessages.some(msg => msg.includes('Ithaqua has entered the game'));
       console.log('AW sees current session:', hasCurrentSession);
-    } catch (error) {
+    } catch {
       console.log('⚠️ Current session message not received within timeout');
     }
   });

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminal } from '../GameTerminal';
 
 // Mock the debug logger
@@ -14,7 +15,19 @@ vi.mock('../../utils/debugLogger', () => ({
 
 // Mock the panel components
 vi.mock('../panels/ChatPanel', () => ({
-  ChatPanel: ({ messages, onSendChatMessage, onClearMessages, onDownloadLogs, isConnected }: any) => (
+  ChatPanel: ({
+    messages,
+    onSendChatMessage,
+    onClearMessages,
+    onDownloadLogs,
+    isConnected,
+  }: {
+    messages: ChatMessage[];
+    onSendChatMessage: (message: string, channel: string) => void;
+    onClearMessages?: () => void;
+    onDownloadLogs?: () => void;
+    isConnected?: boolean;
+  }) => (
     <div data-testid="chat-panel">
       <div data-testid="chat-messages-count">{messages.length}</div>
       <button data-testid="send-chat" onClick={() => onSendChatMessage('test message', 'local')}>
@@ -32,7 +45,17 @@ vi.mock('../panels/ChatPanel', () => ({
 }));
 
 vi.mock('../panels/CommandPanel', () => ({
-  CommandPanel: ({ commandHistory, onSendCommand, onClearHistory, isConnected }: any) => (
+  CommandPanel: ({
+    commandHistory,
+    onSendCommand,
+    onClearHistory,
+    isConnected,
+  }: {
+    commandHistory: string[];
+    onSendCommand: (command: string) => void;
+    onClearHistory?: () => void;
+    isConnected?: boolean;
+  }) => (
     <div data-testid="command-panel">
       <div data-testid="command-history-count">{commandHistory.length}</div>
       <button data-testid="send-command" onClick={() => onSendCommand('look')}>
@@ -47,7 +70,15 @@ vi.mock('../panels/CommandPanel', () => ({
 }));
 
 vi.mock('../panels/GameLogPanel', () => ({
-  GameLogPanel: ({ messages, onClearMessages, onDownloadLogs }: any) => (
+  GameLogPanel: ({
+    messages,
+    onClearMessages,
+    onDownloadLogs,
+  }: {
+    messages: ChatMessage[];
+    onClearMessages?: () => void;
+    onDownloadLogs?: () => void;
+  }) => (
     <div data-testid="game-log-panel">
       <div data-testid="game-log-messages-count">{messages.length}</div>
       <button data-testid="game-log-clear" onClick={onClearMessages}>
@@ -61,7 +92,19 @@ vi.mock('../panels/GameLogPanel', () => ({
 }));
 
 vi.mock('../DraggablePanel', () => ({
-  DraggablePanel: ({ children, title, onClose, onMinimize, onMaximize }: any) => (
+  DraggablePanel: ({
+    children,
+    title,
+    onClose,
+    onMinimize,
+    onMaximize,
+  }: {
+    children: React.ReactNode;
+    title?: string;
+    onClose?: () => void;
+    onMinimize?: () => void;
+    onMaximize?: () => void;
+  }) => (
     <div data-testid={`draggable-panel-${title.toLowerCase().replace(' ', '-')}`}>
       <div data-testid="panel-title">{title}</div>
       <button data-testid="panel-close" onClick={onClose}>
@@ -83,7 +126,7 @@ vi.mock('../MotdContent', () => ({
 }));
 
 vi.mock('../RoomInfoPanel', () => ({
-  RoomInfoPanel: ({ room, debugInfo }: any) => (
+  RoomInfoPanel: ({ room, debugInfo }: { room?: { name?: string; description?: string }; debugInfo?: unknown }) => (
     <div data-testid="room-info-panel">
       <div data-testid="room-name">{room?.name || 'No Room'}</div>
       <div data-testid="room-description">{room?.description || 'No Description'}</div>
