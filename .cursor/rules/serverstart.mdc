@@ -1,24 +1,41 @@
 ---
-alwaysApply: false
+alwaysApply: true
 ---
 
+# CRITICAL SERVER MANAGEMENT RULES
 
-The server should only be started using the start_dev.ps1 script, run from the project root
-You should always verify there is no running server by using stop_server.ps1 script before trying to start the server
+## ONE SERVER ONLY RULE
+**THERE CAN ONLY BE ONE SERVER RUNNING AT ANY TIME**
 
-**Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users.
-**Database Placement**: Verify database files are in correct locations (/data/players/ for production, /server/tests/data/players/ for tests)
-**Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
+## MANDATORY SERVER STARTUP PROCEDURE
+1. **STOP FIRST**: Before starting a server, ALWAYS run `./scripts/stop_server.ps1`
+2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an | findstr :54731` and `netstat -an | findstr :5173`
+3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
+4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
+5. **ONE START ONLY**: Run `./scripts/start_dev.ps1` with `is_background: false` exactly ONCE
+6. **IF IT SAYS "Press any key to exit"**: The server is running - DO NOT start another
 
-The server should only be started using the start_dev.ps1 script, run from the project root
-You should always verify there is no running server by using stop_server.ps1 script before trying to start the server
+## PRE-COMMAND CHECKLIST
+Before running ANY server command, ask yourself:
+- Did I already start a server in this session? (YES = STOP, don't start another)
+- Am I about to use `is_background: true`? (YES = STOP, use false instead)  
+- Did I run `stop_server.ps1` first? (NO = STOP, run it first)
+- Am I about to run `start_dev.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
 
-The server should only be started using the start_dev.ps1 script, run from the project root
-You should always verify there is no running server by using stop_server.ps1 script before trying to start the server
+## SERVER STARTUP IS CRITICAL
+- Server startup is a CRITICAL operation that requires full attention
+- NEVER start multiple server instances
+- If `start_dev.ps1` fails or shows errors, DO NOT run it again - investigate the error first
+- Use `is_background: false` for ALL server operations to see output
 
-**Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users.
-**Database Placement**: Verify database files are in correct locations (/data/players/ for production, /server/tests/data/players/ for tests)
-**Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
+## Security and Environment
+- **Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users
+- **Database Placement**: Verify database files are in correct locations (/data/players/ for production, /server/tests/data/players/ for tests)
+- **Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
 
-The server should only be started using the start_dev.ps1 script, run from the project root
-You should always verify there is no running server by using stop_server.ps1 script before trying to start the server
+## VIOLATION CONSEQUENCES
+Violating these rules will cause:
+- Multiple server instances running simultaneously
+- Port conflicts and connection failures
+- Unpredictable behavior in multiplayer scenarios
+- Complete failure of the testing process

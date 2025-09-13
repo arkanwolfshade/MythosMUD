@@ -43,13 +43,13 @@ class DebugLogger {
 
   private getDefaultLogLevel(): LogLevel {
     // Check environment variables for log level
-    const envLogLevel = process.env.VITE_LOG_LEVEL as LogLevel;
+    const envLogLevel = import.meta.env.VITE_LOG_LEVEL as LogLevel;
     if (envLogLevel && ['DEBUG', 'INFO', 'WARN', 'ERROR'].includes(envLogLevel)) {
       return envLogLevel;
     }
 
     // Default based on environment
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
       return 'WARN';
     }
 
@@ -126,7 +126,7 @@ class DebugLogger {
   // Public logging methods
   debug(message: string, data?: unknown): void {
     // In production builds, debug calls are removed at build time
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
       return;
     }
     this.log('DEBUG', message, data);

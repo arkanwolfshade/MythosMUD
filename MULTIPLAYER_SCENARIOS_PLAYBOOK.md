@@ -28,6 +28,17 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 
 ## Cursor Execution Rules (Low-Performance Optimized)
 
+### CRITICAL SERVER RULE - READ THIS FIRST
+**ONE SERVER ONLY**: There can only be ONE server running at any time.
+**STOP FIRST**: Before starting a server, ALWAYS run `./scripts/stop_server.ps1`
+**NO BACKGROUND**: Never use `is_background: true` for server startup
+**SEE OUTPUT**: Always use `is_background: false` to see what's happening
+**IF IT SAYS "Press any key to exit"**: The server is running - DO NOT start another
+
+### CRITICAL: FOLLOW INSTRUCTIONS EXACTLY AS WRITTEN
+
+**⚠️ MANDATORY RULE**: Every step in every scenario must be executed exactly as written. Do not skip steps, modify steps, or assume steps are optional. Each step is there for a specific reason and builds upon the previous steps. Failure to follow instructions exactly will cause subsequent scenarios to fail.
+
 ### Prerequisites (Run Before Starting Scenarios)
 
 1. **Verify Server Status**: Always check if server is running before starting
@@ -43,6 +54,13 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - **Database Operations**: Use SQLite CLI for direct database access
 - **Error Handling**: Document all failures, making sure to look at logfiles and the web console, and stop
 - **Wait Times**: All scenarios use extended timeouts (15-30 seconds) for low-performance machines
+
+### PRE-COMMAND CHECKLIST
+Before running ANY server command, ask yourself:
+- Did I already start a server in this session? (YES = STOP, don't start another)
+- Am I about to use `is_background: true`? (YES = STOP, use false instead)
+- Did I run `stop_server.ps1` first? (NO = STOP, run it first)
+- Am I about to run `start_dev.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
 
 ### State Verification Steps
 
