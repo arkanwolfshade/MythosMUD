@@ -55,6 +55,7 @@ class CommandType(str, Enum):
     STATUS = "status"
     INVENTORY = "inventory"
     QUIT = "quit"
+    LOGOUT = "logout"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
@@ -581,6 +582,12 @@ class QuitCommand(BaseCommand):
     command_type: Literal[CommandType.QUIT] = CommandType.QUIT
 
 
+class LogoutCommand(BaseCommand):
+    """Command for logging out of the game."""
+
+    command_type: Literal[CommandType.LOGOUT] = CommandType.LOGOUT
+
+
 class WhisperCommand(BaseCommand):
     """Command for whispering to a specific player."""
 
@@ -611,7 +618,7 @@ class WhisperCommand(BaseCommand):
 
         # Check for command injection attempts
         if re.search(
-            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
+            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|logout|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
             v,
             re.IGNORECASE,
         ):
@@ -640,7 +647,7 @@ class ReplyCommand(BaseCommand):
 
         # Check for command injection attempts
         if re.search(
-            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
+            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|logout|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
             v,
             re.IGNORECASE,
         ):
@@ -676,6 +683,7 @@ Command = (
     | StatusCommand
     | InventoryCommand
     | QuitCommand
+    | LogoutCommand
     | WhisperCommand
     | ReplyCommand
 )

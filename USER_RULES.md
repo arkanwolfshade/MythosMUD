@@ -34,7 +34,7 @@
 
 ## VIOLATION CONSEQUENCES
 - Multiple server instances running simultaneously
-- Port conflicts and connection failures  
+- Port conflicts and connection failures
 - Unpredictable behavior in multiplayer scenarios
 - Complete failure of the testing process
 

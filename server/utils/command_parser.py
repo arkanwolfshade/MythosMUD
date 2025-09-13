@@ -24,6 +24,7 @@ from ..models.command import (
     InventoryCommand,
     LocalCommand,
     LookCommand,
+    LogoutCommand,
     MeCommand,
     MuteCommand,
     MuteGlobalCommand,
@@ -85,6 +86,7 @@ class CommandParser:
             CommandType.STATUS.value: self._create_status_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.QUIT.value: self._create_quit_command,
+            CommandType.LOGOUT.value: self._create_logout_command,
             # Communication commands
             CommandType.WHISPER.value: self._create_whisper_command,
             CommandType.REPLY.value: self._create_reply_command,
@@ -554,6 +556,12 @@ class CommandParser:
                 MythosValidationError, "Quit command takes no arguments", context=context, logger_name=__name__
             )
         return QuitCommand()
+
+    def _create_logout_command(self, args: list[str]) -> LogoutCommand:
+        """Create LogoutCommand from arguments."""
+        # Logout command ignores arguments (like quit command)
+        # This allows for commands like "logout force now" to work
+        return LogoutCommand()
 
     def _create_whisper_command(self, args: list[str]) -> WhisperCommand:
         """Create a WhisperCommand from parsed arguments."""

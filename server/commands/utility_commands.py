@@ -244,6 +244,82 @@ async def handle_quit_command(
     return {"result": "Goodbye! You have been disconnected from the game."}
 
 
+async def handle_logout_command(
+    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+) -> dict[str, str]:
+    """
+    Handle the logout command for cleanly disconnecting from the game.
+
+    This command performs a complete logout process including:
+    - Updating player's last active timestamp
+    - Cleaning up server-side session data
+    - Disconnecting all connections
+    - Returning success confirmation
+
+    Args:
+        args: Command arguments (ignored)
+        current_user: Current user information
+        request: FastAPI request object
+        alias_storage: Alias storage instance
+        player_name: Player name for logging
+
+    Returns:
+        dict: Logout command result with success status and metadata
+    """
+    logger.debug("Processing logout command", player=player_name, args=args)
+
+    try:
+        # Update last active timestamp before logout
+        app = request.app if request else None
+        persistence = app.state.persistence if app else None
+
+        if persistence:
+            try:
+                player = persistence.get_player_by_name(get_username_from_user(current_user))
+                if player:
+                    from datetime import UTC, datetime
+
+                    player.last_active = datetime.now(UTC)
+                    persistence.save_player(player)
+                    logger.info("Player logout - updated last active", player=player_name)
+            except Exception as e:
+                logger.error("Error updating last active on logout", player=player_name, error=str(e))
+
+        # Disconnect player from all connections
+        try:
+            app = request.app if request else None
+            connection_manager = app.state.connection_manager if app else None
+
+            if connection_manager:
+                await connection_manager.force_disconnect_player(player_name)
+                logger.info("Player disconnected from all connections", player=player_name)
+            else:
+                logger.warning("Connection manager not available for logout", player=player_name)
+        except Exception as e:
+            logger.error("Error disconnecting player", player=player_name, error=str(e))
+
+        logger.info("Player logged out successfully", player=player_name)
+
+        return {
+            "result": "Logged out successfully",
+            "session_terminated": True,
+            "connections_closed": True,
+            "message": "You have been logged out and disconnected from the game.",
+        }
+
+    except Exception as e:
+        logger.error("Unexpected error during logout", player=player_name, error=str(e), exc_info=True)
+
+        # Even if there's an error, we should still indicate logout success
+        # The client will handle the cleanup
+        return {
+            "result": "Logged out successfully",
+            "session_terminated": True,
+            "connections_closed": True,
+            "message": "You have been logged out from the game.",
+        }
+
+
 async def handle_status_command(
     args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:

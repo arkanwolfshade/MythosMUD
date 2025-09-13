@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AVAILABLE_CHANNELS, DEFAULT_CHANNEL } from '../../config/channels';
 import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
+import { LogoutButton } from '../ui/LogoutButton';
 import { TerminalButton } from '../ui/TerminalButton';
 import { TerminalInput } from '../ui/TerminalInput';
 
@@ -9,8 +10,10 @@ interface CommandPanelProps {
   commandHistory: string[];
   onSendCommand: (command: string) => void;
   onClearHistory?: () => void;
+  onLogout?: () => void;
   disabled?: boolean;
   isConnected?: boolean;
+  isLoggingOut?: boolean;
   placeholder?: string;
   selectedChannel?: string;
   onChannelSelect?: (channelId: string) => void;
@@ -20,8 +23,10 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   commandHistory,
   onSendCommand,
   onClearHistory,
+  onLogout,
   disabled = false,
   isConnected = true,
+  isLoggingOut = false,
   placeholder = "Enter game command (e.g., 'look', 'inventory', 'go north')...",
   selectedChannel = DEFAULT_CHANNEL,
   // onChannelSelect removed - not used in current implementation
@@ -201,6 +206,13 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
           ))}
         </div>
       </div>
+
+      {/* Logout Button */}
+      {onLogout && (
+        <div className="p-3 border-t border-gray-700 bg-mythos-terminal-background">
+          <LogoutButton onLogout={onLogout} disabled={disabled || !isConnected} isLoggingOut={isLoggingOut} />
+        </div>
+      )}
     </div>
   );
 };

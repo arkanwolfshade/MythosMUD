@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
+import { logoutHandler } from './utils/logoutHandler';
 import { memoryMonitor } from './utils/memoryMonitor';
 import { inputSanitizer, secureTokenStorage } from './utils/security';
 
@@ -29,6 +30,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Initialize memory monitoring
   useEffect(() => {
@@ -154,7 +156,86 @@ function App() {
     setIsAuthenticated(false);
     setAuthToken('');
     // Clear secure tokens
-    secureTokenStorage.clearToken();
+    secureTokenStorage.clearAllTokens();
+  };
+
+  // Reference to store the disconnect callback from GameTerminalWithPanels
+  const disconnectCallbackRef = useRef<(() => void) | null>(null);
+
+  // Reference to the username input for focus management
+  const usernameInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Callback to register the disconnect function from GameTerminalWithPanels
+  const handleDisconnectCallback = (disconnectFn: () => void) => {
+    disconnectCallbackRef.current = disconnectFn;
+  };
+
+  // Function to focus the username input for accessibility
+  const focusUsernameInput = () => {
+    // Use setTimeout to ensure the DOM has updated after state changes
+    setTimeout(() => {
+      if (usernameInputRef.current) {
+        usernameInputRef.current.focus();
+      }
+    }, 0);
+  };
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent multiple logout attempts
+
+    setIsLoggingOut(true);
+    setError(null);
+
+    // Helper function to clear all state
+    const clearAllState = () => {
+      setIsAuthenticated(false);
+      setHasCharacter(false);
+      setCharacterName('');
+      setPlayerName('');
+      setPassword('');
+      setInviteCode('');
+      setAuthToken('');
+      setError(null);
+      secureTokenStorage.clearAllTokens();
+
+      // Focus the username input for accessibility
+      focusUsernameInput();
+    };
+
+    try {
+      await logoutHandler({
+        authToken,
+        disconnect: () => {
+          // Call the disconnect callback from GameTerminalWithPanels
+          if (disconnectCallbackRef.current) {
+            disconnectCallbackRef.current();
+          }
+        },
+        clearState: clearAllState,
+        navigateToLogin: clearAllState,
+        timeout: 5000,
+      });
+    } catch (error) {
+      // Even if logout handler fails, we should still return to login
+      console.error('Logout failed:', error);
+      setError(error instanceof Error ? error.message : 'Logout failed');
+
+      // Force return to login screen regardless of server response
+      // Clear all state except the error message
+      setIsAuthenticated(false);
+      setHasCharacter(false);
+      setCharacterName('');
+      setPlayerName('');
+      setPassword('');
+      setInviteCode('');
+      setAuthToken('');
+      secureTokenStorage.clearAllTokens();
+
+      // Focus the username input for accessibility
+      focusUsernameInput();
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const toggleMode = () => {
@@ -184,6 +265,7 @@ function App() {
 
             <div className="login-inputs">
               <input
+                ref={usernameInputRef}
                 type="text"
                 placeholder="Username"
                 className="login-input"
@@ -265,7 +347,13 @@ function App() {
   // If authenticated and has character, show game terminal
   return (
     <div className="App">
-      <GameTerminalWithPanels playerName={characterName} authToken={authToken} />
+      <GameTerminalWithPanels
+        playerName={characterName}
+        authToken={authToken}
+        onLogout={handleLogout}
+        isLoggingOut={isLoggingOut}
+        onDisconnect={handleDisconnectCallback}
+      />
     </div>
   );
 }

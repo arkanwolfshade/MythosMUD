@@ -18,7 +18,7 @@ alwaysApply: true
 ## PRE-COMMAND CHECKLIST
 Before running ANY server command, ask yourself:
 - Did I already start a server in this session? (YES = STOP, don't start another)
-- Am I about to use `is_background: true`? (YES = STOP, use false instead)  
+- Am I about to use `is_background: true`? (YES = STOP, use false instead)
 - Did I run `stop_server.ps1` first? (NO = STOP, run it first)
 - Am I about to run `start_dev.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
 

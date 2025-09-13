@@ -2222,6 +2222,311 @@ console.log('Total whispers Ithaqua sees:', allWhispers.length);
 
 ---
 
+## Scenario 19: Logout Button Functionality
+
+### Description
+
+Tests the logout button functionality including proper state cleanup, server communication, and return to login screen.
+
+### Prerequisites
+
+- One player connected (AW)
+- Logout button system implemented (Tasks 1-4 completed)
+- Server running with logout command support
+
+### Cursor Execution Steps
+
+#### Step 1: AW Enters the Game
+
+```javascript
+// Navigate to client
+await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
+
+// Login as AW
+await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+
+// Wait for game terminal
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+```
+
+#### Step 2: Verify Logout Button is Present
+
+```javascript
+// Wait for command panel to load
+await mcp_playwright_browser_wait_for({text: "Exit the Realm"});
+
+// Verify logout button appears with correct text and styling
+const logoutButton = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('[data-testid=\"logout-button\"]')?.textContent.trim()"});
+console.log('Logout button text:', logoutButton);
+
+// Verify button is enabled and clickable
+const buttonEnabled = await mcp_playwright_browser_evaluate({function: "() => !document.querySelector('[data-testid=\"logout-button\"]')?.disabled"});
+console.log('Logout button enabled:', buttonEnabled);
+```
+
+#### Step 3: Test Logout Button Click
+
+```javascript
+// Click the logout button
+await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
+
+// Wait for logout processing (extended timeout for server communication)
+await mcp_playwright_browser_wait_for({time: 10});
+```
+
+#### Step 4: Verify Return to Login Screen
+
+```javascript
+// Wait for login screen to appear
+await mcp_playwright_browser_wait_for({text: "Username", time: 30});
+
+// Verify we're back at login screen
+const loginForm = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.login-form') !== null"});
+console.log('Login form visible:', loginForm);
+
+// Verify username field is focused for accessibility
+const usernameFocused = await mcp_playwright_browser_evaluate({function: "() => document.activeElement?.placeholder === 'Username'"});
+console.log('Username field focused:', usernameFocused);
+```
+
+#### Step 5: Verify State Cleanup
+
+```javascript
+// Verify all form fields are cleared
+const usernameValue = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('input[placeholder=\"Username\"]')?.value"});
+const passwordValue = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('input[placeholder=\"Password\"]')?.value"});
+
+console.log('Username field cleared:', usernameValue === '');
+console.log('Password field cleared:', passwordValue === '');
+
+// Verify no error messages are displayed
+const errorMessage = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.error-message')?.textContent.trim()"});
+console.log('No error message displayed:', !errorMessage);
+```
+
+### Expected Results
+
+- ✅ Logout button appears with "Exit the Realm" text and portal icon
+- ✅ Logout button is properly styled with eldritch effects
+- ✅ Clicking logout button triggers logout process
+- ✅ Player returns to login screen after logout
+- ✅ Username field is focused for accessibility
+- ✅ All form fields are cleared
+- ✅ No error messages are displayed
+- ✅ Server receives logout command and processes it correctly
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 20: Logout Button Error Handling
+
+### Description
+
+Tests logout button functionality when server communication fails or times out.
+
+### Prerequisites
+
+- One player connected (AW)
+- Logout button system implemented
+- Server running (will be stopped during test)
+
+### Cursor Execution Steps
+
+#### Step 1: AW Enters the Game
+
+```javascript
+// Navigate to client and login as AW
+await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
+await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+```
+
+#### Step 2: Stop Server to Simulate Communication Failure
+
+```javascript
+// Stop the server to simulate communication failure
+// This would be done via terminal command in real testing
+// For this scenario, we'll assume the server becomes unreachable
+```
+
+#### Step 3: Attempt Logout with Server Unavailable
+
+```javascript
+// Click the logout button
+await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
+
+// Wait for timeout period (5 seconds + processing time)
+await mcp_playwright_browser_wait_for({time: 8});
+```
+
+#### Step 4: Verify Graceful Fallback to Login
+
+```javascript
+// Wait for login screen to appear despite server error
+await mcp_playwright_browser_wait_for({text: "Username", time: 30});
+
+// Verify we're back at login screen
+const loginForm = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.login-form') !== null"});
+console.log('Login form visible after server error:', loginForm);
+
+// Verify error message is displayed
+const errorMessage = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.error-message')?.textContent.trim()"});
+console.log('Error message displayed:', errorMessage?.includes('Logout failed') || errorMessage?.includes('Server not reachable'));
+```
+
+#### Step 5: Verify Client-Side Cleanup Still Occurs
+
+```javascript
+// Verify all form fields are cleared despite server error
+const usernameValue = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('input[placeholder=\"Username\"]')?.value"});
+const passwordValue = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('input[placeholder=\"Password\"]')?.value"});
+
+console.log('Username field cleared despite error:', usernameValue === '');
+console.log('Password field cleared despite error:', passwordValue === '');
+
+// Verify username field is focused
+const usernameFocused = await mcp_playwright_browser_evaluate({function: "() => document.activeElement?.placeholder === 'Username'"});
+console.log('Username field focused despite error:', usernameFocused);
+```
+
+### Expected Results
+
+- ✅ Logout button click triggers logout process
+- ✅ Server communication failure is handled gracefully
+- ✅ Client-side logout still occurs despite server error
+- ✅ Player returns to login screen
+- ✅ Error message is displayed to user
+- ✅ All form fields are cleared
+- ✅ Username field is focused for accessibility
+- ✅ Client state is properly cleaned up
+
+### Status: ✅ READY FOR TESTING
+
+---
+
+## Scenario 21: Logout Button Accessibility
+
+### Description
+
+Tests logout button accessibility features including keyboard navigation and screen reader support.
+
+### Prerequisites
+
+- One player connected (AW)
+- Logout button system implemented
+- Server running with logout command support
+
+### Cursor Execution Steps
+
+#### Step 1: AW Enters the Game
+
+```javascript
+// Navigate to client and login as AW
+await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
+await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+```
+
+#### Step 2: Test Keyboard Navigation to Logout Button
+
+```javascript
+// Tab to the logout button
+await mcp_playwright_browser_press_key({key: "Tab"});
+await mcp_playwright_browser_press_key({key: "Tab"});
+await mcp_playwright_browser_press_key({key: "Tab"});
+
+// Verify logout button has focus
+const logoutFocused = await mcp_playwright_browser_evaluate({function: "() => document.activeElement?.getAttribute('data-testid') === 'logout-button'"});
+console.log('Logout button has focus via Tab navigation:', logoutFocused);
+```
+
+#### Step 3: Test Keyboard Activation (Enter Key)
+
+```javascript
+// Press Enter to activate logout button
+await mcp_playwright_browser_press_key({key: "Enter"});
+
+// Wait for logout processing
+await mcp_playwright_browser_wait_for({time: 10});
+```
+
+#### Step 4: Verify Return to Login Screen
+
+```javascript
+// Wait for login screen
+await mcp_playwright_browser_wait_for({text: "Username", time: 30});
+
+// Verify we're back at login screen
+const loginForm = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.login-form') !== null"});
+console.log('Login form visible after keyboard logout:', loginForm);
+```
+
+#### Step 5: Test Ctrl+Q Keyboard Shortcut
+
+```javascript
+// Login again for shortcut test
+await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+
+// Test Ctrl+Q shortcut
+await mcp_playwright_browser_press_key({key: "q", modifiers: ["Control"]});
+
+// Wait for logout processing
+await mcp_playwright_browser_wait_for({time: 10});
+```
+
+#### Step 6: Verify Shortcut Logout Success
+
+```javascript
+// Wait for login screen
+await mcp_playwright_browser_wait_for({text: "Username", time: 30});
+
+// Verify we're back at login screen
+const loginFormAfterShortcut = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.login-form') !== null"});
+console.log('Login form visible after Ctrl+Q shortcut:', loginFormAfterShortcut);
+```
+
+#### Step 7: Test ARIA Labels and Screen Reader Support
+
+```javascript
+// Login again for ARIA test
+await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
+
+// Check ARIA attributes
+const ariaLabel = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('[data-testid=\"logout-button\"]')?.getAttribute('aria-label')"});
+const ariaDescription = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('[data-testid=\"logout-button\"]')?.getAttribute('aria-describedby')"});
+
+console.log('ARIA label present:', !!ariaLabel);
+console.log('ARIA description present:', !!ariaDescription);
+console.log('ARIA label content:', ariaLabel);
+```
+
+### Expected Results
+
+- ✅ Logout button is reachable via Tab navigation
+- ✅ Logout button can be activated with Enter key
+- ✅ Ctrl+Q keyboard shortcut works correctly
+- ✅ ARIA labels are present for screen reader support
+- ✅ ARIA descriptions provide additional context
+- ✅ All accessibility features work correctly
+- ✅ Logout process completes successfully via all input methods
+
+### Status: ✅ READY FOR TESTING
+
+---
+
 ## Post-Scenario Cleanup
 
 ### Step 1: Close All Browser Tabs

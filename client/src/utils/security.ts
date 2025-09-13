@@ -143,6 +143,21 @@ export const secureTokenStorage = {
     document.cookie =
       `refreshToken=${token}; expires=${expires.toUTCString()}; ` + `path=/; HttpOnly; Secure; SameSite=Strict`;
   },
+
+  /**
+   * Clear refresh token
+   */
+  clearRefreshToken(): void {
+    document.cookie = 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; HttpOnly; Secure; SameSite=Strict';
+  },
+
+  /**
+   * Clear all tokens (both access and refresh)
+   */
+  clearAllTokens(): void {
+    this.clearToken();
+    this.clearRefreshToken();
+  },
 };
 
 /**

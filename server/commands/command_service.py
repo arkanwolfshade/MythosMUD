@@ -41,6 +41,7 @@ from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
     handle_inventory_command,
+    handle_logout_command,
     handle_quit_command,
     handle_status_command,
     handle_who_command,
@@ -94,6 +95,7 @@ class CommandService:
             # Utility commands
             "who": handle_who_command,
             "quit": handle_quit_command,
+            "logout": handle_logout_command,
             "status": handle_status_command,
             "inventory": handle_inventory_command,
         }

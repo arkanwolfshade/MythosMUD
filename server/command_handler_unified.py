@@ -119,6 +119,7 @@ def _should_treat_as_emote(command: str) -> bool:
         "go",
         "move",
         "quit",
+        "logout",
         "help",
         "who",
         "emote",

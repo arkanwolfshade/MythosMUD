@@ -54,6 +54,9 @@ export const MythosIcons = {
   system: 'system',
   users: 'users',
   megaphone: 'megaphone',
+
+  // Logout button icon
+  portal: 'portal',
 } as const;
 
 // Map icon names to Lucide icon components
@@ -109,6 +112,9 @@ const iconMap: Record<keyof typeof MythosIcons, keyof typeof LucideIcons> = {
   system: 'Settings',
   users: 'Users',
   megaphone: 'Megaphone',
+
+  // Logout button icon
+  portal: 'CircleDot',
 };
 
 interface EldritchIconProps {

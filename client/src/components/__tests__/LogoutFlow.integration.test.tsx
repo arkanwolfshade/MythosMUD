@@ -1,0 +1,401 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { vi } from 'vitest';
+import App from '../../App';
+
+// Mock all external dependencies
+vi.mock('../../utils/memoryMonitor', () => ({
+  memoryMonitor: {
+    start: vi.fn(),
+    stop: vi.fn(),
+  },
+}));
+
+vi.mock('../../utils/security', () => ({
+  inputSanitizer: {
+    sanitizeUsername: vi.fn(input => input),
+    sanitizeCommand: vi.fn(input => input),
+  },
+  secureTokenStorage: {
+    setToken: vi.fn(),
+    clearToken: vi.fn(),
+    getToken: vi.fn(() => 'mock-token'),
+  },
+}));
+
+vi.mock('../../utils/logoutHandler', () => ({
+  logoutHandler: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../../hooks/useGameConnection', () => ({
+  useGameConnection: vi.fn(() => ({
+    isConnected: true,
+    isConnecting: false,
+    error: null,
+    reconnectAttempts: 0,
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    sendCommand: vi.fn().mockResolvedValue(true),
+  })),
+}));
+
+vi.mock('../../components/StatsRollingScreen', () => ({
+  StatsRollingScreen: ({ onStatsAccepted }: { onStatsAccepted: (stats: any) => void }) => (
+    <div data-testid="stats-rolling-screen">
+      <button
+        onClick={() =>
+          onStatsAccepted({ strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 })
+        }
+      >
+        Accept Stats
+      </button>
+    </div>
+  ),
+}));
+
+// Mock the LogoutButton component
+vi.mock('../../components/ui/LogoutButton', () => ({
+  LogoutButton: ({
+    onLogout,
+    isLoggingOut,
+    disabled,
+  }: {
+    onLogout: () => void;
+    isLoggingOut?: boolean;
+    disabled?: boolean;
+  }) => (
+    <button onClick={onLogout} disabled={disabled || isLoggingOut} data-testid="logout-button">
+      {isLoggingOut ? 'Exiting...' : 'Exit the Realm'}
+    </button>
+  ),
+}));
+
+// Mock all other UI components
+vi.mock('../../components/ui/EldritchIcon', () => ({
+  EldritchIcon: ({ name }: { name: string }) => <div data-testid={`icon-${name}`}>{name}</div>,
+  MythosIcons: {
+    portal: 'portal',
+  },
+}));
+
+vi.mock('../../components/panels/CommandPanel', () => ({
+  CommandPanel: ({
+    onLogout,
+    isLoggingOut,
+    disabled,
+  }: {
+    onLogout?: () => void;
+    isLoggingOut?: boolean;
+    disabled?: boolean;
+  }) => (
+    <div data-testid="command-panel">
+      <input data-testid="command-input" placeholder="Enter command..." />
+      {onLogout && (
+        <button onClick={onLogout} disabled={disabled || isLoggingOut} data-testid="logout-button">
+          {isLoggingOut ? 'Exiting...' : 'Exit the Realm'}
+        </button>
+      )}
+    </div>
+  ),
+}));
+
+vi.mock('../../components/panels/ChatPanel', () => ({
+  ChatPanel: () => <div data-testid="chat-panel">Chat Panel</div>,
+}));
+
+vi.mock('../../components/panels/GameLogPanel', () => ({
+  GameLogPanel: () => <div data-testid="game-log-panel">Game Log Panel</div>,
+}));
+
+vi.mock('../../components/DraggablePanel', () => ({
+  DraggablePanel: ({ children, title }: { children: React.ReactNode; title: string }) => (
+    <div data-testid={`panel-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+      <h3>{title}</h3>
+      {children}
+    </div>
+  ),
+}));
+
+describe('Logout Flow Integration', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('Complete Logout Flow', () => {
+    it('should complete full logout flow from authenticated state', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      render(<App />);
+
+      // Fill login form
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      // Wait for authentication
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Verify logout button is present
+      const logoutButton = screen.getByTestId('logout-button');
+      expect(logoutButton).toBeInTheDocument();
+      expect(logoutButton).toHaveTextContent('Exit the Realm');
+
+      // Click logout button
+      fireEvent.click(logoutButton);
+
+      // Verify logout handler was called
+      const { logoutHandler } = await import('../../utils/logoutHandler');
+      expect(logoutHandler).toHaveBeenCalledWith({
+        authToken: 'mock-token',
+        disconnect: expect.any(Function),
+        clearState: expect.any(Function),
+        navigateToLogin: expect.any(Function),
+        timeout: 5000,
+      });
+
+      // Wait for logout to complete and return to login screen
+      await waitFor(() => {
+        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+        expect(screen.getByText('Enter the realm of eldritch knowledge')).toBeInTheDocument();
+      });
+
+      // Verify we're back at login screen
+      expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    });
+
+    it('should show loading state during logout process', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      // Mock logout handler with delay
+      const { logoutHandler } = await import('../../utils/logoutHandler');
+      (logoutHandler as any).mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+
+      render(<App />);
+
+      // Login
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Click logout button
+      const logoutButton = screen.getByTestId('logout-button');
+      fireEvent.click(logoutButton);
+
+      // Verify loading state is shown
+      expect(logoutButton).toHaveTextContent('Exiting...');
+      expect(logoutButton).toBeDisabled();
+
+      // Wait for logout to complete
+      await waitFor(() => {
+        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+      });
+    });
+
+    it('should handle logout errors gracefully and still return to login', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      // Mock logout handler to throw error
+      const { logoutHandler } = await import('../../utils/logoutHandler');
+      (logoutHandler as any).mockRejectedValueOnce(new Error('Logout failed'));
+
+      render(<App />);
+
+      // Login
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Click logout button
+      const logoutButton = screen.getByTestId('logout-button');
+      fireEvent.click(logoutButton);
+
+      // Wait for logout to complete despite error
+      await waitFor(() => {
+        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+      });
+
+      // Verify we're back at login screen even after error
+      expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    });
+  });
+
+  describe('Logout Button States', () => {
+    it('should disable logout button when disconnected', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      // Mock disconnected state
+      const { useGameConnection } = await import('../../hooks/useGameConnection');
+      (useGameConnection as any).mockReturnValue({
+        isConnected: false,
+        isConnecting: false,
+        error: 'Connection lost',
+        reconnectAttempts: 0,
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        sendCommand: vi.fn().mockResolvedValue(true),
+      });
+
+      render(<App />);
+
+      // Login
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Verify logout button is disabled when disconnected
+      const logoutButton = screen.getByTestId('logout-button');
+      expect(logoutButton).toBeDisabled();
+    });
+
+    it('should disable logout button during logout process', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      render(<App />);
+
+      // Login
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Click logout button
+      const logoutButton = screen.getByTestId('logout-button');
+      fireEvent.click(logoutButton);
+
+      // Verify button is disabled during logout
+      expect(logoutButton).toBeDisabled();
+      expect(logoutButton).toHaveTextContent('Exiting...');
+    });
+  });
+
+  describe('State Cleanup', () => {
+    it('should clear all authentication state during logout', async () => {
+      // Mock successful login
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          access_token: 'mock-token',
+          refresh_token: 'mock-refresh-token',
+          has_character: true,
+          character_name: 'TestPlayer',
+        }),
+      });
+
+      const { secureTokenStorage } = await import('../../utils/security');
+
+      render(<App />);
+
+      // Login
+      const usernameInput = screen.getByPlaceholderText('Username');
+      const passwordInput = screen.getByPlaceholderText('Password');
+      const loginButton = screen.getByText('Enter the Void');
+
+      fireEvent.change(usernameInput, { target: { value: 'TestPlayer' } });
+      fireEvent.change(passwordInput, { target: { value: 'password' } });
+      fireEvent.click(loginButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      });
+
+      // Verify token was set
+      expect(secureTokenStorage.setToken).toHaveBeenCalledWith('mock-token');
+
+      // Click logout button
+      const logoutButton = screen.getByTestId('logout-button');
+      fireEvent.click(logoutButton);
+
+      // Wait for logout to complete
+      await waitFor(() => {
+        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+      });
+
+      // Verify token was cleared
+      expect(secureTokenStorage.clearToken).toHaveBeenCalled();
+    });
+  });
+});

@@ -26,6 +26,9 @@ import { GameTerminal } from './GameTerminal';
 interface GameTerminalWithPanelsProps {
   playerName: string;
   authToken: string;
+  onLogout?: () => void;
+  isLoggingOut?: boolean;
+  onDisconnect?: (disconnectFn: () => void) => void;
 }
 
 interface Player {
@@ -87,7 +90,13 @@ interface GameState {
   commandHistory: string[];
 }
 
-export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ playerName, authToken }) => {
+export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
+  playerName,
+  authToken,
+  onLogout,
+  isLoggingOut = false,
+  onDisconnect,
+}) => {
   const [gameState, setGameState] = useState<GameState>({
     player: null,
     room: null,
@@ -473,6 +482,13 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
     onError: handleError,
   });
 
+  // Register the disconnect function with the parent component
+  useEffect(() => {
+    if (onDisconnect) {
+      onDisconnect(disconnect);
+    }
+  }, [onDisconnect, disconnect]);
+
   // Connect once on mount; disconnect on unmount.
   // Important: Avoid including changing dependencies (like connect/disconnect identity or state)
   // which would trigger cleanup on every render and cause immediate disconnects.
@@ -574,8 +590,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
   };
 
   const handleLogout = () => {
-    disconnect();
-    // Note: App.tsx will handle the logout state
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Fallback to just disconnect if no logout handler provided
+      disconnect();
+    }
   };
 
   return (
@@ -593,6 +613,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({ 
         onConnect={connect}
         onDisconnect={disconnect}
         onLogout={handleLogout}
+        isLoggingOut={isLoggingOut}
         onDownloadLogs={() => logger.downloadLogs()}
         onSendCommand={handleCommandSubmit}
         onSendChatMessage={handleChatMessage}

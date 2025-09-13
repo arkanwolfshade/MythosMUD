@@ -70,6 +70,7 @@ interface GameTerminalProps {
   onConnect: () => void;
   onDisconnect: () => void;
   onLogout: () => void;
+  isLoggingOut?: boolean;
   onDownloadLogs: () => void;
   onSendCommand: (command: string) => void;
   onSendChatMessage: (message: string, channel: string) => void;
@@ -87,6 +88,10 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   player,
   messages,
   commandHistory,
+  onConnect,
+  onDisconnect,
+  onLogout,
+  isLoggingOut = false,
   onDownloadLogs,
   onSendCommand,
   onSendChatMessage,
@@ -224,7 +229,9 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               commandHistory={commandHistory}
               onSendCommand={onSendCommand}
               onClearHistory={onClearHistory}
+              onLogout={onLogout}
               isConnected={isConnected}
+              isLoggingOut={isLoggingOut}
             />
           </DraggablePanel>
 
