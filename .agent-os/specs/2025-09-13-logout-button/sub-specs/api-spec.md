@@ -7,13 +7,13 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 ### POST /commands/logout
 
 **Purpose:** Process player logout command to terminate server-side session and cleanup game state
-**Parameters:** 
+**Parameters:**
 - `command`: "logout" (string)
 - `args`: [] (empty array)
 - `player_id`: Current player ID from session
 - `auth_token`: Current authentication token
 
-**Response:** 
+**Response:**
 ```json
 {
   "success": true,
