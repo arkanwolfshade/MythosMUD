@@ -1,8 +1,8 @@
-# MythosMUD Multiplayer Scenarios Playbook - Cursor Executable Version
+# MythosMUD Multiplayer Scenarios Playbook - Cursor Executable Version (Low-Performance Optimized)
 
 ## Overview
 
-This playbook contains detailed scenarios for testing multiplayer functionality in MythosMUD. **This version is specifically designed for Cursor AI to execute automatically using Playwright MCP.** Each scenario includes explicit step-by-step instructions that Cursor can follow exactly.
+This playbook contains detailed scenarios for testing multiplayer functionality in MythosMUD. **This version is specifically designed for Cursor AI to execute automatically using Playwright MCP on low-performance machines.** Each scenario includes explicit step-by-step instructions with extended timeouts and wait times to accommodate slower system responses.
 
 ## Test Players
 
@@ -26,7 +26,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - **Teleport**: `teleport <player>` (admin only)
 - **Other**: `look`, `inventory`, `help`, `mute`, `unmute`, `dance`, etc.
 
-## Cursor Execution Rules
+## Cursor Execution Rules (Low-Performance Optimized)
 
 ### Prerequisites (Run Before Starting Scenarios)
 
@@ -34,23 +34,32 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 2. **Database State**: Ensure test players exist and are in correct starting room
 3. **Clean Environment**: Stop any running servers and clear browser state
 4. **Port Availability**: Verify ports 54731 and 5173 are available
+5. **Performance Considerations**: Allow extra time for all operations on low-performance machines
 
 ### Execution Commands
 
 - **Server Management**: Use `./scripts/stop_server.ps1` and `./scripts/start_dev.ps1`
-- **Browser Automation**: Use Playwright MCP commands exclusively
+- **Browser Automation**: Use Playwright MCP commands exclusively with extended timeouts
 - **Database Operations**: Use SQLite CLI for direct database access
-- **Error Handling**: Document all failures and continue to next scenario
+- **Error Handling**: Document all failures, making sure to look at logfiles and the web console, and stop
+- **Wait Times**: All scenarios use extended timeouts (15-30 seconds) for low-performance machines
 
 ### State Verification Steps
 
 Before each scenario, verify:
 
-- Server is running on port 54731
-- Client is accessible on port 5173
+- Server is running on port 54731 (allow 2-3 minutes for startup)
+- Client is accessible on port 5173 (allow 30-60 seconds for loading)
 - Database contains test players
 - Players are in correct starting room
 - No stale browser sessions
+
+### Performance Optimization Notes
+
+- **Extended Timeouts**: All `wait_for` operations use 15-30 second timeouts
+- **Buffer Time**: Additional 5-10 second waits between critical operations
+- **Retry Logic**: Commands may be repeated if they fail due to timing
+- **Resource Monitoring**: Watch for memory/CPU usage during extended operations
 
 ---
 
@@ -104,29 +113,52 @@ UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';
 ./scripts/start_dev.ps1
 ```
 
-**Wait**: 10-15 seconds for server to fully start
+**Wait**: 180 seconds (3 minutes) for server to fully start on low-performance machines
 
 ### Step 4: Verify Server Accessibility
 
-**Cursor Command**: Test server connectivity
+**Cursor Command**: Test server connectivity with retries for low-performance machines
 
 ```powershell
-# Test server health
-$healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
-if ($healthResponse.StatusCode -eq 200) {
-    $healthData = $healthResponse.Content | ConvertFrom-Json
-    Write-Host "Server Status: $($healthData.status)"
-    Write-Host "Uptime: $([math]::Round($healthData.uptime_seconds, 2)) seconds"
-} else {
-    Write-Host "Server health check failed with status: $($healthResponse.StatusCode)"
+# Test server health with retries
+$maxRetries = 5
+$retryCount = 0
+do {
+    try {
+        $healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing -TimeoutSec 30
+        if ($healthResponse.StatusCode -eq 200) {
+            $healthData = $healthResponse.Content | ConvertFrom-Json
+            Write-Host "Server Status: $($healthData.status)"
+            Write-Host "Uptime: $([math]::Round($healthData.uptime_seconds, 2)) seconds"
+            break
+        }
+    } catch {
+        Write-Host "Server health check attempt $($retryCount + 1) failed. Retrying in 10 seconds..."
+        Start-Sleep -Seconds 10
+    }
+    $retryCount++
+} while ($retryCount -lt $maxRetries)
+
+if ($retryCount -eq $maxRetries) {
+    Write-Host "Server health check failed after $maxRetries attempts"
 }
 
-# Test client accessibility
-$clientResponse = Invoke-WebRequest -Uri "http://localhost:5173" -UseBasicParsing
-Write-Host "Client Status: $($clientResponse.StatusCode)"
+# Test client accessibility with retries
+$retryCount = 0
+do {
+    try {
+        $clientResponse = Invoke-WebRequest -Uri "http://localhost:5173" -UseBasicParsing -TimeoutSec 30
+        Write-Host "Client Status: $($clientResponse.StatusCode)"
+        break
+    } catch {
+        Write-Host "Client accessibility check attempt $($retryCount + 1) failed. Retrying in 10 seconds..."
+        Start-Sleep -Seconds 10
+    }
+    $retryCount++
+} while ($retryCount -lt $maxRetries)
 ```
 
-**Expected**: Both endpoints return successful responses
+**Expected**: Both endpoints return successful responses after retries
 
 ---
 
@@ -147,6 +179,9 @@ Tests basic multiplayer connection and disconnection messaging between two playe
 ```javascript
 // Open browser and navigate to client
 await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
+
+// Wait for page to fully load on low-performance machine
+await mcp_playwright_browser_wait_for({time: 10});
 ```
 
 #### Step 2: AW Enters the Game
@@ -154,23 +189,26 @@ await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
 **Cursor Commands**:
 
 ```javascript
-// Wait for login form
-await mcp_playwright_browser_wait_for({text: "Username"});
+// Wait for login form (extended timeout for low-performance machines)
+await mcp_playwright_browser_wait_for({text: "Username", time: 30});
 
 // Fill login form for AW
 await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
 await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
 await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
 
+// Wait for login processing on slow machine
+await mcp_playwright_browser_wait_for({time: 15});
+
 // Wait for MOTD screen and click Continue to enter game
-await mcp_playwright_browser_wait_for({text: "Continue"});
+await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
 await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
 
-// Wait for game interface to load
-await mcp_playwright_browser_wait_for({text: "Chat"});
+// Wait for game interface to load (extended timeout)
+await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
 
-// Wait additional time for room subscription to stabilize
-await mcp_playwright_browser_wait_for({time: 3});
+// Wait additional time for room subscription to stabilize on slow machine
+await mcp_playwright_browser_wait_for({time: 10});
 ```
 
 #### Step 3: Open Second Browser Tab for Ithaqua
@@ -181,23 +219,32 @@ await mcp_playwright_browser_wait_for({time: 3});
 // Open new tab for Ithaqua
 await mcp_playwright_browser_tab_new({url: "http://localhost:5173"});
 
+// Wait for new tab to load
+await mcp_playwright_browser_wait_for({time: 10});
+
 // Switch to new tab
 await mcp_playwright_browser_tab_select({index: 1});
+
+// Wait for tab switch to complete
+await mcp_playwright_browser_wait_for({time: 5});
 
 // Fill login form for Ithaqua
 await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "Ithaqua"});
 await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
 await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
 
+// Wait for login processing on slow machine
+await mcp_playwright_browser_wait_for({time: 15});
+
 // Wait for MOTD screen and click Continue to enter game
-await mcp_playwright_browser_wait_for({text: "Continue"});
+await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
 await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
 
-// Wait for game interface to load
-await mcp_playwright_browser_wait_for({text: "Chat"});
+// Wait for game interface to load (extended timeout)
+await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
 
-// Wait additional time for connection message broadcasting
-await mcp_playwright_browser_wait_for({time: 3});
+// Wait additional time for connection message broadcasting on slow machine
+await mcp_playwright_browser_wait_for({time: 15});
 ```
 
 #### Step 4: Verify AW Sees Ithaqua Entered Message (with timing tolerance)
@@ -208,8 +255,11 @@ await mcp_playwright_browser_wait_for({time: 3});
 // Switch back to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
-// Wait for message to appear (with longer timeout for timing issues)
-await mcp_playwright_browser_wait_for({text: "Ithaqua has entered the game", time: 10});
+// Wait for tab switch to complete
+await mcp_playwright_browser_wait_for({time: 5});
+
+// Wait for message to appear (extended timeout for low-performance machines)
+await mcp_playwright_browser_wait_for({text: "Ithaqua has entered the game", time: 30});
 
 // Verify message appears
 const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -233,6 +283,9 @@ if (!hasIthaquaEntered) {
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
 
+// Wait for tab switch to complete
+await mcp_playwright_browser_wait_for({time: 5});
+
 // Check for unwanted messages
 const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const unwantedMessages = ithaquaMessages.filter(msg =>
@@ -253,11 +306,17 @@ console.log('Ithaqua message count:', ithaquaMessages.length);
 // Close Ithaqua's tab
 await mcp_playwright_browser_tab_close({index: 1});
 
+// Wait for tab closure to process
+await mcp_playwright_browser_wait_for({time: 5});
+
 // Switch back to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
-// Wait for disconnect message
-await mcp_playwright_browser_wait_for({text: "Ithaqua has left the game", time: 10});
+// Wait for tab switch to complete
+await mcp_playwright_browser_wait_for({time: 5});
+
+// Wait for disconnect message (extended timeout for low-performance machines)
+await mcp_playwright_browser_wait_for({text: "Ithaqua has left the game", time: 30});
 ```
 
 #### Step 7: Verify AW Sees Ithaqua Left Message
@@ -299,6 +358,22 @@ if (!hasIthaquaLeft) {
 - This is a known limitation that requires further investigation and potential fixes
 
 ### Status: ⚠️ PARTIAL SUCCESS - TIMING ARTIFACT IDENTIFIED
+
+### Low-Performance Machine Considerations
+
+**Extended Timeouts Applied**:
+- Login form wait: 30 seconds (was default)
+- MOTD screen wait: 30 seconds (was default)
+- Game interface load: 30 seconds (was default)
+- Connection message wait: 30 seconds (was 10 seconds)
+- Tab switching: 5 second buffer between operations
+- Page load: 10 second buffer after navigation
+
+**Performance Notes**:
+- All browser operations include buffer time for slow machines
+- Tab switching includes explicit wait times
+- Message verification uses extended timeouts
+- Connection/disconnection events may take longer to propagate
 
 ---
 
@@ -2168,7 +2243,7 @@ netstat -an | findstr :5173
 
 ---
 
-## Error Handling and Troubleshooting
+## Error Handling and Troubleshooting (Low-Performance Optimized)
 
 ### Common Issues and Solutions
 
@@ -2181,26 +2256,32 @@ netstat -an | findstr :5173
 2. Verify database file exists and is accessible
 3. Check server logs in `logs/development/`
 4. Restart with `./scripts/stop_server.ps1` first
+5. **Low-Performance**: Allow 5-10 minutes for server startup on very slow machines
+6. **Low-Performance**: Monitor system resources (CPU/Memory) during startup
 
 #### Issue 2: Players Can't Connect
 
 **Symptoms**: Browser shows connection errors
 **Solutions**:
 
-1. Verify server is running on port 54731
-2. Check client is accessible on port 5173
+1. Verify server is running on port 54731 (wait 2-3 minutes after startup)
+2. Check client is accessible on port 5173 (allow 1-2 minutes for client load)
 3. Verify database contains test players
 4. Check network connectivity
+5. **Low-Performance**: Use retry logic with 30-second intervals
+6. **Low-Performance**: Close other applications to free up system resources
 
 #### Issue 3: Messages Not Appearing
 
 **Symptoms**: Expected messages don't show up
 **Solutions**:
 
-1. Wait longer for message delivery (add delays)
+1. Wait longer for message delivery (extend delays to 30-60 seconds)
 2. Check browser console for errors
 3. Verify WebSocket connections are active
 4. Check server logs for message broadcasting errors
+5. **Low-Performance**: Increase all wait_for timeouts to 30+ seconds
+6. **Low-Performance**: Add buffer time between critical operations
 
 #### Issue 4: Database State Issues
 
@@ -2211,6 +2292,18 @@ netstat -an | findstr :5173
 2. Update player locations manually
 3. Check admin privileges
 4. Restore from backup if needed
+
+#### Issue 5: Low-Performance Machine Specific Issues
+
+**Symptoms**: Timeouts, slow responses, browser freezing
+**Solutions**:
+
+1. **Memory Issues**: Close unnecessary applications and browser tabs
+2. **CPU Issues**: Reduce system load, close background processes
+3. **Browser Performance**: Use Chrome/Edge with hardware acceleration disabled
+4. **Network Issues**: Use localhost only, disable VPN/proxy
+5. **Disk Issues**: Ensure sufficient free space (5+ GB recommended)
+6. **Timeout Issues**: Double all wait times, add retry logic
 
 ### Debugging Commands
 
@@ -2250,16 +2343,18 @@ console.log('Current room:', roomInfo);
 
 ## Success Criteria
 
-### Scenario Completion Checklist
+### Scenario Completion Checklist (Low-Performance Optimized)
 
 For each scenario to be considered successful:
 
 1. **All Expected Messages Appear**: Every expected message is visible in the correct player's chat
 2. **No Unexpected Messages**: No unwanted or duplicate messages appear
-3. **Proper Timing**: Messages appear within reasonable timeframes (2-5 seconds)
+3. **Proper Timing**: Messages appear within extended timeframes (15-60 seconds on low-performance machines)
 4. **State Consistency**: Player locations and game state remain consistent
-5. **Error-Free Execution**: No error messages or exceptions occur
-6. **Clean Transitions**: Scenarios can run back-to-back without issues
+5. **Error-Free Execution**: No error messages or exceptions occur (timeouts are expected and handled)
+6. **Clean Transitions**: Scenarios can run back-to-back without issues (with extended wait times)
+7. **Resource Management**: System resources remain stable throughout execution
+8. **Timeout Tolerance**: All operations complete successfully despite longer response times
 
 ### Overall Success Criteria
 
@@ -2284,8 +2379,26 @@ The multiplayer implementation represents a successful bridge between the event-
 
 ---
 
-**Document Version**: 4.0 (Cursor Executable)
-**Last Updated**: 2025-08-23
+**Document Version**: 4.1 (Cursor Executable - Low-Performance Optimized)
+**Last Updated**: 2025-01-27
 **Next Review**: After each scenario completion
-**Primary Audience**: Cursor AI and Developers
+**Primary Audience**: Cursor AI and Developers (Low-Performance Machines)
 **Update Frequency**: After each scenario completion
+
+### Low-Performance Machine Optimizations Applied
+
+- **Extended Timeouts**: All wait operations increased to 15-60 seconds
+- **Buffer Times**: 5-15 second delays between critical operations
+- **Retry Logic**: Automatic retries for connection and health checks
+- **Resource Monitoring**: Guidelines for managing system resources
+- **Tab Management**: Explicit waits for browser tab operations
+- **Server Startup**: Extended startup time allowances (3+ minutes)
+- **Error Handling**: Specific troubleshooting for slow machines
+
+### Performance Recommendations
+
+1. **Close unnecessary applications** before running scenarios
+2. **Monitor system resources** during execution
+3. **Use localhost only** to minimize network latency
+4. **Allow extra time** for all operations (2-3x normal expectations)
+5. **Check system logs** if operations fail due to resource constraints
