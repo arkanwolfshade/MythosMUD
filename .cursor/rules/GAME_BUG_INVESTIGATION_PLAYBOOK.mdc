@@ -1,0 +1,492 @@
+# MythosMUD Game Bug Investigation Playbook - Cursor Executable Version
+
+## 🚨 CRITICAL INSTRUCTION FOR AI INVESTIGATORS 🚨
+
+**BEFORE YOU DO ANYTHING ELSE:**
+- Execute EVERY investigation step EXACTLY as written
+- Do NOT skip, modify, or interpret any steps
+- Do NOT attempt to fix any issues found - ONLY investigate and report
+- Your job is to investigate, document, and analyze - NOT to fix
+- If you think a step is unnecessary, execute it anyway and document the result
+- Generate a comprehensive investigation report with findings and analysis
+
+## 🔬 INVESTIGATION OVERVIEW
+
+This playbook contains systematic procedures for investigating game bugs in MythosMUD. **This version is specifically designed for Cursor AI to execute automatically using available tools and generate detailed investigation reports.** Each investigation includes explicit step-by-step instructions with comprehensive analysis requirements.
+
+## 🎯 INVESTIGATION OBJECTIVES
+
+**PRIMARY GOAL**: Generate a comprehensive investigation report that includes:
+- Detailed description of the bug behavior
+- Root cause analysis
+- System impact assessment
+- Evidence collection and documentation
+- Recommended investigation priorities (NOT fixes)
+- Technical analysis of affected components
+
+**CRITICAL RULE**: **DO NOT ATTEMPT TO FIX ANY ISSUES** - Only investigate, document, and analyze.
+
+## 🛠️ AVAILABLE INVESTIGATION TOOLS
+
+### Codebase Analysis Tools
+- **codebase_search**: Semantic search for code patterns and functionality
+- **grep**: Exact string/regex searches across the codebase
+- **read_file**: Read and analyze specific files
+- **glob_file_search**: Find files by patterns
+- **list_dir**: Explore directory structures
+
+### System Analysis Tools
+- **run_terminal_cmd**: Execute system commands for investigation
+- **read_lints**: Check for code quality issues
+- **web_search**: Research external information if needed
+
+### Testing and Validation Tools
+- **mcp_playwright_browser_***: Browser automation for client-side testing
+- **todo_write**: Track investigation progress and findings
+
+## 📋 PRE-INVESTIGATION CHECKLIST
+
+Before starting ANY investigation, confirm:
+- [ ] I have read the MANDATORY RULE above
+- [ ] I will execute every step exactly as written
+- [ ] I will NOT attempt to fix any issues found
+- [ ] I will generate a comprehensive investigation report
+- [ ] I will document all findings systematically
+- [ ] I will focus on investigation, not resolution
+
+## 🔍 INVESTIGATION METHODOLOGY
+
+### Phase 1: Initial Bug Report Analysis
+1. **Parse Bug Description**: Extract key details from user report
+2. **Identify Affected Systems**: Determine which components are involved
+3. **Create Investigation Plan**: Outline systematic investigation approach
+4. **Set Investigation Scope**: Define boundaries and priorities
+
+### Phase 2: System State Investigation
+1. **Check Server Status**: Verify current system state
+2. **Examine Logs**: Analyze relevant log files for errors/patterns
+3. **Database State**: Investigate database integrity and data consistency
+4. **Configuration Review**: Check system configuration for anomalies
+
+### Phase 3: Code Analysis
+1. **Locate Relevant Code**: Find code responsible for bug behavior
+2. **Trace Execution Path**: Follow code execution through affected systems
+3. **Identify Dependencies**: Map out system dependencies and interactions
+4. **Analyze Data Flow**: Understand how data moves through the system
+
+### Phase 4: Evidence Collection
+1. **Gather Error Messages**: Collect all relevant error messages
+2. **Document System State**: Record current system configuration
+3. **Capture Log Evidence**: Extract relevant log entries with timestamps
+4. **Identify Patterns**: Look for recurring issues or anomalies
+
+### Phase 5: Analysis and Reporting
+1. **Root Cause Analysis**: Determine underlying cause of the bug
+2. **Impact Assessment**: Evaluate scope and severity of the issue
+3. **Generate Report**: Create comprehensive investigation report
+4. **Document Findings**: Record all discoveries and analysis
+
+## 🚀 INVESTIGATION SCENARIOS
+
+### Scenario 1: Authentication/Login Issues
+
+#### Bug Report: "Player cannot log in"
+
+**INVESTIGATION STEPS:**
+
+**Step 1: Parse Bug Description**
+- Extract player username/identifier if provided
+- Note any error messages reported by user
+- Record time/date of issue occurrence
+- Document any steps that led to the problem
+
+**Step 2: Check Server Status**
+```bash
+# Check if server is running
+./scripts/stop_server.ps1
+# Wait for shutdown confirmation
+./scripts/start_dev.ps1
+```
+- Document server startup process
+- Note any startup errors or warnings
+- Verify server is responding on expected ports
+
+**Step 3: Examine Authentication Logs**
+```bash
+# Check authentication-related logs
+grep -i "authentication\|login\|auth" logs/development/server.log
+grep -i "password\|credential\|token" logs/development/server.log
+```
+- Document any authentication errors found
+- Note error frequencies and patterns
+- Record timestamps of relevant events
+
+**Step 4: Database Investigation**
+```bash
+# Check database connection and integrity
+sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/players.db "SELECT COUNT(*) FROM players;"
+```
+- Document database status
+- Check for any database-related errors
+- Verify player data accessibility
+
+**Step 5: Code Analysis**
+- Use codebase_search to find authentication-related code
+- Examine login flow implementation
+- Analyze password hashing and validation logic
+- Review session management code
+
+**Step 6: Configuration Review**
+- Check authentication configuration settings
+- Verify environment variables related to auth
+- Review security settings and policies
+
+**INVESTIGATION REPORT TEMPLATE:**
+```
+BUG INVESTIGATION REPORT: Authentication/Login Issues
+=====================================================
+
+Bug Description: [User-reported issue]
+Investigation Date: [Date/Time]
+Investigator: [AI Assistant]
+
+FINDINGS:
+---------
+1. Server Status: [Running/Not Running/Errors]
+2. Authentication Logs: [Summary of findings]
+3. Database Status: [Integrity/Errors/Issues]
+4. Code Analysis: [Key findings from code review]
+5. Configuration: [Settings and environment status]
+
+ROOT CAUSE ANALYSIS:
+-------------------
+[Detailed analysis of underlying cause]
+
+SYSTEM IMPACT:
+--------------
+[Assessment of scope and severity]
+
+EVIDENCE:
+---------
+[Specific log entries, error messages, code snippets]
+
+RECOMMENDATIONS:
+----------------
+[Investigation priorities - NOT fixes]
+```
+
+### Scenario 2: Movement/Command Issues
+
+#### Bug Report: "Player cannot move between rooms"
+
+**INVESTIGATION STEPS:**
+
+**Step 1: Parse Bug Description**
+- Extract movement commands attempted
+- Note any error messages or unexpected behavior
+- Record player location and attempted destination
+- Document any specific room or direction issues
+
+**Step 2: Check Game State**
+```bash
+# Check server status and game state
+grep -i "movement\|go\|room\|location" logs/development/server.log
+```
+- Document current game state
+- Check for movement-related errors
+- Note any room loading issues
+
+**Step 3: Database Investigation**
+```bash
+# Check player location data
+sqlite3 data/players/players.db "SELECT username, current_room_id FROM players;"
+# Check room data integrity
+find data/rooms/ -name "*.json" -exec python -m json.tool {} \; > /dev/null
+```
+- Verify player location data consistency
+- Check room data integrity
+- Document any database inconsistencies
+
+**Step 4: Room Data Analysis**
+- Examine room configuration files
+- Check room connectivity and exits
+- Analyze room loading mechanisms
+- Review room validation logic
+
+**Step 5: Command Processing Investigation**
+- Use codebase_search to find movement command handlers
+- Trace command execution flow
+- Analyze room transition logic
+- Review command validation and processing
+
+**Step 6: System State Analysis**
+- Check for any system-wide issues affecting movement
+- Analyze connection state and WebSocket functionality
+- Review game loop and tick processing
+
+**INVESTIGATION REPORT TEMPLATE:**
+```
+BUG INVESTIGATION REPORT: Movement/Command Issues
+=================================================
+
+Bug Description: [User-reported movement issue]
+Investigation Date: [Date/Time]
+Investigator: [AI Assistant]
+
+FINDINGS:
+---------
+1. Game State: [Current system state]
+2. Movement Logs: [Summary of movement-related logs]
+3. Database Status: [Player location and room data]
+4. Room Data: [Room configuration and integrity]
+5. Command Processing: [Movement command handling analysis]
+6. System State: [Overall system health]
+
+ROOT CAUSE ANALYSIS:
+-------------------
+[Detailed analysis of movement system issues]
+
+SYSTEM IMPACT:
+--------------
+[Assessment of movement system scope and severity]
+
+EVIDENCE:
+---------
+[Specific log entries, database queries, room data]
+
+RECOMMENDATIONS:
+----------------
+[Investigation priorities for movement system]
+```
+
+### Scenario 3: Chat/Communication Issues
+
+#### Bug Report: "Chat messages not appearing or delayed"
+
+**INVESTIGATION STEPS:**
+
+**Step 1: Parse Bug Description**
+- Extract chat channel or message type affected
+- Note any specific users experiencing issues
+- Record timing of message failures
+- Document any error messages or delays
+
+**Step 2: Check Communication Logs**
+```bash
+# Check chat-related logs
+grep -i "chat\|message\|communication" logs/development/server.log
+grep -i "websocket\|connection" logs/development/server.log
+```
+- Document chat system status
+- Check for WebSocket connection issues
+- Note any message processing errors
+
+**Step 3: WebSocket Investigation**
+```bash
+# Check WebSocket connections and status
+netstat -an | findstr :54731
+```
+- Document WebSocket connection state
+- Check for connection drops or timeouts
+- Analyze real-time communication health
+
+**Step 4: Chat System Code Analysis**
+- Use codebase_search to find chat system implementation
+- Examine message routing and delivery logic
+- Analyze WebSocket event handling
+- Review chat channel management
+
+**Step 5: Database Investigation**
+```bash
+# Check chat-related database operations
+sqlite3 data/players/players.db ".schema" | grep -i chat
+```
+- Verify chat data storage and retrieval
+- Check for database-related chat issues
+- Analyze chat history and persistence
+
+**Step 6: Network Analysis**
+- Check network connectivity and performance
+- Analyze message delivery timing
+- Review connection management and cleanup
+
+**INVESTIGATION REPORT TEMPLATE:**
+```
+BUG INVESTIGATION REPORT: Chat/Communication Issues
+===================================================
+
+Bug Description: [User-reported chat issue]
+Investigation Date: [Date/Time]
+Investigator: [AI Assistant]
+
+FINDINGS:
+---------
+1. Communication Logs: [Summary of chat system logs]
+2. WebSocket Status: [Connection state and health]
+3. Chat System Code: [Implementation analysis]
+4. Database Status: [Chat data integrity]
+5. Network Analysis: [Connectivity and performance]
+
+ROOT CAUSE ANALYSIS:
+-------------------
+[Detailed analysis of communication system issues]
+
+SYSTEM IMPACT:
+--------------
+[Assessment of chat system scope and severity]
+
+EVIDENCE:
+---------
+[Specific log entries, network status, code analysis]
+
+RECOMMENDATIONS:
+----------------
+[Investigation priorities for communication system]
+```
+
+### Scenario 4: Performance/System Issues
+
+#### Bug Report: "Game is running slowly or unresponsive"
+
+**INVESTIGATION STEPS:**
+
+**Step 1: Parse Bug Description**
+- Extract specific performance symptoms
+- Note any system resource indicators
+- Record timing of performance degradation
+- Document any error messages or crashes
+
+**Step 2: System Resource Analysis**
+```bash
+# Check system resources
+python -c "import psutil; print(f'CPU: {psutil.cpu_percent()}%'); print(f'Memory: {psutil.virtual_memory().percent}%')"
+# Check disk space
+df -h
+```
+- Document current system resource usage
+- Check for resource exhaustion
+- Analyze system performance metrics
+
+**Step 3: Performance Logs Analysis**
+```bash
+# Check for performance-related issues
+grep -i "slow\|timeout\|performance\|duration" logs/development/server.log
+grep -i "memory\|cpu\|resource" logs/development/server.log
+```
+- Document performance-related log entries
+- Identify slow operations or timeouts
+- Analyze resource usage patterns
+
+**Step 4: Database Performance Investigation**
+```bash
+# Check database performance
+sqlite3 data/players/players.db "PRAGMA integrity_check;"
+# Check for slow queries in logs
+grep -i "duration.*ms" logs/development/server.log | sort -k5 -nr
+```
+- Verify database performance and integrity
+- Identify slow database operations
+- Analyze query performance patterns
+
+**Step 5: Code Performance Analysis**
+- Use codebase_search to find performance-critical code
+- Examine database query patterns
+- Analyze memory usage and potential leaks
+- Review caching and optimization implementations
+
+**Step 6: System Monitoring**
+```bash
+# Monitor system resources over time
+python scripts/error_monitoring.py --log-dir logs/development --monitor --interval 10 --duration 300
+```
+- Document system monitoring results
+- Analyze resource usage trends
+- Identify performance bottlenecks
+
+**INVESTIGATION REPORT TEMPLATE:**
+```
+BUG INVESTIGATION REPORT: Performance/System Issues
+==================================================
+
+Bug Description: [User-reported performance issue]
+Investigation Date: [Date/Time]
+Investigator: [AI Assistant]
+
+FINDINGS:
+---------
+1. System Resources: [CPU, Memory, Disk usage]
+2. Performance Logs: [Summary of performance-related logs]
+3. Database Performance: [Query performance and integrity]
+4. Code Analysis: [Performance-critical code review]
+5. System Monitoring: [Resource usage trends and patterns]
+
+ROOT CAUSE ANALYSIS:
+-------------------
+[Detailed analysis of performance bottlenecks]
+
+SYSTEM IMPACT:
+--------------
+[Assessment of performance impact scope and severity]
+
+EVIDENCE:
+---------
+[Specific metrics, log entries, resource usage data]
+
+RECOMMENDATIONS:
+----------------
+[Investigation priorities for performance optimization]
+```
+
+## 📊 INVESTIGATION REPORTING STANDARDS
+
+### Report Structure
+1. **Executive Summary**: Brief overview of findings
+2. **Detailed Findings**: Comprehensive analysis of each investigation area
+3. **Root Cause Analysis**: Technical analysis of underlying issues
+4. **System Impact Assessment**: Scope and severity evaluation
+5. **Evidence Documentation**: Specific data, logs, and code references
+6. **Investigation Recommendations**: Priorities for further investigation (NOT fixes)
+
+### Evidence Collection Standards
+- **Timestamp All Evidence**: Include precise timestamps for all findings
+- **Document Command Output**: Record exact command results
+- **Include Code References**: Provide specific file and line references
+- **Log Entry Documentation**: Include full log entries with context
+- **System State Snapshots**: Document current system configuration
+
+### Analysis Quality Standards
+- **Systematic Approach**: Follow investigation methodology consistently
+- **Comprehensive Coverage**: Address all relevant system components
+- **Technical Depth**: Provide detailed technical analysis
+- **Evidence-Based Conclusions**: Base all conclusions on collected evidence
+- **Clear Documentation**: Ensure findings are clearly documented and traceable
+
+## 🚨 CRITICAL REMINDERS
+
+**NEVER ATTEMPT TO FIX ISSUES** - Your role is investigation and analysis only.
+
+**ALWAYS DOCUMENT FINDINGS** - Comprehensive documentation is essential for effective investigation.
+
+**FOLLOW METHODOLOGY** - Systematic approach ensures thorough investigation.
+
+**EVIDENCE-BASED ANALYSIS** - Base all conclusions on collected evidence and data.
+
+**GENERATE COMPREHENSIVE REPORTS** - Detailed reports enable effective decision-making.
+
+## 📝 INVESTIGATION COMPLETION CHECKLIST
+
+Before concluding any investigation, verify:
+- [ ] All investigation steps completed as written
+- [ ] Comprehensive evidence collected and documented
+- [ ] Root cause analysis completed
+- [ ] System impact assessed
+- [ ] Investigation report generated
+- [ ] No attempt made to fix issues (investigation only)
+- [ ] All findings clearly documented with evidence
+
+---
+
+*"In the restricted archives of Miskatonic University, we learn that proper investigation requires systematic methodology, comprehensive evidence collection, and thorough analysis. The truth lies not in hasty conclusions, but in methodical examination of all available evidence."*
+
+**Remember**: This playbook is for investigation and analysis only. Do not attempt to fix any issues discovered during investigation.

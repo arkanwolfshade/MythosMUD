@@ -2788,6 +2788,108 @@ class ConnectionManager:
         except Exception as e:
             logger.error(f"Error during force cleanup: {e}", exc_info=True)
 
+    # --- Event Subscription Methods ---
+
+    def _get_event_bus(self):
+        """Get the event bus from the persistence layer."""
+        from ..persistence import get_persistence
+
+        persistence = get_persistence()
+        return getattr(persistence, "_event_bus", None)
+
+    async def subscribe_to_room_events(self):
+        """Subscribe to room movement events for occupant broadcasting."""
+        event_bus = self._get_event_bus()
+        if not event_bus:
+            logger.warning("No event bus available for room event subscription")
+            return
+
+        try:
+            from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+
+            event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
+            event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
+            logger.info("Successfully subscribed to room movement events")
+        except Exception as e:
+            logger.error(f"Error subscribing to room events: {e}", exc_info=True)
+
+    async def unsubscribe_from_room_events(self):
+        """Unsubscribe from room movement events."""
+        event_bus = self._get_event_bus()
+        if not event_bus:
+            return
+
+        try:
+            from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+
+            event_bus.unsubscribe(PlayerEnteredRoom, self._handle_player_entered_room)
+            event_bus.unsubscribe(PlayerLeftRoom, self._handle_player_left_room)
+            logger.info("Successfully unsubscribed from room movement events")
+        except Exception as e:
+            logger.error(f"Error unsubscribing from room events: {e}", exc_info=True)
+
+    async def _handle_player_entered_room(self, event_data):
+        """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
+        try:
+            room_id = event_data.get("room_id")
+            if not room_id:
+                logger.warning("PlayerEnteredRoom event missing room_id")
+                return
+
+            # Get current room occupants
+            occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+            names: list[str] = []
+            for occ in occ_infos:
+                name = occ.get("player_name") if isinstance(occ, dict) else None
+                if name:
+                    names.append(name)
+
+            # Build and broadcast room_occupants event
+            from .envelope import build_event
+
+            occ_event = build_event(
+                "room_occupants",
+                {"occupants": names, "count": len(names)},
+                room_id=room_id,
+            )
+            await self.broadcast_to_room(room_id, occ_event)
+
+            logger.debug(f"Broadcasted room_occupants event for room {room_id} with {len(names)} occupants")
+
+        except Exception as e:
+            logger.error(f"Error handling PlayerEnteredRoom event: {e}", exc_info=True)
+
+    async def _handle_player_left_room(self, event_data):
+        """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
+        try:
+            room_id = event_data.get("room_id")
+            if not room_id:
+                logger.warning("PlayerLeftRoom event missing room_id")
+                return
+
+            # Get current room occupants
+            occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+            names: list[str] = []
+            for occ in occ_infos:
+                name = occ.get("player_name") if isinstance(occ, dict) else None
+                if name:
+                    names.append(name)
+
+            # Build and broadcast room_occupants event
+            from .envelope import build_event
+
+            occ_event = build_event(
+                "room_occupants",
+                {"occupants": names, "count": len(names)},
+                room_id=room_id,
+            )
+            await self.broadcast_to_room(room_id, occ_event)
+
+            logger.debug(f"Broadcasted room_occupants event for room {room_id} with {len(names)} occupants")
+
+        except Exception as e:
+            logger.error(f"Error handling PlayerLeftRoom event: {e}", exc_info=True)
+
 
 # Global connection manager instance
 connection_manager = ConnectionManager()

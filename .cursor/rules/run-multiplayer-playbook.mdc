@@ -1,0 +1,30 @@
+---
+description: Run the multiplayer scenarios playbook exactly as written.
+alwaysApply: false
+---
+
+## 🔍 CRITICAL AI INVESTIGATOR REQUIREMENTS 🔍
+
+**MANDATORY LLM REQUIREMENT:**
+- **MUST USE GPT-4**: This investigation playbook requires GPT-4 level reasoning and systematic analysis
+- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for investigation execution
+- **REASON**: Complex bug investigation requires advanced reasoning capabilities and systematic analysis
+- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any investigation
+
+**CURSOR AI CONFIGURATION:**
+- Set Cursor to use GPT-4 for this session
+- Ensure model selection is set to "GPT-4" or "GPT-4 Turbo"
+- Verify model capabilities include advanced instruction following and systematic analysis
+
+
+## 🚨 CRITICAL INSTRUCTION FOR AI INVESTIGATORS 🚨
+
+**BEFORE YOU DO ANYTHING ELSE:**
+- Execute EVERY investigation step EXACTLY as written
+- Do NOT skip, modify, or interpret any steps
+- Do NOT attempt to fix any issues found - ONLY report
+- Your job is to execute, and document - NOT to fix
+- If you think a step is unnecessary, execute it anyway and document the result
+
+
+Execute the @MULTIPLAYER_SCENARIOS_PLAYBOOK.md playbook. Follow every step exactly as written. Do not skip, modify, or interpret any steps. Execute each command exactly as specified

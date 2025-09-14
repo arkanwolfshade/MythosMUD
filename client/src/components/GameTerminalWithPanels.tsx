@@ -390,6 +390,46 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             break;
           }
+          case 'room_occupants': {
+            const occupants = event.data.occupants as string[];
+            const occupantCount = event.data.count as number;
+
+            // Validate event data
+            if (occupants && Array.isArray(occupants) && typeof occupantCount === 'number') {
+              logger.info('GameTerminalWithPanels', 'Processing room_occupants event', {
+                occupantsCount: occupants.length,
+                occupantCount,
+                occupants: occupants,
+              });
+
+              // Update room state with new occupant information
+              if (updates.room) {
+                updates.room = {
+                  ...updates.room,
+                  occupants: occupants,
+                  occupant_count: occupantCount,
+                };
+              } else {
+                // If no room update is pending, create one with current room data
+                const currentRoom = gameState.room;
+                if (currentRoom) {
+                  updates.room = {
+                    ...currentRoom,
+                    occupants: occupants,
+                    occupant_count: occupantCount,
+                  };
+                }
+              }
+            } else {
+              logger.warn('GameTerminalWithPanels', 'Invalid room_occupants event data', {
+                occupants: occupants,
+                occupantCount: occupantCount,
+                occupantsType: typeof occupants,
+                countType: typeof occupantCount,
+              });
+            }
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,
@@ -434,7 +474,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         processingTimeout.current = window.setTimeout(processEventQueue, 10);
       }
     }
-  }, []);
+  }, [gameState.room]);
 
   // Memoize the game event handler to prevent infinite re-renders
   const handleGameEvent = useCallback(

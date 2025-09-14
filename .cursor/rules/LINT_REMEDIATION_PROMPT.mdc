@@ -1,0 +1,144 @@
+# Lint Remediation Prompt - Cursor Executable Version
+
+## Project Linting Configuration
+- **Python Backend**: Uses Ruff linter with flake8-bugbear rules
+- **React Frontend**: Uses ESLint with React hooks plugin
+- **Line Length**: 120 characters maximum
+- **Command**: `make lint` (runs both Python and React linting)
+
+## Step-by-Step Remediation Process
+
+### 1. Initial Assessment
+```bash
+# Run linting to identify all current issues
+make lint
+```
+
+### 2. Categorize Findings
+Lint findings typically fall into these categories:
+
+#### A. Python/Ruff Issues
+- **B007**: Loop control variable not used within loop body
+- **E501**: Line too long (handled by line-length setting)
+- **F401**: Imported but unused
+- **I001**: Import sorting issues
+- **UP**: Python upgrade suggestions
+
+#### B. React/ESLint Issues
+- **react-hooks/exhaustive-deps**: Missing dependencies in useEffect/useCallback
+- **@typescript-eslint/no-unused-vars**: Unused variables
+- **max-len**: Line length violations
+
+### 3. Systematic Fixing Approach
+
+#### For Python Issues:
+1. **Unused Loop Variables (B007)**:
+   ```python
+   # Before:
+   for player_id, websocket in mock_websockets.items():
+       websocket.send_json.assert_called()
+
+   # After:
+   for _player_id, websocket in mock_websockets.items():
+       websocket.send_json.assert_called()
+   ```
+
+2. **Import Issues (F401, I001)**:
+   - Remove unused imports
+   - Sort imports according to isort rules
+   - Use `# noqa: F401` for intentional unused imports in `__init__.py`
+
+3. **Line Length (E501)**:
+   - Break long lines at logical points
+   - Use parentheses for implicit line continuation
+   - Consider extracting variables for complex expressions
+
+#### For React Issues:
+1. **Missing Dependencies (react-hooks/exhaustive-deps)**:
+   ```typescript
+   // Option 1: Add missing dependency
+   const callback = useCallback(() => {
+       // function body
+   }, [dependency1, dependency2, missingDependency]);
+
+   // Option 2: Remove dependency array if not needed
+   const callback = useCallback(() => {
+       // function body
+   }, []);
+   ```
+
+2. **Unused Variables (@typescript-eslint/no-unused-vars)**:
+   - Remove unused variables
+   - Prefix with underscore: `_unusedVariable`
+   - Use `// eslint-disable-next-line` for intentional cases
+
+### 4. Quality Assurance Checklist
+- [ ] All lint issues resolved (run `make lint` again)
+- [ ] No functionality broken (existing tests still pass)
+- [ ] Code follows project conventions (120 char limit, naming)
+- [ ] Changes are minimal and focused
+- [ ] No new lint issues introduced
+
+### 5. Common Patterns and Solutions
+
+#### Test File Patterns:
+```python
+# Unused loop variables in tests
+for _player_id, websocket in mock_websockets.items():
+    websocket.send_json.assert_called()
+
+# Unused test parameters
+def test_function(_unused_param):
+    pass
+```
+
+#### React Hook Patterns:
+```typescript
+// Proper dependency management
+const memoizedCallback = useCallback(() => {
+    doSomething(a, b);
+}, [a, b]);
+
+// Stable references
+const stableCallback = useCallback(() => {
+    doSomething();
+}, []); // Empty deps for stable functions
+```
+
+### 6. Error Handling
+If fixes introduce new issues:
+1. Revert problematic changes
+2. Investigate root cause
+3. Apply more targeted fixes
+4. Test incrementally
+
+### 7. Final Verification
+```bash
+# Verify all lint issues resolved
+make lint
+
+# Ensure tests still pass
+make test
+
+# Check code coverage maintained
+make coverage
+```
+
+## Best Practices
+1. **Incremental Fixes**: Fix one category of issues at a time
+2. **Preserve Functionality**: Only change what's necessary for linting
+3. **Follow Conventions**: Maintain project's coding standards
+4. **Test After Changes**: Verify no regressions introduced
+5. **Document Complex Fixes**: Add comments for non-obvious changes
+
+## Troubleshooting
+- **Ruff Issues**: Check `pyproject.toml` for rule configurations
+- **ESLint Issues**: Check `client/eslint.config.js` for rule settings
+- **Pre-commit Hooks**: Ensure local hooks match CI/CD requirements
+- **IDE Integration**: Verify editor settings align with project config
+
+## Success Criteria
+- `make lint` exits with code 0
+- All existing tests pass
+- No new lint violations introduced
+- Code maintains readability and functionality

@@ -1,5 +1,27 @@
 # MythosMUD Multiplayer Scenarios Playbook - Cursor Executable Version (Low-Performance Optimized)
 
+## 🤖 CRITICAL AI EXECUTOR REQUIREMENTS 🤖
+
+**MANDATORY LLM REQUIREMENT:**
+- **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
+- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
+- **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
+- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
+
+**CURSOR AI CONFIGURATION:**
+- Set Cursor to use GPT-4 for this session
+- Ensure model selection is set to "GPT-4" or "GPT-4 Turbo"
+- Verify model capabilities include advanced instruction following and complex reasoning
+
+## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
+
+**BEFORE YOU DO ANYTHING ELSE:**
+- Execute EVERY step in EVERY scenario EXACTLY as written
+- Do NOT skip, modify, or interpret any steps
+- Do NOT make assumptions about how systems should work
+- Your job is to execute, not to interpret or improve
+- If you think a step is wrong, execute it anyway and document the result
+
 ## Overview
 
 This playbook contains detailed scenarios for testing multiplayer functionality in MythosMUD. **This version is specifically designed for Cursor AI to execute automatically using Playwright MCP on low-performance machines.** Each scenario includes explicit step-by-step instructions with extended timeouts and wait times to accommodate slower system responses.
@@ -37,7 +59,45 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 
 ### CRITICAL: FOLLOW INSTRUCTIONS EXACTLY AS WRITTEN
 
-**⚠️ MANDATORY RULE**: Every step in every scenario must be executed exactly as written. Do not skip steps, modify steps, or assume steps are optional. Each step is there for a specific reason and builds upon the previous steps. Failure to follow instructions exactly will cause subsequent scenarios to fail.
+**⚠️ CRITICAL MANDATORY RULE - NO EXCEPTIONS**:
+- Execute EVERY step in EVERY scenario EXACTLY as written
+- Do NOT skip, modify, or assume any step is optional
+- Do NOT interpret or "help" by changing commands
+- Do NOT make assumptions about how systems should work
+- If a step seems wrong, execute it anyway and document the result
+- Each step builds on the previous - skipping breaks the entire scenario
+- Your job is to execute, not to interpret or improve
+
+### PRE-EXECUTION CHECKLIST
+Before starting ANY scenario, confirm:
+- [ ] I have read the MANDATORY RULE above
+- [ ] I will execute every step exactly as written
+- [ ] I will not skip, modify, or interpret any steps
+- [ ] I will not make assumptions about system behavior
+- [ ] I will document actual results, not expected results
+
+### NO INTERPRETATION RULE
+- If a command says "say Hello" - type exactly "say Hello"
+- If a command says "mute Ithaqua" - type exactly "mute Ithaqua"
+- If a step seems to test something obvious - execute it anyway
+- If you think a step is wrong - execute it anyway and document the result
+- Your job is to execute, not to interpret or improve
+
+### STOP AND ASK RULE
+If you find yourself:
+- Thinking "this step seems unnecessary"
+- Wanting to "help" by changing a command
+- Making assumptions about what should happen
+- Skipping steps because they seem obvious
+
+STOP. Ask the user: "Should I continue with the exact steps as written, or do you want me to modify this approach?"
+
+### RESULT DOCUMENTATION REQUIREMENTS
+After each step, document:
+- What command was executed (exactly)
+- What response was received (exactly)
+- Whether it matched the expected result (yes/no)
+- If no match, what the actual result was
 
 ### Prerequisites (Run Before Starting Scenarios)
 
@@ -650,13 +710,21 @@ Tests the muting system and emote functionality across game sessions.
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
-// Type mute command
+// Type mute command EXACTLY as written below
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "mute Ithaqua"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
-// Wait for mute confirmation
+// Wait for mute confirmation EXACTLY as written below
 await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua"});
 ```
+
+**VALIDATION**: Did you type "mute Ithaqua" exactly? Did you wait for "You have muted Ithaqua" exactly?
+
+**RESULT DOCUMENTATION**:
+- Command executed: "mute Ithaqua"
+- Response received: [document actual response]
+- Expected result: "You have muted Ithaqua"
+- Match: [yes/no]
 
 #### Step 3: Ithaqua Uses Dance Emote
 
@@ -666,13 +734,21 @@ await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua"});
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
 
-// Type dance emote
+// Type dance emote EXACTLY as written below
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "dance"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
-// Wait for emote confirmation
+// Wait for emote confirmation EXACTLY as written below
 await mcp_playwright_browser_wait_for({text: "You dance like nobody's watching"});
 ```
+
+**VALIDATION**: Did you type "dance" exactly? Did you wait for "You dance like nobody's watching" exactly?
+
+**RESULT DOCUMENTATION**:
+- Command executed: "dance"
+- Response received: [document actual response]
+- Expected result: "You dance like nobody's watching"
+- Match: [yes/no]
 
 #### Step 4: Verify AW Does NOT See Ithaqua's Emote
 
@@ -2702,11 +2778,33 @@ The multiplayer implementation represents a successful bridge between the event-
 
 ---
 
-**Document Version**: 4.1 (Cursor Executable - Low-Performance Optimized)
+**Document Version**: 4.2 (Cursor Executable - Low-Performance Optimized with Strict Execution Rules)
 **Last Updated**: 2025-01-27
 **Next Review**: After each scenario completion
 **Primary Audience**: Cursor AI and Developers (Low-Performance Machines)
 **Update Frequency**: After each scenario completion
+
+---
+
+## Instructions for Human Users
+
+### How to Give Commands to AI Executors
+
+**❌ WRONG - Do not use:**
+> "Execute the playbook"
+
+**✅ CORRECT - Use this format:**
+> "Execute the @MULTIPLAYER_SCENARIOS_PLAYBOOK.md playbook. Follow every step exactly as written. Do not skip, modify, or interpret any steps. Execute each command exactly as specified. Document actual results, not expected results."
+
+### Why This Matters
+
+The AI executor must follow exact steps to:
+- Test the actual behavior of the system
+- Identify bugs and issues
+- Provide accurate documentation
+- Ensure reproducible results
+
+Any deviation from exact execution invalidates the test results.
 
 ### Low-Performance Machine Optimizations Applied
 
