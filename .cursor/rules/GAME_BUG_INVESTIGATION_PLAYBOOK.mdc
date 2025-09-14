@@ -10,6 +10,16 @@
 - If you think a step is unnecessary, execute it anyway and document the result
 - Generate a comprehensive investigation report with findings and analysis
 
+## 🔐 MANDATORY TEST CREDENTIALS
+
+**CRITICAL**: Always use the official test credentials from MULTIPLAYER_SCENARIOS_PLAYBOOK.md:
+
+**Test Players:**
+- **ArkanWolfshade** (AW) - password: Cthulhu1
+- **Ithaqua** - password: Cthulhu1
+
+**NEVER use random or assumed credentials** - Always use these exact test accounts for all investigations involving login, authentication, or multiplayer scenarios.
+
 ## 🔬 INVESTIGATION OVERVIEW
 
 This playbook contains systematic procedures for investigating game bugs in MythosMUD. **This version is specifically designed for Cursor AI to execute automatically using available tools and generate detailed investigation reports.** Each investigation includes explicit step-by-step instructions with comprehensive analysis requirements.
@@ -44,6 +54,13 @@ This playbook contains systematic procedures for investigating game bugs in Myth
 - **mcp_playwright_browser_***: Browser automation for client-side testing
 - **todo_write**: Track investigation progress and findings
 
+### Browser Testing Credential Requirements
+When using browser automation tools for investigation:
+- **ALWAYS use official test credentials**: ArkanWolfshade / Cthulhu1 or Ithaqua / Cthulhu1
+- **NEVER attempt to create new accounts** during investigation
+- **NEVER use random or assumed credentials**
+- **Reference MULTIPLAYER_SCENARIOS_PLAYBOOK.md** for proper test account setup
+
 ## 📋 PRE-INVESTIGATION CHECKLIST
 
 Before starting ANY investigation, confirm:
@@ -53,6 +70,8 @@ Before starting ANY investigation, confirm:
 - [ ] I will generate a comprehensive investigation report
 - [ ] I will document all findings systematically
 - [ ] I will focus on investigation, not resolution
+- [ ] I will use ONLY the official test credentials (ArkanWolfshade/Cthulhu1, Ithaqua/Cthulhu1)
+- [ ] I will NOT use random or assumed credentials
 
 ## 🔍 INVESTIGATION METHODOLOGY
 
@@ -99,6 +118,9 @@ Before starting ANY investigation, confirm:
 - Note any error messages reported by user
 - Record time/date of issue occurrence
 - Document any steps that led to the problem
+- **CRITICAL**: If testing login functionality, use ONLY the official test credentials:
+  - ArkanWolfshade / Cthulhu1
+  - Ithaqua / Cthulhu1
 
 **Step 2: Check Server Status**
 ```bash
@@ -484,6 +506,8 @@ Before concluding any investigation, verify:
 - [ ] Investigation report generated
 - [ ] No attempt made to fix issues (investigation only)
 - [ ] All findings clearly documented with evidence
+- [ ] Only official test credentials were used (ArkanWolfshade/Cthulhu1, Ithaqua/Cthulhu1)
+- [ ] No random or assumed credentials were used during testing
 
 ---
 

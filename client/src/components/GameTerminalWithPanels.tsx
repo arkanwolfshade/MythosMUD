@@ -126,6 +126,84 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     currentMessagesRef.current = gameState.messages;
   }, [gameState.messages]);
 
+  // Track the last room update timestamp to prevent stale data overwrites
+  const lastRoomUpdateTime = useRef<number>(0);
+
+  // Room data validation function to prevent stale data overwrites
+  const validateRoomDataForOccupants = useCallback((currentRoom: Room, event: GameEvent) => {
+    // Check if the event timestamp is recent enough to be valid
+    const eventTime = new Date(event.timestamp).getTime();
+    const currentTime = Date.now();
+    const timeDiff = currentTime - eventTime;
+
+    logger.info('GameTerminalWithPanels', '🔍 VALIDATION DEBUG: validateRoomDataForOccupants called', {
+      currentRoomId: currentRoom.id,
+      currentRoomName: currentRoom.name,
+      eventTimestamp: event.timestamp,
+      eventTime,
+      currentTime,
+      timeDiff,
+      lastRoomUpdateTime: lastRoomUpdateTime.current,
+    });
+
+    // If event is older than 5 seconds, it might be stale
+    if (timeDiff > 5000) {
+      logger.warn('GameTerminalWithPanels', '🔍 VALIDATION DEBUG: Event timestamp too old', {
+        timeDiff,
+        threshold: 5000,
+      });
+      return {
+        isValid: false,
+        reason: 'Event timestamp too old',
+        timeDiff,
+      };
+    }
+
+    // Check if this room_occupants event is older than the last room update
+    if (eventTime < lastRoomUpdateTime.current) {
+      logger.warn(
+        'GameTerminalWithPanels',
+        '🔍 VALIDATION DEBUG: Room occupants event is older than last room update',
+        {
+          eventTime,
+          lastRoomUpdateTime: lastRoomUpdateTime.current,
+          timeDiff: lastRoomUpdateTime.current - eventTime,
+          currentRoomId: currentRoom.id,
+          currentRoomName: currentRoom.name,
+        }
+      );
+      return {
+        isValid: false,
+        reason: 'Event is older than last room update',
+        eventTime,
+        lastRoomUpdateTime: lastRoomUpdateTime.current,
+      };
+    }
+
+    // Check if the room data seems consistent
+    if (!currentRoom.id || !currentRoom.name) {
+      logger.warn('GameTerminalWithPanels', '🔍 VALIDATION DEBUG: Invalid room data structure', {
+        currentRoomId: currentRoom.id,
+        currentRoomName: currentRoom.name,
+      });
+      return {
+        isValid: false,
+        reason: 'Invalid room data structure',
+      };
+    }
+
+    logger.info('GameTerminalWithPanels', '🔍 VALIDATION DEBUG: Room data is valid', {
+      currentRoomId: currentRoom.id,
+      currentRoomName: currentRoom.name,
+      eventTimestamp: event.timestamp,
+    });
+
+    return {
+      isValid: true,
+      reason: 'Room data is valid',
+    };
+  }, []);
+
   // Event processing function with debouncing and deduplication
   const processEventQueue = useCallback(() => {
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
@@ -171,6 +249,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
             if (playerData && roomData) {
+              // Track the timestamp of this room update
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
               updates.player = playerData;
               updates.room = roomData;
               logger.info('GameTerminalWithPanels', 'Received game state', {
@@ -185,6 +265,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
             if (playerData && roomData) {
+              // Track the timestamp of this room update
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
               updates.player = playerData;
               updates.room = roomData;
             }
@@ -196,6 +278,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const occupantCount = event.data.occupant_count as number;
 
             if (roomData) {
+              // Track the timestamp of this room update
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
+
               // Merge room data with occupants information from the event
               updates.room = {
                 ...roomData,
@@ -208,6 +293,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           case 'room_state': {
             const roomData = event.data.room_data as Room;
             if (roomData) {
+              // Track the timestamp of this room update
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
               updates.room = roomData;
             }
             break;
@@ -402,22 +489,36 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 occupants: occupants,
               });
 
-              // Update room state with new occupant information
-              if (updates.room) {
-                updates.room = {
-                  ...updates.room,
-                  occupants: occupants,
-                  occupant_count: occupantCount,
-                };
-              } else {
-                // If no room update is pending, create one with current room data
-                const currentRoom = gameState.room;
-                if (currentRoom) {
-                  updates.room = {
-                    ...currentRoom,
-                    occupants: occupants,
-                    occupant_count: occupantCount,
-                  };
+              // Always validate the room data to prevent stale overwrites
+              const currentRoom = gameState.room;
+              if (currentRoom) {
+                const roomDataValidation = validateRoomDataForOccupants(currentRoom, event);
+                if (roomDataValidation.isValid) {
+                  // Update room state with new occupant information
+                  if (updates.room) {
+                    // Room data already updated by room_update event - preserve it and just update occupants
+                    updates.room = {
+                      ...updates.room,
+                      occupants: occupants,
+                      occupant_count: occupantCount,
+                    };
+                  } else {
+                    // Use current room data and update occupants
+                    updates.room = {
+                      ...currentRoom,
+                      occupants: occupants,
+                      occupant_count: occupantCount,
+                    };
+                  }
+                } else {
+                  logger.warn('GameTerminalWithPanels', 'Skipping room_occupants event due to stale room data', {
+                    currentRoomId: currentRoom.id,
+                    currentRoomName: currentRoom.name,
+                    eventTimestamp: event.timestamp,
+                    validationResult: roomDataValidation,
+                  });
+                  // Don't update room data at all - just skip this event
+                  // Continue to next event without updating room data
                 }
               }
             } else {
@@ -474,7 +575,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         processingTimeout.current = window.setTimeout(processEventQueue, 10);
       }
     }
-  }, [gameState.room]);
+  }, [gameState.room, validateRoomDataForOccupants]);
 
   // Memoize the game event handler to prevent infinite re-renders
   const handleGameEvent = useCallback(
