@@ -57,6 +57,20 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     inputRef.current?.focus();
   }, []);
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle Ctrl+Q for logout
+      if (e.ctrlKey && e.key === 'q' && onLogout && !disabled && isConnected) {
+        e.preventDefault();
+        onLogout();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onLogout, disabled, isConnected]);
+
   // Update current channel when prop changes
   useEffect(() => {
     setCurrentChannel(selectedChannel);
@@ -79,6 +93,13 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
     onSendCommand(command);
     setCommandInput('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCommandSubmit(e);
+    }
   };
 
   // handleKeyDown removed - not used in current implementation
@@ -109,7 +130,10 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   // TODO: Implement command suggestions
 
   return (
-    <div className="command-panel h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded">
+    <div
+      className="command-panel h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded"
+      data-testid="command-panel"
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background">
         <div className="flex items-center space-x-2">
@@ -141,6 +165,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
             ref={inputRef}
             value={commandInput}
             onChange={e => setCommandInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled || !isConnected}
             className="w-full"

@@ -2,7 +2,7 @@ import React, { createContext, ReactNode } from 'react';
 import { useGameTerminal } from '../hooks/useGameTerminal';
 
 // Context type definition
-interface GameTerminalContextType {
+export interface GameTerminalContextType {
   // Connection state
   isConnected: boolean;
   isConnecting: boolean;
@@ -86,3 +86,6 @@ export const GameTerminalProvider: React.FC<GameTerminalProviderProps> = ({ chil
 
   return <GameTerminalContext.Provider value={gameTerminalState}>{children}</GameTerminalContext.Provider>;
 };
+
+// Export the context for use in hooks
+export { GameTerminalContext };

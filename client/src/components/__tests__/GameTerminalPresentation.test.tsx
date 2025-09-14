@@ -213,20 +213,30 @@ describe('GameTerminalPresentation', () => {
     it('should display connection status in header', () => {
       render(<GameTerminalPresentation {...defaultProps} />);
 
-      expect(screen.getByText('Connected')).toBeInTheDocument();
+      // Look for the connected status in the header area
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Connected');
+
       expect(screen.getByText('Player: TestPlayer')).toBeInTheDocument();
     });
 
     it('should display disconnected status when not connected', () => {
       render(<GameTerminalPresentation {...defaultProps} isConnected={false} isConnecting={false} />);
 
-      expect(screen.getByText('Disconnected')).toBeInTheDocument();
+      // Look for the disconnected status in the header area
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Disconnected');
     });
 
     it('should display connecting status when connecting', () => {
       render(<GameTerminalPresentation {...defaultProps} isConnected={false} isConnecting={true} />);
 
-      expect(screen.getByText('Connecting...')).toBeInTheDocument();
+      // Look for the connecting status in the header area
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Connecting...');
     });
 
     it('should display error message when error exists', () => {
@@ -257,9 +267,16 @@ describe('GameTerminalPresentation', () => {
       render(<GameTerminalPresentation {...defaultProps} />);
 
       expect(screen.getByText('Messages:')).toBeInTheDocument();
-      expect(screen.getByText('1')).toBeInTheDocument();
+      // Look for the specific message count in the status panel context
+      const messagesLabel = screen.getByText('Messages:');
+      const messagesValue = messagesLabel.parentElement?.querySelector('span:last-child');
+      expect(messagesValue).toHaveTextContent('1');
+
       expect(screen.getByText('Commands:')).toBeInTheDocument();
-      expect(screen.getByText('3')).toBeInTheDocument();
+      // Look for the specific command count in the status panel context
+      const commandsLabel = screen.getByText('Commands:');
+      const commandsValue = commandsLabel.parentElement?.querySelector('span:last-child');
+      expect(commandsValue).toHaveTextContent('3');
     });
   });
 
@@ -430,8 +447,12 @@ describe('GameTerminalPresentation', () => {
     it('should handle panel close events', () => {
       render(<GameTerminalPresentation {...defaultProps} />);
 
-      const closeButton = screen.getByTestId('panel-close');
-      fireEvent.click(closeButton);
+      // Get the first close button (from the chat panel)
+      const chatPanel = screen.getByTestId('draggable-panel-chat');
+      const closeButton = chatPanel.querySelector('[data-testid="panel-close"]');
+      expect(closeButton).toBeInTheDocument();
+
+      fireEvent.click(closeButton!);
 
       // Should not throw error
       expect(closeButton).toBeInTheDocument();
@@ -440,7 +461,10 @@ describe('GameTerminalPresentation', () => {
     it('should handle panel minimize events', () => {
       render(<GameTerminalPresentation {...defaultProps} />);
 
-      const minimizeButton = screen.getByTestId('panel-minimize');
+      const minimizeButtons = screen.getAllByTestId('panel-minimize');
+      expect(minimizeButtons.length).toBeGreaterThan(0);
+
+      const minimizeButton = minimizeButtons[0];
       fireEvent.click(minimizeButton);
 
       // Should not throw error
@@ -450,7 +474,10 @@ describe('GameTerminalPresentation', () => {
     it('should handle panel maximize events', () => {
       render(<GameTerminalPresentation {...defaultProps} />);
 
-      const maximizeButton = screen.getByTestId('panel-maximize');
+      const maximizeButtons = screen.getAllByTestId('panel-maximize');
+      expect(maximizeButtons.length).toBeGreaterThan(0);
+
+      const maximizeButton = maximizeButtons[0];
       fireEvent.click(maximizeButton);
 
       // Should not throw error

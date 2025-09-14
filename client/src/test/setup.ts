@@ -30,6 +30,9 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
+// Mock scrollIntoView for DOM elements
+Element.prototype.scrollIntoView = vi.fn();
+
 // Mock console methods to reduce noise in tests
 const originalError = console.error;
 const originalWarn = console.warn;

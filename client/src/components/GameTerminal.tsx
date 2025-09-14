@@ -122,6 +122,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
   return (
     <div
+      data-testid="game-terminal"
       className="min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden"
       style={{ minHeight: '100vh', width: '100%' }}
     >

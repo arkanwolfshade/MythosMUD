@@ -6,10 +6,21 @@ import { useGameTerminal } from './useGameTerminal';
 // Mock the stores
 vi.mock('../stores', () => ({
   useConnectionStore: vi.fn(() => ({
-    isConnected: true,
+    isFullyConnected: vi.fn().mockReturnValue(true),
     isConnecting: false,
     error: null,
     reconnectAttempts: 0,
+    sessionId: 'test-session',
+    websocketConnected: true,
+    sseConnected: true,
+    connectionHealth: 'connected' as const,
+    hasAnyConnection: vi.fn().mockReturnValue(true),
+    getConnectionInfo: vi.fn().mockReturnValue({
+      sessionId: 'test-session',
+      websocketConnected: true,
+      sseConnected: true,
+      connectionHealth: 'connected' as const,
+    }),
   })),
   useGameStore: vi.fn(() => ({
     player: {
@@ -153,10 +164,21 @@ describe('useGameTerminal', () => {
 
       // Mock updated connection state
       vi.mocked(useConnectionStore).mockReturnValue({
-        isConnected: false,
+        isFullyConnected: vi.fn().mockReturnValue(false),
         isConnecting: true,
         error: 'Connection failed',
         reconnectAttempts: 3,
+        sessionId: null,
+        websocketConnected: false,
+        sseConnected: false,
+        connectionHealth: 'disconnected' as const,
+        hasAnyConnection: vi.fn().mockReturnValue(false),
+        getConnectionInfo: vi.fn().mockReturnValue({
+          sessionId: null,
+          websocketConnected: false,
+          sseConnected: false,
+          connectionHealth: 'disconnected' as const,
+        }),
       });
 
       rerender();

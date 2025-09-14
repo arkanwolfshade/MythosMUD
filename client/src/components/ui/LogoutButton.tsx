@@ -71,6 +71,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
       className={classes}
       aria-label="Exit the realm and return to login screen"
       title="Exit the realm and return to login screen (Ctrl+Q)"
+      data-testid="logout-button"
     >
       <div className="flex items-center justify-center gap-2">
         <EldritchIcon name={MythosIcons.portal} size={16} variant="error" />

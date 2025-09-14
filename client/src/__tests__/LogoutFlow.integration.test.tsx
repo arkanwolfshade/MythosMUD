@@ -112,7 +112,7 @@ describe('Complete Logout Flow Integration', () => {
       fireEvent.click(screen.getByTestId('logout-button'));
 
       // Step 5: Verify loading state
-      expect(screen.getByText('Logging out...')).toBeInTheDocument();
+      expect(screen.getByText('Exiting...')).toBeInTheDocument();
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
       // Step 6: Wait for logout to complete
@@ -222,7 +222,7 @@ describe('Complete Logout Flow Integration', () => {
       expect(mockLogoutHandler).toHaveBeenCalledTimes(1);
 
       // Verify loading state
-      expect(screen.getByText('Logging out...')).toBeInTheDocument();
+      expect(screen.getByText('Exiting...')).toBeInTheDocument();
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
       // Complete logout

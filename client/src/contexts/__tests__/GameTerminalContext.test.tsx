@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGameTerminal } from '../../hooks/useGameTerminal';
+import { GameTerminalProvider } from '../GameTerminalContext';
 import {
-  GameTerminalProvider,
   useConnectionState,
   useGameActions,
   useGameState,
   useGameTerminalContext,
   useSessionState,
-} from '../GameTerminalContext';
+} from '../hooks/useGameTerminalContext';
 
 // Mock the useGameTerminal hook
 vi.mock('../../hooks/useGameTerminal', () => ({

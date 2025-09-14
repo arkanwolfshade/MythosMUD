@@ -205,20 +205,26 @@ describe('GameTerminal', () => {
     it('should display connection status in header', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      expect(screen.getByText('Connected')).toBeInTheDocument();
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Connected');
       expect(screen.getByText('Player: TestPlayer')).toBeInTheDocument();
     });
 
     it('should display disconnected status when not connected', () => {
       render(<GameTerminal {...defaultProps} isConnected={false} isConnecting={false} />);
 
-      expect(screen.getByText('Disconnected')).toBeInTheDocument();
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Disconnected');
     });
 
     it('should display connecting status when connecting', () => {
       render(<GameTerminal {...defaultProps} isConnected={false} isConnecting={true} />);
 
-      expect(screen.getByText('Connecting...')).toBeInTheDocument();
+      const connectionStatus = screen.getByText('Connection:');
+      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
+      expect(statusValue).toHaveTextContent('Connecting...');
     });
 
     it('should display error message when error exists', () => {
@@ -249,9 +255,14 @@ describe('GameTerminal', () => {
       render(<GameTerminal {...defaultProps} />);
 
       expect(screen.getByText('Messages:')).toBeInTheDocument();
-      expect(screen.getByText('1')).toBeInTheDocument();
+      const messagesLabel = screen.getByText('Messages:');
+      const messagesValue = messagesLabel.parentElement?.querySelector('span:last-child');
+      expect(messagesValue).toHaveTextContent('1');
+
       expect(screen.getByText('Commands:')).toBeInTheDocument();
-      expect(screen.getByText('3')).toBeInTheDocument();
+      const commandsLabel = screen.getByText('Commands:');
+      const commandsValue = commandsLabel.parentElement?.querySelector('span:last-child');
+      expect(commandsValue).toHaveTextContent('3');
     });
   });
 
@@ -422,8 +433,10 @@ describe('GameTerminal', () => {
     it('should handle panel close events', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const closeButton = screen.getByTestId('panel-close');
-      fireEvent.click(closeButton);
+      const chatPanel = screen.getByTestId('draggable-panel-chat');
+      const closeButton = chatPanel.querySelector('[data-testid="panel-close"]');
+      expect(closeButton).toBeInTheDocument();
+      fireEvent.click(closeButton!);
 
       // Should not throw error
       expect(closeButton).toBeInTheDocument();
@@ -432,8 +445,10 @@ describe('GameTerminal', () => {
     it('should handle panel minimize events', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const minimizeButton = screen.getByTestId('panel-minimize');
-      fireEvent.click(minimizeButton);
+      const chatPanel = screen.getByTestId('draggable-panel-chat');
+      const minimizeButton = chatPanel.querySelector('[data-testid="panel-minimize"]');
+      expect(minimizeButton).toBeInTheDocument();
+      fireEvent.click(minimizeButton!);
 
       // Should not throw error
       expect(minimizeButton).toBeInTheDocument();
@@ -442,8 +457,10 @@ describe('GameTerminal', () => {
     it('should handle panel maximize events', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const maximizeButton = screen.getByTestId('panel-maximize');
-      fireEvent.click(maximizeButton);
+      const chatPanel = screen.getByTestId('draggable-panel-chat');
+      const maximizeButton = chatPanel.querySelector('[data-testid="panel-maximize"]');
+      expect(maximizeButton).toBeInTheDocument();
+      fireEvent.click(maximizeButton!);
 
       // Should not throw error
       expect(maximizeButton).toBeInTheDocument();

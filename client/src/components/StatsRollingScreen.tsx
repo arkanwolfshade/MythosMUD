@@ -210,7 +210,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
 
   if (isLoading && !currentStats) {
     return (
-      <div className="stats-rolling-screen">
+      <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Rolling your character's stats...</p>
@@ -221,7 +221,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
 
   if (!currentStats) {
     return (
-      <div className="stats-rolling-screen">
+      <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
         <div className="error-container">
           <p>Failed to load stats. Please try again.</p>
           <button onClick={rollStats} className="retry-button">
@@ -233,7 +233,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   }
 
   return (
-    <div className="stats-rolling-screen">
+    <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
       <div className="stats-header">
         <h2>Character Creation</h2>
         <p className="character-name">Character: {characterName}</p>

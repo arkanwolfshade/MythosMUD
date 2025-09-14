@@ -75,8 +75,8 @@ export interface ConnectionActions {
 
 export interface ConnectionSelectors {
   // Computed properties
-  isFullyConnected: boolean;
-  hasAnyConnection: boolean;
+  isFullyConnected: () => boolean;
+  hasAnyConnection: () => boolean;
   getConnectionInfo: () => {
     sessionId: string | null;
     websocketConnected: boolean;
