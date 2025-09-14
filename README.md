@@ -10,7 +10,6 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 ## Table of Contents
 
 - [🐙 MythosMUD](#-mythosmud)
-  - [  ](#--)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Getting Started](#getting-started)
