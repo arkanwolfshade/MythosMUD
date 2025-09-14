@@ -2,6 +2,15 @@
 
 ## 🤖 CRITICAL AI EXECUTOR REQUIREMENTS 🤖
 
+**🚨 STOP! READ THIS FIRST! 🚨**
+
+**MANDATORY EXECUTION ORDER - NO EXCEPTIONS:**
+1. **FIRST**: Complete ALL database verification steps (Step 2)
+2. **SECOND**: Start the server (Step 3)
+3. **THIRD**: Execute scenarios in order
+
+**⚠️ VIOLATING THIS ORDER = COMPLETE FAILURE**
+
 **MANDATORY LLM REQUIREMENT:**
 - **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
 - **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
@@ -15,12 +24,22 @@
 
 ## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
 
+**MANDATORY EXECUTION PROTOCOL - NO EXCEPTIONS:**
+
 **BEFORE YOU DO ANYTHING ELSE:**
-- Execute EVERY step in EVERY scenario EXACTLY as written
-- Do NOT skip, modify, or interpret any steps
-- Do NOT make assumptions about how systems should work
-- Your job is to execute, not to interpret or improve
-- If you think a step is wrong, execute it anyway and document the result
+1. **MANDATORY DATABASE VERIFICATION**: You MUST verify the starting room configuration BEFORE starting the server
+2. **MANDATORY PREREQUISITE CHECKS**: You MUST complete ALL pre-execution steps before ANY scenario
+3. **ZERO TOLERANCE FOR SKIPPING**: Execute EVERY step in EVERY scenario EXACTLY as written
+4. **NO INTERPRETATION ALLOWED**: Do NOT skip, modify, or interpret any steps
+5. **NO ASSUMPTIONS ALLOWED**: Do NOT make assumptions about how systems should work
+6. **EXECUTION ONLY**: Your job is to execute, not to interpret or improve
+7. **EXECUTE EVEN IF WRONG**: If you think a step is wrong, execute it anyway and document the result
+
+**VIOLATION CONSEQUENCES:**
+- Skipping database verification = COMPLETE FAILURE
+- Starting server without prerequisites = COMPLETE FAILURE
+- Modifying any command = COMPLETE FAILURE
+- Making assumptions = COMPLETE FAILURE
 
 ## Overview
 
@@ -68,13 +87,27 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - Each step builds on the previous - skipping breaks the entire scenario
 - Your job is to execute, not to interpret or improve
 
-### PRE-EXECUTION CHECKLIST
-Before starting ANY scenario, confirm:
-- [ ] I have read the MANDATORY RULE above
+### MANDATORY PRE-EXECUTION CHECKLIST
+**YOU MUST COMPLETE EVERY ITEM BEFORE STARTING ANY SCENARIO:**
+
+**DATABASE VERIFICATION (MANDATORY):**
+- [ ] I have verified both test players exist in the database
+- [ ] I have confirmed both players are in room `earth_arkham_city_sanitarium_room_foyer_001`
+- [ ] I have confirmed ArkanWolfshade has admin privileges (is_admin = 1)
+- [ ] I have run the SQL commands to update player locations if needed
+
+**INSTRUCTION COMPLIANCE (MANDATORY):**
+- [ ] I have read the MANDATORY EXECUTION PROTOCOL above
+- [ ] I understand that skipping database verification = COMPLETE FAILURE
 - [ ] I will execute every step exactly as written
 - [ ] I will not skip, modify, or interpret any steps
 - [ ] I will not make assumptions about system behavior
 - [ ] I will document actual results, not expected results
+
+**EXECUTION AFFIRMATION (MANDATORY):**
+- [ ] I affirm that I will follow the database verification steps BEFORE starting the server
+- [ ] I affirm that I will NOT start any scenario without completing ALL prerequisites
+- [ ] I understand that any deviation from these instructions constitutes complete failure
 
 ### NO INTERPRETATION RULE
 - If a command says "say Hello" - type exactly "say Hello"
@@ -156,7 +189,9 @@ netstat -an | findstr :5173
 
 **Expected**: No processes found on these ports
 
-### Step 2: Database State Verification
+### Step 2: MANDATORY Database State Verification
+
+**⚠️ CRITICAL: THIS STEP IS MANDATORY AND CANNOT BE SKIPPED**
 
 **Cursor Command**: Verify test players exist and are in correct room
 
@@ -165,25 +200,32 @@ netstat -an | findstr :5173
 sqlite3 data/players/players.db
 ```
 
-**SQL Commands to Run**:
+**MANDATORY SQL Commands to Run (EXECUTE ALL)**:
 
 ```sql
--- Check if players exist
+-- MANDATORY: Check if players exist and their current state
 SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 
--- Update players to starting room if needed
+-- MANDATORY: Update players to starting room (ALWAYS run this)
 UPDATE players SET current_room_id = 'earth_arkham_city_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 
--- Verify ArkanWolfshade has admin privileges
+-- MANDATORY: Verify ArkanWolfshade has admin privileges (ALWAYS run this)
 UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';
 
--- Commit changes
+-- MANDATORY: Verify the updates worked
+SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
+
+-- MANDATORY: Commit changes
 .quit
 ```
 
-**Expected**: Both players exist, are in Main Foyer, AW has admin privileges
+**MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkham_city_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)
 
-### Step 3: Start Development Environment
+**⚠️ FAILURE TO COMPLETE THIS STEP = COMPLETE TEST FAILURE**
+
+### Step 3: Start Development Environment (ONLY AFTER DATABASE VERIFICATION)
+
+**⚠️ CRITICAL: DO NOT START SERVER UNTIL DATABASE VERIFICATION IS COMPLETE**
 
 **Cursor Command**: Start the development server
 
@@ -192,6 +234,8 @@ UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';
 ```
 
 **Wait**: 180 seconds (3 minutes) for server to fully start on low-performance machines
+
+**⚠️ REMINDER**: If you started the server without completing database verification, STOP IMMEDIATELY and restart from Step 2
 
 ### Step 4: Verify Server Accessibility
 
@@ -247,6 +291,17 @@ do {
 Tests basic multiplayer connection and disconnection messaging between two players.
 
 **⚠️ TIMING ARTIFACT NOTICE**: This scenario may fail due to a known timing issue where the first player may not be properly subscribed to the room when the second player connects. This prevents connection messages from being received. The connection message broadcasting system is working correctly, but there's a race condition in room subscription timing.
+
+### ⚠️ MANDATORY PREREQUISITE VERIFICATION
+
+**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+
+1. **Database State**: Both players are in `earth_arkham_city_sanitarium_room_foyer_001`
+2. **Server Running**: Development server is running on port 54731
+3. **Client Accessible**: Client is accessible on port 5173
+4. **No Previous Sessions**: Browser is clean with no existing game sessions
+
+**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
 
 ### Cursor Execution Steps
 
