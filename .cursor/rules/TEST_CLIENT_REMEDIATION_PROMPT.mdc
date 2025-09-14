@@ -1,0 +1,506 @@
+# Test Client Remediation Prompt - Cursor Executable Version
+
+## Project Client Testing Configuration
+- **Test Runner**: Vitest with React Testing Library
+- **Test Environment**: jsdom for browser simulation
+- **Coverage Provider**: v8 with HTML, text, and JSON reports
+- **Command**: `make test-client` (runs client-side unit tests only)
+- **Coverage Thresholds**: 10% statements, 30% branches, 60% functions, 10% lines
+- **Linting**: ESLint with React hooks plugin and TypeScript rules
+- **Line Length**: 120 characters maximum
+
+## Step-by-Step Remediation Process
+
+### 1. Initial Assessment
+```bash
+# Run client tests to identify all current failures
+make test-client
+```
+
+### 2. Categorize Test Failures
+Client test failures typically fall into these categories:
+
+#### A. Component Rendering Failures
+- **JSX Syntax Errors**: Invalid JSX structure or syntax
+- **Import/Export Issues**: Missing or incorrect module imports
+- **Props Validation**: Incorrect prop types or missing required props
+- **Context Provider Issues**: Missing or incorrectly configured React contexts
+
+#### B. React Hook Failures
+- **useState Issues**: State initialization or update problems
+- **useEffect Dependencies**: Missing dependencies or infinite loops
+- **useCallback/useMemo**: Incorrect dependency arrays or stale closures
+- **Custom Hook Issues**: Hook implementation or usage problems
+
+#### C. Testing Library Failures
+- **Element Queries**: Unable to find DOM elements for testing
+- **User Interactions**: Failed user event simulations
+- **Async Operations**: Timeout issues with async component behavior
+- **Mock Setup**: Incorrect or missing mock implementations
+
+#### D. TypeScript/Type Errors
+- **Type Mismatches**: Incompatible prop types or function signatures
+- **Missing Types**: Undefined types or missing type declarations
+- **Generic Constraints**: Incorrect generic type usage
+- **Interface Violations**: Object structure mismatches
+
+#### E. State Management Failures
+- **Zustand Store Issues**: Store state updates or selectors
+- **Context State**: Context value propagation or updates
+- **Local State**: Component state management problems
+- **State Synchronization**: State consistency across components
+
+#### F. WebSocket/Connection Failures
+- **Connection Mocking**: WebSocket connection simulation issues
+- **Message Handling**: Message parsing or processing failures
+- **Connection State**: Connection lifecycle management
+- **Real-time Updates**: Event handling and state updates
+
+### 3. Systematic Investigation Approach
+
+#### For Component Rendering Failures:
+1. **Check JSX Syntax**:
+   ```bash
+   # Run TypeScript compiler to check for syntax errors
+   cd client && npx tsc --noEmit
+   ```
+
+2. **Verify Imports**:
+   ```bash
+   # Check for missing or incorrect imports
+   grep -r "import.*from" src/ | grep -v "node_modules"
+   ```
+
+3. **Validate Component Props**:
+   ```typescript
+   // Check component prop interfaces
+   interface ComponentProps {
+     requiredProp: string;
+     optionalProp?: number;
+   }
+   ```
+
+#### For React Hook Failures:
+1. **Check Hook Dependencies**:
+   ```typescript
+   // Verify useEffect dependencies
+   useEffect(() => {
+     // effect logic
+   }, [dependency1, dependency2]); // Ensure all dependencies included
+
+   // Check useCallback dependencies
+   const memoizedCallback = useCallback(() => {
+     // callback logic
+   }, [dependency1, dependency2]);
+   ```
+
+2. **Validate Hook Rules**:
+   ```typescript
+   // Ensure hooks are called at top level
+   function Component() {
+     const [state, setState] = useState(initialValue); // ✓ Top level
+
+     if (condition) {
+       const [badState] = useState(value); // ✗ Conditional hook
+     }
+   }
+   ```
+
+#### For Testing Library Failures:
+1. **Check Element Queries**:
+   ```typescript
+   // Use appropriate query methods
+   import { render, screen } from '@testing-library/react';
+
+   test('finds element', () => {
+     render(<Component />);
+     const element = screen.getByRole('button'); // Prefer accessible queries
+     // or
+     const element = screen.getByTestId('test-id'); // For specific elements
+   });
+   ```
+
+2. **Verify Async Operations**:
+   ```typescript
+   // Handle async operations properly
+   test('handles async operation', async () => {
+     render(<AsyncComponent />);
+     await waitFor(() => {
+       expect(screen.getByText('Loaded')).toBeInTheDocument();
+     });
+   });
+   ```
+
+#### For TypeScript Errors:
+1. **Check Type Definitions**:
+   ```bash
+   # Run TypeScript compiler
+   cd client && npx tsc --noEmit --strict
+   ```
+
+2. **Validate Interfaces**:
+   ```typescript
+   // Ensure proper type definitions
+   interface Props {
+     title: string;
+     count: number;
+     onClick: () => void;
+   }
+
+   const Component: React.FC<Props> = ({ title, count, onClick }) => {
+     // Component implementation
+   };
+   ```
+
+### 4. Common Fix Patterns
+
+#### Component Test Patterns:
+```typescript
+// Proper component testing setup
+import { render, screen, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
+
+describe('Component', () => {
+  test('renders correctly', () => {
+    render(<Component title="Test" />);
+    expect(screen.getByText('Test')).toBeInTheDocument();
+  });
+
+  test('handles user interaction', () => {
+    const handleClick = vi.fn();
+    render(<Component onClick={handleClick} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+#### Hook Testing Patterns:
+```typescript
+// Testing custom hooks
+import { renderHook, act } from '@testing-library/react';
+import { useCustomHook } from './useCustomHook';
+
+describe('useCustomHook', () => {
+  test('returns initial state', () => {
+    const { result } = renderHook(() => useCustomHook());
+    expect(result.current.value).toBe(initialValue);
+  });
+
+  test('updates state', () => {
+    const { result } = renderHook(() => useCustomHook());
+
+    act(() => {
+      result.current.updateValue('new value');
+    });
+
+    expect(result.current.value).toBe('new value');
+  });
+});
+```
+
+#### Context Testing Patterns:
+```typescript
+// Testing components with context
+import { render } from '@testing-library/react';
+import { ContextProvider } from './ContextProvider';
+
+const renderWithContext = (component: React.ReactElement) => {
+  return render(
+    <ContextProvider>
+      {component}
+    </ContextProvider>
+  );
+};
+
+test('component uses context', () => {
+  renderWithContext(<Component />);
+  // Test assertions
+});
+```
+
+#### Mock Patterns:
+```typescript
+// Mocking external dependencies
+import { vi } from 'vitest';
+
+// Mock modules
+vi.mock('./externalModule', () => ({
+  externalFunction: vi.fn(() => 'mocked value'),
+}));
+
+// Mock WebSocket
+global.WebSocket = vi.fn(() => ({
+  send: vi.fn(),
+  close: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+}));
+```
+
+### 5. Test Environment Setup
+
+#### Vitest Configuration:
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      thresholds: {
+        statements: 10,
+        branches: 30,
+        functions: 60,
+        lines: 10,
+      },
+    },
+  },
+});
+```
+
+#### Test Setup File:
+```typescript
+// src/test/setup.ts
+import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
+
+// Mock browser APIs
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })),
+});
+
+// Mock ResizeObserver
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+```
+
+### 6. Quality Assurance Checklist
+- [ ] All test failures resolved (run `make test-client` again)
+- [ ] TypeScript compilation passes without errors
+- [ ] ESLint passes without errors (`npm run lint`)
+- [ ] Test coverage meets minimum thresholds
+- [ ] All React hooks follow rules of hooks
+- [ ] Components properly handle props and state
+- [ ] Async operations properly tested with waitFor
+- [ ] Mock implementations are complete and accurate
+
+### 7. Common Test Failure Solutions
+
+#### Component Rendering Issues:
+```typescript
+// Fix missing props
+interface Props {
+  title: string;
+  optional?: boolean;
+}
+
+const Component: React.FC<Props> = ({ title, optional = false }) => {
+  return <div>{title}</div>;
+};
+
+// Fix context provider issues
+const ComponentWithContext = () => {
+  return (
+    <ContextProvider value={mockValue}>
+      <ChildComponent />
+    </ContextProvider>
+  );
+};
+```
+
+#### Hook Dependency Issues:
+```typescript
+// Fix missing dependencies
+useEffect(() => {
+  fetchData(dependency1, dependency2);
+}, [dependency1, dependency2]); // Include all dependencies
+
+// Fix stale closures
+const memoizedCallback = useCallback(() => {
+  doSomething(value);
+}, [value]); // Include all values used in callback
+```
+
+#### Testing Library Issues:
+```typescript
+// Fix element queries
+test('finds element', () => {
+  render(<Component />);
+  const element = screen.getByRole('button', { name: /submit/i });
+  expect(element).toBeInTheDocument();
+});
+
+// Fix async operations
+test('handles async data', async () => {
+  render(<AsyncComponent />);
+  await waitFor(() => {
+    expect(screen.getByText('Data loaded')).toBeInTheDocument();
+  });
+});
+```
+
+#### TypeScript Issues:
+```typescript
+// Fix type mismatches
+interface Props {
+  count: number;
+  onIncrement: () => void;
+}
+
+const Counter: React.FC<Props> = ({ count, onIncrement }) => {
+  return (
+    <button onClick={onIncrement}>
+      Count: {count}
+    </button>
+  );
+};
+
+// Fix generic constraints
+function useApi<T extends { id: string }>(url: string): T[] {
+  // Implementation
+}
+```
+
+### 8. Error Handling and Debugging
+
+#### Test Debugging:
+```bash
+# Run specific test with verbose output
+npm run test:unit -- --reporter=verbose Component.test.tsx
+
+# Run tests in watch mode for development
+npm run test:unit:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+#### Common Debug Commands:
+```bash
+# Check TypeScript errors
+npx tsc --noEmit
+
+# Run ESLint
+npm run lint
+
+# Check for unused dependencies
+npx depcheck
+
+# Verify test setup
+npm run test:unit -- --run --reporter=verbose
+```
+
+### 9. Test Maintenance Best Practices
+
+#### Test Organization:
+- Group related tests in describe blocks
+- Use descriptive test names that explain the expected behavior
+- Keep tests focused and testing one thing at a time
+- Use proper setup and teardown for test isolation
+
+#### Mock Management:
+- Mock external dependencies appropriately
+- Use vi.fn() for function mocks
+- Reset mocks between tests with vi.clearAllMocks()
+- Mock at the appropriate level (module, function, or object)
+
+#### Performance Considerations:
+- Use screen queries efficiently
+- Avoid unnecessary re-renders in tests
+- Mock expensive operations
+- Use waitFor judiciously for async operations
+
+### 10. Final Verification
+```bash
+# Verify all tests pass
+make test-client
+
+# Check TypeScript compilation
+cd client && npx tsc --noEmit
+
+# Run linting
+cd client && npm run lint
+
+# Check test coverage
+cd client && npm run test:coverage
+
+# Verify no regressions in other tests
+make test
+```
+
+## Best Practices
+1. **Incremental Fixes**: Fix one category of test failures at a time
+2. **Preserve Test Intent**: Only change what's necessary to fix failures
+3. **Maintain Coverage**: Ensure test coverage meets minimum thresholds
+4. **Test Isolation**: Keep tests independent and isolated
+5. **Proper Mocking**: Mock external dependencies appropriately
+
+## Troubleshooting
+- **Component Issues**: Check JSX syntax, imports, and prop types
+- **Hook Issues**: Verify hook dependencies and rules of hooks compliance
+- **Testing Library Issues**: Use appropriate queries and handle async operations
+- **TypeScript Issues**: Check type definitions and interface compliance
+- **State Management Issues**: Verify store updates and context providers
+
+## Success Criteria
+- `make test-client` exits with code 0
+- All TypeScript compilation passes without errors
+- ESLint passes without errors
+- Test coverage meets minimum thresholds
+- All React components render correctly
+- Hooks follow React rules and dependencies
+- Async operations are properly tested
+
+## Common Test Failure Categories
+
+### 1. Component Rendering Failures
+- **Symptoms**: JSX syntax errors, import failures, prop validation errors
+- **Common Causes**: Missing imports, incorrect prop types, context provider issues
+- **Solutions**: Fix imports, validate prop interfaces, ensure proper context setup
+
+### 2. React Hook Failures
+- **Symptoms**: Hook dependency warnings, infinite loops, stale closures
+- **Common Causes**: Missing dependencies, conditional hooks, incorrect hook usage
+- **Solutions**: Add missing dependencies, follow rules of hooks, fix closure issues
+
+### 3. Testing Library Failures
+- **Symptoms**: Element not found errors, timeout issues, interaction failures
+- **Common Causes**: Incorrect queries, async operation handling, mock setup issues
+- **Solutions**: Use appropriate queries, handle async with waitFor, fix mock implementations
+
+### 4. TypeScript/Type Errors
+- **Symptoms**: Type mismatch errors, missing type declarations, interface violations
+- **Common Causes**: Incorrect prop types, missing interfaces, generic constraint issues
+- **Solutions**: Fix type definitions, add missing interfaces, correct generic usage
+
+### 5. State Management Failures
+- **Symptoms**: State not updating, context not propagating, store selector issues
+- **Common Causes**: Incorrect state updates, missing context providers, store configuration
+- **Solutions**: Fix state update logic, ensure proper context setup, verify store configuration
+
+### 6. WebSocket/Connection Failures
+- **Symptoms**: Connection simulation failures, message handling errors, state sync issues
+- **Common Causes**: Incorrect WebSocket mocking, message format issues, event handling problems
+- **Solutions**: Fix WebSocket mocks, validate message formats, correct event handling
+
+---
+
+*"In the digital realm of the client-side, we learn that proper testing requires systematic component validation, comprehensive hook testing, and thorough interaction simulation. The path to reliable user interfaces lies not in quick fixes, but in methodical test remediation and validation."*
+
+**Remember**: This prompt focuses on investigating and fixing client-side test failures systematically. Always run tests after making changes and ensure no regressions are introduced in the React application.

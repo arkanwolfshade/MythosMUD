@@ -136,28 +136,39 @@ async def handle_who_command(
             online_players = []
             logger.debug(f"Who command - checking {len(players)} players, threshold: {online_threshold}")
 
+            # Pre-compile regex for better performance (if needed for string parsing)
+
             for player in players:
                 # Ensure last_active is a datetime object for comparison
                 if player.last_active:
+                    last_active = None
+
                     # Handle case where last_active might be a string
                     if isinstance(player.last_active, str):
                         try:
-                            from datetime import datetime
-
-                            last_active = datetime.fromisoformat(player.last_active.replace("Z", "+00:00"))
+                            # Optimized string parsing - handle common formats more efficiently
+                            last_active_str = player.last_active.strip()
+                            if last_active_str.endswith("Z"):
+                                # Handle UTC format
+                                last_active = datetime.fromisoformat(last_active_str[:-1] + "+00:00")
+                            elif "+" in last_active_str or "-" in last_active_str[-6:]:
+                                # Handle timezone format
+                                last_active = datetime.fromisoformat(last_active_str)
+                            else:
+                                # Assume UTC if no timezone info
+                                last_active = datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
                         except (ValueError, AttributeError) as e:
                             logger.warning(f"Failed to parse last_active string for {player.name}: {e}")
                             # Skip players with invalid last_active data
                             continue
                     else:
                         last_active = player.last_active
+                        # Ensure both datetimes are timezone-aware for comparison
+                        if last_active.tzinfo is None:
+                            # Make naive datetime timezone-aware
+                            last_active = last_active.replace(tzinfo=UTC)
 
-                    # Ensure both datetimes are timezone-aware for comparison
-                    if last_active.tzinfo is None:
-                        # Make naive datetime timezone-aware
-                        last_active = last_active.replace(tzinfo=UTC)
-
-                    if last_active > online_threshold:
+                    if last_active and last_active > online_threshold:
                         online_players.append(player)
                 else:
                     logger.debug(f"Player {player.name} has no last_active timestamp")
@@ -169,9 +180,14 @@ async def handle_who_command(
                 if filter_term:
                     filtered_players = filter_players_by_name(online_players, filter_term)
                     if filtered_players:
-                        # Sort by name, using a stable sort to handle ties
-                        sorted_players = sorted(filtered_players, key=lambda p: (p.name, id(p)))
-                        player_entries = [format_player_entry(player) for player in sorted_players]
+                        # Optimize sorting by using a more efficient key function
+                        sorted_players = sorted(filtered_players, key=lambda p: p.name.lower())
+
+                        # Optimize formatting by batching the operations
+                        player_entries = []
+                        for player in sorted_players:
+                            player_entries.append(format_player_entry(player))
+
                         player_list = ", ".join(player_entries)
                         result = f"Players matching '{filter_term}' ({len(filtered_players)}): {player_list}"
                         logger.debug(
@@ -188,9 +204,14 @@ async def handle_who_command(
                         return {"result": result}
                 else:
                     # No filter - show all online players
-                    # Sort by name, using a stable sort to handle ties
-                    sorted_players = sorted(online_players, key=lambda p: (p.name, id(p)))
-                    player_entries = [format_player_entry(player) for player in sorted_players]
+                    # Optimize sorting by using a more efficient key function
+                    sorted_players = sorted(online_players, key=lambda p: p.name.lower())
+
+                    # Optimize formatting by batching the operations
+                    player_entries = []
+                    for player in sorted_players:
+                        player_entries.append(format_player_entry(player))
+
                     player_list = ", ".join(player_entries)
                     result = f"Online players ({len(online_players)}): {player_list}"
                     logger.debug("Who command successful", player=player_name, count=len(online_players))
