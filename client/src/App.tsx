@@ -247,6 +247,24 @@ function App() {
     setInviteCode('');
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      // Only trigger login/register if both username and password are filled
+      if (playerName.trim() && password.trim()) {
+        // For registration, also require invite code
+        if (isRegistering && !inviteCode.trim()) {
+          return;
+        }
+        // Trigger the appropriate action
+        if (isRegistering) {
+          handleRegisterClick();
+        } else {
+          handleLoginClick();
+        }
+      }
+    }
+  };
+
   if (showDemo) {
     return (
       <div className="App">
@@ -271,6 +289,7 @@ function App() {
                 className="login-input"
                 value={playerName}
                 onChange={e => setPlayerName(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <input
                 type="password"
@@ -278,6 +297,7 @@ function App() {
                 className="login-input"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               {isRegistering && (
                 <input
@@ -286,6 +306,7 @@ function App() {
                   className="login-input"
                   value={inviteCode}
                   onChange={e => setInviteCode(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
               )}
             </div>
