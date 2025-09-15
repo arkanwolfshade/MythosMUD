@@ -24,13 +24,13 @@
   - [x] 3.5 Integrate GameTickService with application lifespan management
   - [x] 3.6 Verify all tests pass
 
-- [ ] 4. **Refactor ConnectionManager for NATS Integration**
-  - [ ] 4.1 Write tests for NATS-based event broadcasting in ConnectionManager
-  - [ ] 4.2 Replace direct broadcasting in `_handle_player_entered_room()` with NATS publication
-  - [ ] 4.3 Replace direct broadcasting in `_handle_player_left_room()` with NATS publication
-  - [ ] 4.4 Add EventPublisher dependency injection to ConnectionManager
-  - [ ] 4.5 Update event handling to use NATS message routing
-  - [ ] 4.6 Verify all tests pass
+- [x] 4. **Refactor ConnectionManager for NATS Integration**
+  - [x] 4.1 Write tests for NATS-based event broadcasting in ConnectionManager
+  - [x] 4.2 Replace direct broadcasting in `_handle_player_entered_room()` with NATS publication
+  - [x] 4.3 Replace direct broadcasting in `_handle_player_left_room()` with NATS publication
+  - [x] 4.4 Add EventPublisher dependency injection to ConnectionManager
+  - [x] 4.5 Update event handling to use NATS message routing
+  - [x] 4.6 Verify all tests pass
 
 - [ ] 5. **Integration Testing and Validation**
   - [ ] 5.1 Write end-to-end integration tests for complete NATS event flow

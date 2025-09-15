@@ -10,6 +10,7 @@ import asyncio
 import time
 import uuid
 from dataclasses import dataclass
+from datetime import UTC
 from typing import Any
 
 from fastapi import WebSocket
@@ -53,7 +54,7 @@ class ConnectionManager:
     - RoomSubscriptionManager: Room subscriptions and occupant tracking
     """
 
-    def __init__(self):
+    def __init__(self, event_publisher=None):
         """Initialize the connection manager with modular components."""
         # Active WebSocket connections
         self.active_websockets: dict[str, WebSocket] = {}
@@ -67,6 +68,8 @@ class ConnectionManager:
         self.sequence_counter = 0
         # Reference to persistence layer (set during app startup)
         self.persistence = None
+        # EventPublisher for NATS integration
+        self.event_publisher = event_publisher
 
         # Player presence tracking
         # player_id -> player_info
@@ -2898,9 +2901,23 @@ class ConnectionManager:
         """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
         try:
             room_id = event_data.get("room_id")
+            player_id = event_data.get("player_id")
+
             if not room_id:
                 logger.warning("PlayerEnteredRoom event missing room_id")
                 return
+
+            # Publish NATS event if event_publisher is available
+            if self.event_publisher and player_id:
+                try:
+                    from datetime import datetime
+
+                    timestamp = datetime.now(UTC).isoformat()
+                    await self.event_publisher.publish_player_entered_event(
+                        player_id=player_id, room_id=room_id, timestamp=timestamp
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to publish player_entered NATS event: {e}")
 
             # Get current room occupants
             occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
@@ -2929,9 +2946,23 @@ class ConnectionManager:
         """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
         try:
             room_id = event_data.get("room_id")
+            player_id = event_data.get("player_id")
+
             if not room_id:
                 logger.warning("PlayerLeftRoom event missing room_id")
                 return
+
+            # Publish NATS event if event_publisher is available
+            if self.event_publisher and player_id:
+                try:
+                    from datetime import datetime
+
+                    timestamp = datetime.now(UTC).isoformat()
+                    await self.event_publisher.publish_player_left_event(
+                        player_id=player_id, room_id=room_id, timestamp=timestamp
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to publish player_left NATS event: {e}")
 
             # Get current room occupants
             occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
