@@ -1438,6 +1438,72 @@ class ConnectionManager:
         logger.debug(f"broadcast_global: delivery stats: {global_stats}")
         return global_stats
 
+    async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Broadcast a room-specific event to all players in the room.
+
+        Args:
+            event_type: Type of event (e.g., 'player_entered', 'player_left')
+            room_id: Room ID to broadcast to
+            data: Event data
+
+        Returns:
+            dict: Broadcast delivery statistics
+        """
+        try:
+            # Import here to avoid circular imports
+            from .envelope import build_event
+
+            # Create event message
+            event = build_event(event_type, data)
+
+            # Broadcast to room
+            return await self.broadcast_to_room(room_id, event)
+
+        except Exception as e:
+            logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
+            return {
+                "room_id": room_id,
+                "total_targets": 0,
+                "excluded_players": 0,
+                "successful_deliveries": 0,
+                "failed_deliveries": 0,
+                "delivery_details": {},
+                "error": str(e),
+            }
+
+    async def broadcast_global_event(self, event_type: str, data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Broadcast a global event to all connected players.
+
+        Args:
+            event_type: Type of event (e.g., 'game_tick')
+            data: Event data
+
+        Returns:
+            dict: Broadcast delivery statistics
+        """
+        try:
+            # Import here to avoid circular imports
+            from .envelope import build_event
+
+            # Create event message
+            event = build_event(event_type, data)
+
+            # Broadcast globally
+            return await self.broadcast_global(event)
+
+        except Exception as e:
+            logger.error("Error broadcasting global event", error=str(e), event_type=event_type)
+            return {
+                "total_players": 0,
+                "excluded_players": 0,
+                "successful_deliveries": 0,
+                "failed_deliveries": 0,
+                "delivery_details": {},
+                "error": str(e),
+            }
+
     def get_pending_messages(self, player_id: str) -> list[dict[str, Any]]:
         """
         Get pending messages for a player.

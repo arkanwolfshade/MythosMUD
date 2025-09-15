@@ -9,12 +9,12 @@
   - [x] 1.4 Add error handling and logging for NATS publishing failures
   - [x] 1.5 Verify all tests pass
 
-- [ ] 2. **Extend NATSMessageHandler for Event Routing**
-  - [ ] 2.1 Write tests for NATSMessageHandler event subscription capabilities
-  - [ ] 2.2 Add event subscription methods to NATSMessageHandler class
-  - [ ] 2.3 Implement event routing logic for player_entered, player_left, game_tick
-  - [ ] 2.4 Add connection manager integration for event broadcasting
-  - [ ] 2.5 Verify all tests pass
+- [x] 2. **Extend NATSMessageHandler for Event Routing**
+  - [x] 2.1 Write tests for NATSMessageHandler event subscription capabilities
+  - [x] 2.2 Add event subscription methods to NATSMessageHandler class
+  - [x] 2.3 Implement event routing logic for player_entered, player_left, game_tick
+  - [x] 2.4 Add connection manager integration for event broadcasting
+  - [x] 2.5 Verify all tests pass
 
 - [ ] 3. **Implement Game Tick System**
   - [ ] 3.1 Write tests for game tick scheduler and event generation

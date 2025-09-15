@@ -38,24 +38,48 @@ class NATSMessageHandler:
 
         logger.info("NATS message handler initialized")
 
-    async def start(self):
-        """Start the NATS message handler and subscribe to chat subjects."""
+    async def start(self, enable_event_subscriptions: bool = True):
+        """
+        Start the NATS message handler and subscribe to subjects.
+
+        Args:
+            enable_event_subscriptions: Whether to subscribe to event subjects
+
+        Returns:
+            True if started successfully, False otherwise
+        """
         try:
             # Subscribe to chat message subjects
             await self._subscribe_to_chat_subjects()
-            logger.info("NATS message handler started successfully")
+
+            # Subscribe to event subjects if enabled
+            if enable_event_subscriptions:
+                await self.subscribe_to_event_subjects()
+
+            logger.info(
+                "NATS message handler started successfully", event_subscriptions_enabled=enable_event_subscriptions
+            )
+            return True
         except Exception as e:
             logger.error("Failed to start NATS message handler", error=str(e))
+            return False
 
     async def stop(self):
-        """Stop the NATS message handler and unsubscribe from subjects."""
+        """
+        Stop the NATS message handler and unsubscribe from subjects.
+
+        Returns:
+            True if stopped successfully, False otherwise
+        """
         try:
             # Unsubscribe from all subjects
             for subject in list(self.subscriptions.keys()):
                 await self._unsubscribe_from_subject(subject)
             logger.info("NATS message handler stopped successfully")
+            return True
         except Exception as e:
             logger.error("Error stopping NATS message handler", error=str(e))
+            return False
 
     async def _subscribe_to_chat_subjects(self):
         """Subscribe to all chat-related NATS subjects."""
@@ -84,10 +108,13 @@ class NATSMessageHandler:
             if success:
                 self.subscriptions[subject] = True
                 logger.info("Subscribed to NATS subject", subject=subject)
+                return True
             else:
                 logger.error("Failed to subscribe to NATS subject", subject=subject)
+                return False
         except Exception as e:
             logger.error("Error subscribing to NATS subject", subject=subject, error=str(e))
+            return False
 
     async def _unsubscribe_from_subject(self, subject: str):
         """Unsubscribe from a specific NATS subject."""
@@ -97,10 +124,13 @@ class NATSMessageHandler:
                 if subject in self.subscriptions:
                     del self.subscriptions[subject]
                 logger.info("Unsubscribed from NATS subject", subject=subject)
+                return True
             else:
                 logger.error("Failed to unsubscribe from NATS subject", subject=subject)
+                return False
         except Exception as e:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
+            return False
 
     async def _handle_nats_message(self, message_data: dict[str, Any]):
         """
@@ -117,6 +147,12 @@ class NATSMessageHandler:
                 f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}"
             )
 
+            # Check if this is an event message
+            if message_data.get("event_type"):
+                await self._handle_event_message(message_data)
+                return
+
+            # Handle chat messages (existing logic)
             # Extract message details
             channel = message_data.get("channel")
             room_id = message_data.get("room_id")
@@ -632,6 +668,222 @@ class NATSMessageHandler:
 
         except Exception as e:
             logger.error("Error cleaning up empty sub-zone subscriptions", error=str(e))
+
+    # Event subscription methods
+    async def subscribe_to_event_subjects(self) -> bool:
+        """
+        Subscribe to all event-related NATS subjects.
+
+        Returns:
+            True if all subscriptions successful, False otherwise
+        """
+        try:
+            event_subjects = [
+                "events.player_entered.*",  # Player entered events per room
+                "events.player_left.*",  # Player left events per room
+                "events.game_tick",  # Global game tick events
+            ]
+
+            logger.debug("Subscribing to event subjects", subjects=event_subjects)
+
+            success_count = 0
+            for subject in event_subjects:
+                success = await self._subscribe_to_subject(subject)
+                if success:
+                    success_count += 1
+
+            if success_count == len(event_subjects):
+                logger.info("Successfully subscribed to all event subjects", count=success_count)
+                return True
+            else:
+                logger.warning(
+                    "Partial success subscribing to event subjects", successful=success_count, total=len(event_subjects)
+                )
+                return success_count == len(event_subjects)
+
+        except Exception as e:
+            logger.error("Error subscribing to event subjects", error=str(e))
+            return False
+
+    async def unsubscribe_from_event_subjects(self) -> bool:
+        """
+        Unsubscribe from all event-related NATS subjects.
+
+        Returns:
+            True if all unsubscriptions successful, False otherwise
+        """
+        try:
+            event_subjects = [
+                "events.player_entered.*",
+                "events.player_left.*",
+                "events.game_tick",
+            ]
+
+            logger.debug("Unsubscribing from event subjects", subjects=event_subjects)
+
+            success_count = 0
+            for subject in event_subjects:
+                if subject in self.subscriptions:
+                    success = await self._unsubscribe_from_subject(subject)
+                    if success:
+                        success_count += 1
+
+            if success_count == len(event_subjects):
+                logger.info("Successfully unsubscribed from all event subjects", count=success_count)
+                return True
+            else:
+                logger.warning(
+                    "Partial success unsubscribing from event subjects",
+                    successful=success_count,
+                    total=len(event_subjects),
+                )
+                return success_count == len(event_subjects)
+
+        except Exception as e:
+            logger.error("Error unsubscribing from event subjects", error=str(e))
+            return False
+
+    async def _handle_event_message(self, message_data: dict[str, Any]):
+        """
+        Handle incoming event messages from NATS.
+
+        Args:
+            message_data: Event message data from NATS
+        """
+        try:
+            logger.debug("Handling event message", message_data=message_data)
+
+            # Extract event details
+            event_type = message_data.get("event_type")
+            data = message_data.get("data", {})
+
+            # Validate required fields
+            if not event_type or not data:
+                logger.warning("Invalid event message - missing required fields", message_data=message_data)
+                return
+
+            # Route event based on type
+            if event_type == "player_entered":
+                await self._handle_player_entered_event(data)
+            elif event_type == "player_left":
+                await self._handle_player_left_event(data)
+            elif event_type == "game_tick":
+                await self._handle_game_tick_event(data)
+            else:
+                logger.debug("Unknown event type received", event_type=event_type)
+
+        except Exception as e:
+            logger.error("Error handling event message", error=str(e), message_data=message_data)
+
+    async def _handle_player_entered_event(self, data: dict[str, Any]):
+        """
+        Handle player_entered event.
+
+        Args:
+            data: Event data containing player and room information
+        """
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Player entered event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("player_entered", room_id, data)
+
+            logger.debug(
+                "Player entered event broadcasted",
+                room_id=room_id,
+                player_id=data.get("player_id"),
+            )
+
+        except Exception as e:
+            logger.error("Error handling player entered event", error=str(e), data=data)
+
+    async def _handle_player_left_event(self, data: dict[str, Any]):
+        """
+        Handle player_left event.
+
+        Args:
+            data: Event data containing player and room information
+        """
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Player left event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("player_left", room_id, data)
+
+            logger.debug(
+                "Player left event broadcasted",
+                room_id=room_id,
+                player_id=data.get("player_id"),
+            )
+
+        except Exception as e:
+            logger.error("Error handling player left event", error=str(e), data=data)
+
+    async def _handle_game_tick_event(self, data: dict[str, Any]):
+        """
+        Handle game_tick event.
+
+        Args:
+            data: Event data containing tick information
+        """
+        try:
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast globally
+            await connection_manager.broadcast_global_event("game_tick", data)
+
+            logger.debug(
+                "Game tick event broadcasted",
+                tick_number=data.get("tick_number"),
+            )
+
+        except Exception as e:
+            logger.error("Error handling game tick event", error=str(e), data=data)
+
+    def get_event_subscription_count(self) -> int:
+        """
+        Get the number of active event subscriptions.
+
+        Returns:
+            Number of active event subscriptions
+        """
+        event_subjects = [
+            "events.player_entered.*",
+            "events.player_left.*",
+            "events.game_tick",
+        ]
+
+        count = 0
+        for subject in event_subjects:
+            if subject in self.subscriptions:
+                count += 1
+
+        return count
+
+    def is_event_subscription_active(self, subject: str) -> bool:
+        """
+        Check if a specific event subscription is active.
+
+        Args:
+            subject: NATS subject to check
+
+        Returns:
+            True if subscription is active, False otherwise
+        """
+        return subject in self.subscriptions
 
 
 # Global NATS message handler instance
