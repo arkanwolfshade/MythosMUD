@@ -51,7 +51,7 @@ class TestNATSMessageHandler:
         await self.handler.start()
 
         # Verify subscriptions were created
-        expected_subjects = [
+        expected_chat_subjects = [
             "chat.say.*",
             "chat.local.*",
             "chat.local.subzone.*",
@@ -64,9 +64,25 @@ class TestNATSMessageHandler:
             "chat.admin",
         ]
 
-        assert len(self.handler.subscriptions) == len(expected_subjects)
-        for subject in expected_subjects:
+        expected_event_subjects = [
+            "events.player_entered.*",
+            "events.player_left.*",
+            "events.game_tick",
+        ]
+
+        # Verify chat subscriptions
+        for subject in expected_chat_subjects:
             assert subject in self.handler.subscriptions
+
+        # Verify event subscriptions
+        for subject in expected_event_subjects:
+            assert subject in self.handler.subscriptions
+
+        # Verify total count
+        assert len(self.handler.subscriptions) == len(expected_chat_subjects) + len(expected_event_subjects)
+
+        # Verify all subscriptions are active
+        for subject in expected_chat_subjects + expected_event_subjects:
             assert self.handler.subscriptions[subject] is True
 
     @pytest.mark.asyncio
