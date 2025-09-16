@@ -241,24 +241,129 @@ class NATSMessageHandler:
             sender_id: Sender player ID
             channel: Channel type (say, local, emote, pose)
         """
+        logger.debug(
+            "=== BROADCAST FILTERING DEBUG: Starting room broadcast ===",
+            room_id=room_id,
+            sender_id=sender_id,
+            channel=channel,
+        )
+
         try:
             # Get all players subscribed to this room
             canonical_id = connection_manager._canonical_room_id(room_id) or room_id
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Room ID resolution ===",
+                room_id=room_id,
+                canonical_id=canonical_id,
+                sender_id=sender_id,
+                channel=channel,
+            )
+
             targets: set[str] = set()
 
             if canonical_id in connection_manager.room_subscriptions:
                 targets.update(connection_manager.room_subscriptions[canonical_id])
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Added canonical room subscribers ===",
+                    room_id=room_id,
+                    canonical_id=canonical_id,
+                    canonical_subscribers=list(connection_manager.room_subscriptions[canonical_id]),
+                    sender_id=sender_id,
+                    channel=channel,
+                )
             if room_id != canonical_id and room_id in connection_manager.room_subscriptions:
                 targets.update(connection_manager.room_subscriptions[room_id])
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Added original room subscribers ===",
+                    room_id=room_id,
+                    original_subscribers=list(connection_manager.room_subscriptions[room_id]),
+                    sender_id=sender_id,
+                    channel=channel,
+                )
+
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Total targets before filtering ===",
+                room_id=room_id,
+                sender_id=sender_id,
+                channel=channel,
+                total_targets=list(targets),
+                target_count=len(targets),
+            )
+
+            # Create a single UserManager instance for all mute checks to improve efficiency
+            from ..services.user_manager import UserManager
+
+            user_manager = UserManager()
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Created UserManager instance ===",
+                room_id=room_id,
+                sender_id=sender_id,
+                channel=channel,
+            )
+
+            # Pre-load mute data for all potential receivers to ensure consistency
+            receiver_ids = [pid for pid in targets if pid != sender_id]
+            if receiver_ids:
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Pre-loading mute data for receivers ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    channel=channel,
+                    receiver_count=len(receiver_ids),
+                )
+                for receiver_id in receiver_ids:
+                    try:
+                        user_manager.load_player_mutes(receiver_id)
+                        logger.debug(
+                            "=== BROADCAST FILTERING DEBUG: Loaded mute data for receiver ===",
+                            room_id=room_id,
+                            sender_id=sender_id,
+                            channel=channel,
+                            receiver_id=receiver_id,
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            "Failed to load mute data for receiver",
+                            room_id=room_id,
+                            sender_id=sender_id,
+                            channel=channel,
+                            receiver_id=receiver_id,
+                            error=str(e),
+                        )
 
             # Filter players based on their current room and mute status
             filtered_targets = []
             for player_id in targets:
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Processing target player ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    target_player_id=player_id,
+                    channel=channel,
+                )
+
                 if player_id == sender_id:
+                    logger.debug(
+                        "=== BROADCAST FILTERING DEBUG: Skipping sender ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        target_player_id=player_id,
+                        channel=channel,
+                    )
                     continue  # Skip sender
 
                 # Check if player is currently in the message's room
-                if not self._is_player_in_room(player_id, room_id):
+                is_in_room = self._is_player_in_room(player_id, room_id)
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Player in room check ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    target_player_id=player_id,
+                    is_in_room=is_in_room,
+                    channel=channel,
+                )
+
+                if not is_in_room:
                     logger.debug(
                         "Filtered out player not in room",
                         player_id=player_id,
@@ -267,8 +372,18 @@ class NATSMessageHandler:
                     )
                     continue
 
-                # Check if the receiving player has muted the sender
-                if self._is_player_muted_by_receiver(player_id, sender_id):
+                # Check if the receiving player has muted the sender using the shared UserManager instance
+                is_muted = self._is_player_muted_by_receiver_with_user_manager(user_manager, player_id, sender_id)
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Mute check result ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    target_player_id=player_id,
+                    is_muted=is_muted,
+                    channel=channel,
+                )
+
+                if is_muted:
                     logger.debug(
                         "Filtered out message due to mute",
                         receiver_id=player_id,
@@ -277,10 +392,33 @@ class NATSMessageHandler:
                     )
                     continue
 
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    target_player_id=player_id,
+                    channel=channel,
+                )
                 filtered_targets.append(player_id)
+
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Final filtered targets ===",
+                room_id=room_id,
+                sender_id=sender_id,
+                channel=channel,
+                filtered_targets=filtered_targets,
+                filtered_count=len(filtered_targets),
+            )
 
             # Send message only to filtered players
             for player_id in filtered_targets:
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Sending message to player ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    target_player_id=player_id,
+                    channel=channel,
+                )
                 await connection_manager.send_personal_message(player_id, chat_event)
 
             logger.info(
@@ -359,17 +497,81 @@ class NATSMessageHandler:
         Returns:
             bool: True if receiver has muted sender, False otherwise
         """
+        logger.debug(
+            "=== MUTE FILTERING DEBUG: Starting mute check ===",
+            receiver_id=receiver_id,
+            sender_id=sender_id,
+        )
+
         try:
             # Import UserManager to check mute status
             from ..services.user_manager import UserManager
 
             user_manager = UserManager()
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: UserManager created ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
 
             # Load the receiver's mute data before checking
-            user_manager.load_player_mutes(receiver_id)
+            mute_load_result = user_manager.load_player_mutes(receiver_id)
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Mute data load result ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                mute_load_result=mute_load_result,
+            )
+
+            # Check what mute data is available (only for debugging, not for logic)
+            try:
+                if hasattr(user_manager, "_player_mutes") and user_manager._player_mutes is not None:
+                    available_mute_data = list(user_manager._player_mutes.keys())
+                    logger.debug(
+                        "=== MUTE FILTERING DEBUG: Available mute data ===",
+                        receiver_id=receiver_id,
+                        sender_id=sender_id,
+                        available_mute_data=available_mute_data,
+                    )
+
+                    if receiver_id in user_manager._player_mutes:
+                        receiver_mutes = list(user_manager._player_mutes[receiver_id].keys())
+                        logger.debug(
+                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
+                            receiver_id=receiver_id,
+                            sender_id=sender_id,
+                            receiver_mutes=receiver_mutes,
+                        )
+                    else:
+                        logger.debug(
+                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
+                            receiver_id=receiver_id,
+                            sender_id=sender_id,
+                        )
+                else:
+                    logger.debug(
+                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
+                        receiver_id=receiver_id,
+                        sender_id=sender_id,
+                    )
+            except Exception as debug_error:
+                logger.debug(
+                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                    debug_error=str(debug_error),
+                )
 
             # Check if receiver has muted sender (personal mute)
-            if user_manager.is_player_muted(receiver_id, sender_id):
+            is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Personal mute check result ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                is_personally_muted=is_personally_muted,
+            )
+
+            if is_personally_muted:
                 logger.debug(
                     "Player muted by receiver (personal mute)",
                     receiver_id=receiver_id,
@@ -379,7 +581,18 @@ class NATSMessageHandler:
 
             # Load global mutes and check if sender is globally muted by anyone
             # Only apply global mute if receiver is not an admin (admins can see globally muted players)
-            if user_manager.is_player_muted_by_others(sender_id) and not user_manager.is_admin(receiver_id):
+            is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
+            is_receiver_admin = user_manager.is_admin(receiver_id)
+
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Global mute check ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                is_globally_muted=is_globally_muted,
+                is_receiver_admin=is_receiver_admin,
+            )
+
+            if is_globally_muted and not is_receiver_admin:
                 logger.debug(
                     "Player muted by receiver (global mute)",
                     receiver_id=receiver_id,
@@ -387,6 +600,11 @@ class NATSMessageHandler:
                 )
                 return True
 
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: No mute found, allowing message ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
             return False
 
         except Exception as e:
@@ -395,6 +613,126 @@ class NATSMessageHandler:
                 error=str(e),
                 receiver_id=receiver_id,
                 sender_id=sender_id,
+            )
+            return False
+
+    def _is_player_muted_by_receiver_with_user_manager(self, user_manager, receiver_id: str, sender_id: str) -> bool:
+        """
+        Check if a receiving player has muted the sender using a provided UserManager instance.
+
+        Args:
+            user_manager: UserManager instance to use for mute checks
+            receiver_id: Player ID of the message receiver
+            sender_id: Player ID of the message sender
+
+        Returns:
+            bool: True if receiver has muted sender, False otherwise
+        """
+        logger.debug(
+            "=== MUTE FILTERING DEBUG: Starting mute check with provided UserManager ===",
+            receiver_id=receiver_id,
+            sender_id=sender_id,
+        )
+
+        try:
+            # Load the receiver's mute data before checking (if not already loaded)
+            mute_load_result = user_manager.load_player_mutes(receiver_id)
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Mute data load result ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                mute_load_result=mute_load_result,
+            )
+
+            # Check what mute data is available (only for debugging, not for logic)
+            try:
+                if hasattr(user_manager, "_player_mutes") and user_manager._player_mutes is not None:
+                    available_mute_data = list(user_manager._player_mutes.keys())
+                    logger.debug(
+                        "=== MUTE FILTERING DEBUG: Available mute data ===",
+                        receiver_id=receiver_id,
+                        sender_id=sender_id,
+                        available_mute_data=available_mute_data,
+                    )
+
+                    if receiver_id in user_manager._player_mutes:
+                        receiver_mutes = list(user_manager._player_mutes[receiver_id].keys())
+                        logger.debug(
+                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
+                            receiver_id=receiver_id,
+                            sender_id=sender_id,
+                            receiver_mutes=receiver_mutes,
+                        )
+                    else:
+                        logger.debug(
+                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
+                            receiver_id=receiver_id,
+                            sender_id=sender_id,
+                        )
+                else:
+                    logger.debug(
+                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
+                        receiver_id=receiver_id,
+                        sender_id=sender_id,
+                    )
+            except Exception as debug_error:
+                logger.debug(
+                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                    debug_error=str(debug_error),
+                )
+
+            # Check if receiver has muted sender (personal mute)
+            is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Personal mute check result ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                is_personally_muted=is_personally_muted,
+            )
+
+            if is_personally_muted:
+                logger.debug(
+                    "Player muted by receiver (personal mute)",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+                return True
+
+            # Load global mutes and check if sender is globally muted by anyone
+            # Only apply global mute if receiver is not an admin (admins can see globally muted players)
+            is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
+            is_receiver_admin = user_manager.is_admin(receiver_id)
+
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Global mute check ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                is_globally_muted=is_globally_muted,
+                is_receiver_admin=is_receiver_admin,
+            )
+
+            if is_globally_muted and not is_receiver_admin:
+                logger.debug(
+                    "Player muted by receiver (global mute)",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+                return True
+
+            logger.debug(
+                "Player not muted by receiver",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
+            return False
+        except Exception as e:
+            logger.error(
+                "Error checking mute status with provided UserManager",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                error=str(e),
             )
             return False
 

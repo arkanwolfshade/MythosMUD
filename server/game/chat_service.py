@@ -782,7 +782,18 @@ class ChatService:
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
-        self.user_manager.load_player_mutes(player_id)
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Loading sender's mute data ===",
+            player_id=player_id,
+            player_name=player.name,
+        )
+        mute_load_result = self.user_manager.load_player_mutes(player_id)
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Sender's mute data load result ===",
+            player_id=player_id,
+            player_name=player.name,
+            mute_load_result=mute_load_result,
+        )
 
         # Check rate limits before allowing emote
         if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):

@@ -350,7 +350,7 @@ class TestNATSMessageHandler:
 
         with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
             with patch.object(self.handler, "_is_player_in_room", return_value=True):
-                with patch.object(self.handler, "_is_player_muted_by_receiver", return_value=True):
+                with patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True):
                     await self.handler._broadcast_to_room_with_filtering("room_001", chat_event, "player_001", "say")
 
                     # Should not send to muted player
