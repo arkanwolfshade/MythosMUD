@@ -26,13 +26,6 @@ class TestMuteFilteringPerformance:
         self.mock_room_service = MagicMock()
         self.mock_player_service = MagicMock(spec=PlayerService)
 
-        # Initialize chat service
-        self.chat_service = ChatService(
-            persistence=self.mock_persistence,
-            room_service=self.mock_room_service,
-            player_service=self.mock_player_service,
-        )
-
         # Test data
         self.muter_id = str(uuid.uuid4())
         self.muter_name = "ArkanWolfshade"
@@ -51,6 +44,21 @@ class TestMuteFilteringPerformance:
         self.target_player.name = self.target_name
         self.target_player.current_room_id = self.room_id
 
+    def _create_chat_service_with_mocks(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
+        """Helper method to create ChatService with mocked dependencies."""
+        chat_service = ChatService(
+            persistence=self.mock_persistence,
+            room_service=self.mock_room_service,
+            player_service=self.mock_player_service,
+            user_manager_instance=mock_user_manager,
+        )
+
+        # Replace services with mocks
+        chat_service.nats_service = mock_nats_service
+        chat_service.rate_limiter = mock_rate_limiter
+
+        return chat_service
+
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
@@ -59,6 +67,9 @@ class TestMuteFilteringPerformance:
         self, mock_user_manager, mock_rate_limiter, mock_nats_service
     ):
         """Test emote message performance when no mutes are active."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -77,7 +88,7 @@ class TestMuteFilteringPerformance:
         start_time = time.time()
 
         for i in range(num_messages):
-            await self.chat_service.send_emote_message(self.target_id, f"action_{i}")
+            await chat_service.send_emote_message(self.target_id, f"action_{i}")
             # Note: These will fail due to NATS, but we're measuring the processing time before NATS
 
         end_time = time.time()
@@ -96,6 +107,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_emote_message_performance_with_mutes(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test emote message performance when mutes are active."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -114,7 +128,7 @@ class TestMuteFilteringPerformance:
         start_time = time.time()
 
         for i in range(num_messages):
-            await self.chat_service.send_emote_message(self.target_id, f"action_{i}")
+            await chat_service.send_emote_message(self.target_id, f"action_{i}")
             # These should fail due to mute filtering, but we're measuring processing time
 
         end_time = time.time()
@@ -135,6 +149,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_predefined_emote_performance(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test predefined emote performance."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -160,7 +177,7 @@ class TestMuteFilteringPerformance:
             start_time = time.time()
 
             for _i in range(num_messages):
-                await self.chat_service.send_predefined_emote(self.target_id, "twibble")
+                await chat_service.send_predefined_emote(self.target_id, "twibble")
                 # These will fail due to NATS, but we're measuring processing time
 
             end_time = time.time()
@@ -181,6 +198,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_workflow_performance(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test performance of mute/unmute workflow operations."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -201,11 +221,9 @@ class TestMuteFilteringPerformance:
         for i in range(num_operations):
             # Alternate between mute and unmute
             if i % 2 == 0:
-                self.chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+                chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
             else:
-                self.chat_service.unmute_player(
-                    muter_id=self.muter_id, target_player_name=self.target_name
-                )
+                chat_service.unmute_player(muter_id=self.muter_id, target_player_name=self.target_name)
 
         end_time = time.time()
         total_time = end_time - start_time
@@ -225,6 +243,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_global_mute_performance(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test performance of global mute operations."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -243,7 +264,7 @@ class TestMuteFilteringPerformance:
         start_time = time.time()
 
         for i in range(num_operations):
-            self.chat_service.mute_global(
+            chat_service.mute_global(
                 muter_id=self.muter_id,
                 target_player_name=self.target_name,
                 duration_minutes=30,
@@ -270,6 +291,9 @@ class TestMuteFilteringPerformance:
         """Test performance with concurrent emote messages."""
         import asyncio
 
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -285,7 +309,7 @@ class TestMuteFilteringPerformance:
 
         # Create multiple concurrent emote tasks
         async def send_emote(task_id):
-            return await self.chat_service.send_emote_message(self.target_id, f"concurrent_action_{task_id}")
+            return await chat_service.send_emote_message(self.target_id, f"concurrent_action_{task_id}")
 
         # Measure performance of concurrent emote messages
         num_concurrent = 20
@@ -312,6 +336,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_mixed_message_types_performance(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test performance with mixed message types (custom and predefined emotes)."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -339,10 +366,10 @@ class TestMuteFilteringPerformance:
             for i in range(num_messages):
                 if i % 2 == 0:
                     # Custom emote
-                    await self.chat_service.send_emote_message(self.target_id, f"custom_action_{i}")
+                    await chat_service.send_emote_message(self.target_id, f"custom_action_{i}")
                 else:
                     # Predefined emote
-                    await self.chat_service.send_predefined_emote(self.target_id, "twibble")
+                    await chat_service.send_predefined_emote(self.target_id, "twibble")
 
             end_time = time.time()
             total_time = end_time - start_time
@@ -362,6 +389,9 @@ class TestMuteFilteringPerformance:
     @patch("server.game.chat_service.user_manager")
     async def test_user_manager_optimization_performance(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test that UserManager optimization doesn't degrade performance."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -380,7 +410,7 @@ class TestMuteFilteringPerformance:
         start_time = time.time()
 
         for i in range(num_messages):
-            await self.chat_service.send_emote_message(self.target_id, f"optimization_test_{i}")
+            await chat_service.send_emote_message(self.target_id, f"optimization_test_{i}")
 
         end_time = time.time()
         total_time = end_time - start_time

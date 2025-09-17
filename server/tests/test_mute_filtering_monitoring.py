@@ -25,13 +25,6 @@ class TestMuteFilteringMonitoring:
         self.mock_room_service = MagicMock()
         self.mock_player_service = MagicMock(spec=PlayerService)
 
-        # Initialize chat service
-        self.chat_service = ChatService(
-            persistence=self.mock_persistence,
-            room_service=self.mock_room_service,
-            player_service=self.mock_player_service,
-        )
-
         # Test data
         self.muter_id = str(uuid.uuid4())
         self.muter_name = "ArkanWolfshade"
@@ -50,12 +43,30 @@ class TestMuteFilteringMonitoring:
         self.target_player.name = self.target_name
         self.target_player.current_room_id = self.room_id
 
+    def _create_chat_service_with_mocks(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
+        """Helper method to create ChatService with mocked dependencies."""
+        chat_service = ChatService(
+            persistence=self.mock_persistence,
+            room_service=self.mock_room_service,
+            player_service=self.mock_player_service,
+            user_manager_instance=mock_user_manager,
+        )
+
+        # Replace services with mocks
+        chat_service.nats_service = mock_nats_service
+        chat_service.rate_limiter = mock_rate_limiter
+
+        return chat_service
+
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_failure_detection(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test detection of mute filtering failures."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -70,11 +81,11 @@ class TestMuteFilteringMonitoring:
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
         # First, mute the target player
-        mute_result = self.chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
         assert mute_result is True
 
         # Now try to send an emote - this should be blocked but isn't due to mock
-        emote_result = await self.chat_service.send_emote_message(self.target_id, "dance")
+        emote_result = await chat_service.send_emote_message(self.target_id, "dance")
 
         # The emote should fail due to NATS, but we can check the logging
         # In a real scenario, this would be a mute filtering failure
@@ -89,6 +100,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_data_loading_failure_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test monitoring of mute data loading failures."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -103,7 +117,7 @@ class TestMuteFilteringMonitoring:
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
         # Try to send an emote with mute data loading failure
-        emote_result = await self.chat_service.send_emote_message(self.target_id, "dance")
+        emote_result = await chat_service.send_emote_message(self.target_id, "dance")
 
         # The emote should fail due to NATS, but we can check the logging
         assert emote_result["success"] is False
@@ -117,6 +131,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_user_manager_consistency_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test monitoring of UserManager instance consistency."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -132,7 +149,7 @@ class TestMuteFilteringMonitoring:
 
         # Send multiple emotes to test UserManager consistency
         for i in range(5):
-            emote_result = await self.chat_service.send_emote_message(self.target_id, f"action_{i}")
+            emote_result = await chat_service.send_emote_message(self.target_id, f"action_{i}")
             assert emote_result["success"] is False  # Due to NATS
 
         # Verify that UserManager methods were called consistently
@@ -145,6 +162,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_performance_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test monitoring of mute filtering performance."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -163,7 +183,7 @@ class TestMuteFilteringMonitoring:
         start_time = time.time()
 
         for i in range(num_operations):
-            emote_result = await self.chat_service.send_emote_message(self.target_id, f"perf_test_{i}")
+            emote_result = await chat_service.send_emote_message(self.target_id, f"perf_test_{i}")
             assert emote_result["success"] is False  # Due to NATS
 
         end_time = time.time()
@@ -189,6 +209,9 @@ class TestMuteFilteringMonitoring:
         self, mock_user_manager, mock_rate_limiter, mock_nats_service
     ):
         """Test monitoring of mute filtering error handling."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -204,7 +227,7 @@ class TestMuteFilteringMonitoring:
 
         # Test error handling with invalid player ID
         invalid_player_id = "invalid-id"
-        emote_result = await self.chat_service.send_emote_message(invalid_player_id, "dance")
+        emote_result = await chat_service.send_emote_message(invalid_player_id, "dance")
 
         # The emote should fail due to invalid player
         assert emote_result["success"] is False
@@ -219,6 +242,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_consistency_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test monitoring of mute filtering consistency across message types."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -238,7 +264,7 @@ class TestMuteFilteringMonitoring:
 
         for msg_type in message_types:
             if msg_type == "custom_emote":
-                emote_result = await self.chat_service.send_emote_message(self.target_id, "dance")
+                emote_result = await chat_service.send_emote_message(self.target_id, "dance")
             else:
                 # Mock EmoteService for predefined emotes
                 with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -249,7 +275,7 @@ class TestMuteFilteringMonitoring:
                         "You twibble.",
                         f"{self.target_name} twibbles.",
                     )
-                    emote_result = await self.chat_service.send_predefined_emote(self.target_id, "twibble")
+                    emote_result = await chat_service.send_predefined_emote(self.target_id, "twibble")
 
             results[msg_type] = emote_result["success"]
 
@@ -265,6 +291,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_alerting_system(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test the mute filtering alerting system."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -283,7 +312,7 @@ class TestMuteFilteringMonitoring:
         failure_count = 0
 
         for i in range(num_operations):
-            emote_result = await self.chat_service.send_emote_message(self.target_id, f"alert_test_{i}")
+            emote_result = await chat_service.send_emote_message(self.target_id, f"alert_test_{i}")
 
             # Count failures (in this case, all fail due to NATS)
             if not emote_result["success"]:
@@ -303,6 +332,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_health_check(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test mute filtering health check system."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -327,7 +359,7 @@ class TestMuteFilteringMonitoring:
         # Test mute data loading health
         try:
             mock_user_manager.load_player_mutes.return_value = True
-            await self.chat_service.send_emote_message(self.target_id, "health_check")
+            await chat_service.send_emote_message(self.target_id, "health_check")
             health_status["mute_data_loading"] = True
         except Exception as e:
             health_status["mute_data_loading"] = False
@@ -336,7 +368,7 @@ class TestMuteFilteringMonitoring:
         # Test UserManager consistency health
         try:
             mock_user_manager.is_player_muted.return_value = False
-            await self.chat_service.send_emote_message(self.target_id, "health_check")
+            await chat_service.send_emote_message(self.target_id, "health_check")
             health_status["user_manager_consistency"] = True
         except Exception as e:
             health_status["user_manager_consistency"] = False
@@ -345,7 +377,7 @@ class TestMuteFilteringMonitoring:
         # Test performance health
         try:
             start_time = time.time()
-            await self.chat_service.send_emote_message(self.target_id, "health_check")
+            await chat_service.send_emote_message(self.target_id, "health_check")
             end_time = time.time()
             processing_time = end_time - start_time
 
@@ -360,7 +392,7 @@ class TestMuteFilteringMonitoring:
 
         # Test error handling health
         try:
-            await self.chat_service.send_emote_message("invalid_id", "health_check")
+            await chat_service.send_emote_message("invalid_id", "health_check")
             health_status["error_handling"] = True
         except Exception as e:
             health_status["error_handling"] = False
@@ -385,6 +417,9 @@ class TestMuteFilteringMonitoring:
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_metrics_collection(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
         """Test collection of mute filtering metrics."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(mock_user_manager, mock_rate_limiter, mock_nats_service)
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -413,7 +448,7 @@ class TestMuteFilteringMonitoring:
 
         for i in range(num_operations):
             start_time = time.time()
-            emote_result = await self.chat_service.send_emote_message(self.target_id, f"metrics_test_{i}")
+            emote_result = await chat_service.send_emote_message(self.target_id, f"metrics_test_{i}")
             end_time = time.time()
 
             processing_time = end_time - start_time
