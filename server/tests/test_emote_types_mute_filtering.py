@@ -83,6 +83,7 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.mute_player.return_value = True
+        mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
@@ -94,15 +95,20 @@ class TestEmoteTypesMuteFiltering:
         assert emote_result["message"]["channel"] == "emote"
         assert emote_result["message"]["content"] == "waves hello"
 
-        # Mute the player
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-        assert mute_result is True
+        # Apply global mute to the player
+        global_mute_result = chat_service.mute_global(
+            muter_id=self.muter_id,
+            target_player_name=self.target_name,
+            duration_minutes=60,
+            reason="Test mute filtering",
+        )
+        assert global_mute_result is True
 
-        # Test custom emote when muted
-        mock_user_manager.is_player_muted.return_value = True
+        # Test custom emote when globally muted
+        mock_user_manager.is_globally_muted.return_value = True
         emote_result = await chat_service.send_emote_message(self.target_id, "waves goodbye")
         assert emote_result["success"] is False
-        assert "muted" in emote_result["error"].lower()
+        assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -115,13 +121,21 @@ class TestEmoteTypesMuteFiltering:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -139,15 +153,20 @@ class TestEmoteTypesMuteFiltering:
             assert emote_result["message"]["channel"] == "emote"
             assert "twibbles" in emote_result["message"]["content"]
 
-            # Mute the player
-            mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-            assert mute_result is True
+            # Apply global mute to the player
+            global_mute_result = chat_service.mute_global(
+                muter_id=self.muter_id,
+                target_player_name=self.target_name,
+                duration_minutes=60,
+                reason="Test predefined emote mute filtering",
+            )
+            assert global_mute_result is True
 
-            # Test predefined emote when muted
-            mock_user_manager.is_player_muted.return_value = True
+            # Test predefined emote when globally muted
+            mock_user_manager.is_globally_muted.return_value = True
             emote_result = await chat_service.send_predefined_emote(self.target_id, "twibble")
             assert emote_result["success"] is False
-            assert "muted" in emote_result["error"].lower()
+            assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -162,13 +181,21 @@ class TestEmoteTypesMuteFiltering:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -199,16 +226,21 @@ class TestEmoteTypesMuteFiltering:
                 assert emote_result["message"]["channel"] == "emote"
                 assert emote_action in emote_result["message"]["content"]
 
-            # Mute the player
-            mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-            assert mute_result is True
+            # Apply global mute to the player
+            global_mute_result = chat_service.mute_global(
+                muter_id=self.muter_id,
+                target_player_name=self.target_name,
+                duration_minutes=60,
+                reason="Test multiple predefined emotes mute filtering",
+            )
+            assert global_mute_result is True
 
-            # Test all predefined emotes when muted
-            mock_user_manager.is_player_muted.return_value = True
+            # Test all predefined emotes when globally muted
+            mock_user_manager.is_globally_muted.return_value = True
             for emote_command, _emote_action in predefined_emotes:
                 emote_result = await chat_service.send_predefined_emote(self.target_id, emote_command)
                 assert emote_result["success"] is False
-                assert "muted" in emote_result["error"].lower()
+                assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -223,13 +255,21 @@ class TestEmoteTypesMuteFiltering:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -250,20 +290,25 @@ class TestEmoteTypesMuteFiltering:
             assert predefined_emote_result["success"] is True
             assert "dances" in predefined_emote_result["message"]["content"]
 
-            # Mute the player
-            mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-            assert mute_result is True
+            # Apply global mute to the player
+            global_mute_result = chat_service.mute_global(
+                muter_id=self.muter_id,
+                target_player_name=self.target_name,
+                duration_minutes=60,
+                reason="Test emote consistency mute filtering",
+            )
+            assert global_mute_result is True
 
-            # Test both emote types when muted - both should be blocked
-            mock_user_manager.is_player_muted.return_value = True
+            # Test both emote types when globally muted - both should be blocked
+            mock_user_manager.is_globally_muted.return_value = True
 
             custom_emote_result = await chat_service.send_emote_message(self.target_id, "dances")
             assert custom_emote_result["success"] is False
-            assert "muted" in custom_emote_result["error"].lower()
+            assert "globally muted" in custom_emote_result["error"].lower()
 
             predefined_emote_result = await chat_service.send_predefined_emote(self.target_id, "dance")
             assert predefined_emote_result["success"] is False
-            assert "muted" in predefined_emote_result["error"].lower()
+            assert "globally muted" in predefined_emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -309,7 +354,7 @@ class TestEmoteTypesMuteFiltering:
 
             predefined_emote_result = await chat_service.send_predefined_emote(self.target_id, "invalid_emote")
             assert predefined_emote_result["success"] is False
-            assert "not recognized" in predefined_emote_result["error"].lower()
+            assert "unknown emote" in predefined_emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -329,6 +374,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player

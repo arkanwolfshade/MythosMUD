@@ -45,6 +45,21 @@ class TestTemporaryPermanentMutes:
         self.target_player.name = self.target_name
         self.target_player.current_room_id = self.room_id
 
+    def _create_chat_service_with_mocks(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
+        """Helper method to create ChatService with mocked dependencies."""
+        chat_service = ChatService(
+            persistence=self.mock_persistence,
+            room_service=self.mock_room_service,
+            player_service=self.mock_player_service,
+            user_manager_instance=mock_user_manager,
+        )
+
+        # Replace services with mocks
+        chat_service.nats_service = mock_nats_service
+        chat_service.rate_limiter = mock_rate_limiter
+
+        return chat_service
+
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
@@ -277,6 +292,7 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.mute_player.return_value = True
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.unmute_player.return_value = True
+        mock_user_manager.unmute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
         # Create chat service with mocked user manager
@@ -294,23 +310,24 @@ class TestTemporaryPermanentMutes:
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
-        # Apply permanent mute
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-        assert mute_result is True
+        # Apply permanent global mute
+        global_mute_result = chat_service.mute_global(
+            muter_id=self.muter_id, target_player_name=self.target_name, reason="Test permanent mute"
+        )
+        assert global_mute_result is True
 
         # Test emote is blocked
-        mock_user_manager.is_player_muted.return_value = True
-        mock_user_manager.is_player_muted_by_others.return_value = True
+        mock_user_manager.is_globally_muted.return_value = True
         emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is False
+        assert "globally muted" in emote_result["error"].lower()
 
         # Manually unmute the player
-        unmute_result = chat_service.unmute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        unmute_result = chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
         assert unmute_result is True
 
         # Test emote is now allowed
-        mock_user_manager.is_player_muted.return_value = False
-        mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.is_globally_muted.return_value = False
         emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is True
         assert emote_result["message"]["content"] == "waves"
@@ -342,33 +359,43 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.unmute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
-        # Test temporary mute
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-        assert mute_result is True
+        # Test temporary global mute
+        temp_mute_result = chat_service.mute_global(
+            muter_id=self.muter_id,
+            target_player_name=self.target_name,
+            duration_minutes=60,
+            reason="Test temporary mute",
+        )
+        assert temp_mute_result is True
 
-        # Test emote is blocked with temporary mute
-        mock_user_manager.is_player_muted.return_value = True
+        # Test emote is blocked with temporary global mute
+        mock_user_manager.is_globally_muted.return_value = True
         emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is False
-        assert "muted" in emote_result["error"].lower()
+        assert "globally muted" in emote_result["error"].lower()
 
-        # Unmute and test permanent mute
-        unmute_result = chat_service.unmute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        # Unmute and test permanent global mute
+        unmute_result = chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
         assert unmute_result is True
 
-        # Apply permanent mute
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
-        assert mute_result is True
+        # Apply permanent global mute
+        perm_mute_result = chat_service.mute_global(
+            muter_id=self.muter_id, target_player_name=self.target_name, reason="Test permanent mute"
+        )
+        assert perm_mute_result is True
 
-        # Test emote is blocked with permanent mute (same behavior)
-        mock_user_manager.is_player_muted.return_value = True
+        # Test emote is blocked with permanent global mute (same behavior)
+        mock_user_manager.is_globally_muted.return_value = True
         emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is False
-        assert "muted" in emote_result["error"].lower()
+        assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -395,6 +422,8 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -461,6 +490,8 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -517,6 +548,9 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.mute_player.return_value = True
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -541,11 +575,12 @@ class TestTemporaryPermanentMutes:
         assert emote_result["success"] is False
         assert "globally muted" in emote_result["error"].lower()
 
-        # Remove global mute, test personal mute still active
+        # Remove global mute, test personal mute does NOT block the muted player
+        # (Personal mutes only affect the muter's ability to see messages, not the muted player's ability to send them)
         mock_user_manager.is_globally_muted.return_value = False
         emote_result = await chat_service.send_emote_message(self.target_id, "waves")
-        assert emote_result["success"] is False
-        assert "muted" in emote_result["error"].lower()
+        assert emote_result["success"] is True  # Personal mutes don't block the muted player
+        assert emote_result["message"]["content"] == "waves"
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -572,6 +607,8 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = False
+        mock_user_manager.mute_global.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player

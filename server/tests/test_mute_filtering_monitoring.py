@@ -69,13 +69,21 @@ class TestMuteFilteringMonitoring:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False  # Player should be muted but isn't
+        mock_user_manager.mute_player.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
@@ -84,15 +92,14 @@ class TestMuteFilteringMonitoring:
         mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
         assert mute_result is True
 
-        # Now try to send an emote - this should be blocked but isn't due to mock
+        # Now try to send an emote - this should succeed because personal mutes don't block the muted player
         emote_result = await chat_service.send_emote_message(self.target_id, "dance")
 
-        # The emote should fail due to NATS, but we can check the logging
-        # In a real scenario, this would be a mute filtering failure
-        assert emote_result["success"] is False
+        # The emote should succeed because personal mutes don't block the muted player
+        assert emote_result["success"] is True
 
-        # Verify that mute filtering was attempted
-        mock_user_manager.is_player_muted.assert_called()
+        # Verify that mute_player was called (the mute was applied)
+        mock_user_manager.mute_player.assert_called()
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -136,7 +143,13 @@ class TestMuteFilteringMonitoring:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
@@ -150,11 +163,14 @@ class TestMuteFilteringMonitoring:
         # Send multiple emotes to test UserManager consistency
         for i in range(5):
             emote_result = await chat_service.send_emote_message(self.target_id, f"action_{i}")
-            assert emote_result["success"] is False  # Due to NATS
+            assert emote_result["success"] is True  # Should succeed with proper NATS mock
 
         # Verify that UserManager methods were called consistently
         assert mock_user_manager.load_player_mutes.call_count >= 5
-        assert mock_user_manager.is_player_muted.call_count >= 5
+        # Note: is_player_muted is not called because personal mutes don't block the muted player
+        # Instead, verify that other UserManager methods were called consistently
+        assert mock_user_manager.is_channel_muted.call_count >= 5
+        assert mock_user_manager.is_globally_muted.call_count >= 5
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
@@ -247,7 +263,13 @@ class TestMuteFilteringMonitoring:
 
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
-        mock_nats_service.publish.return_value = True
+
+        # Make NATS publish async
+        async def mock_publish(*args, **kwargs):
+            return True
+
+        mock_nats_service.publish = mock_publish
+
         mock_rate_limiter.check_rate_limit.return_value = True
         mock_user_manager.is_channel_muted.return_value = False
         mock_user_manager.is_globally_muted.return_value = False
@@ -279,11 +301,14 @@ class TestMuteFilteringMonitoring:
 
             results[msg_type] = emote_result["success"]
 
-        # Verify consistency across message types
-        assert all(not result for result in results.values()), "Inconsistent mute filtering across message types"
+        # Verify consistency across message types - both should succeed since personal mutes don't block the muted player
+        assert all(result for result in results.values()), "Inconsistent message processing across message types"
 
-        # Verify that mute filtering was applied to all message types
-        assert mock_user_manager.is_player_muted.call_count >= len(message_types)
+        # Verify that UserManager methods were called consistently for all message types
+        # Note: is_player_muted is not called because personal mutes don't block the muted player
+        assert mock_user_manager.load_player_mutes.call_count >= len(message_types)
+        assert mock_user_manager.is_channel_muted.call_count >= len(message_types)
+        assert mock_user_manager.is_globally_muted.call_count >= len(message_types)
 
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
