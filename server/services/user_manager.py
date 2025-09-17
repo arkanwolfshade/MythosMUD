@@ -24,7 +24,7 @@ class UserManager:
     tracking with integration to AI logging systems.
     """
 
-    def __init__(self):
+    def __init__(self, data_dir: Path | None = None):
         """Initialize the user manager."""
         # Player mute storage: {player_id: {target_type: {target_id: mute_info}}}
         self._player_mutes = {}  # player_id -> {target_type -> {target_id -> mute_info}}
@@ -42,7 +42,7 @@ class UserManager:
         self.chat_logger = chat_logger
 
         # Data directory for player-specific mute files
-        self.data_dir = Path("data/user_management")
+        self.data_dir = data_dir or Path("data/user_management")
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info("UserManager initialized with JSON file persistence")

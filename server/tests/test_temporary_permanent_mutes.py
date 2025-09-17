@@ -55,9 +55,22 @@ class TestTemporaryPermanentMutes:
     @pytest.mark.asyncio
     @patch("server.game.chat_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
-    @patch("server.game.chat_service.user_manager")
-    async def test_temporary_mute_with_short_duration(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
+    async def test_temporary_mute_with_short_duration(self, mock_rate_limiter, mock_nats_service):
         """Test temporary mute with short duration (5 minutes)."""
+        # Create mock user manager
+        mock_user_manager = MagicMock()
+
+        # Create chat service with mocked user manager
+        chat_service = ChatService(
+            persistence=self.mock_persistence,
+            room_service=self.mock_room_service,
+            player_service=self.mock_player_service,
+            user_manager_instance=mock_user_manager
+        )
+
+        # Replace NATS service with mock
+        chat_service.nats_service = mock_nats_service
+
         # Setup mocks
         mock_nats_service.is_connected.return_value = True
         mock_nats_service.publish.return_value = True
@@ -67,17 +80,19 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.can_send_message.return_value = True
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
+        mock_user_manager.mute_player.return_value = True
+        mock_user_manager.is_admin.return_value = True
 
         self.mock_player_service.get_player_by_id.return_value = self.target_player
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
         # Apply temporary mute (5 minutes)
-        mute_result = self.chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
         assert mute_result is True
 
         # Test emote is blocked when muted
         mock_user_manager.is_player_muted.return_value = True
-        emote_result = await self.chat_service.send_emote_message(self.target_id, "waves")
+        emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is False
         assert "muted" in emote_result["error"].lower()
 
@@ -85,7 +100,7 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.is_player_muted.return_value = False
 
         # Test emote is allowed after expiration
-        emote_result = await self.chat_service.send_emote_message(self.target_id, "waves")
+        emote_result = await chat_service.send_emote_message(self.target_id, "waves")
         assert emote_result["success"] is True
         assert emote_result["message"]["content"] == "waves"
 
