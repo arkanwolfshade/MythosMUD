@@ -209,6 +209,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 - [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
 - [DEVELOPMENT.md](DEVELOPMENT.md) — Dev environment setup
 - [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) — AI agent development guide
+- [Security Documentation](SECURITY.md) — Security practices and vulnerability reporting
+- [OpenSSF Best Practices](docs/OPENSSF_BEST_PRACTICES.md) — Security badge compliance documentation
 
 ---
 
