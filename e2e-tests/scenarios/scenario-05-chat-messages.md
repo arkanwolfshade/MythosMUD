@@ -191,7 +191,7 @@ if (totalMessages === 0) {
     console.log('✅ Verification complete - proceeding to next step');
 } else {
     console.log('✅ Messages found - continuing with verification');
-    
+
     // Verify we have the expected messages
     const expectedMessages = [
       'ArkanWolfshade says: Hello Ithaqua',

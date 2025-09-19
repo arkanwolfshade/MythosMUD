@@ -190,7 +190,7 @@ if (awMessagesUpdated.length === 0) {
     console.log('✅ Verification complete - proceeding to next step');
 } else {
     console.log('Who command has proper format:', whoCommandFormat);
-    
+
     // Verify no duplicate entries
     const playerCount = awMessagesUpdated.filter(msg => msg.includes('ArkanWolfshade')).length;
     const ithaquaCount = awMessagesUpdated.filter(msg => msg.includes('Ithaqua')).length;

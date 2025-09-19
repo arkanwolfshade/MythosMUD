@@ -217,7 +217,7 @@ if (buttonStates === null) {
     console.log('✅ Verification complete - proceeding to next step');
 } else {
     console.log('Button states:', buttonStates);
-    
+
     // Verify button states
     const isNotDisabled = buttonStates && !buttonStates.disabled;
     const hasClassName = buttonStates && buttonStates.className;

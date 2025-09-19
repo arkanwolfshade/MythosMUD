@@ -219,7 +219,7 @@ if (awMessagesUpdatedLogs.length === 0) {
     console.log('✅ Verification complete - proceeding to next step');
 } else {
     console.log('Updated whisper log messages:', updatedWhisperLogMessages.length);
-    
+
     // Verify log contains multiple whisper information
     const hasMultipleWhisperInfo = updatedWhisperLogMessages.some(msg =>
       msg.includes('Logging test message 1') ||

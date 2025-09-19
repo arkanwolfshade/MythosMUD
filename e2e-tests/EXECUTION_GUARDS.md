@@ -18,12 +18,12 @@ const MAX_STEP_ATTEMPTS = 3;
 while (stepAttempts < MAX_STEP_ATTEMPTS) {
     // Execute step logic
     const result = await executeStep();
-    
+
     if (isStepComplete(result)) {
         console.log(`✅ Step completed successfully on attempt ${stepAttempts + 1}`);
         break;
     }
-    
+
     stepAttempts++;
     if (stepAttempts >= MAX_STEP_ATTEMPTS) {
         console.log(`⚠️ Step failed after ${MAX_STEP_ATTEMPTS} attempts - proceeding with documented failure`);
