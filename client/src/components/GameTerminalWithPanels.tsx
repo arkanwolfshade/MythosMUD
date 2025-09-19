@@ -477,6 +477,62 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             break;
           }
+          case 'chat_message': {
+            const message = event.data.message as string;
+            const channel = event.data.channel as string;
+            const playerName = event.data.player_name as string;
+            const targetName = event.data.target_name as string;
+
+            if (message) {
+              logger.info('GameTerminalWithPanels', 'Processing chat message', {
+                message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                channel,
+                playerName,
+                targetName,
+                timestamp: event.timestamp,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              // Determine message type based on channel
+              let messageType: string;
+              switch (channel) {
+                case 'whisper':
+                  messageType = 'whisper';
+                  break;
+                case 'shout':
+                  messageType = 'shout';
+                  break;
+                case 'emote':
+                  messageType = 'emote';
+                  break;
+                case 'say':
+                case 'local':
+                default:
+                  messageType = 'chat';
+                  break;
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: messageType as any,
+                channel: channel as any,
+              };
+
+              updates.messages.push(chatMessage);
+
+              logger.info('GameTerminalWithPanels', 'Added chat message to updates', {
+                messageType,
+                channel,
+                totalMessages: updates.messages.length,
+              });
+            }
+            break;
+          }
           case 'room_occupants': {
             const occupants = event.data.occupants as string[];
             const occupantCount = event.data.count as number;
