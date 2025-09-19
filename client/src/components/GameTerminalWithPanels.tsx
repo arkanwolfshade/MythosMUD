@@ -519,8 +519,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 text: message,
                 timestamp: event.timestamp,
                 isHtml: false,
-                messageType: messageType as any,
-                channel: channel as any,
+                messageType: messageType,
+                channel: channel,
               };
 
               updates.messages.push(chatMessage);

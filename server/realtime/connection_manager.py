@@ -1656,16 +1656,10 @@ class ConnectionManager:
                     # Send initial game_state event to the player
                     await self._send_initial_game_state(player_id, player, room_id)
 
-                    # Notify current room that player entered the game
-                    from .envelope import build_event
-
-                    entered_event = build_event(
-                        "player_entered_game",
-                        {"player_id": player_id, "player_name": player_info["player_name"]},
-                        room_id=room_id,
-                    )
-                    logger.info(f"🔍 DEBUG: Broadcasting player_entered_game for {player_id} in room {room_id}")
-                    await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
+                    # Note: Removed duplicate player_entered_game event generation
+                    # The room.player_entered() call above already triggers PlayerEnteredRoom events
+                    # which are handled by the RealTimeEventHandler to create "enters the room" messages
+                    # This eliminates duplicate "has entered the game" messages
 
                 logger.info(f"Player {player_id} presence tracked as connected (new connection)")
             else:
@@ -1691,24 +1685,12 @@ class ConnectionManager:
                     room_id = room.id
 
             if room_id:
-                # Debug: Check room subscriptions before broadcasting
-                subscribers = self.room_manager.get_room_subscribers(room_id)
-                logger.debug(f"🔍 DEBUG: Room {room_id} has subscribers: {subscribers}")
-                logger.debug(f"🔍 DEBUG: Room subscriptions dict: {self.room_manager.room_subscriptions}")
-
-                # Broadcast connection message to other players in the room
-                from .envelope import build_event
-
-                player_name = getattr(player, "name", player_id)
-                entered_event = build_event(
-                    "player_entered_game",
-                    {"player_id": player_id, "player_name": player_name},
-                    room_id=room_id,
-                )
-                logger.info(
-                    f"🔍 DEBUG: Broadcasting player_entered_game for {player_id} in room {room_id} (already tracked)"
-                )
-                await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
+                # Note: Removed duplicate player_entered_game event generation
+                # The room.player_entered() call during connection setup already triggers
+                # PlayerEnteredRoom events which are handled by the RealTimeEventHandler
+                # This eliminates duplicate "has entered the game" messages for players
+                # who are already tracked as online but connecting via additional channels
+                logger.debug(f"Player {player_id} already tracked as online, skipping duplicate connection message")
 
         except Exception as e:
             logger.error(f"Error broadcasting connection message for {player_id}: {e}", exc_info=True)
