@@ -31,10 +31,12 @@ foreach ($path in $PossiblePaths) {
             $null = Get-Command $path -ErrorAction Stop
             $NatsServerPath = $path
             break
-        } catch {
+        }
+        catch {
             continue
         }
-    } elseif (Test-Path $path) {
+    }
+    elseif (Test-Path $path) {
         $NatsServerPath = $path
         break
     }
@@ -52,6 +54,20 @@ $NatsPort = 4222
 $NatsHttpPort = 8222
 $NatsLogPath = Join-Path $PSScriptRoot "..\logs\development\nats\nats-server.log"
 
+# Function to ensure NATS log directory exists
+function Ensure-NatsLogDirectory {
+    [CmdletBinding()]
+    param()
+
+    $natsLogDir = Split-Path $NatsLogPath -Parent
+    if (-not (Test-Path $natsLogDir)) {
+        Write-Host "Creating NATS log directory: $natsLogDir" -ForegroundColor Gray
+        New-Item -ItemType Directory -Path $natsLogDir -Force | Out-Null
+        return $true
+    }
+    return $false
+}
+
 # Function to check if NATS server is installed
 function Test-NatsServerInstalled {
     [CmdletBinding()]
@@ -66,10 +82,12 @@ function Test-NatsServerInstalled {
                 $null = Get-Command $path -ErrorAction Stop
                 $detectedPath = $path
                 break
-            } catch {
+            }
+            catch {
                 continue
             }
-        } elseif (Test-Path $path) {
+        }
+        elseif (Test-Path $path) {
             $detectedPath = $path
             break
         }
@@ -134,6 +152,9 @@ function Start-NatsServer {
 
     Write-Host "Starting NATS server..." -ForegroundColor Cyan
 
+    # Ensure NATS log directory exists
+    Ensure-NatsLogDirectory | Out-Null
+
     try {
         # Get the actual NATS server path
         $actualNatsPath = $null
@@ -143,10 +164,12 @@ function Start-NatsServer {
                     $null = Get-Command $path -ErrorAction Stop
                     $actualNatsPath = $path
                     break
-                } catch {
+                }
+                catch {
                     continue
                 }
-            } elseif (Test-Path $path) {
+            }
+            elseif (Test-Path $path) {
                 $actualNatsPath = $path
                 break
             }
@@ -159,11 +182,11 @@ function Start-NatsServer {
 
         if ($UseConfig -and (Test-Path $NatsConfigPath)) {
             Write-Host "Using configuration file: $NatsConfigPath" -ForegroundColor Gray
-            $command = "& '$actualNatsPath' -c '$NatsConfigPath'"
+            $command = "& '$actualNatsPath' -c '$NatsConfigPath' -l '$NatsLogPath'"
         }
         else {
             Write-Host "Using default configuration" -ForegroundColor Gray
-            $command = "& '$actualNatsPath' -p $NatsPort -m $NatsHttpPort"
+            $command = "& '$actualNatsPath' -p $NatsPort -m $NatsHttpPort -l '$NatsLogPath'"
         }
 
         if ($Background) {
@@ -179,7 +202,8 @@ function Start-NatsServer {
         # Wait for server to start (longer wait for background processes)
         if ($Background) {
             Start-Sleep -Seconds 5
-        } else {
+        }
+        else {
             Start-Sleep -Seconds 3
         }
 
@@ -299,7 +323,8 @@ function Get-NatsServerStatus {
     $clientPort = Test-NetConnection -ComputerName localhost -Port $NatsPort -WarningAction SilentlyContinue
     $httpPort = Test-NetConnection -ComputerName localhost -Port $NatsHttpPort -WarningAction SilentlyContinue
 
-    # Check log file
+    # Ensure log directory exists and check log file
+    Ensure-NatsLogDirectory | Out-Null
     $logExists = Test-Path $NatsLogPath
 
     Write-Host ""
