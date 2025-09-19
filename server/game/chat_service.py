@@ -87,7 +87,7 @@ class ChatService:
     all chat functionality - no fallback to WebSocket broadcasting is provided.
     """
 
-    def __init__(self, persistence, room_service, player_service):
+    def __init__(self, persistence, room_service, player_service, user_manager_instance=None):
         """
         Initialize chat service.
 
@@ -95,6 +95,7 @@ class ChatService:
             persistence: Database persistence layer
             room_service: Room management service
             player_service: Player management service
+            user_manager_instance: Optional user manager instance (defaults to global instance)
         """
         self.persistence = persistence
         self.room_service = room_service
@@ -119,7 +120,7 @@ class ChatService:
         self.rate_limiter = rate_limiter
 
         # User manager for muting and permissions
-        self.user_manager = user_manager
+        self.user_manager = user_manager_instance or user_manager
 
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
@@ -782,7 +783,18 @@ class ChatService:
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
-        self.user_manager.load_player_mutes(player_id)
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Loading sender's mute data ===",
+            player_id=player_id,
+            player_name=player.name,
+        )
+        mute_load_result = self.user_manager.load_player_mutes(player_id)
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Sender's mute data load result ===",
+            player_id=player_id,
+            player_name=player.name,
+            mute_load_result=mute_load_result,
+        )
 
         # Check rate limits before allowing emote
         if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):

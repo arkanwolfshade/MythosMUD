@@ -24,9 +24,8 @@ class TestUserManager:
         self.test_data_dir = Path(self.temp_dir) / "user_management"
         self.test_data_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create the user manager instance
-        self.user_manager = UserManager()
-        self.user_manager.data_dir = self.test_data_dir
+        # Create the user manager instance with test data directory
+        self.user_manager = UserManager(data_dir=self.test_data_dir)
 
         # Mock chat logger
         self.mock_chat_logger = Mock()
@@ -733,8 +732,7 @@ class TestUserManagerIntegration:
         self.test_data_dir = Path(self.temp_dir) / "user_management"
         self.test_data_dir.mkdir(parents=True, exist_ok=True)
 
-        self.user_manager = UserManager()
-        self.user_manager.data_dir = self.test_data_dir
+        self.user_manager = UserManager(data_dir=self.test_data_dir)
 
     def teardown_method(self):
         """Clean up test fixtures."""
@@ -785,8 +783,7 @@ class TestUserManagerIntegration:
         assert result is True
 
         # 3. Create new instance and load
-        new_user_manager = UserManager()
-        new_user_manager.data_dir = self.test_data_dir
+        new_user_manager = UserManager(data_dir=self.test_data_dir)
 
         result = new_user_manager.load_player_mutes("player_001")
         assert result is True

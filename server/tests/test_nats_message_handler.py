@@ -51,7 +51,7 @@ class TestNATSMessageHandler:
         await self.handler.start()
 
         # Verify subscriptions were created
-        expected_subjects = [
+        expected_chat_subjects = [
             "chat.say.*",
             "chat.local.*",
             "chat.local.subzone.*",
@@ -64,9 +64,25 @@ class TestNATSMessageHandler:
             "chat.admin",
         ]
 
-        assert len(self.handler.subscriptions) == len(expected_subjects)
-        for subject in expected_subjects:
+        expected_event_subjects = [
+            "events.player_entered.*",
+            "events.player_left.*",
+            "events.game_tick",
+        ]
+
+        # Verify chat subscriptions
+        for subject in expected_chat_subjects:
             assert subject in self.handler.subscriptions
+
+        # Verify event subscriptions
+        for subject in expected_event_subjects:
+            assert subject in self.handler.subscriptions
+
+        # Verify total count
+        assert len(self.handler.subscriptions) == len(expected_chat_subjects) + len(expected_event_subjects)
+
+        # Verify all subscriptions are active
+        for subject in expected_chat_subjects + expected_event_subjects:
             assert self.handler.subscriptions[subject] is True
 
     @pytest.mark.asyncio
@@ -334,7 +350,7 @@ class TestNATSMessageHandler:
 
         with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
             with patch.object(self.handler, "_is_player_in_room", return_value=True):
-                with patch.object(self.handler, "_is_player_muted_by_receiver", return_value=True):
+                with patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True):
                     await self.handler._broadcast_to_room_with_filtering("room_001", chat_event, "player_001", "say")
 
                     # Should not send to muted player
@@ -492,3 +508,417 @@ class TestNATSMessageHandlerGlobal:
         handler = get_nats_message_handler()
 
         assert handler is None
+
+
+class TestNATSMessageHandlerEventSubscription:
+    """Test cases for NATSMessageHandler event subscription capabilities."""
+
+    def setup_method(self):
+        """Set up test fixtures."""
+        # Create a mock NATS service
+        self.mock_nats_service = Mock()
+        self.mock_nats_service.subscribe = AsyncMock()
+        self.mock_nats_service.unsubscribe = AsyncMock()
+
+        # Create the handler instance
+        self.handler = NATSMessageHandler(self.mock_nats_service)
+
+        # Mock connection manager
+        self.mock_connection_manager = Mock()
+        self.mock_connection_manager.broadcast_global = AsyncMock()
+        self.mock_connection_manager.broadcast_room_event = AsyncMock()
+        self.mock_connection_manager.broadcast_global_event = AsyncMock()
+        self.mock_connection_manager.send_personal_message = AsyncMock()
+        self.mock_connection_manager._canonical_room_id = Mock(return_value=None)
+        self.mock_connection_manager.room_subscriptions = {}
+        self.mock_connection_manager.online_players = {}
+
+        # Test data
+        self.test_room_id = "arkham_1"
+        self.test_player_id = "test_player_123"
+
+    @pytest.mark.asyncio
+    async def test_subscribe_to_event_subjects_success(self):
+        """Test successful subscription to event subjects."""
+        # Mock successful subscription
+        self.mock_nats_service.subscribe.return_value = True
+
+        # Call the method
+        result = await self.handler.subscribe_to_event_subjects()
+
+        # Verify result
+        assert result is True
+
+        # Verify NATS service was called for all event subjects
+        expected_calls = [
+            "events.player_entered.*",
+            "events.player_left.*",
+            "events.game_tick",
+        ]
+
+        assert self.mock_nats_service.subscribe.call_count == len(expected_calls)
+
+        # Check that all expected subjects were subscribed to
+        call_args_list = self.mock_nats_service.subscribe.call_args_list
+        subscribed_subjects = [call[0][0] for call in call_args_list]
+
+        for expected_subject in expected_calls:
+            assert expected_subject in subscribed_subjects
+
+    @pytest.mark.asyncio
+    async def test_subscribe_to_event_subjects_failure(self):
+        """Test handling of subscription failure for event subjects."""
+        # Mock subscription failure
+        self.mock_nats_service.subscribe.return_value = False
+
+        # Call the method
+        result = await self.handler.subscribe_to_event_subjects()
+
+        # Verify result
+        assert result is False
+
+        # Verify NATS service was called
+        assert self.mock_nats_service.subscribe.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_subscribe_to_event_subjects_exception(self):
+        """Test handling of subscription exception for event subjects."""
+        # Mock subscription exception
+        self.mock_nats_service.subscribe.side_effect = Exception("NATS connection error")
+
+        # Call the method
+        result = await self.handler.subscribe_to_event_subjects()
+
+        # Verify result
+        assert result is False
+
+        # Verify NATS service was called
+        assert self.mock_nats_service.subscribe.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_unsubscribe_from_event_subjects_success(self):
+        """Test successful unsubscription from event subjects."""
+        # Mock successful unsubscription
+        self.mock_nats_service.unsubscribe.return_value = True
+
+        # Add some mock subscriptions
+        self.handler.subscriptions = {
+            "events.player_entered.*": True,
+            "events.player_left.*": True,
+            "events.game_tick": True,
+        }
+
+        # Call the method
+        result = await self.handler.unsubscribe_from_event_subjects()
+
+        # Verify result
+        assert result is True
+
+        # Verify NATS service was called for all event subjects
+        assert self.mock_nats_service.unsubscribe.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_unsubscribe_from_event_subjects_failure(self):
+        """Test handling of unsubscription failure for event subjects."""
+        # Mock unsubscription failure
+        self.mock_nats_service.unsubscribe.return_value = False
+
+        # Add some mock subscriptions
+        self.handler.subscriptions = {
+            "events.player_entered.*": True,
+            "events.player_left.*": True,
+            "events.game_tick": True,
+        }
+
+        # Call the method
+        result = await self.handler.unsubscribe_from_event_subjects()
+
+        # Verify result
+        assert result is False
+
+        # Verify NATS service was called
+        assert self.mock_nats_service.unsubscribe.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_player_entered(self):
+        """Test handling of player_entered event message."""
+        # Mock connection manager methods directly
+        with patch(
+            "server.realtime.nats_message_handler.connection_manager.broadcast_room_event",
+            self.mock_connection_manager.broadcast_room_event,
+        ):
+            # Create test event message
+            event_message = {
+                "event_type": "player_entered",
+                "data": {
+                    "player_id": self.test_player_id,
+                    "room_id": self.test_room_id,
+                    "player_name": "TestPlayer",
+                    "room_name": "TestRoom",
+                },
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was called
+            self.mock_connection_manager.broadcast_room_event.assert_called_once()
+            call_args = self.mock_connection_manager.broadcast_room_event.call_args
+
+            # Check event type and room ID
+            assert call_args[0][0] == "player_entered"
+            assert call_args[0][1] == self.test_room_id
+            assert call_args[0][2] == event_message["data"]
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_player_left(self):
+        """Test handling of player_left event message."""
+        # Mock connection manager methods directly
+        with patch(
+            "server.realtime.nats_message_handler.connection_manager.broadcast_room_event",
+            self.mock_connection_manager.broadcast_room_event,
+        ):
+            # Create test event message
+            event_message = {
+                "event_type": "player_left",
+                "data": {
+                    "player_id": self.test_player_id,
+                    "room_id": self.test_room_id,
+                    "player_name": "TestPlayer",
+                    "room_name": "TestRoom",
+                },
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was called
+            self.mock_connection_manager.broadcast_room_event.assert_called_once()
+            call_args = self.mock_connection_manager.broadcast_room_event.call_args
+
+            # Check event type and room ID
+            assert call_args[0][0] == "player_left"
+            assert call_args[0][1] == self.test_room_id
+            assert call_args[0][2] == event_message["data"]
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_game_tick(self):
+        """Test handling of game_tick event message."""
+        # Mock connection manager methods directly
+        with patch(
+            "server.realtime.nats_message_handler.connection_manager.broadcast_global_event",
+            self.mock_connection_manager.broadcast_global_event,
+        ):
+            # Create test event message
+            event_message = {
+                "event_type": "game_tick",
+                "data": {
+                    "tick_number": 1,
+                    "server_time": "2024-01-01T12:00:00Z",
+                },
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was called
+            self.mock_connection_manager.broadcast_global_event.assert_called_once()
+            call_args = self.mock_connection_manager.broadcast_global_event.call_args
+
+            # Check event type and data
+            assert call_args[0][0] == "game_tick"
+            assert call_args[0][1] == event_message["data"]
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_unknown_event_type(self):
+        """Test handling of unknown event type."""
+        # Mock connection manager
+        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+            # Create test event message with unknown event type
+            event_message = {
+                "event_type": "unknown_event",
+                "data": {"test": "data"},
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was not called
+            self.mock_connection_manager.broadcast_room_event.assert_not_called()
+            self.mock_connection_manager.broadcast_global_event.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_missing_data(self):
+        """Test handling of event message with missing data."""
+        # Mock connection manager
+        with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
+            # Create test event message with missing data
+            event_message = {
+                "event_type": "player_entered",
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was not called
+            self.mock_connection_manager.broadcast_room_event.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_handle_event_message_exception(self):
+        """Test handling of exception in event message processing."""
+        # Mock connection manager to raise exception
+        self.mock_connection_manager.broadcast_room_event.side_effect = Exception("Broadcast error")
+
+        with patch(
+            "server.realtime.nats_message_handler.connection_manager.broadcast_room_event",
+            self.mock_connection_manager.broadcast_room_event,
+        ):
+            # Create test event message
+            event_message = {
+                "event_type": "player_entered",
+                "data": {
+                    "player_id": self.test_player_id,
+                    "room_id": self.test_room_id,
+                    "player_name": "TestPlayer",
+                    "room_name": "TestRoom",
+                },
+                "timestamp": "2024-01-01T12:00:00Z",
+                "sequence_number": 1,
+            }
+
+            # Call the method (should not raise exception)
+            await self.handler._handle_event_message(event_message)
+
+            # Verify connection manager was called
+            self.mock_connection_manager.broadcast_room_event.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_start_with_event_subscriptions(self):
+        """Test starting handler with event subscriptions enabled."""
+        # Mock successful subscription
+        self.mock_nats_service.subscribe.return_value = True
+
+        # Call the method with event subscriptions enabled
+        result = await self.handler.start(enable_event_subscriptions=True)
+
+        # Verify result
+        assert result is True
+
+        # Verify both chat and event subjects were subscribed to
+        call_args_list = self.mock_nats_service.subscribe.call_args_list
+        subscribed_subjects = [call[0][0] for call in call_args_list]
+
+        # Check chat subjects
+        assert "chat.say.*" in subscribed_subjects
+        assert "chat.global" in subscribed_subjects
+
+        # Check event subjects
+        assert "events.player_entered.*" in subscribed_subjects
+        assert "events.player_left.*" in subscribed_subjects
+        assert "events.game_tick" in subscribed_subjects
+
+    @pytest.mark.asyncio
+    async def test_start_without_event_subscriptions(self):
+        """Test starting handler without event subscriptions."""
+        # Mock successful subscription
+        self.mock_nats_service.subscribe.return_value = True
+
+        # Call the method without event subscriptions
+        result = await self.handler.start(enable_event_subscriptions=False)
+
+        # Verify result
+        assert result is True
+
+        # Verify only chat subjects were subscribed to
+        call_args_list = self.mock_nats_service.subscribe.call_args_list
+        subscribed_subjects = [call[0][0] for call in call_args_list]
+
+        # Check chat subjects
+        assert "chat.say.*" in subscribed_subjects
+        assert "chat.global" in subscribed_subjects
+
+        # Check event subjects are not present
+        assert "events.player_entered.*" not in subscribed_subjects
+        assert "events.player_left.*" not in subscribed_subjects
+        assert "events.game_tick" not in subscribed_subjects
+
+    @pytest.mark.asyncio
+    async def test_stop_with_event_subscriptions(self):
+        """Test stopping handler with event subscriptions."""
+        # Add some mock subscriptions
+        self.handler.subscriptions = {
+            "chat.say.*": True,
+            "chat.global": True,
+            "events.player_entered.*": True,
+            "events.player_left.*": True,
+            "events.game_tick": True,
+        }
+
+        # Mock successful unsubscription
+        self.mock_nats_service.unsubscribe.return_value = True
+
+        # Call the method
+        result = await self.handler.stop()
+
+        # Verify result
+        assert result is True
+
+        # Verify all subscriptions were unsubscribed from
+        assert self.mock_nats_service.unsubscribe.call_count == 5
+
+    def test_get_event_subscription_count(self):
+        """Test getting count of event subscriptions."""
+        # Add some mock subscriptions
+        self.handler.subscriptions = {
+            "chat.say.*": True,
+            "chat.global": True,
+            "events.player_entered.*": True,
+            "events.player_left.*": True,
+            "events.game_tick": True,
+        }
+
+        # Call the method
+        count = self.handler.get_event_subscription_count()
+
+        # Verify count
+        assert count == 3
+
+    def test_get_event_subscription_count_no_events(self):
+        """Test getting count when no event subscriptions exist."""
+        # Add only chat subscriptions
+        self.handler.subscriptions = {
+            "chat.say.*": True,
+            "chat.global": True,
+        }
+
+        # Call the method
+        count = self.handler.get_event_subscription_count()
+
+        # Verify count
+        assert count == 0
+
+    def test_is_event_subscription_active(self):
+        """Test checking if event subscription is active."""
+        # Add some mock subscriptions
+        self.handler.subscriptions = {
+            "events.player_entered.*": True,
+            "events.game_tick": True,
+        }
+
+        # Test active subscription
+        assert self.handler.is_event_subscription_active("events.player_entered.*") is True
+        assert self.handler.is_event_subscription_active("events.game_tick") is True
+
+        # Test inactive subscription
+        assert self.handler.is_event_subscription_active("events.player_left.*") is False
+        assert self.handler.is_event_subscription_active("chat.say.*") is False

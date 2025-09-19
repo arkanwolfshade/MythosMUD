@@ -439,6 +439,12 @@ class TestMovementService:
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
 
+        # Add missing exits attribute to room mocks
+        mock_from_room.exits = {"east": "room2"}
+        mock_to_room.exits = {"west": "room1"}
+        mock_from_room._players = set()
+        mock_to_room._players = set()
+
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
             service = MovementService()
 

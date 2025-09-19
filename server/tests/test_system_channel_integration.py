@@ -61,15 +61,25 @@ class TestSystemChannelIntegration:
 
         self.regular_player = MockPlayer(str(uuid.uuid4()), "RegularUser", 1, "arkham_1")
 
-        # Create chat service
-        self.chat_service = ChatService(
-            persistence=self.mock_persistence,
-            room_service=self.mock_room_service,
-            player_service=self.mock_player_service,
-        )
+        # Chat service will be created in individual test methods with mocked dependencies
 
         # Create command service
         self.command_service = CommandService()
+
+    def _create_chat_service_with_mocks(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
+        """Helper method to create ChatService with mocked dependencies."""
+        chat_service = ChatService(
+            persistence=self.mock_persistence,
+            room_service=self.mock_room_service,
+            player_service=self.mock_player_service,
+            user_manager_instance=mock_user_manager,
+        )
+
+        # Replace services with mocks
+        chat_service.nats_service = mock_nats_service
+        chat_service.rate_limiter = mock_rate_limiter
+
+        return chat_service
 
     def teardown_method(self):
         """Clean up test fixtures."""
@@ -82,6 +92,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_admin_success(self):
         """Test complete system command flow for admin user."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -95,7 +110,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command
@@ -127,6 +142,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_non_admin_denied(self):
         """Test system command flow for non-admin user."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.regular_player
         self.mock_user_manager.is_admin.return_value = False
@@ -136,7 +156,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command
@@ -162,6 +182,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_empty_message(self):
         """Test system command with empty message."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_user_manager.is_admin.return_value = True
@@ -171,7 +196,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command with empty message
@@ -197,6 +222,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_nats_failure(self):
         """Test system command when NATS publishing fails."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_user_manager.is_admin.return_value = True
@@ -207,7 +237,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command
@@ -233,6 +263,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_nats_not_connected(self):
         """Test system command when NATS is not connected."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_user_manager.is_admin.return_value = True
@@ -243,7 +278,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command
@@ -269,6 +304,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_message_structure(self):
         """Test that system messages have correct structure."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -279,7 +319,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command
@@ -327,6 +367,11 @@ class TestSystemChannelIntegration:
     @pytest.mark.asyncio
     async def test_system_command_integration_rate_limiting(self):
         """Test that system commands respect rate limiting."""
+        # Create chat service with mocked user manager
+        chat_service = self._create_chat_service_with_mocks(
+            self.mock_user_manager, self.mock_rate_limiter, self.mock_nats_service
+        )
+
         # Setup mocks
         self.mock_player_service.resolve_player_name.return_value = self.admin_player
         self.mock_user_manager.is_admin.return_value = True
@@ -337,7 +382,7 @@ class TestSystemChannelIntegration:
         mock_request.app = Mock()
         mock_request.app.state = Mock()
         mock_request.app.state.player_service = self.mock_player_service
-        mock_request.app.state.chat_service = self.chat_service
+        mock_request.app.state.chat_service = chat_service
         mock_request.app.state.user_manager = self.mock_user_manager
 
         # Test system command

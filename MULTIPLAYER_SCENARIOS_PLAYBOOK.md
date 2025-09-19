@@ -5,6 +5,7 @@
 **🚨 STOP! READ THIS FIRST! 🚨**
 
 **MANDATORY EXECUTION ORDER - NO EXCEPTIONS:**
+
 1. **FIRST**: Complete ALL database verification steps (Step 2)
 2. **SECOND**: Start the server (Step 3)
 3. **THIRD**: Execute scenarios in order
@@ -12,12 +13,14 @@
 **⚠️ VIOLATING THIS ORDER = COMPLETE FAILURE**
 
 **MANDATORY LLM REQUIREMENT:**
+
 - **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
 - **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
 - **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
 - **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
 
 **CURSOR AI CONFIGURATION:**
+
 - Set Cursor to use GPT-4 for this session
 - Ensure model selection is set to "GPT-4" or "GPT-4 Turbo"
 - Verify model capabilities include advanced instruction following and complex reasoning
@@ -27,6 +30,7 @@
 **MANDATORY EXECUTION PROTOCOL - NO EXCEPTIONS:**
 
 **BEFORE YOU DO ANYTHING ELSE:**
+
 1. **MANDATORY DATABASE VERIFICATION**: You MUST verify the starting room configuration BEFORE starting the server
 2. **MANDATORY PREREQUISITE CHECKS**: You MUST complete ALL pre-execution steps before ANY scenario
 3. **ZERO TOLERANCE FOR SKIPPING**: Execute EVERY step in EVERY scenario EXACTLY as written
@@ -36,6 +40,7 @@
 7. **EXECUTE EVEN IF WRONG**: If you think a step is wrong, execute it anyway and document the result
 
 **VIOLATION CONSEQUENCES:**
+
 - Skipping database verification = COMPLETE FAILURE
 - Starting server without prerequisites = COMPLETE FAILURE
 - Modifying any command = COMPLETE FAILURE
@@ -70,6 +75,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 ## Cursor Execution Rules (Low-Performance Optimized)
 
 ### CRITICAL SERVER RULE - READ THIS FIRST
+
 **ONE SERVER ONLY**: There can only be ONE server running at any time.
 **STOP FIRST**: Before starting a server, ALWAYS run `./scripts/stop_server.ps1`
 **NO BACKGROUND**: Never use `is_background: true` for server startup
@@ -79,6 +85,7 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 ### CRITICAL: FOLLOW INSTRUCTIONS EXACTLY AS WRITTEN
 
 **⚠️ CRITICAL MANDATORY RULE - NO EXCEPTIONS**:
+
 - Execute EVERY step in EVERY scenario EXACTLY as written
 - Do NOT skip, modify, or assume any step is optional
 - Do NOT interpret or "help" by changing commands
@@ -88,15 +95,18 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - Your job is to execute, not to interpret or improve
 
 ### MANDATORY PRE-EXECUTION CHECKLIST
+
 **YOU MUST COMPLETE EVERY ITEM BEFORE STARTING ANY SCENARIO:**
 
 **DATABASE VERIFICATION (MANDATORY):**
+
 - [ ] I have verified both test players exist in the database
 - [ ] I have confirmed both players are in room `earth_arkham_city_sanitarium_room_foyer_001`
 - [ ] I have confirmed ArkanWolfshade has admin privileges (is_admin = 1)
 - [ ] I have run the SQL commands to update player locations if needed
 
 **INSTRUCTION COMPLIANCE (MANDATORY):**
+
 - [ ] I have read the MANDATORY EXECUTION PROTOCOL above
 - [ ] I understand that skipping database verification = COMPLETE FAILURE
 - [ ] I will execute every step exactly as written
@@ -105,11 +115,13 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - [ ] I will document actual results, not expected results
 
 **EXECUTION AFFIRMATION (MANDATORY):**
+
 - [ ] I affirm that I will follow the database verification steps BEFORE starting the server
 - [ ] I affirm that I will NOT start any scenario without completing ALL prerequisites
 - [ ] I understand that any deviation from these instructions constitutes complete failure
 
 ### NO INTERPRETATION RULE
+
 - If a command says "say Hello" - type exactly "say Hello"
 - If a command says "mute Ithaqua" - type exactly "mute Ithaqua"
 - If a step seems to test something obvious - execute it anyway
@@ -117,7 +129,9 @@ This playbook contains detailed scenarios for testing multiplayer functionality 
 - Your job is to execute, not to interpret or improve
 
 ### STOP AND ASK RULE
+
 If you find yourself:
+
 - Thinking "this step seems unnecessary"
 - Wanting to "help" by changing a command
 - Making assumptions about what should happen
@@ -126,7 +140,9 @@ If you find yourself:
 STOP. Ask the user: "Should I continue with the exact steps as written, or do you want me to modify this approach?"
 
 ### RESULT DOCUMENTATION REQUIREMENTS
+
 After each step, document:
+
 - What command was executed (exactly)
 - What response was received (exactly)
 - Whether it matched the expected result (yes/no)
@@ -149,7 +165,9 @@ After each step, document:
 - **Wait Times**: All scenarios use extended timeouts (15-30 seconds) for low-performance machines
 
 ### PRE-COMMAND CHECKLIST
+
 Before running ANY server command, ask yourself:
+
 - Did I already start a server in this session? (YES = STOP, don't start another)
 - Am I about to use `is_background: true`? (YES = STOP, use false instead)
 - Did I run `stop_server.ps1` first? (NO = STOP, run it first)
@@ -495,6 +513,7 @@ if (!hasIthaquaLeft) {
 ### Low-Performance Machine Considerations
 
 **Extended Timeouts Applied**:
+
 - Login form wait: 30 seconds (was default)
 - MOTD screen wait: 30 seconds (was default)
 - Game interface load: 30 seconds (was default)
@@ -503,6 +522,7 @@ if (!hasIthaquaLeft) {
 - Page load: 10 second buffer after navigation
 
 **Performance Notes**:
+
 - All browser operations include buffer time for slow machines
 - Tab switching includes explicit wait times
 - Message verification uses extended timeouts
@@ -776,6 +796,7 @@ await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua"});
 **VALIDATION**: Did you type "mute Ithaqua" exactly? Did you wait for "You have muted Ithaqua" exactly?
 
 **RESULT DOCUMENTATION**:
+
 - Command executed: "mute Ithaqua"
 - Response received: [document actual response]
 - Expected result: "You have muted Ithaqua"
@@ -800,6 +821,7 @@ await mcp_playwright_browser_wait_for({text: "You dance like nobody's watching"}
 **VALIDATION**: Did you type "dance" exactly? Did you wait for "You dance like nobody's watching" exactly?
 
 **RESULT DOCUMENTATION**:
+
 - Command executed: "dance"
 - Response received: [document actual response]
 - Expected result: "You dance like nobody's watching"
@@ -2774,9 +2796,6 @@ Get-Content logs/development/server.log -Tail 50
 #### Check Database State
 
 ```powershell
-# Open SQLite database
-sqlite3 data/players/players.db
-
 # Check player state
 SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 ```
@@ -2854,6 +2873,7 @@ The multiplayer implementation represents a successful bridge between the event-
 ### Why This Matters
 
 The AI executor must follow exact steps to:
+
 - Test the actual behavior of the system
 - Identify bugs and issues
 - Provide accurate documentation
