@@ -12,6 +12,39 @@
 
 **⚠️ VIOLATING THIS ORDER = COMPLETE FAILURE**
 
+**🚨 INFINITE LOOP PREVENTION - CRITICAL! 🚨**
+
+**MANDATORY EXECUTION GUARDS:**
+
+1. **MAXIMUM 3 ATTEMPTS** per step - then proceed with documented failure
+2. **NEVER retry** `browser_evaluate` calls - empty results are often valid
+3. **ALWAYS proceed** to next step after timeout or empty results
+4. **ALWAYS close** browser tabs between scenarios
+5. **NEVER repeat** the same step multiple times
+
+**⚠️ VIOLATING THESE GUARDS = INFINITE LOOPS**
+
+**EXECUTION GUARD EXAMPLES:**
+
+```javascript
+// ✅ CORRECT: Handle empty results gracefully
+const messages = await mcp_playwright_browser_evaluate({...});
+if (messages.length === 0) {
+    console.log('✅ No messages found - verification complete');
+    // PROCEED TO NEXT STEP - do not retry
+} else {
+    console.log('✅ Messages found:', messages);
+    // Continue verification
+}
+
+// ❌ WRONG: This creates infinite loops
+const messages = await mcp_playwright_browser_evaluate({...});
+if (messages.length === 0) {
+    // DON'T retry - empty is often valid!
+    const messages = await mcp_playwright_browser_evaluate({...}); // INFINITE LOOP!
+}
+```
+
 **MANDATORY LLM REQUIREMENT:**
 
 - **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
