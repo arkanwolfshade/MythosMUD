@@ -113,12 +113,20 @@ async def lifespan(app: FastAPI):
     # Initialize chat service and add to app.state (after NATS initialization)
     from ..game.chat_service import ChatService
 
-    # Initialize chat service with required dependencies
+    # Initialize chat service with required dependencies using proper dependency injection
     app.state.chat_service = ChatService(
         persistence=app.state.persistence,
         room_service=app.state.persistence,  # Persistence layer provides room service functionality
         player_service=app.state.player_service,
+        nats_service=app.state.nats_service,  # Pass the properly configured NATS service
     )
+
+    # Verify NATS service connection in chat service
+    if app.state.chat_service.nats_service and app.state.chat_service.nats_service.is_connected():
+        logger.info("Chat service NATS connection verified - NATS is connected and ready")
+    else:
+        logger.error("Chat service NATS connection failed - NATS is not connected")
+        raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
     logger.info("Chat service added to app.state")
     logger.info(f"app.state.chat_service: {app.state.chat_service}")

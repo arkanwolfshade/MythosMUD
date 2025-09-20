@@ -6,6 +6,12 @@ import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
 
+// Function to get font size class
+const getFontSizeClass = (): string => {
+  // This would typically come from theme context
+  return 'text-sm';
+};
+
 // Function to get activity color classes based on activity level
 const getActivityColor = (activityLevel: string): string => {
   switch (activityLevel) {

@@ -120,11 +120,16 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const eventQueue = useRef<GameEvent[]>([]);
   const processingTimeout = useRef<number | null>(null);
   const currentMessagesRef = useRef<ChatMessage[]>([]);
+  const currentRoomRef = useRef<Room | null>(null);
 
-  // Keep the ref in sync with the state
+  // Keep the refs in sync with the state
   useEffect(() => {
     currentMessagesRef.current = gameState.messages;
   }, [gameState.messages]);
+
+  useEffect(() => {
+    currentRoomRef.current = gameState.room;
+  }, [gameState.room]);
 
   // Track the last room update timestamp to prevent stale data overwrites
   const lastRoomUpdateTime = useRef<number>(0);
@@ -546,7 +551,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               });
 
               // Always validate the room data to prevent stale overwrites
-              const currentRoom = gameState.room;
+              const currentRoom = currentRoomRef.current;
               if (currentRoom) {
                 const roomDataValidation = validateRoomDataForOccupants(currentRoom, event);
                 if (roomDataValidation.isValid) {
@@ -585,6 +590,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 countType: typeof occupantCount,
               });
             }
+            break;
+          }
+          case 'heartbeat': {
+            // Heartbeat events are used for connection health monitoring
+            // No action needed, just acknowledge receipt
+            logger.debug('GameTerminalWithPanels', 'Received heartbeat event');
+            break;
+          }
+          case 'pong': {
+            // Pong events are responses to ping messages
+            // No action needed, just acknowledge receipt
+            logger.debug('GameTerminalWithPanels', 'Received pong event');
             break;
           }
           default: {
@@ -631,7 +648,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         processingTimeout.current = window.setTimeout(processEventQueue, 10);
       }
     }
-  }, [gameState.room, validateRoomDataForOccupants]);
+  }, [validateRoomDataForOccupants]);
 
   // Memoize the game event handler to prevent infinite re-renders
   const handleGameEvent = useCallback(

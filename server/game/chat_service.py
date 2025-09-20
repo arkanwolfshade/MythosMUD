@@ -11,9 +11,10 @@ from typing import Any
 
 from ..logging_config import get_logger
 from ..services.chat_logger import chat_logger
-from ..services.nats_service import nats_service
 from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
+
+# NATS service import moved to constructor to avoid circular dependency issues
 
 logger = get_logger("communications.chat_service")
 
@@ -87,7 +88,7 @@ class ChatService:
     all chat functionality - no fallback to WebSocket broadcasting is provided.
     """
 
-    def __init__(self, persistence, room_service, player_service, user_manager_instance=None):
+    def __init__(self, persistence, room_service, player_service, nats_service=None, user_manager_instance=None):
         """
         Initialize chat service.
 
@@ -95,6 +96,7 @@ class ChatService:
             persistence: Database persistence layer
             room_service: Room management service
             player_service: Player management service
+            nats_service: NATS service instance (optional, defaults to global instance)
             user_manager_instance: Optional user manager instance (defaults to global instance)
         """
         self.persistence = persistence
@@ -110,8 +112,10 @@ class ChatService:
         # Last whisper tracking for reply functionality
         self._last_whisper_senders: dict[str, str] = {}  # player_name -> last_sender_name
 
-        # NATS service for real-time messaging
-        self.nats_service = nats_service
+        # NATS service for real-time messaging (use provided instance or fall back to global)
+        from ..services.nats_service import nats_service as global_nats_service
+
+        self.nats_service = nats_service or global_nats_service
 
         # Chat logger for AI processing and log shipping
         self.chat_logger = chat_logger
@@ -238,6 +242,13 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
+        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service object: {self.nats_service} ===")
+        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service type: {type(self.nats_service)} ===")
+        if self.nats_service:
+            logger.debug(f"=== CHAT SERVICE DEBUG: NATS service is_connected(): {self.nats_service.is_connected()} ===")
+        else:
+            logger.error("=== CHAT SERVICE DEBUG: NATS service is None ===")
+
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
             # NATS publishing failed - this should not happen as NATS is mandatory

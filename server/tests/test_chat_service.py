@@ -81,14 +81,18 @@ class TestChatService:
         self.mock_rate_limiter = Mock()
         self.mock_user_manager = Mock()
 
-        # Create the service instance
-        self.chat_service = ChatService(self.mock_persistence, self.mock_room_service, self.mock_player_service)
+        # Create the service instance with proper dependency injection
+        self.chat_service = ChatService(
+            self.mock_persistence,
+            self.mock_room_service,
+            self.mock_player_service,
+            nats_service=self.mock_nats_service,
+            user_manager_instance=self.mock_user_manager,
+        )
 
-        # Replace service dependencies with mocks
-        self.chat_service.nats_service = self.mock_nats_service
+        # Replace remaining service dependencies with mocks
         self.chat_service.chat_logger = self.mock_chat_logger
         self.chat_service.rate_limiter = self.mock_rate_limiter
-        self.chat_service.user_manager = self.mock_user_manager
 
         # Create a mock player for testing
         self.mock_player = Mock()
