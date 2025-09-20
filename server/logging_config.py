@@ -141,6 +141,7 @@ def configure_structlog(
     environment: str | None = None,
     log_level: str = "INFO",
     log_config: dict[str, Any] | None = None,
+    player_service: Any = None,
 ) -> None:
     """
     Configure Structlog based on environment.
@@ -173,7 +174,7 @@ def configure_structlog(
 
     # Configure standard library logging for file output
     if log_config and not log_config.get("disable_logging", False):
-        _setup_file_logging(environment, log_config, log_level)
+        _setup_file_logging(environment, log_config, log_level, player_service)
 
     structlog.configure(
         processors=processors,
@@ -191,6 +192,7 @@ def _setup_file_logging(
     environment: str,
     log_config: dict[str, Any],
     log_level: str,
+    player_service: Any = None,
 ) -> None:
     """Set up file logging handlers for different log categories."""
     from logging.handlers import RotatingFileHandler
@@ -250,11 +252,20 @@ def _setup_file_logging(
         )
         handler.setLevel(logging.DEBUG)
 
-        # Create formatter
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
+        # Create formatter - use PlayerGuidFormatter if player_service is available
+        if player_service is not None:
+            from .logging.player_guid_formatter import PlayerGuidFormatter
+
+            formatter = PlayerGuidFormatter(
+                player_service=player_service,
+                fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
+        else:
+            formatter = logging.Formatter(
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
         handler.setFormatter(formatter)
 
         # Add handler to loggers that match the prefixes
@@ -275,7 +286,22 @@ def _setup_file_logging(
         encoding="utf-8",
     )
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-    console_handler.setFormatter(formatter)
+
+    # Use the same formatter logic for console handler
+    if player_service is not None:
+        from .logging.player_guid_formatter import PlayerGuidFormatter
+
+        console_formatter = PlayerGuidFormatter(
+            player_service=player_service,
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    else:
+        console_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    console_handler.setFormatter(console_formatter)
 
     # Add console handler to root logger to capture all output
     root_logger.addHandler(console_handler)
@@ -289,7 +315,22 @@ def _setup_file_logging(
         encoding="utf-8",
     )
     errors_handler.setLevel(logging.WARNING)
-    errors_handler.setFormatter(formatter)
+
+    # Use the same formatter logic for errors handler
+    if player_service is not None:
+        from .logging.player_guid_formatter import PlayerGuidFormatter
+
+        errors_formatter = PlayerGuidFormatter(
+            player_service=player_service,
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    else:
+        errors_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    errors_handler.setFormatter(errors_formatter)
     root_logger.addHandler(errors_handler)
 
     # Nothing else to do here; structlog is already configured in
@@ -317,12 +358,13 @@ def get_logger(name: str) -> BoundLogger:
     return structlog.get_logger(name)
 
 
-def setup_logging(config: dict[str, Any]) -> None:
+def setup_logging(config: dict[str, Any], player_service: Any = None) -> None:
     """
     Set up logging configuration based on server config.
 
     Args:
         config: Server configuration dictionary
+        player_service: Optional player service for GUID-to-name conversion
     """
     logging_config = config.get("logging", {})
     environment = logging_config.get("environment", detect_environment())
@@ -333,11 +375,11 @@ def setup_logging(config: dict[str, Any]) -> None:
 
     if disable_logging:
         # Configure minimal logging without file handlers
-        configure_structlog(environment, log_level, {"disable_logging": True})
+        configure_structlog(environment, log_level, {"disable_logging": True}, player_service)
         return
 
     # Configure Structlog
-    configure_structlog(environment, log_level, logging_config)
+    configure_structlog(environment, log_level, logging_config, player_service)
 
     # Configure uvicorn to use our StructLog system
     _configure_uvicorn_logging()
@@ -350,6 +392,54 @@ def setup_logging(config: dict[str, Any]) -> None:
         log_level=log_level,
         log_base=logging_config.get("log_base", "logs"),
     )
+
+
+def update_logging_with_player_service(player_service: Any) -> None:
+    """
+    Update existing logging handlers to use PlayerGuidFormatter.
+
+    This function should be called after the player service becomes available
+    to enhance existing log handlers with GUID-to-name conversion.
+
+    Args:
+        player_service: The player service for GUID-to-name conversion
+    """
+    from .logging.player_guid_formatter import PlayerGuidFormatter
+
+    # Create the enhanced formatter
+    enhanced_formatter = PlayerGuidFormatter(
+        player_service=player_service,
+        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    # Update all existing handlers with the enhanced formatter
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers:
+        if hasattr(handler, "setFormatter"):
+            handler.setFormatter(enhanced_formatter)
+
+    # Update handlers for specific log categories
+    log_categories = [
+        "server",
+        "persistence",
+        "authentication",
+        "world",
+        "communications",
+        "commands",
+        "errors",
+        "access",
+    ]
+
+    for category in log_categories:
+        logger = logging.getLogger(category)
+        for handler in logger.handlers:
+            if hasattr(handler, "setFormatter"):
+                handler.setFormatter(enhanced_formatter)
+
+    # Log that the enhancement has been applied
+    logger = get_logger("server.logging")
+    logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
 
 
 def _configure_uvicorn_logging() -> None:

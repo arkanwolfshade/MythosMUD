@@ -63,6 +63,12 @@ async def lifespan(app: FastAPI):
     logger.info(f"app.state.player_service: {app.state.player_service}")
     logger.info(f"app.state.user_manager: {app.state.user_manager}")
 
+    # Enhance logging system with PlayerGuidFormatter now that player service is available
+    from ..logging_config import update_logging_with_player_service
+
+    update_logging_with_player_service(app.state.player_service)
+    logger.info("Logging system enhanced with PlayerGuidFormatter")
+
     # Set the main event loop for the EventBus to handle async event handlers
     main_loop = asyncio.get_running_loop()
     app.state.event_handler.event_bus.set_main_loop(main_loop)

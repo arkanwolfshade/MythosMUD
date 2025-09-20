@@ -24,8 +24,8 @@ class TestConnectionManagerOccupantEvents:
     def mock_event_bus(self):
         """Create a mock event bus for testing."""
         event_bus = Mock()
-        event_bus.subscribe = AsyncMock()
-        event_bus.unsubscribe = AsyncMock()
+        event_bus.subscribe = Mock()
+        event_bus.unsubscribe = Mock()
         return event_bus
 
     @pytest.fixture

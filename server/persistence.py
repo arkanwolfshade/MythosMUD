@@ -326,7 +326,7 @@ class PersistenceLayer:
                         ),
                     )
                     conn.commit()
-                    self._log(f"Saved player {player.name} ({player.player_id})")
+                    self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
                 except sqlite3.IntegrityError as e:
                     log_and_raise(
@@ -503,7 +503,7 @@ class PersistenceLayer:
                 # First check if player exists
                 cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
                 if not cursor.fetchone():
-                    self._log(f"Delete attempted for non-existent player: {player_id}")
+                    self._log("Delete attempted for non-existent player")
                     return False
 
                 # Delete the player (foreign key constraints will handle related data)
@@ -511,11 +511,11 @@ class PersistenceLayer:
                 conn.commit()
 
                 if cursor.rowcount > 0:
-                    self._log(f"Successfully deleted player {player_id}")
+                    self._log("Successfully deleted player")
                     self._run_hooks("after_delete_player", player_id)
                     return True
                 else:
-                    self._log(f"No rows affected when deleting player {player_id}")
+                    self._log("No rows affected when deleting player")
                     return False
 
             except sqlite3.Error as e:
@@ -574,7 +574,8 @@ class PersistenceLayer:
             # Players should only be added to rooms when they actually connect to the game
             # But we should not clear all players - only remove those that are truly ghost players
             if memory_player_ids:
-                self._log(f"Room {room.id} has {len(memory_player_ids)} players in memory: {memory_player_ids}")
+                # Log player count without exposing GUIDs to prevent infinite loops with PlayerGuidFormatter
+                self._log(f"Room {room.id} has {len(memory_player_ids)} players in memory")
                 # Note: We don't clear the room's players here because they are added when players connect
                 # The room's _players set should only be modified when players actually enter/leave
 

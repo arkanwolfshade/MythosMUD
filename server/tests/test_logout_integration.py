@@ -2,7 +2,7 @@
 Integration tests for logout functionality.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 
@@ -33,7 +33,7 @@ class TestLogoutIntegration:
         mock_player = MagicMock()
         mock_player.name = "testplayer"
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-        mock_request.app.state.persistence.save_player = AsyncMock()
+        mock_request.app.state.persistence.save_player = Mock()
 
         # Mock the connection manager
         mock_connection_manager = MagicMock()
@@ -67,7 +67,7 @@ class TestLogoutIntegration:
         mock_player = MagicMock()
         mock_player.name = "testplayer"
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-        mock_request.app.state.persistence.save_player = AsyncMock()
+        mock_request.app.state.persistence.save_player = Mock()
 
         # Mock the connection manager
         mock_connection_manager = MagicMock()
@@ -95,7 +95,7 @@ class TestLogoutIntegration:
         mock_player = MagicMock()
         mock_player.name = "testplayer"
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-        mock_request.app.state.persistence.save_player = AsyncMock()
+        mock_request.app.state.persistence.save_player = Mock()
 
         # Mock the connection manager
         mock_connection_manager = MagicMock()
@@ -142,7 +142,7 @@ class TestLogoutIntegration:
         mock_player = MagicMock()
         mock_player.name = "testplayer"
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-        mock_request.app.state.persistence.save_player = AsyncMock()
+        mock_request.app.state.persistence.save_player = Mock()
 
         # Don't set connection manager (simulate it not being available)
         mock_request.app.state.connection_manager = None
@@ -165,7 +165,7 @@ class TestLogoutIntegration:
         mock_player = MagicMock()
         mock_player.name = "testplayer"
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-        mock_request.app.state.persistence.save_player = AsyncMock()
+        mock_request.app.state.persistence.save_player = Mock()
 
         # Mock the connection manager
         mock_connection_manager = MagicMock()
