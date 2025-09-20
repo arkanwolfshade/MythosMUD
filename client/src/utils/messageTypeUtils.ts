@@ -27,23 +27,23 @@ interface MessagePattern {
 const CHAT_PATTERNS: MessagePattern[] = [
   // Channel-specific chat messages with brackets
   {
-    pattern: /^\[([^\]]+)\]\s+\w+\s+(says|whispers|shouts|emotes|tells(?:\s+you)?):/i,
+    pattern: /^\[([^\]]+)\]\s+\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?):/i,
     type: 'chat',
     channelExtractor: /^\[([^\]]+)\]/i,
   },
   // Chat messages without brackets but with chat verbs
   {
-    pattern: /^\w+\s+(says|whispers|shouts|emotes|tells(?:\s+you)?):/i,
+    pattern: /^\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?):/i,
     type: 'chat',
   },
   // Direct chat patterns - this should catch most chat content
   {
-    pattern: /(says|whispers|shouts|emotes|tells(?:\s+you)?):/i,
+    pattern: /(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?):/i,
     type: 'chat',
   },
   // Chat patterns without colons (for edge cases)
   {
-    pattern: /^\w+\s+(says|whispers|shouts|emotes|tells(?:\s+you)?)(?:\s+|$)/i,
+    pattern: /^\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?)(?:\s+|$)/i,
     type: 'chat',
   },
 ];
@@ -82,9 +82,26 @@ export function determineMessageType(message: string): MessageTypeResult {
 
   const trimmedMessage = message.trim();
 
+  // Manual test of the specific pattern that should match
+  const testPattern = /^\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?):/i;
+  const manualTest = testPattern.test(trimmedMessage);
+  console.log(
+    `🧪 MANUAL TEST: Pattern /^\\w+\\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\\s+you)?):/i against "${trimmedMessage}" = ${manualTest}`
+  );
+
+  // Test individual parts
+  const wordMatch = /^\w+/.test(trimmedMessage);
+  const spaceMatch = /^\w+\s+/.test(trimmedMessage);
+  const sayMatch = /(say|says):/i.test(trimmedMessage);
+  console.log(`🧪 COMPONENT TESTS: word=${wordMatch}, space=${spaceMatch}, say=${sayMatch}`);
+
   // Check chat patterns first (highest priority)
   for (const pattern of CHAT_PATTERNS) {
-    if (pattern.pattern.test(trimmedMessage)) {
+    console.log(`🔍 Testing pattern: ${pattern.pattern} against message: "${trimmedMessage}"`);
+    const testResult = pattern.pattern.test(trimmedMessage);
+    console.log(`🔍 Pattern test result: ${testResult}`);
+    if (testResult) {
+      console.log(`✅ Pattern matched! Type: ${pattern.type}`);
       const channel = pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
 
       return {
@@ -124,7 +141,27 @@ export function extractChannelFromMessage(message: string): string {
     return channelMatch[1].toLowerCase().trim();
   }
 
-  // Default to local channel
+  // Intelligently determine channel based on message content
+  const trimmedMessage = message.trim();
+
+  // Check for specific chat verbs and map them to appropriate channels
+  if (/\b(say|says)\b/i.test(trimmedMessage)) {
+    return 'say';
+  }
+  if (/\b(whisper|whispers)\b/i.test(trimmedMessage)) {
+    return 'whisper';
+  }
+  if (/\b(shout|shouts)\b/i.test(trimmedMessage)) {
+    return 'global';
+  }
+  if (/\b(emote|emotes)\b/i.test(trimmedMessage)) {
+    return 'say'; // Emotes are typically local to the room
+  }
+  if (/\b(tell|tells)\b/i.test(trimmedMessage)) {
+    return 'whisper'; // Tell is typically a whisper
+  }
+
+  // Default to local channel for other messages
   return 'local';
 }
 
