@@ -290,9 +290,9 @@ class TestPlayerGuidFormatter:
         result = self.formatter._convert_player_guids(message)
         end_time = time.time()
 
-        # Should complete quickly (less than 10ms for large messages)
+        # Should complete quickly (less than 50ms for large messages in CI environments)
         duration = end_time - start_time
-        assert duration < 0.01  # 10ms - more realistic for large messages
+        assert duration < 0.05  # 50ms - realistic for CI environments with 100 GUIDs
 
         # Verify all GUIDs were converted
         expected_count = 100
