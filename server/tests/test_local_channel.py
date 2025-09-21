@@ -121,7 +121,7 @@ class TestLocalChannelService:
     ):
         """Create a ChatService instance with mocked dependencies."""
         with (
-            patch("server.game.chat_service.nats_service", mock_nats_service),
+            patch("server.services.nats_service.nats_service", mock_nats_service),
             patch("server.game.chat_service.chat_logger", mock_chat_logger),
             patch("server.game.chat_service.rate_limiter", mock_rate_limiter),
             patch("server.game.chat_service.user_manager", mock_user_manager),
@@ -443,7 +443,7 @@ class TestLocalChannelIntegration:
     ):
         """Create a ChatService instance with mocked dependencies."""
         with (
-            patch("server.game.chat_service.nats_service", mock_nats_service),
+            patch("server.services.nats_service.nats_service", mock_nats_service),
             patch("server.game.chat_service.chat_logger", mock_chat_logger),
             patch("server.game.chat_service.rate_limiter", mock_rate_limiter),
             patch("server.game.chat_service.user_manager", mock_user_manager),
