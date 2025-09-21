@@ -53,52 +53,35 @@ if (Test-Path $natsManagerPath) {
         Write-Host "====================" -ForegroundColor Yellow
         Write-Host ""
 
-        # Check NATS server executable
-        $natsExePath = $null
-        $possiblePaths = @(
-            "C:\Users\$env:USERNAME\AppData\Local\Microsoft\WinGet\Packages\NATSAuthors.NATSServer_Microsoft.Winget.Source_8wekyb3d8bbwe\nats-server-v2.10.25-windows-amd64\nats-server.exe",
-            "C:\nats-server\nats-server.exe",
-            "E:\nats-server\nats-server.exe",
-            "nats-server"
-        )
-
-        foreach ($path in $possiblePaths) {
-            if ($path -eq "nats-server") {
-                try {
-                    $null = Get-Command $path -ErrorAction Stop
-                    $natsExePath = $path
-                    break
-                } catch {
-                    continue
-                }
-            } elseif (Test-Path $path) {
-                $natsExePath = $path
-                break
-            }
-        }
+        # Check NATS server executable using the new function
+        $natsExePath = Get-NatsServerPath
 
         if ($natsExePath) {
             try {
                 $version = & $natsExePath --version 2>$null
                 Write-Host "NATS Server Version: $version" -ForegroundColor Green
                 Write-Host "NATS Server Path: $natsExePath" -ForegroundColor Green
-            } catch {
+            }
+            catch {
                 Write-Host "NATS Server Version: Found but version check failed" -ForegroundColor Yellow
             }
-        } else {
+        }
+        else {
             Write-Host "NATS Server Version: Not installed" -ForegroundColor Red
         }
 
         # Check configuration file
         if ($natsExePath -and $natsExePath -ne "nats-server") {
             $natsConfigPath = Join-Path (Split-Path $natsExePath -Parent) "nats-server.conf"
-        } else {
+        }
+        else {
             $natsConfigPath = "nats-server.conf"
         }
 
         if (Test-Path $natsConfigPath) {
             Write-Host "Configuration File: $natsConfigPath" -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "Configuration File: Not found (using defaults)" -ForegroundColor Yellow
         }
 
@@ -130,7 +113,8 @@ if (Test-Path $natsManagerPath) {
             foreach ($process in $natsProcesses) {
                 Write-Host "Process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Green
             }
-        } else {
+        }
+        else {
             Write-Host "No NATS processes found" -ForegroundColor Yellow
         }
     }
@@ -141,15 +125,19 @@ if (Test-Path $natsManagerPath) {
 
     if ($status.Installed -and $status.Running -and $status.ClientPortOpen) {
         Write-Host "✅ NATS server is ready for MythosMUD" -ForegroundColor Green
-    } elseif ($status.Installed -and $status.Running) {
+    }
+    elseif ($status.Installed -and $status.Running) {
         Write-Host "⚠️  NATS server is running but ports may be blocked" -ForegroundColor Yellow
-    } elseif ($status.Installed) {
+    }
+    elseif ($status.Installed) {
         Write-Host "⚠️  NATS server is installed but not running" -ForegroundColor Yellow
-    } else {
+    }
+    else {
         Write-Host "❌ NATS server is not installed" -ForegroundColor Red
     }
 
-} else {
+}
+else {
     Write-Host "NATS management functions not found at: $natsManagerPath" -ForegroundColor Red
     Write-Host "Please ensure the nats_manager.ps1 file exists in the scripts directory." -ForegroundColor Yellow
 }

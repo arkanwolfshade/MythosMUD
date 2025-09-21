@@ -54,6 +54,49 @@ $NatsPort = 4222
 $NatsHttpPort = 8222
 $NatsLogPath = Join-Path $PSScriptRoot "..\logs\development\nats\nats-server.log"
 
+# Function to get NATS server path with environment variable support
+function Get-NatsServerPath {
+    [CmdletBinding()]
+    param()
+
+    # Check if NATS_SERVER_PATH environment variable is set
+    if (-not $env:NATS_SERVER_PATH) {
+        Write-Error "NATS_SERVER_PATH environment variable is not set. Please set this variable to the path of your NATS server executable."
+        return $null
+    }
+
+    $envPath = $env:NATS_SERVER_PATH.Trim()
+
+    # Check for empty environment variable
+    if ($envPath -eq "") {
+        Write-Error "NATS_SERVER_PATH environment variable is set but empty. Please set this variable to the path of your NATS server executable."
+        return $null
+    }
+
+    # Check if the path exists
+    if (-not (Test-Path $envPath)) {
+        Write-Error "NATS_SERVER_PATH points to non-existent file: $envPath. Please verify the path is correct."
+        return $null
+    }
+
+    # Validate that it's actually a NATS server
+    try {
+        $versionOutput = & $envPath --version 2>$null
+        if ($versionOutput -like "*nats-server*") {
+            Write-Verbose "Using NATS server from environment variable: $envPath"
+            return $envPath
+        }
+        else {
+            Write-Error "NATS_SERVER_PATH points to invalid executable (not a NATS server): $envPath. Version output: $versionOutput"
+            return $null
+        }
+    }
+    catch {
+        Write-Error "NATS_SERVER_PATH points to invalid executable (cannot execute --version): $envPath. Error: $($_.Exception.Message)"
+        return $null
+    }
+}
+
 # Function to ensure NATS log directory exists
 function Ensure-NatsLogDirectory {
     [CmdletBinding()]
@@ -73,36 +116,17 @@ function Test-NatsServerInstalled {
     [CmdletBinding()]
     param()
 
-    # Re-detect NATS server path
-    $detectedPath = $null
-    foreach ($path in $PossiblePaths) {
-        if ($path -eq "nats-server") {
-            # Check if it's in PATH
-            try {
-                $null = Get-Command $path -ErrorAction Stop
-                $detectedPath = $path
-                break
-            }
-            catch {
-                continue
-            }
-        }
-        elseif (Test-Path $path) {
-            $detectedPath = $path
-            break
-        }
-    }
+    # Use the new path detection function
+    $detectedPath = Get-NatsServerPath
 
+    # Check if the path detection was successful
     if ($detectedPath) {
         Write-Host "NATS server found at: $detectedPath" -ForegroundColor Green
         return $true
     }
     else {
-        Write-Host "NATS server not found in any of the expected locations:" -ForegroundColor Red
-        foreach ($path in $PossiblePaths) {
-            Write-Host "  - $path" -ForegroundColor Yellow
-        }
-        Write-Host "Please install NATS server using: winget install NATSAuthors.NATSServer" -ForegroundColor Yellow
+        Write-Host "NATS server not found or not properly configured" -ForegroundColor Red
+        Write-Host "Please set NATS_SERVER_PATH environment variable to the path of your NATS server executable" -ForegroundColor Yellow
         return $false
     }
 }
@@ -156,24 +180,8 @@ function Start-NatsServer {
     Ensure-NatsLogDirectory | Out-Null
 
     try {
-        # Get the actual NATS server path
-        $actualNatsPath = $null
-        foreach ($path in $PossiblePaths) {
-            if ($path -eq "nats-server") {
-                try {
-                    $null = Get-Command $path -ErrorAction Stop
-                    $actualNatsPath = $path
-                    break
-                }
-                catch {
-                    continue
-                }
-            }
-            elseif (Test-Path $path) {
-                $actualNatsPath = $path
-                break
-            }
-        }
+        # Get the actual NATS server path using the new function
+        $actualNatsPath = Get-NatsServerPath
 
         if (-not $actualNatsPath) {
             Write-Host "NATS server executable not found" -ForegroundColor Red
