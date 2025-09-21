@@ -1,0 +1,191 @@
+"""
+Test RealTimeEventHandler broadcasting functionality.
+
+This test suite verifies that the RealTimeEventHandler properly broadcasts
+player_entered and player_left messages to room occupants.
+"""
+
+import asyncio
+from unittest.mock import AsyncMock, Mock
+
+import pytest
+
+from server.events import EventBus
+from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+from server.realtime.event_handler import RealTimeEventHandler
+
+
+class TestEventHandlerBroadcasting:
+    """Test RealTimeEventHandler broadcasting functionality."""
+
+    @pytest.fixture
+    def event_bus(self):
+        """Create an EventBus with proper event loop setup."""
+        bus = EventBus()
+        # Set up a mock event loop for testing
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        bus.set_main_loop(loop)
+        return bus
+
+    @pytest.fixture
+    def mock_connection_manager(self):
+        """Create a mock connection manager."""
+        cm = AsyncMock()
+        cm._get_player = Mock()
+        cm.persistence = Mock()
+        cm.broadcast_to_room = AsyncMock()
+        cm.subscribe_to_room = AsyncMock()
+        cm.unsubscribe_from_room = AsyncMock()
+        cm.send_personal_message = AsyncMock()
+        return cm
+
+    @pytest.fixture
+    def event_handler(self, event_bus, mock_connection_manager):
+        """Create a RealTimeEventHandler with mocked dependencies."""
+        handler = RealTimeEventHandler(event_bus)
+        handler.connection_manager = mock_connection_manager
+        return handler
+
+    @pytest.mark.asyncio
+    async def test_player_entered_event_broadcasting(self, event_bus, event_handler, mock_connection_manager):
+        """Test that PlayerEnteredRoom events are properly broadcast."""
+        # Setup mock player
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        # Setup mock room
+        mock_room = Mock()
+        mock_room.name = "Test Room"
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Create and publish event
+        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+
+        # Publish the event
+        event_bus.publish(event)
+
+        # Wait for async processing
+        await asyncio.sleep(0.2)
+
+        # Verify that broadcast_to_room was called
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+        # Get the call arguments
+        call_args = mock_connection_manager.broadcast_to_room.call_args
+        _room_id, message, exclude_player = call_args[0][0], call_args[0][1], call_args[1].get("exclude_player")
+
+        # Verify the message structure
+        assert message["event_type"] == "player_entered"
+        assert message["data"]["player_name"] == "TestPlayer"
+        assert message["data"]["message"] == "TestPlayer enters the room."
+        assert exclude_player == "test_player_123"
+
+    @pytest.mark.asyncio
+    async def test_player_left_event_broadcasting(self, event_bus, event_handler, mock_connection_manager):
+        """Test that PlayerLeftRoom events are properly broadcast."""
+        # Setup mock player
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        # Setup mock room
+        mock_room = Mock()
+        mock_room.name = "Test Room"
+        mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Create and publish event
+        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+
+        # Publish the event
+        event_bus.publish(event)
+
+        # Wait for async processing
+        await asyncio.sleep(0.2)
+
+        # Verify that broadcast_to_room was called
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+        # Get the call arguments
+        call_args = mock_connection_manager.broadcast_to_room.call_args
+        _room_id, message, exclude_player = call_args[0][0], call_args[0][1], call_args[1].get("exclude_player")
+
+        # Verify the message structure
+        assert message["event_type"] == "player_left"
+        assert message["data"]["player_name"] == "TestPlayer"
+        assert message["data"]["message"] == "TestPlayer leaves the room."
+        assert exclude_player == "test_player_123"
+
+    @pytest.mark.asyncio
+    async def test_event_handler_handles_missing_player_gracefully(
+        self, event_bus, event_handler, mock_connection_manager
+    ):
+        """Test that RealTimeEventHandler handles missing players gracefully."""
+        # Setup mock to return None for player lookup
+        mock_connection_manager._get_player.return_value = None
+
+        # Create and publish event
+        event = PlayerEnteredRoom(
+            timestamp=None, event_type="", player_id="nonexistent_player", room_id="test_room_001"
+        )
+
+        # Publish the event
+        event_bus.publish(event)
+
+        # Wait for async processing
+        await asyncio.sleep(0.2)
+
+        # Verify that broadcast_to_room was NOT called (since player not found)
+        mock_connection_manager.broadcast_to_room.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_event_handler_handles_missing_room_gracefully(
+        self, event_bus, event_handler, mock_connection_manager
+    ):
+        """Test that RealTimeEventHandler handles missing rooms gracefully."""
+        # Setup mock player
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        # Setup mock to return None for room lookup
+        mock_connection_manager.persistence.get_room.return_value = None
+
+        # Create and publish event
+        event = PlayerEnteredRoom(
+            timestamp=None, event_type="", player_id="test_player_123", room_id="nonexistent_room"
+        )
+
+        # Publish the event
+        event_bus.publish(event)
+
+        # Wait for async processing
+        await asyncio.sleep(0.2)
+
+        # Verify that broadcast_to_room was still called (with room_id as string)
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+    def test_message_creation_formats(self, event_handler):
+        """Test that message creation methods return properly formatted messages."""
+        # Test player entered message
+        entered_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        entered_message = event_handler._create_player_entered_message(entered_event, "TestPlayer")
+
+        assert entered_message["event_type"] == "player_entered"
+        assert entered_message["data"]["player_id"] == "test_player"
+        assert entered_message["data"]["player_name"] == "TestPlayer"
+        assert entered_message["data"]["message"] == "TestPlayer enters the room."
+        assert "timestamp" in entered_message
+        assert "sequence_number" in entered_message
+
+        # Test player left message
+        left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        left_message = event_handler._create_player_left_message(left_event, "TestPlayer")
+
+        assert left_message["event_type"] == "player_left"
+        assert left_message["data"]["player_id"] == "test_player"
+        assert left_message["data"]["player_name"] == "TestPlayer"
+        assert left_message["data"]["message"] == "TestPlayer leaves the room."
+        assert "timestamp" in left_message
+        assert "sequence_number" in left_message

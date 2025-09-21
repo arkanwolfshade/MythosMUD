@@ -36,6 +36,7 @@ dependencies = [
     "psutil>=6.0.0", # System and process utilities for memory monitoring
     "ftfy>=6.1.3", # Fixes "bad" Unicode input safely
     "strip-ansi>=0.1.1", # Removes ANSI escape codes
+    "playwright>=1.55.0",
 ]
 
 [project.optional-dependencies]

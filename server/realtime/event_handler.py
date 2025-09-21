@@ -15,6 +15,7 @@ from ..events import EventBus
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from ..logging_config import get_logger
 from ..services.chat_logger import chat_logger
+from ..services.room_sync_service import get_room_sync_service
 from .connection_manager import connection_manager
 
 
@@ -44,10 +45,13 @@ class RealTimeEventHandler:
         # Chat logger for AI processing
         self.chat_logger = chat_logger
 
+        # Room synchronization service for enhanced event processing
+        self.room_sync_service = get_room_sync_service()
+
         # Subscribe to relevant game events
         self._subscribe_to_events()
 
-        self._logger.info("RealTimeEventHandler initialized")
+        self._logger.info("RealTimeEventHandler initialized with enhanced room synchronization")
 
     def _subscribe_to_events(self):
         """Subscribe to relevant game events."""
@@ -63,43 +67,51 @@ class RealTimeEventHandler:
 
     async def _handle_player_entered(self, event: PlayerEnteredRoom):
         """
-        Handle player entering a room.
+        Handle player entering a room with enhanced synchronization.
 
         Args:
             event: The PlayerEnteredRoom event
         """
         try:
-            self._logger.debug(f"Handling player entered event: {event.player_id} -> {event.room_id}")
+            # Process event with proper ordering to prevent race conditions
+            processed_event = self.room_sync_service._process_event_with_ordering(event)
+
+            self._logger.debug(
+                f"Handling player entered event with synchronization: {processed_event.player_id} -> {processed_event.room_id}"
+            )
 
             # Get player information
-            player = self.connection_manager._get_player(event.player_id)
+            player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for entered event: {event.player_id}")
+                self._logger.warning(f"Player not found for entered event: {processed_event.player_id}")
                 return
 
-            player_name = getattr(player, "name", event.player_id)
+            player_name = getattr(player, "name", processed_event.player_id)
 
             # Log player movement for AI processing
             try:
                 room = (
-                    self.connection_manager.persistence.get_room(event.room_id)
+                    self.connection_manager.persistence.get_room(processed_event.room_id)
                     if self.connection_manager.persistence
                     else None
                 )
-                room_name = getattr(room, "name", event.room_id) if room else event.room_id
+                room_name = getattr(room, "name", processed_event.room_id) if room else processed_event.room_id
 
                 self.chat_logger.log_player_joined_room(
-                    player_id=event.player_id, player_name=player_name, room_id=event.room_id, room_name=room_name
+                    player_id=processed_event.player_id,
+                    player_name=player_name,
+                    room_id=processed_event.room_id,
+                    room_name=room_name,
                 )
             except Exception as e:
                 self._logger.error(f"Error logging player joined room: {e}")
 
-            # Create real-time message
-            message = self._create_player_entered_message(event, player_name)
+            # Create real-time message with processed event
+            message = self._create_player_entered_message(processed_event, player_name)
 
             # CRITICAL FIX: Ensure player_id is always a string for proper comparison
-            exclude_player_id = str(event.player_id) if event.player_id else None
-            room_id_str = str(event.room_id) if event.room_id else None
+            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
+            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
 
             self._logger.debug(
                 f"Broadcasting player_entered: exclude_player={exclude_player_id} (type: {type(exclude_player_id)})"
@@ -126,7 +138,7 @@ class RealTimeEventHandler:
                     elif isinstance(occ, str):
                         names.append(occ)
                 # Convert room_id to string for JSON serialization
-                room_id_str = str(event.room_id) if event.room_id else ""
+                room_id_str = str(processed_event.room_id) if processed_event.room_id else ""
 
                 personal = {
                     "event_type": "room_occupants",
@@ -139,53 +151,63 @@ class RealTimeEventHandler:
             except Exception as e:
                 self._logger.error(f"Error sending personal occupants update: {e}")
 
-            self._logger.info(f"Player {player_name} entered room {event.room_id}")
+            self._logger.info(
+                f"Player {player_name} entered room {processed_event.room_id} with enhanced synchronization"
+            )
 
         except Exception as e:
             self._logger.error(f"Error handling player entered event: {e}", exc_info=True)
 
     async def _handle_player_left(self, event: PlayerLeftRoom):
         """
-        Handle player leaving a room.
+        Handle player leaving a room with enhanced synchronization.
 
         Args:
             event: The PlayerLeftRoom event
         """
         try:
-            self._logger.debug(f"Handling player left event: {event.player_id} <- {event.room_id}")
+            # Process event with proper ordering to prevent race conditions
+            processed_event = self.room_sync_service._process_event_with_ordering(event)
+
+            self._logger.debug(
+                f"Handling player left event with synchronization: {processed_event.player_id} <- {processed_event.room_id}"
+            )
 
             # Get player information
-            player = self.connection_manager._get_player(event.player_id)
+            player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for left event: {event.player_id}")
+                self._logger.warning(f"Player not found for left event: {processed_event.player_id}")
                 return
 
-            player_name = getattr(player, "name", event.player_id)
+            player_name = getattr(player, "name", processed_event.player_id)
 
             # Log player movement for AI processing
             try:
                 room = (
-                    self.connection_manager.persistence.get_room(event.room_id)
+                    self.connection_manager.persistence.get_room(processed_event.room_id)
                     if self.connection_manager.persistence
                     else None
                 )
-                room_name = getattr(room, "name", event.room_id) if room else event.room_id
+                room_name = getattr(room, "name", processed_event.room_id) if room else processed_event.room_id
 
                 self.chat_logger.log_player_left_room(
-                    player_id=event.player_id, player_name=player_name, room_id=event.room_id, room_name=room_name
+                    player_id=processed_event.player_id,
+                    player_name=player_name,
+                    room_id=processed_event.room_id,
+                    room_name=room_name,
                 )
             except Exception as e:
                 self._logger.error(f"Error logging player left room: {e}")
 
-            # Create real-time message
-            message = self._create_player_left_message(event, player_name)
+            # Create real-time message with processed event
+            message = self._create_player_left_message(processed_event, player_name)
 
             # Unsubscribe player from the room
-            await self.connection_manager.unsubscribe_from_room(event.player_id, event.room_id)
+            await self.connection_manager.unsubscribe_from_room(processed_event.player_id, processed_event.room_id)
 
             # CRITICAL FIX: Ensure player_id is always a string for proper comparison
-            exclude_player_id = str(event.player_id) if event.player_id else None
-            room_id_str = str(event.room_id) if event.room_id else None
+            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
+            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
 
             self._logger.debug(
                 f"Broadcasting player_left: exclude_player={exclude_player_id} (type: {type(exclude_player_id)})"
@@ -197,7 +219,7 @@ class RealTimeEventHandler:
             # Send room occupants update to remaining players
             await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
-            self._logger.info(f"Player {player_name} left room {event.room_id}")
+            self._logger.info(f"Player {player_name} left room {processed_event.room_id} with enhanced synchronization")
 
         except Exception as e:
             self._logger.error(f"Error handling player left event: {e}", exc_info=True)

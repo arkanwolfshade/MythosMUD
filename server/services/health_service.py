@@ -258,11 +258,19 @@ class HealthService:
             self.health_check_count += 1
             self.last_health_check = datetime.now(UTC)
 
+            # Get version from project configuration
+            import importlib.metadata
+
+            try:
+                version = importlib.metadata.version("mythosmud")
+            except importlib.metadata.PackageNotFoundError:
+                version = "0.1.0"  # Fallback version
+
             return HealthResponse(
                 status=overall_status,
                 timestamp=datetime.now(UTC).isoformat(),
                 uptime_seconds=self.get_server_uptime(),
-                version="0.1.0",  # TODO: Get from config
+                version=version,
                 components=components,
                 alerts=alerts,
             )

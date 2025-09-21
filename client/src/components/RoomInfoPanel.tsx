@@ -23,13 +23,118 @@ interface RoomInfoPanelProps {
   };
 }
 
+/**
+ * Validates room data consistency and applies fixes for common issues.
+ * Based on findings from "Data Consistency in Non-Euclidean Spaces" - Dr. Armitage, 1928
+ */
+function validateAndFixRoomData(room: Room | null): Room | null {
+  if (!room) {
+    console.log('🔍 RoomInfoPanel: No room data to validate');
+    return null;
+  }
+
+  console.log('🔍 RoomInfoPanel: Validating room data', {
+    roomId: room.id,
+    roomName: room.name,
+    hasDescription: !!room.description,
+    hasZone: !!room.zone,
+    hasSubZone: !!room.sub_zone,
+    hasExits: !!room.exits,
+    hasOccupants: !!room.occupants,
+    occupantCount: room.occupant_count,
+  });
+
+  const validatedRoom: Room = { ...room };
+  let fixesApplied = 0;
+
+  // Fix missing or invalid description
+  if (!validatedRoom.description || validatedRoom.description.trim() === '') {
+    validatedRoom.description = 'No description available';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default description');
+  }
+
+  // Fix missing zone
+  if (!validatedRoom.zone) {
+    validatedRoom.zone = 'Unknown';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default zone');
+  }
+
+  // Fix missing sub_zone
+  if (!validatedRoom.sub_zone) {
+    validatedRoom.sub_zone = 'Unknown';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default sub_zone');
+  }
+
+  // Fix missing exits
+  if (!validatedRoom.exits) {
+    validatedRoom.exits = {};
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added empty exits object');
+  }
+
+  // Fix missing occupants array
+  if (!validatedRoom.occupants) {
+    validatedRoom.occupants = [];
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added empty occupants array');
+  }
+
+  // Validate occupant count consistency
+  if (validatedRoom.occupants && validatedRoom.occupant_count !== undefined) {
+    const actualCount = validatedRoom.occupants.length;
+    if (actualCount !== validatedRoom.occupant_count) {
+      console.warn('🔍 RoomInfoPanel: Occupant count mismatch detected', {
+        expected: validatedRoom.occupant_count,
+        actual: actualCount,
+        roomId: validatedRoom.id,
+        roomName: validatedRoom.name,
+      });
+
+      // Fix the count to match the actual occupants array
+      validatedRoom.occupant_count = actualCount;
+      fixesApplied++;
+      console.log('🔍 RoomInfoPanel: Applied fix - corrected occupant count to match occupants array');
+    }
+  }
+
+  // Validate room data structure
+  if (!validatedRoom.id || !validatedRoom.name) {
+    console.error('🔍 RoomInfoPanel: Critical room data missing', {
+      hasId: !!validatedRoom.id,
+      hasName: !!validatedRoom.name,
+    });
+    return null;
+  }
+
+  if (fixesApplied > 0) {
+    console.log('🔍 RoomInfoPanel: Room data validation completed', {
+      roomId: validatedRoom.id,
+      roomName: validatedRoom.name,
+      fixesApplied,
+    });
+  } else {
+    console.log('🔍 RoomInfoPanel: Room data is valid, no fixes needed', {
+      roomId: validatedRoom.id,
+      roomName: validatedRoom.name,
+    });
+  }
+
+  return validatedRoom;
+}
+
 export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   console.log('🔍 RoomInfoPanel render called with room:', room);
   console.log('🔍 RoomInfoPanel room type:', typeof room);
   console.log('🔍 RoomInfoPanel room keys:', room ? Object.keys(room) : []);
 
+  // Validate room data consistency and apply fixes
+  const validatedRoom = validateAndFixRoomData(room);
+
   // For development mode, show mock room data if no real room data is available
-  const displayRoom = room || {
+  const displayRoom = validatedRoom || {
     id: 'dev-room-1',
     name: 'Miskatonic University Library',
     description:

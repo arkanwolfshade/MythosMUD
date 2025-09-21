@@ -80,24 +80,45 @@ async function installRealtimeFakes(page: Page) {
 }
 
 async function loginWithMock(page: Page, username: string) {
-  // Mock login response
-  await page.route('**/api/auth/login', async route => {
+  // Mock login response with proper format
+  await page.route('**/auth/login', async route => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ access_token: 'test-token', user_id: `${username}-id` }),
+      body: JSON.stringify({
+        access_token: 'test-token',
+        has_character: true,
+        character_name: username,
+        refresh_token: 'test-refresh-token',
+      }),
+    });
+  });
+
+  // Mock MOTD response
+  await page.route('**/api/motd', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        title: 'Welcome to MythosMUD',
+        content: 'Welcome to the realm of eldritch knowledge...',
+      }),
     });
   });
 
   await page.goto('/');
   await expect(page.locator('h1')).toContainText('MythosMUD');
 
-  await page.getByLabel('Username:').fill(username);
-  await page.getByLabel('Password:').fill('irrelevant');
-  await page.getByRole('button', { name: 'Enter the MUD' }).click();
+  await page.getByPlaceholder('Username').fill(username);
+  await page.getByPlaceholder('Password').fill('irrelevant');
+  await page.getByRole('button', { name: 'Enter the Void' }).click();
+
+  // Wait for MOTD screen and click Continue
+  await page.waitForSelector('text=Continue', { timeout: 10000 });
+  await page.getByRole('button', { name: 'Continue' }).click();
 
   // Wait for the terminal view
-  await page.waitForSelector('.game-terminal');
+  await page.waitForSelector('[data-testid="game-terminal"]', { timeout: 10000 });
 }
 
 test.describe('Room occupants - two clients', () => {
@@ -107,8 +128,8 @@ test.describe('Room occupants - two clients', () => {
     const pageA = await contextA.newPage();
     await installRealtimeFakes(pageA);
     await loginWithMock(pageA, 'Alice');
-    // Click Connect to create SSE/WebSocket connections
-    await pageA.getByRole('button', { name: 'Connect to Game' }).click();
+
+    // Wait for connection to be established (handled automatically by useGameConnection)
     await pageA.waitForFunction(() => {
       const w = window as unknown as { __fakeSSEs?: unknown[] };
       return Array.isArray(w.__fakeSSEs) && w.__fakeSSEs.length > 0;
@@ -119,7 +140,8 @@ test.describe('Room occupants - two clients', () => {
     const pageB = await contextB.newPage();
     await installRealtimeFakes(pageB);
     await loginWithMock(pageB, 'Bob');
-    await pageB.getByRole('button', { name: 'Connect to Game' }).click();
+
+    // Wait for connection to be established (handled automatically by useGameConnection)
     await pageB.waitForFunction(() => {
       const w = window as unknown as { __fakeSSEs?: unknown[] };
       return Array.isArray(w.__fakeSSEs) && w.__fakeSSEs.length > 0;
@@ -135,58 +157,145 @@ test.describe('Room occupants - two clients', () => {
       exits: { north: '...', south: '...' },
     };
 
-    await pageA.evaluate(() => {
-      const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({
-        event_type: 'game_state',
-        data: { player: { name: 'Alice' }, room: {} as Record<string, never>, occupants: [] },
-      });
-    });
+    // Send initial game_state to both clients
     await pageA.evaluate(room => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'game_state', data: { player: { name: 'Alice' }, room, occupants: [] } });
+      const roomWithOccupants = {
+        ...room,
+        occupants: ['Alice'], // Only current player initially
+        occupant_count: 1,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { name: 'Alice' },
+          room: roomWithOccupants,
+        },
+      });
     }, baseRoom);
 
     await pageB.evaluate(room => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'game_state', data: { player: { name: 'Bob' }, room, occupants: [] } });
+      const roomWithOccupants = {
+        ...room,
+        occupants: ['Bob'], // Only current player initially
+        occupant_count: 1,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { name: 'Bob' },
+          room: roomWithOccupants,
+        },
+      });
     }, baseRoom);
 
-    // Now simulate room_occupants broadcasts
-    // Alice receives occupants [Bob]
-    await pageA.evaluate(() => {
+    // Now simulate both players being in the room
+    // Alice receives updated room with Bob present
+    await pageA.evaluate(room => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: ['Bob'], count: 1 } });
-    });
+      const roomWithBothOccupants = {
+        ...room,
+        occupants: ['Alice', 'Bob'], // Both players present
+        occupant_count: 2,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: {
+          player: { name: 'Alice' },
+          room: roomWithBothOccupants,
+        },
+      });
+    }, baseRoom);
 
-    // Bob receives occupants [Alice]
-    await pageB.evaluate(() => {
+    // Bob receives updated room with Alice present
+    await pageB.evaluate(room => {
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: ['Alice'], count: 1 } });
-    });
+      const roomWithBothOccupants = {
+        ...room,
+        occupants: ['Alice', 'Bob'], // Both players present
+        occupant_count: 2,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: {
+          player: { name: 'Bob' },
+          room: roomWithBothOccupants,
+        },
+      });
+    }, baseRoom);
 
-    // Verify RoomInfoPanel shows names and counts
+    // Wait for events to be processed
+    await pageA.waitForTimeout(500);
+    await pageB.waitForTimeout(500);
+
+    // Verify RoomInfoPanel shows names and counts for both players
+    await expect(pageA.locator('.room-occupants .occupant-count-badge')).toContainText('2');
+    await expect(pageA.locator('.room-occupants .occupant-name')).toHaveCount(2);
+    await expect(pageA.locator('.room-occupants .occupant-name').first()).toContainText('Alice');
+    await expect(pageA.locator('.room-occupants .occupant-name').nth(1)).toContainText('Bob');
+
+    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('2');
+    await expect(pageB.locator('.room-occupants .occupant-name')).toHaveCount(2);
+    await expect(pageB.locator('.room-occupants .occupant-name').first()).toContainText('Alice');
+    await expect(pageB.locator('.room-occupants .occupant-name').nth(1)).toContainText('Bob');
+
+    // Simulate Bob leaving: only Alice remains
+    await pageA.evaluate(room => {
+      const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
+      const roomWithOnlyAlice = {
+        ...room,
+        occupants: ['Alice'], // Only Alice remains
+        occupant_count: 1,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 3,
+        data: {
+          player: { name: 'Alice' },
+          room: roomWithOnlyAlice,
+        },
+      });
+    }, baseRoom);
+
+    await pageB.evaluate(room => {
+      const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
+      const roomWithOnlyBob = {
+        ...room,
+        occupants: ['Bob'], // Only Bob remains (from Bob's perspective)
+        occupant_count: 1,
+      };
+      w.__fakeSSEs[0].emit({
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 3,
+        data: {
+          player: { name: 'Bob' },
+          room: roomWithOnlyBob,
+        },
+      });
+    }, baseRoom);
+
+    // Wait for events to be processed
+    await pageA.waitForTimeout(500);
+    await pageB.waitForTimeout(500);
+
     await expect(pageA.locator('.room-occupants .occupant-count-badge')).toContainText('1');
-    await expect(pageA.locator('.room-occupants .occupant-name')).toContainText('Bob');
+    await expect(pageA.locator('.room-occupants .occupant-name')).toHaveCount(1);
+    await expect(pageA.locator('.room-occupants .occupant-name').first()).toContainText('Alice');
 
     await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('1');
-    await expect(pageB.locator('.room-occupants .occupant-name')).toContainText('Alice');
-
-    // Simulate Bob leaving: occupants update to [] for Alice, and [] for Bob as well
-    await pageA.evaluate(() => {
-      const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: [], count: 0 } });
-    });
-    await pageB.evaluate(() => {
-      const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
-      w.__fakeSSEs[0].emit({ event_type: 'room_occupants', data: { occupants: [], count: 0 } });
-    });
-
-    await expect(pageA.locator('.room-occupants .occupant-count-badge')).toContainText('0');
-    await expect(pageA.locator('.room-occupants .no-occupants-text')).toContainText('No other players present');
-
-    await expect(pageB.locator('.room-occupants .occupant-count-badge')).toContainText('0');
-    await expect(pageB.locator('.room-occupants .no-occupants-text')).toContainText('No other players present');
+    await expect(pageB.locator('.room-occupants .occupant-name')).toHaveCount(1);
+    await expect(pageB.locator('.room-occupants .occupant-name').first()).toContainText('Bob');
 
     await contextA.close();
     await contextB.close();

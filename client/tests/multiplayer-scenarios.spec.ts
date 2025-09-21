@@ -8,9 +8,9 @@ async function loginWithRealCredentials(page: Page, username: string, password: 
   await expect(page.locator('h1')).toContainText('MythosMUD');
 
   // Fill login form
-  await page.getByLabel('Username:').fill(username);
-  await page.getByLabel('Password:').fill(password);
-  await page.getByRole('button', { name: 'Enter the MUD' }).click();
+  await page.getByPlaceholder('Username').fill(username);
+  await page.getByPlaceholder('Password').fill(password);
+  await page.getByRole('button', { name: 'Enter the Void' }).click();
 
   // Wait for MOTD screen and click Continue
   await page.waitForSelector('text=Continue');

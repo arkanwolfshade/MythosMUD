@@ -62,11 +62,36 @@ def run_client_tests():
     return 0
 
 
+def run_client_e2e_tests():
+    """Run client-side E2E tests (Playwright tests)"""
+    print("Running client E2E tests...")
+    print("⚠️  WARNING: This requires both server and client to be running!")
+    print("   Make sure to run './scripts/start_dev.ps1' first.")
+    print()
+
+    # Get the project root
+    project_root = Path(__file__).parent.parent
+    client_dir = project_root / "client"
+
+    # Run Playwright E2E tests
+    print("  Running Playwright E2E tests...")
+    playwright_cmd = "npm run test"
+    playwright_result = subprocess.run(playwright_cmd, shell=True, cwd=client_dir)
+
+    if playwright_result.returncode != 0:
+        print("  Playwright E2E tests failed")
+        return playwright_result.returncode
+
+    print("  Client E2E tests passed!")
+    return 0
+
+
 def main():
     """Run all tests (server and client)"""
     parser = argparse.ArgumentParser(description="Run MythosMUD tests")
     parser.add_argument("--server-only", action="store_true", help="Run only server tests")
-    parser.add_argument("--client-only", action="store_true", help="Run only client tests")
+    parser.add_argument("--client-only", action="store_true", help="Run only client unit tests (Vitest)")
+    parser.add_argument("--client-e2e-only", action="store_true", help="Run only client E2E tests (Playwright)")
     parser.add_argument("--e2e-only", action="store_true", help="Run only E2E tests (if enabled)")
 
     args = parser.parse_args()
@@ -83,7 +108,7 @@ def main():
         return
 
     if args.client_only:
-        print("Running Client Tests Only")
+        print("Running Client Unit Tests Only")
         print("=" * 30)
         client_result = run_client_tests()
         if client_result != 0:
@@ -91,6 +116,17 @@ def main():
             sys.exit(client_result)
         else:
             print("Client tests passed!")
+        return
+
+    if args.client_e2e_only:
+        print("Running Client E2E Tests Only")
+        print("=" * 30)
+        client_e2e_result = run_client_e2e_tests()
+        if client_e2e_result != 0:
+            print(f"Client E2E tests failed with exit code: {client_e2e_result}")
+            sys.exit(client_e2e_result)
+        else:
+            print("Client E2E tests passed!")
         return
 
     if args.e2e_only:
