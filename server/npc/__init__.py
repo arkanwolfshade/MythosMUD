@@ -19,14 +19,26 @@ from .behaviors import (
 from .combat_integration import NPCCombatIntegration
 from .communication_integration import NPCCommunicationIntegration
 from .event_reaction_system import NPCEventReaction, NPCEventReactionSystem, NPCEventReactionTemplates
+from .interaction_system import (
+    NPCInteraction,
+    NPCInteractionEngine,
+    NPCInteractionResult,
+    NPCInteractionType,
+    NPCRelationshipManager,
+)
+from .lifecycle_manager import NPCLifecycleEvent, NPCLifecycleManager, NPCLifecycleRecord, NPCLifecycleState
 from .movement_integration import NPCMovementIntegration
+from .population_control import NPCPopulationController, PopulationStats, ZoneConfiguration
+from .spawning_service import NPCSpawningService, NPCSpawnRequest, NPCSpawnResult
 from .threading import (
     NPCActionMessage,
     NPCActionType,
     NPCCommunicationBridge,
-    NPCLifecycleManager,
     NPCMessageQueue,
     NPCThreadManager,
+)
+from .threading import (
+    NPCLifecycleManager as NPCThreadLifecycleManager,
 )
 
 __all__ = [
@@ -35,7 +47,7 @@ __all__ = [
     "NPCMessageQueue",
     "NPCThreadManager",
     "NPCCommunicationBridge",
-    "NPCLifecycleManager",
+    "NPCThreadLifecycleManager",
     "NPCBase",
     "BehaviorEngine",
     "ShopkeeperNPC",
@@ -46,5 +58,20 @@ __all__ = [
     "NPCEventReaction",
     "NPCEventReactionSystem",
     "NPCEventReactionTemplates",
+    "NPCInteraction",
+    "NPCInteractionEngine",
+    "NPCInteractionResult",
+    "NPCInteractionType",
+    "NPCRelationshipManager",
     "NPCMovementIntegration",
+    "NPCPopulationController",
+    "PopulationStats",
+    "ZoneConfiguration",
+    "NPCLifecycleEvent",
+    "NPCLifecycleManager",
+    "NPCLifecycleRecord",
+    "NPCLifecycleState",
+    "NPCSpawnRequest",
+    "NPCSpawnResult",
+    "NPCSpawningService",
 ]

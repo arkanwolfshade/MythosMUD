@@ -62,12 +62,12 @@
   - [x] 4.8 Verify all integration tests pass ✅
 
 - [ ] 5. NPC Population Management and Zone Integration
-  - [ ] 5.1 Write tests for NPC spawning and population management
-  - [ ] 5.2 Implement sub-zone-based NPC population control system
-  - [ ] 5.3 Create NPC spawning logic with required/optional population rules
-  - [ ] 5.4 Implement NPC lifecycle management (spawn, despawn, respawn)
-  - [ ] 5.5 Add NPC-to-NPC interaction and relationship system
-  - [ ] 5.6 Verify all population management tests pass
+  - [x] 5.1 Write tests for NPC spawning and population management ✅
+  - [x] 5.2 Implement sub-zone-based NPC population control system ✅
+  - [x] 5.3 Create NPC spawning logic with required/optional population rules ✅
+  - [x] 5.4 Implement NPC lifecycle management (spawn, despawn, respawn) ✅
+  - [x] 5.5 Add NPC-to-NPC interaction and relationship system ✅
+  - [x] 5.6 Verify all population management tests pass
 
 - [ ] 6. Basic Admin API for NPC Management
   - [ ] 6.1 Write tests for NPC admin API endpoints
@@ -76,3 +76,13 @@
   - [ ] 6.4 Add NPC population monitoring and zone statistics endpoints
   - [ ] 6.5 Implement API authentication and authorization for admin endpoints
   - [ ] 6.6 Verify all API tests pass
+
+- [ ] 7. Admin Slash Commands for NPC Management
+  - [ ] 7.1 Write tests for admin slash command parsing and validation
+  - [ ] 7.2 Implement slash command framework for admin NPC management
+  - [ ] 7.3 Create NPC definition management commands (/npc create, /npc edit, /npc delete, /npc list)
+  - [ ] 7.4 Implement NPC instance control commands (/npc spawn, /npc despawn, /npc move, /npc stats)
+  - [ ] 7.5 Add NPC population monitoring commands (/npc population, /npc zones, /npc status)
+  - [ ] 7.6 Create NPC behavior control commands (/npc behavior, /npc react, /npc stop)
+  - [ ] 7.7 Implement command help system and error handling
+  - [ ] 7.8 Verify all slash command tests pass
