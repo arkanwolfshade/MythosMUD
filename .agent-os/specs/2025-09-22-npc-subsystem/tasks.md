@@ -41,15 +41,15 @@
   - [x] 2.5 Add NPC thread lifecycle management (start, stop, restart) ✅
   - [x] 2.6 Verify all threading and message queue tests pass ✅
 
-- [ ] 3. Basic NPC Types and Core Behaviors
-  - [ ] 3.1 Write tests for NPC base classes and behavior engines
-  - [ ] 3.2 Implement NPC base class with common functionality (stats, inventory, communication)
-  - [ ] 3.3 Create behavior engine framework with deterministic rule system
-  - [ ] 3.4 Implement shopkeeper NPC type with buy/sell interactions
-  - [ ] 3.5 Implement passive mob NPC type with wandering and response behaviors
-  - [ ] 3.6 Implement aggressive mob NPC type with hunting and territorial behaviors
-  - [ ] 3.7 Add AI integration stubs for future enhancement
-  - [ ] 3.8 Verify all NPC behavior tests pass
+- [x] 3. Basic NPC Types and Core Behaviors ✅ COMPLETED
+  - [x] 3.1 Write tests for NPC base classes and behavior engines ✅
+  - [x] 3.2 Implement NPC base class with common functionality (stats, inventory, communication) ✅
+  - [x] 3.3 Create behavior engine framework with deterministic rule system ✅
+  - [x] 3.4 Implement shopkeeper NPC type with buy/sell interactions ✅
+  - [x] 3.5 Implement passive mob NPC type with wandering and response behaviors ✅
+  - [x] 3.6 Implement aggressive mob NPC type with hunting and territorial behaviors ✅
+  - [x] 3.7 Add AI integration stubs for future enhancement ✅
+  - [x] 3.8 Verify all NPC behavior tests pass ✅
 
 - [ ] 4. NPC Integration with Existing Systems
   - [ ] 4.1 Write integration tests for NPC movement system integration

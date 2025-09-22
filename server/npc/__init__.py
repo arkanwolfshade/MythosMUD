@@ -9,6 +9,13 @@ is essential for maintaining the delicate balance between order and chaos
 in our eldritch digital realm.
 """
 
+from .behaviors import (
+    AggressiveMobNPC,
+    BehaviorEngine,
+    NPCBase,
+    PassiveMobNPC,
+    ShopkeeperNPC,
+)
 from .threading import (
     NPCActionMessage,
     NPCActionType,
@@ -25,4 +32,9 @@ __all__ = [
     "NPCThreadManager",
     "NPCCommunicationBridge",
     "NPCLifecycleManager",
+    "NPCBase",
+    "BehaviorEngine",
+    "ShopkeeperNPC",
+    "PassiveMobNPC",
+    "AggressiveMobNPC",
 ]
