@@ -142,6 +142,8 @@ async def init_db():
         async with engine.begin() as conn:
             logger.info("Creating database tables")
             await conn.run_sync(metadata.create_all)
+            # Enable foreign key constraints for SQLite
+            await conn.execute("PRAGMA foreign_keys = ON")
             logger.info("Database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__

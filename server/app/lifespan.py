@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from ..config_loader import get_config
 from ..database import init_db
 from ..logging_config import get_logger
+from ..npc_database import init_npc_database
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..realtime.event_handler import get_real_time_event_handler
@@ -33,6 +34,7 @@ async def lifespan(app: FastAPI):
     including persistence layer initialization and game tick loop."""
     logger.info("Starting MythosMUD server...")
     await init_db()
+    await init_npc_database()
     # Initialize real-time event handler first to obtain its EventBus
     app.state.event_handler = get_real_time_event_handler()
     # Ensure the event handler has access to the connection manager

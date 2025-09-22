@@ -136,7 +136,11 @@ celerybeat.pid
 
 # Environments
 .env
-.envrc
+.env.local
+.env.production
+.env.prod
+.env.development
+.env.dev
 .venv
 env/
 venv/
@@ -212,6 +216,17 @@ TASKS.local.md
 
 # Environment files (CRITICAL: Never commit actual .env files)
 .env.local
+.env.production
+.env.prod
+.env.development
+.env.dev
+# Allow test and example environment files
+!.env.test
+!.env.example
+!*.env.example
+!test.env.example
+!env.example
+!env.production.example
 
 # Logging files (CRITICAL: Never commit log files)
 logs/

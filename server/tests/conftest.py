@@ -93,6 +93,11 @@ def pytest_configure(config):
     test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
     test_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+    # Set up NPC database URL for tests
+    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+    test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -133,6 +138,28 @@ def test_database():
         return test_db_url.replace("sqlite+aiosqlite:///", "")
     else:
         raise ValueError(f"Unsupported database URL format: {test_db_url}")
+
+
+@pytest.fixture(scope="session")
+def test_npc_database():
+    """Initialize NPC test database with proper schema."""
+    import asyncio
+
+    from server.npc_database import init_npc_database
+    from server.tests.init_npc_test_db import init_npc_test_database
+
+    # Initialize the NPC test database
+    init_npc_test_database()
+
+    # Also initialize the NPC database through the main initialization function
+    # This ensures the SQLAlchemy metadata is properly set up
+    asyncio.run(init_npc_database())
+
+    # Return the NPC database path
+    from pathlib import Path
+
+    npc_test_db_path = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+    return str(npc_test_db_path)
 
 
 @pytest.fixture(autouse=True)  # Enable automatic use for all tests
