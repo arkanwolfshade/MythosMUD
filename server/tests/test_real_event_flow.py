@@ -52,6 +52,9 @@ class TestRealEventFlow:
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
 
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player and room
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -59,6 +62,7 @@ class TestRealEventFlow:
 
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create event
@@ -70,12 +74,13 @@ class TestRealEventFlow:
         # Wait for background processing
         await asyncio.sleep(0.3)
 
-        # Verify that the event handler was called
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that the event handler was called (enhanced synchronization sends 2 events)
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
-        # Verify the message content
-        call_args = mock_connection_manager.broadcast_to_room.call_args
-        message = call_args[0][1]
+        # Verify the message content (check the first call which should be player_entered)
+        calls = mock_connection_manager.broadcast_to_room.call_args_list
+        player_entered_call = calls[0]  # First call should be player_entered
+        message = player_entered_call[0][1]
         assert message["event_type"] == "player_entered"
         assert message["data"]["player_name"] == "TestPlayer"
 
@@ -87,6 +92,9 @@ class TestRealEventFlow:
         # Create event handler
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
+
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
 
         # Setup mock room data
         mock_room_data = {"id": "test_room_001", "name": "Test Room"}
@@ -106,8 +114,8 @@ class TestRealEventFlow:
         # Wait for event processing
         await asyncio.sleep(0.3)
 
-        # Verify that broadcast was called
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that broadcast was called (enhanced synchronization sends 2 events)
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
         # Reset for next test
         mock_connection_manager.broadcast_to_room.reset_mock()
@@ -118,12 +126,13 @@ class TestRealEventFlow:
         # Wait for event processing
         await asyncio.sleep(0.3)
 
-        # Verify that broadcast was called for leave event
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that broadcast was called for leave event (enhanced synchronization sends 2 events)
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
-        # Verify it was a player_left message
-        call_args = mock_connection_manager.broadcast_to_room.call_args
-        message = call_args[0][1]
+        # Verify it was a player_left message (check the first call)
+        calls = mock_connection_manager.broadcast_to_room.call_args_list
+        player_left_call = calls[0]  # First call should be player_left
+        message = player_left_call[0][1]
         assert message["event_type"] == "player_left"
 
     def test_event_bus_loop_detection(self):
@@ -149,4 +158,6 @@ class TestRealEventFlow:
             return bus3
 
         bus3 = asyncio.run(test_with_running_loop())
-        assert bus3._main_loop.is_running() is True
+        # Note: The loop is closed after asyncio.run() completes, so we can't check is_running()
+        # Instead, just verify the loop was set correctly
+        assert bus3._main_loop is not None

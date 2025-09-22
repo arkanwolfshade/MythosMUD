@@ -9,13 +9,14 @@ import asyncio
 import time
 
 import pytest
+import pytest_asyncio
 from playwright.async_api import async_playwright
 
 
 class TestE2EMultiplayerConnectionMessaging:
     """End-to-End tests for multiplayer connection messaging."""
 
-    @pytest.fixture(scope="class")
+    @pytest_asyncio.fixture(scope="class")
     async def browser_setup(self):
         """Set up browser for testing."""
         playwright = await async_playwright().start()
@@ -25,24 +26,34 @@ class TestE2EMultiplayerConnectionMessaging:
         await playwright.stop()
 
     @pytest.fixture
-    async def player_contexts(self, browser_setup):
+    def player_contexts(self, browser_setup):
         """Create two player browser contexts."""
+        # This will be called synchronously, but browser_setup is async
+        # We'll handle this differently in each test
+        return browser_setup
+
+    async def _create_player_contexts(self, browser):
+        """Helper method to create player contexts."""
         contexts = []
         for _i in range(2):
-            context = await browser_setup.new_context()
+            context = await browser.new_context()
             page = await context.new_page()
             contexts.append((context, page))
-        yield contexts
-        # Cleanup
+        return contexts
+
+    async def _cleanup_contexts(self, contexts):
+        """Helper method to cleanup contexts."""
         for context, _page in contexts:
             await context.close()
 
     @pytest.mark.asyncio
     async def test_two_players_see_connection_messages(self, player_contexts):
         """Test that two players can see each other's connection messages."""
-        # Get player contexts
-        player1_context, player1_page = player_contexts[0]
-        player2_context, player2_page = player_contexts[1]
+        # Create player contexts using helper
+        browser = player_contexts  # No await needed since it's a regular fixture now
+        contexts = await self._create_player_contexts(browser)
+        player1_context, player1_page = contexts[0]
+        player2_context, player2_page = contexts[1]
 
         # Navigate both players to the game
         await player1_page.goto("http://localhost:5173")
@@ -83,12 +94,17 @@ class TestE2EMultiplayerConnectionMessaging:
         )
         assert player1_entered_message is not None, "Player 2 should see Player 1's connection message"
 
+        # Cleanup
+        await self._cleanup_contexts(contexts)
+
     @pytest.mark.asyncio
     async def test_player_disconnection_message(self, player_contexts):
         """Test that players see disconnection messages when someone leaves."""
-        # Get player contexts
-        player1_context, player1_page = player_contexts[0]
-        player2_context, player2_page = player_contexts[1]
+        # Create player contexts using helper
+        browser = player_contexts  # No await needed since it's a regular fixture now
+        contexts = await self._create_player_contexts(browser)
+        player1_context, player1_page = contexts[0]
+        player2_context, player2_page = contexts[1]
 
         # Navigate both players to the game
         await player1_page.goto("http://localhost:5173")
@@ -122,12 +138,17 @@ class TestE2EMultiplayerConnectionMessaging:
         )
         assert player2_left_message is not None, "Player 1 should see Player 2's disconnection message"
 
+        # Cleanup
+        await self._cleanup_contexts(contexts)
+
     @pytest.mark.asyncio
     async def test_room_occupant_count_updates(self, player_contexts):
         """Test that room occupant counts update correctly."""
-        # Get player contexts
-        player1_context, player1_page = player_contexts[0]
-        player2_context, player2_page = player_contexts[1]
+        # Create player contexts using helper
+        browser = player_contexts  # No await needed since it's a regular fixture now
+        contexts = await self._create_player_contexts(browser)
+        player1_context, player1_page = contexts[0]
+        player2_context, player2_page = contexts[1]
 
         # Navigate both players to the game
         await player1_page.goto("http://localhost:5173")
@@ -166,6 +187,9 @@ class TestE2EMultiplayerConnectionMessaging:
         # Check final occupant count (should be 1 again)
         occupant_count_3 = await player1_page.text_content(".occupant-count")
         assert "1" in occupant_count_3, f"Occupant count after disconnection should be 1, got: {occupant_count_3}"
+
+        # Cleanup
+        await self._cleanup_contexts(contexts)
 
     @pytest.mark.asyncio
     async def test_multiple_players_connection_messages(self, browser_setup):
@@ -229,9 +253,11 @@ class TestE2EMultiplayerConnectionMessaging:
     @pytest.mark.asyncio
     async def test_connection_message_timing(self, player_contexts):
         """Test that connection messages appear in reasonable time."""
-        # Get player contexts
-        player1_context, player1_page = player_contexts[0]
-        player2_context, player2_page = player_contexts[1]
+        # Create player contexts using helper
+        browser = player_contexts  # No await needed since it's a regular fixture now
+        contexts = await self._create_player_contexts(browser)
+        player1_context, player1_page = contexts[0]
+        player2_context, player2_page = contexts[1]
 
         # Navigate both players to the game
         await player1_page.goto("http://localhost:5173")
@@ -264,3 +290,6 @@ class TestE2EMultiplayerConnectionMessaging:
         message_delay = end_time - start_time
         assert message_delay < 5.0, f"Connection message took too long: {message_delay:.2f} seconds"
         assert message_delay > 0.1, f"Connection message appeared too quickly: {message_delay:.2f} seconds"
+
+        # Cleanup
+        await self._cleanup_contexts(contexts)

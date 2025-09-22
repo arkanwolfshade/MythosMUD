@@ -58,6 +58,9 @@ class TestRealTimeEventHandlerIntegration:
         self, event_bus, event_handler, mock_connection_manager
     ):
         """Test that RealTimeEventHandler processes PlayerEnteredRoom events."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -66,13 +69,14 @@ class TestRealTimeEventHandlerIntegration:
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
-        await event_bus.publish(event)
+        event_bus.publish(event)
 
         # Give async handlers time to process
         await asyncio.sleep(0.1)
@@ -80,12 +84,16 @@ class TestRealTimeEventHandlerIntegration:
         # Verify connection manager methods were called
         mock_connection_manager._get_player.assert_called_with("test_player_123")
         mock_connection_manager.persistence.get_room.assert_called_with("test_room_001")
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Enhanced synchronization sends both player_entered and room_occupants events
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
         mock_connection_manager.subscribe_to_room.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_event_handler_processes_player_left_event(self, event_bus, event_handler, mock_connection_manager):
         """Test that RealTimeEventHandler processes PlayerLeftRoom events."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -94,13 +102,14 @@ class TestRealTimeEventHandlerIntegration:
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
         event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
-        await event_bus.publish(event)
+        event_bus.publish(event)
 
         # Give async handlers time to process
         await asyncio.sleep(0.1)
@@ -109,11 +118,15 @@ class TestRealTimeEventHandlerIntegration:
         mock_connection_manager._get_player.assert_called_with("test_player_123")
         mock_connection_manager.persistence.get_room.assert_called_with("test_room_001")
         mock_connection_manager.unsubscribe_from_room.assert_called_once()
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Enhanced synchronization sends both player_left and room_occupants events
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
     @pytest.mark.asyncio
     async def test_room_publishes_events_to_event_handler(self, event_bus, event_handler, mock_connection_manager):
         """Test that Room publishes events that are received by RealTimeEventHandler."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -122,6 +135,7 @@ class TestRealTimeEventHandlerIntegration:
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create room with event bus
@@ -140,7 +154,8 @@ class TestRealTimeEventHandlerIntegration:
 
         # Verify event handler processed the event
         mock_connection_manager._get_player.assert_called_with("test_player_123")
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Enhanced synchronization sends both player_entered and room_occupants events
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
         mock_connection_manager.subscribe_to_room.assert_called_once()
 
         # Reset mocks for next test
@@ -155,14 +170,15 @@ class TestRealTimeEventHandlerIntegration:
 
         # Verify event handler processed the event
         mock_connection_manager.unsubscribe_from_room.assert_called_once()
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Enhanced synchronization sends both player_left and room_occupants events
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
     def test_event_bus_publish_method(self, event_bus):
         """Test that EventBus publish method works correctly."""
         # Track published events
         published_events = []
 
-        async def mock_handler(event):
+        def mock_handler(event):
             published_events.append(event)
 
         # Subscribe to events
@@ -174,13 +190,17 @@ class TestRealTimeEventHandlerIntegration:
         left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
 
         # Publish events (this is async, so we need to run it)
-        import asyncio
 
-        async def publish_events():
-            await event_bus.publish(entered_event)
-            await event_bus.publish(left_event)
+        def publish_events():
+            event_bus.publish(entered_event)
+            event_bus.publish(left_event)
 
-        asyncio.run(publish_events())
+        publish_events()
+
+        # Give the background thread time to process both events
+        import time
+
+        time.sleep(0.1)
 
         # Verify events were received
         assert len(published_events) == 2

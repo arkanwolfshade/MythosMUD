@@ -50,6 +50,9 @@ class TestEventHandlerBroadcasting:
     @pytest.mark.asyncio
     async def test_player_entered_event_broadcasting(self, event_bus, event_handler, mock_connection_manager):
         """Test that PlayerEnteredRoom events are properly broadcast."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -58,6 +61,7 @@ class TestEventHandlerBroadcasting:
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
@@ -69,14 +73,19 @@ class TestEventHandlerBroadcasting:
         # Wait for async processing
         await asyncio.sleep(0.2)
 
-        # Verify that broadcast_to_room was called
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that broadcast_to_room was called (enhanced synchronization sends 2 events)
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
-        # Get the call arguments
-        call_args = mock_connection_manager.broadcast_to_room.call_args
-        _room_id, message, exclude_player = call_args[0][0], call_args[0][1], call_args[1].get("exclude_player")
+        # Get the call arguments for both calls
+        calls = mock_connection_manager.broadcast_to_room.call_args_list
+        player_entered_call = calls[0]  # First call should be player_entered
 
-        # Verify the message structure
+        # Verify the first call (player_entered)
+        _room_id, message, exclude_player = (
+            player_entered_call[0][0],
+            player_entered_call[0][1],
+            player_entered_call[1].get("exclude_player"),
+        )
         assert message["event_type"] == "player_entered"
         assert message["data"]["player_name"] == "TestPlayer"
         assert message["data"]["message"] == "TestPlayer enters the room."
@@ -85,6 +94,9 @@ class TestEventHandlerBroadcasting:
     @pytest.mark.asyncio
     async def test_player_left_event_broadcasting(self, event_bus, event_handler, mock_connection_manager):
         """Test that PlayerLeftRoom events are properly broadcast."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -93,6 +105,7 @@ class TestEventHandlerBroadcasting:
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
+        mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
@@ -104,14 +117,19 @@ class TestEventHandlerBroadcasting:
         # Wait for async processing
         await asyncio.sleep(0.2)
 
-        # Verify that broadcast_to_room was called
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that broadcast_to_room was called (enhanced synchronization sends 2 events)
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
-        # Get the call arguments
-        call_args = mock_connection_manager.broadcast_to_room.call_args
-        _room_id, message, exclude_player = call_args[0][0], call_args[0][1], call_args[1].get("exclude_player")
+        # Get the call arguments for both calls
+        calls = mock_connection_manager.broadcast_to_room.call_args_list
+        player_left_call = calls[0]  # First call should be player_left
 
-        # Verify the message structure
+        # Verify the first call (player_left)
+        _room_id, message, exclude_player = (
+            player_left_call[0][0],
+            player_left_call[0][1],
+            player_left_call[1].get("exclude_player"),
+        )
         assert message["event_type"] == "player_left"
         assert message["data"]["player_name"] == "TestPlayer"
         assert message["data"]["message"] == "TestPlayer leaves the room."
@@ -144,6 +162,9 @@ class TestEventHandlerBroadcasting:
         self, event_bus, event_handler, mock_connection_manager
     ):
         """Test that RealTimeEventHandler handles missing rooms gracefully."""
+        # Set the main loop for async event handling
+        event_bus.set_main_loop(asyncio.get_running_loop())
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -163,8 +184,8 @@ class TestEventHandlerBroadcasting:
         # Wait for async processing
         await asyncio.sleep(0.2)
 
-        # Verify that broadcast_to_room was still called (with room_id as string)
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # Verify that broadcast_to_room was still called (with room_id as string) - enhanced sync sends 2 events
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
     def test_message_creation_formats(self, event_handler):
         """Test that message creation methods return properly formatted messages."""
