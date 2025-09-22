@@ -263,13 +263,15 @@ class NPCBase(ABC):
     inventory, communication, and basic behavior framework.
     """
 
-    def __init__(self, definition: NPCDefinition, npc_id: str):
+    def __init__(self, definition: NPCDefinition, npc_id: str, event_bus=None, event_reaction_system=None):
         """
         Initialize the NPC base class.
 
         Args:
             definition: NPC definition from database
             npc_id: Unique identifier for this NPC instance
+            event_bus: Optional event bus for publishing events
+            event_reaction_system: Optional event reaction system for automatic reactions
         """
         self.npc_id = npc_id
         self.definition = definition
@@ -294,7 +296,20 @@ class NPCBase(ABC):
         # Track last action time for behavior timing
         self._last_action_time = time.time()
 
+        # Initialize event system integration
+        self.event_bus = event_bus
+        self.event_reaction_system = event_reaction_system
+
+        # Initialize integration systems (will be set by external systems)
+        self.movement_integration = None
+        self.combat_integration = None
+        self.communication_integration = None
+
         logger.info("NPC base initialized", npc_id=npc_id, npc_name=definition.name)
+
+        # Register default event reactions if reaction system is available
+        if self.event_reaction_system:
+            self._register_default_reactions()
 
     def _parse_stats(self, stats_json: str) -> dict[str, Any]:
         """Parse stats from JSON string."""
@@ -393,7 +408,7 @@ class NPCBase(ABC):
                 return item
         return None
 
-    def take_damage(self, damage: int) -> bool:
+    def take_damage(self, damage: int, damage_type: str = "physical", source_id: str | None = None) -> bool:
         """Take damage and update health."""
         try:
             if not self.is_alive:
@@ -403,9 +418,44 @@ class NPCBase(ABC):
             new_hp = max(0, current_hp - damage)
             self._stats["hp"] = new_hp
 
+            # Publish damage event
+            if self.event_bus:
+                from ..events.event_types import NPCTookDamage
+
+                self.event_bus.publish(
+                    NPCTookDamage(
+                        timestamp=time.time(),
+                        event_type="NPCTookDamage",
+                        npc_id=self.npc_id,
+                        room_id=self.current_room,
+                        damage=damage,
+                        damage_type=damage_type,
+                        source_id=source_id,
+                    )
+                )
+
             if new_hp <= 0:
                 self.is_alive = False
                 logger.info("NPC died", npc_id=self.npc_id, damage=damage)
+
+                # Use combat integration for death handling
+                if hasattr(self, "combat_integration") and self.combat_integration:
+                    self.combat_integration.handle_npc_death(self.npc_id, self.current_room, "damage", source_id)
+                else:
+                    # Fallback to direct event publishing
+                    if self.event_bus:
+                        from ..events.event_types import NPCDied
+
+                        self.event_bus.publish(
+                            NPCDied(
+                                timestamp=time.time(),
+                                event_type="NPCDied",
+                                npc_id=self.npc_id,
+                                room_id=self.current_room,
+                                cause="damage",
+                                killer_id=source_id,
+                            )
+                        )
             else:
                 logger.debug("NPC took damage", npc_id=self.npc_id, damage=damage, new_hp=new_hp)
 
@@ -431,24 +481,179 @@ class NPCBase(ABC):
             logger.error("Error healing", npc_id=self.npc_id, error=str(e))
             return False
 
-    def move_to_room(self, room_id: str) -> bool:
-        """Move NPC to a different room."""
+    def move_to_room(self, room_id: str, use_integration: bool = True) -> bool:
+        """
+        Move NPC to a different room.
+
+        Args:
+            room_id: ID of the destination room
+            use_integration: Whether to use the movement integration system
+
+        Returns:
+            bool: True if movement was successful
+        """
         try:
-            self.current_room = room_id
-            logger.debug("NPC moved to room", npc_id=self.npc_id, room_id=room_id)
-            return True
+            if use_integration:
+                # Use the movement integration system for enhanced functionality
+                from .movement_integration import NPCMovementIntegration
+
+                # Get event bus from persistence if available
+                event_bus = getattr(self, "_event_bus", None)
+                if not event_bus and hasattr(self, "definition"):
+                    # Try to get event bus from persistence
+                    try:
+                        from ..persistence import get_persistence
+
+                        persistence = get_persistence()
+                        event_bus = getattr(persistence, "_event_bus", None)
+                    except Exception:
+                        pass
+
+                movement_integration = NPCMovementIntegration(event_bus)
+                success = movement_integration.move_npc_to_room(self.npc_id, self.current_room, room_id)
+
+                if success:
+                    self.current_room = room_id
+                    logger.debug("NPC moved to room with integration", npc_id=self.npc_id, room_id=room_id)
+                    return True
+                else:
+                    logger.warning("NPC movement failed with integration", npc_id=self.npc_id, room_id=room_id)
+                    return False
+            else:
+                # Simple movement without integration
+                self.current_room = room_id
+                logger.debug("NPC moved to room (simple)", npc_id=self.npc_id, room_id=room_id)
+                return True
+
         except Exception as e:
             logger.error("Error moving NPC", npc_id=self.npc_id, error=str(e))
             return False
 
-    def speak(self, message: str, channel: str = "local") -> bool:
+    def speak(self, message: str, channel: str = "local", target_id: str | None = None) -> bool:
         """NPC speaks a message."""
         try:
             logger.info("NPC spoke", npc_id=self.npc_id, message=message, channel=channel)
-            return True
+
+            # Use communication integration if available
+            if hasattr(self, "communication_integration") and self.communication_integration:
+                if target_id and channel == "whisper":
+                    # Send whisper to specific target
+                    return self.communication_integration.send_whisper_to_player(
+                        self.npc_id, target_id, message, self.current_room
+                    )
+                else:
+                    # Send message to room
+                    return self.communication_integration.send_message_to_room(
+                        self.npc_id, self.current_room, message, channel
+                    )
+            else:
+                # Fallback to direct event publishing
+                if self.event_bus:
+                    from ..events.event_types import NPCSpoke
+
+                    self.event_bus.publish(
+                        NPCSpoke(
+                            timestamp=time.time(),
+                            event_type="NPCSpoke",
+                            npc_id=self.npc_id,
+                            room_id=self.current_room,
+                            message=message,
+                            channel=channel,
+                            target_id=target_id,
+                        )
+                    )
+                return True
+
         except Exception as e:
             logger.error("Error NPC speaking", npc_id=self.npc_id, error=str(e))
             return False
+
+    def listen(self, message: str, speaker_id: str, channel: str = "local") -> bool:
+        """NPC receives/listens to a message."""
+        try:
+            logger.debug("NPC listened", npc_id=self.npc_id, speaker_id=speaker_id, message=message, channel=channel)
+
+            # Use communication integration if available
+            if hasattr(self, "communication_integration") and self.communication_integration:
+                return self.communication_integration.handle_player_message(
+                    self.npc_id, speaker_id, message, self.current_room, channel
+                )
+            else:
+                # Fallback to direct event publishing
+                if self.event_bus:
+                    from ..events.event_types import NPCListened
+
+                    self.event_bus.publish(
+                        NPCListened(
+                            timestamp=time.time(),
+                            event_type="NPCListened",
+                            npc_id=self.npc_id,
+                            room_id=self.current_room,
+                            message=message,
+                            speaker_id=speaker_id,
+                            channel=channel,
+                        )
+                    )
+                return True
+
+        except Exception as e:
+            logger.error("Error NPC listening", npc_id=self.npc_id, error=str(e))
+            return False
+
+    def _register_default_reactions(self) -> None:
+        """Register default event reactions for this NPC."""
+        if not self.event_reaction_system:
+            return
+
+        try:
+            from .event_reaction_system import NPCEventReactionTemplates
+
+            reactions = []
+
+            # Add greeting reaction for friendly NPCs
+            if self.npc_type in ["shopkeeper", "passive_mob"]:
+                greeting = self._behavior_config.get("greeting_message", "Hello there!")
+                reactions.append(NPCEventReactionTemplates.player_entered_room_greeting(self.npc_id, greeting))
+
+            # Add farewell reaction
+            if self.npc_type in ["shopkeeper", "passive_mob"]:
+                farewell = self._behavior_config.get("farewell_message", "Goodbye!")
+                reactions.append(NPCEventReactionTemplates.player_left_room_farewell(self.npc_id, farewell))
+
+            # Add combat reactions for aggressive NPCs
+            if self.npc_type == "aggressive_mob":
+                reactions.append(NPCEventReactionTemplates.npc_attacked_retaliation(self.npc_id))
+
+            # Add response reactions for communicative NPCs
+            if self.npc_type in ["shopkeeper", "passive_mob"]:
+                response = self._behavior_config.get("response_message", "I heard you!")
+                reactions.append(NPCEventReactionTemplates.player_spoke_response(self.npc_id, response))
+
+            # Register reactions
+            if reactions:
+                self.event_reaction_system.register_npc_reactions(self.npc_id, reactions)
+                logger.debug("Registered default reactions", npc_id=self.npc_id, reaction_count=len(reactions))
+
+        except Exception as e:
+            logger.error("Error registering default reactions", npc_id=self.npc_id, error=str(e))
+
+    def get_npc_context(self) -> dict[str, Any]:
+        """
+        Get context information for this NPC for event reactions.
+
+        Returns:
+            dict: NPC context information
+        """
+        return {
+            "npc_id": self.npc_id,
+            "current_room": self.current_room,
+            "is_alive": self.is_alive,
+            "is_active": self.is_active,
+            "stats": self._stats,
+            "behavior_config": self._behavior_config,
+            "npc_type": self.npc_type,
+            "name": self.name,
+        }
 
     def get_behavior_engine(self) -> BehaviorEngine:
         """Get the behavior engine for this NPC."""
@@ -556,9 +761,9 @@ class NPCBase(ABC):
 class ShopkeeperNPC(NPCBase):
     """Shopkeeper NPC type with buy/sell functionality."""
 
-    def __init__(self, definition: NPCDefinition, npc_id: str):
+    def __init__(self, definition: NPCDefinition, npc_id: str, event_bus=None, event_reaction_system=None):
         """Initialize shopkeeper NPC."""
-        super().__init__(definition, npc_id)
+        super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._shop_inventory: list[dict[str, Any]] = []
         self._buyable_items: dict[str, int] = {}  # item_id -> base_price
         self._setup_shopkeeper_behavior_rules()
@@ -678,9 +883,9 @@ class ShopkeeperNPC(NPCBase):
 class PassiveMobNPC(NPCBase):
     """Passive mob NPC type with wandering and response behaviors."""
 
-    def __init__(self, definition: NPCDefinition, npc_id: str):
+    def __init__(self, definition: NPCDefinition, npc_id: str, event_bus=None, event_reaction_system=None):
         """Initialize passive mob NPC."""
-        super().__init__(definition, npc_id)
+        super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._setup_passive_mob_behavior_rules()
 
     def _setup_passive_mob_behavior_rules(self):
@@ -760,9 +965,9 @@ class PassiveMobNPC(NPCBase):
 class AggressiveMobNPC(NPCBase):
     """Aggressive mob NPC type with hunting and territorial behaviors."""
 
-    def __init__(self, definition: NPCDefinition, npc_id: str):
+    def __init__(self, definition: NPCDefinition, npc_id: str, event_bus=None, event_reaction_system=None):
         """Initialize aggressive mob NPC."""
-        super().__init__(definition, npc_id)
+        super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._targets: list[str] = []
         self._territory_center = definition.room_id
         self._setup_aggressive_mob_behavior_rules()
@@ -826,7 +1031,31 @@ class AggressiveMobNPC(NPCBase):
         try:
             attack_damage = self._behavior_config.get("attack_damage", 20)
             logger.info("NPC attacked target", npc_id=self.npc_id, target_id=target_id, damage=attack_damage)
-            return True
+
+            # Use combat integration for attack handling
+            if hasattr(self, "combat_integration") and self.combat_integration:
+                success = self.combat_integration.handle_npc_attack(
+                    self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
+                )
+                return success
+            else:
+                # Fallback to direct event publishing
+                if self.event_bus:
+                    from ..events.event_types import NPCAttacked
+
+                    self.event_bus.publish(
+                        NPCAttacked(
+                            timestamp=time.time(),
+                            event_type="NPCAttacked",
+                            npc_id=self.npc_id,
+                            target_id=target_id,
+                            room_id=self.current_room,
+                            damage=attack_damage,
+                            attack_type="physical",
+                        )
+                    )
+                return True
+
         except Exception as e:
             logger.error("Error attacking target", npc_id=self.npc_id, error=str(e))
             return False

@@ -16,6 +16,10 @@ from .behaviors import (
     PassiveMobNPC,
     ShopkeeperNPC,
 )
+from .combat_integration import NPCCombatIntegration
+from .communication_integration import NPCCommunicationIntegration
+from .event_reaction_system import NPCEventReaction, NPCEventReactionSystem, NPCEventReactionTemplates
+from .movement_integration import NPCMovementIntegration
 from .threading import (
     NPCActionMessage,
     NPCActionType,
@@ -37,4 +41,10 @@ __all__ = [
     "ShopkeeperNPC",
     "PassiveMobNPC",
     "AggressiveMobNPC",
+    "NPCCombatIntegration",
+    "NPCCommunicationIntegration",
+    "NPCEventReaction",
+    "NPCEventReactionSystem",
+    "NPCEventReactionTemplates",
+    "NPCMovementIntegration",
 ]
