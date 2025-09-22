@@ -197,8 +197,13 @@ describe('ChatPanel', () => {
       expect(screen.getAllByTestId('terminal-button')).toHaveLength(3); // Clear, Download, Chat History buttons
     });
 
-    it('should display messages correctly', () => {
-      render(<ChatPanel {...defaultProps} selectedChannel="all" />);
+    it('should display messages correctly', async () => {
+      const user = userEvent.setup();
+      render(<ChatPanel {...defaultProps} selectedChannel="local" />);
+
+      // Change filter to "All Messages" to see all chat messages
+      const filterSelect = screen.getByDisplayValue('Current Channel');
+      await user.selectOptions(filterSelect, 'all');
 
       expect(screen.getByText('[local] Player1 says: Hello everyone!')).toBeInTheDocument();
       expect(screen.getByText('[whisper] Player2 whispers: Secret message')).toBeInTheDocument();
@@ -262,10 +267,11 @@ describe('ChatPanel', () => {
 
       render(<ChatPanel {...defaultProps} messages={htmlMessages} selectedChannel="local" />);
 
-      // The HTML should be rendered - check for the visible text parts
-      expect(screen.getByText('Message with')).toBeInTheDocument();
+      // The HTML should be rendered - check for the complete message content
+      const messageElement = screen.getByTestId('chat-message');
+      expect(messageElement).toHaveTextContent('Message with HTML content');
+      // Also check that the strong tag is rendered
       expect(screen.getByText('HTML')).toBeInTheDocument();
-      expect(screen.getByText('content')).toBeInTheDocument();
     });
   });
 

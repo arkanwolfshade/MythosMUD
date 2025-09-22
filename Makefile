@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-runtime
+.PHONY: help clean lint format test coverage build install run semgrep test-client-runtime test-server-runtime
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -14,6 +14,7 @@ help:
 	@echo "  test-server - Run server tests only"
 	@echo "  test-client - Run client unit tests only (Vitest)"
 	@echo "  test-client-runtime - Run client E2E tests (Playwright)"
+	@echo "  test-server-runtime - Run server E2E tests (requires running server)"
 	@echo "  coverage  - Run coverage for both server and client"
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
@@ -39,6 +40,9 @@ test-client:
 
 test-client-runtime:
 	cd $(PROJECT_ROOT) && python scripts/test.py --client-e2e-only
+
+test-server-runtime:
+	cd $(PROJECT_ROOT) && python scripts/test.py --server-e2e-only
 
 coverage:
 	cd $(PROJECT_ROOT) && python scripts/coverage.py

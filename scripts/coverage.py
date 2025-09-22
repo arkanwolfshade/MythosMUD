@@ -5,9 +5,17 @@ from pathlib import Path
 
 
 def run_server_coverage():
-    """Run server-side coverage with pytest"""
-    print("🐍 Running server coverage with pytest...")
-    cmd = ["uv", "run", "pytest", "--cov=.", "--cov-report=term-missing", "tests"]
+    """Run server-side coverage with pytest (excluding E2E tests)"""
+    print("🐍 Running server coverage with pytest (excluding E2E tests)...")
+    cmd = [
+        "uv",
+        "run",
+        "pytest",
+        "--cov=.",
+        "--cov-report=term-missing",
+        "tests",
+        "--ignore=tests/test_e2e_multiplayer_connection_messaging.py",
+    ]
     env = dict(**os.environ)
 
     # Set up environment for server tests

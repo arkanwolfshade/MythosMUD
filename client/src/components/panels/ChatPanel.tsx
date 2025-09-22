@@ -124,6 +124,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return messageChannel === selectedChannel;
       }
 
+      // Show error messages regardless of channel (they're typically global)
+      if (message.messageType === 'error') {
+        return true;
+      }
+
       return false;
     }
     return true;

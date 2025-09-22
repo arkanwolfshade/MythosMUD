@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def run_server_tests():
-    """Run server-side Python tests"""
+    """Run server-side Python tests (excluding E2E tests)"""
     print("Cleaning test database...")
     clean_cmd = ["python", "scripts/clean_test_db.py"]
 
@@ -29,10 +29,50 @@ def run_server_tests():
     if clean_result.returncode != 0:
         print("Warning: Failed to clean test database, continuing anyway...")
 
-    print("Running server tests with pytest...")
+    print("Running server tests with pytest (excluding E2E tests)...")
     # Change to server directory to use the pytest configuration there
     server_dir = project_root / "server"
-    cmd = ["uv", "run", "pytest", "tests", "-v", "--tb=short"]
+    # Exclude E2E tests from standard test runs
+    cmd = [
+        "uv",
+        "run",
+        "pytest",
+        "tests",
+        "-v",
+        "--tb=short",
+        "--ignore=tests/test_e2e_multiplayer_connection_messaging.py",
+    ]
+    result = subprocess.run(cmd, env=env, cwd=server_dir)
+
+    return result.returncode
+
+
+def run_server_e2e_tests():
+    """Run server-side E2E tests (requires running server)"""
+    print("Running server E2E tests...")
+    print("⚠️  WARNING: This requires the server to be running!")
+    print("   Make sure to run './scripts/start_dev.ps1' first.")
+    print()
+
+    # Set the required environment variables for the subprocess
+    env = os.environ.copy()
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+    # Get the project root (one level up from scripts directory)
+    project_root = Path(__file__).parent.parent
+    # Ensure we're using the correct path for test logs
+    test_logs_dir = project_root / "server" / "tests" / "logs"
+    test_logs_dir.mkdir(parents=True, exist_ok=True)
+    # Set test environment variables for logging
+    env["MYTHOSMUD_ENV"] = "test"
+    env["MYTHOSMUD_TEST_MODE"] = "true"
+    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "tests" / "test_server_config.yaml")
+    env["ALIASES_DIR"] = "server/tests/data/players/aliases"
+
+    print("Running server E2E tests with pytest...")
+    # Change to server directory to use the pytest configuration there
+    server_dir = project_root / "server"
+    # Run only E2E tests
+    cmd = ["uv", "run", "pytest", "tests/test_e2e_multiplayer_connection_messaging.py", "-v", "--tb=short"]
     result = subprocess.run(cmd, env=env, cwd=server_dir)
 
     return result.returncode
@@ -90,6 +130,9 @@ def main():
     """Run all tests (server and client)"""
     parser = argparse.ArgumentParser(description="Run MythosMUD tests")
     parser.add_argument("--server-only", action="store_true", help="Run only server tests")
+    parser.add_argument(
+        "--server-e2e-only", action="store_true", help="Run only server E2E tests (requires running server)"
+    )
     parser.add_argument("--client-only", action="store_true", help="Run only client unit tests (Vitest)")
     parser.add_argument("--client-e2e-only", action="store_true", help="Run only client E2E tests (Playwright)")
     parser.add_argument("--e2e-only", action="store_true", help="Run only E2E tests (if enabled)")
@@ -105,6 +148,17 @@ def main():
             sys.exit(server_result)
         else:
             print("Server tests passed!")
+        return
+
+    if args.server_e2e_only:
+        print("Running Server E2E Tests Only")
+        print("=" * 30)
+        server_e2e_result = run_server_e2e_tests()
+        if server_e2e_result != 0:
+            print(f"Server E2E tests failed with exit code: {server_e2e_result}")
+            sys.exit(server_e2e_result)
+        else:
+            print("Server E2E tests passed!")
         return
 
     if args.client_only:
