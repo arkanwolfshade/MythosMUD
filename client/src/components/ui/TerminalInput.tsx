@@ -15,6 +15,7 @@ interface TerminalInputProps {
   required?: boolean;
   name?: string;
   id?: string;
+  'data-testid'?: string;
 }
 
 export const TerminalInput: React.FC<TerminalInputProps> = ({
@@ -32,6 +33,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
   required = false,
   name,
   id,
+  'data-testid': dataTestId,
 }) => {
   const baseClasses =
     'font-mono bg-mythos-terminal-surface border border-gray-700 text-mythos-terminal-text placeholder-mythos-terminal-text-secondary rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:border-mythos-terminal-primary focus:animate-eldritch-border';
@@ -63,6 +65,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
       required={required}
       name={name}
       id={id}
+      data-testid={dataTestId}
     />
   );
 };

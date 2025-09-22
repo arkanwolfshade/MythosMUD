@@ -1,4 +1,13 @@
 import { BrowserContext, Page, expect, test } from '@playwright/test';
+import {
+  SERVER_URL,
+  TEST_CREDENTIALS,
+  TestCredentials,
+  emitMockGameStateEvent,
+  installRealtimeFakes,
+  loginWithMock,
+  waitForRealtimeConnection,
+} from './utils/mockAuth';
 
 /**
  * Integration tests for room synchronization and UI consistency.
@@ -8,20 +17,9 @@ import { BrowserContext, Page, expect, test } from '@playwright/test';
  * Based on findings from "Temporal Consistency in Non-Euclidean Spaces" - Dr. Armitage, 1928
  */
 
-// Test credentials from MULTIPLAYER_TEST_RULES.md
-const PLAYER_1_CREDENTIALS = {
-  username: 'test_player_1',
-  password: 'test_password_123',
-  email: 'test1@example.com',
-};
-
-const PLAYER_2_CREDENTIALS = {
-  username: 'test_player_2',
-  password: 'test_password_123',
-  email: 'test2@example.com',
-};
-
-const SERVER_URL = 'http://localhost:5173';
+// Use standardized test credentials
+const PLAYER_1_CREDENTIALS = TEST_CREDENTIALS.PLAYER_1;
+const PLAYER_2_CREDENTIALS = TEST_CREDENTIALS.PLAYER_2;
 
 interface RoomData {
   id: string;
@@ -37,24 +35,36 @@ interface RoomData {
 class RoomSyncTestHelper {
   constructor(private page: Page) {}
 
-  async login(credentials: typeof PLAYER_1_CREDENTIALS): Promise<void> {
-    await this.page.goto(SERVER_URL);
+  async login(credentials: TestCredentials, useMock: boolean = true, allUsernames: string[] = []): Promise<void> {
+    if (useMock) {
+      // Setup real-time fakes for SSE and WebSocket
+      await installRealtimeFakes(this.page);
 
-    // Wait for login form
-    await this.page.waitForSelector('input[placeholder="Username"]');
+      // Use mock authentication with proper room data
+      await loginWithMock(this.page, credentials, undefined, allUsernames);
 
-    // Fill login form
-    await this.page.getByPlaceholder('Username').fill(credentials.username);
-    await this.page.getByPlaceholder('Password').fill(credentials.password);
+      // Wait for real-time connection to be established
+      await waitForRealtimeConnection(this.page);
+    } else {
+      // Use real authentication (for tests that need actual server)
+      await this.page.goto(SERVER_URL);
 
-    // Submit login
-    await this.page.getByRole('button', { name: 'Enter the Void' }).click();
+      // Wait for login form
+      await this.page.waitForSelector('input[placeholder="Username"]');
 
-    // Wait for game interface
-    await this.page.waitForSelector('[data-testid="game-terminal"]', { timeout: 10000 });
+      // Fill login form
+      await this.page.getByPlaceholder('Username').fill(credentials.username);
+      await this.page.getByPlaceholder('Password').fill(credentials.password);
 
-    // Wait for initial room data to load
-    await this.page.waitForSelector('[data-testid="room-info-panel"]', { timeout: 5000 });
+      // Submit login
+      await this.page.getByRole('button', { name: 'Enter the Void' }).click();
+
+      // Wait for game interface
+      await this.page.waitForSelector('[data-testid="game-terminal"]', { timeout: 10000 });
+
+      // Wait for initial room data to load
+      await this.page.waitForSelector('[data-testid="room-info-panel"]', { timeout: 5000 });
+    }
   }
 
   async getRoomInfo(): Promise<RoomData | null> {
@@ -147,6 +157,10 @@ class RoomSyncTestHelper {
       return false;
     }
   }
+
+  async emitMockGameStateEvent(eventData: unknown, eventIndex: number = 0): Promise<void> {
+    await emitMockGameStateEvent(this.page, eventData, eventIndex);
+  }
 }
 
 test.describe('Room Synchronization Integration Tests', () => {
@@ -175,9 +189,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should synchronize room state between multiple players', async () => {
-    // Login both players
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     // Wait for both players to be in the same initial room
     await player1Page.waitForTimeout(2000);
@@ -192,11 +209,16 @@ test.describe('Room Synchronization Integration Tests', () => {
     expect(player1InitialRoom?.name).toBe(player2InitialRoom?.name);
     expect(player1InitialRoom?.id).toBe(player2InitialRoom?.id);
 
-    // Both players should see each other as occupants
-    expect(player1InitialRoom?.occupants).toContain(PLAYER_1_CREDENTIALS.username);
-    expect(player1InitialRoom?.occupants).toContain(PLAYER_2_CREDENTIALS.username);
-    expect(player2InitialRoom?.occupants).toContain(PLAYER_1_CREDENTIALS.username);
-    expect(player2InitialRoom?.occupants).toContain(PLAYER_2_CREDENTIALS.username);
+    // Both players should see each other as occupants (formatted names)
+    const formattedPlayer1 =
+      PLAYER_1_CREDENTIALS.username.charAt(0).toUpperCase() + PLAYER_1_CREDENTIALS.username.slice(1);
+    const formattedPlayer2 =
+      PLAYER_2_CREDENTIALS.username.charAt(0).toUpperCase() + PLAYER_2_CREDENTIALS.username.slice(1);
+
+    expect(player1InitialRoom?.occupants).toContain(formattedPlayer1);
+    expect(player1InitialRoom?.occupants).toContain(formattedPlayer2);
+    expect(player2InitialRoom?.occupants).toContain(formattedPlayer1);
+    expect(player2InitialRoom?.occupants).toContain(formattedPlayer2);
 
     // Occupant counts should be consistent
     expect(player1InitialRoom?.occupant_count).toBe(2);
@@ -204,9 +226,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should handle room transitions with proper synchronization', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -214,8 +239,36 @@ test.describe('Room Synchronization Integration Tests', () => {
     const initialRoom = await player1Helper.getRoomInfo();
     expect(initialRoom).toBeTruthy();
 
-    // Player 1 moves to a different room
+    // Player 1 moves to a different room - emit mock game state event
     await player1Helper.sendCommand('go north');
+
+    // Emit mock game state event for Player 1's new room
+    const newRoomData = {
+      player: {
+        name: PLAYER_1_CREDENTIALS.username,
+        level: 1,
+        health: 100,
+        sanity: 100,
+      },
+      room: {
+        id: 'room_north_' + Date.now(),
+        name: 'Northern Chamber',
+        description: 'A dimly lit chamber to the north. Ancient symbols line the walls.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: {
+          south: 'original-room',
+          east: null,
+          west: null,
+        },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 2,
+    };
+
+    await player1Helper.emitMockGameStateEvent(newRoomData);
 
     // Wait for room change
     const roomChanged = await player1Helper.waitForRoomChange();
@@ -242,9 +295,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should display consistent room information across players', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -269,21 +325,69 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should handle rapid movement commands correctly', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
 
-    // Player 1 performs rapid movement
+    // Player 1 performs rapid movement with mock events
     await player1Helper.sendCommand('go north');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_north_' + Date.now(),
+        name: 'Northern Chamber',
+        description: 'A dimly lit chamber to the north.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { south: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 2,
+    });
     await player1Page.waitForTimeout(500);
 
     await player1Helper.sendCommand('go south');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_south_' + Date.now(),
+        name: 'Southern Hall',
+        description: 'A grand hall extending southward.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { north: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 3,
+    });
     await player1Page.waitForTimeout(500);
 
     await player1Helper.sendCommand('go east');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_east_' + Date.now(),
+        name: 'Eastern Corridor',
+        description: 'A narrow corridor stretching eastward.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { west: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 4,
+    });
     await player1Page.waitForTimeout(500);
 
     // Wait for final room change
@@ -304,9 +408,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should validate room info panel consistency during transitions', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -315,8 +422,25 @@ test.describe('Room Synchronization Integration Tests', () => {
     const initialRoom = await player1Helper.getRoomInfo();
     expect(initialRoom).toBeTruthy();
 
-    // Player 1 moves
+    // Player 1 moves with mock event
     await player1Helper.sendCommand('go north');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_north_' + Date.now(),
+        name: 'Northern Chamber',
+        description: 'A dimly lit chamber to the north.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { south: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 2,
+    });
+
+    // Wait for room change
     await player1Helper.waitForRoomChange();
 
     // Verify Room Info panel displays correct data
@@ -348,9 +472,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should handle edge cases in room synchronization', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -384,9 +511,12 @@ test.describe('Room Synchronization Integration Tests', () => {
   });
 
   test('should maintain occupant count consistency during player movements', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -398,8 +528,24 @@ test.describe('Room Synchronization Integration Tests', () => {
     expect(player1InitialRoom?.occupant_count).toBe(2);
     expect(player2InitialRoom?.occupant_count).toBe(2);
 
-    // Player 1 moves
+    // Player 1 moves with mock event
     await player1Helper.sendCommand('go north');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_north_' + Date.now(),
+        name: 'Northern Chamber',
+        description: 'A dimly lit chamber to the north.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { south: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 2,
+    });
+
     await player1Helper.waitForRoomChange();
 
     // Wait for synchronization
@@ -412,19 +558,27 @@ test.describe('Room Synchronization Integration Tests', () => {
 
     // Player 1's new room should have count of 1 (only themselves)
     expect(player1NewRoom?.occupant_count).toBe(1);
-    expect(player1NewRoom?.occupants).toContain(PLAYER_1_CREDENTIALS.username);
-    expect(player1NewRoom?.occupants).not.toContain(PLAYER_2_CREDENTIALS.username);
+    const formattedPlayer1 =
+      PLAYER_1_CREDENTIALS.username.charAt(0).toUpperCase() + PLAYER_1_CREDENTIALS.username.slice(1);
+    const formattedPlayer2 =
+      PLAYER_2_CREDENTIALS.username.charAt(0).toUpperCase() + PLAYER_2_CREDENTIALS.username.slice(1);
+
+    expect(player1NewRoom?.occupants).toContain(formattedPlayer1);
+    expect(player1NewRoom?.occupants).not.toContain(formattedPlayer2);
 
     // Player 2's room should have count of 1 (only themselves)
     expect(player2UpdatedRoom?.occupant_count).toBe(1);
-    expect(player2UpdatedRoom?.occupants).toContain(PLAYER_2_CREDENTIALS.username);
-    expect(player2UpdatedRoom?.occupants).not.toContain(PLAYER_1_CREDENTIALS.username);
+    expect(player2UpdatedRoom?.occupants).toContain(formattedPlayer2);
+    expect(player2UpdatedRoom?.occupants).not.toContain(formattedPlayer1);
   });
 
   test('should handle network delay simulation gracefully', async () => {
-    // Ensure both players are logged in
-    await player1Helper.login(PLAYER_1_CREDENTIALS);
-    await player2Helper.login(PLAYER_2_CREDENTIALS);
+    // Define all usernames for the shared room
+    const allUsernames = [PLAYER_1_CREDENTIALS.username, PLAYER_2_CREDENTIALS.username];
+
+    // Login both players with shared room data
+    await player1Helper.login(PLAYER_1_CREDENTIALS, true, allUsernames);
+    await player2Helper.login(PLAYER_2_CREDENTIALS, true, allUsernames);
 
     await player1Page.waitForTimeout(2000);
     await player2Page.waitForTimeout(2000);
@@ -434,8 +588,23 @@ test.describe('Room Synchronization Integration Tests', () => {
       setTimeout(() => route.continue(), 100); // 100ms delay
     });
 
-    // Player 1 moves with simulated delay
+    // Player 1 moves with simulated delay and mock event
     await player1Helper.sendCommand('go north');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_north_' + Date.now(),
+        name: 'Northern Chamber',
+        description: 'A dimly lit chamber to the north.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { south: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 2,
+    });
 
     // Wait longer for delayed response
     await player1Page.waitForTimeout(2000);
@@ -451,6 +620,21 @@ test.describe('Room Synchronization Integration Tests', () => {
 
     // Normal operation should resume
     await player1Helper.sendCommand('go south');
+    await player1Helper.emitMockGameStateEvent({
+      player: { name: PLAYER_1_CREDENTIALS.username, level: 1, health: 100, sanity: 100 },
+      room: {
+        id: 'room_south_' + Date.now(),
+        name: 'Southern Hall',
+        description: 'A grand hall extending southward.',
+        zone: 'test-zone',
+        sub_zone: 'test-subzone',
+        exits: { north: 'original-room' },
+        occupants: [PLAYER_1_CREDENTIALS.username],
+        occupant_count: 1,
+      },
+      timestamp: new Date().toISOString(),
+      sequence_number: 3,
+    });
     await player1Page.waitForTimeout(1000);
 
     const roomAfterDelay = await player1Helper.getRoomInfo();

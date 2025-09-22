@@ -170,6 +170,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
             disabled={disabled || !isConnected}
             className="w-full"
             autoFocus
+            data-testid="command-input"
           />
           <TerminalButton
             type="submit"

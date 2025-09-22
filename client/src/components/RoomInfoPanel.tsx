@@ -201,27 +201,31 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   };
 
   return (
-    <div className="room-info-panel">
+    <div className="room-info-panel" data-testid="room-info-panel">
       <div className="room-info-content">
         {/* Room Name */}
-        <div className="room-name">
+        <div className="room-name" data-testid="room-name">
           <h4>{displayRoom.name}</h4>
         </div>
 
         {/* Zone */}
         <div className="room-zone">
           <span className="zone-label">Zone:</span>
-          <span className="zone-value">{formatLocationName(displayRoom.zone || 'Unknown')}</span>
+          <span className="zone-value" data-testid="zone-value">
+            {formatLocationName(displayRoom.zone || 'Unknown')}
+          </span>
         </div>
 
         {/* Subzone */}
         <div className="room-subzone">
           <span className="subzone-label">Subzone:</span>
-          <span className="subzone-value">{formatLocationName(displayRoom.sub_zone || 'Unknown')}</span>
+          <span className="subzone-value" data-testid="subzone-value">
+            {formatLocationName(displayRoom.sub_zone || 'Unknown')}
+          </span>
         </div>
 
         {/* Description */}
-        <div className="room-description">
+        <div className="room-description" data-testid="room-description">
           <span className="description-label">Description:</span>
           <p className="description-text">{formatDescription(displayRoom.description)}</p>
         </div>
@@ -245,7 +249,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
             <span className="occupants-label">
               Occupants
               {typeof displayRoom.occupant_count === 'number' && (
-                <span className="occupant-count-badge">({displayRoom.occupant_count})</span>
+                <span className="occupant-count-badge" data-testid="occupant-count">
+                  ({displayRoom.occupant_count})
+                </span>
               )}
             </span>
           </div>
@@ -255,7 +261,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
                 {displayRoom.occupants.map((occupant, index) => (
                   <div key={index} className="occupant-item">
                     <span className="occupant-indicator">●</span>
-                    <span className="occupant-name">{formatOccupantName(occupant)}</span>
+                    <span className="occupant-name" data-testid="occupant-name">
+                      {formatOccupantName(occupant)}
+                    </span>
                   </div>
                 ))}
               </div>
