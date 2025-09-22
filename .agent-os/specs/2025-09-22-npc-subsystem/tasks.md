@@ -30,7 +30,7 @@
   - [x] 1.2 Create SQL DDL files for NPC tables (npc_definitions, npc_spawn_rules, npc_relationships) ✅
   - [x] 1.3 Implement NPC database models and repository classes ✅
   - [x] 1.4 Create database initialization and verification scripts ✅
-  - [ ] 1.5 Add sample NPC data for testing and development
+  - [x] 1.5 Add sample NPC data for testing and development ✅
   - [x] 1.6 Verify all database tests pass ✅
 
 - [ ] 2. NPC Threading and Message Queue Infrastructure
