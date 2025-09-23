@@ -11,7 +11,6 @@ that lurk in the shadows of our world. The spawning service ensures that NPCs
 appear at the right time, in the right place, and under the right conditions.
 """
 
-import logging
 import random
 import time
 from typing import Any
@@ -22,7 +21,9 @@ from server.models.npc import NPCDefinition, NPCSpawnRule
 from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
 from server.npc.population_control import NPCPopulationController, ZoneConfiguration
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class NPCSpawnRequest:

@@ -10,7 +10,6 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
-import logging
 import time
 from datetime import UTC, datetime
 from enum import Enum
@@ -18,7 +17,9 @@ from typing import Any
 
 from fastapi import HTTPException, Request, status
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class AdminRole(str, Enum):

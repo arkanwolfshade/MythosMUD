@@ -11,7 +11,6 @@ that lurk in the shadows of our world. The interaction system ensures that NPCs
 can form meaningful connections and react appropriately to each other's presence.
 """
 
-import logging
 import random
 import time
 from enum import Enum
@@ -22,7 +21,9 @@ from server.events.event_types import NPCEnteredRoom, NPCLeftRoom, NPCSpoke
 from server.models.npc import NPCRelationship, NPCRelationshipType
 from server.npc.behaviors import NPCBase
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class NPCInteractionType(str, Enum):

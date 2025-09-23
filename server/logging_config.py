@@ -5,6 +5,22 @@ This module provides a configurable logging system that supports multiple
 environments (test, development, staging, production) with separate log files
 for different categories of events. As the Pnakotic Manuscripts teach us,
 proper categorization of knowledge is essential for its preservation.
+
+CRITICAL LOGGING REQUIREMENT:
+All service modules MUST use get_logger() from this module instead of
+logging.getLogger(). Standard Python loggers do not support the 'context'
+parameter that our structlog-based system requires. Using logging.getLogger()
+will cause server startup failures when services attempt to log with context.
+
+CORRECT USAGE:
+    from ..logging_config import get_logger
+    logger = get_logger(__name__)
+    logger.info("Message", context={"key": "value"})
+
+INCORRECT USAGE (WILL CAUSE FAILURES):
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Message", context={"key": "value"})  # TypeError!
 """
 
 import logging

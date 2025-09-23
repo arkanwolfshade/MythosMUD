@@ -11,7 +11,6 @@ that lurk in the shadows of our world. The lifecycle manager ensures that NPCs
 have proper birth, existence, and eventual return to the void.
 """
 
-import logging
 import time
 from enum import Enum
 from typing import Any
@@ -23,7 +22,9 @@ from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class NPCLifecycleState(str, Enum):

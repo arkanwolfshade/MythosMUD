@@ -12,7 +12,6 @@ configurations reflect the inherent mystical properties of different locations.
 """
 
 import json
-import logging
 import random
 import time
 from pathlib import Path
@@ -27,7 +26,9 @@ from server.events.event_types import (
 )
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class ZoneConfiguration:

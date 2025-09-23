@@ -8,7 +8,6 @@ As documented in the Cultes des Goules, proper instance management is essential
 for maintaining control over the eldritch entities that inhabit our world.
 """
 
-import logging
 from typing import Any
 
 from server.database import get_async_session
@@ -17,7 +16,9 @@ from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
-logger = logging.getLogger(__name__)
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class NPCInstanceService:

@@ -26,6 +26,7 @@ clean:
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py
+	cd $(PROJECT_ROOT) && python scripts/check_logging_consistency.py
 
 lint-sqlalchemy:
 	cd $(PROJECT_ROOT) && python scripts/lint_sqlalchemy_async.py
