@@ -32,6 +32,9 @@ os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
 
+# CRITICAL: Set database URLs IMMEDIATELY to prevent import-time failures
+# This must happen before any database modules are imported
+
 # Ensure DATABASE_URL is set with absolute path
 database_url = os.getenv("DATABASE_URL")
 if database_url:
@@ -48,6 +51,7 @@ else:
     test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
     test_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+    print(f"✓ Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
 
 # Ensure NPC_DATABASE_URL is set with absolute path
 npc_database_url = os.getenv("NPC_DATABASE_URL")
@@ -67,6 +71,7 @@ else:
     test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
     test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    print(f"✓ Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
 
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
@@ -207,22 +212,26 @@ def test_database():
 @pytest.fixture(scope="session")
 def test_npc_database():
     """Initialize NPC test database with proper schema."""
-    import asyncio
+    import os
 
-    from server.npc_database import init_npc_database
-    from server.tests.init_npc_test_db import init_npc_test_database
-
-    # Initialize the NPC test database
-    init_npc_test_database()
-
-    # Also initialize the NPC database through the main initialization function
-    # This ensures the SQLAlchemy metadata is properly set up
-    asyncio.run(init_npc_database())
-
-    # Return the NPC database path
+    # Get the NPC test database path
     from pathlib import Path
 
+    from server.tests.init_npc_test_db import init_npc_test_database
+
     npc_test_db_path = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+
+    # Remove existing database file to ensure clean state
+    if npc_test_db_path.exists():
+        os.unlink(npc_test_db_path)
+
+    # Initialize the NPC test database with schema
+    init_npc_test_database()
+
+    # The SQLAlchemy metadata initialization will happen when the NPC database
+    # module is imported and the engine is created. We don't need to call
+    # init_npc_database() here as it's meant for runtime initialization.
+
     return str(npc_test_db_path)
 
 

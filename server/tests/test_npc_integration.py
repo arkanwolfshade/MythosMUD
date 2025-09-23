@@ -452,34 +452,46 @@ class TestNPCCombatIntegration:
         """Test NPC attack with enhanced combat integration."""
         from ..npc.combat_integration import NPCCombatIntegration
 
-        # Create combat integration
-        combat_integration = NPCCombatIntegration(event_bus)
-        aggressive_npc.combat_integration = combat_integration
+        # Mock the persistence layer to prevent database access issues
+        mock_persistence = MagicMock()
+        mock_player = MagicMock()
+        mock_player.stats.model_dump.return_value = {"constitution": 10, "health": 100}
+        mock_persistence.get_player.return_value = mock_player
 
-        events_received = []
+        # Mock the game mechanics service
+        mock_game_mechanics = MagicMock()
+        mock_game_mechanics.apply_combat_effects.return_value = True
 
-        def capture_events(event):
-            events_received.append(event)
+        # Create combat integration with mocked dependencies
+        with patch("server.npc.combat_integration.get_persistence", return_value=mock_persistence):
+            with patch("server.npc.combat_integration.GameMechanicsService", return_value=mock_game_mechanics):
+                combat_integration = NPCCombatIntegration(event_bus)
+                aggressive_npc.combat_integration = combat_integration
 
-        # Subscribe to combat events
-        from ..events.event_types import NPCAttacked
+                events_received = []
 
-        event_bus.subscribe(NPCAttacked, capture_events)
+                def capture_events(event):
+                    events_received.append(event)
 
-        # Test enhanced attack
-        result = aggressive_npc.attack_target("test_player_1")
-        assert result is True
+                # Subscribe to combat events
+                from ..events.event_types import NPCAttacked
 
-        # Wait for event to be processed
-        import time
+                event_bus.subscribe(NPCAttacked, capture_events)
 
-        time.sleep(0.1)
+                # Test enhanced attack
+                result = aggressive_npc.attack_target("test_player_1")
+                assert result is True
 
-        # Should have attack event
-        assert len(events_received) == 1
-        assert events_received[0].event_type == "NPCAttacked"
-        assert events_received[0].npc_id == "aggressive_npc_1"
-        assert events_received[0].target_id == "test_player_1"
+                # Wait for event to be processed
+                import time
+
+                time.sleep(0.1)
+
+                # Should have attack event
+                assert len(events_received) == 1
+                assert events_received[0].event_type == "NPCAttacked"
+                assert events_received[0].npc_id == "aggressive_npc_1"
+                assert events_received[0].target_id == "test_player_1"
 
 
 class TestNPCCommunicationIntegration:
