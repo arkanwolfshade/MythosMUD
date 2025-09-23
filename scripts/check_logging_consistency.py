@@ -28,21 +28,21 @@ def check_file_for_logging_issues(file_path: Path) -> list[str]:
     issues = []
 
     try:
-        with open(file_path, encoding='utf-8') as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
-            lines = content.split('\n')
+            lines = content.split("\n")
 
         # Check for logging.getLogger() usage
         for i, line in enumerate(lines, 1):
-            if re.search(r'logging\.getLogger\(', line):
+            if re.search(r"logging\.getLogger\(", line):
                 # Check if this file imports get_logger
-                if 'from ..logging_config import get_logger' not in content:
+                if "from ..logging_config import get_logger" not in content:
                     issues.append(f"Line {i}: Uses logging.getLogger() but doesn't import get_logger()")
 
         # Check for context parameter usage with standard logger
         for i, line in enumerate(lines, 1):
-            if re.search(r'logger\.(info|debug|warning|error|critical)\([^)]*context\s*=', line):
-                if 'from ..logging_config import get_logger' not in content:
+            if re.search(r"logger\.(info|debug|warning|error|critical)\([^)]*context\s*=", line):
+                if "from ..logging_config import get_logger" not in content:
                     issues.append(f"Line {i}: Uses context parameter but doesn't import get_logger()")
 
     except Exception as e:
@@ -57,18 +57,13 @@ def main():
     server_dir = project_root / "server"
 
     # Files to check (service files and core modules)
-    patterns_to_check = [
-        "server/services/*.py",
-        "server/npc/*.py",
-        "server/game/*.py",
-        "server/utils/*.py"
-    ]
+    patterns_to_check = ["server/services/*.py", "server/npc/*.py", "server/game/*.py", "server/utils/*.py"]
 
     all_issues = []
 
     for pattern in patterns_to_check:
         for file_path in server_dir.glob(pattern.replace("server/", "")):
-            if file_path.is_file() and file_path.suffix == '.py':
+            if file_path.is_file() and file_path.suffix == ".py":
                 issues = check_file_for_logging_issues(file_path)
                 if issues:
                     all_issues.append(f"\n{file_path.relative_to(project_root)}:")

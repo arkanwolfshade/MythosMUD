@@ -13,18 +13,39 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
+# CRITICAL: Load .env.test file FIRST, before any other environment variable setup
+# This ensures that test-specific database URLs are loaded before any modules
+# that depend on them are imported
+project_root = Path(__file__).parent.parent.parent
+TEST_ENV_PATH = project_root / ".env.test"
+if TEST_ENV_PATH.exists():
+    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
+    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
+else:
+    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
+    print("Using default test environment variables")
+
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
 os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
 os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-# Get the project root (two levels up from this file)
-project_root = Path(__file__).parent.parent.parent
-# Use absolute path to ensure database is created in the correct location
-test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-test_db_path.parent.mkdir(parents=True, exist_ok=True)
-os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+# Only set DATABASE_URL if not already set by .env.test
+if not os.getenv("DATABASE_URL"):
+    # Use absolute path to ensure database is created in the correct location
+    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+# Only set NPC_DATABASE_URL if not already set by .env.test
+if not os.getenv("NPC_DATABASE_URL"):
+    # Use absolute path to ensure NPC database is created in the correct location
+    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+    test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -69,16 +90,6 @@ def sync_test_environment():
         loop.close()
 
 
-# Load test environment variables from .env.test file
-TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
-if TEST_ENV_PATH.exists():
-    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
-else:
-    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables")
-
-
 def pytest_configure(config):
     """Configure pytest with test environment variables."""
     # Set required test environment variables, overriding any existing values
@@ -87,17 +98,24 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
-    # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-    test_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 
-    # Set up NPC database URL for tests
-    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
-    test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    # Only set DATABASE_URL if not already set by .env.test
+    if not os.getenv("DATABASE_URL"):
+        # Use absolute path to ensure database is created in the correct location
+        test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        test_db_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+    # Only set NPC_DATABASE_URL if not already set by .env.test
+    if not os.getenv("NPC_DATABASE_URL"):
+        # Set up NPC database URL for tests
+        test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+        test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
