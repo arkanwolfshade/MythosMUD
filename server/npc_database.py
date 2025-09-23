@@ -9,12 +9,13 @@ import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
 from .logging_config import get_logger
@@ -34,10 +35,14 @@ if not NPC_DATABASE_URL:
 logger.info("NPC Database URL configured", npc_database_url=NPC_DATABASE_URL)
 
 # Create async engine for NPC database
+# Use NullPool for tests to prevent SQLite file locking issues
+# StaticPool keeps connections open, which causes problems with SQLite in test environments
+pool_class = NullPool if "test" in NPC_DATABASE_URL else StaticPool
+
 npc_engine = create_async_engine(
     NPC_DATABASE_URL,
     echo=False,
-    poolclass=StaticPool,
+    poolclass=pool_class,
     pool_pre_ping=True,
     connect_args={
         "check_same_thread": False,
@@ -45,7 +50,19 @@ npc_engine = create_async_engine(
     },
 )
 
-logger.info("NPC Database engine created", pool_class=StaticPool)
+
+# Enable foreign key constraints for SQLite
+@event.listens_for(npc_engine.sync_engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    """Enable foreign key constraints for SQLite connections."""
+    if "sqlite" in str(dbapi_connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+        print(f"DEBUG: Enabled foreign keys for connection: {dbapi_connection}")
+
+
+logger.info("NPC Database engine created", pool_class=pool_class.__name__)
 
 # Create async session maker for NPC database
 npc_session_maker = async_sessionmaker(
@@ -75,6 +92,10 @@ async def get_npc_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with npc_session_maker() as session:
         try:
             logger.debug("Creating NPC database session")
+            # Enable foreign key constraints for this session
+            from sqlalchemy import text
+
+            await session.execute(text("PRAGMA foreign_keys = ON"))
             yield session
             logger.debug("NPC Database session created successfully")
         except Exception as e:

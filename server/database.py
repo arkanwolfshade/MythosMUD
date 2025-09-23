@@ -9,13 +9,13 @@ import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
-from sqlalchemy import text
+from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
 from .logging_config import get_logger
@@ -40,10 +40,14 @@ if not DATABASE_URL:
 logger.info("Database URL configured", database_url=DATABASE_URL)
 
 # Create async engine
+# Use NullPool for tests to prevent SQLite file locking issues
+# StaticPool keeps connections open, which causes problems with SQLite in test environments
+pool_class = NullPool if "test" in DATABASE_URL else StaticPool
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
-    poolclass=StaticPool,
+    poolclass=pool_class,
     pool_pre_ping=True,
     connect_args={
         "check_same_thread": False,
@@ -51,7 +55,18 @@ engine = create_async_engine(
     },
 )
 
-logger.info("Database engine created", pool_class="StaticPool")
+
+# Enable foreign key constraints for SQLite
+@event.listens_for(engine.sync_engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    """Enable foreign key constraints for SQLite connections."""
+    if "sqlite" in str(dbapi_connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+
+logger.info("Database engine created", pool_class=pool_class.__name__)
 
 # Create async session maker
 async_session_maker = async_sessionmaker(
