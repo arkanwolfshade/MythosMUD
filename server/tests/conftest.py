@@ -192,6 +192,24 @@ def ensure_test_db_ready(test_database):
     pass
 
 
+@pytest.fixture(autouse=True)  # Enable automatic use for all tests
+def cleanup_database_connections():
+    """Clean up database connections after each test to prevent connection issues."""
+    import asyncio
+
+    from ..database import close_db
+
+    yield  # Run the test
+
+    # Clean up database connections after the test
+    try:
+        asyncio.run(close_db())
+    except Exception as e:
+        # Log cleanup errors but don't fail the test
+        print(f"Warning: Database cleanup failed: {e}")
+        pass
+
+
 @pytest.fixture
 def test_client():
     """Create a test client with properly initialized app state."""
