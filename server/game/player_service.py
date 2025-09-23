@@ -47,12 +47,12 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info("Creating new player", name=name, starting_room_id=starting_room_id)
+        logger.info("Creating new player", context={"name": name, "starting_room_id": starting_room_id})
 
         # Check if player already exists
         existing_player = self.persistence.get_player_by_name(name)
         if existing_player:
-            logger.warning("Player creation failed - name already exists", name=name)
+            logger.warning("Player creation failed - name already exists", context={"name": name})
             context = create_error_context()
             context.metadata["player_name"] = name
             context.metadata["operation"] = "create_player"
@@ -67,7 +67,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", name=name)
+            logger.debug("Generated user_id for new player", context={"name": name})
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -83,7 +83,7 @@ class PlayerService:
 
         # Save player to persistence
         self.persistence.save_player(player)
-        logger.info("Player created successfully", name=name, player_id=player.player_id)
+        logger.info("Player created successfully", context={"name": name, "player_id": player.player_id})
 
         # Convert to schema format
         return self._convert_player_to_schema(player)
@@ -110,12 +110,12 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info("Creating new player with stats", name=name, starting_room_id=starting_room_id)
+        logger.info("Creating new player with stats", context={"name": name, "starting_room_id": starting_room_id})
 
         # Check if player already exists
         existing_player = self.persistence.get_player_by_name(name)
         if existing_player:
-            logger.warning("Player creation failed - name already exists", name=name)
+            logger.warning("Player creation failed - name already exists", context={"name": name})
             context = create_error_context()
             context.metadata["player_name"] = name
             context.metadata["operation"] = "create_player_with_stats"
@@ -130,7 +130,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", name=name)
+            logger.debug("Generated user_id for new player", context={"name": name})
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -154,7 +154,7 @@ class PlayerService:
 
         # Save player to persistence
         self.persistence.save_player(player)
-        logger.info("Player created successfully with stats", name=name, player_id=player.player_id)
+        logger.info("Player created successfully with stats", context={"name": name, "player_id": player.player_id})
 
         # Convert to schema format
         return self._convert_player_to_schema(player)
@@ -169,16 +169,16 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Getting player by ID", player_id=player_id)
+        logger.debug("Getting player by ID", context={"player_id": player_id})
 
         player = self.persistence.get_player(player_id)
         if not player:
-            logger.debug("Player not found by ID", player_id=player_id)
+            logger.debug("Player not found by ID", context={"player_id": player_id})
             return None
 
         # Safely get player name for logging
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
-        logger.debug("Player found by ID", player_id=player_id, name=player_name)
+        logger.debug("Player found by ID", context={"player_id": player_id, "name": player_name})
         return self._convert_player_to_schema(player)
 
     def get_player_by_name(self, player_name: str) -> PlayerRead | None:
@@ -191,16 +191,16 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Getting player by name", player_name=player_name)
+        logger.debug("Getting player by name", context={"player_name": player_name})
 
         player = self.persistence.get_player_by_name(player_name)
         if not player:
-            logger.debug("Player not found by name", player_name=player_name)
+            logger.debug("Player not found by name", context={"player_name": player_name})
             return None
 
         # Safely get player ID for logging
         player_id = player.player_id if hasattr(player, "player_id") else player.get("player_id", "unknown")
-        logger.debug("Player found by name", player_name=player_name, player_id=player_id)
+        logger.debug("Player found by name", context={"player_name": player_name, "player_id": player_id})
         return self._convert_player_to_schema(player)
 
     def list_players(self) -> list[PlayerRead]:
@@ -231,7 +231,7 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Resolving player name", player_name=player_name)
+        logger.debug("Resolving player name", context={"player_name": player_name})
 
         if not player_name or not player_name.strip():
             logger.debug("Empty player name provided")
@@ -310,7 +310,7 @@ class PlayerService:
         Returns:
             List[PlayerRead]: List of matching players
         """
-        logger.debug("Searching players by name", search_term=search_term, limit=limit)
+        logger.debug("Searching players by name", context={"search_term": search_term, "limit": limit})
 
         if not search_term or not search_term.strip():
             logger.debug("Empty search term provided")
@@ -365,7 +365,7 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (is_valid, error_message)
         """
-        logger.debug("Validating player name", player_name=player_name)
+        logger.debug("Validating player name", context={"player_name": player_name})
 
         if not player_name or not player_name.strip():
             return False, "Player name cannot be empty"
@@ -402,10 +402,10 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (success, message)
         """
-        logger.debug("Attempting to delete player", player_id=player_id)
+        logger.debug("Attempting to delete player", context={"player_id": player_id})
         player = self.persistence.get_player(player_id)
         if not player:
-            logger.warning("Player not found for deletion", player_id=player_id)
+            logger.warning("Player not found for deletion", context={"player_id": player_id})
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "delete_player"
@@ -420,7 +420,7 @@ class PlayerService:
         # Delete the player from the database
         success = self.persistence.delete_player(player_id)
         if not success:
-            logger.error("Failed to delete player from persistence", player_id=player_id)
+            logger.error("Failed to delete player from persistence", context={"player_id": player_id})
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "delete_player"
@@ -434,12 +434,12 @@ class PlayerService:
 
         # Safely get player name for logging
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
-        logger.info("Player deleted successfully", player_id=player_id, name=player_name)
+        logger.info("Player deleted successfully", context={"player_id": player_id, "name": player_name})
 
         # Delete player aliases if they exist
         alias_storage = AliasStorage()
         alias_storage.delete_player_aliases(player_name)
-        logger.debug("Player aliases deleted", player_id=player_id, name=player_name)
+        logger.debug("Player aliases deleted", context={"player_id": player_id, "name": player_name})
 
         return True, f"Player {player_name} has been deleted"
 

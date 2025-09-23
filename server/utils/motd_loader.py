@@ -39,7 +39,7 @@ def load_motd() -> str:
         else:
             context = create_error_context()
             context.metadata = {"motd_path": motd_path, "motd_file": motd_file}
-            logger.warning("MOTD file not found", context=context.to_dict())
+            logger.warning("MOTD file not found", **context.to_dict())
             return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."
 
     except Exception as e:
@@ -50,5 +50,5 @@ def load_motd() -> str:
             "error_type": type(e).__name__,
             "error_message": str(e),
         }
-        logger.error("Error loading MOTD", context=context.to_dict())
+        logger.error("Error loading MOTD", **context.to_dict())
         return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."

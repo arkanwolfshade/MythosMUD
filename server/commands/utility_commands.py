@@ -112,7 +112,7 @@ async def handle_who_command(
     Returns:
         dict: Who command result
     """
-    logger.debug("Processing who command", player=player_name, command_data=command_data)
+    logger.debug("Processing who command", context={"player": player_name, "command_data": command_data})
 
     # Extract filter term from command_data (use target_player for consistency with command service)
     filter_term = command_data.get("target_player", "")
@@ -121,7 +121,7 @@ async def handle_who_command(
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning("Who command failed - no persistence layer", player=player_name)
+        logger.warning("Who command failed - no persistence layer", context={"player": player_name})
         return {"result": "Player information is not available."}
 
     try:
@@ -200,7 +200,10 @@ async def handle_who_command(
                     else:
                         # No matches found
                         result = f"No players found matching '{filter_term}'. Try 'who' to see all online players."
-                        logger.debug("Who command - no matches for filter", player=player_name, filter=filter_term)
+                        logger.debug(
+                            "Who command - no matches for filter",
+                            context={"player": player_name, "filter": filter_term},
+                        )
                         return {"result": result}
                 else:
                     # No filter - show all online players
@@ -214,16 +217,18 @@ async def handle_who_command(
 
                     player_list = ", ".join(player_entries)
                     result = f"Online players ({len(online_players)}): {player_list}"
-                    logger.debug("Who command successful", player=player_name, count=len(online_players))
+                    logger.debug(
+                        "Who command successful", context={"player": player_name, "count": len(online_players)}
+                    )
                     return {"result": result}
             else:
-                logger.debug("No online players found", player=player_name)
+                logger.debug("No online players found", context={"player": player_name})
                 return {"result": "No players are currently online."}
         else:
-            logger.debug("No players found in database", player=player_name)
+            logger.debug("No players found in database", context={"player": player_name})
             return {"result": "No players found."}
     except Exception as e:
-        logger.error("Who command error", player=player_name, error=str(e))
+        logger.error("Who command error", context={"player": player_name, "error": str(e)})
         return {"result": f"Error retrieving player list: {str(e)}"}
 
 
@@ -243,7 +248,7 @@ async def handle_quit_command(
     Returns:
         dict: Quit command result
     """
-    logger.debug("Processing quit command", player=player_name, args=args)
+    logger.debug("Processing quit command", context={"player": player_name, "args": args})
 
     # Update last active timestamp before quitting
     app = request.app if request else None
@@ -257,11 +262,11 @@ async def handle_quit_command(
 
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
-                logger.info("Player quit - updated last active", player=player_name)
+                logger.info("Player quit - updated last active", context={"player": player_name})
         except Exception as e:
-            logger.error("Error updating last active on quit", player=player_name, error=str(e))
+            logger.error("Error updating last active on quit", context={"player": player_name, "error": str(e)})
 
-    logger.info("Player quitting", player=player_name)
+    logger.info("Player quitting", context={"player": player_name})
     return {"result": "Goodbye! You have been disconnected from the game."}
 
 
@@ -287,7 +292,7 @@ async def handle_logout_command(
     Returns:
         dict: Logout command result with success status and metadata
     """
-    logger.debug("Processing logout command", player=player_name, args=args)
+    logger.debug("Processing logout command", context={"player": player_name, "args": args})
 
     try:
         # Update last active timestamp before logout
@@ -302,9 +307,9 @@ async def handle_logout_command(
 
                     player.last_active = datetime.now(UTC)
                     persistence.save_player(player)
-                    logger.info("Player logout - updated last active", player=player_name)
+                    logger.info("Player logout - updated last active", context={"player": player_name})
             except Exception as e:
-                logger.error("Error updating last active on logout", player=player_name, error=str(e))
+                logger.error("Error updating last active on logout", context={"player": player_name, "error": str(e)})
 
         # Disconnect player from all connections
         try:
@@ -313,13 +318,13 @@ async def handle_logout_command(
 
             if connection_manager:
                 await connection_manager.force_disconnect_player(player_name)
-                logger.info("Player disconnected from all connections", player=player_name)
+                logger.info("Player disconnected from all connections", context={"player": player_name})
             else:
-                logger.warning("Connection manager not available for logout", player=player_name)
+                logger.warning("Connection manager not available for logout", context={"player": player_name})
         except Exception as e:
-            logger.error("Error disconnecting player", player=player_name, error=str(e))
+            logger.error("Error disconnecting player", context={"player": player_name, "error": str(e)})
 
-        logger.info("Player logged out successfully", player=player_name)
+        logger.info("Player logged out successfully", context={"player": player_name})
 
         return {
             "result": "Logged out successfully",
@@ -329,7 +334,7 @@ async def handle_logout_command(
         }
 
     except Exception as e:
-        logger.error("Unexpected error during logout", player=player_name, error=str(e), exc_info=True)
+        logger.error("Unexpected error during logout", context={"player": player_name, "error": str(e)}, exc_info=True)
 
         # Even if there's an error, we should still indicate logout success
         # The client will handle the cleanup
@@ -357,19 +362,19 @@ async def handle_status_command(
     Returns:
         dict: Status command result
     """
-    logger.debug("Processing status command", player=player_name, args=args)
+    logger.debug("Processing status command", context={"player": player_name, "args": args})
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning("Status command failed - no persistence layer", player=player_name)
+        logger.warning("Status command failed - no persistence layer", context={"player": player_name})
         return {"result": "Status information is not available."}
 
     try:
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Status command failed - player not found", player=player_name)
+            logger.warning("Status command failed - player not found", context={"player": player_name})
             return {"result": "Player information not found."}
 
         # Get current room information
@@ -399,10 +404,10 @@ async def handle_status_command(
             status_lines.append(f"Pose: {player.pose}")
 
         result = "\n".join(status_lines)
-        logger.debug("Status command successful", player=player_name)
+        logger.debug("Status command successful", context={"player": player_name})
         return {"result": result}
     except Exception as e:
-        logger.error("Status command error", player=player_name, error=str(e))
+        logger.error("Status command error", context={"player": player_name, "error": str(e)})
         return {"result": f"Error retrieving status information: {str(e)}"}
 
 
@@ -422,19 +427,19 @@ async def handle_inventory_command(
     Returns:
         dict: Inventory command result
     """
-    logger.debug("Processing inventory command", player=player_name, args=args)
+    logger.debug("Processing inventory command", context={"player": player_name, "args": args})
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning("Inventory command failed - no persistence layer", player=player_name)
+        logger.warning("Inventory command failed - no persistence layer", context={"player": player_name})
         return {"result": "Inventory information is not available."}
 
     try:
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            logger.warning("Inventory command failed - player not found", player=player_name)
+            logger.warning("Inventory command failed - player not found", context={"player": player_name})
             return {"result": "Player information not found."}
 
         if player.inventory:
@@ -449,13 +454,15 @@ async def handle_inventory_command(
                 item_list.append(item_desc)
 
             result = "You are carrying:\n" + "\n".join(item_list)
-            logger.debug("Inventory command successful", player=player_name, count=len(player.inventory))
+            logger.debug(
+                "Inventory command successful", context={"player": player_name, "count": len(player.inventory)}
+            )
             return {"result": result}
         else:
-            logger.debug("Empty inventory", player=player_name)
+            logger.debug("Empty inventory", context={"player": player_name})
             return {"result": "You are not carrying anything."}
     except Exception as e:
-        logger.error("Inventory command error", player=player_name, error=str(e))
+        logger.error("Inventory command error", context={"player": player_name, "error": str(e)})
         return {"result": f"Error retrieving inventory: {str(e)}"}
 
 
@@ -475,15 +482,15 @@ async def handle_emote_command(
     Returns:
         dict: Emote command result
     """
-    logger.debug("Processing emote command", player=player_name, command_data=command_data)
+    logger.debug("Processing emote command", context={"player": player_name, "command_data": command_data})
 
     # Extract action from command_data
     action = command_data.get("action")
     if not action:
-        logger.warning("Emote command with no action", player=player_name)
+        logger.warning("Emote command with no action", context={"player": player_name})
         return {"result": "Emote what? Usage: emote <action>"}
 
-    logger.debug("Player performing emote", player=player_name, action=action)
+    logger.debug("Player performing emote", context={"player": player_name, "action": action})
 
     try:
         # Import and use the emote service
@@ -497,11 +504,13 @@ async def handle_emote_command(
             self_message, other_message = emote_service.format_emote_messages(action, player_name)
 
             # Return both messages for broadcasting
-            logger.debug("Predefined emote executed", player=player_name, emote=action, message=self_message)
+            logger.debug(
+                "Predefined emote executed", context={"player": player_name, "emote": action, "message": self_message}
+            )
             return {"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}
         else:
             # Custom emote - use the action as provided
-            logger.debug("Custom emote executed", player=player_name, action=action)
+            logger.debug("Custom emote executed", context={"player": player_name, "action": action})
             return {
                 "result": f"{player_name} {action}",
                 "broadcast": f"{player_name} {action}",

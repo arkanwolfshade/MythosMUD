@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-runtime test-server-runtime
+.PHONY: help clean lint format test coverage build install run semgrep test-client-runtime test-server-runtime lint-sqlalchemy
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -9,6 +9,7 @@ help:
 	@echo "Available targets:"
 	@echo "  clean     - Remove build, dist, and cache files"
 	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
+	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
 	@echo "  test      - Run all tests (server + client)"
 	@echo "  test-server - Run server tests only"
@@ -25,6 +26,9 @@ clean:
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py
+
+lint-sqlalchemy:
+	cd $(PROJECT_ROOT) && python scripts/lint_sqlalchemy_async.py
 
 format:
 	cd $(PROJECT_ROOT) && python scripts/format.py

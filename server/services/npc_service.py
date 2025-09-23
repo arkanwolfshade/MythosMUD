@@ -51,11 +51,11 @@ class NPCService:
             )
             definitions = result.scalars().all()
 
-            logger.info("Retrieved NPC definitions", count=len(definitions))
+            logger.info("Retrieved NPC definitions", context={"count": len(definitions)})
             return list(definitions)
 
         except Exception as e:
-            logger.error("Error retrieving NPC definitions", error=str(e))
+            logger.error("Error retrieving NPC definitions", context={"error": str(e)})
             raise
 
     async def get_npc_definition(self, session: AsyncSession, definition_id: int) -> NPCDefinition | None:
@@ -78,7 +78,9 @@ class NPCService:
             definition = result.scalar_one_or_none()
 
             if definition:
-                logger.info("Retrieved NPC definition", definition_id=definition_id, name=definition.name)
+                logger.info(
+                    "Retrieved NPC definition", context={"definition_id": definition_id, "name": definition.name}
+                )
             else:
                 logger.warning("NPC definition not found", definition_id=definition_id)
 
@@ -292,7 +294,7 @@ class NPCService:
             # Delete the definition (cascade will handle related records)
             await session.execute(delete(NPCDefinition).where(NPCDefinition.id == definition_id))
 
-            logger.info("Deleted NPC definition", definition_id=definition_id, name=definition.name)
+            logger.info("Deleted NPC definition", context={"definition_id": definition_id, "name": definition.name})
 
             return True
 
@@ -324,7 +326,7 @@ class NPCService:
             return list(rules)
 
         except Exception as e:
-            logger.error("Error retrieving NPC spawn rules", error=str(e))
+            logger.error("Error retrieving NPC spawn rules", context={"error": str(e)})
             raise
 
     async def get_spawn_rule(self, session: AsyncSession, rule_id: int) -> NPCSpawnRule | None:
@@ -476,7 +478,7 @@ class NPCService:
             return list(relationships)
 
         except Exception as e:
-            logger.error("Error retrieving NPC relationships", error=str(e))
+            logger.error("Error retrieving NPC relationships", context={"error": str(e)})
             raise
 
     async def get_relationship(self, session: AsyncSession, relationship_id: int) -> NPCRelationship | None:
@@ -634,7 +636,7 @@ class NPCService:
             )
             definitions = result.scalars().all()
 
-            logger.info("Retrieved NPC definitions by type", npc_type=npc_type, count=len(definitions))
+            logger.info("Retrieved NPC definitions by type", npc_type=npc_type, context={"count": len(definitions)})
             return list(definitions)
 
         except Exception as e:
@@ -661,7 +663,9 @@ class NPCService:
             )
             definitions = result.scalars().all()
 
-            logger.info("Retrieved NPC definitions by sub-zone", sub_zone_id=sub_zone_id, count=len(definitions))
+            logger.info(
+                "Retrieved NPC definitions by sub-zone", sub_zone_id=sub_zone_id, context={"count": len(definitions)}
+            )
             return list(definitions)
 
         except Exception as e:
@@ -709,7 +713,7 @@ class NPCService:
             return stats
 
         except Exception as e:
-            logger.error("Error generating NPC system statistics", error=str(e))
+            logger.error("Error generating NPC system statistics", context={"error": str(e)})
             raise
 
 

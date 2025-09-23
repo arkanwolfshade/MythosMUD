@@ -218,7 +218,7 @@ async def handle_npc_create_command(
                 ai_integration_stub={},
             )
 
-            logger.info(f"NPC '{name}' created successfully by {player_name}", npc_id=definition.id)
+            logger.info(f"NPC '{name}' created successfully by {player_name}", context={"npc_id": definition.id})
             return {"result": f"NPC '{name}' created successfully with ID {definition.id}"}
 
     except Exception as e:
@@ -272,7 +272,7 @@ async def handle_npc_edit_command(
             if not definition:
                 return {"result": f"NPC definition {npc_id} not found"}
 
-            logger.info(f"NPC definition {npc_id} updated by {player_name}", field=field, value=value)
+            logger.info(f"NPC definition {npc_id} updated by {player_name}", context={"field": field, "value": value})
             return {"result": f"NPC definition {npc_id} updated successfully"}
 
     except Exception as e:

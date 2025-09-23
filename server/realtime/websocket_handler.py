@@ -245,7 +245,10 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
-        logger.info("🚨 SERVER DEBUG: handle_game_command called", command=command, args=args, player_id=player_id)
+        logger.info(
+            "🚨 SERVER DEBUG: handle_game_command called",
+            context={"command": command, "args": args, "player_id": player_id},
+        )
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -274,7 +277,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
-            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", context={"player": player_id})
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
@@ -322,7 +325,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
-    logger.info("🚨 SERVER DEBUG: process_websocket_command called", command=cmd, args=args, player_id=player_id)
+    logger.info(
+        "🚨 SERVER DEBUG: process_websocket_command called",
+        context={"command": cmd, "args": args, "player_id": player_id},
+    )
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager

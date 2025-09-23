@@ -9,6 +9,7 @@ import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -143,7 +144,7 @@ async def init_db():
             logger.info("Creating database tables")
             await conn.run_sync(metadata.create_all)
             # Enable foreign key constraints for SQLite
-            await conn.execute("PRAGMA foreign_keys = ON")
+            await conn.execute(text("PRAGMA foreign_keys = ON"))
             logger.info("Database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
