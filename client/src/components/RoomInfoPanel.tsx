@@ -185,10 +185,44 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
 
   const formatLocationName = (location: string): string => {
     if (!location || location === 'Unknown') return 'Unknown';
-    return location
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+
+    // Handle underscore-separated words
+    if (location.includes('_')) {
+      return location
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    // Handle camelCase words (like 'arkhamCity' -> 'Arkham City')
+    if (/[a-z][A-Z]/.test(location)) {
+      return location
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // Insert space before capital letters
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    // Handle specific known patterns for concatenated lowercase words
+    // This is a pragmatic approach for common MUD location patterns
+    const knownPatterns: Record<string, string> = {
+      arkhamcity: 'Arkham City',
+      universitylibrary: 'University Library',
+      cityhall: 'City Hall',
+      policeheadquarters: 'Police Headquarters',
+      hospital: 'Hospital',
+      library: 'Library',
+      university: 'University',
+      arkham: 'Arkham',
+    };
+
+    const lowerLocation = location.toLowerCase();
+    if (knownPatterns[lowerLocation]) {
+      return knownPatterns[lowerLocation];
+    }
+
+    // Fallback: capitalize first letter
+    return location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
   };
 
   const formatDescription = (description: string): string => {
