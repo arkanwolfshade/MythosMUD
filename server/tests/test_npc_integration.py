@@ -42,7 +42,7 @@ class TestNPCMovementIntegration:
         npc_def.description = "A test NPC for integration testing"
         npc_def.npc_type = NPCDefinitionType.PASSIVE_MOB
         npc_def.sub_zone_id = "downtown"
-        npc_def.room_id = "earth_arkham_city_downtown_room_derby_st_001"
+        npc_def.room_id = "earth_arkhamcity_downtown_room_derby_st_001"
         npc_def.base_stats = '{"hp": 100, "strength": 10}'
         npc_def.behavior_config = '{"wander_interval": 30}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -52,10 +52,10 @@ class TestNPCMovementIntegration:
     def mock_room_1(self):
         """Create a mock room for testing."""
         room = MagicMock()
-        room.id = "earth_arkham_city_downtown_room_derby_st_001"
+        room.id = "earth_arkhamcity_downtown_room_derby_st_001"
         room.name = "Derby Street"
         room.description = "A quiet street in downtown Arkham"
-        room.exits = {"north": "earth_arkham_city_downtown_room_derby_st_002"}
+        room.exits = {"north": "earth_arkhamcity_downtown_room_derby_st_002"}
         room.get_players.return_value = []
         room.get_npcs.return_value = []
         room.add_npc.return_value = True
@@ -66,10 +66,10 @@ class TestNPCMovementIntegration:
     def mock_room_2(self):
         """Create a second mock room for testing."""
         room = MagicMock()
-        room.id = "earth_arkham_city_downtown_room_derby_st_002"
+        room.id = "earth_arkhamcity_downtown_room_derby_st_002"
         room.name = "Derby Street North"
         room.description = "The northern end of Derby Street"
-        room.exits = {"south": "earth_arkham_city_downtown_room_derby_st_001"}
+        room.exits = {"south": "earth_arkhamcity_downtown_room_derby_st_001"}
         room.get_players.return_value = []
         room.get_npcs.return_value = []
         room.add_npc.return_value = True
@@ -81,8 +81,8 @@ class TestNPCMovementIntegration:
         """Create a mock persistence layer for testing."""
         persistence = MagicMock()
         persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_downtown_room_derby_st_001": mock_room_1,
-            "earth_arkham_city_downtown_room_derby_st_002": mock_room_2,
+            "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
+            "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
         }.get(room_id)
         return persistence
 
@@ -101,10 +101,10 @@ class TestNPCMovementIntegration:
     def test_npc_movement_basic(self, test_npc, movement_service, mock_room_1, mock_room_2):
         """Test basic NPC movement between rooms."""
         # Test initial room assignment
-        assert test_npc.current_room == "earth_arkham_city_downtown_room_derby_st_001"
+        assert test_npc.current_room == "earth_arkhamcity_downtown_room_derby_st_001"
 
         # Test movement to new room
-        new_room_id = "earth_arkham_city_downtown_room_derby_st_002"
+        new_room_id = "earth_arkhamcity_downtown_room_derby_st_002"
         result = test_npc.move_to_room(new_room_id)
 
         assert result is True
@@ -113,7 +113,7 @@ class TestNPCMovementIntegration:
     def test_npc_movement_with_room_validation(self, test_npc, movement_service, mock_room_1, mock_room_2):
         """Test NPC movement with room validation."""
         # Test movement to valid room
-        new_room_id = "earth_arkham_city_downtown_room_derby_st_002"
+        new_room_id = "earth_arkhamcity_downtown_room_derby_st_002"
         result = test_npc.move_to_room(new_room_id)
 
         assert result is True
@@ -140,7 +140,7 @@ class TestNPCMovementIntegration:
         event_bus.subscribe(NPCLeftRoom, capture_npc_events)
 
         # Move NPC to new room
-        new_room_id = "earth_arkham_city_downtown_room_derby_st_002"
+        new_room_id = "earth_arkhamcity_downtown_room_derby_st_002"
         test_npc.move_to_room(new_room_id)
 
         # Give event processing time
@@ -156,7 +156,7 @@ class TestNPCMovementIntegration:
         initial_time = test_npc._last_action_time
 
         # Move NPC
-        test_npc.move_to_room("earth_arkham_city_downtown_room_derby_st_002")
+        test_npc.move_to_room("earth_arkhamcity_downtown_room_derby_st_002")
 
         # Last action time should be updated
         assert test_npc._last_action_time >= initial_time
@@ -168,8 +168,8 @@ class TestNPCMovementIntegration:
 
         # Test that NPC movement doesn't interfere with player movement
         player_id = "test_player_1"
-        from_room = "earth_arkham_city_downtown_room_derby_st_001"
-        to_room = "earth_arkham_city_downtown_room_derby_st_002"
+        from_room = "earth_arkhamcity_downtown_room_derby_st_001"
+        to_room = "earth_arkhamcity_downtown_room_derby_st_002"
 
         # Mock player movement
         with patch.object(movement_service, "move_player", return_value=True) as mock_move:
@@ -769,7 +769,7 @@ class TestNPCEventIntegration:
         npc_def.description = "An NPC for event testing"
         npc_def.npc_type = NPCDefinitionType.PASSIVE_MOB
         npc_def.sub_zone_id = "downtown"
-        npc_def.room_id = "earth_arkham_city_downtown_room_derby_st_001"
+        npc_def.room_id = "earth_arkhamcity_downtown_room_derby_st_001"
         npc_def.base_stats = '{"hp": 100}'
         npc_def.behavior_config = '{"wander_interval": 30}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -795,7 +795,7 @@ class TestNPCEventIntegration:
             timestamp=None,
             event_type="PlayerEnteredRoom",
             player_id="test_player_1",
-            room_id="earth_arkham_city_downtown_room_derby_st_001",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
         )
         event_bus.publish(event)
 
@@ -851,7 +851,7 @@ class TestNPCEventIntegration:
         event_bus.subscribe(NPCLeftRoom, capture_npc_events)
 
         # Move NPC (which could trigger events in the future)
-        test_npc.move_to_room("earth_arkham_city_downtown_room_derby_st_002")
+        test_npc.move_to_room("earth_arkhamcity_downtown_room_derby_st_002")
 
         # Give event processing time
         time.sleep(0.1)
@@ -874,7 +874,7 @@ class TestNPCSystemIntegration:
         npc_def.id = 1
         npc_def.name = "Wandering Scholar"
         npc_def.npc_type = NPCDefinitionType.PASSIVE_MOB
-        npc_def.room_id = "earth_arkham_city_downtown_room_derby_st_001"
+        npc_def.room_id = "earth_arkhamcity_downtown_room_derby_st_001"
         npc_def.base_stats = '{"hp": 80, "intelligence": 15}'
         npc_def.behavior_config = '{"wander_interval": 60}'
         npc_def.ai_integration_stub = '{"ai_enabled": false}'
@@ -973,7 +973,7 @@ class TestNPCSystemIntegration:
                 timestamp=None,
                 event_type="PlayerEnteredRoom",
                 player_id="test_player_1",
-                room_id="earth_arkham_city_downtown_room_derby_st_001",
+                room_id="earth_arkhamcity_downtown_room_derby_st_001",
             )
         )
 
@@ -1005,7 +1005,7 @@ class TestNPCEventReactionSystem:
             name="Test Shopkeeper",
             npc_type="shopkeeper",
             sub_zone_id="test_zone",
-            room_id="earth_arkham_city_downtown_room_derby_st_001",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
             base_stats='{"hp": 100, "strength": 10, "constitution": 12}',
             behavior_config='{"greeting_message": "Welcome to my shop!", "farewell_message": "Come back soon!"}',
             ai_integration_stub='{"enabled": false}',
@@ -1072,8 +1072,8 @@ class TestNPCEventReactionSystem:
             timestamp=time.time(),
             event_type="PlayerEnteredRoom",
             player_id="test_player_1",
-            room_id="earth_arkham_city_downtown_room_derby_st_001",
-            from_room_id="earth_arkham_city_downtown_room_derby_st_002",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
+            from_room_id="earth_arkhamcity_downtown_room_derby_st_002",
         )
 
         event_bus.publish(player_entered_event)

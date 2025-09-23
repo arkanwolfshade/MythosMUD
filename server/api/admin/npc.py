@@ -187,7 +187,6 @@ def validate_admin_permission(current_user, action: AdminAction, request: Reques
 @npc_router.get("/definitions", response_model=list[NPCDefinitionResponse])
 async def get_npc_definitions(
     current_user=Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
     request: Request = None,
 ):
     """Get all NPC definitions."""
@@ -197,8 +196,12 @@ async def get_npc_definitions(
         auth_service = get_admin_auth_service()
         logger.info("NPC definitions requested", context={"user": auth_service.get_username(current_user)})
 
-        # Get NPC definitions from database
-        definitions = await npc_service.get_npc_definitions(session)
+        # Get NPC definitions from database using NPC database session
+        from server.npc_database import get_npc_async_session
+
+        async for npc_session in get_npc_async_session():
+            definitions = await npc_service.get_npc_definitions(npc_session)
+            break
 
         # Convert to response models
         response_definitions = [NPCDefinitionResponse.from_orm(defn) for defn in definitions]
@@ -221,7 +224,6 @@ async def get_npc_definitions(
 async def create_npc_definition(
     npc_data: NPCDefinitionCreate,
     current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
     request: Request = None,
 ):
     """Create a new NPC definition."""
@@ -233,28 +235,32 @@ async def create_npc_definition(
             "NPC definition creation requested", user=auth_service.get_username(current_user), name=npc_data.name
         )
 
-        # Create NPC definition in database
-        definition = await npc_service.create_npc_definition(
-            session=session,
-            name=npc_data.name,
-            description=None,  # Not in create model yet
-            npc_type=npc_data.npc_type.value,
-            sub_zone_id=npc_data.sub_zone_id,
-            room_id=npc_data.room_id,
-            base_stats=npc_data.base_stats,
-            behavior_config=npc_data.behavior_config,
-            ai_integration_stub=npc_data.ai_integration_stub,
-        )
+        # Create NPC definition in database using NPC database session
+        from server.npc_database import get_npc_async_session
+
+        async for npc_session in get_npc_async_session():
+            definition = await npc_service.create_npc_definition(
+                session=npc_session,
+                name=npc_data.name,
+                description=None,  # Not in create model yet
+                npc_type=npc_data.npc_type.value,
+                sub_zone_id=npc_data.sub_zone_id,
+                room_id=npc_data.room_id,
+                base_stats=npc_data.base_stats,
+                behavior_config=npc_data.behavior_config,
+                ai_integration_stub=npc_data.ai_integration_stub,
+            )
+            break
 
         # Commit the transaction
-        await session.commit()
+        await npc_session.commit()
 
         return NPCDefinitionResponse.from_orm(definition)
 
     except HTTPException:
         raise
     except Exception as e:
-        await session.rollback()
+        # Rollback is handled by the session context manager
         context = create_context_from_request(request)
         logger.error(f"Error creating NPC definition: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
@@ -266,7 +272,6 @@ async def create_npc_definition(
 async def get_npc_definition(
     definition_id: int,
     current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
     request: Request = None,
 ):
     """Get a specific NPC definition by ID."""
@@ -278,8 +283,12 @@ async def get_npc_definition(
             "NPC definition requested", user=auth_service.get_username(current_user), definition_id=definition_id
         )
 
-        # Get NPC definition from database
-        definition = await npc_service.get_npc_definition(session, definition_id)
+        # Get NPC definition from database using NPC database session
+        from server.npc_database import get_npc_async_session
+
+        async for npc_session in get_npc_async_session():
+            definition = await npc_service.get_npc_definition(npc_session, definition_id)
+            break
 
         if not definition:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found")

@@ -71,17 +71,26 @@ class Environment:
     async def _setup_database(self):
         """Set up test database"""
         self.database_path = os.path.join(self.temp_dir, "test_players.db")
+        self.npc_database_path = os.path.join(self.temp_dir, "test_npcs.db")
 
         # Create database directory
         os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.npc_database_path), exist_ok=True)
 
         # Set environment variable for database URL
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{self.database_path}"
+        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{self.npc_database_path}"
 
         try:
-            # Initialize database
+            # Initialize main database
             await init_db()
             self.logger.info("Database setup complete", db_path=self.database_path)
+
+            # Initialize NPC database
+            from server.npc_database import init_npc_database
+
+            await init_npc_database()
+            self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
         except Exception as e:
             self.logger.error(f"Database setup failed: {e}")
             # For tests, we can continue without a real database

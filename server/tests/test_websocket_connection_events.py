@@ -189,7 +189,7 @@ class TestWebSocketConnectionEvents:
     async def test_event_handler_handles_player_entered_event(self, mock_event_bus):
         """Test that RealTimeEventHandler properly handles PlayerEnteredRoom events."""
         # Create event handler with mocked connection manager
-        mock_connection_manager = AsyncMock()
+        mock_connection_manager = Mock()
         mock_connection_manager._get_player.return_value = Mock(name="TestPlayer")
         mock_connection_manager.persistence.get_room.return_value = Mock(name="Test Room")
 
@@ -214,7 +214,7 @@ class TestWebSocketConnectionEvents:
     async def test_event_handler_handles_player_left_event(self, mock_event_bus):
         """Test that RealTimeEventHandler properly handles PlayerLeftRoom events."""
         # Create event handler with mocked connection manager
-        mock_connection_manager = AsyncMock()
+        mock_connection_manager = Mock()
         mock_connection_manager._get_player.return_value = Mock(name="TestPlayer")
         mock_connection_manager.persistence.get_room.return_value = Mock(name="Test Room")
 
