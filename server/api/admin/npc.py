@@ -209,7 +209,7 @@ async def get_npc_definitions(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC definitions: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC definitions: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC definitions",
@@ -256,7 +256,7 @@ async def create_npc_definition(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error creating NPC definition: {str(e)}", context=context)
+        logger.error(f"Error creating NPC definition: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC definition", context=context
         ) from e
@@ -290,7 +290,7 @@ async def get_npc_definition(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC definition: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC definition: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC definition", context=context
         ) from e
@@ -340,7 +340,7 @@ async def update_npc_definition(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error updating NPC definition: {str(e)}", context=context)
+        logger.error(f"Error updating NPC definition: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error updating NPC definition", context=context
         ) from e
@@ -378,7 +378,7 @@ async def delete_npc_definition(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error deleting NPC definition: {str(e)}", context=context)
+        logger.error(f"Error deleting NPC definition: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC definition", context=context
         ) from e
@@ -412,7 +412,7 @@ async def get_npc_instances(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC instances: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC instances: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC instances", context=context
         ) from e
@@ -462,7 +462,7 @@ async def spawn_npc_instance(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error spawning NPC instance: {str(e)}", context=context)
+        logger.error(f"Error spawning NPC instance: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error spawning NPC instance", context=context
         ) from e
@@ -505,7 +505,7 @@ async def despawn_npc_instance(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error despawning NPC instance: {str(e)}", context=context)
+        logger.error(f"Error despawning NPC instance: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error despawning NPC instance", context=context
         ) from e
@@ -554,7 +554,7 @@ async def move_npc_instance(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error moving NPC instance: {str(e)}", context=context)
+        logger.error(f"Error moving NPC instance: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error moving NPC instance", context=context
         ) from e
@@ -594,7 +594,7 @@ async def get_npc_stats(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC stats: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC stats: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC stats", context=context
         ) from e
@@ -633,7 +633,7 @@ async def get_npc_population_stats(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC population stats: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC population stats: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC population stats",
@@ -672,7 +672,7 @@ async def get_npc_zone_stats(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC zone stats: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC zone stats: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC zone stats", context=context
         ) from e
@@ -694,22 +694,22 @@ async def get_npc_system_status(
         instance_service = get_npc_instance_service()
 
         # Get system status
-        status = await instance_service.get_system_stats()
+        system_status = await instance_service.get_system_stats()
 
         logger.info(
             "Retrieved NPC system status",
             user=current_user.get("username"),
-            system_status=status.get("system_status"),
-            active_npcs=status.get("active_npcs"),
+            system_status=system_status.get("system_status"),
+            active_npcs=system_status.get("active_npcs"),
         )
 
-        return status
+        return system_status
 
     except HTTPException:
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC system status: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC system status: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC system status",
@@ -745,7 +745,7 @@ async def get_npc_relationships(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC relationships: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC relationships: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC relationships",
@@ -791,7 +791,7 @@ async def create_npc_relationship(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error creating NPC relationship: {str(e)}", context=context)
+        logger.error(f"Error creating NPC relationship: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC relationship", context=context
         ) from e
@@ -829,7 +829,7 @@ async def delete_npc_relationship(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error deleting NPC relationship: {str(e)}", context=context)
+        logger.error(f"Error deleting NPC relationship: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC relationship", context=context
         ) from e
@@ -863,7 +863,7 @@ async def get_npc_spawn_rules(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC spawn rules: {str(e)}", context=context)
+        logger.error(f"Error retrieving NPC spawn rules: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC spawn rules",
@@ -909,7 +909,7 @@ async def create_npc_spawn_rule(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error creating NPC spawn rule: {str(e)}", context=context)
+        logger.error(f"Error creating NPC spawn rule: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC spawn rule", context=context
         ) from e
@@ -947,7 +947,7 @@ async def delete_npc_spawn_rule(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
-        logger.error(f"Error deleting NPC spawn rule: {str(e)}", context=context)
+        logger.error(f"Error deleting NPC spawn rule: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC spawn rule", context=context
         ) from e
@@ -980,7 +980,7 @@ async def get_admin_sessions(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving admin sessions: {str(e)}", context=context)
+        logger.error(f"Error retrieving admin sessions: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving admin sessions", context=context
         ) from e
@@ -1012,7 +1012,7 @@ async def get_admin_audit_log(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error retrieving admin audit log: {str(e)}", context=context)
+        logger.error(f"Error retrieving admin audit log: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving admin audit log",
@@ -1044,7 +1044,7 @@ async def cleanup_admin_sessions(
         raise
     except Exception as e:
         context = create_context_from_request(request)
-        logger.error(f"Error cleaning up admin sessions: {str(e)}", context=context)
+        logger.error(f"Error cleaning up admin sessions: {str(e)}", **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error cleaning up admin sessions",

@@ -245,15 +245,22 @@ class TestNPCAdminAPI:
         updated_npc = sample_npc_definition
         updated_npc.name = "Updated NPC"
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.update_npc_definition", return_value=updated_npc),
-        ):
-            response = client.put("/admin/npc/definitions/1", json=npc_data)
-            assert response.status_code == status.HTTP_200_OK
+        from server.auth.users import get_current_user
 
-            data = response.json()
-            assert data["name"] == "Updated NPC"
+        async def mock_get_current_user():
+            return mock_admin_user
+
+        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+
+        try:
+            with patch("server.api.admin.npc.update_npc_definition", return_value=updated_npc):
+                response = client.put("/admin/npc/definitions/1", json=npc_data)
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["name"] == "Updated NPC"
+        finally:
+            client.app.dependency_overrides.clear()
 
     def test_npc_definition_delete_unauthorized(self, client):
         """Test that NPC definition deletion requires authentication."""
@@ -262,12 +269,19 @@ class TestNPCAdminAPI:
 
     def test_npc_definition_delete_success(self, client, mock_admin_user):
         """Test successful NPC definition deletion."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.delete_npc_definition", return_value=True),
-        ):
-            response = client.delete("/admin/npc/definitions/1")
-            assert response.status_code == status.HTTP_204_NO_CONTENT
+        from server.auth.users import get_current_user
+
+        async def mock_get_current_user():
+            return mock_admin_user
+
+        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+
+        try:
+            with patch("server.api.admin.npc.delete_npc_definition", return_value=True):
+                response = client.delete("/admin/npc/definitions/1")
+                assert response.status_code == status.HTTP_204_NO_CONTENT
+        finally:
+            client.app.dependency_overrides.clear()
 
     def test_npc_instances_list_unauthorized(self, client):
         """Test that NPC instances list requires authentication."""
@@ -332,12 +346,19 @@ class TestNPCAdminAPI:
             "message": "NPC spawned successfully",
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.spawn_npc_instance", return_value=mock_result),
-        ):
-            response = client.post("/admin/npc/instances/spawn", json=spawn_data)
-            assert response.status_code == status.HTTP_201_CREATED
+        from server.auth.users import get_current_user
+
+        async def mock_get_current_user():
+            return mock_admin_user
+
+        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+
+        try:
+            with patch("server.api.admin.npc.spawn_npc_instance", return_value=mock_result):
+                response = client.post("/admin/npc/instances/spawn", json=spawn_data)
+                assert response.status_code == status.HTTP_201_CREATED
+        finally:
+            client.app.dependency_overrides.clear()
 
             data = response.json()
             assert data["success"] is True
@@ -355,12 +376,19 @@ class TestNPCAdminAPI:
             "message": "NPC despawned successfully",
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.despawn_npc_instance", return_value=mock_result),
-        ):
-            response = client.delete("/admin/npc/instances/npc_001")
-            assert response.status_code == status.HTTP_200_OK
+        from server.auth.users import get_current_user
+
+        async def mock_get_current_user():
+            return mock_admin_user
+
+        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+
+        try:
+            with patch("server.api.admin.npc.despawn_npc_instance", return_value=mock_result):
+                response = client.delete("/admin/npc/instances/npc_001")
+                assert response.status_code == status.HTTP_200_OK
+        finally:
+            client.app.dependency_overrides.clear()
 
             data = response.json()
             assert data["success"] is True

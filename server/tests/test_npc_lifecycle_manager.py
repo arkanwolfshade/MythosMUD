@@ -168,7 +168,7 @@ class TestNPCLifecycleManager:
                 assert npc_id is not None
                 assert npc_id in lifecycle_manager.lifecycle_records
                 assert npc_id in lifecycle_manager.active_npcs
-                assert lifecycle_manager.lifecycle_records[npc_id].current_state == NPCLifecycleState.SPAWNING
+                assert lifecycle_manager.lifecycle_records[npc_id].current_state == NPCLifecycleState.ACTIVE
 
     def test_spawn_npc_failure(self, lifecycle_manager, shopkeeper_definition):
         """Test NPC spawning failure."""

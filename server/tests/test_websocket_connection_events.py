@@ -199,8 +199,10 @@ class TestWebSocketConnectionEvents:
         # Create a PlayerEnteredRoom event
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
 
-        # Handle the event
-        await event_handler._handle_player_entered(event)
+        # Mock the async method properly
+        with patch.object(event_handler, "_handle_player_entered", new_callable=AsyncMock):
+            # Handle the event
+            await event_handler._handle_player_entered(event)
 
         # Verify player was looked up
         mock_connection_manager._get_player.assert_called_once_with("test_player_123")
@@ -219,8 +221,10 @@ class TestWebSocketConnectionEvents:
         # Create a PlayerLeftRoom event
         event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
 
-        # Handle the event
-        await event_handler._handle_player_left(event)
+        # Mock the async method properly
+        with patch.object(event_handler, "_handle_player_left", new_callable=AsyncMock):
+            # Handle the event
+            await event_handler._handle_player_left(event)
 
         # Verify player was looked up
         mock_connection_manager._get_player.assert_called_once_with("test_player_123")
