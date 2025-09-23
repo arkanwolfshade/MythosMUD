@@ -1,14 +1,14 @@
 {
-  "id": "earth_arkham_city_downtown_Main_St_002",
+  "id": "earth_arkhamcity_downtown_Main_St_002",
   "name": "Main Street (North)",
   "description": "The northern section of Main Street, where the commercial district begins to give way to more residential areas. The street is quieter here, but still well-maintained with gas lamps casting pools of light on the cobblestones.",
   "plane": "earth",
-  "zone": "arkham_city",
+  "zone": "arkhamcity",
   "sub_zone": "downtown",
   "environment": "outdoors",
   "exits": {
     "north": null,
-    "south": "earth_arkham_city_downtown_Main_St_001",
+    "south": "earth_arkhamcity_downtown_Main_St_001",
     "east": null,
     "west": null,
     "up": null,

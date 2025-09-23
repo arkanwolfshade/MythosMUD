@@ -1,13 +1,13 @@
 {
-  "id": "earth_arkham_city_french_hill_S_Garrison_St_001",
+  "id": "earth_arkhamcity_frenchhill_S_Garrison_St_001",
   "name": "South Garrison Street",
   "description": "A quiet residential street in French Hill. Victorian houses line both sides of the cobblestone road, their dark windows seeming to watch your every move. The air is thick with the scent of damp earth and something else, something you can't quite identify.",
   "plane": "earth",
-  "zone": "arkham_city",
-  "sub_zone": "french_hill",
+  "zone": "arkhamcity",
+  "sub_zone": "frenchhill",
   "environment": "outdoors",
   "exits": {
-    "north": "earth_arkham_city_french_hill_S_Garrison_St_002",
+    "north": "earth_arkhamcity_frenchhill_S_Garrison_St_002",
     "south": null,
     "east": null,
     "west": null,
