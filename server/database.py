@@ -45,14 +45,13 @@ engine = create_async_engine(
     echo=False,
     poolclass=StaticPool,
     pool_pre_ping=True,
-    pool_recycle=3600,
     connect_args={
         "check_same_thread": False,
         "timeout": 30,
     },
 )
 
-logger.info("Database engine created", pool_class="StaticPool", pool_recycle=3600)
+logger.info("Database engine created", pool_class="StaticPool")
 
 # Create async session maker
 async_session_maker = async_sessionmaker(

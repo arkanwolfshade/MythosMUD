@@ -153,7 +153,8 @@ def test_database():
     # Return the database path from environment variable
     test_db_url = os.getenv("DATABASE_URL")
     if test_db_url.startswith("sqlite+aiosqlite:///"):
-        return test_db_url.replace("sqlite+aiosqlite:///", "")
+        db_path = test_db_url.replace("sqlite+aiosqlite:///", "")
+        return db_path
     else:
         raise ValueError(f"Unsupported database URL format: {test_db_url}")
 
@@ -190,24 +191,6 @@ def ensure_test_db_ready(test_database):
 
     reset_persistence()
     pass
-
-
-@pytest.fixture(autouse=True)  # Enable automatic use for all tests
-def cleanup_database_connections():
-    """Clean up database connections after each test to prevent connection issues."""
-    import asyncio
-
-    from ..database import close_db
-
-    yield  # Run the test
-
-    # Clean up database connections after the test
-    try:
-        asyncio.run(close_db())
-    except Exception as e:
-        # Log cleanup errors but don't fail the test
-        print(f"Warning: Database cleanup failed: {e}")
-        pass
 
 
 @pytest.fixture
