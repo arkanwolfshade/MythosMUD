@@ -276,6 +276,91 @@ Learn about available commands and their proper usage.</p>
 </div>
 """,
     },
+    "npc": {
+        "category": "Administration",
+        "description": "NPC management commands (admin only)",
+        "usage": "npc <subcommand> [arguments]",
+        "examples": [
+            "npc help",
+            "npc list",
+            "npc create TestNPC shopkeeper arkham_city_downtown earth_arkham_city_downtown_001",
+        ],
+        "detailed_help": """
+<div style="color: #8B0000;">
+<h3>NPC Admin Commands</h3>
+<p>As documented in the Cultes des Goules, proper administrative protocols
+are essential for maintaining control over the eldritch entities that
+lurk in the shadows of our world.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>npc help</strong> - Show NPC command help</li>
+<li><strong>npc list</strong> - List all NPC definitions</li>
+<li><strong>npc create &lt;name&gt; &lt;type&gt; &lt;sub_zone_id&gt; &lt;room_id&gt;</strong> - Create a new NPC definition</li>
+<li><strong>npc edit &lt;id&gt; &lt;field&gt; &lt;value&gt;</strong> - Edit an NPC definition</li>
+<li><strong>npc delete &lt;id&gt;</strong> - Delete an NPC definition</li>
+<li><strong>npc spawn &lt;definition_id&gt; &lt;room_id&gt;</strong> - Spawn an NPC instance</li>
+<li><strong>npc despawn &lt;npc_id&gt;</strong> - Despawn an NPC instance</li>
+<li><strong>npc move &lt;npc_id&gt; &lt;room_id&gt;</strong> - Move an NPC instance</li>
+<li><strong>npc stats &lt;npc_id&gt;</strong> - Get NPC instance stats</li>
+<li><strong>npc population</strong> - Get NPC population statistics</li>
+<li><strong>npc zone [zone_key]</strong> - Get NPC zone statistics</li>
+<li><strong>npc status</strong> - Get NPC system status</li>
+<li><strong>npc behavior &lt;npc_id&gt; &lt;behavior_type&gt;</strong> - Set NPC behavior type</li>
+<li><strong>npc react &lt;npc_id&gt; &lt;reaction_type&gt;</strong> - Trigger NPC reaction</li>
+<li><strong>npc stop &lt;npc_id&gt;</strong> - Stop NPC current behavior</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>npc help</li>
+<li>npc list</li>
+<li>npc create TestShopkeeper shopkeeper arkham_city_downtown earth_arkham_city_downtown_001</li>
+<li>npc spawn 1 earth_arkham_city_downtown_001</li>
+<li>npc population</li>
+<li>npc status</li>
+<li>npc behavior npc_001 aggressive</li>
+<li>npc react npc_001 greet</li>
+<li>npc stop npc_001</li>
+</ul>
+
+<h4>NPC Types:</h4>
+<ul>
+<li>shopkeeper - Merchant NPCs</li>
+<li>passive_mob - Non-aggressive creatures</li>
+<li>aggressive_mob - Hostile creatures</li>
+<li>quest_giver - Quest NPCs</li>
+<li>merchant - Trading NPCs</li>
+</ul>
+
+<h4>Behavior Types:</h4>
+<ul>
+<li>passive - NPC remains non-aggressive</li>
+<li>aggressive - NPC becomes hostile</li>
+<li>defensive - NPC defends when attacked</li>
+<li>wander - NPC moves randomly</li>
+<li>patrol - NPC follows a patrol route</li>
+<li>guard - NPC guards a specific area</li>
+<li>idle - NPC remains stationary</li>
+</ul>
+
+<h4>Reaction Types:</h4>
+<ul>
+<li>greet - NPC greets players</li>
+<li>attack - NPC attacks target</li>
+<li>flee - NPC runs away</li>
+<li>investigate - NPC investigates area</li>
+<li>alert - NPC becomes alert</li>
+<li>calm - NPC becomes calm</li>
+<li>excited - NPC becomes excited</li>
+<li>suspicious - NPC becomes suspicious</li>
+</ul>
+
+<p><strong>Note:</strong> These commands require admin privileges. Only administrators
+can manage NPCs in the world.</p>
+</div>
+""",
+    },
     "who": {
         "category": "Utility",
         "description": "List online players with their levels and locations",
