@@ -21,17 +21,17 @@ class TestRoomUtils:
     def test_extract_subzone_from_room_id_valid(self):
         """Test extracting sub-zone from valid room IDs."""
         # Test northside
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "northside"
 
         # Test downtown
-        room_id = "earth_arkham_city_downtown_market_square"
+        room_id = "earth_arkhamcity_downtown_market_square"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "downtown"
 
         # Test campus
-        room_id = "earth_arkham_city_campus_library_main"
+        room_id = "earth_arkhamcity_campus_library_main"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "campus"
 
@@ -58,7 +58,7 @@ class TestRoomUtils:
     def test_get_zone_from_room_id_valid(self):
         """Test extracting zone from valid room IDs."""
         # Test arkham_city
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         zone = get_zone_from_room_id(room_id)
         assert zone == "arkham_city"
 
@@ -85,7 +85,7 @@ class TestRoomUtils:
     def test_get_plane_from_room_id_valid(self):
         """Test extracting plane from valid room IDs."""
         # Test earth plane
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         plane = get_plane_from_room_id(room_id)
         assert plane == "earth"
 
@@ -108,12 +108,12 @@ class TestRoomUtils:
     def test_is_valid_room_id_format_valid(self):
         """Test room ID format validation with valid IDs."""
         # Valid room IDs
-        assert is_valid_room_id_format("earth_arkham_city_northside_intersection_derby_high") is True
+        assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high") is True
         assert is_valid_room_id_format("earth_innsmouth_docks_warehouse_1") is True
         assert is_valid_room_id_format("dream_arkham_city_downtown_market_square") is True
 
         # Room IDs with more parts are also valid
-        assert is_valid_room_id_format("earth_arkham_city_northside_intersection_derby_high_street") is True
+        assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high_street") is True
 
     def test_is_valid_room_id_format_invalid(self):
         """Test room ID format validation with invalid IDs."""
@@ -130,9 +130,9 @@ class TestRoomUtils:
 
     def test_get_local_channel_subject_valid(self):
         """Test generating local channel NATS subjects with valid room IDs."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subject = get_local_channel_subject(room_id)
-        assert subject == "chat.local.earth_arkham_city_northside_intersection_derby_high"
+        assert subject == "chat.local.earth_arkhamcity_northside_intersection_derby_high"
 
         room_id = "earth_innsmouth_docks_warehouse_1"
         subject = get_local_channel_subject(room_id)
@@ -147,11 +147,11 @@ class TestRoomUtils:
 
     def test_get_subzone_local_channel_subject_valid(self):
         """Test generating sub-zone local channel NATS subjects with valid room IDs."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subject = get_subzone_local_channel_subject(room_id)
         assert subject == "chat.local.subzone.northside"
 
-        room_id = "earth_arkham_city_downtown_market_square"
+        room_id = "earth_arkhamcity_downtown_market_square"
         subject = get_subzone_local_channel_subject(room_id)
         assert subject == "chat.local.subzone.downtown"
 
@@ -169,7 +169,7 @@ class TestRoomUtils:
     def test_room_id_parsing_edge_cases(self):
         """Test edge cases for room ID parsing."""
         # Room ID with underscores in sub-zone name
-        room_id = "earth_arkham_city_old_town_tavern_main"
+        room_id = "earth_arkhamcity_old_town_tavern_main"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "old"
 
@@ -179,7 +179,7 @@ class TestRoomUtils:
         assert zone == "old_innsmouth"
 
         # Room ID with many parts
-        room_id = "earth_arkham_city_northside_intersection_derby_high_street_corner"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high_street_corner"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "northside"
         zone = get_zone_from_room_id(room_id)
@@ -189,11 +189,11 @@ class TestRoomUtils:
 
     def test_nats_subject_generation_consistency(self):
         """Test that NATS subject generation is consistent."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         # Local channel subject should include the full room ID
         local_subject = get_local_channel_subject(room_id)
-        assert local_subject == "chat.local.earth_arkham_city_northside_intersection_derby_high"
+        assert local_subject == "chat.local.earth_arkhamcity_northside_intersection_derby_high"
 
         # Sub-zone subject should only include the sub-zone
         subzone_subject = get_subzone_local_channel_subject(room_id)

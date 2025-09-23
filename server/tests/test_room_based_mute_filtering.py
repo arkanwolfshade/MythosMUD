@@ -25,7 +25,7 @@ class TestRoomBasedMuteFiltering:
         self.handler = NATSMessageHandler(self.mock_nats_service)
 
         # Test data
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
         self.sender_id = str(uuid.uuid4())
         self.receiver_id = str(uuid.uuid4())
         self.sender_name = "Ithaqua"

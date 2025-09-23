@@ -31,7 +31,7 @@ class TestMuteFilteringPerformance:
         self.muter_name = "ArkanWolfshade"
         self.target_id = str(uuid.uuid4())
         self.target_name = "Ithaqua"
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Mock player objects
         self.muter_player = MagicMock()

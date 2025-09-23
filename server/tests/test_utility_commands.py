@@ -151,14 +151,14 @@ class TestWhoCommand:
             MagicMock(
                 name="user1",
                 level=1,
-                current_room_id="earth_arkham_city_northside_intersection_derby_high",
+                current_room_id="earth_arkhamcity_northside_intersection_derby_high",
                 is_admin=False,
                 last_active=old_time,
             ),
             MagicMock(
                 name="user2",
                 level=1,
-                current_room_id="earth_arkham_city_northside_room_derby_st_001",
+                current_room_id="earth_arkhamcity_northside_room_derby_st_001",
                 is_admin=False,
                 last_active=old_time,
             ),
@@ -187,21 +187,21 @@ class TestWhoCommand:
         alice = MagicMock()
         alice.name = "alice"
         alice.level = 5
-        alice.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        alice.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         alice.is_admin = False
         alice.last_active = recent_time
 
         bob = MagicMock()
         bob.name = "bob"
         bob.level = 3
-        bob.current_room_id = "earth_arkham_city_northside_room_derby_st_001"
+        bob.current_room_id = "earth_arkhamcity_northside_room_derby_st_001"
         bob.is_admin = False
         bob.last_active = recent_time
 
         charlie = MagicMock()
         charlie.name = "charlie"
         charlie.level = 7
-        charlie.current_room_id = "earth_arkham_city_northside_room_high_ln_002"
+        charlie.current_room_id = "earth_arkhamcity_northside_room_high_ln_002"
         charlie.is_admin = False
         charlie.last_active = recent_time
 
@@ -233,7 +233,7 @@ class TestWhoCommand:
         online_player = MagicMock(
             name="online_user",
             level=1,
-            current_room_id="earth_arkham_city_northside_intersection_derby_high",
+            current_room_id="earth_arkhamcity_northside_intersection_derby_high",
             is_admin=False,
         )
         online_player.last_active = recent_time
@@ -244,7 +244,7 @@ class TestWhoCommand:
         offline_player = MagicMock(
             name="offline_user",
             level=1,
-            current_room_id="earth_arkham_city_northside_room_derby_st_001",
+            current_room_id="earth_arkhamcity_northside_room_derby_st_001",
             is_admin=False,
         )
         offline_player.last_active = old_time
@@ -294,21 +294,21 @@ class TestWhoCommand:
         alice = MagicMock()
         alice.name = "alice"
         alice.level = 5
-        alice.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        alice.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         alice.is_admin = False
         alice.last_active = recent_time
 
         bob = MagicMock()
         bob.name = "bob"
         bob.level = 3
-        bob.current_room_id = "earth_arkham_city_northside_room_derby_st_001"
+        bob.current_room_id = "earth_arkhamcity_northside_room_derby_st_001"
         bob.is_admin = False
         bob.last_active = recent_time
 
         charlie = MagicMock()
         charlie.name = "charlie"
         charlie.level = 7
-        charlie.current_room_id = "earth_arkham_city_northside_room_high_ln_002"
+        charlie.current_room_id = "earth_arkhamcity_northside_room_high_ln_002"
         charlie.is_admin = False
         charlie.last_active = recent_time
 
@@ -1060,7 +1060,7 @@ class TestLocationFormatting:
 
     def test_format_player_location_standard_format(self):
         """Test formatting player location with standard room ID format."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         result = format_player_location(room_id)
         expected = "Arkham: City: Northside Intersection Derby High"
         assert result == expected
@@ -1088,7 +1088,7 @@ class TestLocationFormatting:
         assert result == expected
 
         # Test single word room name
-        room_id = "earth_arkham_city_center"
+        room_id = "earth_arkhamcity_center"
         result = format_player_location(room_id)
         expected = "Arkham: City: Center"
         assert result == expected
@@ -1110,7 +1110,7 @@ class TestLocationFormatting:
     def test_format_player_location_special_characters(self):
         """Test formatting player location with special characters."""
         # Test with underscores in room names
-        room_id = "earth_arkham_city_old_man_whateley_house"
+        room_id = "earth_arkhamcity_old_man_whateley_house"
         result = format_player_location(room_id)
         expected = "Arkham: City: Old Man Whateley House"
         assert result == expected
@@ -1164,7 +1164,7 @@ class TestMockPlayerSorting:
         from datetime import UTC, datetime, timedelta
 
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
-        player = self.create_mock_player("testuser", 5, "earth_arkham_city_center", False, recent_time)
+        player = self.create_mock_player("testuser", 5, "earth_arkhamcity_center", False, recent_time)
 
         # This should not raise an exception
         result = format_player_entry(player)
@@ -1184,7 +1184,7 @@ class TestPlayerEntryFormatting:
         player = MagicMock()
         player.name = "alice"
         player.level = 5
-        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player.is_admin = False
 
         result = format_player_entry(player)
@@ -1197,7 +1197,7 @@ class TestPlayerEntryFormatting:
         player = MagicMock()
         player.name = "admin"
         player.level = 10
-        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player.is_admin = True
 
         result = format_player_entry(player)
@@ -1210,13 +1210,13 @@ class TestPlayerEntryFormatting:
         player1 = MagicMock()
         player1.name = "newbie"
         player1.level = 1
-        player1.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player1.is_admin = False
 
         player2 = MagicMock()
         player2.name = "veteran"
         player2.level = 50
-        player2.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player2.is_admin = False
 
         result1 = format_player_entry(player1)
@@ -1280,18 +1280,18 @@ class TestWhoCommandIntegration:
         players = [
             # Online admin player
             self.create_mock_player(
-                "admin_user", 25, "earth_arkham_city_northside_intersection_derby_high", True, recent_time
+                "admin_user", 25, "earth_arkhamcity_northside_intersection_derby_high", True, recent_time
             ),
             # Online regular player
             self.create_mock_player(
-                "investigator_alice", 8, "earth_arkham_city_northside_room_derby_st_001", False, recent_time
+                "investigator_alice", 8, "earth_arkhamcity_northside_room_derby_st_001", False, recent_time
             ),
             # Online player with special characters in name
             self.create_mock_player(
                 "professor_whateley", 15, "earth_dunwich_village_old_man_whateley_farm", False, recent_time
             ),
             # Offline player (should not appear)
-            self.create_mock_player("offline_user", 3, "earth_arkham_city_northside_room_high_ln_002", False, old_time),
+            self.create_mock_player("offline_user", 3, "earth_arkhamcity_northside_room_high_ln_002", False, old_time),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1351,7 +1351,7 @@ class TestWhoCommandIntegration:
             player = MagicMock()
             player.name = f"player_{i:03d}"
             player.level = (i % 50) + 1  # Levels 1-50
-            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.current_room_id = f"earth_arkhamcity_room_{i:03d}"
             player.is_admin = i % 10 == 0  # Every 10th player is admin
             player.last_active = recent_time
             players.append(player)
@@ -1398,10 +1398,10 @@ class TestWhoCommandIntegration:
         old = now - timedelta(minutes=10)  # Old
 
         players = [
-            self.create_mock_player("very_active", 5, "earth_arkham_city_center", False, very_recent),
-            self.create_mock_player("active", 3, "earth_arkham_city_northside", False, recent),
-            self.create_mock_player("borderline", 7, "earth_arkham_city_southside", False, borderline),
-            self.create_mock_player("inactive", 2, "earth_arkham_city_eastside", False, old),
+            self.create_mock_player("very_active", 5, "earth_arkhamcity_center", False, very_recent),
+            self.create_mock_player("active", 3, "earth_arkhamcity_northside", False, recent),
+            self.create_mock_player("borderline", 7, "earth_arkhamcity_southside", False, borderline),
+            self.create_mock_player("inactive", 2, "earth_arkhamcity_eastside", False, old),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1431,9 +1431,9 @@ class TestWhoCommandIntegration:
 
         # Create players with various admin statuses
         players = [
-            self.create_mock_player("super_admin", 50, "earth_arkham_city_admin_quarters", True, recent_time),
-            self.create_mock_player("moderator", 30, "earth_arkham_city_mod_office", True, recent_time),
-            self.create_mock_player("regular_user", 10, "earth_arkham_city_public_area", False, recent_time),
+            self.create_mock_player("super_admin", 50, "earth_arkhamcity_admin_quarters", True, recent_time),
+            self.create_mock_player("moderator", 30, "earth_arkhamcity_mod_office", True, recent_time),
+            self.create_mock_player("regular_user", 10, "earth_arkhamcity_public_area", False, recent_time),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1512,14 +1512,14 @@ class TestWhoCommandIntegration:
         players = [
             # Player with very long name
             self.create_mock_player(
-                "very_long_player_name_with_many_characters", 1, "earth_arkham_city_center", False, recent_time
+                "very_long_player_name_with_many_characters", 1, "earth_arkhamcity_center", False, recent_time
             ),
             # Player with special characters
-            self.create_mock_player("player@#$%", 5, "earth_arkham_city_northside", False, recent_time),
+            self.create_mock_player("player@#$%", 5, "earth_arkhamcity_northside", False, recent_time),
             # Player with numbers
-            self.create_mock_player("player123", 10, "earth_arkham_city_southside", False, recent_time),
+            self.create_mock_player("player123", 10, "earth_arkhamcity_southside", False, recent_time),
             # Player with mixed case
-            self.create_mock_player("PlayerWithMixedCase", 15, "earth_arkham_city_eastside", False, recent_time),
+            self.create_mock_player("PlayerWithMixedCase", 15, "earth_arkhamcity_eastside", False, recent_time),
         ]
 
         mock_persistence.list_players.return_value = players
@@ -1599,7 +1599,7 @@ class TestWhoCommandPerformance:
             player = MagicMock()
             player.name = f"player_{i:04d}"
             player.level = (i % 50) + 1  # Levels 1-50
-            player.current_room_id = f"earth_arkham_city_room_{i:04d}"
+            player.current_room_id = f"earth_arkhamcity_room_{i:04d}"
             player.is_admin = i % 20 == 0  # Every 20th player is admin
             player.last_active = recent_time
             players.append(player)
@@ -1643,7 +1643,7 @@ class TestWhoCommandPerformance:
             player = MagicMock()
             player.name = f"player_{i:03d}"
             player.level = (i % 50) + 1
-            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.current_room_id = f"earth_arkhamcity_room_{i:03d}"
             player.is_admin = i % 25 == 0
             player.last_active = recent_time
             players.append(player)
@@ -1693,7 +1693,7 @@ class TestWhoCommandPerformance:
             player = MagicMock()
             player.name = f"player_{i:04d}"
             player.level = (i % 50) + 1
-            player.current_room_id = f"earth_arkham_city_room_{i:04d}"
+            player.current_room_id = f"earth_arkhamcity_room_{i:04d}"
             player.is_admin = i % 50 == 0
             player.last_active = recent_time
             players.append(player)
@@ -1735,7 +1735,7 @@ class TestWhoCommandPerformance:
             player = MagicMock()
             player.name = f"player_{i:03d}"
             player.level = (i % 50) + 1
-            player.current_room_id = f"earth_arkham_city_room_{i:03d}"
+            player.current_room_id = f"earth_arkhamcity_room_{i:03d}"
             player.is_admin = i % 20 == 0
             player.last_active = recent_time
             players.append(player)
@@ -1810,7 +1810,7 @@ class TestWhoCommandPerformance:
         single_player = MagicMock(
             name="single_player",
             level=1,
-            current_room_id="earth_arkham_city_center",
+            current_room_id="earth_arkhamcity_center",
             is_admin=False,
             last_active=recent_time,
         )

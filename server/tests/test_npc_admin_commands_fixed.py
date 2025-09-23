@@ -44,7 +44,7 @@ class TestNPCAdminCommands:
         player.id = str(uuid4())
         player.name = "admin_player"
         player.is_admin = True
-        player.current_room_id = "earth_arkham_city_downtown_001"
+        player.current_room_id = "earth_arkhamcity_downtown_001"
         return player
 
     @pytest.fixture
@@ -54,7 +54,7 @@ class TestNPCAdminCommands:
         player.id = str(uuid4())
         player.name = "regular_player"
         player.is_admin = False
-        player.current_room_id = "earth_arkham_city_downtown_001"
+        player.current_room_id = "earth_arkhamcity_downtown_001"
         return player
 
     @pytest.fixture
@@ -78,7 +78,7 @@ class TestNPCAdminCommands:
             "name": "Test Shopkeeper",
             "npc_type": "shopkeeper",
             "sub_zone_id": "arkham_city_downtown",
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100, "mp": 50},
             "behavior_config": {"aggressive": False},
             "ai_integration_stub": {"enabled": True},
@@ -153,7 +153,7 @@ class TestNPCAdminCommands:
         """Test successful NPC creation."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkham_city_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the database session and NPC service
@@ -190,7 +190,7 @@ class TestNPCAdminCommands:
         """Test NPC creation with invalid NPC type."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "invalid_type", "arkham_city_downtown", "earth_arkham_city_downtown_001"],
+            "args": ["create", "Test NPC", "invalid_type", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         result = await handle_npc_create_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
@@ -203,7 +203,7 @@ class TestNPCAdminCommands:
         """Test NPC creation with service error."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkham_city_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the NPC service to raise an exception
@@ -303,7 +303,7 @@ class TestNPCAdminCommands:
             mock_definition.name = "Test Shopkeeper"
             mock_definition.npc_type = "shopkeeper"
             mock_definition.sub_zone_id = "arkham_city_downtown"
-            mock_definition.room_id = "earth_arkham_city_downtown_001"
+            mock_definition.room_id = "earth_arkhamcity_downtown_001"
             mock_npc_service.get_npc_definitions = AsyncMock(return_value=[mock_definition])
 
             result = await handle_npc_list_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
@@ -331,13 +331,13 @@ class TestNPCAdminCommands:
     @pytest.mark.asyncio
     async def test_handle_npc_spawn_command_success(self, mock_admin_player, mock_request, mock_alias_storage):
         """Test successful NPC spawning."""
-        command_data = {"command_type": "npc", "args": ["spawn", "1", "earth_arkham_city_downtown_001"]}
+        command_data = {"command_type": "npc", "args": ["spawn", "1", "earth_arkhamcity_downtown_001"]}
 
         # Mock the NPC instance service
         with patch("server.commands.npc_admin_commands.get_npc_instance_service") as mock_get_service:
             mock_service = MagicMock()
             mock_service.spawn_npc_instance = AsyncMock(
-                return_value={"npc_id": "npc_001", "room_id": "earth_arkham_city_downtown_001"}
+                return_value={"npc_id": "npc_001", "room_id": "earth_arkhamcity_downtown_001"}
             )
             mock_get_service.return_value = mock_service
 
@@ -383,7 +383,7 @@ class TestNPCAdminCommands:
     @pytest.mark.asyncio
     async def test_handle_npc_move_command_success(self, mock_admin_player, mock_request, mock_alias_storage):
         """Test successful NPC movement."""
-        command_data = {"command_type": "npc", "args": ["move", "npc_001", "earth_arkham_city_downtown_002"]}
+        command_data = {"command_type": "npc", "args": ["move", "npc_001", "earth_arkhamcity_downtown_002"]}
 
         # Mock the NPC instance service
         with patch("server.commands.npc_admin_commands.get_npc_instance_service") as mock_get_service:
@@ -394,7 +394,7 @@ class TestNPCAdminCommands:
             result = await handle_npc_move_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
 
             assert "result" in result
-            assert "NPC npc_001 moved to earth_arkham_city_downtown_002" in result["result"]
+            assert "NPC npc_001 moved to earth_arkhamcity_downtown_002" in result["result"]
 
     # --- NPC Stats Command Tests ---
 
@@ -628,7 +628,7 @@ class TestNPCAdminCommands:
         """Test that NPC create command requires admin permission."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkham_city_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the player service to return the regular player

@@ -32,7 +32,7 @@ class TestNPCBaseClass:
         npc_def.description = "A test NPC for behavioral testing"
         npc_def.npc_type = NPCDefinitionType.PASSIVE_MOB
         npc_def.sub_zone_id = "downtown"
-        npc_def.room_id = "earth_arkham_city_downtown_room_derby_st_001"
+        npc_def.room_id = "earth_arkhamcity_downtown_room_derby_st_001"
         npc_def.required_npc = True
         npc_def.max_population = 1
         npc_def.spawn_probability = 1.0
@@ -139,7 +139,7 @@ class TestNPCBaseClass:
 
     def test_npc_base_movement(self, mock_npc_base):
         """Test NPC movement functionality."""
-        new_room = "earth_arkham_city_downtown_room_derby_st_002"
+        new_room = "earth_arkhamcity_downtown_room_derby_st_002"
         result = mock_npc_base.move_to_room(new_room)
         assert result is True
         assert mock_npc_base.current_room == new_room
@@ -369,7 +369,7 @@ class TestShopkeeperNPC:
         npc_def.description = "A grizzled old shopkeeper with a suspicious glint in his eye."
         npc_def.npc_type = NPCDefinitionType.SHOPKEEPER
         npc_def.sub_zone_id = "merchant"
-        npc_def.room_id = "earth_arkham_city_merchant_room_peabody_ave_001"
+        npc_def.room_id = "earth_arkhamcity_merchant_room_peabody_ave_001"
         npc_def.base_stats = '{"hp": 100, "charisma": 12, "intelligence": 10}'
         npc_def.behavior_config = '{"sells": ["potion", "torch"], "buys": ["junk"], "markup": 1.5}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -462,7 +462,7 @@ class TestPassiveMobNPC:
         npc_def.description = "A scholarly figure wandering the streets in search of knowledge."
         npc_def.npc_type = NPCDefinitionType.PASSIVE_MOB
         npc_def.sub_zone_id = "downtown"
-        npc_def.room_id = "earth_arkham_city_downtown_room_derby_st_001"
+        npc_def.room_id = "earth_arkhamcity_downtown_room_derby_st_001"
         npc_def.base_stats = '{"hp": 80, "intelligence": 15, "charisma": 8}'
         npc_def.behavior_config = '{"wander_interval": 60, "response_chance": 0.8, "wander_radius": 3}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -526,7 +526,7 @@ class TestAggressiveMobNPC:
         npc_def.description = "A dark figure clad in robes, muttering forbidden incantations."
         npc_def.npc_type = NPCDefinitionType.AGGRESSIVE_MOB
         npc_def.sub_zone_id = "sanitarium"
-        npc_def.room_id = "earth_arkham_city_sanitarium_room_foyer_001"
+        npc_def.room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         npc_def.base_stats = '{"hp": 120, "strength": 15, "intelligence": 12, "aggression": 8}'
         npc_def.behavior_config = '{"hunt_range": 5, "attack_damage": 25, "flee_threshold": 0.3, "territory_size": 2}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'

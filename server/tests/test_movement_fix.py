@@ -31,26 +31,26 @@ class TestMovementFixes:
             player_id="test-player-123",
             user_id="test-user-123",
             name="TestPlayer",
-            current_room_id="earth_arkham_city_northside_Derby_St_013",
+            current_room_id="earth_arkhamcity_northside_Derby_St_013",
         )
 
         # Create test rooms
         self.from_room = Room(
             {
-                "id": "earth_arkham_city_northside_Derby_St_013",
+                "id": "earth_arkhamcity_northside_Derby_St_013",
                 "name": "W. Derby Street",
                 "description": "Test room",
-                "exits": {"east": "earth_arkham_city_northside_Derby_St_014"},
+                "exits": {"east": "earth_arkhamcity_northside_Derby_St_014"},
             },
             self.event_bus,
         )
 
         self.to_room = Room(
             {
-                "id": "earth_arkham_city_northside_Derby_St_014",
+                "id": "earth_arkhamcity_northside_Derby_St_014",
                 "name": "W. Derby Street",
                 "description": "Test room 2",
-                "exits": {"west": "earth_arkham_city_northside_Derby_St_013"},
+                "exits": {"west": "earth_arkhamcity_northside_Derby_St_013"},
             },
             self.event_bus,
         )
@@ -63,8 +63,8 @@ class TestMovementFixes:
 
         # Mock room retrieval
         self.mock_persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_northside_Derby_St_013": self.from_room,
-            "earth_arkham_city_northside_Derby_St_014": self.to_room,
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
         # Add player to from_room
@@ -73,12 +73,12 @@ class TestMovementFixes:
         # Test movement
         result = self.movement_service.move_player(
             self.test_player.player_id,
-            "earth_arkham_city_northside_Derby_St_013",
-            "earth_arkham_city_northside_Derby_St_014",
+            "earth_arkhamcity_northside_Derby_St_013",
+            "earth_arkhamcity_northside_Derby_St_014",
         )
 
         assert result is True
-        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
+        assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
         assert self.from_room.has_player(self.test_player.player_id) is False
         assert self.to_room.has_player(self.test_player.player_id) is True
 
@@ -90,8 +90,8 @@ class TestMovementFixes:
 
         # Mock room retrieval
         self.mock_persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_northside_Derby_St_013": self.from_room,
-            "earth_arkham_city_northside_Derby_St_014": self.to_room,
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
         # Add player to from_room
@@ -100,12 +100,12 @@ class TestMovementFixes:
         # Test movement using player name
         result = self.movement_service.move_player(
             "TestPlayer",  # Use name instead of ID
-            "earth_arkham_city_northside_Derby_St_013",
-            "earth_arkham_city_northside_Derby_St_014",
+            "earth_arkhamcity_northside_Derby_St_013",
+            "earth_arkhamcity_northside_Derby_St_014",
         )
 
         assert result is True
-        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
+        assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
 
     def test_player_not_in_room_auto_add(self):
         """Test that player is automatically added to room when current_room_id matches."""
@@ -115,8 +115,8 @@ class TestMovementFixes:
 
         # Mock room retrieval
         self.mock_persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_northside_Derby_St_013": self.from_room,
-            "earth_arkham_city_northside_Derby_St_014": self.to_room,
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
         # Don't add player to from_room initially - this should trigger auto-add
@@ -125,13 +125,13 @@ class TestMovementFixes:
         # Test movement - should succeed because player is auto-added to from_room
         result = self.movement_service.move_player(
             self.test_player.player_id,
-            "earth_arkham_city_northside_Derby_St_013",
-            "earth_arkham_city_northside_Derby_St_014",
+            "earth_arkhamcity_northside_Derby_St_013",
+            "earth_arkhamcity_northside_Derby_St_014",
         )
 
         assert result is True
         # Player should be moved to target room
-        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
+        assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
         # Player should be in target room
         assert self.to_room.has_player(self.test_player.player_id) is True
         # Player should no longer be in from_room
@@ -145,8 +145,8 @@ class TestMovementFixes:
 
         # Mock room retrieval
         self.mock_persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_northside_Derby_St_013": self.from_room,
-            "earth_arkham_city_northside_Derby_St_014": self.to_room,
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
         # Add player to from_room
@@ -165,8 +165,8 @@ class TestMovementFixes:
         # Test movement
         result = self.movement_service.move_player(
             self.test_player.player_id,
-            "earth_arkham_city_northside_Derby_St_013",
-            "earth_arkham_city_northside_Derby_St_014",
+            "earth_arkhamcity_northside_Derby_St_013",
+            "earth_arkhamcity_northside_Derby_St_014",
         )
 
         assert result is True
@@ -190,7 +190,7 @@ class TestMovementFixes:
 
         # Test movement to invalid room
         result = self.movement_service.move_player(
-            self.test_player.player_id, "earth_arkham_city_northside_Derby_St_013", "invalid_room_id"
+            self.test_player.player_id, "earth_arkhamcity_northside_Derby_St_013", "invalid_room_id"
         )
 
         assert result is False
@@ -205,8 +205,8 @@ class TestMovementFixes:
 
         # Mock room retrieval
         self.mock_persistence.get_room.side_effect = lambda room_id: {
-            "earth_arkham_city_northside_Derby_St_013": self.from_room,
-            "earth_arkham_city_northside_Derby_St_014": self.to_room,
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
         }.get(room_id)
 
         # Add player to from_room
@@ -220,8 +220,8 @@ class TestMovementFixes:
             try:
                 result = self.movement_service.move_player(
                     self.test_player.player_id,
-                    "earth_arkham_city_northside_Derby_St_013",
-                    "earth_arkham_city_northside_Derby_St_014",
+                    "earth_arkhamcity_northside_Derby_St_013",
+                    "earth_arkhamcity_northside_Derby_St_014",
                 )
                 with results_lock:
                     results.append(result)
@@ -251,4 +251,4 @@ class TestMovementFixes:
         assert successful_movements == 1, f"Expected 1 successful movement, got {successful_movements}"
 
         # Verify final state
-        assert self.test_player.current_room_id == "earth_arkham_city_northside_Derby_St_014"
+        assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"

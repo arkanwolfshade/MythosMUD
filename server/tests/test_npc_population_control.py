@@ -346,7 +346,7 @@ class TestNPCPopulationController:
     def test_zone_key_extraction(self, population_controller):
         """Test extracting zone keys from room IDs."""
         # Test standard room ID format
-        zone_key = population_controller._get_zone_key_from_room_id("earth_arkham_city_downtown_001")
+        zone_key = population_controller._get_zone_key_from_room_id("earth_arkhamcity_downtown_001")
         assert zone_key == "arkham_city/downtown"
 
         # Test with different format
@@ -394,7 +394,7 @@ class TestNPCPopulationController:
         # Test should spawn check
         zone_config = population_controller.get_zone_configuration("arkham_city/downtown")
         should_spawn = population_controller._should_spawn_npc(
-            shopkeeper_definition, zone_config, "earth_arkham_city_downtown_001"
+            shopkeeper_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
         assert should_spawn is True
 
@@ -418,7 +418,7 @@ class TestNPCPopulationController:
         # Test that no more NPCs can spawn
         zone_config = population_controller.get_zone_configuration(zone_key)
         should_spawn = population_controller._should_spawn_npc(
-            passive_mob_definition, zone_config, "earth_arkham_city_downtown_001"
+            passive_mob_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
         assert should_spawn is False
 
@@ -435,7 +435,7 @@ class TestNPCPopulationController:
 
         zone_config = population_controller.get_zone_configuration("arkham_city/downtown")
         should_spawn = population_controller._should_spawn_npc(
-            passive_mob_definition, zone_config, "earth_arkham_city_downtown_001"
+            passive_mob_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
         assert should_spawn is False
 
@@ -443,7 +443,7 @@ class TestNPCPopulationController:
         population_controller.update_game_state({"time_of_day": "day", "weather": "clear", "player_count": 1})
 
         should_spawn = population_controller._should_spawn_npc(
-            passive_mob_definition, zone_config, "earth_arkham_city_downtown_001"
+            passive_mob_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
         assert should_spawn is True
 
@@ -463,7 +463,7 @@ class TestNPCPopulationController:
         # Test with high spawn probability (should spawn)
         passive_mob_definition.spawn_probability = 0.8
         should_spawn = population_controller._should_spawn_npc(
-            passive_mob_definition, zone_config, "earth_arkham_city_downtown_001"
+            passive_mob_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
         assert should_spawn is True
 
@@ -481,7 +481,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
 
         # Spawn an NPC
-        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
+        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkhamcity_downtown_001")
 
         # Check that NPC was created
         assert npc_id in population_controller.active_npcs
@@ -489,7 +489,7 @@ class TestNPCPopulationController:
         assert npc_data["definition_id"] == shopkeeper_definition.id
         assert npc_data["npc_type"] == shopkeeper_definition.npc_type
         assert npc_data["name"] == shopkeeper_definition.name
-        assert npc_data["room_id"] == "earth_arkham_city_downtown_001"
+        assert npc_data["room_id"] == "earth_arkhamcity_downtown_001"
         assert npc_data["is_required"] is True
 
         # Check that population stats were updated
@@ -507,7 +507,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
 
         # Spawn an NPC
-        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
+        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkhamcity_downtown_001")
 
         # Despawn the NPC
         result = population_controller.despawn_npc(npc_id)
@@ -542,8 +542,8 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper, spawn_rule_passive_mob])
 
         # Spawn some NPCs
-        population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
-        population_controller._spawn_npc(passive_mob_definition, "earth_arkham_city_downtown_002")
+        population_controller._spawn_npc(shopkeeper_definition, "earth_arkhamcity_downtown_001")
+        population_controller._spawn_npc(passive_mob_definition, "earth_arkhamcity_downtown_002")
 
         # Get population summary
         summary = population_controller.get_zone_population_summary()
@@ -566,7 +566,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_passive_mob])
 
         # Spawn an optional NPC
-        npc_id = population_controller._spawn_npc(passive_mob_definition, "earth_arkham_city_downtown_001")
+        npc_id = population_controller._spawn_npc(passive_mob_definition, "earth_arkhamcity_downtown_001")
 
         # Manually set the spawn time to be old
         population_controller.active_npcs[npc_id]["spawned_at"] = time.time() - 4000  # 4000 seconds ago
@@ -586,7 +586,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
 
         # Spawn a required NPC
-        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
+        npc_id = population_controller._spawn_npc(shopkeeper_definition, "earth_arkhamcity_downtown_001")
 
         # Manually set the spawn time to be old
         population_controller.active_npcs[npc_id]["spawned_at"] = time.time() - 4000  # 4000 seconds ago
@@ -605,14 +605,14 @@ class TestNPCPopulationController:
 
         # Test player entering room (should trigger spawn check)
         player_event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="test_player", room_id="earth_arkham_city_downtown_001"
+            timestamp=None, event_type="", player_id="test_player", room_id="earth_arkhamcity_downtown_001"
         )
 
         # This should trigger spawn checking
         with patch.object(population_controller, "_check_spawn_requirements_for_room") as mock_check:
             event_bus.publish(player_event)
             time.sleep(0.1)  # Allow event processing
-            mock_check.assert_called_once_with("earth_arkham_city_downtown_001")
+            mock_check.assert_called_once_with("earth_arkhamcity_downtown_001")
 
     def test_zone_configuration_missing_files(self, event_bus):
         """Test handling of missing zone configuration files."""

@@ -86,7 +86,7 @@ class TestNPCAdminAPI:
             name="Test Shopkeeper",
             npc_type=NPCDefinitionType.SHOPKEEPER,
             sub_zone_id="arkham/city",
-            room_id="earth_arkham_city_downtown_001",
+            room_id="earth_arkhamcity_downtown_001",
             base_stats='{"hp": 100, "mp": 50, "strength": 10, "intelligence": 15}',
             behavior_config='{"greeting": "Welcome to my shop!", "buy_modifier": 0.8}',
             ai_integration_stub='{"model": "gpt-4", "temperature": 0.7}',
@@ -156,7 +156,7 @@ class TestNPCAdminAPI:
             "name": "New NPC",
             "npc_type": "shopkeeper",
             "sub_zone_id": "arkham/city",
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100, "mp": 50},
             "behavior_config": {"greeting": "Hello!"},
             "ai_integration_stub": {"model": "gpt-4"},
@@ -171,7 +171,7 @@ class TestNPCAdminAPI:
             "name": "New NPC",
             "npc_type": "shopkeeper",
             "sub_zone_id": "arkham/city",
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100, "mp": 50},
             "behavior_config": {"greeting": "Hello!"},
             "ai_integration_stub": {"model": "gpt-4"},
@@ -190,7 +190,7 @@ class TestNPCAdminAPI:
             "name": f"Test NPC {uuid4().hex[:8]}",
             "npc_type": "shopkeeper",
             "sub_zone_id": "arkham/city",
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100, "mp": 50},
             "behavior_config": {"greeting": "Hello!"},
             "ai_integration_stub": {"model": "gpt-4"},
@@ -294,7 +294,7 @@ class TestNPCAdminAPI:
                     "npc_id": "npc_001",
                     "name": "Test Shopkeeper",
                     "npc_type": "shopkeeper",
-                    "current_room_id": "earth_arkham_city_downtown_001",
+                    "current_room_id": "earth_arkhamcity_downtown_001",
                     "is_alive": True,
                     "stats": {"hp": 100, "mp": 50},
                 }
@@ -321,7 +321,7 @@ class TestNPCAdminAPI:
         """Test that NPC spawning requires authentication."""
         spawn_data = {
             "definition_id": 1,
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
         }
 
         response = client.post("/admin/npc/instances/spawn", json=spawn_data)
@@ -331,7 +331,7 @@ class TestNPCAdminAPI:
         """Test successful NPC spawning."""
         spawn_data = {
             "definition_id": 1,
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
         }
 
         mock_result = {
@@ -392,7 +392,7 @@ class TestNPCAdminAPI:
     def test_npc_move_unauthorized(self, client):
         """Test that NPC movement requires authentication."""
         move_data = {
-            "room_id": "earth_arkham_city_downtown_002",
+            "room_id": "earth_arkhamcity_downtown_002",
         }
 
         response = client.put("/admin/npc/instances/npc_001/move", json=move_data)
@@ -401,13 +401,13 @@ class TestNPCAdminAPI:
     def test_npc_move_success(self, client, mock_admin_user):
         """Test successful NPC movement."""
         move_data = {
-            "room_id": "earth_arkham_city_downtown_002",
+            "room_id": "earth_arkhamcity_downtown_002",
         }
 
         mock_result = {
             "success": True,
             "message": "NPC moved successfully",
-            "new_room_id": "earth_arkham_city_downtown_002",
+            "new_room_id": "earth_arkhamcity_downtown_002",
         }
 
         # Use consistent authentication mocking
@@ -425,7 +425,7 @@ class TestNPCAdminAPI:
 
                 data = response.json()
                 assert data["success"] is True
-                assert data["new_room_id"] == "earth_arkham_city_downtown_002"
+                assert data["new_room_id"] == "earth_arkhamcity_downtown_002"
         finally:
             cleanup_auth()
 
@@ -769,7 +769,7 @@ class TestNPCAdminAPI:
             "name": "Invalid NPC",
             "npc_type": "invalid_type",
             "sub_zone_id": "arkham/city",
-            "room_id": "earth_arkham_city_downtown_001",
+            "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100},
             "behavior_config": {},
             "ai_integration_stub": {},

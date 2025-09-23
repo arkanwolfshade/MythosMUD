@@ -97,7 +97,7 @@ class TestLocalChannelLogging:
         rooms = [
             "earth_arkham_docks_warehouse_1",
             "earth_arkham_northside_mansion_1",
-            "earth_arkham_city_intersection_derby_high",
+            "earth_arkhamcity_intersection_derby_high",
         ]
 
         for i, room_id in enumerate(rooms):

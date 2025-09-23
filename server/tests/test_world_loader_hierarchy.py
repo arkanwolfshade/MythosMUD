@@ -92,24 +92,24 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
 
         # Create room files
         room1_data = {
-            "id": "earth_arkham_city_french_hill_S_Garrison_St_001",
+            "id": "earth_arkhamcity_french_hill_S_Garrison_St_001",
             "name": "South Garrison Street",
             "description": "A quiet residential street.",
             "plane": "earth",
             "zone": "arkham_city",
             "sub_zone": "french_hill",
             "environment": "outdoors",
-            "exits": {"north": "earth_arkham_city_french_hill_S_Garrison_St_002", "south": None},
+            "exits": {"north": "earth_arkhamcity_french_hill_S_Garrison_St_002", "south": None},
         }
 
         room2_data = {
-            "id": "earth_arkham_city_french_hill_S_Garrison_St_002",
+            "id": "earth_arkhamcity_french_hill_S_Garrison_St_002",
             "name": "South Garrison Street (North)",
             "description": "The northern end of the street.",
             "plane": "earth",
             "zone": "arkham_city",
             "sub_zone": "french_hill",
-            "exits": {"south": "earth_arkham_city_french_hill_S_Garrison_St_001"},
+            "exits": {"south": "earth_arkhamcity_french_hill_S_Garrison_St_001"},
         }
 
         with open(os.path.join(french_hill_path, "S_Garrison_St_001.json"), "w") as f:
@@ -168,7 +168,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
     def test_generate_room_id(self):
         """Test room ID generation from components."""
         room_id = generate_room_id("earth", "arkham_city", "french_hill", "S_Garrison_St_001")
-        expected_id = "earth_arkham_city_french_hill_S_Garrison_St_001"
+        expected_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"
         self.assertEqual(room_id, expected_id)
 
         # Test with different components
@@ -231,7 +231,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             self.assertIn("earth/arkham_city/french_hill", world_data["subzone_configs"])
 
             # Verify specific room loaded
-            room_id = "earth_arkham_city_french_hill_S_Garrison_St_001"
+            room_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"
             self.assertIn(room_id, world_data["rooms"])
             room = world_data["rooms"][room_id]
             self.assertEqual(room["name"], "South Garrison Street")
@@ -254,7 +254,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             world_data = load_hierarchical_world()
 
             # Test new format ID
-            new_id = "earth_arkham_city_french_hill_S_Garrison_St_001"
+            new_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"
             resolved = resolve_room_reference(new_id, world_data)
             self.assertEqual(resolved, new_id)
 

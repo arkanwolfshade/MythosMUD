@@ -47,15 +47,15 @@ class TestEmoteMuteFiltering:
         self.sender_player = Mock()
         self.sender_player.id = str(uuid.uuid4())
         self.sender_player.name = "Ithaqua"
-        self.sender_player.current_room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.sender_player.current_room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         self.receiver_player = Mock()
         self.receiver_player.id = str(uuid.uuid4())
         self.receiver_player.name = "ArkanWolfshade"
-        self.receiver_player.current_room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.receiver_player.current_room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Test data from the bug report
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
         self.sender_id = self.sender_player.id
         self.receiver_id = self.receiver_player.id
 

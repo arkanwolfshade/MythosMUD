@@ -43,7 +43,7 @@ class TestNPCMessageQueue:
         npc_id = "test_npc_1"
         message = {
             "type": "move",
-            "target_room": "earth_arkham_city_downtown_room_derby_st_001",
+            "target_room": "earth_arkhamcity_downtown_room_derby_st_001",
             "timestamp": time.time(),
         }
 
@@ -255,7 +255,7 @@ class TestNPCActionMessageTypes:
         message = NPCActionMessage(
             action_type=NPCActionType.MOVE,
             npc_id="test_npc_1",
-            target_room="earth_arkham_city_downtown_room_derby_st_001",
+            target_room="earth_arkhamcity_downtown_room_derby_st_001",
             timestamp=time.time(),
         )
 
@@ -263,14 +263,14 @@ class TestNPCActionMessageTypes:
         serialized = message.to_dict()
         assert serialized["action_type"] == "move"
         assert serialized["npc_id"] == "test_npc_1"
-        assert serialized["target_room"] == "earth_arkham_city_downtown_room_derby_st_001"
+        assert serialized["target_room"] == "earth_arkhamcity_downtown_room_derby_st_001"
         assert "timestamp" in serialized
 
         # Test deserialization
         deserialized = NPCActionMessage.from_dict(serialized)
         assert deserialized.action_type == NPCActionType.MOVE
         assert deserialized.npc_id == "test_npc_1"
-        assert deserialized.target_room == "earth_arkham_city_downtown_room_derby_st_001"
+        assert deserialized.target_room == "earth_arkhamcity_downtown_room_derby_st_001"
 
     def test_attack_action_message(self):
         """Test attack action message creation and serialization."""

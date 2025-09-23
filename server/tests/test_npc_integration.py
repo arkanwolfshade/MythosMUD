@@ -194,7 +194,7 @@ class TestNPCCombatIntegration:
         npc_def.description = "A dark figure for combat testing"
         npc_def.npc_type = NPCDefinitionType.AGGRESSIVE_MOB
         npc_def.sub_zone_id = "sanitarium"
-        npc_def.room_id = "earth_arkham_city_sanitarium_room_foyer_001"
+        npc_def.room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         npc_def.base_stats = '{"hp": 120, "strength": 15, "attack_damage": 25}'
         npc_def.behavior_config = '{"hunt_range": 5, "attack_damage": 25, "flee_threshold": 0.3}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -494,7 +494,7 @@ class TestNPCCommunicationIntegration:
         npc_def.description = "A shopkeeper for communication testing"
         npc_def.npc_type = NPCDefinitionType.SHOPKEEPER
         npc_def.sub_zone_id = "merchant"
-        npc_def.room_id = "earth_arkham_city_merchant_room_peabody_ave_001"
+        npc_def.room_id = "earth_arkhamcity_merchant_room_peabody_ave_001"
         npc_def.base_stats = '{"hp": 100, "charisma": 12}'
         npc_def.behavior_config = '{"sells": ["potion"], "markup": 1.5}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
@@ -885,7 +885,7 @@ class TestNPCSystemIntegration:
         npc_def.id = 2
         npc_def.name = "Cultist"
         npc_def.npc_type = NPCDefinitionType.AGGRESSIVE_MOB
-        npc_def.room_id = "earth_arkham_city_sanitarium_room_foyer_001"
+        npc_def.room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         npc_def.base_stats = '{"hp": 120, "strength": 15}'
         npc_def.behavior_config = '{"hunt_range": 5, "attack_damage": 25}'
         npc_def.ai_integration_stub = '{"ai_enabled": false}'
@@ -896,7 +896,7 @@ class TestNPCSystemIntegration:
         npc_def.id = 3
         npc_def.name = "Ezekiel Whateley"
         npc_def.npc_type = NPCDefinitionType.SHOPKEEPER
-        npc_def.room_id = "earth_arkham_city_merchant_room_peabody_ave_001"
+        npc_def.room_id = "earth_arkhamcity_merchant_room_peabody_ave_001"
         npc_def.base_stats = '{"hp": 100, "charisma": 12}'
         npc_def.behavior_config = '{"sells": ["potion"], "markup": 1.5}'
         npc_def.ai_integration_stub = '{"ai_enabled": false}'

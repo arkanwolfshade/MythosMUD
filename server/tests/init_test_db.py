@@ -60,7 +60,7 @@ SAMPLE_PLAYERS = [
         "stats": '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}',
         "inventory": "[]",
         "status_effects": "[]",
-        "current_room_id": "earth_arkham_city_intersection_derby_high",
+        "current_room_id": "earth_arkhamcity_intersection_derby_high",
         "experience_points": 0,
         "level": 1,
     },

@@ -14,7 +14,7 @@ from server.game.chat_service import ChatService
 from server.services.player_preferences_service import PlayerPreferencesService
 
 
-def create_mock_player(player_id="player123", room_id="earth_arkham_city_northside_intersection_derby_high"):
+def create_mock_player(player_id="player123", room_id="earth_arkhamcity_northside_intersection_derby_high"):
     """Create a properly configured mock player object."""
     mock_player = MagicMock()
     mock_player.id = player_id
@@ -227,7 +227,7 @@ class TestLocalChannelCommandIntegration:
 
         # Mock player service to return player with no ID
         mock_player = MagicMock()
-        mock_player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        mock_player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         # Remove id and player_id attributes
         del mock_player.id
         del mock_player.player_id

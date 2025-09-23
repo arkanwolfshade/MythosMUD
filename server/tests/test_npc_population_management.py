@@ -490,14 +490,14 @@ class TestNPCZoneIntegration:
     def arkham_downtown_room(self, event_bus):
         """Create a room in Arkham downtown."""
         room_data = {
-            "id": "earth_arkham_city_downtown_001",
+            "id": "earth_arkhamcity_downtown_001",
             "name": "Arkham Downtown Square",
             "description": "The bustling commercial heart of Arkham",
             "plane": "earth",
             "zone": "arkham_city",
             "sub_zone": "downtown",
             "environment": "outdoors",
-            "exits": {"north": "earth_arkham_city_downtown_002", "south": "earth_arkham_city_downtown_003"},
+            "exits": {"north": "earth_arkhamcity_downtown_002", "south": "earth_arkhamcity_downtown_003"},
         }
         return Room(room_data, event_bus)
 
