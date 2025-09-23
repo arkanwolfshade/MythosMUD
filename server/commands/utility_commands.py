@@ -51,9 +51,9 @@ def format_player_location(room_id: str) -> str:
         parts = room_id.split("_")
         if len(parts) >= 4:
             # Extract zone and sub-zone
-            zone = parts[1]  # arkham
-            sub_zone = parts[2]  # city
-            room_name = "_".join(parts[3:])  # northside_intersection_derby_high
+            zone = parts[1]  # arkhamcity
+            sub_zone = parts[2]  # northside
+            room_name = "_".join(parts[3:])  # intersection_derby_high
 
             # Convert to readable format
             zone_display = zone.replace("_", " ").title()

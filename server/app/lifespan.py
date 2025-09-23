@@ -6,6 +6,7 @@ including the game tick loop and persistence layer initialization."""
 import asyncio
 import datetime
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
@@ -59,7 +60,12 @@ async def lifespan(app: FastAPI):
     from ..services.user_manager import UserManager
 
     app.state.player_service = PlayerService(app.state.persistence)
-    app.state.user_manager = UserManager()
+
+    # Initialize UserManager with proper data directory from config
+    config = get_config()
+    data_dir = config.get("data_dir", "data")
+    user_management_dir = Path(data_dir) / "user_management"
+    app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
     logger.info(f"app.state.player_service: {app.state.player_service}")

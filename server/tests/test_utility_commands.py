@@ -1062,7 +1062,7 @@ class TestLocationFormatting:
         """Test formatting player location with standard room ID format."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         result = format_player_location(room_id)
-        expected = "Arkham: City: Northside Intersection Derby High"
+        expected = "Arkhamcity: Northside: Intersection Derby High"
         assert result == expected
 
     def test_format_player_location_different_zones(self):
@@ -1090,7 +1090,7 @@ class TestLocationFormatting:
         # Test single word room name
         room_id = "earth_arkhamcity_center"
         result = format_player_location(room_id)
-        expected = "Arkham: City: Center"
+        expected = "Earth Arkhamcity Center"
         assert result == expected
 
     def test_format_player_location_invalid_format(self):
@@ -1112,7 +1112,7 @@ class TestLocationFormatting:
         # Test with underscores in room names
         room_id = "earth_arkhamcity_old_man_whateley_house"
         result = format_player_location(room_id)
-        expected = "Arkham: City: Old Man Whateley House"
+        expected = "Arkhamcity: Old: Man Whateley House"
         assert result == expected
 
 
@@ -1172,7 +1172,7 @@ class TestMockPlayerSorting:
         # Check basic formatting
         assert "testuser" in result
         assert "[5]" in result
-        assert "Arkham: City: Center" in result
+        assert "Earth Arkhamcity Center" in result
 
 
 class TestPlayerEntryFormatting:
@@ -1188,7 +1188,7 @@ class TestPlayerEntryFormatting:
         player.is_admin = False
 
         result = format_player_entry(player)
-        expected = "alice [5] - Arkham: City: Northside Intersection Derby High"
+        expected = "alice [5] - Arkhamcity: Northside: Intersection Derby High"
         assert result == expected
 
     def test_format_player_entry_admin_player(self):
@@ -1201,7 +1201,7 @@ class TestPlayerEntryFormatting:
         player.is_admin = True
 
         result = format_player_entry(player)
-        expected = "admin [10] [ADMIN] - Arkham: City: Northside Intersection Derby High"
+        expected = "admin [10] [ADMIN] - Arkhamcity: Northside: Intersection Derby High"
         assert result == expected
 
     def test_format_player_entry_different_levels(self):
@@ -1220,11 +1220,11 @@ class TestPlayerEntryFormatting:
         player2.is_admin = False
 
         result1 = format_player_entry(player1)
-        expected1 = "newbie [1] - Arkham: City: Northside Intersection Derby High"
+        expected1 = "newbie [1] - Arkhamcity: Northside: Intersection Derby High"
         assert result1 == expected1
 
         result2 = format_player_entry(player2)
-        expected2 = "veteran [50] - Arkham: City: Northside Intersection Derby High"
+        expected2 = "veteran [50] - Arkhamcity: Northside: Intersection Derby High"
         assert result2 == expected2
 
 
