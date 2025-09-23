@@ -374,7 +374,7 @@ async def handle_npc_spawn_command(
         instance_service = get_npc_instance_service()
 
         # Spawn NPC instance
-        result = await instance_service.spawn_npc_instance(definition_id, room_id)
+        await instance_service.spawn_npc_instance(definition_id, room_id)
 
         logger.info(f"NPC spawned by {player_name}", definition_id=definition_id, room_id=room_id)
         return {"result": f"NPC spawned successfully in {room_id}"}

@@ -542,8 +542,8 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper, spawn_rule_passive_mob])
 
         # Spawn some NPCs
-        npc_id_1 = population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
-        npc_id_2 = population_controller._spawn_npc(passive_mob_definition, "earth_arkham_city_downtown_002")
+        population_controller._spawn_npc(shopkeeper_definition, "earth_arkham_city_downtown_001")
+        population_controller._spawn_npc(passive_mob_definition, "earth_arkham_city_downtown_002")
 
         # Get population summary
         summary = population_controller.get_zone_population_summary()
@@ -602,18 +602,6 @@ class TestNPCPopulationController:
         # Load definitions and rules
         population_controller.load_npc_definitions([shopkeeper_definition])
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
-
-        # Create a mock room for testing
-        room_data = {
-            "id": "earth_arkham_city_downtown_001",
-            "name": "Test Room",
-            "description": "A test room",
-            "plane": "earth",
-            "zone": "arkham_city",
-            "sub_zone": "downtown",
-            "environment": "outdoors",
-            "exits": {},
-        }
 
         # Test player entering room (should trigger spawn check)
         player_event = PlayerEnteredRoom(

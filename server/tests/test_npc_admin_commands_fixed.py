@@ -635,4 +635,4 @@ class TestNPCAdminCommands:
         mock_request.app.state.player_service = MagicMock()
         mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_regular_player)
 
-        result = await handle_npc_command(command_data, {}, mock_request, mock_alias_storage, "regular_player")
+        await handle_npc_command(command_data, {}, mock_request, mock_alias_storage, "regular_player")

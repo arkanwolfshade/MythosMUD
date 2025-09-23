@@ -190,7 +190,7 @@ class NPCEventReactionSystem:
         """
         if npc_id in self._npc_reactions:
             # Remove from event subscriptions
-            for event_type, npc_set in self._event_subscriptions.items():
+            for _event_type, npc_set in self._event_subscriptions.items():
                 npc_set.discard(npc_id)
 
             # Remove reactions

@@ -383,7 +383,7 @@ class NPCPopulationController:
             return
 
         # Check each NPC definition for spawn requirements
-        for npc_def_id, definition in self.npc_definitions.items():
+        for _npc_def_id, definition in self.npc_definitions.items():
             if definition.sub_zone_id not in zone_key:
                 continue
 

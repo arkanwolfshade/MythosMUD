@@ -415,7 +415,7 @@ class TestNPCInteractionEngine:
         assert NPCInteractionType.ASSISTANCE in rules
 
         # Check that each rule has required fields
-        for interaction_type, rule in rules.items():
+        for _interaction_type, rule in rules.items():
             assert "base_probability" in rule
             assert "relationship_modifier" in rule
             assert "success_threshold" in rule

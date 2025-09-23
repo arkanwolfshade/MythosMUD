@@ -341,7 +341,7 @@ class NPCInstanceService:
             by_zone = {}
             total_npcs = len(active_instances)
 
-            for npc_id, npc_instance in active_instances.items():
+            for _npc_id, npc_instance in active_instances.items():
                 npc_type = getattr(npc_instance, "npc_type", "unknown")
                 current_room_id = getattr(npc_instance, "current_room_id", "unknown")
 

@@ -275,7 +275,7 @@ class NPCRelationshipManager:
         # Use a set to track processed relationships to avoid double counting
         processed_relationships = set()
 
-        for key, relationship in self.relationships.items():
+        for _key, relationship in self.relationships.items():
             # Create a unique identifier for the relationship (smaller ID first)
             rel_id = tuple(sorted([relationship.npc_id_1, relationship.npc_id_2]))
 
@@ -445,7 +445,6 @@ class NPCInteractionEngine:
         rules = self.interaction_rules[interaction_type]
         base_probability = rules["base_probability"]
         rel_modifier = rules["relationship_modifier"]
-        success_threshold = rules["success_threshold"]
 
         # Calculate success probability
         success_probability = base_probability + (relationship_modifier * rel_modifier)

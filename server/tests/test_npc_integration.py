@@ -344,7 +344,7 @@ class TestNPCCombatIntegration:
 
         # Create a mock persistence layer
         mock_persistence = MagicMock()
-        mechanics_service = GameMechanicsService(mock_persistence)
+        GameMechanicsService(mock_persistence)
 
         # Test that NPC combat doesn't interfere with player mechanics
         initial_hp = aggressive_npc.get_stats()["hp"]
@@ -1211,7 +1211,7 @@ class TestNPCEventReactionSystem:
         )
 
         # Create NPC with reaction system
-        npc = ShopkeeperNPC(definition, "shopkeeper_1", event_bus, event_reaction_system)
+        ShopkeeperNPC(definition, "shopkeeper_1", event_bus, event_reaction_system)
 
         # Check that reactions were registered
         assert "shopkeeper_1" in event_reaction_system._npc_reactions

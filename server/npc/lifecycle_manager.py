@@ -505,7 +505,6 @@ class NPCLifecycleManager:
         Returns:
             Dictionary containing lifecycle statistics
         """
-        current_time = time.time()
         total_npcs = len(self.lifecycle_records)
         active_npcs = len(self.active_npcs)
         respawn_queue_size = len(self.respawn_queue)
