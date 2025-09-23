@@ -149,10 +149,10 @@ test.describe('Room occupants - two clients', () => {
 
     // Send initial game_state (empty occupants) to both clients
     const baseRoom = {
-      id: 'earth_arkham_city_downtown_001',
+      id: 'earth_arkhamcity_downtown_001',
       name: 'Downtown Arkham',
       description: 'Streets of Arkham.',
-      zone: 'arkham_city',
+      zone: 'arkhamcity',
       sub_zone: 'downtown',
       exits: { north: '...', south: '...' },
     };

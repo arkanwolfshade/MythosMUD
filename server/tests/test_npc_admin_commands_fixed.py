@@ -77,7 +77,7 @@ class TestNPCAdminCommands:
             "id": 1,
             "name": "Test Shopkeeper",
             "npc_type": "shopkeeper",
-            "sub_zone_id": "arkham_city_downtown",
+            "sub_zone_id": "arkhamcity_downtown",
             "room_id": "earth_arkhamcity_downtown_001",
             "base_stats": {"hp": 100, "mp": 50},
             "behavior_config": {"aggressive": False},
@@ -153,7 +153,7 @@ class TestNPCAdminCommands:
         """Test successful NPC creation."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkhamcity_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the database session and NPC service
@@ -190,7 +190,7 @@ class TestNPCAdminCommands:
         """Test NPC creation with invalid NPC type."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "invalid_type", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
+            "args": ["create", "Test NPC", "invalid_type", "arkhamcity_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         result = await handle_npc_create_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
@@ -203,7 +203,7 @@ class TestNPCAdminCommands:
         """Test NPC creation with service error."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkhamcity_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the NPC service to raise an exception
@@ -302,7 +302,7 @@ class TestNPCAdminCommands:
             mock_definition.id = 1
             mock_definition.name = "Test Shopkeeper"
             mock_definition.npc_type = "shopkeeper"
-            mock_definition.sub_zone_id = "arkham_city_downtown"
+            mock_definition.sub_zone_id = "arkhamcity_downtown"
             mock_definition.room_id = "earth_arkhamcity_downtown_001"
             mock_npc_service.get_npc_definitions = AsyncMock(return_value=[mock_definition])
 
@@ -628,7 +628,7 @@ class TestNPCAdminCommands:
         """Test that NPC create command requires admin permission."""
         command_data = {
             "command_type": "npc",
-            "args": ["create", "Test NPC", "shopkeeper", "arkham_city_downtown", "earth_arkhamcity_downtown_001"],
+            "args": ["create", "Test NPC", "shopkeeper", "arkhamcity_downtown", "earth_arkhamcity_downtown_001"],
         }
 
         # Mock the player service to return the regular player

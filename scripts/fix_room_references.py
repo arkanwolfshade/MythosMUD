@@ -32,7 +32,7 @@ def save_room_file(file_path: Path, room_data: dict) -> None:
         raise ValueError(f"Failed to save {file_path}: {e}") from e
 
 
-def fix_room_references(base_path: str = "./data/rooms/earth/arkham_city/northside") -> None:
+def fix_room_references(base_path: str = "./data/rooms/earth/arkhamcity/northside") -> None:
     """
     Fix room ID references in the northside area.
 
@@ -46,20 +46,20 @@ def fix_room_references(base_path: str = "./data/rooms/earth/arkham_city/northsi
 
     # Define the mapping from old IDs to new IDs
     room_id_mapping = {
-        "earth_arkham_city_northside_derby_st_001": "earth_arkham_city_northside_room_derby_st_001",
-        "earth_arkham_city_northside_derby_st_002": "earth_arkham_city_northside_room_derby_st_002",
-        "earth_arkham_city_northside_derby_st_003": "earth_arkham_city_northside_room_derby_st_003",
-        "earth_arkham_city_northside_derby_st_004": "earth_arkham_city_northside_room_derby_st_004",
-        "earth_arkham_city_northside_derby_st_005": "earth_arkham_city_northside_room_derby_st_005",
-        "earth_arkham_city_northside_derby_st_006": "earth_arkham_city_northside_room_derby_st_006",
-        "earth_arkham_city_northside_derby_st_007": "earth_arkham_city_northside_room_derby_st_007",
-        "earth_arkham_city_northside_derby_st_008": "earth_arkham_city_northside_room_derby_st_008",
-        "earth_arkham_city_northside_derby_st_009": "earth_arkham_city_northside_room_derby_st_009",
-        "earth_arkham_city_northside_derby_st_010": "earth_arkham_city_northside_room_derby_st_010",
-        "earth_arkham_city_northside_derby_st_011": "earth_arkham_city_northside_room_derby_st_011",
-        "earth_arkham_city_northside_derby_st_012": "earth_arkham_city_northside_room_derby_st_012",
-        "earth_arkham_city_northside_derby_st_013": "earth_arkham_city_northside_room_derby_st_013",
-        "earth_arkham_city_northside_derby_st_014": "earth_arkham_city_northside_room_derby_st_014",
+        "earth_arkhamcity_northside_derby_st_001": "earth_arkhamcity_northside_room_derby_st_001",
+        "earth_arkhamcity_northside_derby_st_002": "earth_arkhamcity_northside_room_derby_st_002",
+        "earth_arkhamcity_northside_derby_st_003": "earth_arkhamcity_northside_room_derby_st_003",
+        "earth_arkhamcity_northside_derby_st_004": "earth_arkhamcity_northside_room_derby_st_004",
+        "earth_arkhamcity_northside_derby_st_005": "earth_arkhamcity_northside_room_derby_st_005",
+        "earth_arkhamcity_northside_derby_st_006": "earth_arkhamcity_northside_room_derby_st_006",
+        "earth_arkhamcity_northside_derby_st_007": "earth_arkhamcity_northside_room_derby_st_007",
+        "earth_arkhamcity_northside_derby_st_008": "earth_arkhamcity_northside_room_derby_st_008",
+        "earth_arkhamcity_northside_derby_st_009": "earth_arkhamcity_northside_room_derby_st_009",
+        "earth_arkhamcity_northside_derby_st_010": "earth_arkhamcity_northside_room_derby_st_010",
+        "earth_arkhamcity_northside_derby_st_011": "earth_arkhamcity_northside_room_derby_st_011",
+        "earth_arkhamcity_northside_derby_st_012": "earth_arkhamcity_northside_room_derby_st_012",
+        "earth_arkhamcity_northside_derby_st_013": "earth_arkhamcity_northside_room_derby_st_013",
+        "earth_arkhamcity_northside_derby_st_014": "earth_arkhamcity_northside_room_derby_st_014",
     }
 
     files_fixed = []

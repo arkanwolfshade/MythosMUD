@@ -579,7 +579,7 @@ class TestCharacterCreation:
                 "wisdom": 10,
                 "charisma": 10,
             },
-            starting_room_id="arkham_city_downtown_001",
+            starting_room_id="arkhamcity_downtown_001",
         )
 
         with pytest.raises(HTTPException) as exc_info:

@@ -283,7 +283,7 @@ Learn about available commands and their proper usage.</p>
         "examples": [
             "npc help",
             "npc list",
-            "npc create TestNPC shopkeeper arkham_city_downtown earth_arkham_city_downtown_001",
+            "npc create TestNPC shopkeeper arkhamcity_downtown earth_arkhamcity_downtown_001",
         ],
         "detailed_help": """
 <div style="color: #8B0000;">
@@ -315,8 +315,8 @@ lurk in the shadows of our world.</p>
 <ul>
 <li>npc help</li>
 <li>npc list</li>
-<li>npc create TestShopkeeper shopkeeper arkham_city_downtown earth_arkham_city_downtown_001</li>
-<li>npc spawn 1 earth_arkham_city_downtown_001</li>
+<li>npc create TestShopkeeper shopkeeper arkhamcity_downtown earth_arkhamcity_downtown_001</li>
+<li>npc spawn 1 earth_arkhamcity_downtown_001</li>
 <li>npc population</li>
 <li>npc status</li>
 <li>npc behavior npc_001 aggressive</li>

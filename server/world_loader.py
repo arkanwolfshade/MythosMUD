@@ -101,12 +101,12 @@ def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> st
 
     Args:
         plane: Plane identifier (e.g., 'earth', 'yeng')
-        zone: Zone identifier (e.g., 'arkham_city')
+        zone: Zone identifier (e.g., 'arkhamcity')
         sub_zone: Sub-zone identifier (e.g., 'french_hill')
         room_file: Room file name without extension (e.g., 'S_Garrison_St_001')
 
     Returns:
-        Hierarchical room ID (e.g., 'earth_arkham_city_intersection_derby_high')
+        Hierarchical room ID (e.g., 'earth_arkhamcity_intersection_derby_high')
     """
     components = [plane, zone, sub_zone, room_file]
     return "_".join(components)

@@ -42,14 +42,14 @@ class TestHierarchicalSchema(unittest.TestCase):
     def test_valid_hierarchical_room(self):
         """Test that a valid hierarchical room passes validation."""
         room_data = {
-            "id": "earth_arkham_city_french_hill_S_Garrison_St_001",
+            "id": "earth_arkhamcity_french_hill_S_Garrison_St_001",
             "name": "South Garrison Street",
             "description": "A quiet residential street in French Hill.",
             "plane": "earth",
-            "zone": "arkham_city",
+            "zone": "arkhamcity",
             "sub_zone": "french_hill",
             "environment": "outdoors",
-            "exits": {"north": "earth_arkham_city_french_hill_S_Garrison_St_002", "south": None},
+            "exits": {"north": "earth_arkhamcity_french_hill_S_Garrison_St_002", "south": None},
         }
 
         result = self.validator.validate_room(room_data, self.room_schema)
@@ -135,7 +135,7 @@ class TestHierarchicalSchema(unittest.TestCase):
     def test_room_id_pattern_validation(self):
         """Test that room IDs follow the correct pattern."""
         valid_ids = [
-            "earth_arkham_city_french_hill_S_Garrison_St_001",
+            "earth_arkhamcity_french_hill_S_Garrison_St_001",
             "yeng_katmandu_palace_palace_ground_001",
         ]
 

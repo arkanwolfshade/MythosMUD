@@ -107,9 +107,9 @@ class TestPopulationStats:
 
     def test_population_stats_creation(self):
         """Test creating population statistics."""
-        stats = PopulationStats("arkham_city", "downtown")
+        stats = PopulationStats("arkhamcity", "downtown")
 
-        assert stats.zone_id == "arkham_city"
+        assert stats.zone_id == "arkhamcity"
         assert stats.sub_zone_id == "downtown"
         assert stats.total_npcs == 0
         assert stats.npcs_by_type == {}
@@ -119,7 +119,7 @@ class TestPopulationStats:
 
     def test_add_npc_to_stats(self):
         """Test adding NPCs to population statistics."""
-        stats = PopulationStats("arkham_city", "downtown")
+        stats = PopulationStats("arkhamcity", "downtown")
 
         # Add required NPC
         stats.add_npc("shopkeeper", "room_001", True)
@@ -147,7 +147,7 @@ class TestPopulationStats:
 
     def test_remove_npc_from_stats(self):
         """Test removing NPCs from population statistics."""
-        stats = PopulationStats("arkham_city", "downtown")
+        stats = PopulationStats("arkhamcity", "downtown")
 
         # Add some NPCs first
         stats.add_npc("shopkeeper", "room_001", True)
@@ -172,7 +172,7 @@ class TestPopulationStats:
 
     def test_population_stats_negative_protection(self):
         """Test that population stats don't go negative."""
-        stats = PopulationStats("arkham_city", "downtown")
+        stats = PopulationStats("arkhamcity", "downtown")
 
         # Try to remove from empty stats
         stats.remove_npc("shopkeeper", "room_001", True)
@@ -184,13 +184,13 @@ class TestPopulationStats:
 
     def test_population_stats_to_dict(self):
         """Test converting population stats to dictionary."""
-        stats = PopulationStats("arkham_city", "downtown")
+        stats = PopulationStats("arkhamcity", "downtown")
         stats.add_npc("shopkeeper", "room_001", True)
         stats.add_npc("passive_mob", "room_002", False)
 
         stats_dict = stats.to_dict()
 
-        assert stats_dict["zone_id"] == "arkham_city"
+        assert stats_dict["zone_id"] == "arkhamcity"
         assert stats_dict["sub_zone_id"] == "downtown"
         assert stats_dict["total_npcs"] == 2
         assert stats_dict["npcs_by_type"]["shopkeeper"] == 1
@@ -217,7 +217,7 @@ class TestNPCPopulationController:
             temp_path = Path(temp_dir)
 
             # Create zone structure
-            arkham_dir = temp_path / "arkham_city"
+            arkham_dir = temp_path / "arkhamcity"
             arkham_dir.mkdir()
 
             downtown_dir = arkham_dir / "downtown"
@@ -324,21 +324,21 @@ class TestNPCPopulationController:
         """Test population controller initialization."""
         assert population_controller.event_bus is not None
         assert len(population_controller.zone_configurations) > 0
-        assert "arkham_city" in population_controller.zone_configurations
-        assert "arkham_city/downtown" in population_controller.zone_configurations
+        assert "arkhamcity" in population_controller.zone_configurations
+        assert "arkhamcity/downtown" in population_controller.zone_configurations
         assert len(population_controller.active_npcs) == 0
         assert len(population_controller.population_stats) == 0
 
     def test_zone_configuration_loading(self, population_controller):
         """Test that zone configurations are loaded correctly."""
         # Test zone configuration
-        zone_config = population_controller.get_zone_configuration("arkham_city")
+        zone_config = population_controller.get_zone_configuration("arkhamcity")
         assert zone_config is not None
         assert zone_config.npc_spawn_modifier == 1.2
         assert zone_config.sanity_drain_rate == 0.1
 
         # Test sub-zone configuration
-        subzone_config = population_controller.get_zone_configuration("arkham_city/downtown")
+        subzone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
         assert subzone_config is not None
         assert subzone_config.npc_spawn_modifier == 1.5
         assert subzone_config.sanity_drain_rate == 0.08
@@ -347,7 +347,7 @@ class TestNPCPopulationController:
         """Test extracting zone keys from room IDs."""
         # Test standard room ID format
         zone_key = population_controller._get_zone_key_from_room_id("earth_arkhamcity_downtown_001")
-        assert zone_key == "arkham_city/downtown"
+        assert zone_key == "arkhamcity/downtown"
 
         # Test with different format
         zone_key = population_controller._get_zone_key_from_room_id("earth_innsmouth_waterfront_002")
@@ -392,7 +392,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
 
         # Test should spawn check
-        zone_config = population_controller.get_zone_configuration("arkham_city/downtown")
+        zone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
         should_spawn = population_controller._should_spawn_npc(
             shopkeeper_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
@@ -407,8 +407,8 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_passive_mob])
 
         # Create population stats with max population reached
-        zone_key = "arkham_city/downtown"
-        population_controller.population_stats[zone_key] = PopulationStats("arkham_city", "downtown")
+        zone_key = "arkhamcity/downtown"
+        population_controller.population_stats[zone_key] = PopulationStats("arkhamcity", "downtown")
         stats = population_controller.population_stats[zone_key]
 
         # Add NPCs up to max population
@@ -433,7 +433,7 @@ class TestNPCPopulationController:
         # Set game state that doesn't meet spawn conditions
         population_controller.update_game_state({"time_of_day": "night", "weather": "rain", "player_count": 1})
 
-        zone_config = population_controller.get_zone_configuration("arkham_city/downtown")
+        zone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
         should_spawn = population_controller._should_spawn_npc(
             passive_mob_definition, zone_config, "earth_arkhamcity_downtown_001"
         )
@@ -458,7 +458,7 @@ class TestNPCPopulationController:
         # Set game state that meets spawn conditions
         population_controller.update_game_state({"time_of_day": "day", "weather": "clear", "player_count": 1})
 
-        zone_config = population_controller.get_zone_configuration("arkham_city/downtown")
+        zone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
 
         # Test with high spawn probability (should spawn)
         passive_mob_definition.spawn_probability = 0.8
@@ -493,7 +493,7 @@ class TestNPCPopulationController:
         assert npc_data["is_required"] is True
 
         # Check that population stats were updated
-        zone_key = "arkham_city/downtown"
+        zone_key = "arkhamcity/downtown"
         assert zone_key in population_controller.population_stats
         stats = population_controller.population_stats[zone_key]
         assert stats.total_npcs == 1
@@ -517,7 +517,7 @@ class TestNPCPopulationController:
         assert npc_id not in population_controller.active_npcs
 
         # Check that population stats were updated
-        zone_key = "arkham_city/downtown"
+        zone_key = "arkhamcity/downtown"
         stats = population_controller.population_stats[zone_key]
         assert stats.total_npcs == 0
         assert stats.npcs_by_type[shopkeeper_definition.npc_type] == 0
@@ -550,9 +550,9 @@ class TestNPCPopulationController:
 
         assert summary["total_zones"] == 1
         assert summary["total_active_npcs"] == 2
-        assert "arkham_city/downtown" in summary["zones"]
+        assert "arkhamcity/downtown" in summary["zones"]
 
-        zone_summary = summary["zones"]["arkham_city/downtown"]
+        zone_summary = summary["zones"]["arkhamcity/downtown"]
         assert zone_summary["total_npcs"] == 2
         assert zone_summary["npcs_by_type"]["shopkeeper"] == 1
         assert zone_summary["npcs_by_type"]["passive_mob"] == 1
@@ -620,7 +620,7 @@ class TestNPCPopulationController:
             temp_path = Path(temp_dir)
 
             # Create a zone directory without config files
-            arkham_dir = temp_path / "arkham_city"
+            arkham_dir = temp_path / "arkhamcity"
             arkham_dir.mkdir()
 
             # This should not raise an exception
@@ -633,7 +633,7 @@ class TestNPCPopulationController:
             temp_path = Path(temp_dir)
 
             # Create zone directory with invalid JSON
-            arkham_dir = temp_path / "arkham_city"
+            arkham_dir = temp_path / "arkhamcity"
             arkham_dir.mkdir()
 
             with open(arkham_dir / "zone_config.json", "w") as f:

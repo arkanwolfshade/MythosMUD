@@ -36,7 +36,7 @@ def format_player_location(room_id: str) -> str:
     Format player location as Zone: Sub-zone: Room from room ID.
 
     Args:
-        room_id: Room ID in format earth_arkham_city_northside_intersection_derby_high
+        room_id: Room ID in format earth_arkhamcity_northside_intersection_derby_high
 
     Returns:
         str: Formatted location string
@@ -47,7 +47,7 @@ def format_player_location(room_id: str) -> str:
             logger.warning(f"format_player_location received non-string room_id: {type(room_id)} - {room_id}")
             return str(room_id)
 
-        # Parse room ID: earth_arkham_city_northside_intersection_derby_high
+        # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
         parts = room_id.split("_")
         if len(parts) >= 4:
             # Extract zone and sub-zone

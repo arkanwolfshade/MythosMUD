@@ -480,7 +480,7 @@ All Previous Tasks
 
 3. **Location Formatting**
    - ✅ `format_player_location()` function implemented
-   - ✅ Room ID parsing (earth_arkham_city_northside_intersection_derby_high)
+   - ✅ Room ID parsing (earth_arkhamcity_northside_intersection_derby_high)
    - ✅ Zone: Sub-zone: Room format
    - ✅ Fallback handling for unknown rooms
 

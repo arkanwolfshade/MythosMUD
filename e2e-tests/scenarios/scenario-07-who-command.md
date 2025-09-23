@@ -8,7 +8,7 @@ Tests the who command functionality for player listing and filtering. This scena
 
 **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
 
-1. **Database State**: Both players are in `earth_arkham_city_sanitarium_room_foyer_001`
+1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
@@ -21,7 +21,7 @@ Tests the who command functionality for player listing and filtering. This scena
 ## Test Configuration
 
 - **Test Players**: ArkanWolfshade (AW - Admin) and Ithaqua (Non-Admin)
-- **Starting Room**: Main Foyer (`earth_arkham_city_sanitarium_room_foyer_001`)
+- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
 - **Testing Approach**: Playwright MCP (multi-tab interaction required)
 - **Timeout Settings**: Use configurable timeouts from master rules
 
@@ -72,12 +72,12 @@ console.log('AW messages:', awMessages);
 **Commands**:
 ```javascript
 // Check for location information in who list
-const locationInfo = awMessages.some(msg => msg.includes('earth_arkham_city_sanitarium_room_foyer_001'));
+const locationInfo = awMessages.some(msg => msg.includes('earth_arkhamcity_sanitarium_room_foyer_001'));
 console.log('AW sees location information:', locationInfo);
 
 // Verify format includes zone + sub-zone + room
 const properLocationFormat = awMessages.some(msg =>
-  msg.includes('earth_arkham_city_sanitarium_room_foyer_001') ||
+  msg.includes('earth_arkhamcity_sanitarium_room_foyer_001') ||
   msg.includes('Arkham City Sanitarium - Main Foyer')
 );
 console.log('AW sees proper location format:', properLocationFormat);
@@ -162,7 +162,7 @@ await mcp_playwright_browser_wait_for({text: "Ithaqua"});
 // Check for updated location information
 const awMessagesUpdated = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesUpdatedLocation = awMessagesUpdated.some(msg =>
-  msg.includes('earth_arkham_city_sanitarium_room_east_001') ||
+  msg.includes('earth_arkhamcity_sanitarium_room_east_001') ||
   msg.includes('Arkham City Sanitarium - East Room')
 );
 console.log('AW sees updated location information:', seesUpdatedLocation);

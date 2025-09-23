@@ -148,7 +148,7 @@ describe('RoomInfoPanel', () => {
         id: 'test-room-6',
         name: 'Underscore Room',
         description: 'A room with underscore formatting.',
-        zone: 'arkham_city',
+        zone: 'arkhamcity',
         sub_zone: 'university_library',
         exits: {},
         occupants: [],

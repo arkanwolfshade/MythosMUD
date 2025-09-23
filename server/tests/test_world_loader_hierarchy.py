@@ -63,7 +63,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
         """Create a test hierarchical structure."""
         # Create plane/zone/subzone structure
         earth_path = os.path.join(self.rooms_path, "earth")
-        arkham_path = os.path.join(earth_path, "arkham_city")
+        arkham_path = os.path.join(earth_path, "arkhamcity")
         french_hill_path = os.path.join(arkham_path, "french_hill")
 
         os.makedirs(french_hill_path)
@@ -96,7 +96,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             "name": "South Garrison Street",
             "description": "A quiet residential street.",
             "plane": "earth",
-            "zone": "arkham_city",
+            "zone": "arkhamcity",
             "sub_zone": "french_hill",
             "environment": "outdoors",
             "exits": {"north": "earth_arkhamcity_french_hill_S_Garrison_St_002", "south": None},
@@ -107,7 +107,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             "name": "South Garrison Street (North)",
             "description": "The northern end of the street.",
             "plane": "earth",
-            "zone": "arkham_city",
+            "zone": "arkhamcity",
             "sub_zone": "french_hill",
             "exits": {"south": "earth_arkhamcity_french_hill_S_Garrison_St_001"},
         }
@@ -167,7 +167,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
 
     def test_generate_room_id(self):
         """Test room ID generation from components."""
-        room_id = generate_room_id("earth", "arkham_city", "french_hill", "S_Garrison_St_001")
+        room_id = generate_room_id("earth", "arkhamcity", "french_hill", "S_Garrison_St_001")
         expected_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"
         self.assertEqual(room_id, expected_id)
 
@@ -224,11 +224,11 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
 
             # Verify zone configs loaded
             self.assertEqual(len(world_data["zone_configs"]), 1)
-            self.assertIn("earth/arkham_city", world_data["zone_configs"])
+            self.assertIn("earth/arkhamcity", world_data["zone_configs"])
 
             # Verify subzone configs loaded
             self.assertEqual(len(world_data["subzone_configs"]), 1)
-            self.assertIn("earth/arkham_city/french_hill", world_data["subzone_configs"])
+            self.assertIn("earth/arkhamcity/french_hill", world_data["subzone_configs"])
 
             # Verify specific room loaded
             room_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"

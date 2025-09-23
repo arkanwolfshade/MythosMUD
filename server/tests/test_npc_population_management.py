@@ -38,7 +38,7 @@ class TestNPCPopulationManagement:
             "name": "Test Room",
             "description": "A test room for NPC population management",
             "plane": "earth",
-            "zone": "arkham_city",
+            "zone": "arkhamcity",
             "sub_zone": "downtown",
             "environment": "outdoors",
             "exits": {"north": "test_room_002", "south": "test_room_003"},
@@ -494,7 +494,7 @@ class TestNPCZoneIntegration:
             "name": "Arkham Downtown Square",
             "description": "The bustling commercial heart of Arkham",
             "plane": "earth",
-            "zone": "arkham_city",
+            "zone": "arkhamcity",
             "sub_zone": "downtown",
             "environment": "outdoors",
             "exits": {"north": "earth_arkhamcity_downtown_002", "south": "earth_arkhamcity_downtown_003"},
@@ -519,7 +519,7 @@ class TestNPCZoneIntegration:
     def test_npc_zone_based_spawning(self, arkham_downtown_room, innsmouth_waterfront_room):
         """Test that NPCs spawn based on zone and sub-zone configurations."""
         # Test Arkham downtown (should have higher spawn modifier)
-        assert arkham_downtown_room.zone == "arkham_city"
+        assert arkham_downtown_room.zone == "arkhamcity"
         assert arkham_downtown_room.sub_zone == "downtown"
         assert arkham_downtown_room.environment == "outdoors"
 

@@ -127,10 +127,10 @@ test.describe('Room occupants - initial population and updates for second client
     });
 
     const baseRoom = {
-      id: 'earth_arkham_city_downtown_001',
+      id: 'earth_arkhamcity_downtown_001',
       name: 'Downtown Arkham',
       description: 'Streets of Arkham.',
-      zone: 'arkham_city',
+      zone: 'arkhamcity',
       sub_zone: 'downtown',
       exits: { north: '...', south: '...' },
     } as const;
@@ -188,7 +188,7 @@ test.describe('Room occupants - initial population and updates for second client
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
       // Send game_state event with only current player (others left)
       const roomWithNoOccupants = {
-        id: 'earth_arkham_city_downtown_001',
+        id: 'earth_arkhamcity_downtown_001',
         name: 'Downtown Arkham',
         description: 'Streets of Arkham.',
         zone: 'arkham',
@@ -220,7 +220,7 @@ test.describe('Room occupants - initial population and updates for second client
       const w = window as unknown as { __fakeSSEs: { emit: (payload: unknown) => void }[] };
       // Send game_state event with occupant back
       const roomWithOccupant = {
-        id: 'earth_arkham_city_downtown_001',
+        id: 'earth_arkhamcity_downtown_001',
         name: 'Downtown Arkham',
         description: 'Streets of Arkham.',
         zone: 'arkham',

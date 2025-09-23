@@ -375,10 +375,10 @@ class TestLocalChannelSubZoneExtraction:
         if len(parts) < 4:
             return None
 
-        # The sub-zone is the fourth part (index 3)
+        # The sub-zone is the third part (index 2) for arkhamcity format
         # Format: earth_arkhamcity_northside_intersection_derby_high
-        # Parts: [0]earth [1]arkham [2]city [3]northside [4]intersection [5]derby [6]high
-        return parts[3]
+        # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
+        return parts[2]
 
 
 class TestLocalChannelIntegration:

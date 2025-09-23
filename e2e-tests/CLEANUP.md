@@ -68,7 +68,7 @@ sqlite3 data/players/players.db
 
 ```sql
 -- Reset players to starting room
-UPDATE players SET current_room_id = 'earth_arkham_city_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');
+UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 
 -- Verify reset
 SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');

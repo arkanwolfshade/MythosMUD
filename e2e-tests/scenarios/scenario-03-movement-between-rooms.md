@@ -8,7 +8,7 @@ Tests multiplayer visibility when players move between different rooms. This sce
 
 **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
 
-1. **Database State**: Both players are in `earth_arkham_city_sanitarium_room_foyer_001`
+1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
@@ -20,7 +20,7 @@ Tests multiplayer visibility when players move between different rooms. This sce
 ## Test Configuration
 
 - **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkham_city_sanitarium_room_foyer_001`)
+- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
 - **Testing Approach**: Playwright MCP (multi-tab interaction required)
 - **Timeout Settings**: Use configurable timeouts from master rules
 
@@ -34,7 +34,7 @@ Tests multiplayer visibility when players move between different rooms. This sce
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
-// Both should be in Main Foyer (earth_arkham_city_sanitarium_room_foyer_001)
+// Both should be in Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
 ```
 
 **Expected Result**: Both players are in the same room and can see each other

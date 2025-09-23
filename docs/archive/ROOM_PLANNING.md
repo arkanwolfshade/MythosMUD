@@ -20,8 +20,8 @@
 
 2. **✅ Phase 2: Directory Structure Setup** - COMPLETED
    - Complete hierarchical directory structure implemented
-   - Zone configuration files created: `data/rooms/earth/arkham_city/zone_config.json`
-   - Sub-zone configuration files created: `data/rooms/earth/arkham_city/french_hill/subzone_config.json`
+   - Zone configuration files created: `data/rooms/earth/arkhamcity/zone_config.json`
+   - Sub-zone configuration files created: `data/rooms/earth/arkhamcity/french_hill/subzone_config.json`
    - Configuration templates with weather patterns and special rules
    - Multi-plane support (earth, yeng) with proper organization
 
@@ -71,8 +71,8 @@
 - ✅ `room_validator/core/schema_validator.py` - Schema validation system
 - ✅ `room_validator/validator.py` - Main validation CLI tool
 - ✅ `server/tests/test_world_loader_hierarchy.py` - Comprehensive hierarchy tests
-- ✅ `data/rooms/earth/arkham_city/zone_config.json` - Zone configuration example
-- ✅ `data/rooms/earth/arkham_city/french_hill/subzone_config.json` - Sub-zone configuration example
+- ✅ `data/rooms/earth/arkhamcity/zone_config.json` - Zone configuration example
+- ✅ `data/rooms/earth/arkhamcity/french_hill/subzone_config.json` - Sub-zone configuration example
 
 ---
 
@@ -142,7 +142,7 @@ This document serves as the implementation roadmap for the Room Hierarchy featur
 ```
 data/rooms/
 ├── earth/
-│   ├── arkham_city/
+│   ├── arkhamcity/
 │   │   ├── zone_config.json ✅
 │   │   ├── french_hill/
 │   │   │   ├── subzone_config.json ✅
@@ -218,7 +218,7 @@ data/rooms/
 **New Format Support** ✅ IMPLEMENTED:
 
 - Pattern: `{plane}_{zone}_{sub_zone}_{room_file_name}`
-- Example: `earth_arkham_city_french_hill_S_Garrison_St_001`
+- Example: `earth_arkhamcity_french_hill_S_Garrison_St_001`
 - Direct resolution from hierarchical structure
 
 #### ✅ 3.3 Environment Inheritance Implementation - COMPLETED
@@ -347,12 +347,12 @@ def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> st
 
     Args:
         plane: Plane identifier (e.g., 'earth', 'yeng')
-        zone: Zone identifier (e.g., 'arkham_city')
+        zone: Zone identifier (e.g., 'arkhamcity')
         sub_zone: Sub-zone identifier (e.g., 'french_hill')
         room_file: Room file name without extension (e.g., 'S_Garrison_St_001')
 
     Returns:
-        Hierarchical room ID (e.g., 'earth_arkham_city_intersection_derby_high')
+        Hierarchical room ID (e.g., 'earth_arkhamcity_intersection_derby_high')
     """
     components = [plane, zone, sub_zone, room_file]
     return "_".join(components)
@@ -374,7 +374,7 @@ def resolve_environment(room_path: str, world_config: dict) -> str:
     """
     # Extract hierarchy from path
     path_parts = room_path.split('/')
-    plane = path_parts[-4]  # data/rooms/earth/arkham_city/french_hill/room.json
+    plane = path_parts[-4]  # data/rooms/earth/arkhamcity/french_hill/room.json
     zone = path_parts[-3]
     sub_zone = path_parts[-2]
 

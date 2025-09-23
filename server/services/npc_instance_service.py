@@ -358,7 +358,7 @@ class NPCInstanceService:
                 npc_type = getattr(npc_instance, "npc_type", "unknown")
                 current_room_id = getattr(npc_instance, "current_room_id", "unknown")
 
-                # Extract zone from room_id (assuming format like "earth_arkham_city_downtown_001")
+                # Extract zone from room_id (assuming format like "earth_arkhamcity_downtown_001")
                 zone_key = self._extract_zone_from_room_id(current_room_id)
 
                 # Count by type
@@ -477,7 +477,7 @@ class NPCInstanceService:
         Extract zone key from room ID.
 
         Args:
-            room_id: Room ID like "earth_arkham_city_downtown_001"
+            room_id: Room ID like "earth_arkhamcity_downtown_001"
 
         Returns:
             Zone key like "arkham/city"

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS players (
     stats TEXT NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}',
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
-    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_northside_intersection_derby_high',
+    current_room_id TEXT NOT NULL DEFAULT 'earth_arkhamcity_northside_intersection_derby_high',
     experience_points INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL DEFAULT 1,
     is_admin INTEGER NOT NULL DEFAULT 0,

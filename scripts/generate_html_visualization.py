@@ -54,7 +54,7 @@ def load_room_data(zone_path: str) -> tuple[dict, dict, set]:
 
 
 def generate_html_visualization(
-    rooms: dict, intersections: dict, connections: set, output_path: str = "arkham_city_visualization.html"
+    rooms: dict, intersections: dict, connections: set, output_path: str = "arkhamcity_visualization.html"
 ):
     """Generate an HTML visualization of the room network."""
 
@@ -440,7 +440,7 @@ def generate_html_visualization(
 
 def main():
     """Main function to generate the HTML visualization."""
-    zone_path = "data/rooms/earth/arkham_city"
+    zone_path = "data/rooms/earth/arkhamcity"
 
     if not os.path.exists(zone_path):
         print(f"Error: Zone path {zone_path} not found!")

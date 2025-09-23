@@ -153,8 +153,8 @@ The validator supports both legacy string format and new object format for exits
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → earth_arkham_city_intersection_derby_high, but earth_arkham_city_intersection_derby_high has no 'north' return
-     💡 Suggestion: Add "north": "arkham_002" to earth_arkham_city_intersection_derby_high or flag as one_way
+  ❌ Bidirectional: Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return
+     💡 Suggestion: Add "north": "arkham_002" to earth_arkhamcity_intersection_derby_high or flag as one_way
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
@@ -184,8 +184,8 @@ The validator supports both legacy string format and new object format for exits
     {
       "type": "bidirectional",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → earth_arkham_city_intersection_derby_high, but earth_arkham_city_intersection_derby_high has no 'north' return",
-      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkham_city_intersection_derby_high or flag as one_way"
+      "message": "Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return",
+      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkhamcity_intersection_derby_high or flag as one_way"
     }
   ],
   "warnings": [

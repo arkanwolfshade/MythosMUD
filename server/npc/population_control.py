@@ -281,7 +281,7 @@ class NPCPopulationController:
             Zone key in format "zone/sub_zone"
         """
         # Room IDs are typically in format: "plane_zone_sub_zone_room_number"
-        # Examples: "earth_arkham_city_downtown_001" -> "arkham_city/downtown"
+        # Examples: "earth_arkhamcity_downtown_001" -> "arkhamcity/downtown"
         #           "earth_innsmouth_waterfront_002" -> "innsmouth/waterfront"
         parts = room_id.split("_")
         if len(parts) >= 4:

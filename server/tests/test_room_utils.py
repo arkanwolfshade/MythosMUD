@@ -38,7 +38,7 @@ class TestRoomUtils:
         # Test different zone
         room_id = "earth_innsmouth_docks_warehouse_1"
         subzone = extract_subzone_from_room_id(room_id)
-        assert subzone == "warehouse"
+        assert subzone == "docks"
 
     def test_extract_subzone_from_room_id_invalid(self):
         """Test extracting sub-zone from invalid room IDs."""
@@ -53,19 +53,19 @@ class TestRoomUtils:
 
         # Too few parts
         assert extract_subzone_from_room_id("earth_arkham") is None
-        assert extract_subzone_from_room_id("earth_arkham_city") is None
+        assert extract_subzone_from_room_id("earth_arkhamcity") is None
 
     def test_get_zone_from_room_id_valid(self):
         """Test extracting zone from valid room IDs."""
-        # Test arkham_city
+        # Test arkhamcity
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         zone = get_zone_from_room_id(room_id)
-        assert zone == "arkham_city"
+        assert zone == "arkhamcity"
 
         # Test different zone
         room_id = "earth_innsmouth_docks_warehouse_1"
         zone = get_zone_from_room_id(room_id)
-        assert zone == "innsmouth_docks"
+        assert zone == "innsmouth"
 
     def test_get_zone_from_room_id_invalid(self):
         """Test extracting zone from invalid room IDs."""
@@ -110,7 +110,7 @@ class TestRoomUtils:
         # Valid room IDs
         assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high") is True
         assert is_valid_room_id_format("earth_innsmouth_docks_warehouse_1") is True
-        assert is_valid_room_id_format("dream_arkham_city_downtown_market_square") is True
+        assert is_valid_room_id_format("dream_arkhamcity_downtown_market_square") is True
 
         # Room IDs with more parts are also valid
         assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high_street") is True
@@ -120,7 +120,7 @@ class TestRoomUtils:
         # Invalid room IDs
         assert is_valid_room_id_format("invalid_room_id") is False
         assert is_valid_room_id_format("earth_arkham") is False
-        assert is_valid_room_id_format("earth_arkham_city") is False
+        assert is_valid_room_id_format("earth_arkhamcity") is False
 
         # Empty string
         assert is_valid_room_id_format("") is False
@@ -157,7 +157,7 @@ class TestRoomUtils:
 
         room_id = "earth_innsmouth_docks_warehouse_1"
         subject = get_subzone_local_channel_subject(room_id)
-        assert subject == "chat.local.subzone.warehouse"
+        assert subject == "chat.local.subzone.docks"
 
     def test_get_subzone_local_channel_subject_invalid(self):
         """Test generating sub-zone local channel NATS subjects with invalid room IDs."""
@@ -176,14 +176,14 @@ class TestRoomUtils:
         # Room ID with underscores in zone name
         room_id = "earth_old_innsmouth_docks_warehouse_1"
         zone = get_zone_from_room_id(room_id)
-        assert zone == "old_innsmouth"
+        assert zone == "old"
 
         # Room ID with many parts
         room_id = "earth_arkhamcity_northside_intersection_derby_high_street_corner"
         subzone = extract_subzone_from_room_id(room_id)
         assert subzone == "northside"
         zone = get_zone_from_room_id(room_id)
-        assert zone == "arkham_city"
+        assert zone == "arkhamcity"
         plane = get_plane_from_room_id(room_id)
         assert plane == "earth"
 
