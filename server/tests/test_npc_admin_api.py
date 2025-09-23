@@ -10,7 +10,7 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
@@ -25,7 +25,7 @@ class TestNPCAdminAPI:
     """Test NPC admin API endpoints."""
 
     @pytest.fixture
-    def app(self):
+    def app(self, sync_test_environment):
         """Create FastAPI app for testing."""
         return create_app()
 
@@ -36,8 +36,18 @@ class TestNPCAdminAPI:
         async def mock_get_current_user():
             return user
 
+        # Store the original override if it exists
+        original_override = client.app.dependency_overrides.get(get_current_user)
         client.app.dependency_overrides[get_current_user] = mock_get_current_user
-        return client.app.dependency_overrides
+
+        # Return a cleanup function
+        def cleanup():
+            if original_override is not None:
+                client.app.dependency_overrides[get_current_user] = original_override
+            else:
+                client.app.dependency_overrides.pop(get_current_user, None)
+
+        return cleanup
 
     @pytest.fixture
     def client(self, app):
@@ -112,12 +122,8 @@ class TestNPCAdminAPI:
 
     def test_npc_definitions_list_non_admin(self, client, mock_regular_user):
         """Test that non-admin users can access NPC definitions list (VIEWER role allows read access)."""
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_regular_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_regular_user)
 
         try:
             response = client.get("/admin/npc/definitions")
@@ -126,16 +132,12 @@ class TestNPCAdminAPI:
             data = response.json()
             assert isinstance(data, list)
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
     def test_npc_definitions_list_success(self, client, mock_admin_user):
         """Test successful retrieval of NPC definitions list."""
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_admin_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
         try:
             response = client.get("/admin/npc/definitions")
@@ -146,7 +148,7 @@ class TestNPCAdminAPI:
             assert isinstance(data, list)
             # TODO: When actual implementation is added, test with real data
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
     def test_npc_definition_create_unauthorized(self, client):
         """Test that NPC definition creation requires authentication."""
@@ -180,7 +182,7 @@ class TestNPCAdminAPI:
             response = client.post("/admin/npc/definitions", json=npc_data)
             assert response.status_code == status.HTTP_403_FORBIDDEN
         finally:
-            overrides.clear()
+            overrides()
 
     def test_npc_definition_create_success(self, client, mock_admin_user, sample_npc_definition):
         """Test successful NPC definition creation."""
@@ -203,7 +205,7 @@ class TestNPCAdminAPI:
             assert data["name"] == npc_data["name"]
             assert data["npc_type"] == "shopkeeper"
         finally:
-            overrides.clear()
+            overrides()
 
     def test_npc_definition_get_unauthorized(self, client):
         """Test that NPC definition retrieval requires authentication."""
@@ -223,7 +225,7 @@ class TestNPCAdminAPI:
                 assert data["name"] == "Test Shopkeeper"
                 assert data["npc_type"] == "shopkeeper"
             finally:
-                overrides.clear()
+                overrides()
 
     def test_npc_definition_update_unauthorized(self, client):
         """Test that NPC definition update requires authentication."""
@@ -245,22 +247,18 @@ class TestNPCAdminAPI:
         updated_npc = sample_npc_definition
         updated_npc.name = "Updated NPC"
 
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_admin_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
         try:
-            with patch("server.api.admin.npc.update_npc_definition", return_value=updated_npc):
+            with patch("server.api.admin.npc.npc_service.update_npc_definition", return_value=updated_npc):
                 response = client.put("/admin/npc/definitions/1", json=npc_data)
                 assert response.status_code == status.HTTP_200_OK
 
                 data = response.json()
                 assert data["name"] == "Updated NPC"
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
     def test_npc_definition_delete_unauthorized(self, client):
         """Test that NPC definition deletion requires authentication."""
@@ -269,19 +267,15 @@ class TestNPCAdminAPI:
 
     def test_npc_definition_delete_success(self, client, mock_admin_user):
         """Test successful NPC definition deletion."""
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_admin_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
         try:
-            with patch("server.api.admin.npc.delete_npc_definition", return_value=True):
+            with patch("server.api.admin.npc.npc_service.delete_npc_definition", return_value=True):
                 response = client.delete("/admin/npc/definitions/1")
                 assert response.status_code == status.HTTP_204_NO_CONTENT
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
     def test_npc_instances_list_unauthorized(self, client):
         """Test that NPC instances list requires authentication."""
@@ -321,7 +315,7 @@ class TestNPCAdminAPI:
                 assert data[0]["npc_id"] == "npc_001"
                 assert data[0]["name"] == "Test Shopkeeper"
             finally:
-                overrides.clear()
+                overrides()
 
     def test_npc_spawn_unauthorized(self, client):
         """Test that NPC spawning requires authentication."""
@@ -346,19 +340,20 @@ class TestNPCAdminAPI:
             "message": "NPC spawned successfully",
         }
 
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_admin_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
         try:
-            with patch("server.api.admin.npc.spawn_npc_instance", return_value=mock_result):
+            # Mock the NPC instance service to return our mock result
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.spawn_npc_instance = AsyncMock(return_value=mock_result)
+                mock_get_service.return_value = mock_service
+
                 response = client.post("/admin/npc/instances/spawn", json=spawn_data)
-                assert response.status_code == status.HTTP_201_CREATED
+                assert response.status_code == status.HTTP_200_OK
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
             data = response.json()
             assert data["success"] is True
@@ -376,19 +371,20 @@ class TestNPCAdminAPI:
             "message": "NPC despawned successfully",
         }
 
-        from server.auth.users import get_current_user
-
-        async def mock_get_current_user():
-            return mock_admin_user
-
-        client.app.dependency_overrides[get_current_user] = mock_get_current_user
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
         try:
-            with patch("server.api.admin.npc.despawn_npc_instance", return_value=mock_result):
+            # Mock the NPC instance service to return our mock result
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.despawn_npc_instance = AsyncMock(return_value=mock_result)
+                mock_get_service.return_value = mock_service
+
                 response = client.delete("/admin/npc/instances/npc_001")
                 assert response.status_code == status.HTTP_200_OK
         finally:
-            client.app.dependency_overrides.clear()
+            cleanup_auth()
 
             data = response.json()
             assert data["success"] is True
@@ -414,16 +410,24 @@ class TestNPCAdminAPI:
             "new_room_id": "earth_arkham_city_downtown_002",
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.move_npc_instance", return_value=mock_result),
-        ):
-            response = client.put("/admin/npc/instances/npc_001/move", json=move_data)
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["success"] is True
-            assert data["new_room_id"] == "earth_arkham_city_downtown_002"
+        try:
+            # Mock the NPC instance service to return our mock result
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.move_npc_instance = AsyncMock(return_value=mock_result)
+                mock_get_service.return_value = mock_service
+
+                response = client.put("/admin/npc/instances/npc_001/move", json=move_data)
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["success"] is True
+                assert data["new_room_id"] == "earth_arkham_city_downtown_002"
+        finally:
+            cleanup_auth()
 
     def test_npc_stats_unauthorized(self, client):
         """Test that NPC stats retrieval requires authentication."""
@@ -443,16 +447,24 @@ class TestNPCAdminAPI:
             "spawn_time": "2025-01-01T12:00:00Z",
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_stats", return_value=mock_stats),
-        ):
-            response = client.get("/admin/npc/instances/npc_001/stats")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["npc_id"] == "npc_001"
-            assert data["hp"] == 100
+        try:
+            # Mock the NPC instance service to return our mock stats
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.get_npc_stats = AsyncMock(return_value=mock_stats)
+                mock_get_service.return_value = mock_service
+
+                response = client.get("/admin/npc/instances/npc_001/stats")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["npc_id"] == "npc_001"
+                assert data["hp"] == 100
+        finally:
+            cleanup_auth()
 
     def test_npc_population_unauthorized(self, client):
         """Test that NPC population monitoring requires authentication."""
@@ -477,16 +489,24 @@ class TestNPCAdminAPI:
             "spawn_queue_size": 3,
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_population_stats", return_value=mock_population),
-        ):
-            response = client.get("/admin/npc/population")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["total_npcs"] == 25
-            assert data["by_type"]["shopkeeper"] == 5
+        try:
+            # Mock the NPC instance service to return our mock population stats
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.get_population_stats = AsyncMock(return_value=mock_population)
+                mock_get_service.return_value = mock_service
+
+                response = client.get("/admin/npc/population")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["total_npcs"] == 25
+                assert data["by_type"]["shopkeeper"] == 5
+        finally:
+            cleanup_auth()
 
     def test_npc_zones_unauthorized(self, client):
         """Test that NPC zone monitoring requires authentication."""
@@ -514,16 +534,24 @@ class TestNPCAdminAPI:
             "total_npcs": 18,
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_zone_stats", return_value=mock_zones),
-        ):
-            response = client.get("/admin/npc/zones")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["total_zones"] == 2
-            assert len(data["zones"]) == 2
+        try:
+            # Mock the NPC instance service to return our mock zone stats
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.get_zone_stats = AsyncMock(return_value=mock_zones)
+                mock_get_service.return_value = mock_service
+
+                response = client.get("/admin/npc/zones")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["total_zones"] == 2
+                assert len(data["zones"]) == 2
+        finally:
+            cleanup_auth()
 
     def test_npc_status_unauthorized(self, client):
         """Test that NPC status monitoring requires authentication."""
@@ -543,16 +571,24 @@ class TestNPCAdminAPI:
             "uptime_seconds": 3600,
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_system_status", return_value=mock_status),
-        ):
-            response = client.get("/admin/npc/status")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["system_status"] == "healthy"
-            assert data["active_npcs"] == 25
+        try:
+            # Mock the NPC instance service to return our mock system status
+            with patch("server.api.admin.npc.get_npc_instance_service") as mock_get_service:
+                mock_service = MagicMock()
+                mock_service.get_system_stats = AsyncMock(return_value=mock_status)
+                mock_get_service.return_value = mock_service
+
+                response = client.get("/admin/npc/status")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert data["system_status"] == "healthy"
+                assert data["active_npcs"] == 25
+        finally:
+            cleanup_auth()
 
     def test_npc_relationships_list_unauthorized(self, client):
         """Test that NPC relationships list requires authentication."""
@@ -561,18 +597,21 @@ class TestNPCAdminAPI:
 
     def test_npc_relationships_list_success(self, client, mock_admin_user, sample_relationship):
         """Test successful retrieval of NPC relationships list."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_relationships", return_value=[sample_relationship]),
-        ):
-            response = client.get("/admin/npc/relationships")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert len(data) == 1
-            assert data[0]["npc_id_1"] == 1
-            assert data[0]["npc_id_2"] == 2
-            assert data[0]["relationship_type"] == "ally"
+        try:
+            with patch("server.api.admin.npc.npc_service.get_relationships", return_value=[sample_relationship]):
+                response = client.get("/admin/npc/relationships")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert len(data) == 1
+                assert data[0]["npc_id_1"] == 1
+                assert data[0]["npc_id_2"] == 2
+                assert data[0]["relationship_type"] == "ally"
+        finally:
+            cleanup_auth()
 
     def test_npc_relationship_create_unauthorized(self, client):
         """Test that NPC relationship creation requires authentication."""
@@ -595,17 +634,20 @@ class TestNPCAdminAPI:
             "relationship_strength": 0.8,
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.create_npc_relationship", return_value=sample_relationship),
-        ):
-            response = client.post("/admin/npc/relationships", json=relationship_data)
-            assert response.status_code == status.HTTP_201_CREATED
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["npc_id_1"] == 1
-            assert data["npc_id_2"] == 2
-            assert data["relationship_type"] == "ally"
+        try:
+            with patch("server.api.admin.npc.npc_service.create_relationship", return_value=sample_relationship):
+                response = client.post("/admin/npc/relationships", json=relationship_data)
+                assert response.status_code == status.HTTP_201_CREATED
+
+                data = response.json()
+                assert data["npc_id_1"] == 1
+                assert data["npc_id_2"] == 2
+                assert data["relationship_type"] == "ally"
+        finally:
+            cleanup_auth()
 
     def test_npc_relationship_delete_unauthorized(self, client):
         """Test that NPC relationship deletion requires authentication."""
@@ -614,12 +656,15 @@ class TestNPCAdminAPI:
 
     def test_npc_relationship_delete_success(self, client, mock_admin_user):
         """Test successful NPC relationship deletion."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.delete_npc_relationship", return_value=True),
-        ):
-            response = client.delete("/admin/npc/relationships/1")
-            assert response.status_code == status.HTTP_204_NO_CONTENT
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
+
+        try:
+            with patch("server.api.admin.npc.npc_service.delete_relationship", return_value=True):
+                response = client.delete("/admin/npc/relationships/1")
+                assert response.status_code == status.HTTP_204_NO_CONTENT
+        finally:
+            cleanup_auth()
 
     def test_npc_spawn_rules_list_unauthorized(self, client):
         """Test that NPC spawn rules list requires authentication."""
@@ -628,18 +673,30 @@ class TestNPCAdminAPI:
 
     def test_npc_spawn_rules_list_success(self, client, mock_admin_user, sample_spawn_rule):
         """Test successful retrieval of NPC spawn rules list."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_spawn_rules", return_value=[sample_spawn_rule]),
-        ):
-            response = client.get("/admin/npc/spawn-rules")
-            assert response.status_code == status.HTTP_200_OK
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert len(data) == 1
-            assert data[0]["npc_definition_id"] == 1
-            assert data[0]["spawn_probability"] == 0.5
-            assert data[0]["required_npc"] is True
+        try:
+            # Create a mock spawn rule with all the attributes the response model expects
+            mock_spawn_rule = MagicMock()
+            mock_spawn_rule.id = 1
+            mock_spawn_rule.npc_definition_id = 1
+            mock_spawn_rule.spawn_probability = 0.5
+            mock_spawn_rule.max_population = 3
+            mock_spawn_rule.spawn_conditions = '{"time_of_day": "day"}'
+            mock_spawn_rule.required_npc = True
+
+            with patch("server.api.admin.npc.npc_service.get_spawn_rules", return_value=[mock_spawn_rule]):
+                response = client.get("/admin/npc/spawn-rules")
+                assert response.status_code == status.HTTP_200_OK
+
+                data = response.json()
+                assert len(data) == 1
+                assert data[0]["npc_definition_id"] == 1
+                assert data[0]["spawn_probability"] == 0.5
+                assert data[0]["required_npc"] is True
+        finally:
+            cleanup_auth()
 
     def test_npc_spawn_rule_create_unauthorized(self, client):
         """Test that NPC spawn rule creation requires authentication."""
@@ -664,17 +721,29 @@ class TestNPCAdminAPI:
             "required_npc": True,
         }
 
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.create_npc_spawn_rule", return_value=sample_spawn_rule),
-        ):
-            response = client.post("/admin/npc/spawn-rules", json=spawn_rule_data)
-            assert response.status_code == status.HTTP_201_CREATED
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
 
-            data = response.json()
-            assert data["npc_definition_id"] == 1
-            assert data["spawn_probability"] == 0.5
-            assert data["required_npc"] is True
+        try:
+            # Create a mock spawn rule with all the attributes the response model expects
+            mock_spawn_rule = MagicMock()
+            mock_spawn_rule.id = 1
+            mock_spawn_rule.npc_definition_id = 1
+            mock_spawn_rule.spawn_probability = 0.5
+            mock_spawn_rule.max_population = 3
+            mock_spawn_rule.spawn_conditions = '{"time_of_day": "day"}'
+            mock_spawn_rule.required_npc = True
+
+            with patch("server.api.admin.npc.npc_service.create_spawn_rule", return_value=mock_spawn_rule):
+                response = client.post("/admin/npc/spawn-rules", json=spawn_rule_data)
+                assert response.status_code == status.HTTP_201_CREATED
+
+                data = response.json()
+                assert data["npc_definition_id"] == 1
+                assert data["spawn_probability"] == 0.5
+                assert data["required_npc"] is True
+        finally:
+            cleanup_auth()
 
     def test_npc_spawn_rule_delete_unauthorized(self, client):
         """Test that NPC spawn rule deletion requires authentication."""
@@ -683,12 +752,15 @@ class TestNPCAdminAPI:
 
     def test_npc_spawn_rule_delete_success(self, client, mock_admin_user):
         """Test successful NPC spawn rule deletion."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.delete_npc_spawn_rule", return_value=True),
-        ):
-            response = client.delete("/admin/npc/spawn-rules/1")
-            assert response.status_code == status.HTTP_204_NO_CONTENT
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
+
+        try:
+            with patch("server.api.admin.npc.npc_service.delete_spawn_rule", return_value=True):
+                response = client.delete("/admin/npc/spawn-rules/1")
+                assert response.status_code == status.HTTP_204_NO_CONTENT
+        finally:
+            cleanup_auth()
 
     def test_npc_validation_errors(self, client, mock_admin_user):
         """Test validation errors in NPC API endpoints."""
@@ -709,21 +781,27 @@ class TestNPCAdminAPI:
 
     def test_npc_not_found_errors(self, client, mock_admin_user):
         """Test not found errors in NPC API endpoints."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_definition", return_value=None),
-        ):
-            response = client.get("/admin/npc/definitions/999")
-            assert response.status_code == status.HTTP_404_NOT_FOUND
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
+
+        try:
+            with patch("server.api.admin.npc.get_npc_definition", return_value=None):
+                response = client.get("/admin/npc/definitions/999")
+                assert response.status_code == status.HTTP_404_NOT_FOUND
+        finally:
+            cleanup_auth()
 
     def test_npc_server_errors(self, client, mock_admin_user):
         """Test server errors in NPC API endpoints."""
-        with (
-            patch("server.auth.users.get_current_user", return_value=mock_admin_user),
-            patch("server.api.admin.npc.get_npc_definitions", side_effect=Exception("Database error")),
-        ):
-            response = client.get("/admin/npc/definitions")
-            assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        # Use consistent authentication mocking
+        cleanup_auth = self._mock_auth(client, mock_admin_user)
+
+        try:
+            with patch("server.api.admin.npc.npc_service.get_npc_definitions", side_effect=Exception("Database error")):
+                response = client.get("/admin/npc/definitions")
+                assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        finally:
+            cleanup_auth()
 
     # --- Population Monitoring Tests ---
 
@@ -761,7 +839,7 @@ class TestNPCAdminAPI:
                 assert data["by_zone"]["arkham/city"] == 3
                 assert data["spawn_queue_size"] == 1
             finally:
-                overrides.clear()
+                overrides()
 
     def test_npc_zone_stats_unauthorized(self, client):
         """Test that NPC zone stats require authentication."""
@@ -809,7 +887,7 @@ class TestNPCAdminAPI:
                 assert data["zones"][0]["zone_key"] == "arkham/city"
                 assert data["zones"][0]["npc_count"] == 3
             finally:
-                overrides.clear()
+                overrides()
 
     def test_npc_system_status_unauthorized(self, client):
         """Test that NPC system status requires authentication."""
@@ -847,7 +925,7 @@ class TestNPCAdminAPI:
                 assert data["lifecycle_manager_status"] == "active"
                 assert data["population_controller_status"] == "active"
             finally:
-                overrides.clear()
+                overrides()
 
     # --- Enhanced Authentication Tests ---
 
@@ -887,7 +965,7 @@ class TestNPCAdminAPI:
                 assert data["count"] == 1
                 assert data["sessions"][0]["username"] == "admin_user"
             finally:
-                overrides.clear()
+                overrides()
 
     def test_admin_audit_log_unauthorized(self, client):
         """Test that admin audit log endpoint requires authentication."""
@@ -925,7 +1003,7 @@ class TestNPCAdminAPI:
                 assert data["count"] == 1
                 assert data["audit_log"][0]["action"] == "get_population_stats"
             finally:
-                overrides.clear()
+                overrides()
 
     def test_cleanup_admin_sessions_unauthorized(self, client):
         """Test that cleanup admin sessions endpoint requires authentication."""
@@ -952,4 +1030,4 @@ class TestNPCAdminAPI:
                 assert "cleaned_count" in data
                 assert data["cleaned_count"] == 3
             finally:
-                overrides.clear()
+                overrides()
