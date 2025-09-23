@@ -65,6 +65,29 @@ async def lifespan(app: FastAPI):
     logger.info(f"app.state.player_service: {app.state.player_service}")
     logger.info(f"app.state.user_manager: {app.state.user_manager}")
 
+    # Initialize NPC services
+    from ..npc.lifecycle_manager import NPCLifecycleManager
+    from ..npc.population_control import NPCPopulationController
+    from ..npc.spawning_service import NPCSpawningService
+    from ..services.npc_instance_service import initialize_npc_instance_service
+
+    # Create NPC services
+    app.state.npc_population_controller = NPCPopulationController(app.state.event_bus)
+    app.state.npc_spawning_service = NPCSpawningService(app.state.event_bus, app.state.npc_population_controller)
+    app.state.npc_lifecycle_manager = NPCLifecycleManager(
+        app.state.event_bus, app.state.npc_spawning_service, app.state.npc_population_controller
+    )
+
+    # Initialize the NPC instance service
+    initialize_npc_instance_service(
+        lifecycle_manager=app.state.npc_lifecycle_manager,
+        spawning_service=app.state.npc_spawning_service,
+        population_controller=app.state.npc_population_controller,
+        event_bus=app.state.event_bus,
+    )
+
+    logger.info("NPC services initialized and added to app.state")
+
     # Enhance logging system with PlayerGuidFormatter now that player service is available
     from ..logging_config import update_logging_with_player_service
 
