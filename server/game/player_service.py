@@ -47,7 +47,7 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info("Creating new player", name=name, starting_room_id=starting_room_id, user_id=user_id)
+        logger.info("Creating new player", name=name, starting_room_id=starting_room_id)
 
         # Check if player already exists
         existing_player = self.persistence.get_player_by_name(name)
@@ -67,7 +67,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", name=name, user_id=user_id)
+            logger.debug("Generated user_id for new player", name=name)
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -83,7 +83,7 @@ class PlayerService:
 
         # Save player to persistence
         self.persistence.save_player(player)
-        logger.info("Player created successfully", name=name, player_id=player.player_id, user_id=user_id)
+        logger.info("Player created successfully", name=name, player_id=player.player_id)
 
         # Convert to schema format
         return self._convert_player_to_schema(player)
@@ -110,7 +110,7 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info("Creating new player with stats", name=name, starting_room_id=starting_room_id, user_id=user_id)
+        logger.info("Creating new player with stats", name=name, starting_room_id=starting_room_id)
 
         # Check if player already exists
         existing_player = self.persistence.get_player_by_name(name)
@@ -130,7 +130,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", name=name, user_id=user_id)
+            logger.debug("Generated user_id for new player", name=name)
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -154,7 +154,7 @@ class PlayerService:
 
         # Save player to persistence
         self.persistence.save_player(player)
-        logger.info("Player created successfully with stats", name=name, player_id=player.player_id, user_id=user_id)
+        logger.info("Player created successfully with stats", name=name, player_id=player.player_id)
 
         # Convert to schema format
         return self._convert_player_to_schema(player)

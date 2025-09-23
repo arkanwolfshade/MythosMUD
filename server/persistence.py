@@ -587,7 +587,7 @@ class PersistenceLayer:
             # Log as warning since this is a non-critical operation
             self._logger.warning(
                 "Error syncing room players",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -650,7 +650,7 @@ class PersistenceLayer:
             context.metadata["old_room_id"] = old_room
             self._logger.warning(
                 "Config loading failed during room validation, using fallback",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )

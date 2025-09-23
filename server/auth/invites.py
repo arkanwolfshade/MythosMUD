@@ -102,7 +102,7 @@ class InviteManager:
 
     async def use_invite(self, invite_code: str, user_id: uuid.UUID) -> Invite:
         """Mark an invite as used by a specific user."""
-        logger.info("Using invite", invite_code=invite_code, user_id=user_id)
+        logger.info("Using invite", invite_code=invite_code)
 
         invite = await self.validate_invite(invite_code)
         invite.use_invite(user_id)
@@ -110,17 +110,17 @@ class InviteManager:
         await self.session.commit()
         await self.session.refresh(invite)
 
-        logger.info("Invite marked as used", invite_code=invite_code, user_id=user_id)
+        logger.info("Invite marked as used", invite_code=invite_code)
         return invite
 
     async def get_user_invites(self, user_id: uuid.UUID) -> list[Invite]:
         """Get all invites used by a user."""
-        logger.debug("Getting user invites", user_id=user_id)
+        logger.debug("Getting user invites")
 
         result = await self.session.execute(select(Invite).where(Invite.used_by_user_id == str(user_id)))
         invites = result.scalars().all()
 
-        logger.debug("User invites retrieved", user_id=user_id, count=len(invites))
+        logger.debug("User invites retrieved", count=len(invites))
         return invites
 
     async def get_unused_invites(self) -> list[Invite]:

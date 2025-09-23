@@ -85,7 +85,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             context.metadata["error_message"] = str(e)
             logger.error(
                 "Database session error",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -94,7 +94,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback database session",
-                    **context.to_dict(),
+                    context=context.to_dict(),
                     rollback_error=str(rollback_error),
                 )
             raise
@@ -105,7 +105,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as close_error:
                 logger.warning(
                     "Error closing database session",
-                    **context.to_dict(),
+                    context=context.to_dict(),
                     close_error=str(close_error),
                 )
 
@@ -150,7 +150,7 @@ async def init_db():
         context.metadata["error_message"] = str(e)
         logger.error(
             "Database initialization failed",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -171,7 +171,7 @@ async def close_db():
         context.metadata["error_message"] = str(e)
         logger.error(
             "Error closing database connections",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
