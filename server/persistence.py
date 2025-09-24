@@ -530,6 +530,64 @@ class PersistenceLayer:
                     user_friendly="Failed to delete player",
                 )
 
+    # --- CRUD for Professions ---
+    def get_all_professions(self) -> list:
+        """Get all available professions."""
+        context = create_error_context()
+        context.metadata["operation"] = "get_all_professions"
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id").fetchall()
+
+                professions = []
+                for row in rows:
+                    profession_data = dict(row)
+                    # Import here to avoid circular imports
+                    from .models.profession import Profession
+
+                    profession = Profession(**profession_data)
+                    professions.append(profession)
+
+                return professions
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving professions: {e}",
+                context=context,
+                details={"error": str(e)},
+                user_friendly="Failed to retrieve professions",
+            )
+
+    def get_profession_by_id(self, profession_id: int) -> object | None:
+        """Get a profession by ID."""
+        context = create_error_context()
+        context.metadata["operation"] = "get_profession_by_id"
+        context.metadata["profession_id"] = profession_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                row = conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,)).fetchone()
+
+                if row:
+                    profession_data = dict(row)
+                    # Import here to avoid circular imports
+                    from .models.profession import Profession
+
+                    profession = Profession(**profession_data)
+                    return profession
+                return None
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving profession {profession_id}: {e}",
+                context=context,
+                details={"profession_id": profession_id, "error": str(e)},
+                user_friendly="Failed to retrieve profession",
+            )
+
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> Room | None:
         """Get a room by ID from the cache and sync with database state."""

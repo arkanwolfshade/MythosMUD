@@ -167,7 +167,14 @@ class TestConnectionManagerNATSIntegration:
         self.connection_manager.online_players = {}
 
         # Mock broadcast_to_room to avoid actual broadcasting
-        self.connection_manager.broadcast_to_room = AsyncMock()
+        self.connection_manager.broadcast_to_room = AsyncMock(
+            return_value={
+                "successful_deliveries": 0,
+                "failed_deliveries": 0,
+                "excluded_players": 0,
+                "delivery_details": {},
+            }
+        )
 
         # Make NATS publish raise exception
         self.mock_event_publisher.publish_player_left_event.side_effect = Exception("NATS error")

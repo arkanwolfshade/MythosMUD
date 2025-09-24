@@ -43,9 +43,10 @@ vi.mock('./components/StatsRollingScreen', () => ({
 
     return (
       <div data-testid="stats-rolling-screen">
-        Stats Rolling for {characterName}
+        <h2>Character Creation</h2>
+        <p>Character: {characterName}</p>
         {error && <div className="error-message">{error}</div>}
-        <button onClick={() => onStatsAccepted({ strength: 10 })}>Accept Stats</button>
+        <button onClick={() => onStatsAccepted({ strength: 10 })}>Accept Stats & Create Character</button>
         <button onClick={handleError}>Trigger Error</button>
       </div>
     );
@@ -233,7 +234,33 @@ describe('App', () => {
           character_name: '',
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          professions: [
+            {
+              id: 0,
+              name: 'Tramp',
+              description: 'A wandering soul with no particular skills or connections.',
+              flavor_text:
+                'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+              stat_requirements: {},
+              mechanical_effects: {},
+              is_available: true,
+            },
+          ],
+        }),
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/register')) {
+          return Promise.resolve(mockResponse);
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -264,7 +291,7 @@ describe('App', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
     });
 
@@ -308,7 +335,33 @@ describe('App', () => {
           character_name: '',
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          professions: [
+            {
+              id: 0,
+              name: 'Tramp',
+              description: 'A wandering soul with no particular skills or connections.',
+              flavor_text:
+                'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+              stat_requirements: {},
+              mechanical_effects: {},
+              is_available: true,
+            },
+          ],
+        }),
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/login')) {
+          return Promise.resolve(mockResponse);
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -322,7 +375,7 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
     });
 
@@ -335,7 +388,33 @@ describe('App', () => {
           character_name: '',
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          professions: [
+            {
+              id: 0,
+              name: 'Tramp',
+              description: 'A wandering soul with no particular skills or connections.',
+              flavor_text:
+                'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+              stat_requirements: {},
+              mechanical_effects: {},
+              is_available: true,
+            },
+          ],
+        }),
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/login')) {
+          return Promise.resolve(mockResponse);
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -349,11 +428,23 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+      });
+
+      // Select profession first
+      const trampCard = screen.getByText('Tramp').closest('.profession-card');
+      fireEvent.click(trampCard!);
+
+      const nextButton = screen.getByText('Next');
+      fireEvent.click(nextButton);
+
+      // Wait for stats rolling screen
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
 
       // Accept stats
-      const acceptButton = screen.getByText('Accept Stats');
+      const acceptButton = screen.getByText('Accept Stats & Create Character');
       fireEvent.click(acceptButton);
 
       await waitFor(() => {
@@ -370,7 +461,33 @@ describe('App', () => {
           character_name: '',
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          professions: [
+            {
+              id: 0,
+              name: 'Tramp',
+              description: 'A wandering soul with no particular skills or connections.',
+              flavor_text:
+                'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+              stat_requirements: {},
+              mechanical_effects: {},
+              is_available: true,
+            },
+          ],
+        }),
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/login')) {
+          return Promise.resolve(mockResponse);
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -384,14 +501,86 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
-      // Trigger error - this should call onError which sets the error state
+      // Select profession and go to stats rolling
+      const trampCard = screen.getByText('Tramp').closest('.profession-card');
+      fireEvent.click(trampCard!);
+
+      const nextButton = screen.getByText('Next');
+      fireEvent.click(nextButton);
+
+      // Wait for stats rolling screen
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+
+      // Mock an error response for character creation
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/login')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({
+              access_token: 'mock-token',
+              has_character: false,
+              character_name: '',
+            }),
+          });
+        } else if (url.includes('/professions')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue([
+              {
+                id: 0,
+                name: 'Tramp',
+                description: 'A wandering soul with no particular skills or connections.',
+                flavor_text:
+                  'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+                stat_requirements: {},
+                mechanical_effects: {},
+                is_available: true,
+              },
+            ]),
+          });
+        } else if (url.includes('/players/roll-stats')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({
+              stats: {
+                strength: 12,
+                dexterity: 14,
+                constitution: 10,
+                intelligence: 16,
+                wisdom: 8,
+                charisma: 13,
+              },
+              stat_summary: {
+                total: 73,
+                average: 12.17,
+                highest: 16,
+                lowest: 8,
+              },
+              profession_id: 0,
+              meets_requirements: true,
+              method_used: '3d6',
+            }),
+          });
+        } else if (url.includes('/players/create-character')) {
+          return Promise.resolve({
+            ok: false,
+            status: 500,
+            json: vi.fn().mockResolvedValue({ detail: 'Character creation failed' }),
+          });
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
+
+      // Trigger error by clicking the error button
       const errorButton = screen.getByText('Trigger Error');
       fireEvent.click(errorButton);
 
-      // The error should appear in the login form since we're back to the login state
+      // The error should appear in the stats rolling screen
       await waitFor(() => {
         expect(screen.getByText('Stats error')).toBeInTheDocument();
       });
@@ -517,7 +706,33 @@ describe('App', () => {
           character_name: '',
         }),
       };
-      mockFetch.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(mockResponse), 100)));
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          professions: [
+            {
+              id: 0,
+              name: 'Tramp',
+              description: 'A wandering soul with no particular skills or connections.',
+              flavor_text:
+                'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+              stat_requirements: {},
+              mechanical_effects: {},
+              is_available: true,
+            },
+          ],
+        }),
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/register')) {
+          return new Promise(resolve => setTimeout(() => resolve(mockResponse), 100));
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -540,7 +755,7 @@ describe('App', () => {
       expect(registerButton).toBeDisabled();
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
     });
   });

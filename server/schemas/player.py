@@ -52,6 +52,10 @@ class PlayerRead(PlayerBase):
 
     id: uuid.UUID = Field(..., description="Player's unique identifier")
     user_id: uuid.UUID = Field(..., description="Associated user ID")
+    profession_id: int = Field(default=0, description="Player's profession ID")
+    profession_name: str | None = Field(default=None, description="Player's profession name")
+    profession_description: str | None = Field(default=None, description="Player's profession description")
+    profession_flavor_text: str | None = Field(default=None, description="Player's profession flavor text")
     stats: dict[str, Any] = Field(..., description="Player stats")
     inventory: list[dict[str, Any]] = Field(..., description="Player inventory")
     status_effects: list[dict[str, Any]] = Field(..., description="Player status effects")
@@ -67,6 +71,10 @@ class PlayerRead(PlayerBase):
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
+                "profession_id": 0,
+                "profession_name": "Tramp",
+                "profession_description": "A wandering soul with no particular skills or connections.",
+                "profession_flavor_text": "You have spent your days drifting from place to place, learning to survive on your wits alone.",
                 "current_room_id": "earth_arkham_city_northside_intersection_derby_high",
                 "experience_points": 150,
                 "level": 2,
