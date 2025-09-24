@@ -233,7 +233,10 @@ class NPCSpawnRule(Base):
 
             # Handle different condition types
             if isinstance(value, list):
-                if game_value not in value:
+                # Empty list means "any value is acceptable" (like "any")
+                if len(value) == 0:
+                    continue  # Skip this condition check
+                elif game_value not in value:
                     return False
             elif isinstance(value, dict):
                 # Range checking

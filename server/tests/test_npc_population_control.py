@@ -216,8 +216,11 @@ class TestNPCPopulationController:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
 
-            # Create zone structure
-            arkham_dir = temp_path / "arkhamcity"
+            # Create proper directory structure: plane/zone/subzone
+            earth_dir = temp_path / "earth"
+            earth_dir.mkdir()
+
+            arkham_dir = earth_dir / "arkhamcity"
             arkham_dir.mkdir()
 
             downtown_dir = arkham_dir / "downtown"
@@ -303,7 +306,7 @@ class TestNPCPopulationController:
         """Create a spawn rule for the shopkeeper."""
         return NPCSpawnRule(
             npc_definition_id=shopkeeper_definition.id,
-            sub_zone_id="downtown",
+            sub_zone_id="arkhamcity/downtown",
             min_players=0,
             max_players=999,
             spawn_conditions="{}",
@@ -314,7 +317,7 @@ class TestNPCPopulationController:
         """Create a spawn rule for the passive mob."""
         return NPCSpawnRule(
             npc_definition_id=passive_mob_definition.id,
-            sub_zone_id="downtown",
+            sub_zone_id="arkhamcity/downtown",
             min_players=1,
             max_players=5,
             spawn_conditions='{"time_of_day": "day", "weather": "clear"}',
