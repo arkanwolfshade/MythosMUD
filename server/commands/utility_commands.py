@@ -381,26 +381,59 @@ async def handle_status_command(
         room = persistence.get_room(player.current_room_id) if player.current_room_id else None
         room_name = room.name if room else "Unknown location"
 
+        # Get player stats as dictionary
+        stats = player.get_stats()
+
+        # Get profession information following the same pattern as PlayerService._convert_player_to_schema
+        profession_id = 0
+        profession_name = None
+        profession_description = None
+        profession_flavor_text = None
+
+        if hasattr(player, "profession_id"):
+            profession_id = player.profession_id
+        elif isinstance(player, dict):
+            profession_id = player.get("profession_id", 0)
+
+        # Fetch profession details from persistence
+        if profession_id is not None:
+            try:
+                profession = persistence.get_profession_by_id(profession_id)
+                if profession:
+                    profession_name = profession.name
+                    profession_description = profession.description
+                    profession_flavor_text = profession.flavor_text
+            except Exception as e:
+                logger.warning(f"Failed to fetch profession {profession_id}: {e}")
+
         # Build status information
         status_lines = [
-            f"Name: {player.username}",
+            f"Name: {player.name}",
             f"Location: {room_name}",
-            f"Health: {player.stats.health}/{player.stats.max_health}",
-            f"Sanity: {player.stats.sanity}/{player.stats.max_sanity}",
+            f"Health: {stats.get('current_health', 100)}/{stats.get('max_health', 100)}",
+            f"Sanity: {stats.get('sanity', 100)}/{stats.get('max_sanity', 100)}",
         ]
 
+        # Add profession information if available
+        if profession_name:
+            status_lines.append(f"Profession: {profession_name}")
+            if profession_description:
+                status_lines.append(f"Description: {profession_description}")
+            if profession_flavor_text:
+                status_lines.append(f"Background: {profession_flavor_text}")
+
         # Add additional stats if available
-        if hasattr(player.stats, "fear") and player.stats.fear > 0:
-            status_lines.append(f"Fear: {player.stats.fear}")
+        if stats.get("fear", 0) > 0:
+            status_lines.append(f"Fear: {stats.get('fear', 0)}")
 
-        if hasattr(player.stats, "corruption") and player.stats.corruption > 0:
-            status_lines.append(f"Corruption: {player.stats.corruption}")
+        if stats.get("corruption", 0) > 0:
+            status_lines.append(f"Corruption: {stats.get('corruption', 0)}")
 
-        if hasattr(player.stats, "occult_knowledge") and player.stats.occult_knowledge > 0:
-            status_lines.append(f"Occult Knowledge: {player.stats.occult_knowledge}")
+        if stats.get("occult_knowledge", 0) > 0:
+            status_lines.append(f"Occult Knowledge: {stats.get('occult_knowledge', 0)}")
 
         # Add pose if set
-        if player.pose:
+        if hasattr(player, "pose") and player.pose:
             status_lines.append(f"Pose: {player.pose}")
 
         result = "\n".join(status_lines)

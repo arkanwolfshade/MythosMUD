@@ -21,6 +21,14 @@ class TestPlayerService:
         self.mock_persistence = Mock()
         self.mock_persistence.get_player_by_name = Mock()
         self.mock_persistence.list_players = Mock()
+
+        # Mock profession data to return proper string values
+        mock_profession = Mock()
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        self.mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+
         self.player_service = PlayerService(self.mock_persistence)
 
     def test_resolve_player_name_exact_match(self):

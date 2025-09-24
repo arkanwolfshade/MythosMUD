@@ -123,14 +123,52 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         except Exception:
                             pass
 
-                    game_state_event = build_event(
-                        "game_state",
-                        {
-                            "player": {
+                    # Get complete player data with profession information using PlayerService
+                    # This ensures the Status panel displays profession info automatically
+                    try:
+                        # Access app state through connection manager (same pattern as process_websocket_command)
+                        app_state = connection_manager.app.state if connection_manager.app else None
+                        player_service = getattr(app_state, "player_service", None) if app_state else None
+
+                        if player_service:
+                            # Use PlayerService to get complete player data with profession
+                            complete_player_data = player_service._convert_player_to_schema(player)
+                            logger.debug(
+                                "WebSocket handler: Retrieved complete player data with profession",
+                                player_id=player_id_str,
+                                has_profession=bool(getattr(complete_player_data, "profession_name", None)),
+                            )
+
+                            # Convert PlayerRead object to dictionary for JSON serialization
+                            player_data_for_client = (
+                                complete_player_data.model_dump(mode="json")
+                                if hasattr(complete_player_data, "model_dump")
+                                else complete_player_data.dict()
+                            )
+                        else:
+                            # Fallback to basic player data if PlayerService not available
+                            logger.warning(
+                                "PlayerService not available in websocket handler, using basic player data",
+                                player_id=player_id_str,
+                            )
+                            player_data_for_client = {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
                                 "stats": stats_data,
-                            },
+                            }
+                    except Exception as e:
+                        logger.error(f"Error getting complete player data: {e}", player_id=player_id_str)
+                        # Fallback to basic player data
+                        player_data_for_client = {
+                            "name": player.name,
+                            "level": getattr(player, "level", 1),
+                            "stats": stats_data,
+                        }
+
+                    game_state_event = build_event(
+                        "game_state",
+                        {
+                            "player": player_data_for_client,
                             "room": room_data,
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),

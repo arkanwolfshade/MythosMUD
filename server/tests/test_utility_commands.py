@@ -458,21 +458,30 @@ class TestStatusCommand:
     def mock_player(self):
         """Create a mock player with stats."""
         player = MagicMock()
-        player.username = "testuser"
+        player.name = "testuser"
         player.current_room_id = "room_123"
         player.pose = "adjusting spectacles"
 
-        # Mock stats object
-        stats = MagicMock()
-        stats.health = 85
-        stats.max_health = 100
-        stats.sanity = 75
-        stats.max_sanity = 100
-        stats.fear = 15
-        stats.corruption = 5
-        stats.occult_knowledge = 25
+        # Create a proper stats dictionary that get_stats() should return
+        stats_dict = {
+            "current_health": 85,
+            "max_health": 100,
+            "sanity": 75,
+            "max_sanity": 100,
+            "fear": 15,
+            "corruption": 5,
+            "occult_knowledge": 25,
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10,
+            "cult_affiliation": 0,
+        }
 
-        player.stats = stats
+        # Mock the get_stats method to return the dictionary
+        player.get_stats.return_value = stats_dict
         return player
 
     @pytest.fixture
@@ -582,20 +591,30 @@ class TestStatusCommand:
 
         # Create player with minimal stats
         player = MagicMock()
-        player.username = "testuser"
+        player.name = "testuser"
         player.current_room_id = "room_123"
         player.pose = None
 
-        stats = MagicMock()
-        stats.health = 100
-        stats.max_health = 100
-        stats.sanity = 100
-        stats.max_sanity = 100
-        stats.fear = 0
-        stats.corruption = 0
-        stats.occult_knowledge = 0
+        # Create a proper stats dictionary that get_stats() should return
+        stats_dict = {
+            "current_health": 100,
+            "max_health": 100,
+            "sanity": 100,
+            "max_sanity": 100,
+            "fear": 0,
+            "corruption": 0,
+            "occult_knowledge": 0,
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10,
+            "cult_affiliation": 0,
+        }
 
-        player.stats = stats
+        # Mock the get_stats method to return the dictionary
+        player.get_stats.return_value = stats_dict
         mock_persistence.get_player_by_name.return_value = player
         mock_persistence.get_room.return_value = mock_room
 

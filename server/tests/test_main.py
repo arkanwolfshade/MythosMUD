@@ -49,6 +49,13 @@ class TestEndpoints:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
 
+            # Mock profession data to return proper string values
+            mock_profession = Mock()
+            mock_profession.name = "Scholar"
+            mock_profession.description = "A learned academic"
+            mock_profession.flavor_text = "Knowledge is power"
+            mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+
             # Create a test client
             test_client = TestClient(app)
 
@@ -107,6 +114,11 @@ class TestEndpoints:
                 mock_player.created_at = "2024-01-01T00:00:00Z"
                 mock_player.last_active = "2024-01-01T00:00:00Z"
                 mock_player.is_admin = False
+                # Add profession fields that are now required by PlayerRead schema
+                mock_player.profession_id = 0
+                mock_player.profession_name = "Scholar"
+                mock_player.profession_description = "A learned academic"
+                mock_player.profession_flavor_text = "Knowledge is power"
                 mock_service_instance.create_player.return_value = mock_player
                 mock_player_service.return_value = mock_service_instance
 
@@ -149,6 +161,11 @@ class TestEndpoints:
                 "experience_points": 0,
                 "level": 1,
                 "is_admin": False,
+                # Add profession fields that are now required by PlayerRead schema
+                "profession_id": 0,
+                "profession_name": "Scholar",
+                "profession_description": "A learned academic",
+                "profession_flavor_text": "Knowledge is power",
             },
             {
                 "player_id": test_uuid2,
@@ -163,6 +180,11 @@ class TestEndpoints:
                 "experience_points": 0,
                 "level": 1,
                 "is_admin": False,
+                # Add profession fields that are now required by PlayerRead schema
+                "profession_id": 0,
+                "profession_name": "Scholar",
+                "profession_description": "A learned academic",
+                "profession_flavor_text": "Knowledge is power",
             },
         ]
         with patch.object(client.app.state.persistence, "list_players") as mock_list_players:
@@ -197,6 +219,11 @@ class TestEndpoints:
             "experience_points": 0,
             "level": 1,
             "is_admin": False,
+            # Add profession fields that are now required by PlayerRead schema
+            "profession_id": 0,
+            "profession_name": "Scholar",
+            "profession_description": "A learned academic",
+            "profession_flavor_text": "Knowledge is power",
         }
         with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
             mock_get_player.return_value = mock_player
@@ -247,6 +274,11 @@ class TestEndpoints:
             # Convert expected format to match PlayerRead schema
             expected_player = mock_player.copy()
             expected_player["id"] = expected_player.pop("player_id")
+            # Add profession fields that are now included in the response
+            expected_player["profession_id"] = 0
+            expected_player["profession_name"] = "Scholar"
+            expected_player["profession_description"] = "A learned academic"
+            expected_player["profession_flavor_text"] = "Knowledge is power"
             assert response.json() == expected_player
 
     def test_get_player_by_name_not_found(self, client):

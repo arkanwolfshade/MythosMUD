@@ -26,6 +26,7 @@ class CreateCharacterRequest(BaseModel):
 
     name: str
     stats: dict
+    profession_id: int = 0  # Default to 0 (Tramp)
     starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high"
 
 
@@ -276,6 +277,7 @@ def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
+    profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
 ):
     """
@@ -319,24 +321,46 @@ def roll_character_stats(
         ) from e
 
     stats_generator = StatsGenerator()
+    from ..exceptions import create_error_context
 
     try:
-        stats, available_classes = stats_generator.roll_stats_with_validation(
-            method=method, required_class=required_class, max_attempts=max_attempts
-        )
+        if profession_id is not None:
+            # Use profession-based stat rolling
+            stats, meets_requirements = stats_generator.roll_stats_with_profession(
+                method=method, profession_id=profession_id, max_attempts=max_attempts
+            )
+            stat_summary = stats_generator.get_stat_summary(stats)
 
-        stat_summary = stats_generator.get_stat_summary(stats)
+            return {
+                "stats": stats.model_dump(),
+                "stat_summary": stat_summary,
+                "profession_id": profession_id,
+                "meets_requirements": meets_requirements,
+                "method_used": method,
+            }
+        else:
+            # Use legacy class-based stat rolling
+            stats, available_classes = stats_generator.roll_stats_with_validation(
+                method=method, required_class=required_class, max_attempts=max_attempts
+            )
+            stat_summary = stats_generator.get_stat_summary(stats)
 
-        return {
-            "stats": stats.model_dump(),
-            "stat_summary": stat_summary,
-            "available_classes": available_classes,
-            "method_used": method,
-            "meets_class_requirements": required_class in available_classes if required_class else True,
-        }
+            return {
+                "stats": stats.model_dump(),
+                "stat_summary": stat_summary,
+                "available_classes": available_classes,
+                "method_used": method,
+                "meets_class_requirements": required_class in available_classes if required_class else True,
+            }
+    except ValueError as e:
+        # Handle validation errors (e.g., invalid profession ID)
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "roll_stats"
+        context.metadata["error"] = str(e)
+        raise LoggedHTTPException(status_code=400, detail=f"Invalid profession: {str(e)}", context=context) from e
     except Exception as e:
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
@@ -401,6 +425,7 @@ async def create_character_with_stats(
         player = player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
+            profession_id=request_data.profession_id,
             starting_room_id=request_data.starting_room_id,
             user_id=current_user.id,
         )

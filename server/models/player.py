@@ -54,6 +54,9 @@ class Player(Base):
     # Admin status
     is_admin = Column(Integer(), default=0, nullable=False)  # SQLite doesn't have BOOLEAN, use INTEGER
 
+    # Profession
+    profession_id = Column(Integer(), default=0, nullable=False)
+
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
     last_active = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)

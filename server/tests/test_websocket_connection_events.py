@@ -189,9 +189,16 @@ class TestWebSocketConnectionEvents:
     async def test_event_handler_handles_player_entered_event(self, mock_event_bus):
         """Test that RealTimeEventHandler properly handles PlayerEnteredRoom events."""
         # Create event handler with mocked connection manager
-        mock_connection_manager = Mock()
-        mock_connection_manager._get_player.return_value = Mock(name="TestPlayer")
-        mock_connection_manager.persistence.get_room.return_value = Mock(name="Test Room")
+        mock_connection_manager = AsyncMock()
+
+        # Configure the mock to return proper values for non-async methods
+        mock_player = Mock(name="TestPlayer")
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock(name="Test Room")
+        mock_room.get_players.return_value = ["test_player_123"]
+        mock_connection_manager.persistence.get_room.return_value = mock_room
 
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
@@ -214,9 +221,16 @@ class TestWebSocketConnectionEvents:
     async def test_event_handler_handles_player_left_event(self, mock_event_bus):
         """Test that RealTimeEventHandler properly handles PlayerLeftRoom events."""
         # Create event handler with mocked connection manager
-        mock_connection_manager = Mock()
-        mock_connection_manager._get_player.return_value = Mock(name="TestPlayer")
-        mock_connection_manager.persistence.get_room.return_value = Mock(name="Test Room")
+        mock_connection_manager = AsyncMock()
+
+        # Configure the mock to return proper values for non-async methods
+        mock_player = Mock(name="TestPlayer")
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player.return_value = mock_player
+
+        mock_room = Mock(name="Test Room")
+        mock_room.get_players.return_value = ["test_player_123"]
+        mock_connection_manager.persistence.get_room.return_value = mock_room
 
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
