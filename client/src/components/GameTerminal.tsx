@@ -10,6 +10,10 @@ import { GameLogPanel } from './panels/GameLogPanel';
 
 interface Player {
   name: string;
+  profession_id?: number;
+  profession_name?: string;
+  profession_description?: string;
+  profession_flavor_text?: string;
   stats?: {
     current_health: number;
     sanity: number;
@@ -264,7 +268,6 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             className="panel-status"
             variant="default"
             defaultSize={{ width: 300, height: 200 }}
-            defaultPosition={{ x: 950, y: 50 }}
             onClose={() => console.log('Status panel closed')}
             onMinimize={() => console.log('Status panel minimized')}
             onMaximize={() => console.log('Status panel maximized')}
@@ -290,6 +293,27 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                 <span className="text-base text-mythos-terminal-text-secondary">Player:</span>
                 <span className="text-base text-mythos-terminal-text">{playerName}</span>
               </div>
+              {player?.profession_name && (
+                <div className="border-t border-mythos-terminal-border pt-2">
+                  <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Profession:</h5>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-mythos-terminal-text-secondary">Name:</span>
+                      <span className="text-sm text-mythos-terminal-text font-medium">{player.profession_name}</span>
+                    </div>
+                    {player.profession_description && (
+                      <div className="text-xs text-mythos-terminal-text-secondary italic">
+                        {player.profession_description}
+                      </div>
+                    )}
+                    {player.profession_flavor_text && (
+                      <div className="text-xs text-mythos-terminal-text-secondary">
+                        "{player.profession_flavor_text}"
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               {player?.stats && (
                 <>
                   <div className="flex items-center justify-between">

@@ -523,11 +523,37 @@ class PlayerService:
         Returns:
             PlayerRead: The player data in schema format
         """
+        # Get profession information
+        profession_id = 0
+        profession_name = None
+        profession_description = None
+        profession_flavor_text = None
+
+        if hasattr(player, "profession_id"):
+            profession_id = player.profession_id
+        elif isinstance(player, dict):
+            profession_id = player.get("profession_id", 0)
+
+        # Fetch profession details from persistence
+        if profession_id is not None:
+            try:
+                profession = self.persistence.get_profession_by_id(profession_id)
+                if profession:
+                    profession_name = profession.name
+                    profession_description = profession.description
+                    profession_flavor_text = profession.flavor_text
+            except Exception as e:
+                logger.warning(f"Failed to fetch profession {profession_id}: {e}")
+
         if hasattr(player, "player_id"):  # Player object
             return PlayerRead(
                 id=player.player_id,
                 user_id=player.user_id,
                 name=player.name,
+                profession_id=profession_id,
+                profession_name=profession_name,
+                profession_description=profession_description,
+                profession_flavor_text=profession_flavor_text,
                 current_room_id=player.current_room_id,
                 experience_points=player.experience_points,
                 level=player.level,
@@ -543,6 +569,10 @@ class PlayerService:
                 id=player["player_id"],
                 user_id=player["user_id"],
                 name=player["name"],
+                profession_id=profession_id,
+                profession_name=profession_name,
+                profession_description=profession_description,
+                profession_flavor_text=profession_flavor_text,
                 current_room_id=player["current_room_id"],
                 experience_points=player["experience_points"],
                 level=player["level"],

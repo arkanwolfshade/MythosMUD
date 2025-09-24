@@ -4,6 +4,7 @@ import { logger } from '../utils/logger';
 import { useMemoryMonitor } from '../utils/memoryMonitor';
 import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';
 import { inputSanitizer } from '../utils/security';
+import { convertToPlayerInterface, parseStatusResponse } from '../utils/statusParser';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -33,6 +34,10 @@ interface GameTerminalWithPanelsProps {
 
 interface Player {
   name: string;
+  profession_id?: number;
+  profession_name?: string;
+  profession_description?: string;
+  profession_flavor_text?: string;
   stats?: {
     current_health: number;
     sanity: number;
@@ -262,6 +267,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 playerName: playerData.name,
                 roomName: roomData.name,
                 roomId: roomData.id,
+                hasProfessionName: !!playerData.profession_name,
+                professionName: playerData.profession_name,
+                hasProfessionId: !!playerData.profession_id,
+                professionId: playerData.profession_id,
+                playerDataKeys: Object.keys(playerData),
               });
             }
             break;
@@ -377,6 +387,28 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               currentMessageCount: currentMessagesRef.current.length,
             });
             if (message) {
+              // Check if this is a status command response and parse player data
+              if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
+                try {
+                  const parsedPlayerData = parseStatusResponse(message);
+                  const playerData = convertToPlayerInterface(parsedPlayerData);
+
+                  logger.info('GameTerminalWithPanels', 'Parsed status response and updating player data', {
+                    playerName: playerData.name,
+                    hasProfession: !!playerData.profession_name,
+                    professionName: playerData.profession_name,
+                    hasStats: !!playerData.stats,
+                  });
+
+                  updates.player = playerData;
+                } catch (error) {
+                  logger.error('GameTerminalWithPanels', 'Failed to parse status response', {
+                    error: error instanceof Error ? error.message : String(error),
+                    message: message.substring(0, 200) + '...',
+                  });
+                }
+              }
+
               // Use intelligent message type categorization
               const messageTypeResult = determineMessageType(message);
               debugMessageCategorization(message, messageTypeResult);
