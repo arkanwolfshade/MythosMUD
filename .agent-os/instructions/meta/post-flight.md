@@ -14,4 +14,4 @@ After completing all steps in a process_flow, always review your work and verify
 
 - All steps that specified a subagent should be used, did in fact delegate those tasks to the specified subagent.  IF they did not, see why the subagent was not used and report your findings to the user.
 
-- IF you notice a step wasn't executed according to it's instructions, report your findings and explain which part of the instructions were misread or skipped and why.
+- IF you notice a step wasn't executed according to its instructions, report your findings and explain which part of the instructions were misread or skipped and why.

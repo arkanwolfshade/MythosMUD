@@ -115,6 +115,36 @@ async def lifespan(app: FastAPI):
 
     logger.info("NPC services initialized and added to app.state")
 
+    # Initialize NPC startup spawning
+    from ..services.npc_startup_service import get_npc_startup_service
+
+    logger.info("Starting NPC startup spawning process")
+    try:
+        startup_service = get_npc_startup_service()
+        startup_results = await startup_service.spawn_npcs_on_startup()
+
+        logger.info(
+            "NPC startup spawning completed",
+            context={
+                "total_spawned": startup_results["total_spawned"],
+                "required_spawned": startup_results["required_spawned"],
+                "optional_spawned": startup_results["optional_spawned"],
+                "failed_spawns": startup_results["failed_spawns"],
+                "errors": len(startup_results["errors"]),
+            },
+        )
+
+        # Log any errors that occurred during startup
+        if startup_results["errors"]:
+            logger.warning(f"NPC startup spawning had {len(startup_results['errors'])} errors")
+            for error in startup_results["errors"]:
+                logger.warning(f"Startup spawning error: {error}")
+
+    except Exception as e:
+        logger.error(f"Critical error during NPC startup spawning: {str(e)}")
+        # Don't fail server startup due to NPC spawning issues
+        logger.warning("Continuing server startup despite NPC spawning errors")
+
     # Enhance logging system with PlayerGuidFormatter now that player service is available
     from ..logging_config import update_logging_with_player_service
 
