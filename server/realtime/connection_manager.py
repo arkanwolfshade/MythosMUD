@@ -333,8 +333,7 @@ class ConnectionManager:
                 if player_id in self.player_websockets:
                     # Update the player's connection list with only active connections
                     active_connection_ids = [
-                        conn_id for conn_id in self.player_websockets[player_id]
-                        if conn_id in self.active_websockets
+                        conn_id for conn_id in self.player_websockets[player_id] if conn_id in self.active_websockets
                     ]
                     if active_connection_ids:
                         self.player_websockets[player_id] = active_connection_ids
