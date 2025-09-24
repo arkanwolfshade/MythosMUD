@@ -448,7 +448,8 @@ class ConnectionManager:
                 # Remove player from websocket tracking
                 del self.player_websockets[player_id]
 
-                # Only track disconnection if it's not a force disconnect and player has no other connections
+                # Check if we need to track disconnection (outside of disconnect_lock to avoid deadlock)
+                should_track_disconnect = False
                 if not is_force_disconnect and not self.has_sse_connection(player_id):
                     # Check if disconnect needs to be processed without holding the disconnect_lock
                     should_track_disconnect = False
@@ -482,6 +483,11 @@ class ConnectionManager:
                         del self.last_seen[player_id]
 
                 logger.info(f"WebSocket disconnected for player {player_id}")
+
+            # Track disconnect outside of disconnect_lock to avoid deadlock
+            if should_track_disconnect:
+                await self._track_player_disconnected(player_id)
+
         except Exception as e:
             logger.error(f"Error during WebSocket disconnect for {player_id}: {e}", exc_info=True)
 
