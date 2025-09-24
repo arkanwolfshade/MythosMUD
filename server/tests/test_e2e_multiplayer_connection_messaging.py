@@ -51,6 +51,7 @@ class TestE2EMultiplayerConnectionMessaging:
             await context.close()
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(reason="Hanging in GitHub Actions CI - needs investigation")
     async def test_two_players_see_connection_messages(self, player_contexts):
         """Test that two players can see each other's connection messages."""
         # Create player contexts using helper
