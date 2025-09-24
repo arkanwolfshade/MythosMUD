@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
+import { Profession, ProfessionSelectionScreen } from './components/ProfessionSelectionScreen';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
 import { logoutHandler } from './utils/logoutHandler';
 import { memoryMonitor } from './utils/memoryMonitor';
@@ -26,6 +27,10 @@ function App() {
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
+
+  // Character creation flow state
+  const [selectedProfession, setSelectedProfession] = useState<Profession | null>(null);
+  const [showProfessionSelection, setShowProfessionSelection] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,6 +89,11 @@ function App() {
       setIsAuthenticated(true);
       setHasCharacter(data?.has_character || false);
       setCharacterName(data?.character_name || '');
+
+      // For new users without characters, show profession selection
+      if (!data?.has_character) {
+        setShowProfessionSelection(true);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -139,6 +149,11 @@ function App() {
       setIsAuthenticated(true);
       setHasCharacter(data?.has_character || false);
       setCharacterName(data?.character_name || '');
+
+      // For new users without characters, show profession selection
+      if (!data?.has_character) {
+        setShowProfessionSelection(true);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -146,9 +161,34 @@ function App() {
     }
   };
 
+  const handleProfessionSelected = (profession: Profession) => {
+    setSelectedProfession(profession);
+    setShowProfessionSelection(false);
+  };
+
+  const handleProfessionSelectionBack = () => {
+    setShowProfessionSelection(false);
+    setSelectedProfession(null);
+    // Go back to login screen
+    setIsAuthenticated(false);
+    setHasCharacter(false);
+    setCharacterName('');
+    setPlayerName('');
+    setPassword('');
+    setInviteCode('');
+    setAuthToken('');
+  };
+
+  const handleProfessionSelectionError = (error: string) => {
+    setError(error);
+  };
+
   const handleStatsAccepted = (_stats: Stats) => {
     setHasCharacter(true);
     setCharacterName(playerName);
+    // Reset character creation state
+    setSelectedProfession(null);
+    setShowProfessionSelection(false);
   };
 
   const handleStatsError = (error: string) => {
@@ -157,6 +197,13 @@ function App() {
     setAuthToken('');
     // Clear secure tokens
     secureTokenStorage.clearAllTokens();
+    // Reset character creation state
+    setSelectedProfession(null);
+    setShowProfessionSelection(false);
+  };
+
+  const handleStatsRollingBack = () => {
+    setShowProfessionSelection(true);
   };
 
   // Reference to store the disconnect callback from GameTerminalWithPanels
@@ -350,16 +397,35 @@ function App() {
     );
   }
 
-  // If authenticated but no character, show stats rolling screen
+  // If authenticated but no character, show character creation flow
   if (!hasCharacter) {
+    // Show profession selection screen first
+    if (showProfessionSelection) {
+      return (
+        <div className="App">
+          <ProfessionSelectionScreen
+            characterName={playerName}
+            onProfessionSelected={handleProfessionSelected}
+            onError={handleProfessionSelectionError}
+            onBack={handleProfessionSelectionBack}
+            baseUrl="http://localhost:54731"
+            authToken={authToken}
+          />
+        </div>
+      );
+    }
+
+    // Show stats rolling screen after profession selection
     return (
       <div className="App">
         <StatsRollingScreen
           characterName={playerName}
           onStatsAccepted={handleStatsAccepted}
           onError={handleStatsError}
+          onBack={handleStatsRollingBack}
           baseUrl="http://localhost:54731"
           authToken={authToken}
+          professionId={selectedProfession?.id}
         />
       </div>
     );

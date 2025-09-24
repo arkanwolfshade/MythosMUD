@@ -178,6 +178,7 @@ class ErrorMessages:
     PLAYER_NOT_FOUND = "Player not found"
     ROOM_NOT_FOUND = "Room not found"
     USER_NOT_FOUND = "User not found"
+    PROFESSION_NOT_FOUND = "Profession not found"
 
     # Game Logic
     INVALID_COMMAND = "Invalid command"
