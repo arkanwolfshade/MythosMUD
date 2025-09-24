@@ -218,10 +218,16 @@ class NPCSpawnRule(Base):
         if not conditions:
             return True
 
-        # Simple condition checking - can be enhanced
+        # Enhanced condition checking with proper handling of missing keys
         for key, value in conditions.items():
+            # Handle missing keys in game state
             if key not in game_state:
-                return False
+                # If the condition value is "any" or empty list, missing key is acceptable
+                if value == "any" or (isinstance(value, list) and len(value) == 0):
+                    continue  # Skip this condition check - missing key is acceptable
+                else:
+                    # Missing key is not acceptable for this condition
+                    return False
 
             game_value = game_state[key]
 
@@ -236,7 +242,10 @@ class NPCSpawnRule(Base):
                 if "max" in value and game_value > value["max"]:
                     return False
             else:
-                if game_value != value:
+                # Handle "any" as a special case meaning "any value is acceptable"
+                if value == "any":
+                    continue  # Skip this condition check
+                elif game_value != value:
                     return False
 
         return True

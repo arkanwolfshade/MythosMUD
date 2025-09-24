@@ -200,45 +200,71 @@ class NPCPopulationController:
         logger.info(f"NPC Population Controller initialized with {len(self.zone_configurations)} zones loaded")
 
     def _load_zone_configurations(self) -> None:
-        """Load zone and sub-zone configurations from JSON files."""
+        """Load zone and sub-zone configurations from JSON files.
+
+        The directory structure is: data/rooms/plane/zone/subzone/
+        We need to traverse: plane -> zone -> subzone to find configurations.
+        """
         try:
-            for zone_dir in self.rooms_data_path.iterdir():
-                if not zone_dir.is_dir():
+            # First level: plane directories (earth, yeng, etc.)
+            for plane_dir in self.rooms_data_path.iterdir():
+                if not plane_dir.is_dir():
                     continue
 
-                # Load zone configuration
-                zone_config_file = zone_dir / "zone_config.json"
-                if zone_config_file.exists():
-                    with open(zone_config_file) as f:
-                        zone_data = json.load(f)
-                        zone_config = ZoneConfiguration(zone_data)
-                        self.zone_configurations[zone_dir.name] = zone_config
+                logger.debug(f"Processing plane: {plane_dir.name}")
 
-                # Load sub-zone configurations
-                for sub_zone_dir in zone_dir.iterdir():
-                    if not sub_zone_dir.is_dir():
+                # Second level: zone directories (arkhamcity, innsmouth, katmandu, etc.)
+                for zone_dir in plane_dir.iterdir():
+                    if not zone_dir.is_dir():
                         continue
 
-                    sub_zone_config_file = sub_zone_dir / "subzone_config.json"
-                    if sub_zone_config_file.exists():
-                        with open(sub_zone_config_file) as f:
-                            sub_zone_data = json.load(f)
-                            sub_zone_config = ZoneConfiguration(sub_zone_data)
-                            sub_zone_key = f"{zone_dir.name}/{sub_zone_dir.name}"
-                            self.zone_configurations[sub_zone_key] = sub_zone_config
+                    logger.debug(f"  Processing zone: {zone_dir.name}")
+
+                    # Load zone configuration
+                    zone_config_file = zone_dir / "zone_config.json"
+                    if zone_config_file.exists():
+                        with open(zone_config_file) as f:
+                            zone_data = json.load(f)
+                            zone_config = ZoneConfiguration(zone_data)
+                            self.zone_configurations[zone_dir.name] = zone_config
+                            logger.debug(f"    Loaded zone config: {zone_dir.name}")
+
+                    # Third level: sub-zone directories (sanitarium, downtown, etc.)
+                    for sub_zone_dir in zone_dir.iterdir():
+                        if not sub_zone_dir.is_dir():
+                            continue
+
+                        sub_zone_config_file = sub_zone_dir / "subzone_config.json"
+                        if sub_zone_config_file.exists():
+                            with open(sub_zone_config_file) as f:
+                                sub_zone_data = json.load(f)
+                                sub_zone_config = ZoneConfiguration(sub_zone_data)
+                                sub_zone_key = f"{zone_dir.name}/{sub_zone_dir.name}"
+                                self.zone_configurations[sub_zone_key] = sub_zone_config
+                                logger.debug(f"    Loaded sub-zone config: {sub_zone_key}")
+
+            logger.info(
+                f"Loaded {len(self.zone_configurations)} zone configurations: {list(self.zone_configurations.keys())}"
+            )
 
         except Exception as e:
             logger.error(f"Error loading zone configurations: {str(e)}")
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
+        logger.info("NPC Population Controller subscribing to game events")
         self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
+        logger.info("NPC Population Controller event subscriptions completed")
 
     def _handle_player_entered_room(self, event: PlayerEnteredRoom) -> None:
         """Handle player entering a room."""
+        logger.info(
+            f"NPC Population Controller received PlayerEnteredRoom event: player={event.player_id}, room={event.room_id}"
+        )
+
         # Update player count for the zone
         self._update_player_count()
 
@@ -280,26 +306,18 @@ class NPCPopulationController:
         Returns:
             Zone key in format "zone/sub_zone"
         """
-        # Room IDs are typically in format: "plane_zone_sub_zone_room_number"
+        # Room IDs are in format: "plane_zone_sub_zone_[room_description]_number" or "plane_zone_sub_zone_[room_description]"
         # Examples: "earth_arkhamcity_downtown_001" -> "arkhamcity/downtown"
-        #           "earth_innsmouth_waterfront_002" -> "innsmouth/waterfront"
+        #           "earth_arkhamcity_sanitarium_room_foyer_entrance_001" -> "arkhamcity/sanitarium"
+        #           "earth_arkhamcity_downtown_intersection_derby_garrison" -> "arkhamcity/downtown"
+        #           "earth_innsmouth_waterfront_dock_002" -> "innsmouth/waterfront"
         parts = room_id.split("_")
         if len(parts) >= 4:
-            # Find the last part that looks like a room number (numeric)
-            room_number_idx = -1
-            for i in range(len(parts) - 1, 0, -1):
-                if parts[i].isdigit():
-                    room_number_idx = i
-                    break
-
-            if room_number_idx >= 3:
-                # Everything between parts[1] and room_number_idx-1 is zone/sub_zone
-                zone_parts = parts[1:room_number_idx]
-                if len(zone_parts) >= 2:
-                    # Last part is sub_zone, everything before is zone
-                    zone = "_".join(zone_parts[:-1])
-                    sub_zone = zone_parts[-1]
-                    return f"{zone}/{sub_zone}"
+            # We need exactly the zone (parts[1]) and sub_zone (parts[2])
+            # Everything after parts[2] is room description (with or without numeric suffix)
+            zone = parts[1]  # arkhamcity, innsmouth, katmandu
+            sub_zone = parts[2]  # sanitarium, downtown, waterfront, etc.
+            return f"{zone}/{sub_zone}"
 
         return "unknown/unknown"
 
@@ -376,21 +394,34 @@ class NPCPopulationController:
         Args:
             room_id: The room identifier
         """
+        logger.info(f"Checking spawn requirements for room: {room_id}")
         zone_key = self._get_zone_key_from_room_id(room_id)
+        logger.info(f"Generated zone key: {zone_key}")
         zone_config = self.get_zone_configuration(zone_key)
 
         if not zone_config:
             logger.warning(f"No zone configuration found for {zone_key} (room: {room_id})")
             return
 
+        logger.info(f"Zone configuration found for {zone_key}")
+
         # Check each NPC definition for spawn requirements
+        logger.info(f"Checking {len(self.npc_definitions)} NPC definitions for spawn requirements")
         for _npc_def_id, definition in self.npc_definitions.items():
+            logger.info(f"Checking NPC {definition.id} ({definition.name}) - sub_zone: {definition.sub_zone_id}")
             if definition.sub_zone_id not in zone_key:
+                logger.info(
+                    f"NPC {definition.id} sub_zone '{definition.sub_zone_id}' not in zone_key '{zone_key}', skipping"
+                )
                 continue
 
+            logger.info(f"NPC {definition.id} sub_zone matches, checking spawn conditions")
             # Check if this NPC should spawn
             if self._should_spawn_npc(definition, zone_config, room_id):
+                logger.info(f"NPC {definition.id} ({definition.name}) should spawn, attempting spawn")
                 self._spawn_npc(definition, room_id)
+            else:
+                logger.info(f"NPC {definition.id} ({definition.name}) should not spawn")
 
     def _should_spawn_npc(self, definition: NPCDefinition, zone_config: ZoneConfiguration, room_id: str) -> bool:
         """
@@ -404,32 +435,58 @@ class NPCPopulationController:
         Returns:
             True if NPC should spawn, False otherwise
         """
+        logger.info(f"Evaluating spawn conditions for NPC {definition.id} ({definition.name})")
+
         # Check population limits
         zone_key = self._get_zone_key_from_room_id(room_id)
         stats = self.get_population_stats(zone_key)
         if stats:
             current_count = stats.npcs_by_type.get(definition.npc_type, 0)
+            logger.info(f"Current {definition.npc_type} count in zone: {current_count}")
             if not definition.can_spawn(current_count):
+                logger.info(f"NPC {definition.id} cannot spawn due to population limits (current: {current_count})")
                 return False
+        else:
+            logger.info(f"No population stats found for zone {zone_key}")
 
         # Check spawn rules
         if definition.id in self.spawn_rules:
-            for rule in self.spawn_rules[definition.id]:
+            logger.info(f"Found {len(self.spawn_rules[definition.id])} spawn rules for NPC {definition.id}")
+            for i, rule in enumerate(self.spawn_rules[definition.id]):
+                logger.info(f"Checking spawn rule {i + 1} for NPC {definition.id}")
+
                 if not rule.can_spawn_for_player_count(self.current_game_state["player_count"]):
+                    logger.info(
+                        f"Spawn rule {i + 1} failed player count check (current players: {self.current_game_state['player_count']})"
+                    )
                     continue
 
+                logger.info(f"Spawn rule {i + 1} spawn conditions: {rule.spawn_conditions}")
+                logger.info(f"Current game state: {self.current_game_state}")
                 if not rule.check_spawn_conditions(self.current_game_state):
+                    logger.info(f"Spawn rule {i + 1} failed spawn conditions check")
                     continue
 
                 # Check spawn probability with zone modifier
                 effective_probability = zone_config.get_effective_spawn_probability(definition.spawn_probability)
-                if random.random() <= effective_probability:
+                random_roll = random.random()
+                logger.info(
+                    f"Spawn rule {i + 1} probability check: roll={random_roll:.3f}, threshold={effective_probability:.3f}"
+                )
+                if random_roll <= effective_probability:
+                    logger.info(f"NPC {definition.id} should spawn based on spawn rule {i + 1}")
                     return True
+                else:
+                    logger.info(f"NPC {definition.id} failed probability roll for spawn rule {i + 1}")
+        else:
+            logger.info(f"No spawn rules found for NPC {definition.id}")
 
         # Required NPCs always spawn if conditions are met
         if definition.is_required():
+            logger.info(f"NPC {definition.id} is required and conditions are met, spawning")
             return True
 
+        logger.info(f"NPC {definition.id} should not spawn")
         return False
 
     def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:

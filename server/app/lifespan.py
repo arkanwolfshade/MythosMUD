@@ -76,6 +76,7 @@ async def lifespan(app: FastAPI):
     from ..npc.population_control import NPCPopulationController
     from ..npc.spawning_service import NPCSpawningService
     from ..services.npc_instance_service import initialize_npc_instance_service
+    from ..services.npc_service import NPCService
 
     # Create NPC services
     app.state.npc_population_controller = NPCPopulationController(app.state.event_bus)
@@ -91,6 +92,26 @@ async def lifespan(app: FastAPI):
         population_controller=app.state.npc_population_controller,
         event_bus=app.state.event_bus,
     )
+
+    # Load NPC definitions and spawn rules from database
+    from ..npc_database import get_npc_async_session
+
+    npc_service = NPCService()
+    async for npc_session in get_npc_async_session():
+        try:
+            # Load NPC definitions
+            definitions = await npc_service.get_npc_definitions(npc_session)
+            app.state.npc_population_controller.load_npc_definitions(definitions)
+            logger.info(f"Loaded {len(definitions)} NPC definitions")
+
+            # Load spawn rules
+            spawn_rules = await npc_service.get_spawn_rules(npc_session)
+            app.state.npc_population_controller.load_spawn_rules(spawn_rules)
+            logger.info(f"Loaded {len(spawn_rules)} NPC spawn rules")
+
+        except Exception as e:
+            logger.error(f"Error loading NPC definitions and spawn rules: {e}")
+        break
 
     logger.info("NPC services initialized and added to app.state")
 
