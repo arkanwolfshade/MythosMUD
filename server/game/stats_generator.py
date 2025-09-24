@@ -246,6 +246,97 @@ class StatsGenerator:
         available_classes = self.get_available_classes(stats)
         return stats, available_classes
 
+    def roll_stats_with_profession(
+        self, method: str = "3d6", profession_id: int = 0, max_attempts: int = 10
+    ) -> tuple[Stats, bool]:
+        """
+        Roll stats and validate against profession requirements.
+
+        Args:
+            method: The rolling method to use
+            profession_id: The profession ID to validate against
+            max_attempts: Maximum number of attempts to roll valid stats
+
+        Returns:
+            Tuple[Stats, bool]: (stats, meets_requirements)
+        """
+        logger.info(
+            "Rolling stats with profession validation",
+            method=method,
+            profession_id=profession_id,
+            max_attempts=max_attempts,
+        )
+
+        # Get profession requirements from persistence
+        try:
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+            profession = persistence.get_profession_by_id(profession_id)
+
+            if not profession:
+                raise ValueError(f"Invalid profession ID: {profession_id}")
+
+            stat_requirements = profession.get_stat_requirements()
+
+        except Exception as e:
+            logger.error(f"Error retrieving profession {profession_id}: {e}")
+            raise ValueError(f"Invalid profession ID: {profession_id}") from e
+
+        # If no requirements, just roll normally
+        if not stat_requirements:
+            stats = self.roll_stats(method)
+            logger.info("Profession has no stat requirements, returning normal roll")
+            return stats, True
+
+        # Try to roll stats that meet profession requirements
+        for attempt in range(max_attempts):
+            stats = self.roll_stats(method)
+
+            # Check if stats meet profession requirements
+            meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+
+            if meets_requirements:
+                logger.info("Valid stats rolled for profession", attempt=attempt + 1, profession_id=profession_id)
+                return stats, True
+
+            logger.debug(
+                "Stats don't meet profession requirements, retrying",
+                attempt=attempt + 1,
+                profession_id=profession_id,
+                requirements=stat_requirements,
+            )
+
+        # If we couldn't roll valid stats, return the last roll anyway
+        logger.warning(
+            "Could not roll stats meeting profession requirements",
+            profession_id=profession_id,
+            max_attempts=max_attempts,
+        )
+        stats = self.roll_stats(method)
+        meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+        return stats, meets_requirements
+
+    def _check_profession_requirements(self, stats: Stats, requirements: dict[str, int]) -> bool:
+        """
+        Check if stats meet profession requirements.
+
+        Args:
+            stats: The character's stats
+            requirements: Dictionary of stat requirements (e.g., {"strength": 12, "intelligence": 14})
+
+        Returns:
+            bool: True if all requirements are met
+        """
+        for stat_name, min_value in requirements.items():
+            stat_value = getattr(stats, stat_name, None)
+            if stat_value is None:
+                logger.warning(f"Unknown stat name in requirements: {stat_name}")
+                return False
+            if stat_value < min_value:
+                return False
+        return True
+
     def get_stat_summary(self, stats: Stats) -> dict[str, any]:
         """
         Get a summary of the character's stats including modifiers and totals.

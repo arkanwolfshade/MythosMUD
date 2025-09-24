@@ -444,7 +444,7 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = roll_character_stats("3d6", None, 10, mock_current_user)
+        result = roll_character_stats("3d6", None, 10, current_user=mock_current_user)
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -460,7 +460,7 @@ class TestCharacterCreation:
         mock_limiter.get_rate_limit_info.return_value = {"remaining": 0, "reset_time": 60}
 
         with pytest.raises(HTTPException) as exc_info:
-            roll_character_stats("3d6", None, 10, mock_current_user)
+            roll_character_stats("3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 429
         assert "Rate limit exceeded" in str(exc_info.value.detail["message"])
@@ -468,7 +468,7 @@ class TestCharacterCreation:
     def test_roll_stats_authentication_failure(self):
         """Test stats rolling with authentication failure."""
         with pytest.raises(HTTPException) as exc_info:
-            roll_character_stats("3d6", None, 10, None)
+            roll_character_stats("3d6", None, 10, current_user=None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -484,7 +484,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            roll_character_stats("3d6", None, 10, mock_current_user)
+            roll_character_stats("3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -611,6 +611,91 @@ class TestCharacterCreation:
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)
+
+    @patch("server.api.players.StatsGenerator")
+    @patch("server.api.players.stats_roll_limiter")
+    def test_roll_stats_with_profession_success(
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+    ):
+        """Test successful stats rolling with profession ID."""
+        # Setup mocks
+        mock_limiter.enforce_rate_limit.return_value = None
+        mock_generator = Mock()
+        mock_generator.roll_stats_with_profession.return_value = (
+            Stats(**sample_stats_data),
+            True,  # meets_requirements
+        )
+        mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
+        mock_stats_generator_class.return_value = mock_generator
+
+        result = roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+
+        assert "stats" in result
+        assert "stat_summary" in result
+        assert "profession_id" in result
+        assert "meets_requirements" in result
+        assert result["method_used"] == "3d6"
+        assert result["profession_id"] == 0
+        assert result["meets_requirements"] is True
+
+    @patch("server.api.players.StatsGenerator")
+    @patch("server.api.players.stats_roll_limiter")
+    def test_roll_stats_with_profession_requirements_not_met(
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+    ):
+        """Test stats rolling with profession when requirements are not met."""
+        # Setup mocks
+        mock_limiter.enforce_rate_limit.return_value = None
+        mock_generator = Mock()
+        mock_generator.roll_stats_with_profession.return_value = (
+            Stats(**sample_stats_data),
+            False,  # does not meet requirements
+        )
+        mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
+        mock_stats_generator_class.return_value = mock_generator
+
+        result = roll_character_stats("3d6", None, 10, profession_id=1, current_user=mock_current_user)
+
+        assert "stats" in result
+        assert "stat_summary" in result
+        assert "profession_id" in result
+        assert "meets_requirements" in result
+        assert result["profession_id"] == 1
+        assert result["meets_requirements"] is False
+
+    @patch("server.api.players.StatsGenerator")
+    @patch("server.api.players.stats_roll_limiter")
+    def test_roll_stats_with_invalid_profession(self, mock_limiter, mock_stats_generator_class, mock_current_user):
+        """Test stats rolling with invalid profession ID."""
+        # Setup mocks
+        mock_limiter.enforce_rate_limit.return_value = None
+        mock_generator = Mock()
+        mock_generator.roll_stats_with_profession.side_effect = ValueError("Invalid profession ID")
+        mock_stats_generator_class.return_value = mock_generator
+
+        with pytest.raises(HTTPException) as exc_info:
+            roll_character_stats("3d6", None, 10, profession_id=999, current_user=mock_current_user)
+
+        assert exc_info.value.status_code == 400
+        assert "Invalid profession" in str(exc_info.value.detail)
+
+    @patch("server.api.players.StatsGenerator")
+    @patch("server.api.players.stats_roll_limiter")
+    def test_roll_stats_with_profession_validation_error(
+        self, mock_limiter, mock_stats_generator_class, mock_current_user
+    ):
+        """Test stats rolling with profession when validation fails."""
+        # Setup mocks
+        mock_limiter.enforce_rate_limit.return_value = None
+        mock_generator = Mock()
+        mock_generator.roll_stats_with_profession.side_effect = Exception("Profession validation failed")
+        mock_stats_generator_class.return_value = mock_generator
+
+        with pytest.raises(HTTPException) as exc_info:
+            roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+
+        assert exc_info.value.status_code == 500
+        assert "An internal error occurred" in str(exc_info.value.detail)
 
 
 class TestStatsValidation:

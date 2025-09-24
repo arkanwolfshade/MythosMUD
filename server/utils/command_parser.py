@@ -785,7 +785,11 @@ def get_username_from_user(user_obj) -> str:
     """
     # User object attribute extraction factory - maps common attribute patterns
     # This eliminates the need for repetitive if/elif chains across command files
-    if hasattr(user_obj, "username"):
+
+    # Handle Player objects (which have 'name' attribute)
+    if hasattr(user_obj, "name") and hasattr(user_obj, "player_id"):
+        return user_obj.name
+    elif hasattr(user_obj, "username"):
         return user_obj.username
     elif hasattr(user_obj, "name"):
         return user_obj.name

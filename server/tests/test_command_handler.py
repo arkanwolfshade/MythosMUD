@@ -271,8 +271,13 @@ class TestUtilityFunctions:
 
     def test_get_username_from_user_object(self):
         """Test extracting username from object."""
-        user_obj = Mock()
-        user_obj.username = "testuser"
+
+        # Create a mock object that only has username attribute, not name
+        class UserObject:
+            def __init__(self, username):
+                self.username = username
+
+        user_obj = UserObject("testuser")
         assert get_username_from_user(user_obj) == "testuser"
 
     def test_get_username_from_user_name_key(self):

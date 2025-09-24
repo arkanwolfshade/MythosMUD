@@ -15,16 +15,20 @@ interface StatsRollingScreenProps {
   characterName: string;
   onStatsAccepted: (stats: Stats) => void;
   onError: (error: string) => void;
+  onBack?: () => void;
   baseUrl: string;
   authToken: string;
+  professionId?: number;
 }
 
 export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   characterName,
   onStatsAccepted,
   onError,
+  onBack,
   baseUrl,
   authToken,
+  professionId,
 }) => {
   const [currentStats, setCurrentStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +66,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         },
         body: JSON.stringify({
           method: '3d6',
+          profession_id: professionId,
         }),
       });
 
@@ -110,6 +115,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         },
         body: JSON.stringify({
           method: '3d6',
+          profession_id: professionId,
         }),
       });
 
@@ -160,6 +166,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         body: JSON.stringify({
           name: characterName, // This is the username from registration
           stats: currentStats,
+          profession_id: professionId || 0, // Include profession_id, default to 0 (Tramp)
         }),
       });
 
@@ -272,6 +279,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       {error && <div className="error-message">{error}</div>}
 
       <div className="stats-actions">
+        {onBack && (
+          <button onClick={onBack} className="back-button">
+            Back
+          </button>
+        )}
+
         <button
           onClick={handleReroll}
           disabled={rerollCooldown > 0 || isRerolling || isLoading}
