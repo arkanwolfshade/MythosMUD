@@ -26,6 +26,23 @@ export interface ParsedPlayerData {
   pose?: string;
 }
 
+export interface PlayerWithProfession {
+  name: string;
+  profession_name?: string;
+  profession_description?: string;
+  profession_flavor_text?: string;
+  stats: {
+    current_health: number;
+    max_health: number;
+    sanity: number;
+    max_sanity: number;
+    fear: number;
+    corruption: number;
+    occult_knowledge: number;
+  };
+  pose?: string;
+}
+
 /**
  * Parses a status command response string to extract player data
  *
@@ -97,8 +114,8 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
  * @param parsedData - Parsed player data from status response
  * @returns Player object compatible with the client interfaces
  */
-export function convertToPlayerInterface(parsedData: ParsedPlayerData): any {
-  const player: any = {
+export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWithProfession {
+  const player: PlayerWithProfession = {
     name: parsedData.name || '',
     profession_name: parsedData.profession?.name,
     profession_description: parsedData.profession?.description,

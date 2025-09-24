@@ -267,7 +267,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             title="Status"
             className="panel-status"
             variant="default"
-            defaultSize={{ width: 300, height: 200 }}
+            defaultSize={{ width: 300, height: 150 }}
+            defaultPosition={{ x: 950, y: 250 }}
             onClose={() => console.log('Status panel closed')}
             onMinimize={() => console.log('Status panel minimized')}
             onMaximize={() => console.log('Status panel maximized')}
