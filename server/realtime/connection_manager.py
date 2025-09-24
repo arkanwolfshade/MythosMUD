@@ -450,12 +450,18 @@ class ConnectionManager:
 
                 # Only track disconnection if it's not a force disconnect and player has no other connections
                 if not is_force_disconnect and not self.has_sse_connection(player_id):
+                    # Check if disconnect needs to be processed without holding the disconnect_lock
+                    should_track_disconnect = False
                     async with self.processed_disconnect_lock:
                         if player_id not in self.processed_disconnects:
                             self.processed_disconnects.add(player_id)
-                            await self._track_player_disconnected(player_id)
+                            should_track_disconnect = True
                         else:
                             logger.debug(f"Disconnect already processed for player {player_id}, skipping")
+
+                    # Track disconnect outside of disconnect_lock to avoid deadlock
+                    if should_track_disconnect:
+                        await self._track_player_disconnected(player_id)
 
                 # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
                 # During reconnections, we want to preserve room membership
