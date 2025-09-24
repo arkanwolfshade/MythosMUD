@@ -31,11 +31,11 @@ class TestDualConnectionSystem:
     def mock_websocket(self):
         """Create a mock WebSocket connection."""
         websocket = AsyncMock(spec=WebSocket)
-        websocket.accept = AsyncMock()
-        websocket.close = AsyncMock()
-        websocket.ping = AsyncMock()
-        websocket.send_json = AsyncMock()
-        websocket.receive_text = AsyncMock()
+        websocket.accept = AsyncMock(return_value=None)  # Ensure accept returns immediately
+        websocket.close = AsyncMock(return_value=None)  # Ensure close returns immediately
+        websocket.ping = AsyncMock(return_value=None)  # Ensure ping returns immediately
+        websocket.send_json = AsyncMock(return_value=None)  # Ensure send_json returns immediately
+        websocket.receive_text = AsyncMock(return_value="")  # Ensure receive_text returns immediately
         return websocket
 
     @pytest.fixture
@@ -337,19 +337,19 @@ class TestDualConnectionSystem:
 
         # Create a WebSocket that will fail ping
         dead_websocket = AsyncMock(spec=WebSocket)
-        dead_websocket.accept = AsyncMock()
-        dead_websocket.close = AsyncMock()
+        dead_websocket.accept = AsyncMock(return_value=None)
+        dead_websocket.close = AsyncMock(return_value=None)
         dead_websocket.ping = AsyncMock(side_effect=Exception("Connection dead"))
-        dead_websocket.send_json = AsyncMock()
-        dead_websocket.receive_text = AsyncMock()
+        dead_websocket.send_json = AsyncMock(return_value=None)
+        dead_websocket.receive_text = AsyncMock(return_value="")
 
         # Create a healthy WebSocket
         healthy_websocket = AsyncMock(spec=WebSocket)
-        healthy_websocket.accept = AsyncMock()
-        healthy_websocket.close = AsyncMock()
-        healthy_websocket.ping = AsyncMock()
-        healthy_websocket.send_json = AsyncMock()
-        healthy_websocket.receive_text = AsyncMock()
+        healthy_websocket.accept = AsyncMock(return_value=None)
+        healthy_websocket.close = AsyncMock(return_value=None)
+        healthy_websocket.ping = AsyncMock(return_value=None)
+        healthy_websocket.send_json = AsyncMock(return_value=None)
+        healthy_websocket.receive_text = AsyncMock(return_value="")
 
         # Connect both WebSockets
         dead_result = await connection_manager.connect_websocket(dead_websocket, player_id, session_id)
@@ -365,11 +365,11 @@ class TestDualConnectionSystem:
 
         # Now try to connect a new WebSocket - this should clean up the dead one
         new_websocket = AsyncMock(spec=WebSocket)
-        new_websocket.accept = AsyncMock()
-        new_websocket.close = AsyncMock()
-        new_websocket.ping = AsyncMock()
-        new_websocket.send_json = AsyncMock()
-        new_websocket.receive_text = AsyncMock()
+        new_websocket.accept = AsyncMock(return_value=None)
+        new_websocket.close = AsyncMock(return_value=None)
+        new_websocket.ping = AsyncMock(return_value=None)
+        new_websocket.send_json = AsyncMock(return_value=None)
+        new_websocket.receive_text = AsyncMock(return_value="")
 
         new_result = await connection_manager.connect_websocket(new_websocket, player_id, session_id)
         assert new_result is True
@@ -443,11 +443,11 @@ class TestDualConnectionSystem:
         websockets = []
         for _i in range(3):  # Test with 3 connections
             websocket = AsyncMock(spec=WebSocket)
-            websocket.accept = AsyncMock()
-            websocket.close = AsyncMock()
-            websocket.ping = AsyncMock()
-            websocket.send_json = AsyncMock()
-            websocket.receive_text = AsyncMock()
+            websocket.accept = AsyncMock(return_value=None)
+            websocket.close = AsyncMock(return_value=None)
+            websocket.ping = AsyncMock(return_value=None)
+            websocket.send_json = AsyncMock(return_value=None)
+            websocket.receive_text = AsyncMock(return_value="")
             websockets.append(websocket)
 
             result = await connection_manager.connect_websocket(websocket, player_id, session_id)

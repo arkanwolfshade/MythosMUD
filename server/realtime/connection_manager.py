@@ -325,8 +325,8 @@ class ConnectionManager:
                         # Clean up the dead connection
                         if connection_id in self.active_websockets:
                             del self.active_websockets[connection_id]
-                        if connection_id in self.connection_metadata:
-                            del self.connection_metadata[connection_id]
+                            if connection_id in self.connection_metadata:
+                                del self.connection_metadata[connection_id]
 
                 # Check if player already has active WebSocket connections
                 # For dual connection system, we allow multiple connections
@@ -341,7 +341,8 @@ class ConnectionManager:
                         # No active connections, remove the player entry
                         del self.player_websockets[player_id]
 
-            await websocket.accept()
+            # Accept the WebSocket connection with timeout to prevent hanging
+            await asyncio.wait_for(websocket.accept(), timeout=5.0)
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 
@@ -446,8 +447,8 @@ class ConnectionManager:
                         websocket = self.active_websockets[connection_id]
                         # Properly close the WebSocket connection
                         try:
-                            await websocket.close(code=1000, reason="Connection closed")
-                        except Exception as e:
+                            await asyncio.wait_for(websocket.close(code=1000, reason="Connection closed"), timeout=2.0)
+                        except (TimeoutError, Exception) as e:
                             logger.warning(f"Error closing WebSocket {connection_id} for {player_id}: {e}")
                         del self.active_websockets[connection_id]
 
@@ -1358,8 +1359,8 @@ class ConnectionManager:
             if connection_id in self.active_websockets:
                 websocket = self.active_websockets[connection_id]
                 try:
-                    await websocket.close(code=1000, reason="Connection cleaned up")
-                except Exception as e:
+                    await asyncio.wait_for(websocket.close(code=1000, reason="Connection cleaned up"), timeout=2.0)
+                except (TimeoutError, Exception) as e:
                     logger.warning(f"Error closing dead WebSocket {connection_id} for {player_id}: {e}")
                 del self.active_websockets[connection_id]
 
