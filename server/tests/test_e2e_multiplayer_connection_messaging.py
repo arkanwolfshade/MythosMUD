@@ -20,7 +20,11 @@ class TestE2EMultiplayerConnectionMessaging:
     async def browser_setup(self):
         """Set up browser for testing."""
         playwright = await async_playwright().start()
-        browser = await playwright.chromium.launch(headless=False)  # Set to True for CI
+        # Run headless in CI environment
+        import os
+
+        headless = os.getenv("CI") == "true"
+        browser = await playwright.chromium.launch(headless=headless)
         yield browser
         await browser.close()
         await playwright.stop()
