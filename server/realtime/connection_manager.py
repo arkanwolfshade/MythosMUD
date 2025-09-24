@@ -301,30 +301,41 @@ class ConnectionManager:
         """
         start_time = time.time()
         try:
-            # CRITICAL FIX: Add connection lock to prevent race conditions
+            # CRITICAL FIX: Check for dead connections BEFORE acquiring lock to prevent hanging
+            dead_connection_ids = []
+            if player_id in self.player_websockets:
+                # Check connections for health without holding the lock
+                for connection_id in self.player_websockets[player_id]:
+                    if connection_id in self.active_websockets:
+                        existing_websocket = self.active_websockets[connection_id]
+                        try:
+                            # Check if the existing WebSocket is still open with shorter timeout
+                            await asyncio.wait_for(existing_websocket.ping(), timeout=0.5)
+                        except (TimeoutError, Exception) as ping_error:
+                            logger.warning(
+                                f"Dead WebSocket connection {connection_id} for player {player_id}, will clean up: {ping_error}"
+                            )
+                            dead_connection_ids.append(connection_id)
+
+            # CRITICAL FIX: Minimal lock scope - only for data structure updates
             async with self.disconnect_lock:
+                # Clean up dead connections identified above
+                if dead_connection_ids:
+                    for connection_id in dead_connection_ids:
+                        # Clean up the dead connection
+                        if connection_id in self.active_websockets:
+                            del self.active_websockets[connection_id]
+                        if connection_id in self.connection_metadata:
+                            del self.connection_metadata[connection_id]
+
                 # Check if player already has active WebSocket connections
                 # For dual connection system, we allow multiple connections
                 if player_id in self.player_websockets:
-                    # Clean up any dead connections from the list
-                    active_connection_ids = []
-                    for connection_id in self.player_websockets[player_id]:
-                        if connection_id in self.active_websockets:
-                            existing_websocket = self.active_websockets[connection_id]
-                            try:
-                                # Check if the existing WebSocket is still open
-                                await asyncio.wait_for(existing_websocket.ping(), timeout=2.0)
-                                active_connection_ids.append(connection_id)
-                            except (TimeoutError, Exception) as ping_error:
-                                logger.warning(
-                                    f"Dead WebSocket connection {connection_id} for player {player_id}, cleaning up: {ping_error}"
-                                )
-                                # Clean up the dead connection
-                                del self.active_websockets[connection_id]
-                                if connection_id in self.connection_metadata:
-                                    del self.connection_metadata[connection_id]
-
                     # Update the player's connection list with only active connections
+                    active_connection_ids = [
+                        conn_id for conn_id in self.player_websockets[player_id]
+                        if conn_id in self.active_websockets
+                    ]
                     if active_connection_ids:
                         self.player_websockets[player_id] = active_connection_ids
                     else:

@@ -10,7 +10,7 @@ of our forbidden knowledge transmission protocols across multiple
 connection types.
 """
 
-import time
+import asyncio
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -472,6 +472,7 @@ class TestDualConnectionSystem:
         assert total_connections == 5
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)  # Prevent indefinite hanging in CI
     async def test_connection_metadata_tracking(
         self, connection_manager, mock_websocket, mock_player, mock_persistence
     ):
@@ -515,7 +516,8 @@ class TestDualConnectionSystem:
 
         # Test metadata update
         original_last_seen = websocket_metadata.last_seen
-        time.sleep(0.1)  # Longer delay to ensure timestamp difference
+        # Use asyncio.sleep instead of time.sleep for better async compatibility
+        await asyncio.sleep(0.1)  # Longer delay to ensure timestamp difference
         connection_manager.mark_player_seen(player_id)
 
         # Verify last_seen was updated
