@@ -341,8 +341,8 @@ class ConnectionManager:
                         # No active connections, remove the player entry
                         del self.player_websockets[player_id]
 
-            # Accept the WebSocket connection with timeout to prevent hanging
-            await asyncio.wait_for(websocket.accept(), timeout=5.0)
+            # Accept the WebSocket connection
+            await websocket.accept()
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 

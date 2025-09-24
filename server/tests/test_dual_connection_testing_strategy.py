@@ -31,11 +31,21 @@ class TestDualConnectionSystem:
     def mock_websocket(self):
         """Create a mock WebSocket connection."""
         websocket = AsyncMock(spec=WebSocket)
-        websocket.accept = AsyncMock(return_value=None)  # Ensure accept returns immediately
-        websocket.close = AsyncMock(return_value=None)  # Ensure close returns immediately
-        websocket.ping = AsyncMock(return_value=None)  # Ensure ping returns immediately
-        websocket.send_json = AsyncMock(return_value=None)  # Ensure send_json returns immediately
-        websocket.receive_text = AsyncMock(return_value="")  # Ensure receive_text returns immediately
+
+        # Configure AsyncMock methods to return immediately and be trackable
+        websocket.accept = AsyncMock(return_value=None)
+        websocket.close = AsyncMock(return_value=None)
+        websocket.ping = AsyncMock(return_value=None)
+        websocket.send_json = AsyncMock(return_value=None)
+        websocket.receive_text = AsyncMock(return_value="")
+
+        # Ensure the mocks are properly configured for immediate return
+        websocket.accept.return_value = None
+        websocket.close.return_value = None
+        websocket.ping.return_value = None
+        websocket.send_json.return_value = None
+        websocket.receive_text.return_value = ""
+
         return websocket
 
     @pytest.fixture
