@@ -146,8 +146,10 @@ class NPCSpawningService:
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
-        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
-        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
+        # NOTE: Removed PlayerEnteredRoom subscription to prevent duplicate spawning
+        # The population controller is the sole authority for spawn decisions
+        # self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
+        # self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
 
