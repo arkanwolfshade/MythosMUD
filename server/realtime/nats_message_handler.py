@@ -290,10 +290,9 @@ class NATSMessageHandler:
                 target_count=len(targets),
             )
 
-            # Create a single UserManager instance for all mute checks to improve efficiency
-            from ..services.user_manager import UserManager
+            # Use the global UserManager instance for all mute checks to improve efficiency
+            from ..services.user_manager import user_manager
 
-            user_manager = UserManager()
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Created UserManager instance ===",
                 room_id=room_id,
@@ -504,10 +503,9 @@ class NATSMessageHandler:
         )
 
         try:
-            # Import UserManager to check mute status
-            from ..services.user_manager import UserManager
+            # Use the global UserManager instance to check mute status
+            from ..services.user_manager import user_manager
 
-            user_manager = UserManager()
             logger.debug(
                 "=== MUTE FILTERING DEBUG: UserManager created ===",
                 receiver_id=receiver_id,

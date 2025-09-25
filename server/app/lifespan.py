@@ -64,7 +64,25 @@ async def lifespan(app: FastAPI):
     # Initialize UserManager with proper data directory from config
     config = get_config()
     data_dir = config.get("data_dir", "data")
-    user_management_dir = Path(data_dir) / "user_management"
+
+    # Resolve data_dir relative to project root (same logic as logging_config.py)
+    data_path = Path(data_dir)
+    if not data_path.is_absolute():
+        # Find the project root (where pyproject.toml is located)
+        current_dir = Path.cwd()
+        project_root = None
+        for parent in [current_dir] + list(current_dir.parents):
+            if (parent / "pyproject.toml").exists():
+                project_root = parent
+                break
+
+        if project_root:
+            data_path = project_root / data_path
+        else:
+            # Fallback to current directory if project root not found
+            data_path = current_dir / data_path
+
+    user_management_dir = data_path / "user_management"
     app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
@@ -82,7 +100,7 @@ async def lifespan(app: FastAPI):
     app.state.npc_population_controller = NPCPopulationController(app.state.event_bus)
     app.state.npc_spawning_service = NPCSpawningService(app.state.event_bus, app.state.npc_population_controller)
     app.state.npc_lifecycle_manager = NPCLifecycleManager(
-        app.state.event_bus, app.state.npc_spawning_service, app.state.npc_population_controller
+        app.state.event_bus, app.state.npc_population_controller, app.state.npc_spawning_service
     )
 
     # Initialize the NPC instance service

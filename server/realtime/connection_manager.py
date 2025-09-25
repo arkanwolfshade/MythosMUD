@@ -1882,7 +1882,6 @@ class ConnectionManager:
 
         try:
             import json
-            import os
             from datetime import datetime
 
             logger.error(f"ERROR STATE DETECTED for player {player_id}: {error_type} - {error_details}")
@@ -1913,9 +1912,18 @@ class ConnectionManager:
                 },
             }
 
-            # Write to error log file
-            error_log_path = "logs/development/connection_errors.log"
-            os.makedirs(os.path.dirname(error_log_path), exist_ok=True)
+            # Write to error log file using proper logging configuration
+            from ..config_loader import get_config
+            from ..logging_config import _resolve_log_base, detect_environment
+
+            config = get_config()
+            log_base = config.get("logging", {}).get("log_base", "logs")
+            environment = config.get("logging", {}).get("environment", detect_environment())
+
+            resolved_log_base = _resolve_log_base(log_base)
+            error_log_path = resolved_log_base / environment / "connection_errors.log"
+            error_log_path.parent.mkdir(parents=True, exist_ok=True)
+
             with open(error_log_path, "a") as f:
                 f.write(json.dumps(error_log_entry) + "\n")
 
@@ -2268,6 +2276,17 @@ class ConnectionManager:
         Returns:
             dict: Error statistics
         """
+        # Get the proper error log path using logging configuration
+        from ..config_loader import get_config
+        from ..logging_config import _resolve_log_base, detect_environment
+
+        config = get_config()
+        log_base = config.get("logging", {}).get("log_base", "logs")
+        environment = config.get("logging", {}).get("environment", detect_environment())
+
+        resolved_log_base = _resolve_log_base(log_base)
+        error_log_path = resolved_log_base / environment / "connection_errors.log"
+
         return {
             "total_players": len(self.online_players),
             "total_connections": (
@@ -2276,7 +2295,7 @@ class ConnectionManager:
             ),
             "active_sessions": len(self.session_connections),
             "players_with_sessions": len(self.player_sessions),
-            "error_log_path": "logs/development/connection_errors.log",
+            "error_log_path": str(error_log_path),
         }
 
     async def handle_new_login(self, player_id: str):

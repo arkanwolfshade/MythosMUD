@@ -10,11 +10,11 @@ for maintaining control over the eldritch entities that inhabit our world.
 
 from typing import Any
 
-from server.database import get_async_session
 from server.events.event_bus import EventBus
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
+from server.npc_database import get_npc_async_session
 
 from ..logging_config import get_logger
 
@@ -68,13 +68,14 @@ class NPCInstanceService:
         """
         try:
             # Get the NPC definition from database
-            async with get_async_session() as session:
+            async for session in get_npc_async_session():
                 from server.services.npc_service import npc_service
 
                 definition = await npc_service.get_npc_definition(session, definition_id)
 
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
+                break
 
             # Spawn the NPC using the lifecycle manager
             npc_id = self.lifecycle_manager.spawn_npc(definition, room_id, reason)

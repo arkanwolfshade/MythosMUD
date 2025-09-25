@@ -93,7 +93,6 @@ class NPCStartupService:
                     logger.error(error_msg)
                     startup_results["errors"].append(error_msg)
                     startup_results["failed_spawns"] += 1
-                break
 
             logger.info(
                 "NPC startup spawning completed",

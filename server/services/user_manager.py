@@ -1020,5 +1020,38 @@ class UserManager:
             return False
 
 
-# Global user manager instance
-user_manager = UserManager()
+def _get_proper_data_dir() -> Path:
+    """
+    Get the proper data directory resolved relative to project root.
+
+    This function uses the same logic as logging_config.py to resolve
+    the data directory relative to the project root, ensuring consistency
+    across the application.
+    """
+    from ..config_loader import get_config
+
+    config = get_config()
+    data_dir = config.get("data_dir", "data")
+
+    # Resolve data_dir relative to project root (same logic as logging_config.py)
+    data_path = Path(data_dir)
+    if not data_path.is_absolute():
+        # Find the project root (where pyproject.toml is located)
+        current_dir = Path.cwd()
+        project_root = None
+        for parent in [current_dir] + list(current_dir.parents):
+            if (parent / "pyproject.toml").exists():
+                project_root = parent
+                break
+
+        if project_root:
+            data_path = project_root / data_path
+        else:
+            # Fallback to current directory if project root not found
+            data_path = current_dir / data_path
+
+    return data_path / "user_management"
+
+
+# Global user manager instance with proper path resolution
+user_manager = UserManager(data_dir=_get_proper_data_dir())

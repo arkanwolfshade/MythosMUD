@@ -399,31 +399,47 @@ class NPCSpawningService:
             NPC instance or None if creation failed
         """
         try:
+            # Generate a unique NPC ID first
+            npc_id = self._generate_npc_id(definition, room_id)
+
             # Create appropriate NPC type based on definition
             if definition.npc_type == "shopkeeper":
-                return ShopkeeperNPC(
+                npc_instance = ShopkeeperNPC(
                     definition=definition,
-                    room_id=room_id,
+                    npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
             elif definition.npc_type == "passive_mob":
-                return PassiveMobNPC(
+                npc_instance = PassiveMobNPC(
                     definition=definition,
-                    room_id=room_id,
+                    npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
             elif definition.npc_type == "aggressive_mob":
-                return AggressiveMobNPC(
+                npc_instance = AggressiveMobNPC(
                     definition=definition,
-                    room_id=room_id,
+                    npc_id=npc_id,
+                    event_bus=self.event_bus,
+                    event_reaction_system=None,  # Will be set up later
+                )
+            elif definition.npc_type == "quest_giver":
+                # For now, treat quest_giver as a passive_mob until we implement specific quest behavior
+                npc_instance = PassiveMobNPC(
+                    definition=definition,
+                    npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
             else:
                 logger.warning(f"Unknown NPC type: {definition.npc_type}")
                 return None
+
+            # Set the current room for the NPC instance
+            npc_instance.current_room = room_id
+
+            return npc_instance
 
         except Exception as e:
             logger.error(f"Failed to create NPC instance for {definition.name}: {str(e)}")
@@ -550,3 +566,27 @@ class NPCSpawningService:
             logger.info(f"Cleaned up {len(npcs_to_remove)} inactive NPCs")
 
         return len(npcs_to_remove)
+
+    def _get_zone_key_from_room_id(self, room_id: str) -> str:
+        """
+        Extract zone key from room ID by delegating to the population controller.
+
+        Args:
+            room_id: The room identifier
+
+        Returns:
+            Zone key in format "zone/sub_zone"
+        """
+        return self.population_controller._get_zone_key_from_room_id(room_id)
+
+    def get_population_stats(self, zone_key: str):
+        """
+        Get population statistics for a given zone by delegating to the population controller.
+
+        Args:
+            zone_key: Zone key in format "zone/sub_zone"
+
+        Returns:
+            Population statistics or None if not found
+        """
+        return self.population_controller.get_population_stats(zone_key)

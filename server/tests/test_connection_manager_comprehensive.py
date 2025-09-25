@@ -1536,7 +1536,14 @@ class TestConnectionManagerComprehensive:
         assert stats["total_connections"] == 0
         assert stats["active_sessions"] == 0
         assert stats["players_with_sessions"] == 0
-        assert stats["error_log_path"] == "logs/development/connection_errors.log"
+        # The error log path should be resolved based on test configuration
+        # Test config uses environment: test and log_base: server/tests/logs
+        error_log_path = stats["error_log_path"]
+        assert "server" in error_log_path
+        assert "tests" in error_log_path
+        assert "logs" in error_log_path
+        assert "test" in error_log_path
+        assert error_log_path.endswith("connection_errors.log")
 
         # Add some connections and sessions
         connection_manager.player_sessions["player1"] = "session_1"
