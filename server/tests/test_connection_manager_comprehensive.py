@@ -31,6 +31,9 @@ class TestConnectionManagerComprehensive:
         websocket.accept = AsyncMock()
         websocket.close = AsyncMock()
         websocket.send_json = AsyncMock()
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
         return websocket
 
     @pytest.fixture
@@ -51,6 +54,27 @@ class TestConnectionManagerComprehensive:
         persistence.get_player_by_name = Mock()
         persistence.get_room = Mock()
         return persistence
+
+    def _create_mock_websocket(self):
+        """Create a properly configured mock WebSocket."""
+        websocket = Mock(spec=WebSocket)
+        websocket.accept = AsyncMock()
+        websocket.close = AsyncMock()
+        websocket.ping = AsyncMock()
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
+        return websocket
+
+    def _setup_mock_room(self, mock_persistence, room_id="test_room_001"):
+        """Set up a properly configured mock room."""
+        mock_room = Mock()
+        mock_room.id = room_id
+        mock_room.get_npcs.return_value = []  # Return empty list for NPCs
+        mock_room.get_occupant_count.return_value = 1  # Return occupant count
+        mock_room.to_dict.return_value = {}  # Return empty dict for room data
+        mock_persistence.get_room.return_value = mock_room
+        return mock_room
 
     def test_connection_manager_initialization(self, connection_manager):
         """Test ConnectionManager initialization with new data structures."""
@@ -245,21 +269,12 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room
+        self._setup_mock_room(mock_persistence)
 
         # Create multiple mock websockets
-        websocket1 = Mock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Connect first WebSocket
         success1 = await connection_manager.connect_websocket(websocket1, "test_player", "session_1")
@@ -424,21 +439,12 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room
+        self._setup_mock_room(mock_persistence)
 
         # Create multiple mock websockets
-        websocket1 = Mock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Connect two WebSockets
         success1 = await connection_manager.connect_websocket(websocket1, "test_player", "session_1")
@@ -536,21 +542,12 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room
+        self._setup_mock_room(mock_persistence)
 
         # Create multiple mock websockets
-        websocket1 = Mock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Connect multiple WebSockets
         success1 = await connection_manager.connect_websocket(websocket1, "test_player", "session_1")
@@ -618,23 +615,12 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room using helper method
+        self._setup_mock_room(mock_persistence, "test_room_001")
 
-        # Create multiple mock websockets
-        websocket1 = Mock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-        websocket1.send_json = AsyncMock()
-
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
-        websocket2.send_json = AsyncMock()
+        # Create multiple mock websockets using helper method
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Connect two WebSockets
         success1 = await connection_manager.connect_websocket(websocket1, "test_player", "session_1")
@@ -760,16 +746,11 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room using helper method
+        self._setup_mock_room(mock_persistence, "test_room_001")
 
-        # Create a mock websocket that will fail
-        websocket = Mock(spec=WebSocket)
-        websocket.accept = AsyncMock()
-        websocket.close = AsyncMock()
-        websocket.ping = AsyncMock()
+        # Create a mock websocket that will fail using helper method
+        websocket = self._create_mock_websocket()
         websocket.send_json = AsyncMock(side_effect=Exception("Connection closed"))
 
         # Connect WebSocket
@@ -796,16 +777,11 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
         mock_persistence.get_player.return_value = mock_player
 
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        # Set up mock room using helper method
+        self._setup_mock_room(mock_persistence, "test_room_001")
 
-        # Create a mock websocket that will fail
-        websocket = Mock(spec=WebSocket)
-        websocket.accept = AsyncMock()
-        websocket.close = AsyncMock()
-        websocket.ping = AsyncMock()
+        # Create a mock websocket that will fail using helper method
+        websocket = self._create_mock_websocket()
         websocket.send_json = AsyncMock(side_effect=Exception("Connection closed"))
 
         # Connect WebSocket
@@ -856,9 +832,7 @@ class TestConnectionManagerComprehensive:
         mock_persistence.get_player.return_value = mock_player
 
         # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        _mock_room = self._setup_mock_room(mock_persistence, "test_room_001")
 
         # Ensure mock WebSocket has a working ping method
         mock_websocket.ping = AsyncMock()
@@ -1530,20 +1504,24 @@ class TestConnectionManagerComprehensive:
 
     def test_get_error_statistics(self, connection_manager):
         """Test getting error statistics."""
-        # Initially empty
-        stats = connection_manager.get_error_statistics()
-        assert stats["total_players"] == 0
-        assert stats["total_connections"] == 0
-        assert stats["active_sessions"] == 0
-        assert stats["players_with_sessions"] == 0
-        # The error log path should be resolved based on test configuration
-        # Test config uses environment: test and log_base: server/tests/logs
-        error_log_path = stats["error_log_path"]
-        assert "server" in error_log_path
-        assert "tests" in error_log_path
-        assert "logs" in error_log_path
-        assert "test" in error_log_path
-        assert error_log_path.endswith("connection_errors.log")
+        # Mock the config to return test configuration
+        mock_config = {"logging": {"environment": "test", "log_base": "server/tests/logs"}}
+
+        with patch("server.config_loader.get_config", return_value=mock_config):
+            # Initially empty
+            stats = connection_manager.get_error_statistics()
+            assert stats["total_players"] == 0
+            assert stats["total_connections"] == 0
+            assert stats["active_sessions"] == 0
+            assert stats["players_with_sessions"] == 0
+            # The error log path should be resolved based on test configuration
+            # Test config uses environment: test and log_base: server/tests/logs
+            error_log_path = stats["error_log_path"]
+            assert "server" in error_log_path
+            assert "tests" in error_log_path
+            assert "logs" in error_log_path
+            assert "test" in error_log_path
+            assert error_log_path.endswith("connection_errors.log")
 
         # Add some connections and sessions
         connection_manager.player_sessions["player1"] = "session_1"
@@ -1832,26 +1810,16 @@ class TestConnectionManagerComprehensive:
         mock_persistence.get_player.return_value = mock_player
 
         # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        _mock_room = self._setup_mock_room(mock_persistence, "test_room_001")
 
-        # Mock room manager to return subscribers
+        # Mock room manager to return subscribers and occupants
         connection_manager.room_manager = Mock()
         connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2"}
+        connection_manager.room_manager.get_room_occupants.return_value = []
 
         # Create multiple mock websockets for player1
-        websocket1a = Mock(spec=WebSocket)
-        websocket1a.accept = AsyncMock()
-        websocket1a.close = AsyncMock()
-        websocket1a.ping = AsyncMock()
-        websocket1a.send_json = AsyncMock()
-
-        websocket1b = Mock(spec=WebSocket)
-        websocket1b.accept = AsyncMock()
-        websocket1b.close = AsyncMock()
-        websocket1b.ping = AsyncMock()
-        websocket1b.send_json = AsyncMock()
+        websocket1a = self._create_mock_websocket()
+        websocket1b = self._create_mock_websocket()
 
         # Connect multiple WebSockets for player1
         success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
@@ -1864,11 +1832,7 @@ class TestConnectionManagerComprehensive:
         assert sse_connection_id is not None
 
         # Connect single WebSocket for player2
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
-        websocket2.send_json = AsyncMock()
+        websocket2 = self._create_mock_websocket()
 
         success2 = await connection_manager.connect_websocket(websocket2, "player2", "session_2")
         assert success2 is True
@@ -1948,22 +1912,11 @@ class TestConnectionManagerComprehensive:
         mock_persistence.get_player.return_value = mock_player
 
         # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
+        _mock_room = self._setup_mock_room(mock_persistence, "test_room_001")
 
         # Create multiple mock websockets for player1
-        websocket1a = Mock(spec=WebSocket)
-        websocket1a.accept = AsyncMock()
-        websocket1a.close = AsyncMock()
-        websocket1a.ping = AsyncMock()
-        websocket1a.send_json = AsyncMock()
-
-        websocket1b = Mock(spec=WebSocket)
-        websocket1b.accept = AsyncMock()
-        websocket1b.close = AsyncMock()
-        websocket1b.ping = AsyncMock()
-        websocket1b.send_json = AsyncMock()
+        websocket1a = self._create_mock_websocket()
+        websocket1b = self._create_mock_websocket()
 
         # Connect multiple WebSockets for player1
         success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
@@ -1980,11 +1933,7 @@ class TestConnectionManagerComprehensive:
         assert sse_connection_id2 is not None
 
         # Connect only WebSocket for player3 (no SSE)
-        websocket3 = Mock(spec=WebSocket)
-        websocket3.accept = AsyncMock()
-        websocket3.close = AsyncMock()
-        websocket3.ping = AsyncMock()
-        websocket3.send_json = AsyncMock()
+        websocket3 = self._create_mock_websocket()
 
         success3 = await connection_manager.connect_websocket(websocket3, "player3", "session_3")
         assert success3 is True
@@ -2144,10 +2093,7 @@ class TestConnectionManagerComprehensive:
         mock_persistence.get_player.return_value = mock_player
 
         # Add existing connection
-        existing_websocket = Mock(spec=WebSocket)
-        existing_websocket.accept = AsyncMock()
-        existing_websocket.close = AsyncMock()
-        existing_websocket.ping = AsyncMock()
+        existing_websocket = self._create_mock_websocket()
         connection_id = str(uuid.uuid4())
         connection_manager.active_websockets[connection_id] = existing_websocket
         connection_manager.player_websockets["test_player"] = [connection_id]
@@ -2752,9 +2698,8 @@ class TestConnectionManagerComprehensive:
         connection_manager.persistence = mock_persistence
 
         # Mock room
-        mock_room = Mock()
+        mock_room = self._setup_mock_room(mock_persistence, "test_room_001")
         mock_room.to_dict.return_value = {"room_id": "test_room_001", "name": "Test Room"}
-        mock_persistence.get_room.return_value = mock_room
 
         # Setup room occupants
         connection_manager.room_occupants["test_room_001"] = {"other_player"}

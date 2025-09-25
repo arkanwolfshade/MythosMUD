@@ -408,7 +408,7 @@ class TestNATSMessageHandler:
         mock_user_manager.is_player_muted_by_others.return_value = False
         mock_user_manager.is_admin.return_value = False
 
-        with patch("server.services.user_manager.UserManager", return_value=mock_user_manager):
+        with patch("server.services.user_manager.user_manager", mock_user_manager):
             result = self.handler._is_player_muted_by_receiver("receiver_001", "sender_001")
             assert result is True
 

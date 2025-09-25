@@ -13,7 +13,7 @@ import json
 import tempfile
 import time
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -263,7 +263,21 @@ class TestNPCPopulationController:
     @pytest.fixture
     def population_controller(self, event_bus, temp_rooms_dir):
         """Create a population controller with test data."""
-        return NPCPopulationController(event_bus, str(temp_rooms_dir))
+        # Create a mock spawning service
+        mock_spawning_service = Mock()
+
+        # Create a counter to generate unique NPC IDs
+        npc_id_counter = [0]
+
+        def create_mock_npc_instance(*args, **kwargs):
+            npc_id_counter[0] += 1
+            mock_npc_instance = Mock()
+            mock_npc_instance.success = True
+            mock_npc_instance.npc_id = f"test_npc_{npc_id_counter[0]:03d}"
+            return mock_npc_instance
+
+        mock_spawning_service._spawn_npc_from_request = Mock(side_effect=create_mock_npc_instance)
+        return NPCPopulationController(event_bus, mock_spawning_service, str(temp_rooms_dir))
 
     @pytest.fixture
     def shopkeeper_definition(self):

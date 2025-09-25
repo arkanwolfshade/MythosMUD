@@ -46,6 +46,23 @@ class TestDualConnectionSystem:
         websocket.send_json.return_value = None
         websocket.receive_text.return_value = ""
 
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
+
+        return websocket
+
+    def _create_mock_websocket(self):
+        """Create a properly configured mock WebSocket."""
+        websocket = AsyncMock(spec=WebSocket)
+        websocket.accept = AsyncMock()
+        websocket.close = AsyncMock()
+        websocket.ping = AsyncMock()
+        websocket.send_json = AsyncMock()
+        websocket.receive_text = AsyncMock()
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
         return websocket
 
     @pytest.fixture
@@ -160,19 +177,8 @@ class TestDualConnectionSystem:
         session_id = "session_123"
 
         # Create multiple mock WebSockets
-        websocket1 = AsyncMock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-        websocket1.send_json = AsyncMock()
-        websocket1.receive_text = AsyncMock()
-
-        websocket2 = AsyncMock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
-        websocket2.send_json = AsyncMock()
-        websocket2.receive_text = AsyncMock()
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Execute - Connect first WebSocket
         result1 = await connection_manager.connect_websocket(websocket1, player_id, session_id)
@@ -452,12 +458,7 @@ class TestDualConnectionSystem:
         # Test multiple WebSocket connections (should be allowed)
         websockets = []
         for _i in range(3):  # Test with 3 connections
-            websocket = AsyncMock(spec=WebSocket)
-            websocket.accept = AsyncMock(return_value=None)
-            websocket.close = AsyncMock(return_value=None)
-            websocket.ping = AsyncMock(return_value=None)
-            websocket.send_json = AsyncMock(return_value=None)
-            websocket.receive_text = AsyncMock(return_value="")
+            websocket = self._create_mock_websocket()
             websockets.append(websocket)
 
             result = await connection_manager.connect_websocket(websocket, player_id, session_id)

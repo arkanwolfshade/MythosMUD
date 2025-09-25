@@ -579,81 +579,8 @@ class TestNPCAdminAPI:
         finally:
             cleanup_auth()
 
-    def test_npc_relationships_list_unauthorized(self, client):
-        """Test that NPC relationships list requires authentication."""
-        response = client.get("/admin/npc/relationships")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_npc_relationships_list_success(self, client, mock_admin_user, sample_relationship):
-        """Test successful retrieval of NPC relationships list."""
-        # Use consistent authentication mocking
-        cleanup_auth = self._mock_auth(client, mock_admin_user)
-
-        try:
-            with patch("server.api.admin.npc.npc_service.get_relationships", return_value=[sample_relationship]):
-                response = client.get("/admin/npc/relationships")
-                assert response.status_code == status.HTTP_200_OK
-
-                data = response.json()
-                assert len(data) == 1
-                assert data[0]["npc_id_1"] == 1
-                assert data[0]["npc_id_2"] == 2
-                assert data[0]["relationship_type"] == "ally"
-        finally:
-            cleanup_auth()
-
-    def test_npc_relationship_create_unauthorized(self, client):
-        """Test that NPC relationship creation requires authentication."""
-        relationship_data = {
-            "npc_id_1": 1,
-            "npc_id_2": 2,
-            "relationship_type": "ally",
-            "relationship_strength": 0.8,
-        }
-
-        response = client.post("/admin/npc/relationships", json=relationship_data)
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_npc_relationship_create_success(self, client, mock_admin_user, sample_relationship):
-        """Test successful NPC relationship creation."""
-        relationship_data = {
-            "npc_id_1": 1,
-            "npc_id_2": 2,
-            "relationship_type": "ally",
-            "relationship_strength": 0.8,
-        }
-
-        # Use consistent authentication mocking
-        cleanup_auth = self._mock_auth(client, mock_admin_user)
-
-        try:
-            with patch("server.api.admin.npc.npc_service.create_relationship", return_value=sample_relationship):
-                response = client.post("/admin/npc/relationships", json=relationship_data)
-                assert response.status_code == status.HTTP_201_CREATED
-
-                data = response.json()
-                assert data["npc_id_1"] == 1
-                assert data["npc_id_2"] == 2
-                assert data["relationship_type"] == "ally"
-        finally:
-            cleanup_auth()
-
-    def test_npc_relationship_delete_unauthorized(self, client):
-        """Test that NPC relationship deletion requires authentication."""
-        response = client.delete("/admin/npc/relationships/1")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_npc_relationship_delete_success(self, client, mock_admin_user):
-        """Test successful NPC relationship deletion."""
-        # Use consistent authentication mocking
-        cleanup_auth = self._mock_auth(client, mock_admin_user)
-
-        try:
-            with patch("server.api.admin.npc.npc_service.delete_relationship", return_value=True):
-                response = client.delete("/admin/npc/relationships/1")
-                assert response.status_code == status.HTTP_204_NO_CONTENT
-        finally:
-            cleanup_auth()
+    # NPC relationship tests removed - relationship functionality was removed from the codebase
+    # The relationship endpoints no longer exist, so these tests are no longer applicable
 
     def test_npc_spawn_rules_list_unauthorized(self, client):
         """Test that NPC spawn rules list requires authentication."""

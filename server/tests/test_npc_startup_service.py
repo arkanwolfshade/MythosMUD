@@ -149,7 +149,7 @@ class TestNPCStartupService:
         npc_def.room_id = "specific_room_123"
         npc_def.sub_zone_id = "test_zone"
 
-        room_id = await startup_service._determine_spawn_room(npc_def)
+        room_id = startup_service._determine_spawn_room(npc_def)
 
         assert room_id == "specific_room_123"
 
@@ -160,7 +160,7 @@ class TestNPCStartupService:
         npc_def.room_id = None
         npc_def.sub_zone_id = "sanitarium"
 
-        room_id = await startup_service._determine_spawn_room(npc_def)
+        room_id = startup_service._determine_spawn_room(npc_def)
 
         assert room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
@@ -171,7 +171,7 @@ class TestNPCStartupService:
         npc_def.room_id = None
         npc_def.sub_zone_id = "unknown_zone"
 
-        room_id = await startup_service._determine_spawn_room(npc_def)
+        room_id = startup_service._determine_spawn_room(npc_def)
 
         assert room_id == "earth_arkhamcity_northside_intersection_derby_high"
 
@@ -179,11 +179,11 @@ class TestNPCStartupService:
     async def test_get_default_room_for_sub_zone(self, startup_service):
         """Test getting default room for known sub-zones."""
         # Test known sub-zone
-        room_id = await startup_service._get_default_room_for_sub_zone("sanitarium")
+        room_id = startup_service._get_default_room_for_sub_zone("sanitarium")
         assert room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
         # Test unknown sub-zone
-        room_id = await startup_service._get_default_room_for_sub_zone("unknown_zone")
+        room_id = startup_service._get_default_room_for_sub_zone("unknown_zone")
         assert room_id is None
 
     @pytest.mark.asyncio

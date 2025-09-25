@@ -316,10 +316,8 @@ class NPCBase(ABC):
         # logger.info("NPC base initialized", npc_id=npc_id, npc_name=npc_name)
 
         # Register default event reactions if reaction system is available
-        # Skip this during initialization to avoid potential circular imports
-        # Reactions will be registered later by the lifecycle manager
-        # if self.event_reaction_system:
-        #     self._register_default_reactions()
+        if self.event_reaction_system:
+            self._register_default_reactions()
 
     def _parse_stats(self, stats_json: str) -> dict[str, Any]:
         """Parse stats from JSON string."""
