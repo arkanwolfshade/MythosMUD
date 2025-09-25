@@ -11,10 +11,9 @@ from typing import Any
 
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from ..logging_config import get_logger
-from ..models.npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCRelationshipType, NPCSpawnRule
+from ..models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 
 logger = get_logger("services.npc_service")
 
@@ -46,7 +45,7 @@ class NPCService:
         try:
             result = await session.execute(
                 select(NPCDefinition)
-                .options(selectinload(NPCDefinition.spawn_rules))
+                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
                 .order_by(NPCDefinition.name, NPCDefinition.sub_zone_id)
             )
             definitions = result.scalars().all()
@@ -72,7 +71,7 @@ class NPCService:
         try:
             result = await session.execute(
                 select(NPCDefinition)
-                .options(selectinload(NPCDefinition.spawn_rules))
+                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
                 .where(NPCDefinition.id == definition_id)
             )
             definition = result.scalar_one_or_none()
@@ -316,9 +315,7 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                select(NPCSpawnRule)
-                .options(selectinload(NPCSpawnRule.npc_definition))
-                .order_by(NPCSpawnRule.sub_zone_id, NPCSpawnRule.min_players)
+                select(NPCSpawnRule).order_by(NPCSpawnRule.sub_zone_id, NPCSpawnRule.min_players)
             )
             rules = result.scalars().all()
 
@@ -341,11 +338,7 @@ class NPCService:
             NPC spawn rule or None if not found
         """
         try:
-            result = await session.execute(
-                select(NPCSpawnRule)
-                .options(selectinload(NPCSpawnRule.npc_definition))
-                .where(NPCSpawnRule.id == rule_id)
-            )
+            result = await session.execute(select(NPCSpawnRule).where(NPCSpawnRule.id == rule_id))
             rule = result.scalar_one_or_none()
 
             if rule:
@@ -451,169 +444,6 @@ class NPCService:
             logger.error("Error deleting NPC spawn rule", error=str(e), rule_id=rule_id)
             raise
 
-    # NPC Relationship CRUD Operations
-
-    async def get_relationships(self, session: AsyncSession) -> list[NPCRelationship]:
-        """
-        Get all NPC relationships.
-
-        Args:
-            session: Database session
-
-        Returns:
-            List of NPC relationships
-        """
-        try:
-            result = await session.execute(
-                select(NPCRelationship)
-                .options(
-                    selectinload(NPCRelationship.npc_1),
-                    selectinload(NPCRelationship.npc_2),
-                )
-                .order_by(NPCRelationship.npc_id_1, NPCRelationship.npc_id_2)
-            )
-            relationships = result.scalars().all()
-
-            logger.info("Retrieved NPC relationships", count=len(relationships))
-            return list(relationships)
-
-        except Exception as e:
-            logger.error("Error retrieving NPC relationships", context={"error": str(e)})
-            raise
-
-    async def get_relationship(self, session: AsyncSession, relationship_id: int) -> NPCRelationship | None:
-        """
-        Get a specific NPC relationship by ID.
-
-        Args:
-            session: Database session
-            relationship_id: NPC relationship ID
-
-        Returns:
-            NPC relationship or None if not found
-        """
-        try:
-            result = await session.execute(
-                select(NPCRelationship)
-                .options(
-                    selectinload(NPCRelationship.npc_1),
-                    selectinload(NPCRelationship.npc_2),
-                )
-                .where(NPCRelationship.id == relationship_id)
-            )
-            relationship = result.scalar_one_or_none()
-
-            if relationship:
-                logger.info("Retrieved NPC relationship", relationship_id=relationship_id)
-            else:
-                logger.warning("NPC relationship not found", relationship_id=relationship_id)
-
-            return relationship
-
-        except Exception as e:
-            logger.error("Error retrieving NPC relationship", error=str(e), relationship_id=relationship_id)
-            raise
-
-    async def create_relationship(
-        self,
-        session: AsyncSession,
-        npc_id_1: int,
-        npc_id_2: int,
-        relationship_type: str,
-        relationship_strength: float = 0.5,
-    ) -> NPCRelationship:
-        """
-        Create a new NPC relationship.
-
-        Args:
-            session: Database session
-            npc_id_1: First NPC definition ID
-            npc_id_2: Second NPC definition ID
-            relationship_type: Relationship type (ally, enemy, neutral, follower)
-            relationship_strength: Relationship strength (0.0 to 1.0)
-
-        Returns:
-            Created NPC relationship
-
-        Raises:
-            ValueError: If validation fails
-        """
-        try:
-            # Validate relationship type
-            if relationship_type not in [t.value for t in NPCRelationshipType]:
-                raise ValueError(f"Invalid relationship type: {relationship_type}")
-
-            # Validate relationship strength
-            if not 0.0 <= relationship_strength <= 1.0:
-                raise ValueError(f"Relationship strength must be between 0.0 and 1.0, got: {relationship_strength}")
-
-            # Validate NPCs exist
-            npc1 = await self.get_npc_definition(session, npc_id_1)
-            if not npc1:
-                raise ValueError(f"NPC definition not found: {npc_id_1}")
-
-            npc2 = await self.get_npc_definition(session, npc_id_2)
-            if not npc2:
-                raise ValueError(f"NPC definition not found: {npc_id_2}")
-
-            # Prevent self-relationship
-            if npc_id_1 == npc_id_2:
-                raise ValueError("NPC cannot have a relationship with itself")
-
-            # Create relationship
-            relationship = NPCRelationship(
-                npc_id_1=npc_id_1,
-                npc_id_2=npc_id_2,
-                relationship_type=relationship_type,
-                relationship_strength=relationship_strength,
-            )
-
-            session.add(relationship)
-            await session.flush()  # Get the ID
-            await session.refresh(relationship)
-
-            logger.info(
-                "Created NPC relationship",
-                relationship_id=relationship.id,
-                npc_id_1=npc_id_1,
-                npc_id_2=npc_id_2,
-                relationship_type=relationship_type,
-            )
-
-            return relationship
-
-        except Exception as e:
-            logger.error("Error creating NPC relationship", error=str(e), npc_id_1=npc_id_1, npc_id_2=npc_id_2)
-            raise
-
-    async def delete_relationship(self, session: AsyncSession, relationship_id: int) -> bool:
-        """
-        Delete an NPC relationship.
-
-        Args:
-            session: Database session
-            relationship_id: NPC relationship ID
-
-        Returns:
-            True if deleted, False if not found
-        """
-        try:
-            # Check if relationship exists
-            relationship = await self.get_relationship(session, relationship_id)
-            if not relationship:
-                return False
-
-            # Delete the relationship
-            await session.execute(delete(NPCRelationship).where(NPCRelationship.id == relationship_id))
-
-            logger.info("Deleted NPC relationship", relationship_id=relationship_id)
-
-            return True
-
-        except Exception as e:
-            logger.error("Error deleting NPC relationship", error=str(e), relationship_id=relationship_id)
-            raise
-
     # Utility Methods
 
     async def get_npc_definitions_by_type(self, session: AsyncSession, npc_type: str) -> list[NPCDefinition]:
@@ -630,7 +460,7 @@ class NPCService:
         try:
             result = await session.execute(
                 select(NPCDefinition)
-                .options(selectinload(NPCDefinition.spawn_rules))
+                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
                 .where(NPCDefinition.npc_type == npc_type)
                 .order_by(NPCDefinition.name, NPCDefinition.sub_zone_id)
             )
@@ -657,7 +487,7 @@ class NPCService:
         try:
             result = await session.execute(
                 select(NPCDefinition)
-                .options(selectinload(NPCDefinition.spawn_rules))
+                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
                 .where(NPCDefinition.sub_zone_id == sub_zone_id)
                 .order_by(NPCDefinition.name)
             )
@@ -697,15 +527,10 @@ class NPCService:
             spawn_rules_result = await session.execute(select(session.query(NPCSpawnRule.id).count()))
             total_spawn_rules = spawn_rules_result.scalar()
 
-            # Count relationships
-            relationships_result = await session.execute(select(session.query(NPCRelationship.id).count()))
-            total_relationships = relationships_result.scalar()
-
             stats = {
                 "total_npc_definitions": total_definitions,
                 "npc_definitions_by_type": definitions_by_type,
                 "total_spawn_rules": total_spawn_rules,
-                "total_relationships": total_relationships,
                 "generated_at": datetime.now(UTC).isoformat(),
             }
 

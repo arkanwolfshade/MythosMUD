@@ -19,17 +19,11 @@ from .behaviors import (
 from .combat_integration import NPCCombatIntegration
 from .communication_integration import NPCCommunicationIntegration
 from .event_reaction_system import NPCEventReaction, NPCEventReactionSystem, NPCEventReactionTemplates
-from .interaction_system import (
-    NPCInteraction,
-    NPCInteractionEngine,
-    NPCInteractionResult,
-    NPCInteractionType,
-    NPCRelationshipManager,
-)
 from .lifecycle_manager import NPCLifecycleEvent, NPCLifecycleManager, NPCLifecycleRecord, NPCLifecycleState
 from .movement_integration import NPCMovementIntegration
 from .population_control import NPCPopulationController, PopulationStats, ZoneConfiguration
-from .spawning_service import NPCSpawningService, NPCSpawnRequest, NPCSpawnResult
+
+# from .spawning_service import NPCSpawningService, NPCSpawnRequest, NPCSpawnResult
 from .threading import (
     NPCActionMessage,
     NPCActionType,
@@ -58,11 +52,6 @@ __all__ = [
     "NPCEventReaction",
     "NPCEventReactionSystem",
     "NPCEventReactionTemplates",
-    "NPCInteraction",
-    "NPCInteractionEngine",
-    "NPCInteractionResult",
-    "NPCInteractionType",
-    "NPCRelationshipManager",
     "NPCMovementIntegration",
     "NPCPopulationController",
     "PopulationStats",
@@ -71,7 +60,7 @@ __all__ = [
     "NPCLifecycleManager",
     "NPCLifecycleRecord",
     "NPCLifecycleState",
-    "NPCSpawnRequest",
-    "NPCSpawnResult",
-    "NPCSpawningService",
+    # "NPCSpawnRequest",
+    # "NPCSpawnResult",
+    # "NPCSpawningService",
 ]

@@ -309,9 +309,10 @@ class ConnectionManager:
                     if connection_id in self.active_websockets:
                         existing_websocket = self.active_websockets[connection_id]
                         try:
-                            # Check if the existing WebSocket is still open with shorter timeout
-                            await asyncio.wait_for(existing_websocket.ping(), timeout=0.5)
-                        except (TimeoutError, Exception) as ping_error:
+                            # Check if the existing WebSocket is still open by checking its state
+                            if existing_websocket.client_state.name != "CONNECTED":
+                                raise Exception("WebSocket not connected")
+                        except Exception as ping_error:
                             logger.warning(
                                 f"Dead WebSocket connection {connection_id} for player {player_id}, will clean up: {ping_error}"
                             )
@@ -1149,6 +1150,10 @@ class ConnectionManager:
             # Convert UUIDs to strings for JSON serialization
             serializable_event = self._convert_uuids_to_strings(event)
 
+            # Debug logging to see what's being sent
+            if event.get("event_type") == "game_state":
+                logger.info(f"DEBUG: Sending game_state event to {player_id}: {serializable_event}")
+
             # Count total connections
             websocket_count = len(self.player_websockets.get(player_id, []))
             sse_count = len(self.active_sse_connections.get(player_id, []))
@@ -1260,9 +1265,11 @@ class ConnectionManager:
                     if connection_id in self.active_websockets:
                         websocket = self.active_websockets[connection_id]
                         try:
-                            # Try to ping the WebSocket to check health
-                            await websocket.ping()
-                            health_status["websocket_healthy"] += 1
+                            # Check WebSocket health by checking its state
+                            if websocket.client_state.name == "CONNECTED":
+                                health_status["websocket_healthy"] += 1
+                            else:
+                                raise Exception("WebSocket not connected")
                         except Exception:
                             health_status["websocket_unhealthy"] += 1
                             # Clean up unhealthy connection
@@ -1324,8 +1331,9 @@ class ConnectionManager:
                             if connection_id in self.active_websockets:
                                 websocket = self.active_websockets[connection_id]
                                 try:
-                                    # Try to ping the WebSocket
-                                    await websocket.ping()
+                                    # Check WebSocket health by checking its state
+                                    if websocket.client_state.name != "CONNECTED":
+                                        raise Exception("WebSocket not connected")
                                 except Exception:
                                     # Connection is dead, clean it up
                                     await self._cleanup_dead_websocket(pid, connection_id)
@@ -2411,14 +2419,48 @@ class ConnectionManager:
                 room = self.persistence.get_room(room_id)
                 if room:
                     room_data = room.to_dict()
+                    logger.info(
+                        f"DEBUG: Room data for {room_id}: npcs={room_data.get('npcs', [])}, occupant_count={room_data.get('occupant_count', 0)}"
+                    )
 
-            # Get room occupants
+            # Get room occupants (players and NPCs)
             occupants = []
             if room_id:
+                # Get player occupants
                 occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
                 for occ_player_info in occ_infos:
                     if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
                         occupants.append(occ_player_info.get("player_name", "Unknown"))
+
+                # Get NPC occupants
+                if self.persistence:
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        npc_ids = room.get_npcs()
+                        logger.info(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
+                        logger.info(f"DEBUG: Room {room_id} occupant_count: {room.get_occupant_count()}")
+                        for npc_id in npc_ids:
+                            # Extract NPC name from NPC ID (format: name_room_timestamp_suffix)
+                            # The NPC ID format is: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_entrance_001_timestamp_suffix
+                            # We need to extract the name part before the room part
+                            parts = npc_id.split("_")
+                            # Find the room part (starts with 'earth_arkhamcity' or similar)
+                            room_start_idx = None
+                            for i, part in enumerate(parts):
+                                if part.startswith("earth_") or part.startswith("room_"):
+                                    room_start_idx = i
+                                    break
+
+                            if room_start_idx is not None:
+                                # Extract name parts before the room part
+                                name_parts = parts[:room_start_idx]
+                                npc_name = " ".join(name_parts).replace("_", " ").title()
+                            else:
+                                # Fallback: take first 3 parts and join them
+                                npc_name = " ".join(parts[:3]).replace("_", " ").title()
+
+                            logger.info(f"DEBUG: Extracted NPC name '{npc_name}' from ID '{npc_id}'")
+                            occupants.append(npc_name)
 
             # Create game_state event
             game_state_data = {
@@ -2431,6 +2473,8 @@ class ConnectionManager:
                 "room": room_data,
                 "occupants": occupants,
             }
+
+            logger.info(f"DEBUG: Sending initial game state with occupants: {occupants}")
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
 

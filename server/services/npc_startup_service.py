@@ -134,7 +134,7 @@ class NPCStartupService:
 
             try:
                 # Determine spawn room
-                spawn_room = await self._determine_spawn_room(npc_def)
+                spawn_room = self._determine_spawn_room(npc_def)
                 if not spawn_room:
                     error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
                     logger.error(error_msg)
@@ -201,7 +201,7 @@ class NPCStartupService:
 
             try:
                 # Determine spawn room
-                spawn_room = await self._determine_spawn_room(npc_def)
+                spawn_room = self._determine_spawn_room(npc_def)
                 if not spawn_room:
                     logger.debug(f"No valid spawn room found for optional NPC {npc_def.name}, skipping")
                     continue
@@ -240,7 +240,7 @@ class NPCStartupService:
         logger.info(f"Optional NPC spawning completed: {results['spawned']}/{results['attempted']} successful")
         return results
 
-    async def _determine_spawn_room(self, npc_def) -> str | None:
+    def _determine_spawn_room(self, npc_def) -> str | None:
         """
         Determine the appropriate room for spawning an NPC.
 
@@ -259,7 +259,7 @@ class NPCStartupService:
             # If NPC has a sub_zone_id, we could implement zone-based spawning logic here
             # For now, we'll use a default room for each sub-zone
             if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
-                default_room = await self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
+                default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
                 if default_room:
                     logger.debug(
                         f"Using default room for {npc_def.name} in sub-zone {npc_def.sub_zone_id}: {default_room}"
@@ -274,7 +274,7 @@ class NPCStartupService:
             logger.error(f"Error determining spawn room for {npc_def.name}: {str(e)}")
             return None
 
-    async def _get_default_room_for_sub_zone(self, sub_zone_id: str) -> str | None:
+    def _get_default_room_for_sub_zone(self, sub_zone_id: str) -> str | None:
         """
         Get a default room for a given sub-zone.
 

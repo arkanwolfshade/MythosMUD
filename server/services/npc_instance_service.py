@@ -72,7 +72,6 @@ class NPCInstanceService:
                 from server.services.npc_service import npc_service
 
                 definition = await npc_service.get_npc_definition(session, definition_id)
-
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
                 break

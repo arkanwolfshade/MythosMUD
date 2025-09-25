@@ -13,6 +13,7 @@ appear at the right time, in the right place, and under the right conditions.
 
 import random
 import time
+from dataclasses import dataclass
 from typing import Any
 
 from server.events.event_bus import EventBus
@@ -26,6 +27,19 @@ from ..logging_config import get_logger
 logger = get_logger(__name__)
 
 
+@dataclass
+class SimpleNPCDefinition:
+    """Simple data class to hold NPC definition data without SQLAlchemy relationships."""
+
+    id: int
+    name: str
+    npc_type: str
+    room_id: str | None
+    base_stats: str
+    behavior_config: str
+    ai_integration_stub: str
+
+
 class NPCSpawnRequest:
     """Represents a request to spawn an NPC."""
 
@@ -33,7 +47,7 @@ class NPCSpawnRequest:
         self,
         definition: NPCDefinition,
         room_id: str,
-        spawn_rule: NPCSpawnRule,
+        spawn_rule: NPCSpawnRule | None = None,
         priority: int = 0,
         reason: str = "automatic",
     ):
@@ -104,7 +118,7 @@ class NPCSpawningService:
     population control system to ensure proper population management.
     """
 
-    def __init__(self, event_bus: EventBus, population_controller: NPCPopulationController):
+    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController"):
         """
         Initialize the NPC spawning service.
 
@@ -184,7 +198,7 @@ class NPCSpawningService:
                 self._queue_spawn_request(request)
 
     def _evaluate_spawn_requirements(
-        self, definition: NPCDefinition, zone_config: ZoneConfiguration, room_id: str
+        self, definition: NPCDefinition, zone_config: "ZoneConfiguration", room_id: str
     ) -> list[NPCSpawnRequest]:
         """
         Evaluate spawn requirements for an NPC definition.
@@ -205,7 +219,8 @@ class NPCSpawningService:
         if stats:
             current_count = stats.npcs_by_type.get(definition.npc_type, 0)
             if not definition.can_spawn(current_count):
-                logger.debug(f"Population limit reached for {definition.name} in {zone_key}")
+                definition_name = getattr(definition, "name", "Unknown NPC")
+                logger.debug(f"Population limit reached for {definition_name} in {zone_key}")
                 return spawn_requests
 
         # Check spawn rules
@@ -248,7 +263,7 @@ class NPCSpawningService:
         return spawn_requests
 
     def _calculate_spawn_priority(
-        self, definition: NPCDefinition, rule: NPCSpawnRule, zone_config: ZoneConfiguration
+        self, definition: NPCDefinition, rule: NPCSpawnRule, zone_config: "ZoneConfiguration"
     ) -> int:
         """
         Calculate spawn priority for an NPC.
@@ -308,7 +323,9 @@ class NPCSpawningService:
         if not inserted:
             self.spawn_queue.append(request)
 
-        logger.debug(f"Queued spawn request: {request}")
+        # Avoid logging the entire request object to prevent recursion issues
+        definition_name = getattr(request.definition, "name", "Unknown NPC")
+        logger.debug(f"Queued spawn request for {definition_name} in {request.room_id}")
 
     def process_spawn_queue(self) -> list[NPCSpawnResult]:
         """
@@ -358,8 +375,8 @@ class NPCSpawningService:
             # Store NPC instance
             self.active_npc_instances[npc_id] = npc_instance
 
-            # Update population controller
-            self.population_controller._spawn_npc(request.definition, request.room_id)
+            # Don't call back into population controller to avoid circular dependency
+            # The population controller will update its own statistics when needed
 
             # Publish NPC entered room event
             event = NPCEnteredRoom(
@@ -370,7 +387,9 @@ class NPCSpawningService:
             )
             self.event_bus.publish(event)
 
-            logger.info(f"Successfully spawned NPC: {npc_id} ({request.definition.name}) in {request.room_id}")
+            # Use getattr to safely access definition.name to avoid recursion issues
+            definition_name = getattr(request.definition, "name", "Unknown NPC")
+            logger.info(f"Successfully spawned NPC: {npc_id} ({definition_name}) in {request.room_id}")
 
             return NPCSpawnResult(
                 success=True,
@@ -399,41 +418,61 @@ class NPCSpawningService:
             NPC instance or None if creation failed
         """
         try:
+            # Extract all attributes first to avoid any potential lazy loading issues
+            definition_id = getattr(definition, "id", 0)
+            definition_name = getattr(definition, "name", "Unknown NPC")
+            definition_type = getattr(definition, "npc_type", "unknown")
+            definition_room_id = getattr(definition, "room_id", None)
+            definition_base_stats = getattr(definition, "base_stats", "{}")
+            definition_behavior_config = getattr(definition, "behavior_config", "{}")
+            definition_ai_integration_stub = getattr(definition, "ai_integration_stub", "{}")
+
+            # Convert NPCDefinition to SimpleNPCDefinition to avoid SQLAlchemy relationship issues
+            simple_definition = SimpleNPCDefinition(
+                id=definition_id,
+                name=definition_name,
+                npc_type=definition_type,
+                room_id=definition_room_id,
+                base_stats=definition_base_stats,
+                behavior_config=definition_behavior_config,
+                ai_integration_stub=definition_ai_integration_stub,
+            )
+
             # Generate a unique NPC ID first
-            npc_id = self._generate_npc_id(definition, room_id)
+            npc_id = self._generate_npc_id(simple_definition, room_id)
 
             # Create appropriate NPC type based on definition
-            if definition.npc_type == "shopkeeper":
+            if simple_definition.npc_type == "shopkeeper":
                 npc_instance = ShopkeeperNPC(
-                    definition=definition,
+                    definition=simple_definition,
                     npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
-            elif definition.npc_type == "passive_mob":
+            elif simple_definition.npc_type == "passive_mob":
                 npc_instance = PassiveMobNPC(
-                    definition=definition,
+                    definition=simple_definition,
                     npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
-            elif definition.npc_type == "aggressive_mob":
+            elif simple_definition.npc_type == "aggressive_mob":
                 npc_instance = AggressiveMobNPC(
-                    definition=definition,
+                    definition=simple_definition,
                     npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
-            elif definition.npc_type == "quest_giver":
+            elif simple_definition.npc_type == "quest_giver":
                 # For now, treat quest_giver as a passive_mob until we implement specific quest behavior
                 npc_instance = PassiveMobNPC(
-                    definition=definition,
+                    definition=simple_definition,
                     npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
             else:
-                logger.warning(f"Unknown NPC type: {definition.npc_type}")
+                logger.warning(f"Unknown NPC type: {simple_definition.npc_type}")
                 return None
 
             # Set the current room for the NPC instance
@@ -442,15 +481,17 @@ class NPCSpawningService:
             return npc_instance
 
         except Exception as e:
-            logger.error(f"Failed to create NPC instance for {definition.name}: {str(e)}")
+            # Use extracted name to avoid potential lazy loading issues
+            definition_name = getattr(definition, "name", "Unknown NPC")
+            logger.error(f"Failed to create NPC instance for {definition_name}: {str(e)}")
             return None
 
-    def _generate_npc_id(self, definition: NPCDefinition, room_id: str) -> str:
+    def _generate_npc_id(self, definition: NPCDefinition | SimpleNPCDefinition, room_id: str) -> str:
         """
         Generate a unique NPC ID.
 
         Args:
-            definition: NPC definition
+            definition: NPC definition (either NPCDefinition or SimpleNPCDefinition)
             room_id: Room where NPC is spawned
 
         Returns:
@@ -458,7 +499,9 @@ class NPCSpawningService:
         """
         timestamp = int(time.time())
         random_suffix = random.randint(1000, 9999)
-        return f"{definition.name.lower().replace(' ', '_')}_{room_id}_{timestamp}_{random_suffix}"
+        # Use getattr to avoid potential lazy loading issues
+        definition_name = getattr(definition, "name", "unknown_npc")
+        return f"{definition_name.lower().replace(' ', '_')}_{room_id}_{timestamp}_{random_suffix}"
 
     def despawn_npc(self, npc_id: str, reason: str = "manual") -> bool:
         """

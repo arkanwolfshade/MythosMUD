@@ -15,8 +15,6 @@ from sqlalchemy.exc import IntegrityError
 from server.models.npc import (
     NPCDefinition,
     NPCDefinitionType,
-    NPCRelationship,
-    NPCRelationshipType,
     NPCSpawnRule,
 )
 
@@ -289,183 +287,6 @@ class TestNPCSpawnRule:
         asyncio.run(_test())
 
 
-class TestNPCRelationship:
-    """Test the NPCRelationship model."""
-
-    def test_relationship_creation(self, test_client, test_npc_database):
-        """Test creating an NPC relationship."""
-        from server.npc_database import get_npc_async_session
-
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create two NPC definitions
-                npc1 = NPCDefinition(
-                    name="Guard Captain", npc_type=NPCDefinitionType.AGGRESSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                npc2 = NPCDefinition(
-                    name="Guard Soldier", npc_type=NPCDefinitionType.AGGRESSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-
-                session.add_all([npc1, npc2])
-                await session.commit()
-
-                # Create relationship
-                relationship = NPCRelationship(
-                    npc_id_1=npc1.id,
-                    npc_id_2=npc2.id,
-                    relationship_type=NPCRelationshipType.ALLY,
-                    relationship_strength=0.8,
-                )
-
-                session.add(relationship)
-                await session.commit()
-
-                assert relationship.id is not None
-                assert relationship.npc_id_1 == npc1.id
-                assert relationship.npc_id_2 == npc2.id
-                assert relationship.relationship_type == NPCRelationshipType.ALLY
-                assert relationship.relationship_strength == 0.8
-                break
-
-        asyncio.run(_test())
-
-    def test_relationship_type_validation(self, test_client, test_npc_database):
-        """Test that only valid relationship types are accepted."""
-        from server.npc_database import get_npc_async_session
-
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definitions
-                npc1 = NPCDefinition(
-                    name="Test NPC 1", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                npc2 = NPCDefinition(
-                    name="Test NPC 2", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-
-                session.add_all([npc1, npc2])
-                await session.commit()
-
-                # Test valid relationship types
-                valid_types = [
-                    NPCRelationshipType.ALLY,
-                    NPCRelationshipType.ENEMY,
-                    NPCRelationshipType.NEUTRAL,
-                    NPCRelationshipType.FOLLOWER,
-                ]
-
-                for rel_type in valid_types:
-                    relationship = NPCRelationship(npc_id_1=npc1.id, npc_id_2=npc2.id, relationship_type=rel_type)
-                    session.add(relationship)
-                    await session.commit()
-                    await session.delete(relationship)
-                    await session.commit()
-                break
-
-        asyncio.run(_test())
-
-    def test_relationship_default_strength(self, test_client, test_npc_database):
-        """Test relationship with default strength value."""
-        from server.npc_database import get_npc_async_session
-
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definitions
-                npc1 = NPCDefinition(
-                    name="Default NPC 1", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                npc2 = NPCDefinition(
-                    name="Default NPC 2", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-
-                session.add_all([npc1, npc2])
-                await session.commit()
-
-                # Create relationship without specifying strength
-                relationship = NPCRelationship(
-                    npc_id_1=npc1.id, npc_id_2=npc2.id, relationship_type=NPCRelationshipType.NEUTRAL
-                )
-
-                session.add(relationship)
-                await session.commit()
-
-                assert relationship.relationship_strength == 0.5
-                break
-
-        asyncio.run(_test())
-
-    def test_relationship_unique_constraint(self, test_client, test_npc_database):
-        """Test that relationships between the same NPCs are unique."""
-        from server.npc_database import get_npc_async_session
-
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definitions
-                npc1 = NPCDefinition(
-                    name="Unique NPC 1", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                npc2 = NPCDefinition(
-                    name="Unique NPC 2", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-
-                session.add_all([npc1, npc2])
-                await session.commit()
-
-                # Create first relationship
-                rel1 = NPCRelationship(npc_id_1=npc1.id, npc_id_2=npc2.id, relationship_type=NPCRelationshipType.ALLY)
-                session.add(rel1)
-                await session.commit()
-
-                # Try to create duplicate relationship
-                rel2 = NPCRelationship(npc_id_1=npc1.id, npc_id_2=npc2.id, relationship_type=NPCRelationshipType.ENEMY)
-                session.add(rel2)
-
-                with pytest.raises(IntegrityError):
-                    await session.commit()
-                break
-
-        asyncio.run(_test())
-
-    def test_relationship_bidirectional_constraint(self, test_client, test_npc_database):
-        """Test that relationships can be created bidirectionally."""
-        from server.npc_database import get_npc_async_session
-
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definitions
-                npc1 = NPCDefinition(
-                    name="Bidirectional NPC 1", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                npc2 = NPCDefinition(
-                    name="Bidirectional NPC 2", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-
-                session.add_all([npc1, npc2])
-                await session.commit()
-
-                # Create relationship from npc1 to npc2
-                rel1 = NPCRelationship(npc_id_1=npc1.id, npc_id_2=npc2.id, relationship_type=NPCRelationshipType.ALLY)
-                session.add(rel1)
-                await session.commit()
-
-                # Create reverse relationship (should succeed - bidirectional relationships are allowed)
-                rel2 = NPCRelationship(npc_id_1=npc2.id, npc_id_2=npc1.id, relationship_type=NPCRelationshipType.ALLY)
-                session.add(rel2)
-                await session.commit()
-
-                # Verify both relationships exist
-                relationships = await session.execute(
-                    select(NPCRelationship).where(
-                        (NPCRelationship.npc_id_1 == npc1.id) | (NPCRelationship.npc_id_2 == npc1.id)
-                    )
-                )
-                rel_count = len(relationships.scalars().all())
-                assert rel_count == 2, f"Expected 2 relationships, got {rel_count}"
-                break
-
-        asyncio.run(_test())
-
-
 class TestNPCModelEnums:
     """Test the NPC model enums."""
 
@@ -475,13 +296,6 @@ class TestNPCModelEnums:
         assert NPCDefinitionType.QUEST_GIVER == "quest_giver"
         assert NPCDefinitionType.PASSIVE_MOB == "passive_mob"
         assert NPCDefinitionType.AGGRESSIVE_MOB == "aggressive_mob"
-
-    def test_npc_relationship_type_enum(self):
-        """Test NPCRelationshipType enum values."""
-        assert NPCRelationshipType.ALLY == "ally"
-        assert NPCRelationshipType.ENEMY == "enemy"
-        assert NPCRelationshipType.NEUTRAL == "neutral"
-        assert NPCRelationshipType.FOLLOWER == "follower"
 
 
 class TestNPCDatabaseConstraints:
@@ -538,7 +352,6 @@ class TestNPCDatabaseConstraints:
                 await session.commit()
 
                 # Query by zone (should use index)
-                from sqlalchemy import select
 
                 arkham_npcs = await session.execute(
                     select(NPCDefinition).filter(NPCDefinition.sub_zone_id == "arkham_northside")

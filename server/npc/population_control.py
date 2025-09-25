@@ -96,12 +96,13 @@ class PopulationStats:
         self.sub_zone_id = sub_zone_id
         self.total_npcs = 0
         self.npcs_by_type: dict[str, int] = {}
+        self.npcs_by_definition: dict[int, int] = {}  # Track by individual NPC definition ID
         self.npcs_by_room: dict[str, int] = {}
         self.required_npcs = 0
         self.optional_npcs = 0
         self.last_updated = time.time()
 
-    def add_npc(self, npc_type: str, room_id: str, is_required: bool) -> None:
+    def add_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
         """
         Add an NPC to the population statistics.
 
@@ -109,10 +110,15 @@ class PopulationStats:
             npc_type: Type of the NPC
             room_id: Room where the NPC is located
             is_required: Whether the NPC is required
+            npc_definition_id: The NPC definition ID for individual tracking
         """
         self.total_npcs += 1
         self.npcs_by_type[npc_type] = self.npcs_by_type.get(npc_type, 0) + 1
         self.npcs_by_room[room_id] = self.npcs_by_room.get(room_id, 0) + 1
+
+        # Track by individual NPC definition ID
+        if npc_definition_id is not None:
+            self.npcs_by_definition[npc_definition_id] = self.npcs_by_definition.get(npc_definition_id, 0) + 1
 
         if is_required:
             self.required_npcs += 1
@@ -121,7 +127,7 @@ class PopulationStats:
 
         self.last_updated = time.time()
 
-    def remove_npc(self, npc_type: str, room_id: str, is_required: bool) -> None:
+    def remove_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
         """
         Remove an NPC from the population statistics.
 
@@ -129,10 +135,15 @@ class PopulationStats:
             npc_type: Type of the NPC
             room_id: Room where the NPC was located
             is_required: Whether the NPC was required
+            npc_definition_id: The NPC definition ID for individual tracking
         """
         self.total_npcs = max(0, self.total_npcs - 1)
         self.npcs_by_type[npc_type] = max(0, self.npcs_by_type.get(npc_type, 0) - 1)
         self.npcs_by_room[room_id] = max(0, self.npcs_by_room.get(room_id, 0) - 1)
+
+        # Remove from individual NPC definition tracking
+        if npc_definition_id is not None:
+            self.npcs_by_definition[npc_definition_id] = max(0, self.npcs_by_definition.get(npc_definition_id, 0) - 1)
 
         if is_required:
             self.required_npcs = max(0, self.required_npcs - 1)
@@ -148,6 +159,7 @@ class PopulationStats:
             "sub_zone_id": self.sub_zone_id,
             "total_npcs": self.total_npcs,
             "npcs_by_type": self.npcs_by_type.copy(),
+            "npcs_by_definition": self.npcs_by_definition.copy(),
             "npcs_by_room": self.npcs_by_room.copy(),
             "required_npcs": self.required_npcs,
             "optional_npcs": self.optional_npcs,
@@ -163,21 +175,27 @@ class NPCPopulationController:
     based on zone configurations, player counts, and game state conditions.
     """
 
-    def __init__(self, event_bus: EventBus, rooms_data_path: str = "data/rooms"):
+    def __init__(self, event_bus: EventBus, spawning_service=None, rooms_data_path: str = "data/rooms"):
         """
         Initialize the NPC population controller.
 
         Args:
             event_bus: Event bus for publishing and subscribing to events
+            spawning_service: Optional NPC spawning service for proper NPC creation
             rooms_data_path: Path to the rooms data directory
         """
         self.event_bus = event_bus
+        self.spawning_service = spawning_service
         self.rooms_data_path = Path(rooms_data_path)
 
         # Population tracking
         self.population_stats: dict[str, PopulationStats] = {}
         self.active_npcs: dict[str, dict[str, Any]] = {}  # npc_id -> npc_data
         self.zone_configurations: dict[str, ZoneConfiguration] = {}
+
+        # Clear population stats on initialization to ensure clean state
+        self.clear_population_stats()
+        logger.info("Clearing population stats on initialization")
 
         # NPC definitions and spawn rules (loaded from database)
         self.npc_definitions: dict[int, NPCDefinition] = {}
@@ -278,23 +296,15 @@ class NPCPopulationController:
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""
-        # Update population statistics
-        if event.npc_id in self.active_npcs:
-            npc_data = self.active_npcs[event.npc_id]
-            zone_key = self._get_zone_key_from_room_id(event.room_id)
-            if zone_key in self.population_stats:
-                stats = self.population_stats[zone_key]
-                stats.add_npc(npc_data.get("npc_type", "unknown"), event.room_id, npc_data.get("is_required", False))
+        # Note: Population statistics are tracked in _spawn_npc_instance, not here
+        # This method is kept for potential future room-specific tracking needs
+        logger.debug(f"NPC {event.npc_id} entered room {event.room_id}")
 
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
-        # Update population statistics
-        if event.npc_id in self.active_npcs:
-            npc_data = self.active_npcs[event.npc_id]
-            zone_key = self._get_zone_key_from_room_id(event.room_id)
-            if zone_key in self.population_stats:
-                stats = self.population_stats[zone_key]
-                stats.remove_npc(npc_data.get("npc_type", "unknown"), event.room_id, npc_data.get("is_required", False))
+        # Note: Population statistics are tracked in _despawn_npc_instance, not here
+        # This method is kept for potential future room-specific tracking needs
+        logger.debug(f"NPC {event.npc_id} left room {event.room_id}")
 
     def _get_zone_key_from_room_id(self, room_id: str) -> str:
         """
@@ -441,10 +451,13 @@ class NPCPopulationController:
         zone_key = self._get_zone_key_from_room_id(room_id)
         stats = self.get_population_stats(zone_key)
         if stats:
-            current_count = stats.npcs_by_type.get(definition.npc_type, 0)
-            logger.info(f"Current {definition.npc_type} count in zone: {current_count}")
+            # Check by individual NPC definition ID, not by type
+            current_count = stats.npcs_by_definition.get(definition.id, 0)
+            logger.info(f"Current count for NPC {definition.id} ({definition.name}) in zone: {current_count}")
             if not definition.can_spawn(current_count):
-                logger.info(f"NPC {definition.id} cannot spawn due to population limits (current: {current_count})")
+                logger.info(
+                    f"NPC {definition.id} cannot spawn due to population limits (current: {current_count}, max: {definition.max_population})"
+                )
                 return False
         else:
             logger.info(f"No population stats found for zone {zone_key}")
@@ -491,7 +504,7 @@ class NPCPopulationController:
 
     def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:
         """
-        Spawn an NPC instance.
+        Spawn an NPC instance using the spawning service.
 
         Args:
             definition: NPC definition
@@ -500,37 +513,64 @@ class NPCPopulationController:
         Returns:
             Generated NPC instance ID
         """
-        npc_id = f"{definition.name.lower().replace(' ', '_')}_{int(time.time())}"
+        if not self.spawning_service:
+            logger.error("No spawning service available - cannot spawn NPC")
+            return None
 
-        # Create NPC instance data
-        npc_data = {
-            "npc_id": npc_id,
-            "definition_id": definition.id,
-            "npc_type": definition.npc_type,
-            "name": definition.name,
-            "room_id": room_id,
-            "is_required": definition.is_required(),
-            "spawned_at": time.time(),
-            "stats": definition.get_base_stats(),
-            "behavior_config": definition.get_behavior_config(),
-            "ai_config": definition.get_ai_integration_stub(),
-        }
+        try:
+            # Import locally to avoid circular import
+            from server.npc.spawning_service import NPCSpawnRequest
 
-        # Store active NPC
-        self.active_npcs[npc_id] = npc_data
+            # Use the spawning service to create the NPC
+            spawn_request = NPCSpawnRequest(
+                definition=definition,
+                room_id=room_id,
+                spawn_rule=None,  # We don't have a specific spawn rule for population control
+                priority=0,
+                reason="population_control",
+            )
 
-        # Update population statistics
-        zone_key = self._get_zone_key_from_room_id(room_id)
-        if zone_key not in self.population_stats:
-            zone_parts = zone_key.split("/")
-            self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
+            npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
 
-        stats = self.population_stats[zone_key]
-        stats.add_npc(definition.npc_type, room_id, definition.is_required())
+            if npc_instance and npc_instance.success:
+                npc_id = npc_instance.npc_id
 
-        logger.info(f"Spawned NPC: {npc_id} ({definition.name}, {definition.npc_type}) in {room_id} ({zone_key})")
+                # Update population statistics
+                zone_key = self._get_zone_key_from_room_id(room_id)
+                if zone_key not in self.population_stats:
+                    zone_parts = zone_key.split("/")
+                    self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
 
-        return npc_id
+                stats = self.population_stats[zone_key]
+                stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
+
+                # Store NPC data for tracking
+                self.active_npcs[npc_id] = {
+                    "npc_type": definition.npc_type,
+                    "room_id": room_id,
+                    "is_required": definition.is_required(),
+                    "spawned_at": time.time(),
+                    "name": getattr(definition, "name", "Unknown NPC"),
+                    "definition_id": definition.id,
+                }
+
+                # Use getattr to avoid potential lazy loading issues
+                definition_name = getattr(definition, "name", "Unknown NPC")
+                logger.info(
+                    f"Spawned NPC: {npc_id} ({definition_name}, {definition.npc_type}) in {room_id} ({zone_key})"
+                )
+                return npc_id
+            else:
+                # Use getattr to avoid potential lazy loading issues
+                definition_name = getattr(definition, "name", "Unknown NPC")
+                logger.error(f"Failed to spawn NPC {definition_name} in {room_id}")
+                return None
+
+        except Exception as e:
+            # Use getattr to avoid potential lazy loading issues
+            definition_name = getattr(definition, "name", "Unknown NPC")
+            logger.error(f"Error spawning NPC {definition_name}: {e}")
+            return None
 
     def despawn_npc(self, npc_id: str) -> bool:
         """
@@ -553,7 +593,7 @@ class NPCPopulationController:
         zone_key = self._get_zone_key_from_room_id(room_id)
         if zone_key in self.population_stats:
             stats = self.population_stats[zone_key]
-            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"])
+            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], npc_data.get("definition_id"))
 
         # Remove from active NPCs
         del self.active_npcs[npc_id]
@@ -574,6 +614,17 @@ class NPCPopulationController:
             summary["zones"][zone_key] = stats.to_dict()
 
         return summary
+
+    def clear_population_stats(self) -> None:
+        """
+        Clear all population statistics and active NPCs.
+
+        This ensures a clean state when the server starts, as NPCs are ephemeral
+        and should not persist across server restarts.
+        """
+        self.population_stats.clear()
+        self.active_npcs.clear()
+        logger.info("Population stats and active NPCs cleared")
 
     def cleanup_inactive_npcs(self, max_age_seconds: int = 3600) -> int:
         """

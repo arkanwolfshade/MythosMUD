@@ -612,11 +612,11 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.debug(f"🔍 DEBUG: broadcast_room_update - Room object ID: {id(room)}")
         logger.debug(f"🔍 DEBUG: broadcast_room_update - Room players before any processing: {room.get_players()}")
 
-        # Get room occupants (server-side structs)
-        room_occupants = connection_manager.get_room_occupants(room_id)
-
-        # Transform to list of player names for client (UI expects string[])
+        # Get room occupants (players and NPCs)
         occupant_names = []
+
+        # Get player occupants
+        room_occupants = connection_manager.get_room_occupants(room_id)
         try:
             for occ in room_occupants or []:
                 if isinstance(occ, dict):
@@ -627,6 +627,33 @@ async def broadcast_room_update(player_id: str, room_id: str):
                     occupant_names.append(occ)
         except Exception as e:
             logger.error(f"Error transforming room occupants for room {room_id}: {e}")
+
+        # Get NPC occupants
+        if persistence:
+            npc_ids = room.get_npcs()
+            logger.debug(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
+            for npc_id in npc_ids:
+                # Extract NPC name from NPC ID (format: name_room_timestamp_suffix)
+                # The NPC ID format is: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_entrance_001_1758831502_6620
+                # We need to extract the name part before the room part
+                parts = npc_id.split("_")
+                # Find the room part (starts with 'earth_arkhamcity' or similar)
+                room_start_idx = None
+                for i, part in enumerate(parts):
+                    if part.startswith("earth_") or part.startswith("room_"):
+                        room_start_idx = i
+                        break
+
+                if room_start_idx is not None:
+                    # Extract name parts before the room part
+                    name_parts = parts[:room_start_idx]
+                    npc_name = " ".join(name_parts).replace("_", " ").title()
+                else:
+                    # Fallback: take first 3 parts and join them
+                    npc_name = " ".join(parts[:3]).replace("_", " ").title()
+
+                logger.debug(f"DEBUG: Extracted NPC name '{npc_name}' from ID '{npc_id}'")
+                occupant_names.append(npc_name)
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room

@@ -22,7 +22,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base
 
 from ..npc_metadata import npc_metadata
 
@@ -36,15 +36,6 @@ class NPCDefinitionType(str, Enum):
     QUEST_GIVER = "quest_giver"
     PASSIVE_MOB = "passive_mob"
     AGGRESSIVE_MOB = "aggressive_mob"
-
-
-class NPCRelationshipType(str, Enum):
-    """Enumeration of valid NPC relationship types."""
-
-    ALLY = "ally"
-    ENEMY = "enemy"
-    NEUTRAL = "neutral"
-    FOLLOWER = "follower"
 
 
 class NPCDefinition(Base):
@@ -103,15 +94,6 @@ class NPCDefinition(Base):
         default=lambda: datetime.now(UTC).replace(tzinfo=None),
         nullable=False,
         onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
-    )
-
-    # Relationships
-    spawn_rules = relationship("NPCSpawnRule", back_populates="npc_definition", cascade="all, delete-orphan")
-    relationships_as_npc1 = relationship(
-        "NPCRelationship", foreign_keys="NPCRelationship.npc_id_1", back_populates="npc_1"
-    )
-    relationships_as_npc2 = relationship(
-        "NPCRelationship", foreign_keys="NPCRelationship.npc_id_2", back_populates="npc_2"
     )
 
     def __repr__(self) -> str:
@@ -190,8 +172,8 @@ class NPCSpawnRule(Base):
         Text, nullable=False, default="{}", comment="Environmental and time-based spawn conditions"
     )
 
-    # Relationships
-    npc_definition = relationship("NPCDefinition", back_populates="spawn_rules")
+    # Relationships removed to eliminate circular reference issues
+    # npc_definition = relationship("NPCDefinition", back_populates="spawn_rules")
 
     def __repr__(self) -> str:
         """String representation of the spawn rule."""
@@ -254,60 +236,4 @@ class NPCSpawnRule(Base):
         return True
 
 
-class NPCRelationship(Base):
-    """
-    NPC relationship model.
-
-    Defines relationships between NPCs, including alliances, enmities,
-    and social dynamics that affect NPC behavior.
-    """
-
-    __tablename__ = "npc_relationships"
-    __table_args__ = (
-        UniqueConstraint("npc_id_1", "npc_id_2", name="idx_npc_relationships_unique"),
-        CheckConstraint("relationship_type IN ('ally', 'enemy', 'neutral', 'follower')", name="chk_relationship_type"),
-    )
-
-    # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
-
-    # Foreign keys to NPC definitions
-    npc_id_1 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False, index=True)
-    npc_id_2 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False, index=True)
-
-    # Relationship type and strength
-    relationship_type = Column(
-        String(20), nullable=False, comment="Type of relationship: ally, enemy, neutral, follower"
-    )
-    relationship_strength = Column(
-        Float, default=0.5, nullable=False, comment="Strength of the relationship (0.0 to 1.0)"
-    )
-
-    # Relationships
-    npc_1 = relationship("NPCDefinition", foreign_keys=[npc_id_1], back_populates="relationships_as_npc1")
-    npc_2 = relationship("NPCDefinition", foreign_keys=[npc_id_2], back_populates="relationships_as_npc2")
-
-    def __repr__(self) -> str:
-        """String representation of the relationship."""
-        return f"<NPCRelationship(npc1={self.npc_id_1}, npc2={self.npc_id_2}, type={self.relationship_type})>"
-
-    def is_positive_relationship(self) -> bool:
-        """Check if this is a positive relationship (ally or follower)."""
-        return self.relationship_type in [NPCRelationshipType.ALLY, NPCRelationshipType.FOLLOWER]
-
-    def is_negative_relationship(self) -> bool:
-        """Check if this is a negative relationship (enemy)."""
-        return self.relationship_type == NPCRelationshipType.ENEMY
-
-    def is_neutral_relationship(self) -> bool:
-        """Check if this is a neutral relationship."""
-        return self.relationship_type == NPCRelationshipType.NEUTRAL
-
-    def get_relationship_modifier(self) -> float:
-        """Get relationship modifier for behavior calculations."""
-        if self.is_positive_relationship():
-            return self.relationship_strength
-        elif self.is_negative_relationship():
-            return -self.relationship_strength
-        else:
-            return 0.0
+# NPC relationship model removed to eliminate circular reference issues

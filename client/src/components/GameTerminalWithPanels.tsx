@@ -252,17 +252,27 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           eventTypeLength: eventType.length,
           eventTypeCharCodes: Array.from(eventType).map(c => c.charCodeAt(0)),
           dataKeys: event.data ? Object.keys(event.data) : [],
+          hasOccupants: !!(event.data && event.data.occupants),
+          occupants: event.data?.occupants,
         });
 
         switch (eventType) {
           case 'game_state': {
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
+            const occupants = event.data.occupants as string[] | undefined;
             if (playerData && roomData) {
               // Track the timestamp of this room update
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
               updates.player = playerData;
-              updates.room = roomData;
+
+              // Include occupants data in room data if provided
+              const roomWithOccupants = {
+                ...roomData,
+                ...(occupants && { occupants, occupant_count: occupants.length }),
+              };
+              updates.room = roomWithOccupants;
+
               logger.info('GameTerminalWithPanels', 'Received game state', {
                 playerName: playerData.name,
                 roomName: roomData.name,
@@ -272,6 +282,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 hasProfessionId: !!playerData.profession_id,
                 professionId: playerData.profession_id,
                 playerDataKeys: Object.keys(playerData),
+                occupants: occupants,
+                occupantCount: occupants?.length,
+                roomDataHasOccupants: !!roomData.occupants,
+                roomDataOccupants: roomData.occupants,
+                roomDataOccupantCount: roomData.occupant_count,
+                finalRoomWithOccupants: roomWithOccupants,
               });
             }
             break;
@@ -279,11 +295,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           case 'welcome': {
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
+            const occupants = event.data.occupants as string[] | undefined;
             if (playerData && roomData) {
               // Track the timestamp of this room update
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
               updates.player = playerData;
-              updates.room = roomData;
+
+              // Include occupants data in room data if provided
+              const roomWithOccupants = {
+                ...roomData,
+                ...(occupants && { occupants, occupant_count: occupants.length }),
+              };
+              updates.room = roomWithOccupants;
             }
             break;
           }
@@ -653,6 +676,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           updateKeys: Object.keys(updates),
           messageCount: updates.messages?.length || 0,
           currentMessageCount: currentMessagesRef.current.length,
+          roomUpdate: updates.room,
+          roomOccupants: updates.room?.occupants,
+          roomOccupantCount: updates.room?.occupant_count,
         });
 
         setGameState(prev => {

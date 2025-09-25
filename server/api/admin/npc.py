@@ -22,7 +22,7 @@ from ...auth.users import get_current_user
 from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
 from ...logging_config import get_logger
-from ...models.npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCRelationshipType, NPCSpawnRule
+from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
@@ -105,36 +105,6 @@ class NPCMoveRequest(BaseModel):
     """Model for NPC movement requests."""
 
     room_id: str = Field(..., min_length=1, max_length=100)
-
-
-class NPCRelationshipCreate(BaseModel):
-    """Model for creating NPC relationships."""
-
-    npc_id_1: int = Field(..., gt=0)
-    npc_id_2: int = Field(..., gt=0)
-    relationship_type: NPCRelationshipType
-    relationship_strength: float = Field(..., ge=0.0, le=1.0)
-
-
-class NPCRelationshipResponse(BaseModel):
-    """Model for NPC relationship responses."""
-
-    id: int
-    npc_id_1: int
-    npc_id_2: int
-    relationship_type: str
-    relationship_strength: float
-
-    @classmethod
-    def from_orm(cls, relationship: NPCRelationship) -> "NPCRelationshipResponse":
-        """Create response from ORM object."""
-        return cls(
-            id=relationship.id,
-            npc_id_1=relationship.npc_id_1,
-            npc_id_2=relationship.npc_id_2,
-            relationship_type=relationship.relationship_type,
-            relationship_strength=relationship.relationship_strength,
-        )
 
 
 class NPCSpawnRuleCreate(BaseModel):
@@ -725,124 +695,6 @@ async def get_npc_system_status(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC system status",
             context=context,
-        ) from e
-
-
-# --- NPC Relationship Endpoints ---
-
-
-@npc_router.get("/relationships", response_model=list[NPCRelationshipResponse])
-async def get_npc_relationships(
-    current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
-    request: Request = None,
-):
-    """Get all NPC relationships."""
-    try:
-        validate_admin_permission(current_user, AdminAction.LIST_NPC_RELATIONSHIPS, request)
-
-        auth_service = get_admin_auth_service()
-        logger.info("NPC relationships requested", context={"user": auth_service.get_username(current_user)})
-
-        # Get NPC relationships from database
-        relationships = await npc_service.get_relationships(session)
-
-        # Convert to response models
-        response_relationships = [NPCRelationshipResponse.from_orm(rel) for rel in relationships]
-
-        return response_relationships
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        context = create_context_from_request(request)
-        logger.error(f"Error retrieving NPC relationships: {str(e)}", **context.to_dict())
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error retrieving NPC relationships",
-            context=context,
-        ) from e
-
-
-@npc_router.post("/relationships", response_model=NPCRelationshipResponse, status_code=status.HTTP_201_CREATED)
-async def create_npc_relationship(
-    relationship_data: NPCRelationshipCreate,
-    current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
-    request: Request = None,
-):
-    """Create a new NPC relationship."""
-    try:
-        validate_admin_permission(current_user, AdminAction.CREATE_NPC_RELATIONSHIP, request)
-
-        auth_service = get_admin_auth_service()
-        logger.info(
-            "NPC relationship creation requested",
-            user=auth_service.get_username(current_user),
-            npc_id_1=relationship_data.npc_id_1,
-            npc_id_2=relationship_data.npc_id_2,
-        )
-
-        # Create NPC relationship in database
-        relationship = await npc_service.create_relationship(
-            session=session,
-            npc_id_1=relationship_data.npc_id_1,
-            npc_id_2=relationship_data.npc_id_2,
-            relationship_type=relationship_data.relationship_type.value,
-            relationship_strength=relationship_data.relationship_strength,
-        )
-
-        # Commit the transaction
-        await session.commit()
-
-        return NPCRelationshipResponse.from_orm(relationship)
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        await session.rollback()
-        context = create_context_from_request(request)
-        logger.error(f"Error creating NPC relationship: {str(e)}", **context.to_dict())
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC relationship", context=context
-        ) from e
-
-
-@npc_router.delete("/relationships/{relationship_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_npc_relationship(
-    relationship_id: int,
-    current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_async_session),
-    request: Request = None,
-):
-    """Delete an NPC relationship."""
-    try:
-        validate_admin_permission(current_user, AdminAction.DELETE_NPC_RELATIONSHIP, request)
-
-        auth_service = get_admin_auth_service()
-        logger.info(
-            "NPC relationship deletion requested",
-            user=auth_service.get_username(current_user),
-            relationship_id=relationship_id,
-        )
-
-        # Delete NPC relationship from database
-        deleted = await npc_service.delete_relationship(session, relationship_id)
-
-        if not deleted:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC relationship not found")
-
-        # Commit the transaction
-        await session.commit()
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        await session.rollback()
-        context = create_context_from_request(request)
-        logger.error(f"Error deleting NPC relationship: {str(e)}", **context.to_dict())
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC relationship", context=context
         ) from e
 
 

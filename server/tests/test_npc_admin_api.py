@@ -18,7 +18,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from server.app.factory import create_app
-from server.models.npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCRelationshipType, NPCSpawnRule
+from server.models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 
 
 class TestNPCAdminAPI:
@@ -102,17 +102,6 @@ class TestNPCAdminAPI:
             min_players=1,
             max_players=10,
             spawn_conditions='{"time_of_day": "day", "player_count": {"min": 1}}',
-        )
-
-    @pytest.fixture
-    def sample_relationship(self):
-        """Create a sample NPC relationship."""
-        return NPCRelationship(
-            id=1,
-            npc_id_1=1,
-            npc_id_2=2,
-            relationship_type=NPCRelationshipType.ALLY.value,
-            relationship_strength=0.8,
         )
 
     def test_npc_definitions_list_unauthorized(self, client):
