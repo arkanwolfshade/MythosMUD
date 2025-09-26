@@ -69,9 +69,11 @@ function Start-Client {
 # Determine what to start
 if ($ServerOnly) {
     Start-Server
-} elseif ($ClientOnly) {
+}
+elseif ($ClientOnly) {
     Start-Client
-} else {
+}
+else {
     # Start both
     Write-Host "Starting MythosMUD development environment..." -ForegroundColor Green
     Write-Host ""
@@ -87,5 +89,4 @@ if ($ServerOnly) {
     Write-Host "Client: http://localhost:$ClientPort" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Press any key to exit this script (servers will continue running)..." -ForegroundColor Gray
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 }
