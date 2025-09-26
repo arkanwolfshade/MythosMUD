@@ -11,7 +11,7 @@ def extract_subzone_from_room_id(room_id: str) -> str | None:
     Extract sub-zone from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkham_city_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_high
 
     Args:
         room_id: The room ID to extract sub-zone from
@@ -20,9 +20,9 @@ def extract_subzone_from_room_id(room_id: str) -> str | None:
         The sub-zone name, or None if the room ID format is invalid
 
     Examples:
-        >>> extract_subzone_from_room_id("earth_arkham_city_northside_intersection_derby_high")
+        >>> extract_subzone_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
         'northside'
-        >>> extract_subzone_from_room_id("earth_arkham_city_downtown_market_square")
+        >>> extract_subzone_from_room_id("earth_arkhamcity_downtown_market_square")
         'downtown'
         >>> extract_subzone_from_room_id("invalid_room_id")
         None
@@ -34,10 +34,10 @@ def extract_subzone_from_room_id(room_id: str) -> str | None:
     if len(parts) < 4:
         return None
 
-    # The sub-zone is the fourth part (index 3)
-    # Format: earth_arkham_city_northside_intersection_derby_high
-    # Parts: [0]earth [1]arkham [2]city [3]northside [4]intersection [5]derby [6]high
-    return parts[3]
+    # The sub-zone is the third part (index 2) for arkhamcity format
+    # Format: earth_arkhamcity_northside_intersection_derby_high
+    # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
+    return parts[2]
 
 
 def get_zone_from_room_id(room_id: str) -> str | None:
@@ -45,7 +45,7 @@ def get_zone_from_room_id(room_id: str) -> str | None:
     Extract zone from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkham_city_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_high
 
     Args:
         room_id: The room ID to extract zone from
@@ -54,10 +54,10 @@ def get_zone_from_room_id(room_id: str) -> str | None:
         The zone name, or None if the room ID format is invalid
 
     Examples:
-        >>> get_zone_from_room_id("earth_arkham_city_northside_intersection_derby_high")
-        'arkham_city'
+        >>> get_zone_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
+        'arkhamcity'
         >>> get_zone_from_room_id("earth_innsmouth_docks_warehouse_1")
-        'innsmouth_docks'
+        'innsmouth'
     """
     if not room_id:
         return None
@@ -66,10 +66,10 @@ def get_zone_from_room_id(room_id: str) -> str | None:
     if len(parts) < 4:
         return None
 
-    # The zone is the second and third parts (index 1 and 2)
-    # Format: earth_arkham_city_northside_intersection_derby_high
-    # Parts: [0]earth [1]arkham [2]city [3]northside [4]intersection [5]derby [6]high
-    return f"{parts[1]}_{parts[2]}"
+    # The zone is the second part (index 1) for arkhamcity format
+    # Format: earth_arkhamcity_northside_intersection_derby_high
+    # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
+    return parts[1]
 
 
 def get_plane_from_room_id(room_id: str) -> str | None:
@@ -77,7 +77,7 @@ def get_plane_from_room_id(room_id: str) -> str | None:
     Extract plane from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkham_city_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_high
 
     Args:
         room_id: The room ID to extract plane from
@@ -86,7 +86,7 @@ def get_plane_from_room_id(room_id: str) -> str | None:
         The plane name, or None if the room ID format is invalid
 
     Examples:
-        >>> get_plane_from_room_id("earth_arkham_city_northside_intersection_derby_high")
+        >>> get_plane_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
         'earth'
         >>> get_plane_from_room_id("dream_innsmouth_docks_warehouse_1")
         'dream'
@@ -113,7 +113,7 @@ def is_valid_room_id_format(room_id: str) -> bool:
         True if the room ID format is valid, False otherwise
 
     Examples:
-        >>> is_valid_room_id_format("earth_arkham_city_northside_intersection_derby_high")
+        >>> is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high")
         True
         >>> is_valid_room_id_format("invalid_room_id")
         False
@@ -138,8 +138,8 @@ def get_local_channel_subject(room_id: str) -> str | None:
         The NATS subject for local channel messages, or None if room ID is invalid
 
     Examples:
-        >>> get_local_channel_subject("earth_arkham_city_northside_intersection_derby_high")
-        'chat.local.earth_arkham_city_northside_intersection_derby_high'
+        >>> get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
+        'chat.local.earth_arkhamcity_northside_intersection_derby_high'
     """
     if not is_valid_room_id_format(room_id):
         return None
@@ -161,7 +161,7 @@ def get_subzone_local_channel_subject(room_id: str) -> str | None:
         The NATS subject for sub-zone local channel messages, or None if room ID is invalid
 
     Examples:
-        >>> get_subzone_local_channel_subject("earth_arkham_city_northside_intersection_derby_high")
+        >>> get_subzone_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
         'chat.local.subzone.northside'
     """
     subzone = extract_subzone_from_room_id(room_id)

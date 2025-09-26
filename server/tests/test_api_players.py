@@ -55,7 +55,7 @@ def sample_player_data():
     player.player_id = str(uuid.uuid4())
     player.user_id = str(uuid.uuid4())
     player.name = "TestPlayer"
-    player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.experience_points = 100
     player.level = 5
     player.stats = {"health": 100, "sanity": 100, "strength": 10}
@@ -147,12 +147,12 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         result = create_player(
-            "TestPlayer", "earth_arkham_city_northside_intersection_derby_high", mock_current_user, mock_request
+            "TestPlayer", "earth_arkhamcity_northside_intersection_derby_high", mock_current_user, mock_request
         )
 
         assert result == sample_player_data
         mock_service.create_player.assert_called_once_with(
-            "TestPlayer", "earth_arkham_city_northside_intersection_derby_high"
+            "TestPlayer", "earth_arkhamcity_northside_intersection_derby_high"
         )
 
     @patch("server.api.players.PlayerService")
@@ -165,7 +165,7 @@ class TestPlayerCRUD:
 
         with pytest.raises(HTTPException) as exc_info:
             create_player(
-                "InvalidName", "earth_arkham_city_northside_intersection_derby_high", mock_current_user, mock_request
+                "InvalidName", "earth_arkhamcity_northside_intersection_derby_high", mock_current_user, mock_request
             )
 
         assert exc_info.value.status_code == 400
@@ -511,7 +511,7 @@ class TestCharacterCreation:
         request_data = Mock()
         request_data.name = "testuser"
         request_data.stats = sample_stats_data
-        request_data.starting_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         result = await create_character_with_stats(request_data, mock_current_user, mock_request)
 
@@ -531,7 +531,7 @@ class TestCharacterCreation:
         request_data = Mock()
         request_data.name = "testuser"
         request_data.stats = {"strength": 10}
-        request_data.starting_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
             await create_character_with_stats(request_data, mock_current_user, mock_request)
@@ -545,7 +545,7 @@ class TestCharacterCreation:
         request_data = Mock()
         request_data.name = "testuser"
         request_data.stats = {"strength": 10}
-        request_data.starting_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
             await create_character_with_stats(request_data, None, mock_request)
@@ -579,7 +579,7 @@ class TestCharacterCreation:
                 "wisdom": 10,
                 "charisma": 10,
             },
-            starting_room_id="arkham_city_downtown_001",
+            starting_room_id="arkhamcity_downtown_001",
         )
 
         with pytest.raises(HTTPException) as exc_info:
@@ -604,7 +604,7 @@ class TestCharacterCreation:
         request_data = Mock()
         request_data.name = "testuser"
         request_data.stats = {"invalid": "stats"}
-        request_data.starting_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
             await create_character_with_stats(request_data, mock_current_user, mock_request)

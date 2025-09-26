@@ -37,6 +37,7 @@ from .communication_commands import (
     handle_whisper_command,
 )
 from .exploration_commands import handle_go_command, handle_look_command
+from .npc_admin_commands import handle_npc_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
@@ -98,6 +99,8 @@ class CommandService:
             "logout": handle_logout_command,
             "status": handle_status_command,
             "inventory": handle_inventory_command,
+            # NPC Admin commands
+            "npc": handle_npc_command,
         }
 
     async def process_validated_command(

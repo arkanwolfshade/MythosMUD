@@ -244,16 +244,16 @@ describe('RoomInfoPanel', () => {
       expect(screen.getByText('Manhattan Downtown')).toBeInTheDocument();
     });
 
-    it('should format occupant names correctly', () => {
-      const roomWithLowercaseOccupants = {
+    it('should preserve occupant names as provided by server', () => {
+      const roomWithMixedcaseOccupants = {
         ...mockRoom,
         occupants: ['player1', 'PLAYER2', 'Player3'],
       };
 
-      render(<RoomInfoPanel room={roomWithLowercaseOccupants} debugInfo={mockDebugInfo} />);
+      render(<RoomInfoPanel room={roomWithMixedcaseOccupants} debugInfo={mockDebugInfo} />);
 
-      expect(screen.getByText('Player1')).toBeInTheDocument();
-      expect(screen.getByText('Player2')).toBeInTheDocument();
+      expect(screen.getByText('player1')).toBeInTheDocument();
+      expect(screen.getByText('PLAYER2')).toBeInTheDocument();
       expect(screen.getByText('Player3')).toBeInTheDocument();
     });
 

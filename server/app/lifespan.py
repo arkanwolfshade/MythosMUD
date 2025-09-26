@@ -6,12 +6,14 @@ including the game tick loop and persistence layer initialization."""
 import asyncio
 import datetime
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
 from ..config_loader import get_config
 from ..database import init_db
 from ..logging_config import get_logger
+from ..npc_database import init_npc_database
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..realtime.event_handler import get_real_time_event_handler
@@ -33,6 +35,7 @@ async def lifespan(app: FastAPI):
     including persistence layer initialization and game tick loop."""
     logger.info("Starting MythosMUD server...")
     await init_db()
+    await init_npc_database()
     # Initialize real-time event handler first to obtain its EventBus
     app.state.event_handler = get_real_time_event_handler()
     # Ensure the event handler has access to the connection manager
@@ -57,11 +60,116 @@ async def lifespan(app: FastAPI):
     from ..services.user_manager import UserManager
 
     app.state.player_service = PlayerService(app.state.persistence)
-    app.state.user_manager = UserManager()
+
+    # Initialize UserManager with proper data directory from config
+    config = get_config()
+    data_dir = config.get("data_dir", "data")
+
+    # Resolve data_dir relative to project root (same logic as logging_config.py)
+    data_path = Path(data_dir)
+    if not data_path.is_absolute():
+        # Find the project root (where pyproject.toml is located)
+        current_dir = Path.cwd()
+        project_root = None
+        for parent in [current_dir] + list(current_dir.parents):
+            if (parent / "pyproject.toml").exists():
+                project_root = parent
+                break
+
+        if project_root:
+            data_path = project_root / data_path
+        else:
+            # Fallback to current directory if project root not found
+            data_path = current_dir / data_path
+
+    user_management_dir = data_path / "user_management"
+    app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
     logger.info(f"app.state.player_service: {app.state.player_service}")
     logger.info(f"app.state.user_manager: {app.state.user_manager}")
+
+    # Initialize NPC services
+    from ..npc.lifecycle_manager import NPCLifecycleManager
+    from ..npc.population_control import NPCPopulationController
+    from ..npc.spawning_service import NPCSpawningService
+    from ..services.npc_instance_service import initialize_npc_instance_service
+    from ..services.npc_service import NPCService
+
+    # Create NPC services
+    # Create spawning service first (it doesn't depend on population controller)
+    app.state.npc_spawning_service = NPCSpawningService(app.state.event_bus, None)
+    # Create population controller with spawning service
+    app.state.npc_population_controller = NPCPopulationController(app.state.event_bus, app.state.npc_spawning_service)
+    # Update spawning service to use population controller
+    app.state.npc_spawning_service.population_controller = app.state.npc_population_controller
+    app.state.npc_lifecycle_manager = NPCLifecycleManager(
+        app.state.event_bus, app.state.npc_population_controller, app.state.npc_spawning_service
+    )
+
+    # Initialize the NPC instance service
+    initialize_npc_instance_service(
+        lifecycle_manager=app.state.npc_lifecycle_manager,
+        spawning_service=app.state.npc_spawning_service,
+        population_controller=app.state.npc_population_controller,
+        event_bus=app.state.event_bus,
+    )
+
+    # Load NPC definitions and spawn rules from database
+    from ..npc_database import get_npc_async_session
+
+    npc_service = NPCService()
+    async for npc_session in get_npc_async_session():
+        try:
+            # Load NPC definitions
+            definitions = await npc_service.get_npc_definitions(npc_session)
+            app.state.npc_population_controller.load_npc_definitions(definitions)
+            logger.info(f"Loaded {len(definitions)} NPC definitions")
+
+            # Load spawn rules
+            spawn_rules = await npc_service.get_spawn_rules(npc_session)
+            app.state.npc_population_controller.load_spawn_rules(spawn_rules)
+            logger.info(f"Loaded {len(spawn_rules)} NPC spawn rules")
+
+        except Exception as e:
+            logger.error(f"Error loading NPC definitions and spawn rules: {e}")
+        break
+
+    logger.info("NPC services initialized and added to app.state")
+
+    # Initialize NPC startup spawning - DISABLED TO PREVENT DUPLICATION
+    # Multiple systems were spawning NPCs during startup causing duplication
+    # Only the NPC Population Controller should handle startup spawning
+    # from ..services.npc_startup_service import get_npc_startup_service
+
+    # logger.info("Starting NPC startup spawning process")
+    # try:
+    #     startup_service = get_npc_startup_service()
+    #     startup_results = await startup_service.spawn_npcs_on_startup()
+
+    #     logger.info(
+    #         "NPC startup spawning completed",
+    #         context={
+    #             "total_spawned": startup_results["total_spawned"],
+    #             "required_spawned": startup_results["required_spawned"],
+    #             "optional_spawned": startup_results["optional_spawned"],
+    #             "failed_spawns": startup_results["failed_spawns"],
+    #             "errors": len(startup_results["errors"]),
+    #         },
+    #     )
+
+    #     # Log any errors that occurred during startup
+    #     if startup_results["errors"]:
+    #         logger.warning(f"NPC startup spawning had {len(startup_results['errors'])} errors")
+    #         for error in startup_results["errors"]:
+    #             logger.warning(f"Startup spawning error: {error}")
+
+    # except Exception as e:
+    #     logger.error(f"Critical error during NPC startup spawning: {str(e)}")
+    #     # Don't fail server startup due to NPC spawning issues
+    #     logger.warning("Continuing server startup despite NPC spawning errors")
+
+    logger.info("NPC startup spawning DISABLED to prevent duplication - using Population Controller only")
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
     from ..logging_config import update_logging_with_player_service

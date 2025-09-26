@@ -61,7 +61,7 @@ class NATSMessageHandler:
             )
             return True
         except Exception as e:
-            logger.error("Failed to start NATS message handler", error=str(e))
+            logger.error("Failed to start NATS message handler", context={"error": str(e)})
             return False
 
     async def stop(self):
@@ -78,7 +78,7 @@ class NATSMessageHandler:
             logger.info("NATS message handler stopped successfully")
             return True
         except Exception as e:
-            logger.error("Error stopping NATS message handler", error=str(e))
+            logger.error("Error stopping NATS message handler", context={"error": str(e)})
             return False
 
     async def _subscribe_to_chat_subjects(self):
@@ -107,13 +107,13 @@ class NATSMessageHandler:
             success = await self.nats_service.subscribe(subject, self._handle_nats_message)
             if success:
                 self.subscriptions[subject] = True
-                logger.info("Subscribed to NATS subject", subject=subject)
+                logger.info("Subscribed to NATS subject", context={"subject": subject})
                 return True
             else:
-                logger.error("Failed to subscribe to NATS subject", subject=subject)
+                logger.error("Failed to subscribe to NATS subject", context={"subject": subject})
                 return False
         except Exception as e:
-            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e))
+            logger.error("Error subscribing to NATS subject", subject=subject, context={"error": str(e)})
             return False
 
     async def _unsubscribe_from_subject(self, subject: str):
@@ -123,13 +123,13 @@ class NATSMessageHandler:
             if success:
                 if subject in self.subscriptions:
                     del self.subscriptions[subject]
-                logger.info("Unsubscribed from NATS subject", subject=subject)
+                logger.info("Unsubscribed from NATS subject", context={"subject": subject})
                 return True
             else:
-                logger.error("Failed to unsubscribe from NATS subject", subject=subject)
+                logger.error("Failed to unsubscribe from NATS subject", context={"subject": subject})
                 return False
         except Exception as e:
-            logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
+            logger.error("Error unsubscribing from NATS subject", subject=subject, context={"error": str(e)})
             return False
 
     async def _handle_nats_message(self, message_data: dict[str, Any]):
@@ -290,10 +290,9 @@ class NATSMessageHandler:
                 target_count=len(targets),
             )
 
-            # Create a single UserManager instance for all mute checks to improve efficiency
-            from ..services.user_manager import UserManager
+            # Use the global UserManager instance for all mute checks to improve efficiency
+            from ..services.user_manager import user_manager
 
-            user_manager = UserManager()
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Created UserManager instance ===",
                 room_id=room_id,
@@ -504,10 +503,9 @@ class NATSMessageHandler:
         )
 
         try:
-            # Import UserManager to check mute status
-            from ..services.user_manager import UserManager
+            # Use the global UserManager instance to check mute status
+            from ..services.user_manager import user_manager
 
-            user_manager = UserManager()
             logger.debug(
                 "=== MUTE FILTERING DEBUG: UserManager created ===",
                 receiver_id=receiver_id,
@@ -1005,7 +1003,7 @@ class NATSMessageHandler:
                 logger.info("Cleaned up empty sub-zone subscription", subzone=subzone)
 
         except Exception as e:
-            logger.error("Error cleaning up empty sub-zone subscriptions", error=str(e))
+            logger.error("Error cleaning up empty sub-zone subscriptions", context={"error": str(e)})
 
     # Event subscription methods
     async def subscribe_to_event_subjects(self) -> bool:
@@ -1040,7 +1038,7 @@ class NATSMessageHandler:
                 return success_count == len(event_subjects)
 
         except Exception as e:
-            logger.error("Error subscribing to event subjects", error=str(e))
+            logger.error("Error subscribing to event subjects", context={"error": str(e)})
             return False
 
     async def unsubscribe_from_event_subjects(self) -> bool:
@@ -1078,7 +1076,7 @@ class NATSMessageHandler:
                 return success_count == len(event_subjects)
 
         except Exception as e:
-            logger.error("Error unsubscribing from event subjects", error=str(e))
+            logger.error("Error unsubscribing from event subjects", context={"error": str(e)})
             return False
 
     async def _handle_event_message(self, message_data: dict[str, Any]):

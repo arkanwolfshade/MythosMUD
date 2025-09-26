@@ -5,14 +5,14 @@
 
 
 class MockPlayer:
-    def __init__(self, name, current_room_id="earth_arkham_city_intersection_derby_high"):
+    def __init__(self, name, current_room_id="earth_arkhamcity_intersection_derby_high"):
         self.name = name
         self.current_room_id = current_room_id
 
 
 class MockPlayerManager:
     def __init__(self):
-        self.players = {"cmduser": MockPlayer("cmduser", "earth_arkham_city_intersection_derby_high")}
+        self.players = {"cmduser": MockPlayer("cmduser", "earth_arkhamcity_intersection_derby_high")}
         print(f"[MockPlayerManager] Initialized with cmduser in {self.players['cmduser'].current_room_id}")
 
     def get_player_by_name(self, name):
@@ -24,6 +24,6 @@ class MockPlayerManager:
     def list_players(self):
         return list(self.players.values())
 
-    def create_player(self, name, starting_room_id="earth_arkham_city_intersection_derby_high"):
+    def create_player(self, name, starting_room_id="earth_arkhamcity_intersection_derby_high"):
         self.players[name] = MockPlayer(name, starting_room_id)
         return self.players[name]

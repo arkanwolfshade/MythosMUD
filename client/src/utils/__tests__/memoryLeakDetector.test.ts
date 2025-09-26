@@ -41,11 +41,19 @@ describe('MemoryLeakDetector', () => {
   let detector: MemoryLeakDetector;
   let onWarning: ReturnType<typeof vi.fn>;
   let onCritical: ReturnType<typeof vi.fn>;
+  let originalConsoleWarn: typeof console.warn;
+  let originalConsoleError: typeof console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
     onWarning = vi.fn();
     onCritical = vi.fn();
+
+    // Mock console methods to prevent stderr noise during tests
+    originalConsoleWarn = console.warn;
+    originalConsoleError = console.error;
+    console.warn = vi.fn();
+    console.error = vi.fn();
 
     // Reset memory values
     mockMemory.usedJSHeapSize = 50 * 1024 * 1024;
@@ -69,6 +77,10 @@ describe('MemoryLeakDetector', () => {
 
   afterEach(() => {
     detector.stop();
+
+    // Restore original console methods
+    console.warn = originalConsoleWarn;
+    console.error = originalConsoleError;
   });
 
   describe('Basic Functionality', () => {

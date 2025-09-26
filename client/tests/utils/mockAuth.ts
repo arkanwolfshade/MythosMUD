@@ -88,7 +88,7 @@ export const MOCK_RESPONSES = {
       sanity: 100,
     },
     room: roomData || {
-      id: 'earth_arkham_city_downtown_001',
+      id: 'earth_arkhamcity_downtown_001',
       name: 'Downtown Arkham',
       description:
         'A fog-shrouded street in the heart of Arkham. Victorian buildings loom overhead, their windows dark and foreboding.',
@@ -490,7 +490,7 @@ export async function getAllMessages(page: Page): Promise<string[]> {
  */
 export function getStandardRoomData(usernames: string[] = []): { room: unknown; exits: unknown[] } {
   return {
-    id: 'earth_arkham_city_downtown_001',
+    id: 'earth_arkhamcity_downtown_001',
     name: 'Downtown Arkham',
     description:
       'A fog-shrouded street in the heart of Arkham. Victorian buildings loom overhead, their windows dark and foreboding.',

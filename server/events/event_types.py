@@ -145,3 +145,107 @@ class NPCLeftRoom(BaseEvent):
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCLeftRoom"
+
+
+@dataclass
+class NPCAttacked(BaseEvent):
+    """
+    Event fired when an NPC attacks a target.
+
+    This event is triggered when an NPC performs an attack action
+    against a player or another NPC.
+    """
+
+    npc_id: str
+    target_id: str
+    room_id: str
+    damage: int
+    attack_type: str = "physical"
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "NPCAttacked"
+
+
+@dataclass
+class NPCTookDamage(BaseEvent):
+    """
+    Event fired when an NPC takes damage.
+
+    This event is triggered when an NPC receives damage from
+    any source (player attack, environmental, etc.).
+    """
+
+    npc_id: str
+    room_id: str
+    damage: int
+    damage_type: str = "physical"
+    source_id: str | None = None  # ID of the entity that caused the damage
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "NPCTookDamage"
+
+
+@dataclass
+class NPCDied(BaseEvent):
+    """
+    Event fired when an NPC dies.
+
+    This event is triggered when an NPC's health reaches zero
+    or when it is otherwise removed from the game world.
+    """
+
+    npc_id: str
+    room_id: str
+    cause: str = "unknown"  # How the NPC died
+    killer_id: str | None = None  # ID of the entity that killed the NPC
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "NPCDied"
+
+
+@dataclass
+class NPCSpoke(BaseEvent):
+    """
+    Event fired when an NPC speaks.
+
+    This event is triggered when an NPC communicates with players
+    or other NPCs through speech, emotes, or other communication methods.
+    """
+
+    npc_id: str
+    room_id: str
+    message: str
+    channel: str = "local"  # Communication channel (local, say, whisper, etc.)
+    target_id: str | None = None  # Specific target if whispering or directed speech
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "NPCSpoke"
+
+
+@dataclass
+class NPCListened(BaseEvent):
+    """
+    Event fired when an NPC receives a message.
+
+    This event is triggered when an NPC hears or receives communication
+    from players or other NPCs.
+    """
+
+    npc_id: str
+    room_id: str
+    message: str
+    speaker_id: str
+    channel: str = "local"  # Communication channel
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "NPCListened"

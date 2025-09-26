@@ -56,9 +56,10 @@ CREATE TABLE IF NOT EXISTS players (
     stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
-    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',
+    current_room_id TEXT NOT NULL DEFAULT 'earth_arkhamcity_northside_intersection_derby_high',
     experience_points INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL DEFAULT 1,
+    is_admin INTEGER NOT NULL DEFAULT 0,
     profession_id INTEGER NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -85,6 +86,7 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_professions_available ON professions(is_available);
 CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
 CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
+CREATE INDEX IF NOT EXISTS idx_players_is_admin ON players(is_admin);
 CREATE INDEX IF NOT EXISTS idx_players_profession_id ON players(profession_id);
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
 CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
@@ -145,9 +147,9 @@ async def main():
 
     # Define database paths
     script_dir = Path(__file__).parent
-    project_root = script_dir.parent.parent
+    project_root = script_dir.parent.parent.parent
     prod_db = project_root / "data" / "players" / "players.db"
-    test_db = script_dir / "tests" / "data" / "players" / "test_players.db"
+    test_db = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
 
     try:
         # Initialize production database

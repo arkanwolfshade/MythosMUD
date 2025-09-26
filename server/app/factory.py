@@ -12,6 +12,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from ..api.admin import npc_router as admin_npc_router
 from ..api.game import game_router
 from ..api.monitoring import router as monitoring_router
 from ..api.players import player_router
@@ -109,5 +110,6 @@ def create_app() -> FastAPI:
     app.include_router(monitoring_router)
     app.include_router(realtime_router)
     app.include_router(room_router)
+    app.include_router(admin_npc_router)
 
     return app

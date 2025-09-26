@@ -12,7 +12,7 @@ eldritch architecture.
 from datetime import UTC, datetime
 
 from ..events import EventBus
-from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from ..logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.room_sync_service import get_room_sync_service
@@ -57,8 +57,10 @@ class RealTimeEventHandler:
         """Subscribe to relevant game events."""
         self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered)
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
 
-        self._logger.info("Subscribed to PlayerEnteredRoom and PlayerLeftRoom events")
+        self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
     def _get_next_sequence(self) -> int:
         """Get the next sequence number for events."""
@@ -132,7 +134,7 @@ class RealTimeEventHandler:
                 names: list[str] = []
                 for occ in occupants_info or []:
                     if isinstance(occ, dict):
-                        n = occ.get("player_name") or occ.get("name")
+                        n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
                         if n:
                             names.append(n)
                     elif isinstance(occ, str):
@@ -294,7 +296,7 @@ class RealTimeEventHandler:
             occupant_names: list[str] = []
             for occ in occupants_info or []:
                 if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("name")
+                    name = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
                     if name:
                         occupant_names.append(name)
                 elif isinstance(occ, str):
@@ -355,10 +357,118 @@ class RealTimeEventHandler:
                     }
                     occupants.append(occupant_info)
 
+            # Get NPC IDs in the room
+            npc_ids = room.get_npcs()
+
+            # Convert NPCs to occupant information
+            for npc_id in npc_ids:
+                # Extract NPC name from the NPC ID (format: npc_name_room_id_timestamp_random)
+                npc_name = npc_id.split("_")[0].replace("_", " ").title()
+                occupant_info = {
+                    "npc_id": npc_id,
+                    "npc_name": npc_name,
+                    "type": "npc",
+                }
+                occupants.append(occupant_info)
+
         except Exception as e:
             self._logger.error(f"Error getting room occupants: {e}", exc_info=True)
 
         return occupants
+
+    def _handle_npc_entered(self, event: NPCEnteredRoom):
+        """
+        Handle NPC entering a room.
+
+        This method updates the room state to include the NPC in the occupant list
+        and broadcasts the room update to all players in the room.
+
+        Args:
+            event: NPCEnteredRoom event containing NPC and room information
+        """
+        try:
+            self._logger.info(f"NPC {event.npc_id} entered room {event.room_id}")
+
+            # Get the room from persistence
+            persistence = self.connection_manager.persistence
+            if not persistence:
+                self._logger.warning("Persistence layer not available for NPC room entry")
+                return
+
+            room = persistence.get_room(event.room_id)
+            if not room:
+                self._logger.warning(f"Room not found for NPC entry: {event.room_id}")
+                return
+
+            # Add NPC to room's occupant list
+            room.npc_entered(event.npc_id)
+
+            # Schedule room update broadcast (async operation)
+            import asyncio
+
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # Schedule the async operation to run later
+                    asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                else:
+                    # If no event loop is running, just log that we can't broadcast
+                    self._logger.debug("No event loop available for room occupants update broadcast")
+            except RuntimeError:
+                # No event loop available, just log that we can't broadcast
+                self._logger.debug("No event loop available for room occupants update broadcast")
+
+            self._logger.debug(f"NPC {event.npc_id} successfully added to room {event.room_id} occupant list")
+
+        except Exception as e:
+            self._logger.error(f"Error handling NPC entered room event: {e}", exc_info=True)
+
+    def _handle_npc_left(self, event: NPCLeftRoom):
+        """
+        Handle NPC leaving a room.
+
+        This method updates the room state to remove the NPC from the occupant list
+        and broadcasts the room update to all players in the room.
+
+        Args:
+            event: NPCLeftRoom event containing NPC and room information
+        """
+        try:
+            self._logger.info(f"NPC {event.npc_id} left room {event.room_id}")
+
+            # Get the room from persistence
+            persistence = self.connection_manager.persistence
+            if not persistence:
+                self._logger.warning("Persistence layer not available for NPC room exit")
+                return
+
+            room = persistence.get_room(event.room_id)
+            if not room:
+                self._logger.warning(f"Room not found for NPC exit: {event.room_id}")
+                return
+
+            # Remove NPC from room's occupant list
+            room.npc_left(event.npc_id)
+
+            # Schedule room update broadcast (async operation)
+            import asyncio
+
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # Schedule the async operation to run later
+                    asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                else:
+                    # If no event loop is running, just log that we can't broadcast
+                    self._logger.debug("No event loop available for room occupants update broadcast")
+            except RuntimeError:
+                # No event loop available, just log that we can't broadcast
+                self._logger.debug("No event loop available for room occupants update broadcast")
+
+            self._logger.debug(f"NPC {event.npc_id} successfully removed from room {event.room_id} occupant list")
+
+        except Exception as e:
+            self._logger.error(f"Error handling NPC left room event: {e}", exc_info=True)
 
     def shutdown(self):
         """Shutdown the event handler."""

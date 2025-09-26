@@ -130,7 +130,7 @@ class MinimapRenderer:
         Extract street acronym from room ID.
 
         Args:
-            room_id: Full room ID (e.g., earth_arkham_city_campus_W_College_St_003)
+            room_id: Full room ID (e.g., earth_arkhamcity_campus_W_College_St_003)
 
         Returns:
             Street acronym (e.g., ECS)

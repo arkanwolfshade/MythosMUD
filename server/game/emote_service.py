@@ -7,13 +7,13 @@ to appropriate messages for both the player and room occupants.
 """
 
 import json
-import logging
 from pathlib import Path
 
 from ..exceptions import ValidationError
+from ..logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class EmoteService:

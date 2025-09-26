@@ -43,9 +43,18 @@ Object.defineProperty(global, 'window', {
 
 describe('MemoryMonitor', () => {
   let monitor: MemoryMonitor;
+  let originalConsoleWarn: typeof console.warn;
+  let originalConsoleError: typeof console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock console methods to prevent stderr noise during tests
+    originalConsoleWarn = console.warn;
+    originalConsoleError = console.error;
+    console.warn = vi.fn();
+    console.error = vi.fn();
+
     // Reset singleton instance
     (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
     monitor = MemoryMonitor.getInstance({
@@ -57,6 +66,10 @@ describe('MemoryMonitor', () => {
 
   afterEach(() => {
     monitor.stop();
+
+    // Restore original console methods
+    console.warn = originalConsoleWarn;
+    console.error = originalConsoleError;
   });
 
   describe('Singleton Pattern', () => {
@@ -293,15 +306,28 @@ describe('MemoryMonitor', () => {
 
 describe('useMemoryMonitor Hook', () => {
   let monitor: MemoryMonitor;
+  let originalConsoleWarn: typeof console.warn;
+  let originalConsoleError: typeof console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock console methods to prevent stderr noise during tests
+    originalConsoleWarn = console.warn;
+    originalConsoleError = console.error;
+    console.warn = vi.fn();
+    console.error = vi.fn();
+
     (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
     monitor = MemoryMonitor.getInstance({ enableReporting: false });
   });
 
   afterEach(() => {
     monitor.stop();
+
+    // Restore original console methods
+    console.warn = originalConsoleWarn;
+    console.error = originalConsoleError;
   });
 
   it('should register component and return monitoring utilities', () => {

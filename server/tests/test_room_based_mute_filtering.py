@@ -25,7 +25,7 @@ class TestRoomBasedMuteFiltering:
         self.handler = NATSMessageHandler(self.mock_nats_service)
 
         # Test data
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
         self.sender_id = str(uuid.uuid4())
         self.receiver_id = str(uuid.uuid4())
         self.sender_name = "Ithaqua"
@@ -301,18 +301,12 @@ class TestRoomBasedMuteFiltering:
             with patch.object(self.handler, "_is_player_in_room", return_value=True):
                 # Mock mute check
                 with patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=False):
-                    # Mock UserManager to verify it's created only once
-                    with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-                        mock_user_manager = MagicMock()
-                        mock_user_manager_class.return_value = mock_user_manager
-
+                    # Mock the global user_manager instance
+                    with patch("server.services.user_manager.user_manager") as mock_user_manager:
                         # Execute
                         await self.handler._broadcast_to_room_with_filtering(
                             self.room_id, chat_event, self.sender_id, "say"
                         )
-
-                        # Verify that UserManager was created only once (optimization)
-                        mock_user_manager_class.assert_called_once()
 
                         # Verify that mute data was pre-loaded for the receiver
                         mock_user_manager.load_player_mutes.assert_called_with(self.receiver_id)

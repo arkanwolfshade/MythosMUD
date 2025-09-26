@@ -13,18 +13,66 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
+# CRITICAL: Load .env.test file FIRST, before any other environment variable setup
+# This ensures that test-specific database URLs are loaded before any modules
+# that depend on them are imported
+project_root = Path(__file__).parent.parent.parent
+TEST_ENV_PATH = project_root / ".env.test"
+if TEST_ENV_PATH.exists():
+    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
+    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
+else:
+    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
+    print("Using default test environment variables")
+
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
 os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
 os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-# Get the project root (two levels up from this file)
-project_root = Path(__file__).parent.parent.parent
-# Use absolute path to ensure database is created in the correct location
-test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-test_db_path.parent.mkdir(parents=True, exist_ok=True)
-os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+# CRITICAL: Set database URLs IMMEDIATELY to prevent import-time failures
+# This must happen before any database modules are imported
+
+# Ensure DATABASE_URL is set with absolute path
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    # Convert relative paths to absolute paths
+    if database_url.startswith("sqlite+aiosqlite:///") and not database_url.startswith("sqlite+aiosqlite:///E:"):
+        # Extract the relative path and make it absolute
+        relative_path = database_url.replace("sqlite+aiosqlite:///", "")
+        absolute_path = project_root / relative_path
+        absolute_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+        print(f"✓ Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
+else:
+    # Use absolute path to ensure database is created in the correct location
+    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+    print(f"✓ Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
+
+# Ensure NPC_DATABASE_URL is set with absolute path
+npc_database_url = os.getenv("NPC_DATABASE_URL")
+if npc_database_url:
+    # Convert relative paths to absolute paths
+    if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
+        "sqlite+aiosqlite:///E:"
+    ):
+        # Extract the relative path and make it absolute
+        relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
+        absolute_path = project_root / relative_path
+        absolute_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+        print(f"✓ Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+else:
+    # Use absolute path to ensure NPC database is created in the correct location
+    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+    test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    print(f"✓ Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
+
 # Ensure we're using the correct path for test logs
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -69,16 +117,6 @@ def sync_test_environment():
         loop.close()
 
 
-# Load test environment variables from .env.test file
-TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
-if TEST_ENV_PATH.exists():
-    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
-else:
-    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables")
-
-
 def pytest_configure(config):
     """Configure pytest with test environment variables."""
     # Set required test environment variables, overriding any existing values
@@ -87,12 +125,47 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
-    # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-    test_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+    # Only set DATABASE_URL if not already set by .env.test
+    # Ensure DATABASE_URL is set with absolute path
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        # Convert relative paths to absolute paths
+        if database_url.startswith("sqlite+aiosqlite:///") and not database_url.startswith("sqlite+aiosqlite:///E:"):
+            # Extract the relative path and make it absolute
+            relative_path = database_url.replace("sqlite+aiosqlite:///", "")
+            absolute_path = project_root / relative_path
+            absolute_path.parent.mkdir(parents=True, exist_ok=True)
+            os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+            print(f"✓ Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
+    else:
+        # Use absolute path to ensure database is created in the correct location
+        test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        test_db_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+
+    # Ensure NPC_DATABASE_URL is set with absolute path
+    npc_database_url = os.getenv("NPC_DATABASE_URL")
+    if npc_database_url:
+        # Convert relative paths to absolute paths
+        if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
+            "sqlite+aiosqlite:///E:"
+        ):
+            # Extract the relative path and make it absolute
+            relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
+            absolute_path = project_root / relative_path
+            absolute_path.parent.mkdir(parents=True, exist_ok=True)
+            os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+            print(f"✓ Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+    else:
+        # Use absolute path to ensure NPC database is created in the correct location
+        test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+        test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "server" / "tests" / "logs"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
@@ -130,9 +203,36 @@ def test_database():
     # Return the database path from environment variable
     test_db_url = os.getenv("DATABASE_URL")
     if test_db_url.startswith("sqlite+aiosqlite:///"):
-        return test_db_url.replace("sqlite+aiosqlite:///", "")
+        db_path = test_db_url.replace("sqlite+aiosqlite:///", "")
+        return db_path
     else:
         raise ValueError(f"Unsupported database URL format: {test_db_url}")
+
+
+@pytest.fixture(scope="session")
+def test_npc_database():
+    """Initialize NPC test database with proper schema."""
+    import os
+
+    # Get the NPC test database path
+    from pathlib import Path
+
+    from server.tests.init_npc_test_db import init_npc_test_database
+
+    npc_test_db_path = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+
+    # Remove existing database file to ensure clean state
+    if npc_test_db_path.exists():
+        os.unlink(npc_test_db_path)
+
+    # Initialize the NPC test database with schema
+    init_npc_test_database()
+
+    # The SQLAlchemy metadata initialization will happen when the NPC database
+    # module is imported and the engine is created. We don't need to call
+    # init_npc_database() here as it's meant for runtime initialization.
+
+    return str(npc_test_db_path)
 
 
 @pytest.fixture(autouse=True)  # Enable automatic use for all tests

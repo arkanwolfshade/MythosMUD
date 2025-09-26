@@ -645,7 +645,7 @@ class PersistenceLayer:
             # Log as warning since this is a non-critical operation
             self._logger.warning(
                 "Error syncing room players",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -697,9 +697,9 @@ class PersistenceLayer:
             from .config_loader import get_config
 
             config = get_config()
-            default_room = config.get("default_player_room", "earth_arkham_city_northside_intersection_derby_high")
+            default_room = config.get("default_player_room", "earth_arkhamcity_northside_intersection_derby_high")
             if default_room is None:
-                default_room = "earth_arkham_city_northside_intersection_derby_high"
+                default_room = "earth_arkhamcity_northside_intersection_derby_high"
         except Exception as e:
             # Fallback to hardcoded default if config loading fails
             context = create_error_context()
@@ -708,11 +708,11 @@ class PersistenceLayer:
             context.metadata["old_room_id"] = old_room
             self._logger.warning(
                 "Config loading failed during room validation, using fallback",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            default_room = "earth_arkham_city_northside_intersection_derby_high"
+            default_room = "earth_arkhamcity_northside_intersection_derby_high"
 
         player.current_room_id = default_room
 

@@ -30,12 +30,10 @@ class TestDatabaseConfiguration:
 
     def test_database_url_default(self):
         """Test default DATABASE_URL."""
-        # The actual value set by environment variables in tests
-        # Use absolute path for test expectation
-        project_root = Path(__file__).parent.parent.parent
-        expected_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-        expected_url = f"sqlite+aiosqlite:///{expected_db_path}"
-        assert DATABASE_URL == expected_url
+        # The actual value set by conftest.py uses an absolute path
+        # Check that it contains the expected path components (handle both Windows and Unix paths)
+        assert "server/tests/data/players/test_players.db" in DATABASE_URL.replace("\\", "/")
+        assert DATABASE_URL.startswith("sqlite+aiosqlite:///")
 
     def test_metadata_exists(self):
         """Test that metadata is properly initialized."""

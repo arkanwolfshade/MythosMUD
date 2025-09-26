@@ -453,8 +453,17 @@ export function useGameConnection({
 
       websocket.onmessage = event => {
         try {
+          logger.info('GameConnection', 'Raw WebSocket message received', {
+            rawData: event.data,
+            dataLength: event.data.length,
+          });
           const gameEvent: GameEvent = JSON.parse(event.data);
-          logger.info('GameConnection', 'WebSocket event received', { event_type: gameEvent.event_type });
+          logger.info('GameConnection', 'WebSocket event received', {
+            event_type: gameEvent.event_type,
+            hasOccupants: !!(gameEvent.data && gameEvent.data.occupants),
+            occupants: gameEvent.data?.occupants,
+            dataKeys: gameEvent.data ? Object.keys(gameEvent.data) : [],
+          });
           dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
 
           debug.debug('Received WebSocket event', {

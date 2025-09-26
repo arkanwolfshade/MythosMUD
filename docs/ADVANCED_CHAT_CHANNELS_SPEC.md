@@ -100,7 +100,7 @@ chat/
 └── combined.log           # All channel messages (for moderation)
 
 # Example sub-zone log files:
-# local_arkham_city.log
+# local_arkhamcity.log
 # local_sanitarium.log
 # local_miskatonic_university.log
 ```

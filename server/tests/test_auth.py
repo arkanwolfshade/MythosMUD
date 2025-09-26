@@ -81,8 +81,8 @@ class TestRegistrationEndpoints:
     """Test registration endpoint functionality."""
 
     def test_successful_registration(self, test_client):
-        """Test successful user registration with valid invite."""
-        # This test uses the real database with proper setup
+        """Test successful user registration with real database (isolated test)."""
+        # This test uses the real database but is designed to be isolated
         # The test database should have the TEST123 invite already inserted
 
         # Use a unique username to avoid conflicts with previous test runs
@@ -96,10 +96,7 @@ class TestRegistrationEndpoints:
             json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"},
         )
 
-        # Debug: Print response details
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text}")
-
+        # Verify the response
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data

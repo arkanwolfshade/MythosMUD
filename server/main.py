@@ -8,7 +8,7 @@ persistence layers into a cohesive gaming experience.
 
 As noted in the Pnakotic Manuscripts, the proper organization of arcane
 knowledge is essential for maintaining the delicate balance between order
-and chaos in our digital realm.
+and chaos. This server implementation follows those ancient principles.
 """
 
 import warnings
@@ -104,6 +104,7 @@ if __name__ == "__main__":
         host=config["host"],
         port=config["port"],
         reload=True,
+        reload_excludes=["server/tests/*"],  # Exclude test directory from hot reloading
         # Use our StructLog system for all logging
         access_log=True,
         use_colors=False,  # Disable colors for structured logging

@@ -264,8 +264,8 @@ class TestWorldLoaderErrorLogging:
         # Mock ROOMS_BASE_PATH to point to our temp directory
         with patch("server.world_loader.ROOMS_BASE_PATH", self.temp_dir):
             # Create the directory structure
-            os.makedirs(os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone"))
-            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone", "invalid.json"))
+            os.makedirs(os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone"))
+            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone", "invalid.json"))
 
             # Load world data
             load_hierarchical_world()
@@ -297,8 +297,8 @@ class TestWorldLoaderErrorLogging:
 
         # Mock ROOMS_BASE_PATH and create directory structure
         with patch("server.world_loader.ROOMS_BASE_PATH", self.temp_dir):
-            os.makedirs(os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone"))
-            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone", "test_room.json"))
+            os.makedirs(os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone"))
+            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone", "test_room.json"))
 
             # Mock validator to return validation errors
             mock_validator = Mock()

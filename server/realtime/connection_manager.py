@@ -25,6 +25,36 @@ from .room_subscription_manager import RoomSubscriptionManager
 logger = get_logger(__name__)
 
 
+def _get_npc_name_from_instance(npc_id: str) -> str | None:
+    """
+    Get NPC name from the actual NPC instance, preserving original case from database.
+
+    This is the proper way to get NPC names - directly from the database via the NPC instance.
+
+    Args:
+        npc_id: The NPC ID
+
+    Returns:
+        NPC name from the database, or None if instance not found
+    """
+    try:
+        # Get the NPC instance from the spawning service
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if hasattr(npc_instance_service, "spawning_service"):
+            spawning_service = npc_instance_service.spawning_service
+            if npc_id in spawning_service.active_npc_instances:
+                npc_instance = spawning_service.active_npc_instances[npc_id]
+                name = getattr(npc_instance, "name", None)
+                return name
+
+        return None
+    except Exception as e:
+        logger.debug(f"Error getting NPC name from instance for {npc_id}: {e}")
+        return None
+
+
 @dataclass
 class ConnectionMetadata:
     """
@@ -309,9 +339,10 @@ class ConnectionManager:
                     if connection_id in self.active_websockets:
                         existing_websocket = self.active_websockets[connection_id]
                         try:
-                            # Check if the existing WebSocket is still open with shorter timeout
-                            await asyncio.wait_for(existing_websocket.ping(), timeout=0.5)
-                        except (TimeoutError, Exception) as ping_error:
+                            # Check if the existing WebSocket is still open by checking its state
+                            if existing_websocket.client_state.name != "CONNECTED":
+                                raise Exception("WebSocket not connected")
+                        except Exception as ping_error:
                             logger.warning(
                                 f"Dead WebSocket connection {connection_id} for player {player_id}, will clean up: {ping_error}"
                             )
@@ -1149,6 +1180,10 @@ class ConnectionManager:
             # Convert UUIDs to strings for JSON serialization
             serializable_event = self._convert_uuids_to_strings(event)
 
+            # Debug logging to see what's being sent
+            if event.get("event_type") == "game_state":
+                logger.info(f"DEBUG: Sending game_state event to {player_id}: {serializable_event}")
+
             # Count total connections
             websocket_count = len(self.player_websockets.get(player_id, []))
             sse_count = len(self.active_sse_connections.get(player_id, []))
@@ -1260,9 +1295,11 @@ class ConnectionManager:
                     if connection_id in self.active_websockets:
                         websocket = self.active_websockets[connection_id]
                         try:
-                            # Try to ping the WebSocket to check health
-                            await websocket.ping()
-                            health_status["websocket_healthy"] += 1
+                            # Check WebSocket health by checking its state
+                            if websocket.client_state.name == "CONNECTED":
+                                health_status["websocket_healthy"] += 1
+                            else:
+                                raise Exception("WebSocket not connected")
                         except Exception:
                             health_status["websocket_unhealthy"] += 1
                             # Clean up unhealthy connection
@@ -1324,8 +1361,9 @@ class ConnectionManager:
                             if connection_id in self.active_websockets:
                                 websocket = self.active_websockets[connection_id]
                                 try:
-                                    # Try to ping the WebSocket
-                                    await websocket.ping()
+                                    # Check WebSocket health by checking its state
+                                    if websocket.client_state.name != "CONNECTED":
+                                        raise Exception("WebSocket not connected")
                                 except Exception:
                                     # Connection is dead, clean it up
                                     await self._cleanup_dead_websocket(pid, connection_id)
@@ -1882,7 +1920,6 @@ class ConnectionManager:
 
         try:
             import json
-            import os
             from datetime import datetime
 
             logger.error(f"ERROR STATE DETECTED for player {player_id}: {error_type} - {error_details}")
@@ -1913,9 +1950,18 @@ class ConnectionManager:
                 },
             }
 
-            # Write to error log file
-            error_log_path = "logs/development/connection_errors.log"
-            os.makedirs(os.path.dirname(error_log_path), exist_ok=True)
+            # Write to error log file using proper logging configuration
+            from ..config_loader import get_config
+            from ..logging_config import _resolve_log_base, detect_environment
+
+            config = get_config()
+            log_base = config.get("logging", {}).get("log_base", "logs")
+            environment = config.get("logging", {}).get("environment", detect_environment())
+
+            resolved_log_base = _resolve_log_base(log_base)
+            error_log_path = resolved_log_base / environment / "connection_errors.log"
+            error_log_path.parent.mkdir(parents=True, exist_ok=True)
+
             with open(error_log_path, "a") as f:
                 f.write(json.dumps(error_log_entry) + "\n")
 
@@ -2268,6 +2314,17 @@ class ConnectionManager:
         Returns:
             dict: Error statistics
         """
+        # Get the proper error log path using logging configuration
+        from ..config_loader import get_config
+        from ..logging_config import _resolve_log_base, detect_environment
+
+        config = get_config()
+        log_base = config.get("logging", {}).get("log_base", "logs")
+        environment = config.get("logging", {}).get("environment", detect_environment())
+
+        resolved_log_base = _resolve_log_base(log_base)
+        error_log_path = resolved_log_base / environment / "connection_errors.log"
+
         return {
             "total_players": len(self.online_players),
             "total_connections": (
@@ -2276,7 +2333,7 @@ class ConnectionManager:
             ),
             "active_sessions": len(self.session_connections),
             "players_with_sessions": len(self.player_sessions),
-            "error_log_path": "logs/development/connection_errors.log",
+            "error_log_path": str(error_log_path),
         }
 
     async def handle_new_login(self, player_id: str):
@@ -2392,14 +2449,35 @@ class ConnectionManager:
                 room = self.persistence.get_room(room_id)
                 if room:
                     room_data = room.to_dict()
+                    logger.info(
+                        f"DEBUG: Room data for {room_id}: npcs={room_data.get('npcs', [])}, occupant_count={room_data.get('occupant_count', 0)}"
+                    )
 
-            # Get room occupants
+            # Get room occupants (players and NPCs)
             occupants = []
             if room_id:
+                # Get player occupants
                 occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
                 for occ_player_info in occ_infos:
                     if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
                         occupants.append(occ_player_info.get("player_name", "Unknown"))
+
+                # Get NPC occupants
+                if self.persistence:
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        npc_ids = room.get_npcs()
+                        logger.info(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
+                        logger.info(f"DEBUG: Room {room_id} occupant_count: {room.get_occupant_count()}")
+                        for npc_id in npc_ids:
+                            # Get NPC name from the actual NPC instance, preserving original case from database
+                            npc_name = _get_npc_name_from_instance(npc_id)
+                            if npc_name:
+                                logger.info(f"DEBUG: Got NPC name '{npc_name}' from database for ID '{npc_id}'")
+                                occupants.append(npc_name)
+                            else:
+                                # Log warning if NPC instance not found - this should not happen in normal operation
+                                logger.warning(f"NPC instance not found for ID: {npc_id} - skipping from room display")
 
             # Create game_state event
             game_state_data = {
@@ -2412,6 +2490,8 @@ class ConnectionManager:
                 "room": room_data,
                 "occupants": occupants,
             }
+
+            logger.info(f"DEBUG: Sending initial game state with occupants: {occupants}")
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
 

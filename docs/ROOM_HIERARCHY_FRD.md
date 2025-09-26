@@ -38,7 +38,7 @@ Plane → Zone → Sub-zone → Room
 ```
 data/rooms/
 ├── earth/
-│   ├── arkham_city/
+│   ├── arkhamcity/
 │   │   ├── french_hill/
 │   │   │   ├── S_Garrison_St_001.json
 │   │   │   └── S_Garrison_St_002.json
@@ -100,7 +100,7 @@ data/rooms/
 #### Updated Room ID Format
 
 - **Current**: `arkham_001`
-- **New**: `earth_arkham_city_french_hill_S_Garrison_St_001`
+- **New**: `earth_arkhamcity_french_hill_S_Garrison_St_001`
 
 ### 2. Zone Configuration Schema (New)
 
@@ -191,7 +191,7 @@ Create `subzone_config.json` files at each sub-zone level:
 #### Room IDs
 
 - **Format**: `{plane}_{zone}_{sub_zone}_{room_file_name}`
-- **Example**: `earth_arkham_city_french_hill_S_Garrison_St_001`
+- **Example**: `earth_arkhamcity_french_hill_S_Garrison_St_001`
 
 #### Validation Rules
 
