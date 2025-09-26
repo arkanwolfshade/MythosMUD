@@ -6,6 +6,7 @@ Handles the game tick system that runs at regular intervals.
 import asyncio
 from datetime import UTC, datetime
 
+from ..app.tracked_task_manager import get_global_tracked_manager
 from ..logging_config import get_logger
 
 logger = get_logger("services.game_tick_service")
@@ -45,7 +46,11 @@ class GameTickService:
             return True
 
         try:
-            self._tick_task = asyncio.create_task(self._tick_loop())
+            # Task 4.4: Replace with tracked task creation to prevent memory leaks
+            tracked_manager = get_global_tracked_manager()
+            self._tick_task = tracked_manager.create_tracked_task(
+                self._tick_loop(), task_name="gametick_service/tick_loop", task_type="system_lifecycle"
+            )
             self.is_running = True
             logger.info(f"GameTickService started with {self.tick_interval}s interval")
             return True

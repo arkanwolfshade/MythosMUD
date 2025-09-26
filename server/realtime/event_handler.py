@@ -11,6 +11,7 @@ eldritch architecture.
 
 from datetime import UTC, datetime
 
+from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events import EventBus
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from ..logging_config import get_logger
@@ -421,7 +422,13 @@ class RealTimeEventHandler:
                             "event_handler",
                         )
                     else:
-                        asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                        # Task 4.4: Replace with tracked task creation to prevent memory leaks
+                        tracked_manager = get_global_tracked_manager()
+                        tracked_manager.create_tracked_task(
+                            self._send_room_occupants_update(event.room_id),
+                            task_name=f"event_handler/room_occupants_{event.room_id}",
+                            task_type="event_handler",
+                        )
                 else:
                     # If no event loop is running, just log that we can't broadcast
                     self._logger.debug("No event loop available for room occupants update broadcast")
@@ -475,7 +482,13 @@ class RealTimeEventHandler:
                             "event_handler",
                         )
                     else:
-                        asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                        # Task 4.4: Replace with tracked task creation to prevent memory leaks
+                        tracked_manager = get_global_tracked_manager()
+                        tracked_manager.create_tracked_task(
+                            self._send_room_occupants_update(event.room_id),
+                            task_name=f"event_handler/room_occupants_{event.room_id}",
+                            task_type="event_handler",
+                        )
                 else:
                     # If no event loop is running, just log that we can't broadcast
                     self._logger.debug("No event loop available for room occupants update broadcast")
