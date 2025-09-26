@@ -478,7 +478,7 @@ class TestGameEventStream:
             async_generator = game_event_stream(player_id)
 
             # Break early to exit generator gracefully
-            async for event in async_generator:
+            async for _event in async_generator:
                 break
 
             # Close the generator to trigger the finally block
@@ -509,7 +509,7 @@ class TestGameEventStream:
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             # Test timeout boundary behavior by running generator and closing to trigger finally
             async_generator = game_event_stream(player_id)
-            async for event in async_generator:
+            async for _event in async_generator:
                 break
             await async_generator.aclose()
 
@@ -534,7 +534,7 @@ class TestGameEventStream:
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             # Test disconnect timeout handling by ensuring generator completes properly
             async_generator = game_event_stream(player_id)
-            async for event in async_generator:
+            async for _event in async_generator:
                 break
             await async_generator.aclose()
 

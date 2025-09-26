@@ -29,18 +29,22 @@ class RealTimeEventHandler:
     layer.
     """
 
-    def __init__(self, event_bus: EventBus | None = None):
+    def __init__(self, event_bus: EventBus | None = None, task_registry=None):
         """
         Initialize the real-time event handler.
 
         Args:
             event_bus: Optional EventBus instance. If None, will get the global
                 instance.
+            task_registry: Optional TaskRegistry instance for current lifecycle task tracking
         """
         self.event_bus = event_bus or EventBus()
         self.connection_manager = connection_manager
         self._logger = get_logger("RealTimeEventHandler")
         self._sequence_counter = 0
+
+        # Task registry for tracking child tasks spawned by event broadcasting
+        self.task_registry = task_registry
 
         # Chat logger for AI processing
         self.chat_logger = chat_logger
@@ -410,7 +414,14 @@ class RealTimeEventHandler:
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
                     # Schedule the async operation to run later
-                    asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                    if self.task_registry:
+                        self.task_registry.register_task(
+                            self._send_room_occupants_update(event.room_id),
+                            f"event_handler/room_occupants_{event.room_id}",
+                            "event_handler",
+                        )
+                    else:
+                        asyncio.create_task(self._send_room_occupants_update(event.room_id))
                 else:
                     # If no event loop is running, just log that we can't broadcast
                     self._logger.debug("No event loop available for room occupants update broadcast")
@@ -457,7 +468,14 @@ class RealTimeEventHandler:
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
                     # Schedule the async operation to run later
-                    asyncio.create_task(self._send_room_occupants_update(event.room_id))
+                    if self.task_registry:
+                        self.task_registry.register_task(
+                            self._send_room_occupants_update(event.room_id),
+                            f"event_handler/room_occupants_{event.room_id}",
+                            "event_handler",
+                        )
+                    else:
+                        asyncio.create_task(self._send_room_occupants_update(event.room_id))
                 else:
                     # If no event loop is running, just log that we can't broadcast
                     self._logger.debug("No event loop available for room occupants update broadcast")
@@ -480,14 +498,20 @@ class RealTimeEventHandler:
 real_time_event_handler: RealTimeEventHandler | None = None
 
 
-def get_real_time_event_handler() -> RealTimeEventHandler:
+def get_real_time_event_handler(task_registry=None) -> RealTimeEventHandler:
     """
     Get the global RealTimeEventHandler instance.
+
+    Args:
+        task_registry: Optional TaskRegistry instance for task lifecycle tracking
 
     Returns:
         RealTimeEventHandler: The global event handler instance
     """
     global real_time_event_handler
     if real_time_event_handler is None:
-        real_time_event_handler = RealTimeEventHandler()
+        real_time_event_handler = RealTimeEventHandler(task_registry=task_registry)
+    # If we've passed a task_registry after init, update the instance
+    elif task_registry and not real_time_event_handler.task_registry:
+        real_time_event_handler.task_registry = task_registry
     return real_time_event_handler
