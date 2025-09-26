@@ -641,7 +641,7 @@ class TestNPCPopulationController:
             arkham_dir.mkdir()
 
             # This should not raise an exception
-            controller = NPCPopulationController(event_bus, str(temp_path))
+            controller = NPCPopulationController(event_bus, rooms_data_path=str(temp_path))
             assert len(controller.zone_configurations) == 0
 
     def test_zone_configuration_invalid_json(self, event_bus):
@@ -657,5 +657,5 @@ class TestNPCPopulationController:
                 f.write("invalid json content")
 
             # This should not raise an exception
-            controller = NPCPopulationController(event_bus, str(temp_path))
+            controller = NPCPopulationController(event_bus, rooms_data_path=str(temp_path))
             assert len(controller.zone_configurations) == 0

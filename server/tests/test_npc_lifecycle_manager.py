@@ -165,6 +165,11 @@ class TestNPCLifecycleManager:
 
                 npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
 
+                # Allow time for the NPCEnteredRoom event to be processed and state to transition
+                import time
+
+                time.sleep(0.1)
+
                 assert npc_id is not None
                 assert npc_id in lifecycle_manager.lifecycle_records
                 assert npc_id in lifecycle_manager.active_npcs
