@@ -34,7 +34,7 @@ describe('RoomInfoPanel', () => {
         east: 'test-room-3',
         west: null,
       },
-      occupants: ['player1', 'player2'],
+      occupants: ['Player1', 'Player2'],
       occupant_count: 2,
     };
 
@@ -166,7 +166,7 @@ describe('RoomInfoPanel', () => {
         name: 'Countless Room',
         description: 'A room without occupant count.',
         exits: {},
-        occupants: ['player1'],
+        occupants: ['Player1'],
       };
 
       render(<RoomInfoPanel room={roomWithoutCount} />);
