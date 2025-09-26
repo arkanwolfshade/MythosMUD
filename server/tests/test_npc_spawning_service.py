@@ -417,14 +417,21 @@ class TestNPCSpawningService:
         assert result is False
 
     def test_event_handling_player_entered_room(self, spawning_service, event_bus):
-        """Test handling player entered room events."""
-        with patch.object(spawning_service, "_check_spawn_requirements_for_room") as mock_check:
-            event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="room_001")
+        """Test that spawning service no longer directly handles PlayerEnteredRoom events."""
+        # The spawning service no longer subscribes to PlayerEnteredRoom events
+        # This test verifies that the service doesn't handle these events directly
+        # (The population controller handles these events instead)
 
-            event_bus.publish(event)
-            time.sleep(0.1)  # Allow event processing
-
-            mock_check.assert_called_once_with("room_001")
+        # Verify that the spawning service doesn't have PlayerEnteredRoom subscribers
+        player_entered_subscribers = event_bus._subscribers.get(PlayerEnteredRoom, [])
+        spawning_service_handlers = [
+            handler
+            for handler in player_entered_subscribers
+            if hasattr(handler, "__self__") and handler.__self__ == spawning_service
+        ]
+        assert len(spawning_service_handlers) == 0, (
+            "Spawning service should not handle PlayerEnteredRoom events directly"
+        )
 
     def test_event_handling_npc_entered_room(self, spawning_service, event_bus):
         """Test handling NPC entered room events."""

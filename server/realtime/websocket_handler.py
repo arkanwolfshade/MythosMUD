@@ -17,6 +17,36 @@ from .envelope import build_event
 logger = get_logger(__name__)
 
 
+def _get_npc_name_from_instance(npc_id: str) -> str | None:
+    """
+    Get NPC name from the actual NPC instance, preserving original case from database.
+
+    This is the proper way to get NPC names - directly from the database via the NPC instance.
+
+    Args:
+        npc_id: The NPC ID
+
+    Returns:
+        NPC name from the database, or None if instance not found
+    """
+    try:
+        # Get the NPC instance from the spawning service
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if hasattr(npc_instance_service, "spawning_service"):
+            spawning_service = npc_instance_service.spawning_service
+            if npc_id in spawning_service.active_npc_instances:
+                npc_instance = spawning_service.active_npc_instances[npc_id]
+                name = getattr(npc_instance, "name", None)
+                return name
+
+        return None
+    except Exception as e:
+        logger.debug(f"Error getting NPC name from instance for {npc_id}: {e}")
+        return None
+
+
 async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
     """
     Handle a WebSocket connection for a player.
@@ -633,27 +663,14 @@ async def broadcast_room_update(player_id: str, room_id: str):
             npc_ids = room.get_npcs()
             logger.debug(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
             for npc_id in npc_ids:
-                # Extract NPC name from NPC ID (format: name_room_timestamp_suffix)
-                # The NPC ID format is: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_entrance_001_1758831502_6620
-                # We need to extract the name part before the room part
-                parts = npc_id.split("_")
-                # Find the room part (starts with 'earth_arkhamcity' or similar)
-                room_start_idx = None
-                for i, part in enumerate(parts):
-                    if part.startswith("earth_") or part.startswith("room_"):
-                        room_start_idx = i
-                        break
-
-                if room_start_idx is not None:
-                    # Extract name parts before the room part
-                    name_parts = parts[:room_start_idx]
-                    npc_name = " ".join(name_parts).replace("_", " ").title()
+                # Get NPC name from the actual NPC instance, preserving original case from database
+                npc_name = _get_npc_name_from_instance(npc_id)
+                if npc_name:
+                    logger.debug(f"DEBUG: Got NPC name '{npc_name}' from database for ID '{npc_id}'")
+                    occupant_names.append(npc_name)
                 else:
-                    # Fallback: take first 3 parts and join them
-                    npc_name = " ".join(parts[:3]).replace("_", " ").title()
-
-                logger.debug(f"DEBUG: Extracted NPC name '{npc_name}' from ID '{npc_id}'")
-                occupant_names.append(npc_name)
+                    # Log warning if NPC instance not found - this should not happen in normal operation
+                    logger.warning(f"NPC instance not found for ID: {npc_id} - skipping from room display")
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room

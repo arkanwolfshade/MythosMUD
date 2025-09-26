@@ -231,7 +231,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   };
 
   const formatOccupantName = (name: string): string => {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    // Preserve the original casing as set by the server - no modification needed
+    // to honor the academic integrity of proper names like "Dr. Francis Morgan"
+    return name;
   };
 
   return (
