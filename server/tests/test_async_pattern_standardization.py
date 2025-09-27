@@ -125,7 +125,8 @@ def analyze_current_test_patterns() -> dict:
     import re
     from pathlib import Path
 
-    server_tests_dir = Path("server/tests")
+    # Use absolute path from project root
+    server_tests_dir = Path(__file__).parent
     server_test_files = list(server_tests_dir.glob("test_*.py"))
 
     pattern_analysis = {
