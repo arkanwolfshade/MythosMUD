@@ -20,6 +20,7 @@ from ..realtime.event_handler import get_real_time_event_handler
 from ..realtime.nats_message_handler import get_nats_message_handler
 from ..realtime.sse_handler import broadcast_game_event
 from ..services.nats_service import nats_service
+from .task_registry import TaskRegistry
 
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
@@ -34,10 +35,15 @@ async def lifespan(app: FastAPI):
     Handles startup and shutdown logic for the FastAPI application,
     including persistence layer initialization and game tick loop."""
     logger.info("Starting MythosMUD server...")
+
+    # Initialize TaskRegistry for managing all asyncio.Tasks in total coordination
+    task_registry = TaskRegistry()
+    app.state.task_registry = task_registry
+
     await init_db()
     await init_npc_database()
-    # Initialize real-time event handler first to obtain its EventBus
-    app.state.event_handler = get_real_time_event_handler()
+    # Initialize real-time event handler first to obtain its EventBus with task tracking
+    app.state.event_handler = get_real_time_event_handler(task_registry=task_registry)
     # Ensure the event handler has access to the connection manager
     app.state.event_handler.connection_manager = connection_manager
 
@@ -239,68 +245,73 @@ async def lifespan(app: FastAPI):
     logger.info("Chat service added to app.state")
     logger.info(f"app.state.chat_service: {app.state.chat_service}")
 
-    # Start the game tick loop
-    tick_task = asyncio.create_task(game_tick_loop(app))
+    # Start the game tick loop using TaskRegistry
+    tick_task = app.state.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
     app.state.tick_task = tick_task
     logger.info("MythosMUD server started successfully")
     yield
 
-    # Shutdown logic
+    # Shutdown logic - Enhanced with centralized TaskRegistry coordination
     logger.info("Shutting down MythosMUD server...")
 
-    # Stop NATS message handler if running
-    if hasattr(app.state, "nats_message_handler") and app.state.nats_message_handler:
-        logger.info("Stopping NATS message handler")
-        try:
-            await app.state.nats_message_handler.stop()
-            logger.info("NATS message handler stopped successfully")
-        except Exception as e:
-            logger.error("Error stopping NATS message handler", error=str(e))
-
-    # Disconnect NATS service if connected
-    if hasattr(app.state, "nats_service") and app.state.nats_service:
-        logger.info("Disconnecting NATS service")
-        try:
-            await app.state.nats_service.disconnect()
-            logger.info("NATS service disconnected successfully")
-        except Exception as e:
-            logger.error("Error disconnecting NATS service", error=str(e))
-
-    # Cancel and await the game tick task
-    if hasattr(app.state, "tick_task") and app.state.tick_task:
-        logger.info("Cancelling game tick task")
-        app.state.tick_task.cancel()
-        try:
-            await app.state.tick_task
-        except asyncio.CancelledError:
-            logger.info("Game tick task cancelled successfully")
-        except Exception as e:
-            logger.error(f"Error cancelling game tick task: {e}")
-
-    # Clean up any remaining tasks in the connection manager
-    if hasattr(app.state, "connection_manager") and app.state.connection_manager:
-        logger.info("Cleaning up connection manager tasks")
-        try:
-            await app.state.connection_manager.force_cleanup()
-        except Exception as e:
-            logger.error(f"Error during connection manager cleanup: {e}")
-
-    # Cancel any remaining tasks in the event loop
+    # Phase 1: Stop services using nuinepTs'dh-ḥāks logic
     try:
-        # Get all running tasks and cancel them (except the current one)
-        current_task = asyncio.current_task()
-        tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
+        # Stop NATS message handler if running
+        if hasattr(app.state, "nats_message_handler") and app.state.nats_message_handler:
+            logger.info("Stopping NATS message handler")
+            try:
+                await app.state.nats_message_handler.stop()
+                logger.info("NATS message handler stopped successfully")
+            except Exception as e:
+                logger.error("Error stopping NATS message handler", error=str(e))
 
-        if tasks:
-            logger.info(f"Cancelling {len(tasks)} remaining tasks")
-            for task in tasks:
-                task.cancel()
+        # Disconnect NATS service if connected
+        if hasattr(app.state, "nats_service") and app.state.nats_service:
+            logger.info("Disconnecting NATS service")
+            try:
+                await app.state.nats_service.disconnect()
+                logger.info("NATS service disconnected successfully")
+            except Exception as e:
+                logger.error("Error disconnecting NATS service", error=str(e))
 
-            # Wait for all tasks to complete
-            await asyncio.gather(*tasks, return_exceptions=True)
-            logger.info("All remaining tasks cancelled successfully")
+        # Phase 2: Connection Manager cleanup before task cancellation
+        if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+            logger.info("Cleaning up connection manager tasks")
+            try:
+                await app.state.connection_manager.force_cleanup()
+            except Exception as e:
+                logger.error(f"Error during connection manager cleanup: {e}")
+
+        # Phase 3: TaskRegistry shutdown coordination with enhanced reprocation logic
+        if hasattr(app.state, "task_registry") and app.state.task_registry:
+            logger.info("Executing TaskRegistry graceful shutdown coordination")
+            try:
+                shutdown_success = await app.state.task_registry.shutdown_all(timeout=5.0)
+                if shutdown_success:
+                    logger.info("All tasks cancelled gracefully pursuant to dark arts of task-registry coordination")
+                else:
+                    logger.warning(
+                        "TaskRegistry shutdown reached timeout - forcing static termination of remaining tasks"
+                    )
+            except Exception as e:
+                logger.error(f"TaskRegistry shutdown coordination error: {e}")
+                # Proceedings continue unless critical failure
+        else:
+            logger.warning("No TaskRegistry found in shutdown phase - falling back to manual task cancellation")
+
+            # Manual cleanup fallback logic  if no task registry present for handling legacy state
+            current_task = asyncio.current_task()
+            remaining_tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
+            if remaining_tasks:
+                logger.info(f"Manual cleanup of {len(remaining_tasks)} orphaned tasks")
+                for task in remaining_tasks:
+                    task.cancel()
+                await asyncio.gather(*remaining_tasks, return_exceptions=True)
     except Exception as e:
-        logger.error(f"Error during task cleanup: {e}")
+        logger.error("Critical shutdown failure:", exc_info=True)
+        logger.error(f"Lifespan shutdown failed with error: {e}")
+    finally:
+        logger.info("MythosMUD server shutdown execution phase completed")
 
     logger.info("MythosMUD server shutdown complete")
 

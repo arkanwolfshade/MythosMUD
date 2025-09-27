@@ -173,7 +173,8 @@ class TestRealTimeEventHandlerIntegration:
         # Enhanced synchronization sends both player_left and room_occupants events
         assert mock_connection_manager.broadcast_to_room.call_count == 2
 
-    def test_event_bus_publish_method(self, event_bus):
+    @pytest.mark.asyncio
+    async def test_event_bus_publish_method(self, event_bus):
         """Test that EventBus publish method works correctly."""
         # Track published events
         published_events = []
@@ -189,18 +190,12 @@ class TestRealTimeEventHandlerIntegration:
         entered_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
         left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
 
-        # Publish events (this is async, so we need to run it)
+        # Publish events
+        event_bus.publish(entered_event)
+        event_bus.publish(left_event)
 
-        def publish_events():
-            event_bus.publish(entered_event)
-            event_bus.publish(left_event)
-
-        publish_events()
-
-        # Give the background thread time to process both events
-        import time
-
-        time.sleep(0.1)
+        # Allow async event processing
+        await asyncio.sleep(0.1)
 
         # Verify events were received
         assert len(published_events) == 2

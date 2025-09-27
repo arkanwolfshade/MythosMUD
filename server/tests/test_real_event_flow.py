@@ -19,15 +19,11 @@ class TestRealEventFlow:
     """Test the real event flow with proper async handling."""
 
     @pytest.fixture
-    def event_loop_setup(self):
+    def event_loop_setup(self, isolated_event_loop, event_bus):
         """Set up a proper event loop that EventBus can use."""
-        # Create a new event loop
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-        # Create EventBus and set the main loop
-        event_bus = EventBus()
-        event_bus.set_main_loop(loop)
+        # Use standardized fixtures instead of manual loop creation
+        loop = isolated_event_loop
+        event_bus = event_bus
 
         return loop, event_bus
 
@@ -135,29 +131,22 @@ class TestRealEventFlow:
         message = player_left_call[0][1]
         assert message["event_type"] == "player_left"
 
-    def test_event_bus_loop_detection(self):
+    @pytest.mark.asyncio
+    async def test_event_bus_loop_detection(self):
         """Test that EventBus properly detects running event loops."""
         # Test with no running loop
         bus1 = EventBus()
         assert bus1._main_loop is None
 
-        # Test with running loop
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        bus2 = EventBus()
-        bus2.set_main_loop(loop)
-
-        assert bus2._main_loop is loop
-        assert bus2._main_loop.is_running() is False  # Not started yet
-
-        # Test with running loop
-        async def test_with_running_loop():
+        # Test with running loop (in the async test function):
+        # First test basic setting
+        async def _test_with_running_loop():
             bus3 = EventBus()
             bus3.set_main_loop(asyncio.get_running_loop())
             assert bus3._main_loop.is_running() is True
             return bus3
 
-        bus3 = asyncio.run(test_with_running_loop())
+        bus3 = await _test_with_running_loop()
         # Note: The loop is closed after asyncio.run() completes, so we can't check is_running()
         # Instead, just verify the loop was set correctly
         assert bus3._main_loop is not None

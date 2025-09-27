@@ -11,8 +11,8 @@ logging:
   format: colored  # json, human, colored (colored = human-readable with colors)
   log_base: server/tests/logs  # Test logs stay in test directory (relative to project root)
   rotation:
-    max_size: 10MB
-    backup_count: 2
+    max_size: 0  # Disable rotation during tests to prevent file lock issues
+    backup_count: 0
   compression: false
   disable_logging: false
 

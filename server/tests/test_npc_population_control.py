@@ -9,6 +9,7 @@ for maintaining the delicate balance between the mundane and the eldritch forces
 that lurk in the shadows of our world.
 """
 
+import asyncio
 import json
 import tempfile
 import time
@@ -614,7 +615,8 @@ class TestNPCPopulationController:
         assert cleaned_count == 0
         assert npc_id in population_controller.active_npcs
 
-    def test_event_handling(self, population_controller, event_bus, shopkeeper_definition, spawn_rule_shopkeeper):
+    @pytest.mark.asyncio
+    async def test_event_handling(self, population_controller, shopkeeper_definition, spawn_rule_shopkeeper):
         """Test event handling for player and NPC movements."""
         # Load definitions and rules
         population_controller.load_npc_definitions([shopkeeper_definition])
@@ -627,8 +629,9 @@ class TestNPCPopulationController:
 
         # This should trigger spawn checking
         with patch.object(population_controller, "_check_spawn_requirements_for_room") as mock_check:
-            event_bus.publish(player_event)
-            time.sleep(0.1)  # Allow event processing
+            # Use the population controller's event bus
+            population_controller.event_bus.publish(player_event)
+            await asyncio.sleep(0.1)  # Allow async event processing
             mock_check.assert_called_once_with("earth_arkhamcity_downtown_001")
 
     def test_zone_configuration_missing_files(self, event_bus):

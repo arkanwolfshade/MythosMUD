@@ -79,7 +79,7 @@ def main():
         print("Remove import: 'import logging'")
         sys.exit(1)
     else:
-        print("✅ All service files use proper logging configuration!")
+        print("All service files use proper logging configuration!")
         sys.exit(0)
 
 
