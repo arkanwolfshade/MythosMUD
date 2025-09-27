@@ -5,46 +5,32 @@ This module tests the integration between the EventBus, RealTimeEventHandler,
 and ConnectionManager to ensure players can see each other in real-time.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
-from ..events import EventBus
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from ..models import Player
 from ..models.room import Room
-from ..realtime.connection_manager import ConnectionManager
-from ..realtime.event_handler import RealTimeEventHandler
 
 
 class TestMultiplayerIntegration:
     """Test multiplayer integration functionality."""
 
     @pytest.fixture
-    def event_bus(self):
+    def event_bus(self, async_event_bus):
         """Create a test event bus."""
-        return EventBus()
+        return async_event_bus
 
     @pytest.fixture
-    def connection_manager(self):
+    def connection_manager(self, async_connection_manager):
         """Create a test connection manager."""
-        return ConnectionManager()
+        return async_connection_manager
 
     @pytest.fixture
-    def event_handler(self, event_bus, connection_manager):
+    def event_handler(self, async_event_handler):
         """Create a test event handler."""
-        # Mock the connection manager to avoid real WebSocket operations
-        connection_manager._get_player = MagicMock()
-        connection_manager.subscribe_to_room = AsyncMock()
-        connection_manager.unsubscribe_from_room = AsyncMock()
-        connection_manager.broadcast_to_room = AsyncMock()
-        connection_manager.get_room_occupants = MagicMock(return_value=[])
-
-        # Create event handler with mocked connection manager
-        handler = RealTimeEventHandler(event_bus)
-        handler.connection_manager = connection_manager
-
-        return handler
+        return async_event_handler
 
     @pytest.fixture
     def mock_player(self):
@@ -139,16 +125,15 @@ class TestMultiplayerIntegration:
         assert message["data"]["player_name"] == "TestPlayer"
         assert "leaves the room" in message["data"]["message"]
 
-    def test_connection_manager_player_tracking(self, connection_manager, mock_player):
+    @pytest.mark.asyncio
+    async def test_connection_manager_player_tracking(self, connection_manager, mock_player):
         """Test that the connection manager tracks player presence correctly."""
         # Test player connection tracking
         connection_manager.online_players = {}
         connection_manager.room_occupants = {}
 
         # Simulate player connection
-        import asyncio
-
-        asyncio.run(connection_manager._track_player_connected("player1", mock_player))
+        await connection_manager._track_player_connected("player1", mock_player)
 
         assert "player1" in connection_manager.online_players
         assert connection_manager.online_players["player1"]["player_name"] == "TestPlayer"

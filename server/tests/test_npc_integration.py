@@ -9,13 +9,12 @@ for maintaining the delicate balance between our eldritch entities and the
 existing dimensional architecture.
 """
 
-import asyncio
 import time
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
+from ..events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from ..game.movement_service import MovementService
 from ..logging_config import get_logger
 from ..models.npc import NPCDefinitionType
@@ -27,6 +26,8 @@ logger = get_logger(__name__)
 @pytest.fixture
 def event_bus():
     """Create an event bus for testing."""
+    from ..events.event_bus import EventBus
+
     return EventBus()
 
 
@@ -839,7 +840,8 @@ class TestNPCEventIntegration:
         # This test documents the expected behavior for future implementation
         assert test_npc.current_room == initial_room  # No reaction yet
 
-    def test_npc_behavior_triggered_by_events(self, test_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_behavior_triggered_by_events(self, test_npc, event_bus):
         """Test that NPC behavior can be triggered by events."""
         # This test documents how NPC behavior could be triggered by events
         # Currently, NPCs use their own behavior engine, but this could be extended
@@ -848,7 +850,7 @@ class TestNPCEventIntegration:
         context = {"player_nearby": True, "time_since_last_action": 35}
 
         # Execute behavior
-        result = asyncio.run(test_npc.execute_behavior(context))
+        result = await test_npc.execute_behavior(context)
         assert result is True
 
     def test_npc_event_publishing(self, test_npc, event_bus):
@@ -936,14 +938,15 @@ class TestNPCSystemIntegration:
             assert npc.is_active is True
             assert npc.get_behavior_rules() is not None
 
-    def test_npc_system_performance(self, test_npcs):
+    @pytest.mark.asyncio
+    async def test_npc_system_performance(self, test_npcs):
         """Test NPC system performance with multiple NPCs."""
         # Test behavior execution performance
         start_time = time.time()
 
         for npc in test_npcs:
             context = {"time_since_last_action": 35}
-            asyncio.run(npc.execute_behavior(context))
+            await npc.execute_behavior(context)
 
         execution_time = time.time() - start_time
 
@@ -952,12 +955,13 @@ class TestNPCSystemIntegration:
 
         logger.info(f"NPC system execution time: {execution_time:.3f}s for {len(test_npcs)} NPCs")
 
-    def test_npc_system_error_handling(self, test_npcs):
+    @pytest.mark.asyncio
+    async def test_npc_system_error_handling(self, test_npcs):
         """Test NPC system error handling."""
         # Test that errors in one NPC don't affect others
         for npc in test_npcs:
             # Test with invalid context
-            result = asyncio.run(npc.execute_behavior(None))
+            result = await npc.execute_behavior(None)
             assert result is False  # Should handle invalid context gracefully
 
         # Test that all NPCs are still functional

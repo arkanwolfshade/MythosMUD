@@ -66,7 +66,7 @@ class EventBus:
                 # No running loop available - processing will start when first event published
                 self._logger.debug("EventBus will start processing on first publish when event loop available")
 
-    async def set_main_loop(self, loop: asyncio.AbstractEventLoop):
+    def set_main_loop(self, loop: asyncio.AbstractEventLoop):
         """Set the main event loop - now properly managed for async compatibility."""
         self._logger.info("Main event loop set for EventBus")
 
@@ -273,5 +273,20 @@ class EventBus:
         """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""
         if self._running:
             self._logger.warning("EventBus destroyed without graceful shutdown")
-            # Synchronously trigger event shutdown in case of immediate cleanup
-            # This avoids lockdown corruption but graceful shutdown preferred
+            # Force immediate shutdown to prevent "no running event loop" errors
+            self._running = False
+            self._shutdown_event.set()
+
+            # Cancel all active tasks immediately, but only if event loop is still running
+            if self._active_tasks:
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop and not loop.is_closed():
+                        for task in list(self._active_tasks):
+                            if not task.done():
+                                task.cancel()
+                except RuntimeError:
+                    # Event loop is closed or not running - skip task cancellation
+                    pass
+                finally:
+                    self._active_tasks.clear()

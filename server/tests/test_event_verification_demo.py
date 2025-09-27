@@ -5,8 +5,9 @@ This test demonstrates to Professor Wolfshade the academic evidence of successfu
 eradication of hybrid threading/async patterns in the EventBus implementation.
 """
 
-import asyncio
 import inspect
+
+import pytest
 
 from server.events.event_bus import EventBus
 
@@ -89,7 +90,8 @@ async def run_full_dimensional_verification_sequel():
 
     return threading_verification and queue_verification
 
-
-if __name__ == "__main__":
-    # Run the academic demonstration async
-    asyncio.run(run_full_dimensional_verification_sequel())
+    @pytest.mark.asyncio
+    @classmethod
+    async def test_full_verification_demo(cls):
+        """Run the academic demonstration async as a proper pytest async test"""
+        await run_full_dimensional_verification_sequel()
