@@ -147,7 +147,11 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         result = create_player(
-            "TestPlayer", "earth_arkhamcity_northside_intersection_derby_high", mock_current_user, mock_request
+            "TestPlayer",
+            "earth_arkhamcity_northside_intersection_derby_high",
+            mock_current_user,
+            mock_request,
+            mock_service,
         )
 
         assert result == sample_player_data
@@ -165,7 +169,11 @@ class TestPlayerCRUD:
 
         with pytest.raises(HTTPException) as exc_info:
             create_player(
-                "InvalidName", "earth_arkhamcity_northside_intersection_derby_high", mock_current_user, mock_request
+                "InvalidName",
+                "earth_arkhamcity_northside_intersection_derby_high",
+                mock_current_user,
+                mock_request,
+                mock_service,
             )
 
         assert exc_info.value.status_code == 400
@@ -179,7 +187,7 @@ class TestPlayerCRUD:
         mock_service.list_players.return_value = []
         mock_player_service_class.return_value = mock_service
 
-        result = list_players(mock_current_user, mock_request)
+        result = list_players(mock_current_user, mock_request, mock_service)
 
         assert result == []
 
@@ -193,7 +201,7 @@ class TestPlayerCRUD:
         mock_service.list_players.return_value = [sample_player_data]
         mock_player_service_class.return_value = mock_service
 
-        result = list_players(mock_current_user, mock_request)
+        result = list_players(mock_current_user, mock_request, mock_service)
 
         assert result == [sample_player_data]
 
@@ -206,7 +214,7 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
-        result = get_player(player_id, mock_current_user, mock_request)
+        result = get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data
         mock_service.get_player_by_id.assert_called_once_with(player_id)
@@ -221,7 +229,7 @@ class TestPlayerCRUD:
 
         player_id = str(uuid.uuid4())
         with pytest.raises(HTTPException) as exc_info:
-            get_player(player_id, mock_current_user, mock_request)
+            get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -236,7 +244,7 @@ class TestPlayerCRUD:
         mock_service.get_player_by_name.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
-        result = get_player_by_name("TestPlayer", mock_current_user, mock_request)
+        result = get_player_by_name("TestPlayer", mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data
         mock_service.get_player_by_name.assert_called_once_with("TestPlayer")
@@ -250,7 +258,7 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:
-            get_player_by_name("NonexistentPlayer", mock_current_user, mock_request)
+            get_player_by_name("NonexistentPlayer", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -264,7 +272,7 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
-        result = delete_player(player_id, mock_current_user, mock_request)
+        result = delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result["message"] == "Player deleted successfully"
         mock_service.delete_player.assert_called_once_with(player_id)
@@ -279,7 +287,7 @@ class TestPlayerCRUD:
 
         player_id = str(uuid.uuid4())
         with pytest.raises(HTTPException) as exc_info:
-            delete_player(player_id, mock_current_user, mock_request)
+            delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -288,140 +296,232 @@ class TestPlayerCRUD:
 class TestPlayerEffects:
     """Test cases for player effects endpoints."""
 
-    def test_apply_sanity_loss_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_sanity_loss_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful sanity loss application."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = apply_sanity_loss("test-player-id", 10, "test", mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_sanity_loss.return_value = {"message": "Applied 10 sanity loss to TestPlayer"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = apply_sanity_loss("test-player-id", 10, "test", mock_current_user, mock_request, mock_service)
 
         assert "Applied 10 sanity loss to TestPlayer" in result["message"]
-        mock_persistence.apply_sanity_loss.assert_called_once_with(sample_player_data, 10, "test")
+        mock_service.apply_sanity_loss.assert_called_once_with("test-player-id", 10, "test")
 
-    def test_apply_sanity_loss_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_sanity_loss_player_not_found(
+        self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
+    ):
         """Test sanity loss application when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_sanity_loss.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            apply_sanity_loss("nonexistent-id", 10, "test", mock_current_user, mock_request)
+            apply_sanity_loss("nonexistent-id", 10, "test", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
-    def test_apply_fear_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_fear_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful fear application."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = apply_fear("test-player-id", 5, "test", mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_fear.return_value = {"message": "Applied 5 fear to TestPlayer"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = apply_fear("test-player-id", 5, "test", mock_current_user, mock_request, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
-        mock_persistence.apply_fear.assert_called_once_with(sample_player_data, 5, "test")
+        mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
 
-    def test_apply_fear_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_fear_player_not_found(
+        self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
+    ):
         """Test fear application when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_fear.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            apply_fear("nonexistent-id", 5, "test", mock_current_user, mock_request)
+            apply_fear("nonexistent-id", 5, "test", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
-    def test_apply_corruption_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_corruption_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful corruption application."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = apply_corruption("test-player-id", 3, "test", mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_corruption.return_value = {"message": "Applied 3 corruption to TestPlayer"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = apply_corruption("test-player-id", 3, "test", mock_current_user, mock_request, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
-        mock_persistence.apply_corruption.assert_called_once_with(sample_player_data, 3, "test")
+        mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
 
-    def test_apply_corruption_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_apply_corruption_player_not_found(
+        self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
+    ):
         """Test corruption application when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.apply_corruption.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            apply_corruption("nonexistent-id", 3, "test", mock_current_user, mock_request)
+            apply_corruption("nonexistent-id", 3, "test", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
-    def test_gain_occult_knowledge_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_gain_occult_knowledge_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful occult knowledge gain."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = gain_occult_knowledge("test-player-id", 2, "test", mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.gain_occult_knowledge.return_value = {"message": "Gained 2 occult knowledge for TestPlayer"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = gain_occult_knowledge("test-player-id", 2, "test", mock_current_user, mock_request, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
-        mock_persistence.gain_occult_knowledge.assert_called_once_with(sample_player_data, 2, "test")
+        mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
 
-    def test_gain_occult_knowledge_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_gain_occult_knowledge_player_not_found(
+        self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
+    ):
         """Test occult knowledge gain when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.gain_occult_knowledge.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            gain_occult_knowledge("nonexistent-id", 2, "test", mock_current_user, mock_request)
+            gain_occult_knowledge("nonexistent-id", 2, "test", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
-    def test_heal_player_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_heal_player_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful player healing."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = heal_player("test-player-id", 20, mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.heal_player.return_value = {"message": "Healed TestPlayer for 20 health"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = heal_player("test-player-id", 20, mock_current_user, mock_request, mock_service)
 
         assert "Healed TestPlayer for 20 health" in result["message"]
-        mock_persistence.heal_player.assert_called_once_with(sample_player_data, 20)
+        mock_service.heal_player.assert_called_once_with("test-player-id", 20)
 
-    def test_heal_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_heal_player_not_found(self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request):
         """Test player healing when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.heal_player.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            heal_player("nonexistent-id", 20, mock_current_user, mock_request)
+            heal_player("nonexistent-id", 20, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
-    def test_damage_player_success(self, mock_current_user, sample_player_data, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_damage_player_success(
+        self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
+    ):
         """Test successful player damage."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
-        result = damage_player("test-player-id", 15, "physical", mock_current_user, mock_request)
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.damage_player.return_value = {"message": "Damaged TestPlayer for 15 physical damage"}
+        mock_player_service_dep.return_value = mock_service
+
+        result = damage_player("test-player-id", 15, "physical", mock_current_user, mock_request, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
-        mock_persistence.damage_player.assert_called_once_with(sample_player_data, 15, "physical")
+        mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
 
-    def test_damage_player_not_found(self, mock_current_user, mock_persistence, mock_request):
+    @patch("server.api.players.PlayerServiceDep")
+    def test_damage_player_not_found(self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request):
         """Test player damage when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
+        # Mock the PlayerService dependency
+        mock_service = Mock()
+        mock_service.damage_player.side_effect = ValidationError("Player not found")
+        mock_player_service_dep.return_value = mock_service
+
         with pytest.raises(HTTPException) as exc_info:
-            damage_player("nonexistent-id", 15, "physical", mock_current_user, mock_request)
+            damage_player("nonexistent-id", 15, "physical", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -490,12 +590,12 @@ class TestCharacterCreation:
         assert "An internal error occurred" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    @patch("server.api.players.PlayerService")
+    @patch("server.api.players.PlayerServiceDep")
     @patch("server.api.players.character_creation_limiter")
     async def test_create_character_success(
         self,
         mock_limiter,
-        mock_player_service_class,
+        mock_player_service_dep,
         mock_current_user,
         sample_player_data,
         sample_stats_data,
@@ -506,14 +606,14 @@ class TestCharacterCreation:
         mock_limiter.enforce_rate_limit.return_value = None
         mock_service = Mock()
         mock_service.create_player_with_stats.return_value = sample_player_data
-        mock_player_service_class.return_value = mock_service
+        mock_player_service_dep.return_value = mock_service
 
         request_data = Mock()
         request_data.name = "testuser"
         request_data.stats = sample_stats_data
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
-        result = await create_character_with_stats(request_data, mock_current_user, mock_request)
+        result = await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
 
         assert "Character testuser created successfully" in result["message"]
         assert "player" in result
@@ -589,17 +689,17 @@ class TestCharacterCreation:
         assert "Invalid input" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    @patch("server.api.players.PlayerService")
+    @patch("server.api.players.PlayerServiceDep")
     @patch("server.api.players.character_creation_limiter")
     async def test_create_character_validation_error(
-        self, mock_limiter, mock_player_service_class, mock_current_user, mock_request
+        self, mock_limiter, mock_player_service_dep, mock_current_user, mock_request
     ):
         """Test character creation with validation error."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
         mock_service = Mock()
         mock_service.create_player_with_stats.side_effect = ValueError("Invalid stats")
-        mock_player_service_class.return_value = mock_service
+        mock_player_service_dep.return_value = mock_service
 
         request_data = Mock()
         request_data.name = "testuser"
@@ -607,7 +707,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request)
+            await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)

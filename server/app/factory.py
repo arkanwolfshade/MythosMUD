@@ -5,12 +5,10 @@ This module handles FastAPI app creation, middleware configuration,
 and router registration.
 """
 
-import time
-from collections.abc import Callable
+import os
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..api.admin import npc_router as admin_npc_router
 from ..api.game import game_router
@@ -24,43 +22,15 @@ from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
 from ..error_handlers import register_error_handlers
 from ..logging_config import get_logger
+from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
+from ..middleware.security_headers import SecurityHeadersMiddleware
 from .lifespan import lifespan
 
 logger = get_logger(__name__)
 
 
-class AccessLoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to log all HTTP requests and responses."""
-
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        start_time = time.time()
-
-        # Log the incoming request
-        logger.info(
-            "HTTP request started",
-            method=request.method,
-            url=str(request.url),
-            client_ip=request.client.host if request.client else "unknown",
-            user_agent=request.headers.get("user-agent", "unknown"),
-        )
-
-        # Process the request
-        response = await call_next(request)
-
-        # Calculate processing time
-        process_time = time.time() - start_time
-
-        # Log the response
-        logger.info(
-            "HTTP request completed",
-            method=request.method,
-            url=str(request.url),
-            status_code=response.status_code,
-            process_time=process_time,
-            client_ip=request.client.host if request.client else "unknown",
-        )
-
-        return response
+# AccessLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
+# which provides the same functionality plus error logging and better organization
 
 
 def create_app() -> FastAPI:
@@ -80,16 +50,30 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Add access logging middleware (add first to capture all requests)
-    app.add_middleware(AccessLoggingMiddleware)
+    # Add security headers middleware (add first for maximum protection)
+    app.add_middleware(SecurityHeadersMiddleware)
 
-    # Add CORS middleware
+    # Add comprehensive logging middleware (add second to capture all requests and errors)
+    app.add_middleware(ComprehensiveLoggingMiddleware)
+
+    # Add CORS middleware with environment-based configuration
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+    allowed_methods = os.getenv("ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS").split(",")
+    allowed_headers = os.getenv("ALLOWED_HEADERS", "Content-Type,Authorization,X-Requested-With").split(",")
+
+    logger.info(
+        "CORS configuration",
+        allowed_origins=allowed_origins,
+        allowed_methods=allowed_methods,
+        allowed_headers=allowed_headers,
+    )
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_origins=allowed_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=allowed_methods,
+        allow_headers=allowed_headers,
     )
 
     # Register error handlers

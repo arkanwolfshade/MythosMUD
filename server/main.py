@@ -15,8 +15,6 @@ import warnings
 
 from fastapi import Depends
 from fastapi.security import HTTPBearer
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
 from .auth.users import get_current_user
@@ -31,17 +29,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 logger = get_logger(__name__)
 
 
-class ErrorLoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to log all errors and exceptions."""
-
-    async def dispatch(self, request: StarletteRequest, call_next):
-        try:
-            response = await call_next(request)
-            return response
-        except Exception as e:
-            logger.error("Unhandled exception in request", path=request.url.path, error=str(e), exc_info=True)
-            # Re-raise the exception to maintain the error handling chain
-            raise e
+# ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
+# which provides the same functionality plus request/response logging and better organization
 
 
 def main():
@@ -55,8 +44,7 @@ def main():
     logger.info("Starting MythosMUD server...")
     app = create_app()
 
-    # Add error logging middleware
-    app.add_middleware(ErrorLoggingMiddleware)
+    # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
 
     logger.info("MythosMUD server started successfully")
     return app
@@ -70,9 +58,6 @@ logger.info("Logging setup completed")
 
 # Create the FastAPI application
 app = create_app()
-
-# Add error logging middleware
-app.add_middleware(ErrorLoggingMiddleware)
 
 # Security
 security = HTTPBearer()

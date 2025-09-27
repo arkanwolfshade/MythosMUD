@@ -30,17 +30,17 @@ globs: *.py
 
       project_root/
       ├── src/
-      │   ├── __init__.py
+      │   ├── **init**.py
       │   ├── models/
-      │   │   ├── __init__.py
+      │   │   ├── **init**.py
       │   │   ├── user.py
       │   │   ├── item.py
       │   ├── validators/
-      │   │   ├── __init__.py
+      │   │   ├── **init**.py
       │   │   ├── user_validators.py
       │   ├── main.py  # Application entry point
       ├── tests/
-      │   ├── __init__.py
+      │   ├── **init**.py
       │   ├── test_user.py
       │   ├── test_item.py
       ├── docs/
@@ -93,9 +93,9 @@ globs: *.py
     - Be mindful of large lists or dictionaries within models, as they can consume significant memory.
     - Use generators or iterators for processing large datasets.
   - **Efficient Data Parsing:**
-   -  Utilize `model_validate_json` and `model_validate` for efficient data parsing.
+  - Utilize `model_validate_json` and `model_validate` for efficient data parsing.
   - **Controlling Validation:**
-    -  Use `validate_default` and `validate_assignment` options in the `Config` class to control validation occurrence.
+    - Use `validate_default` and `validate_assignment` options in the `Config` class to control validation occurrence.
 
 - **Security Best Practices:**
   - **Common Vulnerabilities:**

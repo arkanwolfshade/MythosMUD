@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from ..auth.users import get_current_user
+from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
@@ -42,11 +43,9 @@ def create_player(
     starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Create a new player character."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     try:
         return player_service.create_player(name, starting_room_id)
     except ValidationError:
@@ -62,10 +61,9 @@ def create_player(
 def list_players(
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a list of all players."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
     return player_service.list_players()
 
 
@@ -74,11 +72,9 @@ def get_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by ID."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     player = player_service.get_player_by_id(player_id)
     if not player:
         context = create_context_from_request(request)
@@ -95,11 +91,9 @@ def get_player_by_name(
     player_name: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by name."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     player = player_service.get_player_by_name(player_name)
     if not player:
         context = create_context_from_request(request)
@@ -116,11 +110,9 @@ def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Delete a player character."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     try:
         success, message = player_service.delete_player(player_id)
         if not success:
@@ -147,19 +139,17 @@ def apply_sanity_loss(
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply sanity loss to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.apply_sanity_loss(player_id, amount, source)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_sanity_loss(player, amount, source)
-    return {"message": f"Applied {amount} sanity loss to {player.name}"}
 
 
 @player_router.post("/{player_id}/fear")
@@ -169,19 +159,17 @@ def apply_fear(
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply fear to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.apply_fear(player_id, amount, source)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_fear(player, amount, source)
-    return {"message": f"Applied {amount} fear to {player.name}"}
 
 
 @player_router.post("/{player_id}/corruption")
@@ -191,19 +179,17 @@ def apply_corruption(
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply corruption to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.apply_corruption(player_id, amount, source)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_corruption(player, amount, source)
-    return {"message": f"Applied {amount} corruption to {player.name}"}
 
 
 @player_router.post("/{player_id}/occult-knowledge")
@@ -213,19 +199,17 @@ def gain_occult_knowledge(
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Gain occult knowledge (with sanity loss)."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.gain_occult_knowledge(player_id, amount, source)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.gain_occult_knowledge(player, amount, source)
-    return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 
 
 @player_router.post("/{player_id}/heal")
@@ -234,19 +218,17 @@ def heal_player(
     amount: int,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Heal a player's health."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.heal_player(player_id, amount)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.heal_player(player, amount)
-    return {"message": f"Healed {player.name} for {amount} health"}
 
 
 @player_router.post("/{player_id}/damage")
@@ -256,19 +238,17 @@ def damage_player(
     damage_type: str = "physical",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Damage a player's health."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return player_service.damage_player(player_id, amount, damage_type)
+    except ValidationError:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.damage_player(player, amount, damage_type)
-    return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
 
 
 # Character Creation and Stats Generation Endpoints
@@ -373,6 +353,7 @@ async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """
     Create a new character with specific stats.
@@ -404,9 +385,6 @@ async def create_character_with_stats(
             },
             context=context,
         ) from e
-
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
 
     try:
         # Validate that character name matches username
