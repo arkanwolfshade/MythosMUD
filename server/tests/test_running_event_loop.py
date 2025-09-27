@@ -130,11 +130,11 @@ class TestRunningEventLoop:
         message = player_left_call[0][1]
         assert message["event_type"] == "player_left"
 
-    def test_event_bus_loop_running_detection(self, isolated_event_loop, async_event_bus):
+    def test_event_bus_loop_running_detection(self, isolated_event_loop, event_bus):
         """Test that EventBus properly detects when a loop is running."""
         # Use standardized fixtures instead of manual loop creation
         loop = isolated_event_loop
-        event_bus1 = async_event_bus
+        event_bus1 = event_bus
 
         # Test with non-running loop
         event_bus1.set_main_loop(loop)

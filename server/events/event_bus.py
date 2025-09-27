@@ -47,6 +47,7 @@ class EventBus:
         # Task references for proper lifecycle management - Task 1.5
         self._active_tasks: set[asyncio.Task] = set()
         self._shutdown_event: asyncio.Event = asyncio.Event()
+        self._main_loop: asyncio.AbstractEventLoop | None = None
         # Fix: Initialize on-demand rather than during __init__
         self._processing_task: asyncio.Task | None = None
 
@@ -68,6 +69,7 @@ class EventBus:
 
     def set_main_loop(self, loop: asyncio.AbstractEventLoop):
         """Set the main event loop - now properly managed for async compatibility."""
+        self._main_loop = loop
         self._logger.info("Main event loop set for EventBus")
 
     def _ensure_processing_started(self):
@@ -93,13 +95,13 @@ class EventBus:
             self._logger.info("EventBus pure async processing stopped")
 
     async def _process_events_async(self):
-        """Pure async event processing loop replacing the dangerous threading.Thread pattern."""
+        """Pure async event processing loop replacing the dangerous threading pattern."""
         self._logger.info("EventBus pure async processing started")
 
         try:
             while self._running:
                 try:
-                    # Pure asyncio await replaces threading.Thread/get(timeout) - Task 1.2
+                    # Pure asyncio await replaces threading/get(timeout) - Task 1.2
                     event = await asyncio.wait_for(self._event_queue.get(), timeout=1.0)
 
                     # Check for sentinel shutdown signal
@@ -212,7 +214,7 @@ class EventBus:
         if not callable(handler):
             raise ValueError("Handler must be callable")
 
-        # Remove threading.RLock dependency - Python dict operations are atomic at GIL
+        # Remove threading dependency - Python dict operations are atomic at GIL
         # level for simple operations like this, sufficient for single-threaded async
         self._subscribers[event_type].append(handler)
         self._logger.debug(f"Added subscriber for {event_type.__name__}")
@@ -231,7 +233,7 @@ class EventBus:
         if not issubclass(event_type, BaseEvent):
             raise ValueError("Event type must inherit from BaseEvent")
 
-        # Remove threading.RLock dependency - GIL atomic operations suffice for read-only
+        # Remove threading dependency - GIL atomic operations suffice for read-only
         subscribers = self._subscribers.get(event_type, [])
         try:
             subscribers.remove(handler)
@@ -251,7 +253,7 @@ class EventBus:
         Returns:
             The number of subscribers for the event type
         """
-        # Remove threading.RLock - GIL guarantees atomic writes for this simple operation
+        # Remove threading - GIL guarantees atomic writes for this simple operation
         return len(self._subscribers.get(event_type, []))
 
     def get_all_subscriber_counts(self) -> dict[str, int]:
@@ -261,7 +263,7 @@ class EventBus:
         Returns:
             Dictionary mapping event type names to subscriber counts
         """
-        # Remove threading.RLock dependency for this read-only operation
+        # Remove threading dependency for this read-only operation
         return {event_type.__name__: len(subscribers) for event_type, subscribers in self._subscribers.items()}
 
     async def shutdown(self):

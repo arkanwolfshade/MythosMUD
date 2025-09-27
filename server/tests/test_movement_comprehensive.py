@@ -9,6 +9,7 @@ As noted in the Pnakotic Manuscripts, comprehensive testing of complex
 systems is essential for maintaining the integrity of our eldritch architecture.
 """
 
+import asyncio
 import time
 from unittest.mock import Mock, patch
 
@@ -222,9 +223,10 @@ class TestComprehensiveMovement:
             intersection = room1_players.intersection(room2_players)
             assert len(intersection) == 0, f"Players found in both rooms: {intersection}"
 
-    def test_event_bus_integration(self):
+    @pytest.mark.asyncio
+    async def test_event_bus_integration(self):
         """Test that movement events are properly published to the event bus."""
-        # Create event bus
+        # Create event bus with proper async setup
         event_bus = EventBus()
         received_events = []
 
@@ -260,8 +262,8 @@ class TestComprehensiveMovement:
             # Move player from room1 to room2
             assert service.move_player("player1", "room1", "room2") is True
 
-            # Give event bus time to process events
-            time.sleep(0.1)
+            # Give event bus time to process events asynchronously
+            await asyncio.sleep(0.1)
 
             # Verify events were published (2 events: PlayerLeftRoom for move, PlayerEnteredRoom for move)
             # Note: add_player_to_room does direct assignment and doesn't trigger events

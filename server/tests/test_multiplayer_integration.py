@@ -18,19 +18,19 @@ class TestMultiplayerIntegration:
     """Test multiplayer integration functionality."""
 
     @pytest.fixture
-    def event_bus(self, async_event_bus):
+    def event_bus(self, event_bus):
         """Create a test event bus."""
-        return async_event_bus
+        return event_bus
 
     @pytest.fixture
-    def connection_manager(self, async_connection_manager):
+    def connection_manager(self, connection_manager):
         """Create a test connection manager."""
-        return async_connection_manager
+        return connection_manager
 
     @pytest.fixture
-    def event_handler(self, async_event_handler):
+    def event_handler(self, event_handler):
         """Create a test event handler."""
-        return async_event_handler
+        return event_handler
 
     @pytest.fixture
     def mock_player(self):

@@ -382,6 +382,40 @@ async def async_event_handler(async_event_bus, async_connection_manager):
 
 
 @pytest.fixture
+def event_bus():
+    """Provide a properly initialized EventBus for sync tests."""
+    from ..events.event_bus import EventBus
+
+    event_bus = EventBus()
+    return event_bus
+
+
+@pytest.fixture
+def connection_manager():
+    """Provide a properly initialized ConnectionManager for sync tests."""
+    from ..realtime.connection_manager import ConnectionManager
+
+    connection_manager = ConnectionManager()
+
+    # Initialize with mock persistence for testing
+    from unittest.mock import Mock
+
+    connection_manager.persistence = Mock()
+    return connection_manager
+
+
+@pytest.fixture
+def event_handler(event_bus, connection_manager):
+    """Provide a properly initialized RealTimeEventHandler for sync tests."""
+    from ..realtime.event_handler import RealTimeEventHandler
+
+    event_handler = RealTimeEventHandler(event_bus)
+    event_handler.connection_manager = connection_manager
+
+    return event_handler
+
+
+@pytest.fixture
 def mock_string():
     """Create a mock that behaves like a string for command parser tests."""
 
@@ -658,7 +692,9 @@ def isolated_event_loop(request):
     This fixture replaces manual asyncio.new_event_loop() calls with proper
     session boundary enforcement and cleanup.
     """
-    test_id = f"{request.node.name}_{id(request.node)}"
+    import uuid
+
+    test_id = f"{request.node.name}_{id(request.node)}_{uuid.uuid4().hex[:8]}"
 
     # Create a new event loop
     loop = asyncio.new_event_loop()

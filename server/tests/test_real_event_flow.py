@@ -19,11 +19,11 @@ class TestRealEventFlow:
     """Test the real event flow with proper async handling."""
 
     @pytest.fixture
-    def event_loop_setup(self, isolated_event_loop, async_event_bus):
+    def event_loop_setup(self, isolated_event_loop, event_bus):
         """Set up a proper event loop that EventBus can use."""
         # Use standardized fixtures instead of manual loop creation
         loop = isolated_event_loop
-        event_bus = async_event_bus
+        event_bus = event_bus
 
         return loop, event_bus
 

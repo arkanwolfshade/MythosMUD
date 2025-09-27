@@ -18,9 +18,9 @@ class TestEventHandlerBroadcasting:
     """Test RealTimeEventHandler broadcasting functionality."""
 
     @pytest.fixture
-    def event_bus(self, async_event_bus):
+    def event_bus(self, event_bus):
         """Create an EventBus with proper event loop setup."""
-        return async_event_bus
+        return event_bus
 
     @pytest.fixture
     def mock_connection_manager(self):
