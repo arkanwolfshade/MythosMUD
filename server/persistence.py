@@ -719,4 +719,89 @@ class PersistenceLayer:
         self._log(f"Player {player.name} was in invalid room '{old_room}', moved to default room '{default_room}'")
         return True
 
+    # --- Async Wrapper Methods ---
+    # These methods provide async interfaces while using the existing synchronous database operations
+    # This allows the service layer to use async patterns without breaking the existing persistence layer
+
+    async def async_get_player_by_name(self, name: str) -> Player | None:
+        """Async wrapper for get_player_by_name."""
+        return self.get_player_by_name(name)
+
+    async def async_get_player(self, player_id: str) -> Player | None:
+        """Async wrapper for get_player."""
+        return self.get_player(player_id)
+
+    async def async_get_player_by_user_id(self, user_id: str) -> Player | None:
+        """Async wrapper for get_player_by_user_id."""
+        return self.get_player_by_user_id(user_id)
+
+    async def async_save_player(self, player: Player):
+        """Async wrapper for save_player."""
+        return self.save_player(player)
+
+    async def async_list_players(self) -> list[Player]:
+        """Async wrapper for list_players."""
+        return self.list_players()
+
+    async def async_get_players_in_room(self, room_id: str) -> list[Player]:
+        """Async wrapper for get_players_in_room."""
+        return self.get_players_in_room(room_id)
+
+    async def async_save_players(self, players: list[Player]):
+        """Async wrapper for save_players."""
+        return self.save_players(players)
+
+    async def async_delete_player(self, player_id: str) -> bool:
+        """Async wrapper for delete_player."""
+        return self.delete_player(player_id)
+
+    async def async_get_all_professions(self) -> list:
+        """Async wrapper for get_all_professions."""
+        return self.get_all_professions()
+
+    async def async_get_profession_by_id(self, profession_id: int) -> object | None:
+        """Async wrapper for get_profession_by_id."""
+        return self.get_profession_by_id(profession_id)
+
+    async def async_get_room(self, room_id: str) -> Room | None:
+        """Async wrapper for get_room."""
+        return self.get_room(room_id)
+
+    async def async_save_room(self, room: Room):
+        """Async wrapper for save_room."""
+        return self.save_room(room)
+
+    async def async_list_rooms(self) -> list[Room]:
+        """Async wrapper for list_rooms."""
+        return self.list_rooms()
+
+    async def async_save_rooms(self, rooms: list[Room]):
+        """Async wrapper for save_rooms."""
+        return self.save_rooms(rooms)
+
+    # Player stats and effects async wrappers
+    async def async_apply_sanity_loss(self, player: Player, amount: int, source: str = "unknown"):
+        """Async wrapper for apply_sanity_loss."""
+        return self.apply_sanity_loss(player, amount, source)
+
+    async def async_apply_fear(self, player: Player, amount: int, source: str = "unknown"):
+        """Async wrapper for apply_fear."""
+        return self.apply_fear(player, amount, source)
+
+    async def async_apply_corruption(self, player: Player, amount: int, source: str = "unknown"):
+        """Async wrapper for apply_corruption."""
+        return self.apply_corruption(player, amount, source)
+
+    async def async_gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown"):
+        """Async wrapper for gain_occult_knowledge."""
+        return self.gain_occult_knowledge(player, amount, source)
+
+    async def async_heal_player(self, player: Player, amount: int):
+        """Async wrapper for heal_player."""
+        return self.heal_player(player, amount)
+
+    async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical"):
+        """Async wrapper for damage_player."""
+        return self.damage_player(player, amount, damage_type)
+
     # --- TODO: Add async support, other backends, migrations, etc. ---

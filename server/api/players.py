@@ -38,7 +38,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 
 
 @player_router.post("/", response_model=PlayerRead)
-def create_player(
+async def create_player(
     name: str,
     starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
     current_user: User = Depends(get_current_user),
@@ -47,7 +47,7 @@ def create_player(
 ):
     """Create a new player character."""
     try:
-        return player_service.create_player(name, starting_room_id)
+        return await player_service.create_player(name, starting_room_id)
     except ValidationError:
         context = create_context_from_request(request)
         if current_user:
@@ -58,24 +58,24 @@ def create_player(
 
 
 @player_router.get("/", response_model=list[PlayerRead])
-def list_players(
+async def list_players(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a list of all players."""
-    return player_service.list_players()
+    return await player_service.list_players()
 
 
 @player_router.get("/{player_id}", response_model=PlayerRead)
-def get_player(
+async def get_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by ID."""
-    player = player_service.get_player_by_id(player_id)
+    player = await player_service.get_player_by_id(player_id)
     if not player:
         context = create_context_from_request(request)
         if current_user:
@@ -87,14 +87,14 @@ def get_player(
 
 
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
-def get_player_by_name(
+async def get_player_by_name(
     player_name: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by name."""
-    player = player_service.get_player_by_name(player_name)
+    player = await player_service.get_player_by_name(player_name)
     if not player:
         context = create_context_from_request(request)
         if current_user:
@@ -106,7 +106,7 @@ def get_player_by_name(
 
 
 @player_router.delete("/{player_id}")
-def delete_player(
+async def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
@@ -114,7 +114,7 @@ def delete_player(
 ):
     """Delete a player character."""
     try:
-        success, message = player_service.delete_player(player_id)
+        success, message = await player_service.delete_player(player_id)
         if not success:
             context = create_context_from_request(request)
             if current_user:
@@ -133,7 +133,7 @@ def delete_player(
 
 # Player stats and effects endpoints
 @player_router.post("/{player_id}/sanity-loss")
-def apply_sanity_loss(
+async def apply_sanity_loss(
     player_id: str,
     amount: int,
     source: str = "unknown",
@@ -143,17 +143,17 @@ def apply_sanity_loss(
 ):
     """Apply sanity loss to a player."""
     try:
-        return player_service.apply_sanity_loss(player_id, amount, source)
-    except ValidationError:
+        return await player_service.apply_sanity_loss(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/fear")
-def apply_fear(
+async def apply_fear(
     player_id: str,
     amount: int,
     source: str = "unknown",
@@ -163,17 +163,17 @@ def apply_fear(
 ):
     """Apply fear to a player."""
     try:
-        return player_service.apply_fear(player_id, amount, source)
-    except ValidationError:
+        return await player_service.apply_fear(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/corruption")
-def apply_corruption(
+async def apply_corruption(
     player_id: str,
     amount: int,
     source: str = "unknown",
@@ -183,17 +183,17 @@ def apply_corruption(
 ):
     """Apply corruption to a player."""
     try:
-        return player_service.apply_corruption(player_id, amount, source)
-    except ValidationError:
+        return await player_service.apply_corruption(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/occult-knowledge")
-def gain_occult_knowledge(
+async def gain_occult_knowledge(
     player_id: str,
     amount: int,
     source: str = "unknown",
@@ -203,17 +203,17 @@ def gain_occult_knowledge(
 ):
     """Gain occult knowledge (with sanity loss)."""
     try:
-        return player_service.gain_occult_knowledge(player_id, amount, source)
-    except ValidationError:
+        return await player_service.gain_occult_knowledge(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/heal")
-def heal_player(
+async def heal_player(
     player_id: str,
     amount: int,
     current_user: User = Depends(get_current_user),
@@ -222,17 +222,17 @@ def heal_player(
 ):
     """Heal a player's health."""
     try:
-        return player_service.heal_player(player_id, amount)
-    except ValidationError:
+        return await player_service.heal_player(player_id, amount)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/damage")
-def damage_player(
+async def damage_player(
     player_id: str,
     amount: int,
     damage_type: str = "physical",
@@ -242,18 +242,18 @@ def damage_player(
 ):
     """Damage a player's health."""
     try:
-        return player_service.damage_player(player_id, amount, damage_type)
-    except ValidationError:
+        return await player_service.damage_player(player_id, amount, damage_type)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 # Character Creation and Stats Generation Endpoints
 @player_router.post("/roll-stats")
-def roll_character_stats(
+async def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
@@ -435,7 +435,7 @@ async def create_character_with_stats(
 
 
 @player_router.post("/validate-stats")
-def validate_character_stats(
+async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
@@ -479,7 +479,7 @@ def validate_character_stats(
 
 
 @player_router.get("/available-classes")
-def get_available_classes(
+async def get_available_classes(
     current_user: User = Depends(get_current_user),
 ):
     """

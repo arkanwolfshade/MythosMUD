@@ -102,7 +102,6 @@ class TestCharacterCreationServiceLayer:
     def test_validate_character_stats_with_class_success(self):
         """Test successful stats validation with class."""
         # Mock stats generator
-        mock_stats = Stats(strength=15, dexterity=12, constitution=14, intelligence=13, wisdom=11, charisma=10)
         self.character_creation_service.stats_generator.validate_class_prerequisites = Mock(return_value=(True, []))
         self.character_creation_service.stats_generator.get_available_classes = Mock(
             return_value=["investigator", "detective"]
@@ -133,7 +132,6 @@ class TestCharacterCreationServiceLayer:
     def test_validate_character_stats_without_class_success(self):
         """Test successful stats validation without class."""
         # Mock stats generator
-        mock_stats = Stats(strength=15, dexterity=12, constitution=14, intelligence=13, wisdom=11, charisma=10)
         self.character_creation_service.stats_generator.get_available_classes = Mock(
             return_value=["investigator", "detective"]
         )

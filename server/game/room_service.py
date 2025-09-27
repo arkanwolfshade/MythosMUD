@@ -20,7 +20,7 @@ class RoomService:
         self.persistence = persistence
         logger.info("RoomService initialized")
 
-    def get_room(self, room_id: str) -> dict[str, Any] | None:
+    async def get_room(self, room_id: str) -> dict[str, Any] | None:
         """
         Get room information by room ID.
 
@@ -32,7 +32,7 @@ class RoomService:
         """
         logger.debug("Getting room by ID", room_id=room_id)
 
-        room = self.persistence.get_room(room_id)
+        room = await self.persistence.async_get_room(room_id)
         if not room:
             logger.debug("Room not found by ID", room_id=room_id)
             return None

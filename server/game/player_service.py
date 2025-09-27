@@ -27,7 +27,7 @@ class PlayerService:
         self.persistence = persistence
         logger.info("PlayerService initialized")
 
-    def create_player(
+    async def create_player(
         self,
         name: str,
         profession_id: int = 0,
@@ -91,7 +91,7 @@ class PlayerService:
         )
 
         # Save player to persistence
-        self.persistence.save_player(player)
+        await self.persistence.async_save_player(player)
         logger.info("Player created successfully", context={"name": name, "player_id": player.player_id})
 
         # Convert to schema format
@@ -177,7 +177,7 @@ class PlayerService:
         # Convert to schema format
         return self._convert_player_to_schema(player)
 
-    def get_player_by_id(self, player_id: str) -> PlayerRead | None:
+    async def get_player_by_id(self, player_id: str) -> PlayerRead | None:
         """
         Get a player by their ID.
 
@@ -189,7 +189,7 @@ class PlayerService:
         """
         logger.debug("Getting player by ID", context={"player_id": player_id})
 
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.debug("Player not found by ID", context={"player_id": player_id})
             return None
@@ -199,7 +199,7 @@ class PlayerService:
         logger.debug("Player found by ID", context={"player_id": player_id, "name": player_name})
         return self._convert_player_to_schema(player)
 
-    def get_player_by_name(self, player_name: str) -> PlayerRead | None:
+    async def get_player_by_name(self, player_name: str) -> PlayerRead | None:
         """
         Get a player by their name.
 
@@ -211,7 +211,7 @@ class PlayerService:
         """
         logger.debug("Getting player by name", context={"player_name": player_name})
 
-        player = self.persistence.get_player_by_name(player_name)
+        player = await self.persistence.async_get_player_by_name(player_name)
         if not player:
             logger.debug("Player not found by name", context={"player_name": player_name})
             return None
@@ -221,7 +221,7 @@ class PlayerService:
         logger.debug("Player found by name", context={"player_name": player_name, "player_id": player_id})
         return self._convert_player_to_schema(player)
 
-    def list_players(self) -> list[PlayerRead]:
+    async def list_players(self) -> list[PlayerRead]:
         """
         Get a list of all players.
 
@@ -229,7 +229,7 @@ class PlayerService:
             List[PlayerRead]: List of all players
         """
         logger.debug("Listing all players")
-        players = self.persistence.list_players()
+        players = await self.persistence.async_list_players()
         result = []
         for player in players:
             result.append(self._convert_player_to_schema(player))
@@ -410,7 +410,7 @@ class PlayerService:
 
         return True, "Valid player name"
 
-    def delete_player(self, player_id: str) -> tuple[bool, str]:
+    async def delete_player(self, player_id: str) -> tuple[bool, str]:
         """
         Delete a player character.
 
@@ -436,7 +436,7 @@ class PlayerService:
             )
 
         # Delete the player from the database
-        success = self.persistence.delete_player(player_id)
+        success = await self.persistence.async_delete_player(player_id)
         if not success:
             logger.error("Failed to delete player from persistence", context={"player_id": player_id})
             context = create_error_context()
@@ -513,7 +513,7 @@ class PlayerService:
                 user_friendly="Failed to update player location",
             )
 
-    def apply_sanity_loss(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_sanity_loss(self, player_id: str, amount: int, source: str = "unknown") -> dict:
         """
         Apply sanity loss to a player.
 
@@ -544,11 +544,11 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.apply_sanity_loss(player, amount, source)
+        await self.persistence.async_apply_sanity_loss(player, amount, source)
         logger.info("Sanity loss applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} sanity loss to {player.name}"}
 
-    def apply_fear(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_fear(self, player_id: str, amount: int, source: str = "unknown") -> dict:
         """
         Apply fear to a player.
 
@@ -579,11 +579,11 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.apply_fear(player, amount, source)
+        await self.persistence.async_apply_fear(player, amount, source)
         logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} fear to {player.name}"}
 
-    def apply_corruption(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_corruption(self, player_id: str, amount: int, source: str = "unknown") -> dict:
         """
         Apply corruption to a player.
 
@@ -614,11 +614,11 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.apply_corruption(player, amount, source)
+        await self.persistence.async_apply_corruption(player, amount, source)
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
-    def gain_occult_knowledge(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def gain_occult_knowledge(self, player_id: str, amount: int, source: str = "unknown") -> dict:
         """
         Gain occult knowledge (with sanity loss).
 
@@ -649,11 +649,11 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.gain_occult_knowledge(player, amount, source)
+        await self.persistence.async_gain_occult_knowledge(player, amount, source)
         logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 
-    def heal_player(self, player_id: str, amount: int) -> dict:
+    async def heal_player(self, player_id: str, amount: int) -> dict:
         """
         Heal a player's health.
 
@@ -683,11 +683,11 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.heal_player(player, amount)
+        await self.persistence.async_heal_player(player, amount)
         logger.info("Player healed successfully", player_id=player_id, amount=amount)
         return {"message": f"Healed {player.name} for {amount} health"}
 
-    def damage_player(self, player_id: str, amount: int, damage_type: str = "physical") -> dict:
+    async def damage_player(self, player_id: str, amount: int, damage_type: str = "physical") -> dict:
         """
         Damage a player's health.
 
@@ -718,7 +718,7 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.damage_player(player, amount, damage_type)
+        await self.persistence.async_damage_player(player, amount, damage_type)
         logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
         return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
 

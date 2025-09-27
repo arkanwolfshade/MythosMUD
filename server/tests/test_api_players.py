@@ -8,7 +8,7 @@ Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Met
 
 import uuid
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException
@@ -137,16 +137,17 @@ class TestPlayerCRUD:
     """Test cases for basic CRUD operations."""
 
     @patch("server.api.players.PlayerService")
-    def test_create_player_success(
+    @pytest.mark.asyncio
+    async def test_create_player_success(
         self, mock_player_service_class, mock_current_user, sample_player_data, mock_request
     ):
         """Test successful player creation."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.create_player.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
-        result = create_player(
+        result = await create_player(
             "TestPlayer",
             "earth_arkhamcity_northside_intersection_derby_high",
             mock_current_user,
@@ -160,15 +161,16 @@ class TestPlayerCRUD:
         )
 
     @patch("server.api.players.PlayerService")
-    def test_create_player_validation_error(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_create_player_validation_error(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player creation with validation error."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.create_player.side_effect = ValidationError("Invalid player name")
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:
-            create_player(
+            await create_player(
                 "InvalidName",
                 "earth_arkhamcity_northside_intersection_derby_high",
                 mock_current_user,
@@ -180,114 +182,124 @@ class TestPlayerCRUD:
         assert "Invalid input" in str(exc_info.value.detail)
 
     @patch("server.api.players.PlayerService")
-    def test_list_players_empty(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_list_players_empty(self, mock_player_service_class, mock_current_user, mock_request):
         """Test listing players when no players exist."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.list_players.return_value = []
         mock_player_service_class.return_value = mock_service
 
-        result = list_players(mock_current_user, mock_request, mock_service)
+        result = await list_players(mock_current_user, mock_request, mock_service)
 
         assert result == []
 
     @patch("server.api.players.PlayerService")
-    def test_list_players_populated(
+    @pytest.mark.asyncio
+    async def test_list_players_populated(
         self, mock_player_service_class, mock_current_user, sample_player_data, mock_request
     ):
         """Test listing players when players exist."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.list_players.return_value = [sample_player_data]
         mock_player_service_class.return_value = mock_service
 
-        result = list_players(mock_current_user, mock_request, mock_service)
+        result = await list_players(mock_current_user, mock_request, mock_service)
 
         assert result == [sample_player_data]
 
     @patch("server.api.players.PlayerService")
-    def test_get_player_success(self, mock_player_service_class, mock_current_user, sample_player_data, mock_request):
+    @pytest.mark.asyncio
+    async def test_get_player_success(
+        self, mock_player_service_class, mock_current_user, sample_player_data, mock_request
+    ):
         """Test successful player retrieval by ID."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.get_player_by_id.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
-        result = get_player(player_id, mock_current_user, mock_request, mock_service)
+        result = await get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data
         mock_service.get_player_by_id.assert_called_once_with(player_id)
 
     @patch("server.api.players.PlayerService")
-    def test_get_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_get_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval when player not found."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.get_player_by_id.return_value = None
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
         with pytest.raises(HTTPException) as exc_info:
-            get_player(player_id, mock_current_user, mock_request, mock_service)
+            await get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
     @patch("server.api.players.PlayerService")
-    def test_get_player_by_name_success(
+    @pytest.mark.asyncio
+    async def test_get_player_by_name_success(
         self, mock_player_service_class, mock_current_user, sample_player_data, mock_request
     ):
         """Test successful player retrieval by name."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.get_player_by_name.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
-        result = get_player_by_name("TestPlayer", mock_current_user, mock_request, mock_service)
+        result = await get_player_by_name("TestPlayer", mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data
         mock_service.get_player_by_name.assert_called_once_with("TestPlayer")
 
     @patch("server.api.players.PlayerService")
-    def test_get_player_by_name_not_found(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_get_player_by_name_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval by name when player not found."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.get_player_by_name.return_value = None
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:
-            get_player_by_name("NonexistentPlayer", mock_current_user, mock_request, mock_service)
+            await get_player_by_name("NonexistentPlayer", mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
 
     @patch("server.api.players.PlayerService")
-    def test_delete_player_success(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_delete_player_success(self, mock_player_service_class, mock_current_user, mock_request):
         """Test successful player deletion."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.delete_player.return_value = (True, "Player deleted successfully")
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
-        result = delete_player(player_id, mock_current_user, mock_request, mock_service)
+        result = await delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result["message"] == "Player deleted successfully"
         mock_service.delete_player.assert_called_once_with(player_id)
 
     @patch("server.api.players.PlayerService")
-    def test_delete_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
+    @pytest.mark.asyncio
+    async def test_delete_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player deletion when player not found."""
         # Setup mocks
-        mock_service = Mock()
+        mock_service = AsyncMock()
         mock_service.delete_player.return_value = (False, "Player not found")
         mock_player_service_class.return_value = mock_service
 
         player_id = str(uuid.uuid4())
         with pytest.raises(HTTPException) as exc_info:
-            delete_player(player_id, mock_current_user, mock_request, mock_service)
+            await delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)

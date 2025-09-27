@@ -8,7 +8,7 @@ and avoid blocking I/O operations.
 
 import asyncio
 import time
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 
 import pytest
 from fastapi import Depends, FastAPI, Request
@@ -25,8 +25,12 @@ class TestAsyncRouteHandlers:
         """Create FastAPI app for testing."""
         app = create_app()
 
-        # Mock the persistence layer
-        mock_persistence = Mock()
+        # Mock the persistence layer with async methods
+        mock_persistence = AsyncMock()
+        mock_persistence.async_list_players.return_value = []
+        mock_persistence.async_get_player.return_value = None
+        mock_persistence.async_get_room.return_value = None
+        # Also mock the synchronous methods for backward compatibility
         mock_persistence.list_players.return_value = []
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
