@@ -91,7 +91,7 @@ class TestWebSocketConnectionEvents:
 
         # Mock the room to track event publishing
         with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            with patch("server.realtime.broadcast.broadcast_room_update", AsyncMock()):
                 # Import WebSocketDisconnect to properly simulate disconnection
                 from fastapi import WebSocketDisconnect
 
@@ -133,7 +133,7 @@ class TestWebSocketConnectionEvents:
         mock_connection_manager.disconnect_websocket = mock_disconnect_websocket
 
         with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            with patch("server.realtime.broadcast.broadcast_room_update", AsyncMock()):
                 # Import WebSocketDisconnect to properly simulate disconnection
                 from fastapi import WebSocketDisconnect
 
@@ -324,7 +324,7 @@ class TestWebSocketConnectionEvents:
         mock_connection_manager.get_room_occupants.return_value = []
 
         with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            with patch("server.realtime.broadcast.broadcast_room_update", AsyncMock()):
                 # Import WebSocketDisconnect to properly simulate disconnection
                 from fastapi import WebSocketDisconnect
 
@@ -379,7 +379,7 @@ class TestWebSocketConnectionEvents:
         mock_connection_manager.disconnect_websocket = mock_disconnect_websocket
 
         with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            with patch("server.realtime.broadcast.broadcast_room_update", AsyncMock()):
                 # Import WebSocketDisconnect to properly simulate disconnection
                 from fastapi import WebSocketDisconnect
 

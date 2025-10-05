@@ -289,20 +289,3 @@ class Player(BaseModel):
         # Assume carrying capacity is based on strength
         max_capacity = self.stats.strength * 10  # 10 lbs per strength point
         return (current_weight + additional_weight) <= max_capacity
-
-
-class NPC(BaseModel):
-    """Non-player character model."""
-
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    name: str
-    description: str
-    stats: Stats = Field(default_factory=Stats)
-    current_room_id: str
-    npc_type: str = Field(default="civilian")  # civilian, merchant, enemy, etc.
-    is_hostile: bool = Field(default=False)
-    dialogue_options: dict[str, str] = Field(default_factory=dict)
-
-    def is_alive(self) -> bool:
-        """Check if the NPC is alive."""
-        return self.stats.current_health > 0

@@ -9,42 +9,16 @@ import json
 
 from fastapi import WebSocket, WebSocketDisconnect
 
+from ..commands.exploration_commands import handle_look_command
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..logging_config import get_logger
+from .broadcast import broadcast_room_update
 from .connection_manager import connection_manager
 from .envelope import build_event
 
 logger = get_logger(__name__)
 
 
-def _get_npc_name_from_instance(npc_id: str) -> str | None:
-    """
-    Get NPC name from the actual NPC instance, preserving original case from database.
-
-    This is the proper way to get NPC names - directly from the database via the NPC instance.
-
-    Args:
-        npc_id: The NPC ID
-
-    Returns:
-        NPC name from the database, or None if instance not found
-    """
-    try:
-        # Get the NPC instance from the spawning service
-        from ..services.npc_instance_service import get_npc_instance_service
-
-        npc_instance_service = get_npc_instance_service()
-        if hasattr(npc_instance_service, "spawning_service"):
-            spawning_service = npc_instance_service.spawning_service
-            if npc_id in spawning_service.active_npc_instances:
-                npc_instance = spawning_service.active_npc_instances[npc_id]
-                name = getattr(npc_instance, "name", None)
-                return name
-
-        return None
-    except Exception as e:
-        logger.debug(f"Error getting NPC name from instance for {npc_id}: {e}")
-        return None
 
 
 async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
@@ -420,30 +394,15 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Handle basic commands
     if cmd == "look":
-        # Prefer the connection manager's tracked room (real-time canonical)
-        room_id = getattr(player, "current_room_id", None)
-        room = persistence.get_room(room_id)
-        if not room:
-            return {"result": "You see nothing special."}
-
+        # Delegate to the main command handler
+        command_data = {"command_type": "look", "player_name": player.name}
         if args:
-            direction = args[0].lower()
-            exits = room.exits if hasattr(room, "exits") else {}
-            target_room_id = exits.get(direction)
-            if target_room_id:
-                target_room = persistence.get_room(target_room_id)
-                if target_room:
-                    name = getattr(target_room, "name", "")
-                    desc = getattr(target_room, "description", "You see nothing special.")
-                    return {"result": f"{name}\n{desc}"}
-            return {"result": "You see nothing special that way."}
+            # Assume the first argument is a target for now, handle in handle_look_command
+            command_data["target"] = " ".join(args)
 
-        name = getattr(room, "name", "")
-        desc = getattr(room, "description", "You see nothing special.")
-        exits = room.exits if hasattr(room, "exits") else {}
-        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
-        exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
+        # Call the main look command handler
+        result = await handle_look_command(command_data, player, None, connection_manager.persistence, player.name)
+        return {"result": result}
 
     elif cmd == "go":
         logger.debug(f"Processing go command with args: {args}")
@@ -618,120 +577,6 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         await websocket.send_json(error_response)
 
 
-async def broadcast_room_update(player_id: str, room_id: str):
-    """
-    Broadcast a room update to all players in the room.
-
-    Args:
-        player_id: The player who triggered the update
-        room_id: The room's ID
-    """
-    logger.debug(f"broadcast_room_update called with player_id: {player_id}, room_id: {room_id}")
-    try:
-        # Get room data
-        persistence = connection_manager.persistence
-        if not persistence:
-            logger.warning("Persistence layer not available for room update")
-            return
-
-        room = persistence.get_room(room_id)
-        if not room:
-            logger.warning(f"Room not found for update: {room_id}")
-            return
-
-        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room object ID: {id(room)}")
-        logger.debug(f"🔍 DEBUG: broadcast_room_update - Room players before any processing: {room.get_players()}")
-
-        # Get room occupants (players and NPCs)
-        occupant_names = []
-
-        # Get player occupants
-        room_occupants = connection_manager.get_room_occupants(room_id)
-        try:
-            for occ in room_occupants or []:
-                if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("name")
-                    if name:
-                        occupant_names.append(name)
-                elif isinstance(occ, str):
-                    occupant_names.append(occ)
-        except Exception as e:
-            logger.error(f"Error transforming room occupants for room {room_id}: {e}")
-
-        # Get NPC occupants
-        if persistence:
-            npc_ids = room.get_npcs()
-            logger.debug(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
-            for npc_id in npc_ids:
-                # Get NPC name from the actual NPC instance, preserving original case from database
-                npc_name = _get_npc_name_from_instance(npc_id)
-                if npc_name:
-                    logger.debug(f"DEBUG: Got NPC name '{npc_name}' from database for ID '{npc_id}'")
-                    occupant_names.append(npc_name)
-                else:
-                    # Log warning if NPC instance not found - this should not happen in normal operation
-                    logger.warning(f"NPC instance not found for ID: {npc_id} - skipping from room display")
-
-        # Create room update event
-        room_data = room.to_dict() if hasattr(room, "to_dict") else room
-
-        # Debug: Log the room's actual occupants
-        logger.debug(f"🔍 DEBUG: Room {room_id} occupants breakdown:")
-        logger.debug(f"  - Room object ID: {id(room)}")
-        logger.debug(f"  - Players: {room.get_players()}")
-        logger.debug(f"  - Objects: {room.get_objects()}")
-        logger.debug(f"  - NPCs: {room.get_npcs()}")
-        logger.debug(f"  - Total occupant_count: {room.get_occupant_count()}")
-
-        # Ensure all UUID objects are converted to strings for JSON serialization
-        def convert_uuids_to_strings(obj):
-            if isinstance(obj, dict):
-                return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [convert_uuids_to_strings(item) for item in obj]
-            elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
-                return str(obj)
-            else:
-                return obj
-
-        room_data = convert_uuids_to_strings(room_data)
-
-        update_event = build_event(
-            "room_update",
-            {
-                "room": room_data,
-                "entities": [],
-                "occupants": occupant_names,
-                "occupant_count": len(occupant_names),
-            },
-            player_id=player_id,
-            room_id=room_id,
-        )
-
-        logger.debug(f"Room update event created: {update_event}")
-
-        # Update player's room subscription
-        player = connection_manager._get_player(player_id)
-        if player:
-            # Unsubscribe from old room
-            if hasattr(player, "current_room_id") and player.current_room_id and player.current_room_id != room_id:
-                await connection_manager.unsubscribe_from_room(player_id, player.current_room_id)
-                logger.debug(f"Player {player_id} unsubscribed from old room {player.current_room_id}")
-
-            # Subscribe to new room
-            await connection_manager.subscribe_to_room(player_id, room_id)
-            logger.debug(f"Player {player_id} subscribed to new room {room_id}")
-
-            # Update player's current room
-            player.current_room_id = room_id
-
-        # Broadcast to room
-        logger.debug(f"Broadcasting room update to room: {room_id}")
-        await connection_manager.broadcast_to_room(room_id, update_event)
-        logger.debug(f"Room update broadcast completed for room: {room_id}")
-
-    except Exception as e:
-        logger.error(f"Error broadcasting room update for room {room_id}: {e}")
 
 
 async def send_system_message(websocket: WebSocket, message: str, message_type: str = "info"):

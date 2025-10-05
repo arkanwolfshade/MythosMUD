@@ -12,7 +12,7 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging_config import get_logger
-from ..realtime.websocket_handler import broadcast_room_update
+from ..realtime.broadcast import broadcast_room_update
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

@@ -127,6 +127,9 @@ class CommandProcessor:
             # Direction is already a string value due to use_enum_values=True
             command_data["direction"] = validated_command.direction
 
+        if hasattr(validated_command, "target"):
+            command_data["target"] = validated_command.target
+
         if hasattr(validated_command, "message"):
             command_data["message"] = validated_command.message
 

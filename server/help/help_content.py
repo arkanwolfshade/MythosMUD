@@ -14,26 +14,37 @@ logger = get_logger(__name__)
 COMMANDS = {
     "look": {
         "category": "Exploration",
-        "description": ("Examine your surroundings or look in a specific direction"),
-        "usage": "look [direction] or /look [direction]",
-        "examples": ["look", "look north", "look east", "/look", "/look north"],
+        "description": ("Examine your surroundings, look in a specific direction, or examine an NPC"),
+        "usage": "look [target] or /look [target]",
+        "examples": ["look", "look north", "look guard", "look merchant", "/look", "/look north"],
         "detailed_help": """
 <div style="color: #8B4513;">
 <h3>LOOK Command</h3>
 <p>The ancient texts speak of observation as the first step toward understanding.
-Use this command to examine your surroundings or peer into the unknown.</p>
+Use this command to examine your surroundings, peer into the unknown, or study those around you.</p>
 
 <h4>Usage:</h4>
 <ul>
 <li><strong>look</strong> - Examine your current location</li>
-<li><strong>look [direction]</strong> - Look in a specific direction (north, south, east, west)</li>
+<li><strong>look [direction]</strong> - Look in a specific direction (north, south, east, west, up, down, etc.)</li>
+<li><strong>look [npc_name]</strong> - Examine a specific NPC or person in the room</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
 <li>look</li>
 <li>look north</li>
-<li>look east</li>
+<li>look guard</li>
+<li>look merchant</li>
+<li>look captain</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>NPC names are matched case-insensitively and support partial matching</li>
+<li>If multiple NPCs match your search, you'll see a list of their names</li>
+<li>NPCs take priority over directions when both could match</li>
+<li>If no NPCs match, the command will fall back to direction look</li>
 </ul>
 
 <p>As the Necronomicon suggests: "That which can be seen may yet remain unseen to the untrained eye."</p>

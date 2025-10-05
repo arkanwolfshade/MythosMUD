@@ -6,10 +6,12 @@ and relationships that support the NPC subsystem.
 """
 
 import json
+import uuid
 from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 
+from pydantic import BaseModel, Field
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
@@ -25,6 +27,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import declarative_base
 
 from ..npc_metadata import npc_metadata
+from .game import Stats
 
 Base = declarative_base(metadata=npc_metadata)
 
@@ -237,3 +240,20 @@ class NPCSpawnRule(Base):
 
 
 # NPC relationship model removed to eliminate circular reference issues
+
+
+class NPC(BaseModel):
+    """Non-player character model."""
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str
+    stats: Stats = Field(default_factory=Stats)
+    current_room_id: str
+    npc_type: str = Field(default="civilian")  # civilian, merchant, enemy, etc.
+    is_hostile: bool = Field(default=False)
+    dialogue_options: dict[str, str] = Field(default_factory=dict)
+
+    def is_alive(self) -> bool:
+        """Check if the NPC is alive."""
+        return self.stats.current_health > 0

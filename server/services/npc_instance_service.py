@@ -11,6 +11,7 @@ for maintaining control over the eldritch entities that inhabit our world.
 from typing import Any
 
 from server.events.event_bus import EventBus
+from server.models import NPC
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
@@ -525,3 +526,42 @@ def initialize_npc_instance_service(
         event_bus=event_bus,
     )
     logger.info("NPC instance service initialized", context={})
+
+
+def get_npc_by_id(npc_id: str) -> "NPC | None":
+    """
+    Get an NPC instance by ID from active instances.
+
+    This method retrieves a live NPC instance from the spawning service's
+    active instances. It converts the internal NPC instance to the standard
+    NPC model format for use by other parts of the system.
+
+    Args:
+        npc_id: ID of the NPC instance to retrieve
+
+    Returns:
+        NPC model instance or None if not found
+    """
+    try:
+        # Get the global NPC instance service
+        service = get_npc_instance_service()
+
+        # Get NPC instance from the spawning service
+        npc_instance = service.spawning_service.active_npc_instances.get(npc_id)
+        if npc_instance:
+            # Convert to NPC model format
+            from ..models import NPC
+
+            return NPC(
+                id=npc_id,
+                name=getattr(npc_instance, "name", "Unknown"),
+                description=getattr(npc_instance, "description", ""),
+                current_room_id=getattr(npc_instance, "current_room_id", ""),
+                npc_type=getattr(npc_instance, "npc_type", "civilian"),
+                is_hostile=getattr(npc_instance, "is_hostile", False),
+                dialogue_options=getattr(npc_instance, "dialogue_options", {}),
+            )
+        return None
+    except Exception as e:
+        logger.warning(f"Error retrieving NPC {npc_id}: {e}")
+        return None

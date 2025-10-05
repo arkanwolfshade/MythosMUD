@@ -150,7 +150,7 @@ class TestWebSocketMessageHandler:
         with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
             mock_process.return_value = {"result": "You move north.", "room_changed": True, "room_id": "new_room"}
 
-            with patch("server.realtime.websocket_handler.broadcast_room_update") as mock_broadcast:
+            with patch("server.realtime.broadcast.broadcast_room_update") as mock_broadcast:
                 await handle_game_command(mock_websocket, "test_player", "go north")
 
                 mock_broadcast.assert_called_once_with("test_player", "new_room")
@@ -161,7 +161,7 @@ class TestWebSocketMessageHandler:
         with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
             mock_process.return_value = {"result": "You move north."}
 
-            with patch("server.realtime.websocket_handler.broadcast_room_update") as mock_broadcast:
+            with patch("server.realtime.broadcast.broadcast_room_update") as mock_broadcast:
                 await handle_game_command(mock_websocket, "test_player", "go north")
 
                 mock_broadcast.assert_called_once_with("test_player", "test_room")

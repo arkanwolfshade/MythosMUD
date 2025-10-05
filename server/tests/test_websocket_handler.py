@@ -14,8 +14,8 @@ import pytest
 from fastapi import WebSocket, WebSocketDisconnect
 
 from server.error_types import ErrorType
+from server.realtime.broadcast import broadcast_room_update
 from server.realtime.websocket_handler import (
-    broadcast_room_update,
     get_help_content,
     handle_chat_message,
     handle_game_command,

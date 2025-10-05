@@ -12,7 +12,7 @@ from .alias import Alias
 from .game import AttributeType, Stats
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
-from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule, NPC
 from .player import Player
 from .relationships import setup_relationships
 from .user import User
@@ -31,4 +31,5 @@ __all__ = [
     "NPCDefinition",
     "NPCDefinitionType",
     "NPCSpawnRule",
+    "NPC",
 ]
