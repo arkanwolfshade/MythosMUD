@@ -6,8 +6,6 @@ npc_spawn_rules, and npc_relationships tables and their associated
 SQLAlchemy models.
 """
 
-import asyncio
-
 import pytest
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -162,129 +160,121 @@ class TestNPCDefinition:
 class TestNPCSpawnRule:
     """Test the NPCSpawnRule model."""
 
-    def test_spawn_rule_creation(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_spawn_rule_creation(self, test_client, test_npc_database):
         """Test creating an NPC spawn rule."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # First create an NPC definition
-                npc_def = NPCDefinition(
-                    name="Spawnable NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                session.add(npc_def)
-                await session.commit()
+        async for session in get_npc_async_session():
+            # First create an NPC definition
+            npc_def = NPCDefinition(
+                name="Spawnable NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
+            )
+            session.add(npc_def)
+            await session.commit()
 
-                # Create spawn rule
-                spawn_rule = NPCSpawnRule(
-                    npc_definition_id=npc_def.id,
-                    sub_zone_id="arkham_northside",
-                    min_players=2,
-                    max_players=10,
-                )
+            # Create spawn rule
+            spawn_rule = NPCSpawnRule(
+                npc_definition_id=npc_def.id,
+                sub_zone_id="arkham_northside",
+                min_players=2,
+                max_players=10,
+            )
 
-                # Set spawn conditions using the setter method
-                spawn_rule.set_spawn_conditions({"time_of_day": "night", "weather": "foggy"})
+            # Set spawn conditions using the setter method
+            spawn_rule.set_spawn_conditions({"time_of_day": "night", "weather": "foggy"})
 
-                session.add(spawn_rule)
-                await session.commit()
+            session.add(spawn_rule)
+            await session.commit()
 
-                assert spawn_rule.id is not None
-                assert spawn_rule.npc_definition_id == npc_def.id
-                assert spawn_rule.sub_zone_id == "arkham_northside"
-                assert spawn_rule.min_players == 2
-                assert spawn_rule.max_players == 10
-                assert spawn_rule.get_spawn_conditions() == {"time_of_day": "night", "weather": "foggy"}
-                break
+            assert spawn_rule.id is not None
+            assert spawn_rule.npc_definition_id == npc_def.id
+            assert spawn_rule.sub_zone_id == "arkham_northside"
+            assert spawn_rule.min_players == 2
+            assert spawn_rule.max_players == 10
+            assert spawn_rule.get_spawn_conditions() == {"time_of_day": "night", "weather": "foggy"}
+            break
 
-        asyncio.run(_test())
-
-    def test_spawn_rule_default_values(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_spawn_rule_default_values(self, test_client, test_npc_database):
         """Test spawn rule with default values."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definition
-                npc_def = NPCDefinition(
-                    name="Default Spawn NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                )
-                session.add(npc_def)
-                await session.commit()
+        async for session in get_npc_async_session():
+            # Create NPC definition
+            npc_def = NPCDefinition(
+                name="Default Spawn NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
+            )
+            session.add(npc_def)
+            await session.commit()
 
-                # Create spawn rule with minimal data
-                spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
+            # Create spawn rule with minimal data
+            spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
 
-                session.add(spawn_rule)
-                await session.commit()
+            session.add(spawn_rule)
+            await session.commit()
 
-                assert spawn_rule.min_players == 0
-                assert spawn_rule.max_players == 999
-                assert spawn_rule.get_spawn_conditions() == {}
-                break
+            assert spawn_rule.min_players == 0
+            assert spawn_rule.max_players == 999
+            assert spawn_rule.get_spawn_conditions() == {}
+            break
 
-        asyncio.run(_test())
-
-    def test_spawn_rule_foreign_key_constraint(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_spawn_rule_foreign_key_constraint(self, test_client, test_npc_database):
         """Test that spawn rules require valid NPC definitions."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # Try to create spawn rule with non-existent NPC definition
-                spawn_rule = NPCSpawnRule(
-                    npc_definition_id=99999,  # Non-existent ID
-                    sub_zone_id="arkham_northside",
-                )
+        async for session in get_npc_async_session():
+            # Try to create spawn rule with non-existent NPC definition
+            spawn_rule = NPCSpawnRule(
+                npc_definition_id=99999,  # Non-existent ID
+                sub_zone_id="arkham_northside",
+            )
 
-                session.add(spawn_rule)
+            session.add(spawn_rule)
 
-                with pytest.raises(IntegrityError):
-                    await session.commit()
-                break
+            with pytest.raises(IntegrityError):
+                await session.commit()
+            break
 
-        asyncio.run(_test())
-
-    def test_spawn_rule_json_conditions(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_spawn_rule_json_conditions(self, test_client, test_npc_database):
         """Test complex spawn conditions in JSON format."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # Create NPC definition
-                npc_def = NPCDefinition(
-                    name="Conditional Spawn NPC",
-                    npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
-                    sub_zone_id="arkham_northside",
-                )
-                session.add(npc_def)
-                await session.commit()
+        async for session in get_npc_async_session():
+            # Create NPC definition
+            npc_def = NPCDefinition(
+                name="Conditional Spawn NPC",
+                npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
+                sub_zone_id="arkham_northside",
+            )
+            session.add(npc_def)
+            await session.commit()
 
-                # Complex spawn conditions
-                complex_conditions = {
-                    "time_of_day": "night",
-                    "weather": ["foggy", "stormy"],
-                    "player_level_min": 5,
-                    "player_level_max": 20,
-                    "zone_population_max": 50,
-                    "events": ["full_moon", "eclipse"],
-                    "required_items": ["holy_symbol", "silver_weapon"],
-                }
+            # Complex spawn conditions
+            complex_conditions = {
+                "time_of_day": "night",
+                "weather": ["foggy", "stormy"],
+                "player_level_min": 5,
+                "player_level_max": 20,
+                "zone_population_max": 50,
+                "events": ["full_moon", "eclipse"],
+                "required_items": ["holy_symbol", "silver_weapon"],
+            }
 
-                spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
+            spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
 
-                # Set complex spawn conditions using the setter method
-                spawn_rule.set_spawn_conditions(complex_conditions)
+            # Set complex spawn conditions using the setter method
+            spawn_rule.set_spawn_conditions(complex_conditions)
 
-                session.add(spawn_rule)
-                await session.commit()
+            session.add(spawn_rule)
+            await session.commit()
 
-                # Verify complex conditions are stored correctly
-                retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
-                assert retrieved.get_spawn_conditions() == complex_conditions
-                break
-
-        asyncio.run(_test())
+            # Verify complex conditions are stored correctly
+            retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
+            assert retrieved.get_spawn_conditions() == complex_conditions
+            break
 
 
 class TestNPCModelEnums:
@@ -301,65 +291,61 @@ class TestNPCModelEnums:
 class TestNPCDatabaseConstraints:
     """Test database constraints and indexes."""
 
-    def test_npc_definition_required_fields(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_npc_definition_required_fields(self, test_client, test_npc_database):
         """Test that required fields cannot be null."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # Test missing name
-                npc_def = NPCDefinition(npc_type=NPCDefinitionType.SHOPKEEPER, sub_zone_id="arkham_northside")
-                session.add(npc_def)
+        async for session in get_npc_async_session():
+            # Test missing name
+            npc_def = NPCDefinition(npc_type=NPCDefinitionType.SHOPKEEPER, sub_zone_id="arkham_northside")
+            session.add(npc_def)
 
-                with pytest.raises(IntegrityError):
-                    await session.commit()
+            with pytest.raises(IntegrityError):
+                await session.commit()
 
-                await session.rollback()
-                break
+            await session.rollback()
+            break
 
-        asyncio.run(_test())
-
-    def test_npc_definition_zone_index(self, test_client, test_npc_database):
+    @pytest.mark.asyncio
+    async def test_npc_definition_zone_index(self, test_client, test_npc_database):
         """Test that zone-based queries are efficient."""
         from server.npc_database import get_npc_async_session
 
-        async def _test():
-            async for session in get_npc_async_session():
-                # Clean up any existing NPC data to avoid conflicts
-                from sqlalchemy import text
+        async for session in get_npc_async_session():
+            # Clean up any existing NPC data to avoid conflicts
+            from sqlalchemy import text
 
-                await session.execute(text("DELETE FROM npc_relationships"))
-                await session.execute(text("DELETE FROM npc_spawn_rules"))
-                await session.execute(text("DELETE FROM npc_definitions"))
-                await session.commit()
+            await session.execute(text("DELETE FROM npc_relationships"))
+            await session.execute(text("DELETE FROM npc_spawn_rules"))
+            await session.execute(text("DELETE FROM npc_definitions"))
+            await session.commit()
 
-                # Create NPCs in different zones
-                npcs = []
-                for i in range(5):
-                    npc = NPCDefinition(
-                        name=f"Zone NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
-                    )
-                    npcs.append(npc)
-                    session.add(npc)
-
-                for i in range(3):
-                    npc = NPCDefinition(
-                        name=f"Innsmouth NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="innsmouth_docks"
-                    )
-                    npcs.append(npc)
-                    session.add(npc)
-
-                await session.commit()
-
-                # Query by zone (should use index)
-
-                arkham_npcs = await session.execute(
-                    select(NPCDefinition).filter(NPCDefinition.sub_zone_id == "arkham_northside")
+            # Create NPCs in different zones
+            npcs = []
+            for i in range(5):
+                npc = NPCDefinition(
+                    name=f"Zone NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
                 )
-                arkham_results = arkham_npcs.scalars().all()
+                npcs.append(npc)
+                session.add(npc)
 
-                assert len(arkham_results) == 5
-                assert all(npc.sub_zone_id == "arkham_northside" for npc in arkham_results)
-                break
+            for i in range(3):
+                npc = NPCDefinition(
+                    name=f"Innsmouth NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="innsmouth_docks"
+                )
+                npcs.append(npc)
+                session.add(npc)
 
-        asyncio.run(_test())
+            await session.commit()
+
+            # Query by zone (should use index)
+
+            arkham_npcs = await session.execute(
+                select(NPCDefinition).filter(NPCDefinition.sub_zone_id == "arkham_northside")
+            )
+            arkham_results = arkham_npcs.scalars().all()
+
+            assert len(arkham_results) == 5
+            assert all(npc.sub_zone_id == "arkham_northside" for npc in arkham_results)
+            break

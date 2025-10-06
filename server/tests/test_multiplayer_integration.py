@@ -5,46 +5,32 @@ This module tests the integration between the EventBus, RealTimeEventHandler,
 and ConnectionManager to ensure players can see each other in real-time.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ..events import EventBus
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from ..models import Player
 from ..models.room import Room
-from ..realtime.connection_manager import ConnectionManager
-from ..realtime.event_handler import RealTimeEventHandler
 
 
 class TestMultiplayerIntegration:
     """Test multiplayer integration functionality."""
 
     @pytest.fixture
-    def event_bus(self):
+    def event_bus(self, event_bus):
         """Create a test event bus."""
-        return EventBus()
+        return event_bus
 
     @pytest.fixture
-    def connection_manager(self):
+    def connection_manager(self, connection_manager):
         """Create a test connection manager."""
-        return ConnectionManager()
+        return connection_manager
 
     @pytest.fixture
-    def event_handler(self, event_bus, connection_manager):
+    def event_handler(self, event_handler):
         """Create a test event handler."""
-        # Mock the connection manager to avoid real WebSocket operations
-        connection_manager._get_player = MagicMock()
-        connection_manager.subscribe_to_room = AsyncMock()
-        connection_manager.unsubscribe_from_room = AsyncMock()
-        connection_manager.broadcast_to_room = AsyncMock()
-        connection_manager.get_room_occupants = MagicMock(return_value=[])
-
-        # Create event handler with mocked connection manager
-        handler = RealTimeEventHandler(event_bus)
-        handler.connection_manager = connection_manager
-
-        return handler
+        return event_handler
 
     @pytest.fixture
     def mock_player(self):
@@ -82,36 +68,40 @@ class TestMultiplayerIntegration:
     @pytest.mark.asyncio
     async def test_player_entered_event_handling(self, event_handler, event_bus, mock_player):
         """Test handling of player entered events."""
-        # Setup mock player
-        event_handler.connection_manager._get_player.return_value = mock_player
+        # Setup mock player - properly mock the connection manager methods
+        with patch.object(event_handler.connection_manager, "_get_player", return_value=mock_player):
+            with patch.object(event_handler.connection_manager, "subscribe_to_room") as mock_subscribe:
+                with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
+                    # Create and publish a player entered event
+                    event = PlayerEnteredRoom(
+                        timestamp=None, event_type="player_entered", player_id="player1", room_id="test_room_001"
+                    )
 
-        # Create and publish a player entered event
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id="player1", room_id="test_room_001"
-        )
+                    # Call the event handler directly instead of using the EventBus
+                    await event_handler._handle_player_entered(event)
 
-        # Call the event handler directly instead of using the EventBus
-        await event_handler._handle_player_entered(event)
-
-        # Verify that the connection manager methods were called
-        event_handler.connection_manager.subscribe_to_room.assert_called_once_with("player1", "test_room_001")
-        event_handler.connection_manager.broadcast_to_room.assert_called()
+                    # Verify that the connection manager methods were called
+                    mock_subscribe.assert_called_once_with("player1", "test_room_001")
+                    mock_broadcast.assert_called()
 
     @pytest.mark.asyncio
     async def test_player_left_event_handling(self, event_handler, event_bus, mock_player):
         """Test handling of player left events."""
-        # Setup mock player
-        event_handler.connection_manager._get_player.return_value = mock_player
+        # Setup mock player - properly mock the connection manager methods
+        with patch.object(event_handler.connection_manager, "_get_player", return_value=mock_player):
+            with patch.object(event_handler.connection_manager, "unsubscribe_from_room") as mock_unsubscribe:
+                with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
+                    # Create and publish a player left event
+                    event = PlayerLeftRoom(
+                        timestamp=None, event_type="player_left", player_id="player1", room_id="test_room_001"
+                    )
 
-        # Create and publish a player left event
-        event = PlayerLeftRoom(timestamp=None, event_type="player_left", player_id="player1", room_id="test_room_001")
+                    # Call the event handler directly instead of using the EventBus
+                    await event_handler._handle_player_left(event)
 
-        # Call the event handler directly instead of using the EventBus
-        await event_handler._handle_player_left(event)
-
-        # Verify that the connection manager methods were called
-        event_handler.connection_manager.unsubscribe_from_room.assert_called_once_with("player1", "test_room_001")
-        event_handler.connection_manager.broadcast_to_room.assert_called()
+                    # Verify that the connection manager methods were called
+                    mock_unsubscribe.assert_called_once_with("player1", "test_room_001")
+                    mock_broadcast.assert_called()
 
     def test_message_format_player_entered(self, event_handler):
         """Test that player entered messages are formatted correctly."""
@@ -139,21 +129,27 @@ class TestMultiplayerIntegration:
         assert message["data"]["player_name"] == "TestPlayer"
         assert "leaves the room" in message["data"]["message"]
 
-    def test_connection_manager_player_tracking(self, connection_manager, mock_player):
+    @pytest.mark.asyncio
+    async def test_connection_manager_player_tracking(self, connection_manager, mock_player):
         """Test that the connection manager tracks player presence correctly."""
         # Test player connection tracking
         connection_manager.online_players = {}
         connection_manager.room_occupants = {}
 
-        # Simulate player connection
-        import asyncio
+        # Mock the persistence to return a proper room object
+        mock_room = MagicMock()
+        mock_room.id = mock_player.current_room_id
+        connection_manager.persistence.get_room.return_value = mock_room
 
-        asyncio.run(connection_manager._track_player_connected("player1", mock_player))
+        # Simulate player connection
+        await connection_manager._track_player_connected("player1", mock_player)
 
         assert "player1" in connection_manager.online_players
         assert connection_manager.online_players["player1"]["player_name"] == "TestPlayer"
-        assert "test_room_001" in connection_manager.room_occupants
-        assert "player1" in connection_manager.room_occupants["test_room_001"]
+        # Check that the player is tracked in their current room
+        player_room_id = mock_player.current_room_id
+        assert player_room_id in connection_manager.room_occupants
+        assert "player1" in connection_manager.room_occupants[player_room_id]
 
     def test_connection_manager_room_occupants(self, connection_manager, mock_player):
         """Test that the connection manager tracks room occupants correctly."""

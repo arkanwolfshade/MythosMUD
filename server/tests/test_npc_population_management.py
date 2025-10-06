@@ -9,7 +9,7 @@ for maintaining the delicate balance between the mundane and the eldritch forces
 that lurk in the shadows of our world.
 """
 
-import time
+import asyncio
 
 import pytest
 
@@ -562,7 +562,8 @@ class TestNPCZoneIntegration:
         assert arkham_downtown_room.get_occupant_count() == 0
         assert arkham_downtown_room.get_npcs() == []
 
-    def test_npc_room_event_publishing(self, arkham_downtown_room, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_room_event_publishing(self, arkham_downtown_room, event_bus):
         """Test that room NPC events are properly published."""
         # Track events
         events = []
@@ -577,8 +578,8 @@ class TestNPCZoneIntegration:
         npc_id = "test_npc_001"
         arkham_downtown_room.npc_entered(npc_id)
 
-        # Allow event processing
-        time.sleep(0.1)
+        # Allow event processing with proper async handling
+        await asyncio.sleep(0.1)
 
         # Check events
         assert len(events) == 1
@@ -589,8 +590,8 @@ class TestNPCZoneIntegration:
         # Remove NPC
         arkham_downtown_room.npc_left(npc_id)
 
-        # Allow event processing
-        time.sleep(0.1)
+        # Allow event processing with proper async handling
+        await asyncio.sleep(0.1)
 
         # Check events
         assert len(events) == 2

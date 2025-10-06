@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from server.events import EventBus
 from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.realtime.event_handler import RealTimeEventHandler
 
@@ -19,14 +18,9 @@ class TestEventHandlerBroadcasting:
     """Test RealTimeEventHandler broadcasting functionality."""
 
     @pytest.fixture
-    def event_bus(self):
+    def event_bus(self, event_bus):
         """Create an EventBus with proper event loop setup."""
-        bus = EventBus()
-        # Set up a mock event loop for testing
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        bus.set_main_loop(loop)
-        return bus
+        return event_bus
 
     @pytest.fixture
     def mock_connection_manager(self):

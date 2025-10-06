@@ -130,13 +130,13 @@ class TestRunningEventLoop:
         message = player_left_call[0][1]
         assert message["event_type"] == "player_left"
 
-    def test_event_bus_loop_running_detection(self):
+    def test_event_bus_loop_running_detection(self, isolated_event_loop, event_bus):
         """Test that EventBus properly detects when a loop is running."""
-        # Create a new loop
-        loop = asyncio.new_event_loop()
+        # Use standardized fixtures instead of manual loop creation
+        loop = isolated_event_loop
+        event_bus1 = event_bus
 
         # Test with non-running loop
-        event_bus1 = EventBus()
         event_bus1.set_main_loop(loop)
         assert event_bus1._main_loop == loop
         assert event_bus1._main_loop.is_running() is False
@@ -155,8 +155,7 @@ class TestRunningEventLoop:
         # Instead, just verify the loop was set correctly
         assert event_bus2._main_loop is not None
 
-        # Cleanup
-        loop.close()
+        # Cleanup is handled by the isolated_event_loop fixture
 
     @pytest.mark.asyncio
     async def test_multiple_events_processing(self):
