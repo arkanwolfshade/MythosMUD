@@ -170,6 +170,12 @@ class PlayerService:
             # Dictionary
             player.set_stats(stats)
 
+        # Ensure JSON TEXT fields are initialized (SQLite NOT NULL constraints)
+        if not getattr(player, "inventory", None):
+            player.set_inventory([])
+        if not getattr(player, "status_effects", None):
+            player.set_status_effects([])
+
         # Save player to persistence
         self.persistence.save_player(player)
         logger.info("Player created successfully with stats", context={"name": name, "player_id": player.player_id})
