@@ -54,6 +54,24 @@
   line-height: 1.4;
 }
 
+.timeout-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #3a1a1a;
+  border: 2px solid #8b0000;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+}
+
+.timeout-text {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .stats-display {
   margin-bottom: 2rem;
 }

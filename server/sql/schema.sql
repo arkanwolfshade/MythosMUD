@@ -50,6 +50,14 @@ VALUES (
         'You know the hidden passages and dark corners of the city, where others fear to tread.',
         '{}',
         '{}'
+    ),
+    (
+        2,
+        'Strongman',
+        'A physically powerful individual with exceptional strength',
+        'You have developed your body through years of physical training, making you capable of feats that would challenge lesser mortals.',
+        '{"strength": 10}',
+        '{}'
     );
 -- Players table for game data
 CREATE TABLE IF NOT EXISTS players (

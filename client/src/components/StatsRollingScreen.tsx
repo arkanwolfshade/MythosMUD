@@ -47,6 +47,8 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   const [isRerolling, setIsRerolling] = useState(false);
   const [rerollCooldown, setRerollCooldown] = useState(0);
   const [error, setError] = useState('');
+  const [meetsRequirements, setMeetsRequirements] = useState(true);
+  const [timeoutMessage, setTimeoutMessage] = useState('');
 
   // Roll initial stats when component mounts and authToken is available
   useEffect(() => {
@@ -85,7 +87,21 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       if (response.ok) {
         const data = await response.json();
         setCurrentStats(data.stats);
-        logger.info('StatsRollingScreen', 'Stats rolled successfully', { stats: data.stats });
+        setMeetsRequirements(data.meets_requirements !== false);
+
+        // Handle timeout message for profession requirements
+        if (data.meets_requirements === false && profession) {
+          setTimeoutMessage(
+            "The cosmic forces resist your chosen path. The eldritch energies have failed to align with your profession's requirements within the allotted time. You must manually reroll to find stats worthy of your chosen calling."
+          );
+        } else {
+          setTimeoutMessage('');
+        }
+
+        logger.info('StatsRollingScreen', 'Stats rolled successfully', {
+          stats: data.stats,
+          meets_requirements: data.meets_requirements,
+        });
       } else if (response.status === 429) {
         // Rate limit exceeded
         const errorData = await response.json();
@@ -162,6 +178,14 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   const handleAcceptStats = async () => {
     if (!currentStats) {
       setError('No stats to accept');
+      return;
+    }
+
+    // Prevent accepting stats that don't meet profession requirements
+    if (!meetsRequirements) {
+      setError(
+        "You cannot accept these stats. They do not meet your profession's requirements. Please reroll to find suitable attributes."
+      );
       return;
     }
 
@@ -262,6 +286,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
             <p className="profession-description">{profession.description}</p>
           </div>
         )}
+
+        {timeoutMessage && (
+          <div className="timeout-message">
+            <p className="timeout-text">{timeoutMessage}</p>
+          </div>
+        )}
       </div>
 
       <div className="stats-display">
@@ -311,7 +341,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           {isRerolling ? 'Rerolling...' : rerollCooldown > 0 ? `Reroll (${rerollCooldown}s)` : 'Reroll Stats'}
         </button>
 
-        <button onClick={handleAcceptStats} disabled={isLoading} className="accept-button">
+        <button onClick={handleAcceptStats} disabled={isLoading || !meetsRequirements} className="accept-button">
           {isLoading ? 'Creating Character...' : 'Accept Stats & Create Character'}
         </button>
       </div>

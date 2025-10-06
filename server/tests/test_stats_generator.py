@@ -5,7 +5,9 @@ This module tests the random stat generation functionality including
 different rolling methods, class validation, and stat summaries.
 """
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
+
+import pytest
 
 from ..game.stats_generator import StatsGenerator
 from ..models import AttributeType, Stats
@@ -210,3 +212,152 @@ class TestStatsGenerator:
         assert stats_point_buy.intelligence >= 8
         assert stats_point_buy.wisdom >= 8
         assert stats_point_buy.charisma >= 8
+
+
+class TestProfessionStatPrerequisites:
+    """Test cases for profession-based stat prerequisites functionality."""
+
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.stats_generator = StatsGenerator()
+
+    def test_check_profession_requirements_meets_all(self):
+        """Test checking profession requirements when all requirements are met."""
+        # Stats that meet the requirement
+        stats = Stats(strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+
+        assert meets_requirements is True
+
+    def test_check_profession_requirements_fails_single(self):
+        """Test checking profession requirements when single requirement fails."""
+        # Stats that don't meet the requirement
+        stats = Stats(strength=9, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+
+        assert meets_requirements is False
+
+    def test_check_profession_requirements_multiple_requirements(self):
+        """Test checking profession requirements with multiple requirements."""
+        # Stats that meet all requirements
+        stats = Stats(strength=14, dexterity=10, constitution=10, intelligence=15, wisdom=10, charisma=10)
+
+        meets_requirements = self.stats_generator._check_profession_requirements(
+            stats, {"strength": 12, "intelligence": 14}
+        )
+
+        assert meets_requirements is True
+
+    def test_check_profession_requirements_multiple_failures(self):
+        """Test checking profession requirements when multiple requirements fail."""
+        # Stats that don't meet requirements
+        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=12, wisdom=10, charisma=10)
+
+        meets_requirements = self.stats_generator._check_profession_requirements(
+            stats, {"strength": 12, "intelligence": 14}
+        )
+
+        assert meets_requirements is False
+
+    def test_check_profession_requirements_unknown_stat(self):
+        """Test checking profession requirements with unknown stat name."""
+        stats = Stats(strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"unknown_stat": 10})
+
+        assert meets_requirements is False
+
+    @patch("server.persistence.get_persistence")
+    def test_roll_stats_with_profession_no_requirements(self, mock_get_persistence):
+        """Test rolling stats with profession that has no requirements."""
+        # Mock profession with no requirements
+        mock_profession = Mock()
+        mock_profession.get_stat_requirements.return_value = {}
+
+        mock_persistence = Mock()
+        mock_persistence.get_profession_by_id.return_value = mock_profession
+        mock_get_persistence.return_value = mock_persistence
+
+        stats, meets_requirements = self.stats_generator.roll_stats_with_profession(profession_id=0)
+
+        assert isinstance(stats, Stats)
+        assert meets_requirements is True
+
+    @patch("server.persistence.get_persistence")
+    def test_roll_stats_with_profession_with_requirements_success(self, mock_get_persistence):
+        """Test rolling stats with profession that has requirements - successful roll."""
+        # Mock profession with strength requirement of 10 (should be easy to meet)
+        mock_profession = Mock()
+        mock_profession.get_stat_requirements.return_value = {"strength": 10}
+
+        mock_persistence = Mock()
+        mock_persistence.get_profession_by_id.return_value = mock_profession
+        mock_get_persistence.return_value = mock_persistence
+
+        # Mock the roll_stats method to return stats that meet requirements
+        with patch.object(self.stats_generator, "roll_stats") as mock_roll_stats:
+            mock_roll_stats.return_value = Stats(
+                strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10
+            )
+
+            stats, meets_requirements = self.stats_generator.roll_stats_with_profession(profession_id=2, max_attempts=1)
+
+            assert isinstance(stats, Stats)
+            assert meets_requirements is True
+            assert stats.strength >= 10
+
+    @patch("server.persistence.get_persistence")
+    def test_roll_stats_with_profession_invalid_profession_id(self, mock_get_persistence):
+        """Test rolling stats with invalid profession ID."""
+        # Mock persistence to return None for invalid profession
+        mock_persistence = Mock()
+        mock_persistence.get_profession_by_id.return_value = None
+        mock_get_persistence.return_value = mock_persistence
+
+        with pytest.raises(ValueError, match="Invalid profession ID: 999"):
+            self.stats_generator.roll_stats_with_profession(profession_id=999)
+
+    @patch("server.persistence.get_persistence")
+    def test_roll_stats_with_profession_persistence_error(self, mock_get_persistence):
+        """Test rolling stats with profession when persistence layer fails."""
+        # Mock persistence to raise an exception
+        mock_get_persistence.side_effect = Exception("Database connection failed")
+
+        with pytest.raises(ValueError, match="Invalid profession ID: 2"):
+            self.stats_generator.roll_stats_with_profession(profession_id=2)
+
+    @patch("server.persistence.get_persistence")
+    def test_roll_stats_with_profession_max_attempts_exceeded(self, mock_get_persistence):
+        """Test rolling stats with profession when max attempts are exceeded."""
+        # Mock profession with very high requirement that's unlikely to be met
+        mock_profession = Mock()
+        mock_profession.get_stat_requirements.return_value = {"strength": 18}  # Very unlikely
+
+        mock_persistence = Mock()
+        mock_persistence.get_profession_by_id.return_value = mock_profession
+        mock_get_persistence.return_value = mock_persistence
+
+        # The function will make max_attempts + 1 rolls (one final roll after max attempts)
+        # So we need to mock the _check_profession_requirements to always return False
+        with patch.object(self.stats_generator, "_check_profession_requirements", return_value=False):
+            stats, meets_requirements = self.stats_generator.roll_stats_with_profession(profession_id=2, max_attempts=1)
+
+        assert isinstance(stats, Stats)
+        assert meets_requirements is False  # Should fail to meet requirements
+
+    def test_check_profession_requirements_edge_cases(self):
+        """Test edge cases for profession requirements checking."""
+        # Test with empty requirements
+        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {})
+        assert meets_requirements is True
+
+        # Test with exact minimum requirement
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+        assert meets_requirements is True
+
+        # Test with requirement one above minimum
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 11})
+        assert meets_requirements is False

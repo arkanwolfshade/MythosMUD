@@ -43,10 +43,11 @@ CREATE TABLE IF NOT EXISTS professions (
     is_available BOOLEAN NOT NULL DEFAULT 1
 );
 
--- Insert MVP professions (Tramp and Gutter Rat)
+-- Insert MVP professions (Tramp, Gutter Rat, and Strongman)
 INSERT OR IGNORE INTO professions (id, name, description, flavor_text, stat_requirements, mechanical_effects) VALUES
 (0, 'Tramp', 'A wandering soul with no fixed abode', 'You have learned to survive on the streets, finding shelter where you can and making do with what you have.', '{}', '{}'),
-(1, 'Gutter Rat', 'A street-smart survivor of the urban underbelly', 'You know the hidden passages and dark corners of the city, where others fear to tread.', '{}', '{}');
+(1, 'Gutter Rat', 'A street-smart survivor of the urban underbelly', 'You know the hidden passages and dark corners of the city, where others fear to tread.', '{}', '{}'),
+(2, 'Strongman', 'A physically powerful individual with exceptional strength', 'You have developed your body through years of physical training, making you capable of feats that would challenge lesser mortals.', '{"strength": 10}', '{}');
 
 -- Players table for game data
 CREATE TABLE IF NOT EXISTS players (
