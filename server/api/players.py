@@ -26,8 +26,16 @@ class CreateCharacterRequest(BaseModel):
 
     name: str
     stats: dict
-    profession_id: int = 0  # Default to 0 (Tramp)
-    starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high"
+    profession_id: int = 0
+
+
+class RollStatsRequest(BaseModel):
+    """Request model for rolling character stats."""
+
+    method: str = "3d6"
+    required_class: str | None = None
+    timeout_seconds: float = 1.0
+    profession_id: int | None = None
 
 
 logger = get_logger(__name__)
@@ -272,13 +280,14 @@ def damage_player(
 
 
 # Character Creation and Stats Generation Endpoints
-@player_router.post("/roll-stats")
 def roll_character_stats(
-    method: str = "3d6",
-    required_class: str | None = None,
-    max_attempts: int = 10,
+    method: str,
+    required_class: str | None,
+    max_attempts: int,
+    *,
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
+    timeout_seconds: float = 1.0,
 ):
     """
     Roll random stats for character creation.
@@ -327,7 +336,10 @@ def roll_character_stats(
         if profession_id is not None:
             # Use profession-based stat rolling
             stats, meets_requirements = stats_generator.roll_stats_with_profession(
-                method=method, profession_id=profession_id, max_attempts=max_attempts
+                method=method,
+                profession_id=profession_id,
+                timeout_seconds=timeout_seconds,
+                max_attempts=max_attempts,
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
@@ -341,7 +353,9 @@ def roll_character_stats(
         else:
             # Use legacy class-based stat rolling
             stats, available_classes = stats_generator.roll_stats_with_validation(
-                method=method, required_class=required_class, max_attempts=max_attempts
+                method=method,
+                required_class=required_class,
+                max_attempts=max_attempts,
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
@@ -366,6 +380,22 @@ def roll_character_stats(
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "roll_stats"
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
+
+
+@player_router.post("/roll-stats")
+def roll_character_stats_endpoint(
+    request_data: RollStatsRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
+    return roll_character_stats(
+        request_data.method,
+        request_data.required_class,
+        10,
+        profession_id=request_data.profession_id,
+        current_user=current_user,
+        timeout_seconds=request_data.timeout_seconds,
+    )
 
 
 @player_router.post("/create-character")
@@ -421,12 +451,22 @@ async def create_character_with_stats(
         # Convert dict to Stats object
         stats_obj = Stats(**request_data.stats)
 
+        # Determine starting room from request or config default
+        try:
+            from ..config_loader import get_config
+
+            default_start_room = get_config().get("start_room", "earth_arkhamcity_northside_intersection_derby_high")
+        except Exception:
+            default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
+
+        starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
+
         # Create player with stats
         player = player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
             profession_id=request_data.profession_id,
-            starting_room_id=request_data.starting_room_id,
+            starting_room_id=starting_room_id,
             user_id=current_user.id,
         )
 

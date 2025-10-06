@@ -202,7 +202,7 @@ def create_invites_in_db(count: int = 100) -> None:
         # Commit to database
         conn.commit()
 
-        print(f"✓ Generated {invites_created} new invite codes")
+        print(f"[SUCCESS] Generated {invites_created} new invite codes")
 
         # Get updated counts
         cursor.execute("SELECT COUNT(*) FROM invites")
@@ -213,9 +213,9 @@ def create_invites_in_db(count: int = 100) -> None:
 
         available_count = total_invites - used_count
 
-        print(f"✓ Total invite codes available: {total_invites}")
-        print(f"✓ Used codes: {used_count}")
-        print(f"✓ Available codes: {available_count}")
+        print(f"[SUCCESS] Total invite codes available: {total_invites}")
+        print(f"[SUCCESS] Used codes: {used_count}")
+        print(f"[SUCCESS] Available codes: {available_count}")
 
         # Show some examples
         print("\nExample invite codes:")
@@ -233,7 +233,7 @@ def main():
     print("MythosMUD Database Invite Generator")
     print("=" * 40)
 
-    create_invites_in_db(100)
+    create_invites_in_db(10)
 
 
 if __name__ == "__main__":
