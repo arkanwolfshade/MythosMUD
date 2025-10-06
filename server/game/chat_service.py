@@ -158,7 +158,7 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 500 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for chat message", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -295,7 +295,7 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 500 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for local message", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -422,7 +422,7 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 1000 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for global message", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -555,7 +555,7 @@ class ChatService:
             return {"success": False, "error": "Message too long (max 2000 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for system message", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -680,13 +680,13 @@ class ChatService:
             return {"success": False, "error": "Message too long (maximum 2000 characters)"}
 
         # Get sender player object
-        sender_obj = self.player_service.get_player_by_id(sender_id)
+        sender_obj = await self.player_service.get_player_by_id(sender_id)
         if not sender_obj:
             logger.debug("=== CHAT SERVICE DEBUG: Sender not found ===")
             return {"success": False, "error": "Sender not found"}
 
         # Get target player object
-        target_obj = self.player_service.get_player_by_id(target_id)
+        target_obj = await self.player_service.get_player_by_id(target_id)
         if not target_obj:
             logger.debug("=== CHAT SERVICE DEBUG: Target not found ===")
             return {"success": False, "error": "Target player not found"}
@@ -809,7 +809,7 @@ class ChatService:
             return {"success": False, "error": "Action too long (max 200 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for emote message", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -948,7 +948,7 @@ class ChatService:
             return {"success": False, "error": "Pose too long (max 100 characters)"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for pose", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -1013,7 +1013,7 @@ class ChatService:
             return True
         return False
 
-    def get_room_poses(self, room_id: str) -> dict[str, str]:
+    async def get_room_poses(self, room_id: str) -> dict[str, str]:
         """
         Get all poses for players in a room.
 
@@ -1024,12 +1024,12 @@ class ChatService:
             Dictionary mapping player names to their poses
         """
         poses = {}
-        room_players = self.room_service.get_room_occupants(room_id)
+        room_players = await self.room_service.get_room_occupants(room_id)
 
         for player_id in room_players:
             pose = self._player_poses.get(player_id)
             if pose:
-                player = self.player_service.get_player_by_id(player_id)
+                player = await self.player_service.get_player_by_id(player_id)
                 if player:
                     poses[player.name] = pose
 
@@ -1065,7 +1065,7 @@ class ChatService:
             return {"success": False, "error": f"Unknown emote: {emote_command}"}
 
         # Get player information
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for predefined emote", context={"player_id": player_id})
             return {"success": False, "error": "Player not found"}
@@ -1263,10 +1263,10 @@ class ChatService:
             )
             return False
 
-    def mute_channel(self, player_id: str, channel: str) -> bool:
+    async def mute_channel(self, player_id: str, channel: str) -> bool:
         """Mute a specific channel for a player."""
         # Get player name for logging
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         success = self.user_manager.mute_channel(player_id, player_name, channel)
@@ -1274,10 +1274,10 @@ class ChatService:
             logger.info("Player muted channel", player_id=player_id, channel=channel)
         return success
 
-    def unmute_channel(self, player_id: str, channel: str) -> bool:
+    async def unmute_channel(self, player_id: str, channel: str) -> bool:
         """Unmute a specific channel for a player."""
         # Get player name for logging
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         success = self.user_manager.unmute_channel(player_id, player_name, channel)
@@ -1289,14 +1289,14 @@ class ChatService:
         """Check if a channel is muted for a player."""
         return self.user_manager.is_channel_muted(player_id, channel)
 
-    def mute_player(self, muter_id: str, target_player_name: str) -> bool:
+    async def mute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Mute a specific player for another player."""
         # Get muter name for logging
-        muter = self.player_service.get_player_by_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
-        target_player = self.player_service.resolve_player_name(target_player_name)
+        target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
@@ -1305,14 +1305,14 @@ class ChatService:
             logger.info("Player muted another player", muter_id=muter_id, target=target_player_name)
         return success
 
-    def unmute_player(self, muter_id: str, target_player_name: str) -> bool:
+    async def unmute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Unmute a specific player for another player."""
         # Get muter name for logging
-        muter = self.player_service.get_player_by_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
-        target_player = self.player_service.resolve_player_name(target_player_name)
+        target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
@@ -1325,16 +1325,16 @@ class ChatService:
         """Check if a player is muted by another player."""
         return self.user_manager.is_player_muted(muter_id, target_player_id)
 
-    def mute_global(
+    async def mute_global(
         self, muter_id: str, target_player_name: str, duration_minutes: int = None, reason: str = ""
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
         # Get muter name for logging
-        muter = self.player_service.get_player_by_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id)
         muter_name = muter.name if muter else muter_id
 
         # Resolve target player name to ID
-        target_player = self.player_service.resolve_player_name(target_player_name)
+        target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
@@ -1347,14 +1347,14 @@ class ChatService:
             )
         return success
 
-    def unmute_global(self, unmuter_id: str, target_player_name: str) -> bool:
+    async def unmute_global(self, unmuter_id: str, target_player_name: str) -> bool:
         """Remove a global mute from a player."""
         # Get unmuter name for logging
-        unmuter = self.player_service.get_player_by_id(unmuter_id)
+        unmuter = await self.player_service.get_player_by_id(unmuter_id)
         unmuter_name = unmuter.name if unmuter else unmuter_id
 
         # Resolve target player name to ID
-        target_player = self.player_service.resolve_player_name(target_player_name)
+        target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
@@ -1367,18 +1367,18 @@ class ChatService:
         """Check if a player is globally muted."""
         return self.user_manager.is_globally_muted(player_id)
 
-    def add_admin(self, player_id: str) -> bool:
+    async def add_admin(self, player_id: str) -> bool:
         """Add a player as an admin."""
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         self.user_manager.add_admin(player_id, player_name)
         logger.info("Player added as admin", player_id=player_id, player_name=player_name)
         return True
 
-    def remove_admin(self, player_id: str) -> bool:
+    async def remove_admin(self, player_id: str) -> bool:
         """Remove a player's admin status."""
-        player = self.player_service.get_player_by_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id)
         player_name = player.name if player else player_id
 
         self.user_manager.remove_admin(player_id, player_name)
@@ -1406,7 +1406,7 @@ class ChatService:
         messages = self._room_messages.get(room_id, [])
         return [msg.to_dict() for msg in messages[-limit:]]
 
-    def get_mute_status(self, player_id: str) -> str:
+    async def get_mute_status(self, player_id: str) -> str:
         """
         Get comprehensive mute status for a player.
 
@@ -1418,7 +1418,7 @@ class ChatService:
         """
         try:
             # Get player name
-            player = self.player_service.get_player_by_id(player_id)
+            player = await self.player_service.get_player_by_id(player_id)
             if not player:
                 return "Player not found."
 

@@ -81,7 +81,7 @@ class RoomService:
         logger.debug("Zone room listing not implemented", zone_id=zone_id)
         return []
 
-    def get_adjacent_rooms(self, room_id: str) -> list[dict[str, Any]]:
+    async def get_adjacent_rooms(self, room_id: str) -> list[dict[str, Any]]:
         """
         Get a list of rooms adjacent to the specified room.
 
@@ -95,7 +95,7 @@ class RoomService:
         logger.debug("Getting adjacent rooms", room_id=room_id)
 
         # Get the source room
-        source_room = self.get_room(room_id)
+        source_room = await self.get_room(room_id)
         if not source_room:
             logger.debug("Source room not found", room_id=room_id)
             return []
@@ -106,7 +106,7 @@ class RoomService:
         # Check each exit direction
         for direction, target_room_id in exits.items():
             if target_room_id:  # Skip null/None exits
-                target_room = self.get_room(target_room_id)
+                target_room = await self.get_room(target_room_id)
                 if target_room:
                     adjacent_rooms.append({"direction": direction, "room_id": target_room_id, "room_data": target_room})
                     logger.debug(
@@ -126,7 +126,7 @@ class RoomService:
         logger.debug("Adjacent rooms found", room_id=room_id, adjacent_count=len(adjacent_rooms))
         return adjacent_rooms
 
-    def get_local_chat_scope(self, room_id: str) -> list[str]:
+    async def get_local_chat_scope(self, room_id: str) -> list[str]:
         """
         Get the scope of rooms for local chat (current room + adjacent rooms).
 
@@ -139,7 +139,7 @@ class RoomService:
         logger.debug("Getting local chat scope", room_id=room_id)
 
         # Get the source room first
-        source_room = self.get_room(room_id)
+        source_room = await self.get_room(room_id)
         if not source_room:
             logger.debug("Source room not found for local chat scope", room_id=room_id)
             return []
@@ -148,7 +148,7 @@ class RoomService:
         local_scope = [room_id]
 
         # Add adjacent rooms
-        adjacent_rooms = self.get_adjacent_rooms(room_id)
+        adjacent_rooms = await self.get_adjacent_rooms(room_id)
         for adjacent in adjacent_rooms:
             local_scope.append(adjacent["room_id"])
 
@@ -157,7 +157,7 @@ class RoomService:
         )
         return local_scope
 
-    def validate_room_exists(self, room_id: str) -> bool:
+    async def validate_room_exists(self, room_id: str) -> bool:
         """
         Validate that a room exists.
 
@@ -169,13 +169,13 @@ class RoomService:
         """
         logger.debug("Validating room exists", room_id=room_id)
 
-        room = self.persistence.get_room(room_id)
+        room = await self.persistence.async_get_room(room_id)
         exists = room is not None
 
         logger.debug("Room existence validation", room_id=room_id, exists=exists)
         return exists
 
-    def validate_exit_exists(self, from_room_id: str, to_room_id: str) -> bool:
+    async def validate_exit_exists(self, from_room_id: str, to_room_id: str) -> bool:
         """
         Validate that there's a valid exit from one room to another.
 
@@ -188,7 +188,7 @@ class RoomService:
         """
         logger.debug("Validating exit exists", from_room_id=from_room_id, to_room_id=to_room_id)
 
-        from_room = self.get_room(from_room_id)
+        from_room = await self.get_room(from_room_id)
         if not from_room:
             logger.debug("From room not found for exit validation", from_room_id=from_room_id)
             return False
@@ -209,7 +209,7 @@ class RoomService:
         )
         return False
 
-    def get_room_occupants(self, room_id: str) -> list[str]:
+    async def get_room_occupants(self, room_id: str) -> list[str]:
         """
         Get all players currently in a room.
 
@@ -221,7 +221,7 @@ class RoomService:
         """
         logger.debug("Getting room occupants", room_id=room_id)
 
-        room = self.persistence.get_room(room_id)
+        room = await self.persistence.async_get_room(room_id)
         if not room:
             logger.debug("Room not found for occupant lookup", room_id=room_id)
             return []
@@ -236,7 +236,7 @@ class RoomService:
         logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
         return occupants
 
-    def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
+    async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
         Validate that a player is in the specified room.
 
@@ -249,7 +249,7 @@ class RoomService:
         """
         logger.debug("Validating player in room", player_id=player_id, room_id=room_id)
 
-        room = self.persistence.get_room(room_id)
+        room = await self.persistence.async_get_room(room_id)
         if not room:
             logger.debug("Room not found for player validation", room_id=room_id)
             return False
@@ -265,7 +265,7 @@ class RoomService:
         logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
         return is_in_room
 
-    def get_room_exits(self, room_id: str) -> dict[str, str]:
+    async def get_room_exits(self, room_id: str) -> dict[str, str]:
         """
         Get all exits from a room.
 
@@ -277,7 +277,7 @@ class RoomService:
         """
         logger.debug("Getting room exits", room_id=room_id)
 
-        room = self.get_room(room_id)
+        room = await self.get_room(room_id)
         if not room:
             logger.debug("Room not found for exit lookup", room_id=room_id)
             return {}
@@ -286,7 +286,7 @@ class RoomService:
         logger.debug("Room exits retrieved", room_id=room_id, exit_count=len(exits))
         return exits
 
-    def get_room_info(self, room_id: str) -> dict[str, Any] | None:
+    async def get_room_info(self, room_id: str) -> dict[str, Any] | None:
         """
         Get comprehensive room information including occupants and exits.
 
@@ -298,15 +298,15 @@ class RoomService:
         """
         logger.debug("Getting comprehensive room info", room_id=room_id)
 
-        room = self.get_room(room_id)
+        room = await self.get_room(room_id)
         if not room:
             logger.debug("Room not found for comprehensive info", room_id=room_id)
             return None
 
         # Get additional information
-        occupants = self.get_room_occupants(room_id)
-        exits = self.get_room_exits(room_id)
-        adjacent_rooms = self.get_adjacent_rooms(room_id)
+        occupants = await self.get_room_occupants(room_id)
+        exits = await self.get_room_exits(room_id)
+        adjacent_rooms = await self.get_adjacent_rooms(room_id)
 
         room_info = {
             **room,

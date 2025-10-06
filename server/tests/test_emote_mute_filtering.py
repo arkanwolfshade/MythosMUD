@@ -24,7 +24,7 @@ class TestEmoteMuteFiltering:
         # Create mock dependencies
         self.mock_persistence = Mock()
         self.mock_room_service = Mock()
-        self.mock_player_service = Mock()
+        self.mock_player_service = AsyncMock()
         self.mock_connection_manager = Mock()
 
         # Create mock services

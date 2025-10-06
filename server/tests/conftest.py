@@ -20,9 +20,9 @@ project_root = Path(__file__).parent.parent.parent
 TEST_ENV_PATH = project_root / ".env.test"
 if TEST_ENV_PATH.exists():
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
+    print(f"[OK] Loaded test environment from {TEST_ENV_PATH}")
 else:
-    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
+    print(f"[WARNING] Test environment file not found at {TEST_ENV_PATH}")
     print("Using default test environment variables")
 
 # Set environment variables BEFORE any imports to prevent module-level

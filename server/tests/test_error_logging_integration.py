@@ -11,9 +11,8 @@ from uuid import uuid4
 import pytest
 from fastapi import Request
 
-from server.api.players import create_player, delete_player, get_player
 from server.command_handler_unified import process_command
-from server.exceptions import DatabaseError, LoggedHTTPException, ValidationError, create_error_context
+from server.exceptions import DatabaseError, ValidationError, create_error_context
 from server.tests.utils.test_error_logging import ErrorLoggingTestMixin
 
 
@@ -44,62 +43,65 @@ class TestAPIErrorLoggingIntegration:
         user.username = "testuser"
         return user
 
-    def test_api_player_creation_error_logging(self, test_mixin, mock_request, mock_current_user):
+    def test_api_player_creation_error_logging(self, test_mixin, test_client):
         """Test error logging in player creation API endpoint."""
-        with patch("server.api.players.PlayerService") as mock_service_class:
-            # Setup mock service to raise ValidationError
-            mock_service = Mock()
-            mock_service.create_player.side_effect = ValidationError("Player name already exists")
-            mock_service_class.return_value = mock_service
+        with patch("server.api.players.get_current_user") as mock_auth:
+            mock_auth.return_value = {"user_id": "test-user-id"}
 
-            with patch("server.api.players.create_context_from_request") as mock_create_context:
-                mock_context = create_error_context(user_id=str(mock_current_user.id))
-                mock_create_context.return_value = mock_context
+            with patch("server.game.player_service.PlayerService.create_player") as mock_create_player:
+                # Setup mock to raise ValidationError
+                mock_create_player.side_effect = ValidationError("Player name already exists")
 
-                with pytest.raises(LoggedHTTPException) as exc_info:
-                    create_player("ExistingPlayer", "test_room", mock_current_user, mock_request)
+                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                    mock_context = create_error_context(user_id="test-user-id")
+                    mock_create_context.return_value = mock_context
 
-                # Verify error was raised with correct details
-                assert exc_info.value.status_code == 400
-                assert "Invalid input" in str(exc_info.value.detail)
+                    # Test the API endpoint through the test client
+                    response = test_client.post("/players/?name=ExistingPlayer&starting_room_id=test_room")
 
-    def test_api_player_deletion_error_logging(self, test_mixin, mock_request, mock_current_user):
+                    # Verify error response
+                    assert response.status_code == 400
+                    assert "Invalid input" in response.json()["error"]["message"]
+
+    def test_api_player_deletion_error_logging(self, test_mixin, test_client):
         """Test error logging in player deletion API endpoint."""
-        with patch("server.api.players.PlayerService") as mock_service_class:
-            # Setup mock service to raise ValidationError
-            mock_service = Mock()
-            mock_service.delete_player.side_effect = ValidationError("Player not found")
-            mock_service_class.return_value = mock_service
+        with patch("server.api.players.get_current_user") as mock_auth:
+            mock_auth.return_value = {"user_id": "test-user-id"}
 
-            with patch("server.api.players.create_context_from_request") as mock_create_context:
-                mock_context = create_error_context(user_id=str(mock_current_user.id))
-                mock_create_context.return_value = mock_context
+            with patch("server.game.player_service.PlayerService.delete_player") as mock_delete_player:
+                # Setup mock to raise ValidationError
+                mock_delete_player.side_effect = ValidationError("Player not found")
 
-                with pytest.raises(LoggedHTTPException) as exc_info:
-                    delete_player("nonexistent-player-id", mock_current_user, mock_request)
+                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                    mock_context = create_error_context(user_id="test-user-id")
+                    mock_create_context.return_value = mock_context
 
-                # Verify error was raised with correct details
-                assert exc_info.value.status_code == 404
-                assert "Player not found" in str(exc_info.value.detail)
+                    # Test the API endpoint through the test client
+                    response = test_client.delete("/players/nonexistent-player-id")
 
-    def test_api_player_retrieval_error_logging(self, test_mixin, mock_request, mock_current_user):
+                    # Verify error response
+                    assert response.status_code == 404
+                    assert "Player not found" in response.json()["error"]["message"]
+
+    def test_api_player_retrieval_error_logging(self, test_mixin, test_client):
         """Test error logging in player retrieval API endpoint."""
-        with patch("server.api.players.PlayerService") as mock_service_class:
-            # Setup mock service to return None (player not found)
-            mock_service = Mock()
-            mock_service.get_player_by_id.return_value = None
-            mock_service_class.return_value = mock_service
+        with patch("server.api.players.get_current_user") as mock_auth:
+            mock_auth.return_value = {"user_id": "test-user-id"}
 
-            with patch("server.api.players.create_context_from_request") as mock_create_context:
-                mock_context = create_error_context(user_id=str(mock_current_user.id))
-                mock_create_context.return_value = mock_context
+            with patch("server.game.player_service.PlayerService.get_player_by_id") as mock_get_player:
+                # Setup mock to return None (player not found)
+                mock_get_player.return_value = None
 
-                with pytest.raises(LoggedHTTPException) as exc_info:
-                    get_player("nonexistent-player-id", mock_current_user, mock_request)
+                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                    mock_context = create_error_context(user_id="test-user-id")
+                    mock_create_context.return_value = mock_context
 
-                # Verify error was raised with correct details
-                assert exc_info.value.status_code == 404
-                assert "Player not found" in str(exc_info.value.detail)
+                    # Test the API endpoint through the test client
+                    response = test_client.get("/players/nonexistent-player-id")
+
+                    # Verify error response
+                    assert response.status_code == 404
+                    assert "Player not found" in response.json()["error"]["message"]
 
 
 class TestCommandHandlerErrorLoggingIntegration:

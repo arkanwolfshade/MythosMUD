@@ -96,7 +96,7 @@ class TestEmoteTypesMuteFiltering:
         assert emote_result["message"]["content"] == "waves hello"
 
         # Apply global mute to the player
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=60,
@@ -154,7 +154,7 @@ class TestEmoteTypesMuteFiltering:
             assert "twibbles" in emote_result["message"]["content"]
 
             # Apply global mute to the player
-            global_mute_result = chat_service.mute_global(
+            global_mute_result = await chat_service.mute_global(
                 muter_id=self.muter_id,
                 target_player_name=self.target_name,
                 duration_minutes=60,
@@ -227,7 +227,7 @@ class TestEmoteTypesMuteFiltering:
                 assert emote_action in emote_result["message"]["content"]
 
             # Apply global mute to the player
-            global_mute_result = chat_service.mute_global(
+            global_mute_result = await chat_service.mute_global(
                 muter_id=self.muter_id,
                 target_player_name=self.target_name,
                 duration_minutes=60,
@@ -291,7 +291,7 @@ class TestEmoteTypesMuteFiltering:
             assert "dances" in predefined_emote_result["message"]["content"]
 
             # Apply global mute to the player
-            global_mute_result = chat_service.mute_global(
+            global_mute_result = await chat_service.mute_global(
                 muter_id=self.muter_id,
                 target_player_name=self.target_name,
                 duration_minutes=60,
@@ -381,7 +381,7 @@ class TestEmoteTypesMuteFiltering:
         self.mock_player_service.resolve_player_name.return_value = self.target_player
 
         # Apply global mute
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Global mute test"
         )
         assert global_mute_result is True

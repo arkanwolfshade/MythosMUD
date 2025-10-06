@@ -5,12 +5,10 @@ This module tests that the PlayerServiceDep and RoomServiceDep functions
 work correctly and return the expected service instances.
 """
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
 
-from server.api.players import PlayerServiceDep
-from server.api.rooms import RoomServiceDep
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
@@ -37,58 +35,91 @@ class TestDependencyFunctions:
 
     def test_player_service_dep_function(self, mock_persistence):
         """Test that PlayerServiceDep function works correctly."""
-        # Mock the persistence layer in the dependency
-        with patch("server.api.players.get_persistence", return_value=mock_persistence):
-            service = PlayerServiceDep()
+        # Mock the app state persistence
+        from unittest.mock import Mock
 
-            # Verify the service is created correctly
-            assert isinstance(service, PlayerService)
-            assert hasattr(service, "persistence")
-            assert service.persistence == mock_persistence
+        from fastapi import Request
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        # Call the dependency function directly
+        from server.dependencies import get_player_service
+
+        service = get_player_service(mock_request)
+
+        # Verify the service is created correctly
+        assert isinstance(service, PlayerService)
+        assert hasattr(service, "persistence")
+        assert service.persistence == mock_persistence
 
     def test_room_service_dep_function(self, mock_persistence):
         """Test that RoomServiceDep function works correctly."""
-        # Mock the persistence layer in the dependency
-        with patch("server.api.rooms.get_persistence", return_value=mock_persistence):
-            service = RoomServiceDep()
+        # Mock the app state persistence
+        from unittest.mock import Mock
 
-            # Verify the service is created correctly
-            assert isinstance(service, RoomService)
-            assert hasattr(service, "persistence")
-            assert service.persistence == mock_persistence
+        from fastapi import Request
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        # Call the dependency function directly
+        from server.dependencies import get_room_service
+
+        service = get_room_service(mock_request)
+
+        # Verify the service is created correctly
+        assert isinstance(service, RoomService)
+        assert hasattr(service, "persistence")
+        assert service.persistence == mock_persistence
 
     def test_dependency_functions_are_callable(self):
         """Test that dependency functions are callable."""
-        assert callable(PlayerServiceDep)
-        assert callable(RoomServiceDep)
+        from server.dependencies import get_player_service, get_room_service
+
+        assert callable(get_player_service)
+        assert callable(get_room_service)
 
     def test_dependency_functions_return_different_instances(self, mock_persistence):
         """Test that dependency functions return different instances."""
-        with (
-            patch("server.api.players.get_persistence", return_value=mock_persistence),
-            patch("server.api.rooms.get_persistence", return_value=mock_persistence),
-        ):
-            player_service1 = PlayerServiceDep()
-            player_service2 = PlayerServiceDep()
-            room_service1 = RoomServiceDep()
-            room_service2 = RoomServiceDep()
+        from unittest.mock import Mock
 
-            # Verify they are different instances
-            assert player_service1 is not player_service2
-            assert room_service1 is not room_service2
-            assert player_service1 is not room_service1
-            assert player_service2 is not room_service2
+        from fastapi import Request
+
+        from server.dependencies import get_player_service, get_room_service
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        player_service1 = get_player_service(mock_request)
+        player_service2 = get_player_service(mock_request)
+        room_service1 = get_room_service(mock_request)
+        room_service2 = get_room_service(mock_request)
+
+        # Verify they are different instances
+        assert player_service1 is not player_service2
+        assert room_service1 is not room_service2
+        assert player_service1 is not room_service1
+        assert player_service2 is not room_service2
 
     def test_dependency_functions_with_different_persistence(self):
         """Test dependency functions with different persistence layers."""
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        from server.dependencies import get_player_service, get_room_service
+
         persistence1 = AsyncMock()
         persistence2 = AsyncMock()
 
-        with patch("server.api.players.get_persistence", return_value=persistence1):
-            player_service = PlayerServiceDep()
+        mock_request1 = Mock(spec=Request)
+        mock_request1.app.state.persistence = persistence1
+        player_service = get_player_service(mock_request1)
 
-        with patch("server.api.rooms.get_persistence", return_value=persistence2):
-            room_service = RoomServiceDep()
+        mock_request2 = Mock(spec=Request)
+        mock_request2.app.state.persistence = persistence2
+        room_service = get_room_service(mock_request2)
 
         # Verify they use different persistence layers
         assert player_service.persistence == persistence1
@@ -97,62 +128,86 @@ class TestDependencyFunctions:
 
     def test_dependency_function_error_handling(self):
         """Test that dependency functions handle errors gracefully."""
-        # Test with persistence layer that raises an exception
-        with patch("server.api.players.get_persistence", side_effect=Exception("Persistence error")):
-            with pytest.raises(Exception, match="Persistence error"):
-                PlayerServiceDep()
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        # Test with missing app state
+        mock_request = Mock(spec=Request)
+        del mock_request.app  # Remove app attribute
+
+        with pytest.raises(AttributeError):
+            get_player_service(mock_request)
 
     def test_dependency_function_type_annotations(self):
         """Test that dependency functions have correct type annotations."""
         import inspect
 
-        # Check PlayerServiceDep signature
-        player_sig = inspect.signature(PlayerServiceDep)
+        from server.dependencies import get_player_service, get_room_service
+
+        # Check get_player_service signature
+        player_sig = inspect.signature(get_player_service)
         assert player_sig.return_annotation == PlayerService or player_sig.return_annotation == inspect.Signature.empty
 
-        # Check RoomServiceDep signature
-        room_sig = inspect.signature(RoomServiceDep)
+        # Check get_room_service signature
+        room_sig = inspect.signature(get_room_service)
         assert room_sig.return_annotation == RoomService or room_sig.return_annotation == inspect.Signature.empty
 
     def test_dependency_functions_performance(self, mock_persistence):
         """Test that dependency functions perform well."""
         import time
+        from unittest.mock import Mock
 
-        with patch("server.api.players.get_persistence", return_value=mock_persistence):
-            start_time = time.time()
+        from fastapi import Request
 
-            # Create many service instances
-            services = []
-            for _ in range(100):
-                service = PlayerServiceDep()
-                services.append(service)
+        from server.dependencies import get_player_service
 
-            end_time = time.time()
-            elapsed_time = end_time - start_time
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
 
-            # Should complete within reasonable time (less than 1 second for 100 instances)
-            assert elapsed_time < 1.0
-            assert len(services) == 100
+        start_time = time.time()
+
+        # Create many service instances
+        services = []
+        for _ in range(100):
+            service = get_player_service(mock_request)
+            services.append(service)
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+
+        # Should complete within reasonable time (less than 1 second for 100 instances)
+        assert elapsed_time < 1.0
+        assert len(services) == 100
 
     def test_dependency_functions_memory_usage(self, mock_persistence):
         """Test that dependency functions don't cause memory leaks."""
         import gc
+        from unittest.mock import Mock
 
-        with patch("server.api.players.get_persistence", return_value=mock_persistence):
-            # Create many service instances
-            services = []
-            for _ in range(1000):
-                service = PlayerServiceDep()
-                services.append(service)
+        from fastapi import Request
 
-            # Clear references
-            services.clear()
+        from server.dependencies import get_player_service
 
-            # Force garbage collection
-            gc.collect()
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
 
-            # This test passes if no exceptions are raised
-            assert True  # Placeholder assertion
+        # Create many service instances
+        services = []
+        for _ in range(1000):
+            service = get_player_service(mock_request)
+            services.append(service)
+
+        # Clear references
+        services.clear()
+
+        # Force garbage collection
+        gc.collect()
+
+        # This test passes if no exceptions are raised
+        assert True  # Placeholder assertion
 
     def test_dependency_functions_thread_safety(self, mock_persistence):
         """Test that dependency functions are thread-safe."""
@@ -163,9 +218,16 @@ class TestDependencyFunctions:
 
         def worker():
             try:
-                with patch("server.api.players.get_persistence", return_value=mock_persistence):
-                    service = PlayerServiceDep()
-                    results.append(service)
+                from unittest.mock import Mock
+
+                from fastapi import Request
+
+                from server.dependencies import get_player_service
+
+                mock_request = Mock(spec=Request)
+                mock_request.app.state.persistence = mock_persistence
+                service = get_player_service(mock_request)
+                results.append(service)
             except Exception as e:
                 errors.append(e)
 
@@ -186,23 +248,41 @@ class TestDependencyFunctions:
 
     def test_dependency_functions_with_none_persistence(self):
         """Test dependency functions handle None persistence gracefully."""
-        with patch("server.api.players.get_persistence", return_value=None):
-            with pytest.raises((TypeError, AttributeError)):
-                PlayerServiceDep()
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = None
+
+        # The dependency function should still work, but the service will have None persistence
+        service = get_player_service(mock_request)
+        assert service is not None
+        assert service.persistence is None
 
     def test_dependency_functions_consistency(self, mock_persistence):
         """Test that dependency functions behave consistently."""
-        with patch("server.api.players.get_persistence", return_value=mock_persistence):
-            # Call the function multiple times
-            services = []
-            for _ in range(5):
-                service = PlayerServiceDep()
-                services.append(service)
+        from unittest.mock import Mock
 
-            # All services should be valid PlayerService instances
-            for service in services:
-                assert isinstance(service, PlayerService)
-                assert service.persistence == mock_persistence
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        # Call the function multiple times
+        services = []
+        for _ in range(5):
+            service = get_player_service(mock_request)
+            services.append(service)
+
+        # All services should be valid PlayerService instances
+        for service in services:
+            assert isinstance(service, PlayerService)
+            assert service.persistence == mock_persistence
 
     def test_dependency_functions_with_mock_persistence_methods(self, mock_persistence):
         """Test dependency functions with mock persistence that has specific method behaviors."""
@@ -210,10 +290,18 @@ class TestDependencyFunctions:
         mock_persistence.async_list_players.return_value = [{"name": "TestPlayer"}]
         mock_persistence.async_get_player.return_value = {"name": "TestPlayer", "id": "123"}
 
-        with patch("server.api.players.get_persistence", return_value=mock_persistence):
-            service = PlayerServiceDep()
+        from unittest.mock import Mock
 
-            # Verify the service uses the configured mock
-            assert service.persistence == mock_persistence
-            assert service.persistence.async_list_players.return_value == [{"name": "TestPlayer"}]
-            assert service.persistence.async_get_player.return_value == {"name": "TestPlayer", "id": "123"}
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        service = get_player_service(mock_request)
+
+        # Verify the service uses the configured mock
+        assert service.persistence == mock_persistence
+        assert service.persistence.async_list_players.return_value == [{"name": "TestPlayer"}]
+        assert service.persistence.async_get_player.return_value == {"name": "TestPlayer", "id": "123"}

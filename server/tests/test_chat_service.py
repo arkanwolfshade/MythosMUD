@@ -73,7 +73,7 @@ class TestChatService:
         # Create mock dependencies
         self.mock_persistence = Mock()
         self.mock_room_service = Mock()
-        self.mock_player_service = Mock()
+        self.mock_player_service = AsyncMock()
 
         # Create mock services
         self.mock_nats_service = Mock()
@@ -357,7 +357,8 @@ class TestChatService:
         # Verify
         assert result is False
 
-    def test_mute_channel_success(self):
+    @pytest.mark.asyncio
+    async def test_mute_channel_success(self):
         """Test successful channel muting."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -367,13 +368,14 @@ class TestChatService:
         self.mock_user_manager.mute_channel.return_value = True
 
         # Execute
-        result = self.chat_service.mute_channel(player_id, channel)
+        result = await self.chat_service.mute_channel(player_id, channel)
 
         # Verify
         assert result is True
         self.mock_user_manager.mute_channel.assert_called_once_with(player_id, "TestPlayer", channel)
 
-    def test_mute_channel_failure(self):
+    @pytest.mark.asyncio
+    async def test_mute_channel_failure(self):
         """Test channel muting when it fails."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -383,12 +385,13 @@ class TestChatService:
         self.mock_user_manager.mute_channel.return_value = False
 
         # Execute
-        result = self.chat_service.mute_channel(player_id, channel)
+        result = await self.chat_service.mute_channel(player_id, channel)
 
         # Verify
         assert result is False
 
-    def test_unmute_channel_success(self):
+    @pytest.mark.asyncio
+    async def test_unmute_channel_success(self):
         """Test successful channel unmuting."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -398,7 +401,7 @@ class TestChatService:
         self.mock_user_manager.unmute_channel.return_value = True
 
         # Execute
-        result = self.chat_service.unmute_channel(player_id, channel)
+        result = await self.chat_service.unmute_channel(player_id, channel)
 
         # Verify
         assert result is True
@@ -419,7 +422,8 @@ class TestChatService:
         assert result is True
         self.mock_user_manager.is_channel_muted.assert_called_once_with(player_id, channel)
 
-    def test_mute_player_success(self):
+    @pytest.mark.asyncio
+    async def test_mute_player_success(self):
         """Test successful player muting."""
         # Setup
         muter_id = str(uuid.uuid4())
@@ -427,12 +431,12 @@ class TestChatService:
         target_player = Mock()
         target_player.id = str(uuid.uuid4())
 
-        self.mock_player_service.get_player_by_id.return_value = self.mock_player
-        self.mock_player_service.resolve_player_name.return_value = target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.mock_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=target_player)
         self.mock_user_manager.mute_player.return_value = True
 
         # Execute
-        result = self.chat_service.mute_player(muter_id, target_player_name)
+        result = await self.chat_service.mute_player(muter_id, target_player_name)
 
         # Verify
         assert result is True
@@ -440,7 +444,8 @@ class TestChatService:
             muter_id, "TestPlayer", target_player.id, target_player_name
         )
 
-    def test_mute_player_target_not_found(self):
+    @pytest.mark.asyncio
+    async def test_mute_player_target_not_found(self):
         """Test player muting when target player is not found."""
         # Setup
         muter_id = str(uuid.uuid4())
@@ -450,13 +455,14 @@ class TestChatService:
         self.mock_player_service.resolve_player_name.return_value = None
 
         # Execute
-        result = self.chat_service.mute_player(muter_id, target_player_name)
+        result = await self.chat_service.mute_player(muter_id, target_player_name)
 
         # Verify
         assert result is False
         self.mock_user_manager.mute_player.assert_not_called()
 
-    def test_unmute_player_success(self):
+    @pytest.mark.asyncio
+    async def test_unmute_player_success(self):
         """Test successful player unmuting."""
         # Setup
         muter_id = str(uuid.uuid4())
@@ -464,12 +470,12 @@ class TestChatService:
         target_player = Mock()
         target_player.id = str(uuid.uuid4())
 
-        self.mock_player_service.get_player_by_id.return_value = self.mock_player
-        self.mock_player_service.resolve_player_name.return_value = target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.mock_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=target_player)
         self.mock_user_manager.unmute_player.return_value = True
 
         # Execute
-        result = self.chat_service.unmute_player(muter_id, target_player_name)
+        result = await self.chat_service.unmute_player(muter_id, target_player_name)
 
         # Verify
         assert result is True
@@ -492,7 +498,8 @@ class TestChatService:
         assert result is True
         self.mock_user_manager.is_player_muted.assert_called_once_with(muter_id, target_player_id)
 
-    def test_mute_global_success(self):
+    @pytest.mark.asyncio
+    async def test_mute_global_success(self):
         """Test successful global muting."""
         # Setup
         muter_id = str(uuid.uuid4())
@@ -502,12 +509,12 @@ class TestChatService:
         duration_minutes = 30
         reason = "Spam"
 
-        self.mock_player_service.get_player_by_id.return_value = self.mock_player
-        self.mock_player_service.resolve_player_name.return_value = target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.mock_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=target_player)
         self.mock_user_manager.mute_global.return_value = True
 
         # Execute
-        result = self.chat_service.mute_global(muter_id, target_player_name, duration_minutes, reason)
+        result = await self.chat_service.mute_global(muter_id, target_player_name, duration_minutes, reason)
 
         # Verify
         assert result is True
@@ -515,7 +522,8 @@ class TestChatService:
             muter_id, "TestPlayer", target_player.id, target_player_name, duration_minutes, reason
         )
 
-    def test_unmute_global_success(self):
+    @pytest.mark.asyncio
+    async def test_unmute_global_success(self):
         """Test successful global unmuting."""
         # Setup
         unmuter_id = str(uuid.uuid4())
@@ -523,12 +531,12 @@ class TestChatService:
         target_player = Mock()
         target_player.id = str(uuid.uuid4())
 
-        self.mock_player_service.get_player_by_id.return_value = self.mock_player
-        self.mock_player_service.resolve_player_name.return_value = target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.mock_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=target_player)
         self.mock_user_manager.unmute_global.return_value = True
 
         # Execute
-        result = self.chat_service.unmute_global(unmuter_id, target_player_name)
+        result = await self.chat_service.unmute_global(unmuter_id, target_player_name)
 
         # Verify
         assert result is True
@@ -550,7 +558,8 @@ class TestChatService:
         assert result is True
         self.mock_user_manager.is_globally_muted.assert_called_once_with(player_id)
 
-    def test_add_admin_success(self):
+    @pytest.mark.asyncio
+    async def test_add_admin_success(self):
         """Test successful admin addition."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -558,13 +567,14 @@ class TestChatService:
         self.mock_player_service.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        result = self.chat_service.add_admin(player_id)
+        result = await self.chat_service.add_admin(player_id)
 
         # Verify
         assert result is True
         self.mock_user_manager.add_admin.assert_called_once_with(player_id, "TestPlayer")
 
-    def test_remove_admin_success(self):
+    @pytest.mark.asyncio
+    async def test_remove_admin_success(self):
         """Test successful admin removal."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -572,7 +582,7 @@ class TestChatService:
         self.mock_player_service.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        result = self.chat_service.remove_admin(player_id)
+        result = await self.chat_service.remove_admin(player_id)
 
         # Verify
         assert result is True
@@ -680,7 +690,8 @@ class TestChatService:
         assert len(result) == 5
         assert result[0]["sender_name"] == "Player5"  # Last 5 messages
 
-    def test_get_mute_status_player_not_found(self):
+    @pytest.mark.asyncio
+    async def test_get_mute_status_player_not_found(self):
         """Test getting mute status when player is not found."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -688,12 +699,13 @@ class TestChatService:
         self.mock_player_service.get_player_by_id.return_value = None
 
         # Execute
-        result = self.chat_service.get_mute_status(player_id)
+        result = await self.chat_service.get_mute_status(player_id)
 
         # Verify
         assert result == "Player not found."
 
-    def test_get_mute_status_success(self):
+    @pytest.mark.asyncio
+    async def test_get_mute_status_success(self):
         """Test getting mute status successfully."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -703,14 +715,15 @@ class TestChatService:
         self.mock_user_manager.is_admin.return_value = False
 
         # Execute
-        result = self.chat_service.get_mute_status(player_id)
+        result = await self.chat_service.get_mute_status(player_id)
 
         # Verify
         assert "MUTE STATUS FOR TESTPLAYER" in result
         assert "PLAYERS YOU HAVE MUTED: None" in result
         assert "PLAYERS YOU HAVE GLOBALLY MUTED: None" in result
 
-    def test_get_mute_status_admin(self):
+    @pytest.mark.asyncio
+    async def test_get_mute_status_admin(self):
         """Test getting mute status for admin player."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -720,12 +733,13 @@ class TestChatService:
         self.mock_user_manager.is_admin.return_value = True
 
         # Execute
-        result = self.chat_service.get_mute_status(player_id)
+        result = await self.chat_service.get_mute_status(player_id)
 
         # Verify
         assert "ADMIN STATUS: You are an admin" in result
 
-    def test_get_mute_status_with_mutes(self):
+    @pytest.mark.asyncio
+    async def test_get_mute_status_with_mutes(self):
         """Test getting mute status with existing mutes."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -744,7 +758,7 @@ class TestChatService:
         self.mock_user_manager.is_admin.return_value = False
 
         # Execute
-        result = self.chat_service.get_mute_status(player_id)
+        result = await self.chat_service.get_mute_status(player_id)
 
         # Verify
         assert "TargetPlayer1" in result
@@ -752,7 +766,8 @@ class TestChatService:
         assert "Spam" in result
         assert "Harassment" in result
 
-    def test_get_mute_status_exception(self):
+    @pytest.mark.asyncio
+    async def test_get_mute_status_exception(self):
         """Test getting mute status when an exception occurs."""
         # Setup
         player_id = str(uuid.uuid4())
@@ -760,7 +775,7 @@ class TestChatService:
         self.mock_player_service.get_player_by_id.side_effect = Exception("Database error")
 
         # Execute
-        result = self.chat_service.get_mute_status(player_id)
+        result = await self.chat_service.get_mute_status(player_id)
 
         # Verify
         assert result == "Error retrieving mute status."

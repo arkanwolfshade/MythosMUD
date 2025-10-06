@@ -61,13 +61,15 @@ class TestLocalChannelCommandParsing:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": "Hello, fellow investigators!"},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": "Hello, fellow investigators!"},
+            }
+        )
 
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
@@ -100,13 +102,15 @@ class TestLocalChannelCommandParsing:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": "   "},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": "   "},
+            }
+        )
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -126,13 +130,15 @@ class TestLocalChannelCommandParsing:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": long_message},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": long_message},
+            }
+        )
 
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
@@ -152,13 +158,15 @@ class TestLocalChannelCommandParsing:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": special_message},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": special_message},
+            }
+        )
 
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
@@ -191,7 +199,7 @@ class TestLocalChannelCommandIntegration:
         player_name = "testuser"
 
         # Mock player service to return None (player not found)
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=None)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=None)
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -210,7 +218,7 @@ class TestLocalChannelCommandIntegration:
         mock_player = MagicMock()
         mock_player.id = "player123"
         mock_player.current_room_id = None
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -231,7 +239,7 @@ class TestLocalChannelCommandIntegration:
         # Remove id and player_id attributes
         del mock_player.id
         del mock_player.player_id
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -248,13 +256,15 @@ class TestLocalChannelCommandIntegration:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock chat service to return an error
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": False,
-            "error": "Rate limit exceeded",
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": False,
+                "error": "Rate limit exceeded",
+            }
+        )
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -271,10 +281,12 @@ class TestLocalChannelCommandIntegration:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock chat service to raise an exception
-        mock_request.app.state.chat_service.send_local_message.side_effect = Exception("Database connection failed")
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            side_effect=Exception("Database connection failed")
+        )
 
         result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
@@ -337,13 +349,15 @@ class TestLocalChannelCommandAliases:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": "Quick message"},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": "Quick message"},
+            }
+        )
 
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
@@ -365,13 +379,15 @@ class TestLocalChannelCommandAliases:
 
         # Mock the player service to return a valid player
         mock_player = create_mock_player()
-        mock_request.app.state.player_service.resolve_player_name = MagicMock(return_value=mock_player)
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
 
         # Mock successful chat service call
-        mock_request.app.state.chat_service.send_local_message.return_value = {
-            "success": True,
-            "message": {"id": "msg123", "content": "Case insensitive message"},
-        }
+        mock_request.app.state.chat_service.send_local_message = AsyncMock(
+            return_value={
+                "success": True,
+                "message": {"id": "msg123", "content": "Case insensitive message"},
+            }
+        )
 
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)

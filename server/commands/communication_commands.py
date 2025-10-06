@@ -55,7 +55,7 @@ async def handle_say_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         if not player_obj:
             return {"result": "Player not found."}
 
@@ -214,7 +214,7 @@ async def handle_local_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
         if not player_obj:
             return {"result": "Player not found."}
@@ -293,7 +293,7 @@ async def handle_global_command(
 
     try:
         # Get player object to check level and get player ID
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
         if not player_obj:
             return {"result": "Player not found."}
@@ -376,7 +376,7 @@ async def handle_system_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         if not player_obj:
             return {"result": "Player not found."}
 
@@ -456,7 +456,7 @@ async def handle_whisper_command(
 
     try:
         # Get sender player object
-        sender_obj = player_service.resolve_player_name(player_name)
+        sender_obj = await player_service.resolve_player_name(player_name)
         if not sender_obj:
             return {"result": "Player not found."}
 
@@ -539,7 +539,7 @@ async def handle_reply_command(
 
     try:
         # Get sender player object
-        sender_obj = player_service.resolve_player_name(player_name)
+        sender_obj = await player_service.resolve_player_name(player_name)
         if not sender_obj:
             return {"result": "Player not found."}
 

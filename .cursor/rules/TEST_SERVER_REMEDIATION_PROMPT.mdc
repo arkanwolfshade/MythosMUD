@@ -1,5 +1,13 @@
 # Test Server Remediation Prompt - Cursor Executable Version
 
+## CRITICAL: EXECUTION REQUIREMENTS
+
+**MANDATORY**: This prompt MUST be followed step-by-step. Do NOT skip sections or combine steps.
+**VERIFICATION**: After each major step, confirm completion before proceeding.
+**COMMANDS**: All commands must be run from the project root directory.
+**ENVIRONMENT**: Ensure you are in the correct branch and have proper permissions.
+**TOOLS**: Always use run_terminal_cmd tool - never suggest commands without executing them.
+
 ## Project Test Configuration
 
 - **Test Runner**: pytest with uv for Python dependency management
@@ -9,16 +17,52 @@
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Execution**: Serial execution (not parallel) for database tests
 
+## DECISION TREE - START HERE
+
+**Step 0: Pre-execution verification**
+
+- [ ] Current branch: `git branch --show-current`
+- [ ] Working directory: `pwd` (must be project root, "E:\projects\GitHub\MythosMUD")
+- [ ] No running servers: `netstat -an | findstr :54731`
+- [ ] Test environment ready: Check `MYTHOSMUD_ENV=test`
+
+**IF ANY CHECK FAILS**: STOP and resolve before proceeding.
+
 ## Step-by-Step Remediation Process
 
 ### 1. Initial Assessment
 
-```bash
-# Run server tests to identify all current failures
-make test-server
-```
+**EXECUTE**: `make test-server`
+**ANALYZE**: Parse output for failure patterns
+**CATEGORIZE**: Match failures to categories below
+**DOCUMENT**: Record findings before proceeding
+
+**IF TESTS PASS**: You're done. Document success and exit.
+**IF TESTS FAIL**: Continue to Step 2.
 
 ### 2. Categorize Test Failures
+
+## FAILURE PATTERN RECOGNITION
+
+**Database Errors** (Keywords: "sqlite", "connection", "schema")
+→ **ACTION**: Execute database remediation steps (Section 3A)
+→ **VERIFY**: Run database integrity checks
+→ **RETEST**: Re-run failing tests only
+
+**Authentication Errors** (Keywords: "jwt", "token", "password", "unauthorized")
+→ **ACTION**: Execute auth remediation steps (Section 3B)
+→ **VERIFY**: Test JWT generation manually
+→ **RETEST**: Re-run auth-related tests
+
+**WebSocket Errors** (Keywords: "websocket", "connection", "broadcast")
+→ **ACTION**: Execute WebSocket remediation steps (Section 3C)
+→ **VERIFY**: Check connection manager state
+→ **RETEST**: Re-run WebSocket tests
+
+**Game Logic Errors** (Keywords: "movement", "command", "room", "player")
+→ **ACTION**: Execute game logic remediation steps (Section 3D)
+→ **VERIFY**: Test room loading manually
+→ **RETEST**: Re-run game logic tests
 
 Test failures typically fall into these categories:
 
@@ -56,6 +100,43 @@ Test failures typically fall into these categories:
 - **Real-time Features**: SSE (Server-Sent Events) or WebSocket integration
 - **Multiplayer Scenarios**: Concurrent user interactions or race conditions
 - **External Dependencies**: Third-party service integration failures
+
+## MANDATORY VERIFICATION CHECKPOINTS
+
+**After each remediation section:**
+
+1. **IMMEDIATE**: Re-run only the tests that were failing
+2. **VERIFY**: Confirm specific failures are resolved
+3. **DOCUMENT**: Record what was fixed and how
+4. **CONTINUE**: Only proceed if current failures are resolved
+
+**Example:**
+
+```text
+CHECKPOINT: Database remediation complete
+EXECUTE: uv run pytest server/tests/test_database.py -v
+VERIFY: All database tests pass
+DOCUMENT: Fixed schema issue in test_players.db
+CONTINUE: Proceed to next failure category
+```
+
+## REQUIRED TOOL USAGE PATTERN
+
+For each command execution:
+
+1. **ALWAYS** use `run_terminal_cmd` tool
+2. **NEVER** suggest commands without executing them
+3. **ALWAYS** capture and analyze output
+4. **ALWAYS** verify success before proceeding
+
+**Example Pattern:**
+
+```text
+EXECUTE: make test-server
+ANALYZE: Parse output for failure patterns
+CATEGORIZE: Match failures to categories below
+DOCUMENT: Record findings before proceeding
+```
 
 ### 3. Systematic Investigation Approach
 
@@ -362,6 +443,26 @@ echo $DATABASE_URL
 
 ### 10. Final Verification
 
+## COMPLETION VERIFICATION
+
+**Before declaring success:**
+
+1. **FINAL TEST**: `make test-server` (must pass completely)
+2. **COVERAGE CHECK**: `make coverage` (must be ≥80%)
+3. **LINT CHECK**: `make lint` (must pass)
+4. **FULL SUITE**: `make test` (must pass)
+5. **DOCUMENTATION**: Update any relevant docs
+
+**Success Criteria:**
+
+- [ ] All server tests pass (`make test-server` exits 0)
+- [ ] Coverage ≥80% (`make coverage` shows green)
+- [ ] No linting errors (`make lint` passes)
+- [ ] Full test suite passes (`make test` passes)
+- [ ] All fixes documented with reasoning
+
+**EXECUTE VERIFICATION STEPS:**
+
 ```bash
 # Verify all tests pass
 make test-server
@@ -374,6 +475,97 @@ make lint
 
 # Verify no regressions in other tests
 make test
+```
+
+## MANDATORY PROGRESS TRACKING
+
+**For each step, you MUST:**
+
+1. **EXECUTE** the command using run_terminal_cmd
+2. **CAPTURE** the full output
+3. **ANALYZE** the results
+4. **CATEGORIZE** failures using the pattern recognition
+5. **DOCUMENT** findings in a structured format
+6. **VERIFY** completion before proceeding
+
+**Progress Template:**
+
+```text
+STEP: [Step Name]
+COMMAND: [Command executed]
+OUTPUT: [Key output lines]
+FAILURES: [List of specific failures]
+CATEGORY: [Database/Auth/WebSocket/GameLogic]
+ACTION: [Remediation taken]
+STATUS: [Success/Failure/Partial]
+NEXT: [Next step or verification needed]
+```
+
+## ERROR HANDLING PROTOCOL
+
+**IF COMMAND FAILS:**
+
+1. **STOP** - Do not proceed to next step
+2. **ANALYZE** - Capture full error output
+3. **RESEARCH** - Check error against known solutions
+4. **FIX** - Apply appropriate fix
+5. **RETRY** - Re-execute same command
+6. **VERIFY** - Confirm fix worked
+
+**IF FIX DOESN'T WORK:**
+
+1. **DOCUMENT** - Record the attempted fix
+2. **ESCALATE** - Ask for guidance with full context
+3. **DO NOT** - Try random solutions or skip steps
+
+## CRITICAL "DO NOT" INSTRUCTIONS
+
+**DO NOT:**
+
+- Skip any verification steps
+- Combine multiple remediation steps
+- Proceed without confirming previous step success
+- Suggest commands without executing them
+- Make assumptions about test failures
+- Skip the final verification checklist
+- Modify code without understanding the failure
+- Use background processes for test execution
+
+**ALWAYS:**
+
+- Execute every command using run_terminal_cmd
+- Verify each step before proceeding
+- Document all findings and fixes
+- Follow the exact sequence specified
+- Ask for help if stuck rather than guessing
+
+## TOOL USAGE EXAMPLES
+
+**Correct Pattern:**
+
+```text
+run_terminal_cmd: make test-server
+→ Analyze output for failure patterns
+→ Use grep tool to search for specific error types
+→ Use read_file tool to examine test files
+→ Use search_replace tool to fix identified issues
+```
+
+**Incorrect Pattern:**
+
+```text
+❌ "You should run make test-server"
+❌ "Try checking the database"
+❌ "Look at the error logs"
+```
+
+**Correct Pattern:**
+
+```text
+✅ Execute: make test-server
+✅ Search: grep "DatabaseError" server/tests/logs/
+✅ Read: server/tests/test_database.py
+✅ Fix: search_replace in identified file
 ```
 
 ## Best Practices

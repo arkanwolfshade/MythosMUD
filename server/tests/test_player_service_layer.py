@@ -6,7 +6,7 @@ separation and service layer functionality.
 """
 
 import uuid
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -22,22 +22,23 @@ class TestPlayerServiceLayer:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.mock_persistence = Mock()
+        self.mock_persistence = AsyncMock()
         self.player_service = PlayerService(self.mock_persistence)
 
     def test_player_service_initialization(self):
         """Test that PlayerService initializes correctly."""
         assert self.player_service.persistence == self.mock_persistence
 
-    def test_create_player_success(self):
+    @pytest.mark.asyncio
+    async def test_create_player_success(self):
         """Test successful player creation."""
         # Mock persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.save_player.return_value = None
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_save_player.return_value = None
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Create player
-        result = self.player_service.create_player("TestPlayer")
+        result = await self.player_service.create_player("TestPlayer")
 
         # Verify result
         assert isinstance(result, PlayerRead)
@@ -46,36 +47,38 @@ class TestPlayerServiceLayer:
         assert result.current_room_id == "earth_arkhamcity_northside_intersection_derby_high"
 
         # Verify persistence calls
-        self.mock_persistence.get_player_by_name.assert_called_once_with("TestPlayer")
-        self.mock_persistence.save_player.assert_called_once()
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")
+        self.mock_persistence.async_save_player.assert_called_once()
 
-    def test_create_player_name_already_exists(self):
+    @pytest.mark.asyncio
+    async def test_create_player_name_already_exists(self):
         """Test player creation fails when name already exists."""
         # Mock existing player
         existing_player = Mock()
         existing_player.player_id = uuid.uuid4()
-        self.mock_persistence.get_player_by_name.return_value = existing_player
+        self.mock_persistence.async_get_player_by_name.return_value = existing_player
 
         # Attempt to create player with existing name
         with pytest.raises(CustomValidationError) as exc_info:
-            self.player_service.create_player("ExistingPlayer")
+            await self.player_service.create_player("ExistingPlayer")
 
         assert "Player name already exists" in str(exc_info.value)
-        self.mock_persistence.get_player_by_name.assert_called_once_with("ExistingPlayer")
-        self.mock_persistence.save_player.assert_not_called()
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("ExistingPlayer")
+        self.mock_persistence.async_save_player.assert_not_called()
 
-    def test_create_player_with_stats_success(self):
+    @pytest.mark.asyncio
+    async def test_create_player_with_stats_success(self):
         """Test successful player creation with custom stats."""
         # Mock persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.save_player.return_value = None
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_save_player.return_value = None
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Create stats
         stats = Stats(strength=15, dexterity=12, constitution=14, intelligence=13, wisdom=11, charisma=10)
 
         # Create player with stats
-        result = self.player_service.create_player_with_stats("TestPlayer", stats)
+        result = await self.player_service.create_player_with_stats("TestPlayer", stats)
 
         # Verify result
         assert isinstance(result, PlayerRead)
@@ -83,10 +86,11 @@ class TestPlayerServiceLayer:
         assert result.stats == stats.model_dump()
 
         # Verify persistence calls
-        self.mock_persistence.get_player_by_name.assert_called_once_with("TestPlayer")
-        self.mock_persistence.save_player.assert_called_once()
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")
+        self.mock_persistence.async_save_player.assert_called_once()
 
-    def test_get_player_by_id_success(self):
+    @pytest.mark.asyncio
+    async def test_get_player_by_id_success(self):
         """Test successful player retrieval by ID."""
         # Mock player data
         mock_player = Mock()
@@ -104,11 +108,11 @@ class TestPlayerServiceLayer:
         mock_player.last_active = "2023-01-01T00:00:00"
         mock_player.is_admin = 0
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Get player
-        result = self.player_service.get_player_by_id(str(mock_player.player_id))
+        result = await self.player_service.get_player_by_id(str(mock_player.player_id))
 
         # Verify result
         assert isinstance(result, PlayerRead)
@@ -116,20 +120,22 @@ class TestPlayerServiceLayer:
         assert result.name == "TestPlayer"
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with(str(mock_player.player_id))
+        self.mock_persistence.async_get_player.assert_called_once_with(str(mock_player.player_id))
 
-    def test_get_player_by_id_not_found(self):
+    @pytest.mark.asyncio
+    async def test_get_player_by_id_not_found(self):
         """Test player retrieval by ID when player doesn't exist."""
-        self.mock_persistence.get_player.return_value = None
+        self.mock_persistence.async_get_player.return_value = None
 
         # Get non-existent player
-        result = self.player_service.get_player_by_id("nonexistent-id")
+        result = await self.player_service.get_player_by_id("nonexistent-id")
 
         # Verify result
         assert result is None
-        self.mock_persistence.get_player.assert_called_once_with("nonexistent-id")
+        self.mock_persistence.async_get_player.assert_called_once_with("nonexistent-id")
 
-    def test_get_player_by_name_success(self):
+    @pytest.mark.asyncio
+    async def test_get_player_by_name_success(self):
         """Test successful player retrieval by name."""
         # Mock player data
         mock_player = Mock()
@@ -147,20 +153,21 @@ class TestPlayerServiceLayer:
         mock_player.last_active = "2023-01-01T00:00:00"
         mock_player.is_admin = 0
 
-        self.mock_persistence.get_player_by_name.return_value = mock_player
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = mock_player
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Get player
-        result = self.player_service.get_player_by_name("TestPlayer")
+        result = await self.player_service.get_player_by_name("TestPlayer")
 
         # Verify result
         assert isinstance(result, PlayerRead)
         assert result.name == "TestPlayer"
 
         # Verify persistence calls
-        self.mock_persistence.get_player_by_name.assert_called_once_with("TestPlayer")
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")
 
-    def test_list_players_success(self):
+    @pytest.mark.asyncio
+    async def test_list_players_success(self):
         """Test successful player listing."""
         # Mock player data
         mock_player1 = Mock()
@@ -193,11 +200,11 @@ class TestPlayerServiceLayer:
         mock_player2.last_active = "2023-01-01T00:00:00"
         mock_player2.is_admin = 0
 
-        self.mock_persistence.list_players.return_value = [mock_player1, mock_player2]
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player1, mock_player2]
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # List players
-        result = self.player_service.list_players()
+        result = await self.player_service.list_players()
 
         # Verify result
         assert isinstance(result, list)
@@ -207,9 +214,10 @@ class TestPlayerServiceLayer:
         assert result[1].name == "Player2"
 
         # Verify persistence calls
-        self.mock_persistence.list_players.assert_called_once()
+        self.mock_persistence.async_list_players.assert_called_once()
 
-    def test_resolve_player_name_exact_match(self):
+    @pytest.mark.asyncio
+    async def test_resolve_player_name_exact_match(self):
         """Test player name resolution with exact match."""
         # Mock player data
         mock_player = Mock()
@@ -227,17 +235,18 @@ class TestPlayerServiceLayer:
         mock_player.last_active = "2023-01-01T00:00:00"
         mock_player.is_admin = 0
 
-        self.mock_persistence.get_player_by_name.return_value = mock_player
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = mock_player
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Resolve player name
-        result = self.player_service.resolve_player_name("TestPlayer")
+        result = await self.player_service.resolve_player_name("TestPlayer")
 
         # Verify result
         assert isinstance(result, PlayerRead)
         assert result.name == "TestPlayer"
 
-    def test_resolve_player_name_case_insensitive(self):
+    @pytest.mark.asyncio
+    async def test_resolve_player_name_case_insensitive(self):
         """Test player name resolution with case-insensitive matching."""
         # Mock player data
         mock_player = Mock()
@@ -256,18 +265,19 @@ class TestPlayerServiceLayer:
         mock_player.is_admin = 0
 
         # Mock no exact match, but return player in list
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = [mock_player]
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player]
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Resolve player name with different case
-        result = self.player_service.resolve_player_name("testplayer")
+        result = await self.player_service.resolve_player_name("testplayer")
 
         # Verify result
         assert isinstance(result, PlayerRead)
         assert result.name == "TestPlayer"
 
-    def test_validate_player_name_valid(self):
+    @pytest.mark.asyncio
+    async def test_validate_player_name_valid(self):
         """Test player name validation with valid name."""
         # Mock player data
         mock_player = Mock()
@@ -285,78 +295,84 @@ class TestPlayerServiceLayer:
         mock_player.last_active = "2023-01-01T00:00:00"
         mock_player.is_admin = 0
 
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = [mock_player]
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player]
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Validate player name
-        is_valid, message = self.player_service.validate_player_name("TestPlayer")
+        is_valid, message = await self.player_service.validate_player_name("TestPlayer")
 
         # Verify result
         assert is_valid is True
         assert message == "Valid player name"
 
-    def test_validate_player_name_invalid_empty(self):
+    @pytest.mark.asyncio
+    async def test_validate_player_name_invalid_empty(self):
         """Test player name validation with empty name."""
         # Validate empty player name
-        is_valid, message = self.player_service.validate_player_name("")
+        is_valid, message = await self.player_service.validate_player_name("")
 
         # Verify result
         assert is_valid is False
         assert message == "Player name cannot be empty"
 
-    def test_validate_player_name_invalid_too_short(self):
+    @pytest.mark.asyncio
+    async def test_validate_player_name_invalid_too_short(self):
         """Test player name validation with name too short."""
         # Validate short player name
-        is_valid, message = self.player_service.validate_player_name("A")
+        is_valid, message = await self.player_service.validate_player_name("A")
 
         # Verify result
         assert is_valid is False
         assert message == "Player name must be at least 2 characters long"
 
-    def test_validate_player_name_invalid_characters(self):
+    @pytest.mark.asyncio
+    async def test_validate_player_name_invalid_characters(self):
         """Test player name validation with invalid characters."""
         # Validate player name with invalid characters
-        is_valid, message = self.player_service.validate_player_name("Test<Player>")
+        is_valid, message = await self.player_service.validate_player_name("Test<Player>")
 
         # Verify result
         assert is_valid is False
         assert "'<'" in message
 
-    def test_delete_player_success(self):
+    @pytest.mark.asyncio
+    async def test_delete_player_success(self):
         """Test successful player deletion."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.delete_player.return_value = True
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_delete_player.return_value = True
 
         # Delete player
-        success, message = self.player_service.delete_player(str(mock_player.player_id))
+        success, message = await self.player_service.delete_player(str(mock_player.player_id))
 
         # Verify result
         assert success is True
         assert "TestPlayer" in message
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with(str(mock_player.player_id))
-        self.mock_persistence.delete_player.assert_called_once_with(str(mock_player.player_id))
+        self.mock_persistence.async_get_player.assert_called_once_with(str(mock_player.player_id))
+        self.mock_persistence.async_delete_player.assert_called_once_with(str(mock_player.player_id))
 
-    def test_delete_player_not_found(self):
+    @pytest.mark.asyncio
+    async def test_delete_player_not_found(self):
         """Test player deletion when player doesn't exist."""
-        self.mock_persistence.get_player.return_value = None
+        self.mock_persistence.async_get_player.return_value = None
 
         # Attempt to delete non-existent player
         with pytest.raises(CustomValidationError) as exc_info:
-            self.player_service.delete_player("nonexistent-id")
+            await self.player_service.delete_player("nonexistent-id")
 
         assert "Player not found for deletion" in str(exc_info.value)
-        self.mock_persistence.get_player.assert_called_once_with("nonexistent-id")
-        self.mock_persistence.delete_player.assert_not_called()
+        self.mock_persistence.async_get_player.assert_called_once_with("nonexistent-id")
+        self.mock_persistence.async_delete_player.assert_not_called()
 
-    def test_update_player_location_success(self):
+    @pytest.mark.asyncio
+    async def test_update_player_location_success(self):
         """Test successful player location update."""
         # Mock player data
         mock_player = Mock()
@@ -364,33 +380,35 @@ class TestPlayerServiceLayer:
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "old_room"
 
-        self.mock_persistence.get_player_by_name.return_value = mock_player
-        self.mock_persistence.save_player.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = mock_player
+        self.mock_persistence.async_save_player.return_value = None
 
         # Update player location
-        result = self.player_service.update_player_location("TestPlayer", "new_room")
+        result = await self.player_service.update_player_location("TestPlayer", "new_room")
 
         # Verify result
         assert result is True
         assert mock_player.current_room_id == "new_room"
 
         # Verify persistence calls
-        self.mock_persistence.get_player_by_name.assert_called_once_with("TestPlayer")
-        self.mock_persistence.save_player.assert_called_once_with(mock_player)
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")
+        self.mock_persistence.async_save_player.assert_called_once_with(mock_player)
 
-    def test_update_player_location_not_found(self):
+    @pytest.mark.asyncio
+    async def test_update_player_location_not_found(self):
         """Test player location update when player doesn't exist."""
-        self.mock_persistence.get_player_by_name.return_value = None
+        self.mock_persistence.async_get_player_by_name.return_value = None
 
         # Attempt to update location for non-existent player
         with pytest.raises(DatabaseError) as exc_info:
-            self.player_service.update_player_location("NonexistentPlayer", "new_room")
+            await self.player_service.update_player_location("NonexistentPlayer", "new_room")
 
         assert "Failed to update player location" in str(exc_info.value)
-        self.mock_persistence.get_player_by_name.assert_called_once_with("NonexistentPlayer")
-        self.mock_persistence.save_player.assert_not_called()
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("NonexistentPlayer")
+        self.mock_persistence.async_save_player.assert_not_called()
 
-    def test_search_players_by_name_success(self):
+    @pytest.mark.asyncio
+    async def test_search_players_by_name_success(self):
         """Test successful player search by name."""
         # Mock player data
         mock_player1 = Mock()
@@ -423,11 +441,11 @@ class TestPlayerServiceLayer:
         mock_player2.last_active = "2023-01-01T00:00:00"
         mock_player2.is_admin = 0
 
-        self.mock_persistence.list_players.return_value = [mock_player1, mock_player2]
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player1, mock_player2]
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Search players
-        result = self.player_service.search_players_by_name("Test")
+        result = await self.player_service.search_players_by_name("Test")
 
         # Verify result
         assert isinstance(result, list)
@@ -437,19 +455,21 @@ class TestPlayerServiceLayer:
         assert result[1].name == "TestPlayer2"
 
         # Verify persistence calls
-        self.mock_persistence.list_players.assert_called_once()
+        self.mock_persistence.async_list_players.assert_called_once()
 
-    def test_search_players_by_name_empty_term(self):
+    @pytest.mark.asyncio
+    async def test_search_players_by_name_empty_term(self):
         """Test player search with empty search term."""
         # Search with empty term
-        result = self.player_service.search_players_by_name("")
+        result = await self.player_service.search_players_by_name("")
 
         # Verify result
         assert isinstance(result, list)
         assert len(result) == 0
-        self.mock_persistence.list_players.assert_not_called()
+        self.mock_persistence.async_list_players.assert_not_called()
 
-    def test_get_online_players(self):
+    @pytest.mark.asyncio
+    async def test_get_online_players(self):
         """Test getting online players."""
         # Mock player data
         mock_player = Mock()
@@ -467,11 +487,11 @@ class TestPlayerServiceLayer:
         mock_player.last_active = "2023-01-01T00:00:00"
         mock_player.is_admin = 0
 
-        self.mock_persistence.list_players.return_value = [mock_player]
-        self.mock_persistence.get_profession_by_id.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player]
+        self.mock_persistence.async_get_profession_by_id.return_value = None
 
         # Get online players
-        result = self.player_service.get_online_players()
+        result = await self.player_service.get_online_players()
 
         # Verify result
         assert isinstance(result, list)
@@ -480,142 +500,149 @@ class TestPlayerServiceLayer:
         assert result[0].name == "TestPlayer"
 
         # Verify persistence calls
-        self.mock_persistence.list_players.assert_called_once()
+        self.mock_persistence.async_list_players.assert_called_once()
 
-    def test_apply_sanity_loss_success(self):
+    @pytest.mark.asyncio
+    async def test_apply_sanity_loss_success(self):
         """Test successful sanity loss application."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.apply_sanity_loss.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_apply_sanity_loss.return_value = None
 
         # Apply sanity loss
-        result = self.player_service.apply_sanity_loss("test-player-id", 10, "test-source")
+        result = await self.player_service.apply_sanity_loss("test-player-id", 10, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
         assert "Applied 10 sanity loss to TestPlayer" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.apply_sanity_loss.assert_called_once_with(mock_player, 10, "test-source")
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_apply_sanity_loss.assert_called_once_with(mock_player, 10, "test-source")
 
-    def test_apply_sanity_loss_player_not_found(self):
+    @pytest.mark.asyncio
+    async def test_apply_sanity_loss_player_not_found(self):
         """Test sanity loss application when player doesn't exist."""
-        self.mock_persistence.get_player.return_value = None
+        self.mock_persistence.async_get_player.return_value = None
 
         # Attempt to apply sanity loss to non-existent player
         with pytest.raises(CustomValidationError) as exc_info:
-            self.player_service.apply_sanity_loss("nonexistent-id", 10, "test-source")
+            await self.player_service.apply_sanity_loss("nonexistent-id", 10, "test-source")
 
         assert "Player not found: nonexistent-id" in str(exc_info.value)
-        self.mock_persistence.get_player.assert_called_once_with("nonexistent-id")
-        self.mock_persistence.apply_sanity_loss.assert_not_called()
+        self.mock_persistence.async_get_player.assert_called_once_with("nonexistent-id")
+        self.mock_persistence.async_apply_sanity_loss.assert_not_called()
 
-    def test_apply_fear_success(self):
+    @pytest.mark.asyncio
+    async def test_apply_fear_success(self):
         """Test successful fear application."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.apply_fear.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_apply_fear.return_value = None
 
         # Apply fear
-        result = self.player_service.apply_fear("test-player-id", 5, "test-source")
+        result = await self.player_service.apply_fear("test-player-id", 5, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
         assert "Applied 5 fear to TestPlayer" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.apply_fear.assert_called_once_with(mock_player, 5, "test-source")
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_apply_fear.assert_called_once_with(mock_player, 5, "test-source")
 
-    def test_apply_corruption_success(self):
+    @pytest.mark.asyncio
+    async def test_apply_corruption_success(self):
         """Test successful corruption application."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.apply_corruption.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_apply_corruption.return_value = None
 
         # Apply corruption
-        result = self.player_service.apply_corruption("test-player-id", 3, "test-source")
+        result = await self.player_service.apply_corruption("test-player-id", 3, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
         assert "Applied 3 corruption to TestPlayer" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.apply_corruption.assert_called_once_with(mock_player, 3, "test-source")
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_apply_corruption.assert_called_once_with(mock_player, 3, "test-source")
 
-    def test_gain_occult_knowledge_success(self):
+    @pytest.mark.asyncio
+    async def test_gain_occult_knowledge_success(self):
         """Test successful occult knowledge gain."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.gain_occult_knowledge.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_gain_occult_knowledge.return_value = None
 
         # Gain occult knowledge
-        result = self.player_service.gain_occult_knowledge("test-player-id", 15, "test-source")
+        result = await self.player_service.gain_occult_knowledge("test-player-id", 15, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
         assert "Gained 15 occult knowledge for TestPlayer" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.gain_occult_knowledge.assert_called_once_with(mock_player, 15, "test-source")
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_gain_occult_knowledge.assert_called_once_with(mock_player, 15, "test-source")
 
-    def test_heal_player_success(self):
+    @pytest.mark.asyncio
+    async def test_heal_player_success(self):
         """Test successful player healing."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.heal_player.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_heal_player.return_value = None
 
         # Heal player
-        result = self.player_service.heal_player("test-player-id", 20)
+        result = await self.player_service.heal_player("test-player-id", 20)
 
         # Verify result
         assert isinstance(result, dict)
         assert "Healed TestPlayer for 20 health" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.heal_player.assert_called_once_with(mock_player, 20)
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_heal_player.assert_called_once_with(mock_player, 20)
 
-    def test_damage_player_success(self):
+    @pytest.mark.asyncio
+    async def test_damage_player_success(self):
         """Test successful player damage."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
-        self.mock_persistence.get_player.return_value = mock_player
-        self.mock_persistence.damage_player.return_value = None
+        self.mock_persistence.async_get_player.return_value = mock_player
+        self.mock_persistence.async_damage_player.return_value = None
 
         # Damage player
-        result = self.player_service.damage_player("test-player-id", 15, "magical")
+        result = await self.player_service.damage_player("test-player-id", 15, "magical")
 
         # Verify result
         assert isinstance(result, dict)
         assert "Damaged TestPlayer for 15 magical damage" in result["message"]
 
         # Verify persistence calls
-        self.mock_persistence.get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.damage_player.assert_called_once_with(mock_player, 15, "magical")
+        self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
+        self.mock_persistence.async_damage_player.assert_called_once_with(mock_player, 15, "magical")

@@ -22,18 +22,61 @@ class TestSecurityHeadersVerification:
         app = create_app()
 
         # Mock the persistence layer with async methods
-        from unittest.mock import AsyncMock
+        from unittest.mock import AsyncMock, Mock
 
         mock_persistence = AsyncMock()
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.async_get_player.return_value = None
-        mock_persistence.async_get_room.return_value = None
+
+        # Create a proper mock player object for tests that need it
+        import uuid
+
+        mock_player = Mock()
+        mock_player.player_id = str(uuid.uuid4())
+        mock_player.user_id = str(uuid.uuid4())
+        mock_player.name = "TestPlayer"
+        mock_player.profession_id = 0
+        mock_player.current_room_id = "test-room"
+        mock_player.experience_points = 100
+        mock_player.level = 1
+        mock_player.created_at = "2023-01-01"
+        mock_player.last_active = "2023-01-01"
+        mock_player.is_admin = False
+        mock_player.get_stats.return_value = {"str": 10, "dex": 10}
+        mock_player.get_inventory.return_value = []
+        mock_player.get_status_effects.return_value = []
+
+        # Create a mock profession object
+        mock_profession = Mock()
+        mock_profession.name = "Test Profession"
+        mock_profession.description = "A test profession"
+        mock_profession.flavor_text = "Test flavor"
+
+        # Configure async methods with conditional returns
+        def mock_get_player(player_id):
+            # Return None for invalid UUIDs to trigger 404 errors
+            if player_id in ["invalid-uuid-format", "nonexistent-player"]:
+                return None
+            return mock_player
+
+        def mock_get_room(room_id):
+            # Return None for nonexistent rooms to trigger 404 errors
+            if room_id in ["nonexistent-room", "invalid-room"]:
+                return None
+            return None  # Default to None for all rooms
+
+        mock_persistence.async_list_players.return_value = [mock_player]
+        mock_persistence.async_get_player.side_effect = mock_get_player
+        mock_persistence.async_get_player_by_name.return_value = mock_player
+        mock_persistence.async_get_profession_by_id.return_value = mock_profession
+        mock_persistence.async_get_room.side_effect = mock_get_room
         mock_persistence.async_save_player.return_value = None
         mock_persistence.async_delete_player.return_value = True
+
         # Also mock synchronous methods for backward compatibility
-        mock_persistence.list_players.return_value = []
-        mock_persistence.get_player.return_value = None
-        mock_persistence.get_room.return_value = None
+        mock_persistence.list_players.return_value = [mock_player]
+        mock_persistence.get_player.side_effect = mock_get_player
+        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_profession_by_id.return_value = mock_profession
+        mock_persistence.get_room.side_effect = mock_get_room
         mock_persistence.save_player.return_value = None
         mock_persistence.delete_player.return_value = True
 

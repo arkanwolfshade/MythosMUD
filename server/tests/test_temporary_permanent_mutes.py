@@ -9,7 +9,7 @@ This module tests how the mute filtering system handles different types of mutes
 """
 
 import uuid
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -98,8 +98,8 @@ class TestTemporaryPermanentMutes:
         chat_service.nats_service = mock_nats_service
         chat_service.rate_limiter = mock_rate_limiter
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply temporary global mute (5 minutes) - this should prevent sending messages
         mute_result = mock_user_manager.mute_global(
@@ -164,8 +164,8 @@ class TestTemporaryPermanentMutes:
         chat_service.nats_service = mock_nats_service
         chat_service.rate_limiter = mock_rate_limiter
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply temporary global mute (1 hour) - this should prevent sending messages
         mute_result = mock_user_manager.mute_global(
@@ -229,8 +229,8 @@ class TestTemporaryPermanentMutes:
         chat_service.nats_service = mock_nats_service
         chat_service.rate_limiter = mock_rate_limiter
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply permanent global mute (no duration) - this should prevent sending messages
         mute_result = mock_user_manager.mute_global(
@@ -307,11 +307,11 @@ class TestTemporaryPermanentMutes:
         chat_service.nats_service = mock_nats_service
         chat_service.rate_limiter = mock_rate_limiter
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply permanent global mute
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, reason="Test permanent mute"
         )
         assert global_mute_result is True
@@ -323,7 +323,7 @@ class TestTemporaryPermanentMutes:
         assert "globally muted" in emote_result["error"].lower()
 
         # Manually unmute the player
-        unmute_result = chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
+        unmute_result = await chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
         assert unmute_result is True
 
         # Test emote is now allowed
@@ -363,11 +363,11 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.unmute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test temporary global mute
-        temp_mute_result = chat_service.mute_global(
+        temp_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=60,
@@ -382,11 +382,11 @@ class TestTemporaryPermanentMutes:
         assert "globally muted" in emote_result["error"].lower()
 
         # Unmute and test permanent global mute
-        unmute_result = chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
+        unmute_result = await chat_service.unmute_global(unmuter_id=self.muter_id, target_player_name=self.target_name)
         assert unmute_result is True
 
         # Apply permanent global mute
-        perm_mute_result = chat_service.mute_global(
+        perm_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, reason="Test permanent mute"
         )
         assert perm_mute_result is True
@@ -425,11 +425,11 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test global temporary mute
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=30,
@@ -451,7 +451,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["success"] is True
 
         # Test global permanent mute (no duration)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=None,
@@ -493,11 +493,11 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test very short duration (1 minute)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=1,
@@ -511,7 +511,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["success"] is False
 
         # Test very long duration (1 week)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=10080,  # 1 week
@@ -552,15 +552,17 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply personal mute
-        personal_mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        personal_mute_result = await chat_service.mute_player(
+            muter_id=self.muter_id, target_player_name=self.target_name
+        )
         assert personal_mute_result is True
 
         # Apply global mute (should take priority)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=60,
@@ -610,11 +612,11 @@ class TestTemporaryPermanentMutes:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply temporary mute
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=5, reason="Timing test"
         )
         assert global_mute_result is True

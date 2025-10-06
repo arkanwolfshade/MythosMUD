@@ -21,7 +21,7 @@ class TestWhisperChannelStrategy:
         # Create mock dependencies
         self.mock_persistence = Mock()
         self.mock_room_service = Mock()
-        self.mock_player_service = Mock()
+        self.mock_player_service = AsyncMock()
 
         # Create mock services
         self.mock_nats_service = Mock()

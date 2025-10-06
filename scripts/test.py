@@ -41,6 +41,8 @@ def run_server_tests():
         "-v",
         "--tb=short",
         "--ignore=tests/test_e2e_multiplayer_connection_messaging.py",
+        "-m",
+        "not e2e",  # Exclude tests marked with @pytest.mark.e2e
     ]
     result = subprocess.run(cmd, env=env, cwd=server_dir)
 
@@ -50,7 +52,7 @@ def run_server_tests():
 def run_server_e2e_tests():
     """Run server-side E2E tests (requires running server)"""
     print("Running server E2E tests...")
-    print("⚠️  WARNING: This requires the server to be running!")
+    print("WARNING: This requires the server to be running!")
     print("   Make sure to run './scripts/start_dev.ps1' first.")
     print()
 
@@ -71,8 +73,17 @@ def run_server_e2e_tests():
     print("Running server E2E tests with pytest...")
     # Change to server directory to use the pytest configuration there
     server_dir = project_root / "server"
-    # Run only E2E tests
-    cmd = ["uv", "run", "pytest", "tests/test_e2e_multiplayer_connection_messaging.py", "-v", "--tb=short"]
+    # Run only E2E tests (only the existing e2e file and tests marked with @pytest.mark.e2e)
+    cmd = [
+        "uv",
+        "run",
+        "pytest",
+        "tests/test_e2e_multiplayer_connection_messaging.py",
+        "-v",
+        "--tb=short",
+        "-m",
+        "e2e",  # Include only tests marked with @pytest.mark.e2e
+    ]
     result = subprocess.run(cmd, env=env, cwd=server_dir)
 
     return result.returncode
@@ -105,7 +116,7 @@ def run_client_tests():
 def run_client_e2e_tests():
     """Run client-side E2E tests (Playwright tests)"""
     print("Running client E2E tests...")
-    print("⚠️  WARNING: This requires both server and client to be running!")
+    print("WARNING: This requires both server and client to be running!")
     print("   Make sure to run './scripts/start_dev.ps1' first.")
     print()
 

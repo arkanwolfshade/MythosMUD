@@ -51,7 +51,6 @@ class TestServiceDependencyInjection:
         """Create test client."""
         return TestClient(app)
 
-    @pytest.mark.e2e
     def test_player_service_dependency_injection_type(self, client):
         """Test that PlayerService is correctly injected."""
         # Test that the dependency returns a PlayerService instance
@@ -73,7 +72,6 @@ class TestServiceDependencyInjection:
             assert captured_service is not None
             assert isinstance(captured_service, PlayerService)
 
-    @pytest.mark.e2e
     def test_room_service_dependency_injection_type(self, client):
         """Test that RoomService is correctly injected."""
         # Test that the dependency returns a RoomService instance
@@ -95,7 +93,6 @@ class TestServiceDependencyInjection:
             assert captured_service is not None
             assert isinstance(captured_service, RoomService)
 
-    @pytest.mark.e2e
     def test_player_service_has_persistence_layer(self, client):
         """Test that PlayerService has access to persistence layer."""
         with client as test_client:
@@ -114,7 +111,6 @@ class TestServiceDependencyInjection:
             assert hasattr(captured_service, "persistence")
             assert captured_service.persistence is not None
 
-    @pytest.mark.e2e
     def test_room_service_has_persistence_layer(self, client):
         """Test that RoomService has access to persistence layer."""
         with client as test_client:

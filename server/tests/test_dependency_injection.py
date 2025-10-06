@@ -62,6 +62,11 @@ class TestDependencyInjection:
         # Mock the player service methods
         mock_persistence.get_player.return_value = None
         mock_persistence.list_players.return_value = []
+        # Mock async methods with AsyncMock
+        from unittest.mock import AsyncMock
+
+        mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.async_list_players = AsyncMock(return_value=[])
 
         # Test that the dependency injection works by making a request
         # This should not raise an import error or dependency resolution error

@@ -50,13 +50,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Add security headers middleware (add first for maximum protection)
-    app.add_middleware(SecurityHeadersMiddleware)
-
-    # Add comprehensive logging middleware (add second to capture all requests and errors)
-    app.add_middleware(ComprehensiveLoggingMiddleware)
-
-    # Add CORS middleware with environment-based configuration
+    # Add CORS middleware first (it handles preflight requests)
     allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
     allowed_methods = os.getenv("ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS").split(",")
     allowed_headers = os.getenv("ALLOWED_HEADERS", "Content-Type,Authorization,X-Requested-With").split(",")
@@ -75,6 +69,12 @@ def create_app() -> FastAPI:
         allow_methods=allowed_methods,
         allow_headers=allowed_headers,
     )
+
+    # Add comprehensive logging middleware (add second to capture all requests and errors)
+    app.add_middleware(ComprehensiveLoggingMiddleware)
+
+    # Add security headers middleware (add last to ensure headers are added to all responses)
+    app.add_middleware(SecurityHeadersMiddleware)
 
     # Register error handlers
     register_error_handlers(app)

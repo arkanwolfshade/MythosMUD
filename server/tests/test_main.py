@@ -46,7 +46,7 @@ class TestEndpoints:
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
         with patch("server.persistence.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
+            mock_persistence = AsyncMock()
             mock_get_persistence.return_value = mock_persistence
 
             # Mock profession data to return proper string values
@@ -54,7 +54,7 @@ class TestEndpoints:
             mock_profession.name = "Scholar"
             mock_profession.description = "A learned academic"
             mock_profession.flavor_text = "Knowledge is power"
-            mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+            mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
 
             # Create a test client
             test_client = TestClient(app)
@@ -72,7 +72,7 @@ class TestEndpoints:
 
     def test_get_room_existing(self, client):
         """Test getting an existing room."""
-        with patch.object(client.app.state.persistence, "get_room") as mock_get_room:
+        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
             mock_room = {"id": "test_room", "name": "Test Room"}
             mock_get_room.return_value = mock_room
 
@@ -83,7 +83,7 @@ class TestEndpoints:
 
     def test_get_room_not_found(self, client):
         """Test getting a non-existent room."""
-        with patch.object(client.app.state.persistence, "get_room") as mock_get_room:
+        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
             mock_get_room.return_value = None
 
             response = client.get("/rooms/nonexistent")
@@ -98,40 +98,50 @@ class TestEndpoints:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             # Mock the PlayerService to return a successful result
-            with patch("server.api.players.PlayerService") as mock_player_service:
-                mock_service_instance = Mock()
-                mock_player = Mock()
-                mock_player.name = "testplayer"
-                mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
-                mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
-                mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
-                mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
-                mock_player.experience_points = 0
-                mock_player.level = 1
-                mock_player.stats = {"health": 100, "sanity": 90}
-                mock_player.inventory = []
-                mock_player.status_effects = []
-                mock_player.created_at = "2024-01-01T00:00:00Z"
-                mock_player.last_active = "2024-01-01T00:00:00Z"
-                mock_player.is_admin = False
-                # Add profession fields that are now required by PlayerRead schema
-                mock_player.profession_id = 0
-                mock_player.profession_name = "Scholar"
-                mock_player.profession_description = "A learned academic"
-                mock_player.profession_flavor_text = "Knowledge is power"
-                mock_service_instance.create_player.return_value = mock_player
-                mock_player_service.return_value = mock_service_instance
+            mock_service_instance = Mock()
+            mock_player = Mock()
+            mock_player.name = "testplayer"
+            mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
+            mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
+            mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
+            mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
+            mock_player.experience_points = 0
+            mock_player.level = 1
+            mock_player.stats = {"health": 100, "sanity": 90}
+            mock_player.inventory = []
+            mock_player.status_effects = []
+            mock_player.created_at = "2024-01-01T00:00:00Z"
+            mock_player.last_active = "2024-01-01T00:00:00Z"
+            mock_player.is_admin = False
+            # Add profession fields that are now required by PlayerRead schema
+            mock_player.profession_id = 0
+            mock_player.profession_name = "Scholar"
+            mock_player.profession_description = "A learned academic"
+            mock_player.profession_flavor_text = "Knowledge is power"
+            mock_service_instance.create_player = AsyncMock(return_value=mock_player)
 
+            # Override the app dependency to use our mock
+            import server.dependencies
+            from server.main import app
+
+            app.dependency_overrides[server.dependencies.get_player_service] = lambda: mock_service_instance
+
+            try:
                 response = client.post(
                     "/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
                 )
 
                 assert response.status_code == 200
                 # The response will be handled by the PlayerService
+            finally:
+                # Clean up the dependency override
+                app.dependency_overrides.clear()
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""
-        with patch.object(client.app.state.persistence, "get_player_by_name") as mock_get_player:
+        with patch.object(
+            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
+        ) as mock_get_player:
             mock_get_player.return_value = Mock(name="testplayer")  # Player exists
 
             response = client.post("/players?name=testplayer")
@@ -187,7 +197,9 @@ class TestEndpoints:
                 "profession_flavor_text": "Knowledge is power",
             },
         ]
-        with patch.object(client.app.state.persistence, "list_players") as mock_list_players:
+        with patch.object(
+            client.app.state.persistence, "async_list_players", new_callable=AsyncMock
+        ) as mock_list_players:
             mock_list_players.return_value = mock_players
 
             response = client.get("/players")
@@ -225,7 +237,7 @@ class TestEndpoints:
             "profession_description": "A learned academic",
             "profession_flavor_text": "Knowledge is power",
         }
-        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
+        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             mock_get_player.return_value = mock_player
 
             response = client.get(f"/players/{test_uuid}")
@@ -238,7 +250,7 @@ class TestEndpoints:
 
     def test_get_player_by_id_not_found(self, client):
         """Test getting a non-existent player by ID."""
-        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
+        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             mock_get_player.return_value = None
 
             response = client.get("/players/nonexistent")
@@ -265,7 +277,9 @@ class TestEndpoints:
             "level": 1,
             "is_admin": False,
         }
-        with patch.object(client.app.state.persistence, "get_player_by_name") as mock_get_player:
+        with patch.object(
+            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
+        ) as mock_get_player:
             mock_get_player.return_value = mock_player
 
             response = client.get("/players/name/testplayer")
@@ -283,7 +297,9 @@ class TestEndpoints:
 
     def test_get_player_by_name_not_found(self, client):
         """Test getting a non-existent player by name."""
-        with patch.object(client.app.state.persistence, "get_player_by_name") as mock_get_player:
+        with patch.object(
+            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
+        ) as mock_get_player:
             mock_get_player.return_value = None
 
             response = client.get("/players/name/nonexistent")
@@ -293,7 +309,7 @@ class TestEndpoints:
 
     def test_delete_player_not_found(self, client):
         """Test that delete player endpoint returns 404 for non-existent player."""
-        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
+        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             # Mock that player doesn't exist
             mock_get_player.return_value = None
 
@@ -305,8 +321,10 @@ class TestEndpoints:
     def test_delete_player_success(self, client):
         """Test that delete player endpoint successfully deletes a player."""
         # Mock the persistence methods
-        with patch.object(client.app.state.persistence, "get_player") as mock_get_player:
-            with patch.object(client.app.state.persistence, "delete_player") as mock_delete_player:
+        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
+            with patch.object(
+                client.app.state.persistence, "async_delete_player", new_callable=AsyncMock
+            ) as mock_delete_player:
                 # Mock a player that exists
                 mock_player = Mock()
                 mock_player.name = "TestDeletePlayer"

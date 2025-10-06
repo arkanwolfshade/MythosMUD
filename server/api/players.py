@@ -47,7 +47,7 @@ async def create_player(
 ):
     """Create a new player character."""
     try:
-        return await player_service.create_player(name, starting_room_id)
+        return await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
     except ValidationError:
         context = create_context_from_request(request)
         if current_user:
@@ -65,6 +65,25 @@ async def list_players(
 ):
     """Get a list of all players."""
     return await player_service.list_players()
+
+
+@player_router.get("/available-classes")
+async def get_available_classes(
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get information about all available character classes and their prerequisites.
+    """
+    stats_generator = StatsGenerator()
+
+    class_info = {}
+    for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
+        class_info[class_name] = {
+            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
+            "description": get_class_description(class_name),
+        }
+
+    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
 @player_router.get("/{player_id}", response_model=PlayerRead)
@@ -400,7 +419,7 @@ async def create_character_with_stats(
         stats_obj = Stats(**request_data.stats)
 
         # Create player with stats
-        player = player_service.create_player_with_stats(
+        player = await player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
             profession_id=request_data.profession_id,
@@ -476,25 +495,6 @@ async def validate_character_stats(
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "validate_stats"
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT, context=context) from e
-
-
-@player_router.get("/available-classes")
-async def get_available_classes(
-    current_user: User = Depends(get_current_user),
-):
-    """
-    Get information about all available character classes and their prerequisites.
-    """
-    stats_generator = StatsGenerator()
-
-    class_info = {}
-    for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
-        class_info[class_name] = {
-            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
-            "description": get_class_description(class_name),
-        }
-
-    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
 def get_class_description(class_name: str) -> str:

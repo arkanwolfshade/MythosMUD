@@ -7,7 +7,7 @@ to ensure that failures are properly detected, logged, and alerted.
 
 import time
 import uuid
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -85,11 +85,11 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.mute_player.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # First, mute the target player
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        mute_result = await chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
         assert mute_result is True
 
         # Now try to send an emote - this should succeed because personal mutes don't block the muted player
@@ -120,8 +120,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = False  # Simulate loading failure
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Try to send an emote with mute data loading failure
         emote_result = await chat_service.send_emote_message(self.target_id, "dance")
@@ -157,8 +157,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Send multiple emotes to test UserManager consistency
         for i in range(5):
@@ -191,8 +191,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance of mute filtering operations
         num_operations = 10
@@ -238,8 +238,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test error handling with invalid player ID
         invalid_player_id = "invalid-id"
@@ -277,8 +277,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test consistency across different message types
         message_types = ["custom_emote", "predefined_emote"]
@@ -329,8 +329,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Simulate multiple mute filtering operations
         num_operations = 5
@@ -370,8 +370,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Perform health check
         health_status = {
@@ -455,8 +455,8 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Collect metrics
         metrics = {

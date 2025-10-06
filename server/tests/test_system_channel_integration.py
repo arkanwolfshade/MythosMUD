@@ -23,9 +23,9 @@ class TestSystemChannelIntegration:
     def setup_method(self):
         """Set up test fixtures."""
         # Create mock dependencies
-        self.mock_persistence = Mock()
-        self.mock_room_service = Mock()
-        self.mock_player_service = Mock()
+        self.mock_persistence = AsyncMock()
+        self.mock_room_service = AsyncMock()
+        self.mock_player_service = AsyncMock()
 
         # Create mock services
         self.mock_nats_service = Mock()
@@ -98,8 +98,8 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
-        self.mock_player_service.get_player_by_id.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
 
         # Set up the player object to return the correct name
@@ -148,7 +148,7 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.regular_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.regular_player)
         self.mock_user_manager.is_admin.return_value = False
 
         # Create mock request context
@@ -188,7 +188,7 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
 
         # Create mock request context
@@ -228,7 +228,7 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         self.mock_nats_service.publish = AsyncMock(return_value=False)
 
@@ -269,7 +269,7 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         self.mock_nats_service.is_connected.return_value = False
 
@@ -310,8 +310,8 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
-        self.mock_player_service.get_player_by_id.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
 
         # Create mock request context
@@ -373,7 +373,7 @@ class TestSystemChannelIntegration:
         )
 
         # Setup mocks
-        self.mock_player_service.resolve_player_name.return_value = self.admin_player
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         self.mock_rate_limiter.check_rate_limit.return_value = False  # Rate limited
 

@@ -8,7 +8,7 @@ processing, especially with the UserManager optimization.
 
 import time
 import uuid
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -80,8 +80,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance of multiple emote messages
         num_messages = 100
@@ -120,8 +120,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = True  # Player is muted
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance of multiple emote messages with mute filtering
         num_messages = 100
@@ -162,8 +162,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -211,8 +211,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance of mute operations
         num_operations = 50
@@ -221,9 +221,9 @@ class TestMuteFilteringPerformance:
         for i in range(num_operations):
             # Alternate between mute and unmute
             if i % 2 == 0:
-                chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+                await chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
             else:
-                chat_service.unmute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+                await chat_service.unmute_player(muter_id=self.muter_id, target_player_name=self.target_name)
 
         end_time = time.time()
         total_time = end_time - start_time
@@ -256,15 +256,15 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance of global mute operations
         num_operations = 50
         start_time = time.time()
 
         for i in range(num_operations):
-            chat_service.mute_global(
+            await chat_service.mute_global(
                 muter_id=self.muter_id,
                 target_player_name=self.target_name,
                 duration_minutes=30,
@@ -304,8 +304,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Create multiple concurrent emote tasks
         async def send_emote(task_id):
@@ -349,8 +349,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService for predefined emotes
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -402,8 +402,8 @@ class TestMuteFilteringPerformance:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Measure performance with UserManager optimization (single instance per broadcast)
         num_messages = 100

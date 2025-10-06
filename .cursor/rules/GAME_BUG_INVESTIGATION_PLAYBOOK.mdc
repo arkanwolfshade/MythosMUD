@@ -3,6 +3,7 @@
 ## 🤖 Automated Agent Integration
 
 **AGENT CONFIGURATION**: This playbook works in conjunction with **MYTHOSMUD_DEBUGGING_AGENT.mdc**, which provides:
+
 - Automated investigation capabilities and system access
 - Accuracy-first investigation philosophy
 - Pattern detection and knowledge building

@@ -8,7 +8,7 @@ mute/unmute cycle.
 """
 
 import uuid
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -93,11 +93,11 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Step 1: Apply global mute to the target player
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Test mute"
         )
         assert global_mute_result is True
@@ -151,8 +151,8 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -162,7 +162,7 @@ class TestMuteUnmuteWorkflowIntegration:
             mock_emote_service.format_emote_messages.return_value = ("You twibble.", f"{self.target_name} twibbles.")
 
         # Step 1: Apply global mute to the target player
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Test mute"
         )
         assert global_mute_result is True
@@ -213,11 +213,11 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Step 1: Apply temporary global mute (5 minutes)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=5,
@@ -271,11 +271,11 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Step 1: Apply permanent global mute (no duration)
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id,
             target_player_name=self.target_name,
             duration_minutes=None,
@@ -330,11 +330,11 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Step 1: Apply global mute
-        global_mute_result = chat_service.mute_global(
+        global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Global mute test"
         )
         assert global_mute_result is True
@@ -386,8 +386,8 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService for predefined emotes
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -397,7 +397,7 @@ class TestMuteUnmuteWorkflowIntegration:
             mock_emote_service.format_emote_messages.return_value = ("You dance.", f"{self.target_name} dances.")
 
             # Step 1: Apply global mute to the target player
-            global_mute_result = chat_service.mute_global(
+            global_mute_result = await chat_service.mute_global(
                 muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Test mute"
             )
             assert global_mute_result is True
@@ -447,11 +447,11 @@ class TestMuteUnmuteWorkflowIntegration:
 
         # Test 1: Mute non-existent player
         self.mock_player_service.resolve_player_name.return_value = None
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name="NonExistentPlayer")
+        mute_result = await chat_service.mute_player(muter_id=self.muter_id, target_player_name="NonExistentPlayer")
         assert mute_result is False
 
         # Test 2: Unmute non-existent player
-        unmute_result = chat_service.unmute_player(muter_id=self.muter_id, target_player_name="NonExistentPlayer")
+        unmute_result = await chat_service.unmute_player(muter_id=self.muter_id, target_player_name="NonExistentPlayer")
         assert unmute_result is False
 
         # Test 3: Emote from non-existent player
@@ -491,11 +491,11 @@ class TestMuteUnmuteWorkflowIntegration:
         chat_service.rate_limiter = mock_rate_limiter
         chat_service.user_manager = mock_user_manager
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Step 1: Mute the target player
-        mute_result = chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
+        mute_result = await chat_service.mute_player(muter_id=self.muter_id, target_player_name=self.target_name)
         assert mute_result is True
 
         # Step 2: Simulate rate limiting (player not muted but rate limited)

@@ -75,7 +75,7 @@ class TestLocalChannelService:
     @pytest.fixture
     def mock_player_service(self):
         """Create a mock player service."""
-        return MagicMock()
+        return AsyncMock()
 
     @pytest.fixture
     def mock_nats_service(self):
@@ -397,7 +397,7 @@ class TestLocalChannelIntegration:
     @pytest.fixture
     def mock_player_service(self):
         """Create a mock player service."""
-        return MagicMock()
+        return AsyncMock()
 
     @pytest.fixture
     def mock_nats_service(self):

@@ -7,31 +7,34 @@ name resolution, and validation for the chat system.
 
 import uuid
 from datetime import datetime
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from ..game.player_service import PlayerService
 
 
+@pytest.mark.asyncio
 class TestPlayerService:
     """Test cases for PlayerService."""
 
     def setup_method(self):
         """Set up test fixtures."""
         # Create a mock persistence object with the required methods
-        self.mock_persistence = Mock()
-        self.mock_persistence.get_player_by_name = Mock()
-        self.mock_persistence.list_players = Mock()
+        self.mock_persistence = AsyncMock()
+        self.mock_persistence.async_get_player_by_name = AsyncMock()
+        self.mock_persistence.async_list_players = AsyncMock()
 
         # Mock profession data to return proper string values
         mock_profession = Mock()
         mock_profession.name = "Scholar"
         mock_profession.description = "A learned academic"
         mock_profession.flavor_text = "Knowledge is power"
-        self.mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+        self.mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
 
         self.player_service = PlayerService(self.mock_persistence)
 
-    def test_resolve_player_name_exact_match(self):
+    async def test_resolve_player_name_exact_match(self):
         """Test player name resolution with exact match."""
         # Mock player data (as dictionary, like persistence would return)
         mock_player_data = {
@@ -49,10 +52,10 @@ class TestPlayerService:
         }
 
         # Mock the persistence method to return our test player
-        self.mock_persistence.get_player_by_name.return_value = mock_player_data
+        self.mock_persistence.async_get_player_by_name.return_value = mock_player_data
 
         # Test exact match
-        result = self.player_service.resolve_player_name("TestPlayer")
+        result = await self.player_service.resolve_player_name("TestPlayer")
 
         # Verify the result
         assert result is not None
@@ -60,9 +63,9 @@ class TestPlayerService:
         assert result.id == uuid.UUID(mock_player_data["player_id"])
 
         # Verify the persistence method was called correctly
-        self.mock_persistence.get_player_by_name.assert_called_once_with("TestPlayer")
+        self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")
 
-    def test_resolve_player_name_case_insensitive(self):
+    async def test_resolve_player_name_case_insensitive(self):
         """Test player name resolution with case-insensitive matching."""
         # Mock player data (as dictionary, like persistence would return)
         mock_player_data = {
@@ -80,17 +83,17 @@ class TestPlayerService:
         }
 
         # Mock the persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = [mock_player_data]
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player_data]
 
         # Test case-insensitive match
-        result = self.player_service.resolve_player_name("testplayer")
+        result = await self.player_service.resolve_player_name("testplayer")
 
         # Verify the result
         assert result is not None
         assert result.name == "TestPlayer"
 
-    def test_resolve_player_name_partial_match(self):
+    async def test_resolve_player_name_partial_match(self):
         """Test player name resolution with partial matching."""
         # Mock player data (as dictionary, like persistence would return)
         mock_player_data = {
@@ -108,43 +111,43 @@ class TestPlayerService:
         }
 
         # Mock the persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = [mock_player_data]
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player_data]
 
         # Test partial match
-        result = self.player_service.resolve_player_name("Test")
+        result = await self.player_service.resolve_player_name("Test")
 
         # Verify the result
         assert result is not None
         assert result.name == "TestPlayer"
 
-    def test_resolve_player_name_not_found(self):
+    async def test_resolve_player_name_not_found(self):
         """Test player name resolution when player is not found."""
         # Mock the persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = []
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = []
 
         # Test with non-existent player
-        result = self.player_service.resolve_player_name("NonExistentPlayer")
+        result = await self.player_service.resolve_player_name("NonExistentPlayer")
 
         # Verify the result
         assert result is None
 
-    def test_resolve_player_name_empty_input(self):
+    async def test_resolve_player_name_empty_input(self):
         """Test player name resolution with empty input."""
         # Test with empty string
-        result = self.player_service.resolve_player_name("")
+        result = await self.player_service.resolve_player_name("")
         assert result is None
 
         # Test with whitespace only
-        result = self.player_service.resolve_player_name("   ")
+        result = await self.player_service.resolve_player_name("   ")
         assert result is None
 
         # Test with None
-        result = self.player_service.resolve_player_name(None)
+        result = await self.player_service.resolve_player_name(None)
         assert result is None
 
-    def test_resolve_player_name_multiple_candidates(self):
+    async def test_resolve_player_name_multiple_candidates(self):
         """Test player name resolution with multiple matching candidates."""
         # Mock multiple players (as dictionaries, like persistence would return)
         mock_players = [
@@ -177,17 +180,17 @@ class TestPlayerService:
         ]
 
         # Mock the persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = mock_players
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = mock_players
 
         # Test partial match that could match multiple players
-        result = self.player_service.resolve_player_name("Test")
+        result = await self.player_service.resolve_player_name("Test")
 
         # Should return the first match (TestPlayer)
         assert result is not None
         assert result.name == "TestPlayer"
 
-    def test_resolve_player_name_special_characters(self):
+    async def test_resolve_player_name_special_characters(self):
         """Test player name resolution with special characters."""
         # Mock player data (as dictionary, like persistence would return)
         mock_player_data = {
@@ -205,11 +208,11 @@ class TestPlayerService:
         }
 
         # Mock the persistence methods
-        self.mock_persistence.get_player_by_name.return_value = None
-        self.mock_persistence.list_players.return_value = [mock_player_data]
+        self.mock_persistence.async_get_player_by_name.return_value = None
+        self.mock_persistence.async_list_players.return_value = [mock_player_data]
 
         # Test with special characters
-        result = self.player_service.resolve_player_name("test-player")
+        result = await self.player_service.resolve_player_name("test-player")
 
         # Verify the result
         assert result is not None
