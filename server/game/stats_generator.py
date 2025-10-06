@@ -248,7 +248,7 @@ class StatsGenerator:
         return stats, available_classes
 
     def roll_stats_with_profession(
-        self, method: str = "3d6", profession_id: int = 0, timeout_seconds: float = 1.0
+        self, method: str = "3d6", profession_id: int = 0, timeout_seconds: float = 1.0, max_attempts: int = 10
     ) -> tuple[Stats, bool]:
         """
         Roll stats and validate against profession requirements.
@@ -257,6 +257,7 @@ class StatsGenerator:
             method: The rolling method to use
             profession_id: The profession ID to validate against
             timeout_seconds: Maximum time in seconds to spend rolling for valid stats
+            max_attempts: Maximum number of attempts to roll stats that meet requirements
 
         Returns:
             Tuple[Stats, bool]: (stats, meets_requirements)
@@ -266,6 +267,7 @@ class StatsGenerator:
             method=method,
             profession_id=profession_id,
             timeout_seconds=timeout_seconds,
+            max_attempts=max_attempts,
         )
 
         logger.debug(f"DEBUG: Starting profession-based stats rolling for profession_id={profession_id}")
@@ -294,12 +296,12 @@ class StatsGenerator:
             logger.debug(f"DEBUG: No requirements found for profession {profession_id}, rolling normally")
             return stats, True
 
-        # Try to roll stats that meet profession requirements within timeout
+        # Try to roll stats that meet profession requirements within timeout and attempt limits
         start_time = time.time()
         attempt = 0
 
-        logger.debug(f"DEBUG: Starting validation loop with {timeout_seconds}s timeout")
-        while time.time() - start_time < timeout_seconds:
+        logger.debug(f"DEBUG: Starting validation loop with {timeout_seconds}s timeout and max_attempts={max_attempts}")
+        while (time.time() - start_time) < timeout_seconds and attempt < max_attempts:
             attempt += 1
             stats = self.roll_stats(method)
             logger.debug(f"DEBUG: Attempt {attempt}: Rolled stats: {stats.model_dump()}")
@@ -325,10 +327,10 @@ class StatsGenerator:
                 requirements=stat_requirements,
             )
 
-        # Timeout reached - return the last roll with failure status
+        # Limits reached - return the last roll with failure status
         elapsed_time = time.time() - start_time
         logger.warning(
-            "Timeout reached while rolling stats for profession requirements",
+            "Limits reached while rolling stats for profession requirements",
             profession_id=profession_id,
             timeout_seconds=timeout_seconds,
             elapsed_time=elapsed_time,

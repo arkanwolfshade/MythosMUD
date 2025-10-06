@@ -280,10 +280,14 @@ def damage_player(
 
 
 # Character Creation and Stats Generation Endpoints
-@player_router.post("/roll-stats")
 def roll_character_stats(
-    request_data: RollStatsRequest,
+    method: str,
+    required_class: str | None,
+    max_attempts: int,
+    *,
+    profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
+    timeout_seconds: float = 1.0,
 ):
     """
     Roll random stats for character creation.
@@ -329,28 +333,29 @@ def roll_character_stats(
     from ..exceptions import create_error_context
 
     try:
-        if request_data.profession_id is not None:
+        if profession_id is not None:
             # Use profession-based stat rolling
             stats, meets_requirements = stats_generator.roll_stats_with_profession(
-                method=request_data.method,
-                profession_id=request_data.profession_id,
-                timeout_seconds=request_data.timeout_seconds,
+                method=method,
+                profession_id=profession_id,
+                timeout_seconds=timeout_seconds,
+                max_attempts=max_attempts,
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
             return {
                 "stats": stats.model_dump(),
                 "stat_summary": stat_summary,
-                "profession_id": request_data.profession_id,
+                "profession_id": profession_id,
                 "meets_requirements": meets_requirements,
-                "method_used": request_data.method,
+                "method_used": method,
             }
         else:
             # Use legacy class-based stat rolling
             stats, available_classes = stats_generator.roll_stats_with_validation(
-                method=request_data.method,
-                required_class=request_data.required_class,
-                max_attempts=10,  # Keep max_attempts for legacy class-based rolling
+                method=method,
+                required_class=required_class,
+                max_attempts=max_attempts,
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
@@ -358,10 +363,8 @@ def roll_character_stats(
                 "stats": stats.model_dump(),
                 "stat_summary": stat_summary,
                 "available_classes": available_classes,
-                "method_used": request_data.method,
-                "meets_class_requirements": request_data.required_class in available_classes
-                if request_data.required_class
-                else True,
+                "method_used": method,
+                "meets_class_requirements": required_class in available_classes if required_class else True,
             }
     except ValueError as e:
         # Handle validation errors (e.g., invalid profession ID)
@@ -377,6 +380,22 @@ def roll_character_stats(
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "roll_stats"
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
+
+
+@player_router.post("/roll-stats")
+def roll_character_stats_endpoint(
+    request_data: RollStatsRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
+    return roll_character_stats(
+        request_data.method,
+        request_data.required_class,
+        10,
+        profession_id=request_data.profession_id,
+        current_user=current_user,
+        timeout_seconds=request_data.timeout_seconds,
+    )
 
 
 @player_router.post("/create-character")
@@ -432,12 +451,22 @@ async def create_character_with_stats(
         # Convert dict to Stats object
         stats_obj = Stats(**request_data.stats)
 
+        # Determine starting room from request or config default
+        try:
+            from ..config_loader import get_config
+
+            default_start_room = get_config().get("start_room", "earth_arkhamcity_northside_intersection_derby_high")
+        except Exception:
+            default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
+
+        starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
+
         # Create player with stats
         player = player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
             profession_id=request_data.profession_id,
-            starting_room_id=request_data.starting_room_id,
+            starting_room_id=starting_room_id,
             user_id=current_user.id,
         )
 
