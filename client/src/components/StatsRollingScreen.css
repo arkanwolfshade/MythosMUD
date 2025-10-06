@@ -30,6 +30,30 @@
   font-weight: bold;
 }
 
+.profession-display {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #2a2a2a;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+}
+
+.profession-name {
+  color: #ffd700;
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+.profession-description {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 .stats-display {
   margin-bottom: 2rem;
 }

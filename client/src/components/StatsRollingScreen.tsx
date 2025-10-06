@@ -11,6 +11,16 @@ interface Stats {
   charisma: number;
 }
 
+interface Profession {
+  id: number;
+  name: string;
+  description: string;
+  flavor_text: string;
+  stat_requirements: Record<string, number>;
+  mechanical_effects: Record<string, number>;
+  is_available: boolean;
+}
+
 interface StatsRollingScreenProps {
   characterName: string;
   onStatsAccepted: (stats: Stats) => void;
@@ -19,6 +29,7 @@ interface StatsRollingScreenProps {
   baseUrl: string;
   authToken: string;
   professionId?: number;
+  profession?: Profession;
 }
 
 export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
@@ -29,6 +40,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   baseUrl,
   authToken,
   professionId,
+  profession,
 }) => {
   const [currentStats, setCurrentStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -244,6 +256,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       <div className="stats-header">
         <h2>Character Creation</h2>
         <p className="character-name">Character: {characterName}</p>
+        {profession && (
+          <div className="profession-display">
+            <p className="profession-name">Profession: {profession.name}</p>
+            <p className="profession-description">{profession.description}</p>
+          </div>
+        )}
       </div>
 
       <div className="stats-display">

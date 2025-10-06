@@ -426,6 +426,7 @@ function App() {
           baseUrl="http://localhost:54731"
           authToken={authToken}
           professionId={selectedProfession?.id}
+          profession={selectedProfession}
         />
       </div>
     );
