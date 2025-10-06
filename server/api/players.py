@@ -26,8 +26,16 @@ class CreateCharacterRequest(BaseModel):
 
     name: str
     stats: dict
-    profession_id: int = 0  # Default to 0 (Tramp)
-    starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high"
+    profession_id: int = 0
+
+
+class RollStatsRequest(BaseModel):
+    """Request model for rolling character stats."""
+
+    method: str = "3d6"
+    required_class: str | None = None
+    timeout_seconds: float = 1.0
+    profession_id: int | None = None
 
 
 logger = get_logger(__name__)
@@ -274,10 +282,7 @@ def damage_player(
 # Character Creation and Stats Generation Endpoints
 @player_router.post("/roll-stats")
 def roll_character_stats(
-    method: str = "3d6",
-    required_class: str | None = None,
-    max_attempts: int = 10,
-    profession_id: int | None = None,
+    request_data: RollStatsRequest,
     current_user: User = Depends(get_current_user),
 ):
     """
@@ -324,24 +329,28 @@ def roll_character_stats(
     from ..exceptions import create_error_context
 
     try:
-        if profession_id is not None:
+        if request_data.profession_id is not None:
             # Use profession-based stat rolling
             stats, meets_requirements = stats_generator.roll_stats_with_profession(
-                method=method, profession_id=profession_id, max_attempts=max_attempts
+                method=request_data.method,
+                profession_id=request_data.profession_id,
+                timeout_seconds=request_data.timeout_seconds,
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
             return {
                 "stats": stats.model_dump(),
                 "stat_summary": stat_summary,
-                "profession_id": profession_id,
+                "profession_id": request_data.profession_id,
                 "meets_requirements": meets_requirements,
-                "method_used": method,
+                "method_used": request_data.method,
             }
         else:
             # Use legacy class-based stat rolling
             stats, available_classes = stats_generator.roll_stats_with_validation(
-                method=method, required_class=required_class, max_attempts=max_attempts
+                method=request_data.method,
+                required_class=request_data.required_class,
+                max_attempts=10,  # Keep max_attempts for legacy class-based rolling
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
@@ -349,8 +358,10 @@ def roll_character_stats(
                 "stats": stats.model_dump(),
                 "stat_summary": stat_summary,
                 "available_classes": available_classes,
-                "method_used": method,
-                "meets_class_requirements": required_class in available_classes if required_class else True,
+                "method_used": request_data.method,
+                "meets_class_requirements": request_data.required_class in available_classes
+                if request_data.required_class
+                else True,
             }
     except ValueError as e:
         # Handle validation errors (e.g., invalid profession ID)
