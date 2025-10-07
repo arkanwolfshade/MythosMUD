@@ -5,13 +5,24 @@ This module provides type-safe command models with comprehensive validation
 to prevent command injection and ensure data integrity.
 """
 
-import re
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ..logging_config import get_logger
+from ..validators.security_validator import (
+    validate_action_content,
+    validate_alias_name,
+    validate_command_content,
+    validate_filter_name,
+    validate_help_topic,
+    validate_message_content,
+    validate_player_name,
+    validate_pose_content,
+    validate_reason_content,
+    validate_target_player,
+)
 
 logger = get_logger(__name__)
 
@@ -68,14 +79,16 @@ class BaseCommand(BaseModel):
     Provides common validation and security features for all commands.
     """
 
-    model_config = {
+    __slots__ = ()  # Performance optimization for frequently instantiated commands
+
+    model_config = ConfigDict(
         # Security: reject unknown fields to prevent injection
-        "extra": "forbid",
+        extra="forbid",
         # Use enum values for validation
-        "use_enum_values": True,
+        use_enum_values=True,
         # Validate assignment
-        "validate_assignment": True,
-    }
+        validate_assignment=True,
+    )
 
 
 class LookCommand(BaseCommand):
@@ -117,31 +130,8 @@ class SayCommand(BaseCommand):
     @field_validator("message")
     @classmethod
     def validate_message(cls, v):
-        """Validate message content for security."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in say message", chars=found_chars, message_preview=v[:50])
-            raise ValueError(f"Message contains invalid characters: {found_chars}")
-
-        # Check for command injection patterns
-        # Use more specific patterns to avoid false positives on legitimate text
-        injection_patterns = [
-            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
-            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
-            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
-        ]
-
-        for pattern in injection_patterns:
-            if re.search(pattern, v, re.IGNORECASE):
-                logger.warning(
-                    "Command injection pattern detected in say message", pattern=pattern, message_preview=v[:50]
-                )
-                raise ValueError("Message contains suspicious patterns")
-
-        return v.strip()
+        """Validate message content for security using centralized validation."""
+        return validate_message_content(v)
 
 
 class LocalCommand(BaseCommand):
@@ -153,31 +143,8 @@ class LocalCommand(BaseCommand):
     @field_validator("message")
     @classmethod
     def validate_message(cls, v):
-        """Validate message content for security (same as say command)."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in local message", chars=found_chars, message_preview=v[:50])
-            raise ValueError(f"Message contains invalid characters: {found_chars}")
-
-        # Check for command injection patterns
-        # Use more specific patterns to avoid false positives on legitimate text
-        injection_patterns = [
-            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
-            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
-            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
-        ]
-
-        for pattern in injection_patterns:
-            if re.search(pattern, v, re.IGNORECASE):
-                logger.warning(
-                    "Command injection pattern detected in local message", pattern=pattern, message_preview=v[:50]
-                )
-                raise ValueError("Message contains suspicious patterns")
-
-        return v.strip()
+        """Validate message content for security using centralized validation."""
+        return validate_message_content(v)
 
 
 class SystemCommand(BaseCommand):
@@ -189,31 +156,8 @@ class SystemCommand(BaseCommand):
     @field_validator("message")
     @classmethod
     def validate_message(cls, v):
-        """Validate system message content for security."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in system message", chars=found_chars, message_preview=v[:50])
-            raise ValueError(f"Message contains invalid characters: {found_chars}")
-
-        # Check for command injection patterns
-        # Use more specific patterns to avoid false positives on legitimate text
-        injection_patterns = [
-            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
-            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
-            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
-        ]
-
-        for pattern in injection_patterns:
-            if re.search(pattern, v, re.IGNORECASE):
-                logger.warning(
-                    "Command injection pattern detected in system message", pattern=pattern, message_preview=v[:50]
-                )
-                raise ValueError("Message contains suspicious patterns")
-
-        return v.strip()
+        """Validate system message content for security using centralized validation."""
+        return validate_message_content(v)
 
 
 class EmoteCommand(BaseCommand):
@@ -225,31 +169,8 @@ class EmoteCommand(BaseCommand):
     @field_validator("action")
     @classmethod
     def validate_action(cls, v):
-        """Validate emote action for security."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in emote action", chars=found_chars, action_preview=v[:50])
-            raise ValueError(f"Action contains invalid characters: {found_chars}")
-
-        # Check for command injection patterns
-        # Use more specific patterns to avoid false positives on legitimate text
-        injection_patterns = [
-            r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection with value
-            r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection with parentheses
-            r"%[a-zA-Z]\s*[^\s]*",  # Format string injection with content
-        ]
-
-        for pattern in injection_patterns:
-            if re.search(pattern, v, re.IGNORECASE):
-                logger.warning(
-                    "Command injection pattern detected in emote action", pattern=pattern, action_preview=v[:50]
-                )
-                raise ValueError("Action contains suspicious patterns")
-
-        return v.strip()
+        """Validate emote action for security using centralized validation."""
+        return validate_action_content(v)
 
 
 class MeCommand(BaseCommand):
@@ -261,30 +182,8 @@ class MeCommand(BaseCommand):
     @field_validator("action")
     @classmethod
     def validate_action(cls, v):
-        """Validate me action for security (same as emote)."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in me action", chars=found_chars, action_preview=v[:50])
-            raise ValueError(f"Action contains invalid characters: {found_chars}")
-
-        # Check for command injection patterns
-        injection_patterns = [
-            r"\b(and|or)\s*=\s*",  # SQL injection
-            r"__import__|eval|exec|system|os\.",  # Python injection
-            r"%[a-zA-Z]",  # Format string injection
-        ]
-
-        for pattern in injection_patterns:
-            if re.search(pattern, v, re.IGNORECASE):
-                logger.warning(
-                    "Command injection pattern detected in me action", pattern=pattern, action_preview=v[:50]
-                )
-                raise ValueError("Action contains suspicious patterns")
-
-        return v.strip()
+        """Validate me action for security using centralized validation."""
+        return validate_action_content(v)
 
 
 class PoseCommand(BaseCommand):
@@ -296,19 +195,10 @@ class PoseCommand(BaseCommand):
     @field_validator("pose")
     @classmethod
     def validate_pose(cls, v):
-        """Validate pose description for security."""
+        """Validate pose description for security using centralized validation."""
         if v is None:
             return v
-
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in pose", chars=found_chars, pose_preview=v[:50])
-            raise ValueError(f"Pose contains invalid characters: {found_chars}")
-
-        return v.strip()
+        return validate_pose_content(v)
 
 
 class AliasCommand(BaseCommand):
@@ -320,28 +210,17 @@ class AliasCommand(BaseCommand):
 
     @field_validator("alias_name")
     @classmethod
-    def validate_alias_name(cls, v):
-        """Validate alias name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
-            raise ValueError("Alias name must start with a letter and contain only letters, numbers, and underscores")
-        return v
+    def validate_alias_name_field(cls, v):
+        """Validate alias name format using centralized validation."""
+        return validate_alias_name(v)
 
     @field_validator("command")
     @classmethod
     def validate_command(cls, v):
-        """Validate command content for security."""
+        """Validate command content for security using centralized validation."""
         if v is None:
             return v
-
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in alias command", chars=found_chars, command_preview=v[:50])
-            raise ValueError(f"Alias command contains invalid characters: {found_chars}")
-
-        return v.strip()
+        return validate_command_content(v)
 
 
 class AliasesCommand(BaseCommand):
@@ -358,11 +237,9 @@ class UnaliasCommand(BaseCommand):
 
     @field_validator("alias_name")
     @classmethod
-    def validate_alias_name(cls, v):
-        """Validate alias name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
-            raise ValueError("Alias name must start with a letter and contain only letters, numbers, and underscores")
-        return v
+    def validate_alias_name_field(cls, v):
+        """Validate alias name format using centralized validation."""
+        return validate_alias_name(v)
 
 
 class HelpCommand(BaseCommand):
@@ -370,6 +247,14 @@ class HelpCommand(BaseCommand):
 
     command_type: Literal[CommandType.HELP] = CommandType.HELP
     topic: str | None = Field(None, max_length=50, description="Help topic")
+
+    @field_validator("topic")
+    @classmethod
+    def validate_topic(cls, v):
+        """Validate help topic format using centralized validation."""
+        if v is None:
+            return v
+        return validate_help_topic(v)
 
 
 class MuteCommand(BaseCommand):
@@ -382,30 +267,17 @@ class MuteCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
     @field_validator("reason")
     @classmethod
     def validate_reason(cls, v):
-        """Validate mute reason for security."""
+        """Validate mute reason for security using centralized validation."""
         if v is None:
             return v
-
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning("Dangerous characters detected in mute reason", chars=found_chars, reason_preview=v[:50])
-            raise ValueError(f"Mute reason contains invalid characters: {found_chars}")
-
-        return v.strip()
+        return validate_reason_content(v)
 
 
 class UnmuteCommand(BaseCommand):
@@ -416,13 +288,9 @@ class UnmuteCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
 
 class MuteGlobalCommand(BaseCommand):
@@ -435,32 +303,17 @@ class MuteGlobalCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
     @field_validator("reason")
     @classmethod
     def validate_reason(cls, v):
-        """Validate mute reason for security."""
+        """Validate mute reason for security using centralized validation."""
         if v is None:
             return v
-
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-
-        if found_chars:
-            logger.warning(
-                "Dangerous characters detected in global mute reason", chars=found_chars, reason_preview=v[:50]
-            )
-            raise ValueError(f"Global mute reason contains invalid characters: {found_chars}")
-
-        return v.strip()
+        return validate_reason_content(v)
 
 
 class UnmuteGlobalCommand(BaseCommand):
@@ -471,13 +324,9 @@ class UnmuteGlobalCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
 
 class AddAdminCommand(BaseCommand):
@@ -488,13 +337,9 @@ class AddAdminCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
 
 class MutesCommand(BaseCommand):
@@ -511,13 +356,9 @@ class TeleportCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
 
 class GotoCommand(BaseCommand):
@@ -528,13 +369,9 @@ class GotoCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name(cls, v):
-        """Validate player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+    def validate_player_name_field(cls, v):
+        """Validate player name format using centralized validation."""
+        return validate_player_name(v)
 
 
 # Confirmation command classes removed - teleport commands now execute immediately
@@ -549,19 +386,11 @@ class WhoCommand(BaseCommand):
 
     @field_validator("filter_name")
     @classmethod
-    def validate_filter_name(cls, v):
-        """Validate filter name format using existing validation infrastructure."""
+    def validate_filter_name_field(cls, v):
+        """Validate filter name format using centralized validation."""
         if v is None:
             return v
-
-        # Use existing command safety validation
-        from ..utils.command_parser import validate_command_safety
-
-        if not validate_command_safety(v):
-            logger.warning("Dangerous content detected in who filter", filter_preview=v[:50])
-            raise ValueError("Filter contains dangerous content")
-
-        return v.strip()
+        return validate_filter_name(v)
 
 
 class StatusCommand(BaseCommand):
@@ -598,34 +427,14 @@ class WhisperCommand(BaseCommand):
     @field_validator("target")
     @classmethod
     def validate_target(cls, v):
-        """Validate target player name format."""
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", v):
-            raise ValueError(
-                "Target player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
-            )
-        return v
+        """Validate target player name format using centralized validation."""
+        return validate_target_player(v)
 
     @field_validator("message")
     @classmethod
     def validate_message(cls, v):
-        """Validate message content for security."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-        if found_chars:
-            logger.warning("Dangerous content detected in whisper message", dangerous_chars=found_chars)
-            raise ValueError(f"Message contains dangerous characters: {found_chars}")
-
-        # Check for command injection attempts
-        if re.search(
-            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|logout|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
-            v,
-            re.IGNORECASE,
-        ):
-            logger.warning("Potential command injection detected in whisper message", message_preview=v[:50])
-            raise ValueError("Message contains potential command injection")
-
-        return v.strip()
+        """Validate message content for security using centralized validation."""
+        return validate_message_content(v)
 
 
 class ReplyCommand(BaseCommand):
@@ -637,24 +446,8 @@ class ReplyCommand(BaseCommand):
     @field_validator("message")
     @classmethod
     def validate_message(cls, v):
-        """Validate message content for security."""
-        # Check for potentially dangerous characters
-        dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
-        found_chars = [char for char in dangerous_chars if char in v]
-        if found_chars:
-            logger.warning("Dangerous content detected in reply message", dangerous_chars=found_chars)
-            raise ValueError(f"Message contains dangerous characters: {found_chars}")
-
-        # Check for command injection attempts
-        if re.search(
-            r"\b(whisper|w|reply|say|local|global|system|me|pose|emote|look|go|who|status|inventory|quit|logout|help|alias|aliases|unalias|mute|unmute|mute_global|unmute_global|add_admin|mutes|teleport|goto)\b",
-            v,
-            re.IGNORECASE,
-        ):
-            logger.warning("Potential command injection detected in reply message", message_preview=v[:50])
-            raise ValueError("Message contains potential command injection")
-
-        return v.strip()
+        """Validate message content for security using centralized validation."""
+        return validate_message_content(v)
 
 
 # Union type for all commands

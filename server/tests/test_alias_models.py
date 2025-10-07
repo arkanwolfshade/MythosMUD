@@ -9,7 +9,7 @@ import uuid
 from datetime import UTC, datetime
 
 import pytest
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..models import Alias
 
@@ -59,13 +59,13 @@ class TestAliasModel:
 
     def test_alias_required_fields(self):
         """Test that required fields are enforced."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             Alias()  # Missing required fields
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             Alias(name="test")  # Missing command
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             Alias(command="look")  # Missing name
 
     def test_alias_empty_strings(self):

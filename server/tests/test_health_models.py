@@ -6,7 +6,7 @@ proper serialization, deserialization, and configuration behavior.
 """
 
 import pytest
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..models.health import (
     ConnectionsComponent,
@@ -148,7 +148,7 @@ class TestHealthModels:
     def test_health_response_model_validation(self):
         """Test that HealthResponse model validates input correctly."""
         # Test with invalid status
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             HealthResponse(
                 status="invalid_status",  # Invalid status
                 timestamp="2025-08-27T15:30:45.123456Z",

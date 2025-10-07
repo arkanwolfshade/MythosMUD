@@ -5,7 +5,7 @@ This module tests the secure command parsing and validation functionality.
 """
 
 import pytest
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
@@ -48,7 +48,7 @@ class TestCommandModels:
 
     def test_look_command_invalid_direction(self):
         """Test LookCommand with invalid direction."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             LookCommand(direction="invalid")
 
     def test_go_command_valid(self):
@@ -59,7 +59,7 @@ class TestCommandModels:
 
     def test_go_command_missing_direction(self):
         """Test GoCommand without required direction."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             GoCommand()
 
     def test_say_command_valid(self):
@@ -70,13 +70,13 @@ class TestCommandModels:
 
     def test_say_command_empty_message(self):
         """Test SayCommand with empty message."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             SayCommand(message="")
 
     def test_say_command_too_long(self):
         """Test SayCommand with message too long."""
         long_message = "x" * 501
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             SayCommand(message=long_message)
 
     def test_say_command_dangerous_characters(self):
@@ -92,7 +92,7 @@ class TestCommandModels:
         ]
 
         for message in dangerous_messages:
-            with pytest.raises(ValidationError):
+            with pytest.raises(PydanticValidationError):
                 SayCommand(message=message)
 
     def test_emote_command_valid(self):
@@ -110,7 +110,7 @@ class TestCommandModels:
         ]
 
         for action in dangerous_actions:
-            with pytest.raises(ValidationError):
+            with pytest.raises(PydanticValidationError):
                 EmoteCommand(action=action)
 
     def test_me_command_valid(self):
@@ -150,7 +150,7 @@ class TestCommandModels:
         invalid_names = ["123alias", "alias name", "1alias", "alias@name", "alias.name"]
 
         for name in invalid_names:
-            with pytest.raises(ValidationError):
+            with pytest.raises(PydanticValidationError):
                 AliasCommand(alias_name=name)
 
     def test_aliases_command_valid(self):
@@ -195,10 +195,10 @@ class TestCommandModels:
 
     def test_mute_command_invalid_duration(self):
         """Test MuteCommand with invalid duration."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             MuteCommand(player_name="testuser", duration_minutes=0)
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(PydanticValidationError):
             MuteCommand(player_name="testuser", duration_minutes=10081)  # > 1 week
 
     def test_mute_command_invalid_player_name(self):
@@ -206,7 +206,7 @@ class TestCommandModels:
         invalid_names = ["123user", "user name", "1user", "user@name", "user.name"]
 
         for name in invalid_names:
-            with pytest.raises(ValidationError):
+            with pytest.raises(PydanticValidationError):
                 MuteCommand(player_name=name)
 
     def test_unmute_command_valid(self):

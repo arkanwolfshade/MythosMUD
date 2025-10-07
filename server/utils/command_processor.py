@@ -10,7 +10,7 @@ constructed with care, lest the foundations of both be compromised."
 
 from typing import Any
 
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..logging_config import get_logger
 from .command_parser import CommandParser, parse_command
@@ -57,7 +57,7 @@ class CommandProcessor:
 
             return validated_command, None, command_type
 
-        except ValidationError as e:
+        except PydanticValidationError as e:
             # Handle Pydantic validation errors
             error_details = []
             for error in e.errors():

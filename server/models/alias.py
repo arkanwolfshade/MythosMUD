@@ -7,7 +7,7 @@ This module defines the Alias model for storing player command aliases.
 import uuid
 from datetime import UTC, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Alias(BaseModel):
@@ -16,6 +16,15 @@ class Alias(BaseModel):
 
     Stores player command aliases for quick access to frequently used commands.
     """
+
+    __slots__ = ()  # Performance optimization for frequently instantiated aliases
+
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Validate assignment
+        validate_assignment=True,
+    )
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="Alias unique identifier")
     name: str = Field(..., description="Alias name")

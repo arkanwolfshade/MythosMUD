@@ -9,7 +9,7 @@ This package contains all database models including:
 """
 
 from .alias import Alias
-from .game import AttributeType, Stats
+from .game import AttributeType, Stats, StatusEffect, StatusEffectType
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
 from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
@@ -25,6 +25,8 @@ __all__ = [
     "setup_relationships",
     "Stats",
     "AttributeType",
+    "StatusEffect",
+    "StatusEffectType",
     "HealthResponse",
     "HealthErrorResponse",
     "HealthStatus",

@@ -7,7 +7,7 @@ injection and ensure type safety.
 
 import re
 
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..logging_config import get_logger
@@ -233,7 +233,7 @@ class CommandParser:
                     MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
                 )
 
-        except ValidationError as e:
+        except PydanticValidationError as e:
             logger.warning("Command validation failed", command=command, args=args, errors=e.errors())
             context = create_error_context()
             context.metadata = {"command": command, "args": args, "validation_errors": e.errors()}

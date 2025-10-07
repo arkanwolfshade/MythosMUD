@@ -5,8 +5,6 @@ This module tests the unified command handler which processes player commands
 including security validation, alias expansion, and command execution.
 """
 
-import importlib.util
-import os
 from unittest.mock import Mock
 
 import pytest
@@ -22,12 +20,7 @@ from server.exceptions import ValidationError
 
 from ..models.room import Room
 
-# Import models.py directly to avoid package conflicts
-spec = importlib.util.spec_from_file_location(
-    "models_module", os.path.join(os.path.dirname(__file__), "..", "models.py")
-)
-models_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(models_module)
+# Import models from the modular structure
 
 # Test data
 test_room_data = {
