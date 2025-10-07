@@ -162,7 +162,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
 
                         if player_service:
                             # Use PlayerService to get complete player data with profession
-                            complete_player_data = player_service._convert_player_to_schema(player)
+                            complete_player_data = await player_service._convert_player_to_schema(player)
                             logger.debug(
                                 "WebSocket handler: Retrieved complete player data with profession",
                                 player_id=player_id_str,
