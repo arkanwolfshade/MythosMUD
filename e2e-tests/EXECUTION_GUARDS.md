@@ -197,3 +197,185 @@ If an infinite loop is detected:
 - ✅ Clear progression between scenarios
 - ✅ Proper cleanup between scenarios
 - ✅ No infinite retry loops
+
+## 🚫 Real-World AI Execution Failures
+
+These are actual failure patterns observed during AI execution of scenarios. Study these carefully to avoid repeating these mistakes.
+
+### ❌ FAILURE PATTERN 1: "Helpful" Step Addition
+
+**What AI Did**: Added extra verification between steps
+```javascript
+// AI added this step (NOT in scenario):
+const debugMessages = await mcp_playwright_browser_evaluate({...});
+console.log('DEBUG: Additional verification:', debugMessages);
+```
+
+**Why It Failed**:
+- Changed scenario flow and timing
+- Caused race conditions in message delivery
+- Made results non-reproducible
+
+**Correct Behavior**: Execute ONLY the steps in the scenario file, nothing more
+
+---
+
+### ❌ FAILURE PATTERN 2: "Optimized" Step Skipping
+
+**What AI Did**: Skipped step because "we already verified this in previous step"
+```javascript
+// AI skipped Step 5 thinking it was redundant
+// Step 5: Verify Ithaqua sees no self-movement messages
+// AI thought: "We already checked messages in Step 4"
+```
+
+**Why It Failed**:
+- Missed edge case that step was specifically testing
+- Different verification criteria between steps
+- Incomplete test coverage
+
+**Correct Behavior**: Execute EVERY step, even if it seems redundant
+
+---
+
+### ❌ FAILURE PATTERN 3: "Improved" Command Syntax
+
+**What AI Did**: Changed command syntax for "clarity"
+```javascript
+// Scenario says:
+await mcp_playwright_browser_type({text: "say Hello"});
+
+// AI changed to:
+await mcp_playwright_browser_type({text: "say \"Hello\""});
+```
+
+**Why It Failed**:
+- Server interprets `say "Hello"` differently from `say Hello`
+- Command parser treats quotes as part of the message
+- Test fails because behavior doesn't match expectations
+
+**Correct Behavior**: Use EXACT command syntax from scenario, character for character
+
+---
+
+### ❌ FAILURE PATTERN 4: Retry on Empty Results
+
+**What AI Did**: Retried `browser_evaluate` when results were empty
+```javascript
+// AI executed this multiple times:
+const messages = await mcp_playwright_browser_evaluate({...});
+if (messages.length === 0) {
+    // AI thought: "No messages? Let me try again..."
+    const messages = await mcp_playwright_browser_evaluate({...}); // WRONG!
+}
+```
+
+**Why It Failed**:
+- Empty results were the expected correct outcome
+- Created infinite loop waiting for messages that should never arrive
+- Scenario never completed
+
+**Correct Behavior**: Accept first result and proceed to next step
+
+---
+
+### ❌ FAILURE PATTERN 5: Premature Continuation
+
+**What AI Did**: Continued past scenario completion marker
+```javascript
+// Scenario shows:
+console.log('✅ SCENARIO 5 COMPLETED: Basic Chat Communication');
+// ... cleanup procedures ...
+
+// AI continued to:
+// "Let me verify one more time..."
+// "Let me check if there are any edge cases..."
+```
+
+**Why It Failed**:
+- Additional verification changed game state
+- Interfered with next scenario's prerequisites
+- Made cleanup procedures incomplete
+
+**Correct Behavior**: STOP IMMEDIATELY when you see "SCENARIO X COMPLETED"
+
+---
+
+### ❌ FAILURE PATTERN 6: Command Parameter Modification
+
+**What AI Did**: Modified command parameters for "consistency"
+```javascript
+// Scenario says:
+await mcp_playwright_browser_wait_for({text: "Welcome", time: 30});
+
+// AI changed to:
+await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD", time: 30});
+```
+
+**Why It Failed**:
+- More specific text match failed even though partial match would succeed
+- AI assumed what the full message should be
+- Caused timeout failures unnecessarily
+
+**Correct Behavior**: Use EXACT parameters from scenario
+
+---
+
+### ❌ FAILURE PATTERN 7: Reordering Steps
+
+**What AI Did**: Reordered steps for "logical flow"
+```javascript
+// AI executed steps in this order: 1, 2, 4, 3, 5
+// Because AI thought: "Step 4 logically comes before Step 3"
+```
+
+**Why It Failed**:
+- Step 3 set up state required by Step 4
+- Order was intentional for specific testing sequence
+- Test results became invalid
+
+**Correct Behavior**: Execute steps in EXACT order: 1, 2, 3, 4, 5...
+
+---
+
+### ❌ FAILURE PATTERN 8: "Explanatory" Console Logs
+
+**What AI Did**: Added extra console logs for documentation
+```javascript
+// AI added these (NOT in scenario):
+console.log('====================================');
+console.log('Now testing the chat functionality');
+console.log('Expected: Message appears in both tabs');
+console.log('====================================');
+```
+
+**Why It Failed**:
+- Logs interfered with expected output verification
+- Made it harder to identify actual test output
+- Added unnecessary noise
+
+**Correct Behavior**: Use ONLY the console.log statements in the scenario
+
+---
+
+## 📚 Learning from Failures
+
+**Key Principles to Remember:**
+
+1. **Exactness**: Execute commands exactly as written, no interpretation
+2. **Completeness**: Execute all steps, no skipping
+3. **Minimalism**: Execute only what's in the scenario, no additions
+4. **Order**: Execute steps in exact numerical order
+5. **Finality**: Stop immediately at scenario completion
+
+**When Tempted to Deviate:**
+
+- ❓ "Should I add extra verification?" → ❌ NO
+- ❓ "Should I skip this redundant step?" → ❌ NO
+- ❓ "Should I improve this command?" → ❌ NO
+- ❓ "Should I reorder these steps?" → ❌ NO
+- ❓ "Should I continue past completion?" → ❌ NO
+
+**The Golden Rule:**
+
+> **If it's not explicitly written in the scenario file, DON'T DO IT.**
