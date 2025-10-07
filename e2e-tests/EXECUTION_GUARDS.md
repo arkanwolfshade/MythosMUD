@@ -205,6 +205,7 @@ These are actual failure patterns observed during AI execution of scenarios. Stu
 ### ❌ FAILURE PATTERN 1: "Helpful" Step Addition
 
 **What AI Did**: Added extra verification between steps
+
 ```javascript
 // AI added this step (NOT in scenario):
 const debugMessages = await mcp_playwright_browser_evaluate({...});
@@ -212,6 +213,7 @@ console.log('DEBUG: Additional verification:', debugMessages);
 ```
 
 **Why It Failed**:
+
 - Changed scenario flow and timing
 - Caused race conditions in message delivery
 - Made results non-reproducible
@@ -223,6 +225,7 @@ console.log('DEBUG: Additional verification:', debugMessages);
 ### ❌ FAILURE PATTERN 2: "Optimized" Step Skipping
 
 **What AI Did**: Skipped step because "we already verified this in previous step"
+
 ```javascript
 // AI skipped Step 5 thinking it was redundant
 // Step 5: Verify Ithaqua sees no self-movement messages
@@ -230,6 +233,7 @@ console.log('DEBUG: Additional verification:', debugMessages);
 ```
 
 **Why It Failed**:
+
 - Missed edge case that step was specifically testing
 - Different verification criteria between steps
 - Incomplete test coverage
@@ -241,6 +245,7 @@ console.log('DEBUG: Additional verification:', debugMessages);
 ### ❌ FAILURE PATTERN 3: "Improved" Command Syntax
 
 **What AI Did**: Changed command syntax for "clarity"
+
 ```javascript
 // Scenario says:
 await mcp_playwright_browser_type({text: "say Hello"});
@@ -250,6 +255,7 @@ await mcp_playwright_browser_type({text: "say \"Hello\""});
 ```
 
 **Why It Failed**:
+
 - Server interprets `say "Hello"` differently from `say Hello`
 - Command parser treats quotes as part of the message
 - Test fails because behavior doesn't match expectations
@@ -261,6 +267,7 @@ await mcp_playwright_browser_type({text: "say \"Hello\""});
 ### ❌ FAILURE PATTERN 4: Retry on Empty Results
 
 **What AI Did**: Retried `browser_evaluate` when results were empty
+
 ```javascript
 // AI executed this multiple times:
 const messages = await mcp_playwright_browser_evaluate({...});
@@ -271,6 +278,7 @@ if (messages.length === 0) {
 ```
 
 **Why It Failed**:
+
 - Empty results were the expected correct outcome
 - Created infinite loop waiting for messages that should never arrive
 - Scenario never completed
@@ -282,6 +290,7 @@ if (messages.length === 0) {
 ### ❌ FAILURE PATTERN 5: Premature Continuation
 
 **What AI Did**: Continued past scenario completion marker
+
 ```javascript
 // Scenario shows:
 console.log('✅ SCENARIO 5 COMPLETED: Basic Chat Communication');
@@ -293,6 +302,7 @@ console.log('✅ SCENARIO 5 COMPLETED: Basic Chat Communication');
 ```
 
 **Why It Failed**:
+
 - Additional verification changed game state
 - Interfered with next scenario's prerequisites
 - Made cleanup procedures incomplete
@@ -304,6 +314,7 @@ console.log('✅ SCENARIO 5 COMPLETED: Basic Chat Communication');
 ### ❌ FAILURE PATTERN 6: Command Parameter Modification
 
 **What AI Did**: Modified command parameters for "consistency"
+
 ```javascript
 // Scenario says:
 await mcp_playwright_browser_wait_for({text: "Welcome", time: 30});
@@ -313,6 +324,7 @@ await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD", time: 30});
 ```
 
 **Why It Failed**:
+
 - More specific text match failed even though partial match would succeed
 - AI assumed what the full message should be
 - Caused timeout failures unnecessarily
@@ -324,12 +336,14 @@ await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD", time: 30});
 ### ❌ FAILURE PATTERN 7: Reordering Steps
 
 **What AI Did**: Reordered steps for "logical flow"
+
 ```javascript
 // AI executed steps in this order: 1, 2, 4, 3, 5
 // Because AI thought: "Step 4 logically comes before Step 3"
 ```
 
 **Why It Failed**:
+
 - Step 3 set up state required by Step 4
 - Order was intentional for specific testing sequence
 - Test results became invalid
@@ -341,6 +355,7 @@ await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD", time: 30});
 ### ❌ FAILURE PATTERN 8: "Explanatory" Console Logs
 
 **What AI Did**: Added extra console logs for documentation
+
 ```javascript
 // AI added these (NOT in scenario):
 console.log('====================================');
@@ -350,6 +365,7 @@ console.log('====================================');
 ```
 
 **Why It Failed**:
+
 - Logs interfered with expected output verification
 - Made it harder to identify actual test output
 - Added unnecessary noise
