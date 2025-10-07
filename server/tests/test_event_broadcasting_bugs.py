@@ -25,7 +25,8 @@ from server.realtime.event_handler import RealTimeEventHandler
 class TestEventBusIntegration:
     """Test that EventBus instances are properly shared across components."""
 
-    def test_shared_event_bus_instance(self, async_event_bus):
+    @pytest.mark.asyncio
+    async def test_shared_event_bus_instance(self, async_event_bus):
         """Test that MovementService uses the same EventBus as PersistenceLayer."""
         # Create a persistence layer with EventBus
         persistence = Mock(spec=PersistenceLayer)

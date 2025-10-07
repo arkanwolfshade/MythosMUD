@@ -45,3 +45,5 @@ async def test_async_fixture_directly(async_event_bus):
     print("Getting async_event_bus fixture...")
     print("Got EventBus from fixture")
     print("Test complete")
+    # The async_event_bus fixture is an async generator, not an EventBus instance
+    # We don't need to call shutdown() on it

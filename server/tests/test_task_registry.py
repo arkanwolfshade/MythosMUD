@@ -102,7 +102,13 @@ class TestTaskRegistryCore:
         task_registry._shutdown_in_progress = True
 
         with pytest.raises(RuntimeError, match="Task registration denied during shutdown"):
-            task_registry.register_task(asyncio.sleep(0), "task_blocked", "test_type")
+            # Create a simple coroutine for testing - don't await it since we're testing registration
+            async def dummy_coroutine():
+                pass
+
+            # Create the coroutine but don't await it - just pass it to register_task
+            coro = dummy_coroutine()
+            task_registry.register_task(coro, "task_blocked", "test_type")
 
     @pytest.mark.asyncio
     async def test_cancel_task_by_name(self):

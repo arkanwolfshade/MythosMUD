@@ -199,5 +199,3 @@ class TestAsyncPatternAnalysis:
         assert async_test_capacity_exists
         assert pytest_asyncio_coverage_good
         assert asyncio_run_calls_contained
-
-        return current_patterns

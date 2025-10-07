@@ -35,8 +35,6 @@ logger = get_logger(__name__)
 
 def main():
     """Main entry point for the MythosMUD server."""
-    from .config_loader import get_config
-
     # Set up logging based on configuration
     config = get_config()
     setup_logging(config)

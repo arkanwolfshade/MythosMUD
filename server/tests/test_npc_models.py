@@ -243,37 +243,40 @@ class TestNPCSpawnRule:
         from server.npc_database import get_npc_async_session
 
         async for session in get_npc_async_session():
-            # Create NPC definition
-            npc_def = NPCDefinition(
-                name="Conditional Spawn NPC",
-                npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
-                sub_zone_id="arkham_northside",
-            )
-            session.add(npc_def)
-            await session.commit()
+            try:
+                # Create NPC definition
+                npc_def = NPCDefinition(
+                    name="Conditional Spawn NPC",
+                    npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
+                    sub_zone_id="arkham_northside",
+                )
+                session.add(npc_def)
+                await session.commit()
 
-            # Complex spawn conditions
-            complex_conditions = {
-                "time_of_day": "night",
-                "weather": ["foggy", "stormy"],
-                "player_level_min": 5,
-                "player_level_max": 20,
-                "zone_population_max": 50,
-                "events": ["full_moon", "eclipse"],
-                "required_items": ["holy_symbol", "silver_weapon"],
-            }
+                # Complex spawn conditions
+                complex_conditions = {
+                    "time_of_day": "night",
+                    "weather": ["foggy", "stormy"],
+                    "player_level_min": 5,
+                    "player_level_max": 20,
+                    "zone_population_max": 50,
+                    "events": ["full_moon", "eclipse"],
+                    "required_items": ["holy_symbol", "silver_weapon"],
+                }
 
-            spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
+                spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
 
-            # Set complex spawn conditions using the setter method
-            spawn_rule.set_spawn_conditions(complex_conditions)
+                # Set complex spawn conditions using the setter method
+                spawn_rule.set_spawn_conditions(complex_conditions)
 
-            session.add(spawn_rule)
-            await session.commit()
+                session.add(spawn_rule)
+                await session.commit()
 
-            # Verify complex conditions are stored correctly
-            retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
-            assert retrieved.get_spawn_conditions() == complex_conditions
+                # Verify complex conditions are stored correctly
+                retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
+                assert retrieved.get_spawn_conditions() == complex_conditions
+            finally:
+                await session.close()
             break
 
 

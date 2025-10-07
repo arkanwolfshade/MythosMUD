@@ -519,17 +519,23 @@ class TestGameEventStream:
     @pytest.mark.asyncio
     async def test_sse_disconnect_timeout_handling(self):
         """Test SSE disconnect with timeout boundaries for graceful shutdown."""
+        from unittest.mock import AsyncMock
+
         player_id = "test_player_123"
 
-        mock_connection_manager = Mock()
-        mock_connection_manager.connect_sse = Mock(side_effect=lambda player_id, session_id=None: asyncio.sleep(0))
+        mock_connection_manager = AsyncMock()
+
+        async def mock_connect_sse(player_id, session_id=None):
+            await asyncio.sleep(0)
+
+        mock_connection_manager.connect_sse = AsyncMock(side_effect=mock_connect_sse)
 
         async def slow_disconnect(player_id):
             await asyncio.sleep(0.1)  # Simulate slow disconnect
             return None
 
-        mock_connection_manager.disconnect_sse = Mock(side_effect=slow_disconnect)
-        mock_connection_manager.get_pending_messages = Mock(return_value=[])
+        mock_connection_manager.disconnect_sse = AsyncMock(side_effect=slow_disconnect)
+        mock_connection_manager.get_pending_messages = AsyncMock(return_value=[])
 
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
             # Test disconnect timeout handling by ensuring generator completes properly

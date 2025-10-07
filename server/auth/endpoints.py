@@ -22,7 +22,7 @@ from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
-from .users import UserManager, auth_backend, fastapi_users, get_user_manager
+from .users import UserManager, get_user_manager
 
 logger = get_logger("auth.endpoints")
 
@@ -383,7 +383,5 @@ async def create_invite(
     return await invite_manager.create_invite()
 
 
-# Include FastAPI Users authentication endpoints
-auth_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/jwt", tags=["auth"])
-auth_router.include_router(fastapi_users.get_register_router(UserRead, UserCreate), prefix="/jwt", tags=["auth"])
-auth_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+# Note: FastAPI Users authentication endpoints are included in app/factory.py
+# to avoid duplicate operation ID warnings
