@@ -6,17 +6,19 @@ pub/sub system for handling game events. The system is designed to be
 asynchronous and non-blocking, with support for multiple subscribers
 per event type.
 
+Implemented using pure asyncio patterns to banish the hybrid threading
+patterns that threatened the computational sanity of our eldritch
+architecture. Based on warnings from the Pnakotic Manuscripts about
+proper event propagation across dimensional boundaries.
+
 As noted in the Pnakotic Manuscripts, proper event propagation is
 essential for maintaining awareness of the dimensional shifts that
 occur throughout our eldritch architecture.
 """
 
 import asyncio
-import queue
-import threading
 from collections import defaultdict
 from collections.abc import Callable
-from queue import Queue
 
 from ..logging_config import get_logger
 from .event_types import BaseEvent
@@ -24,83 +26,109 @@ from .event_types import BaseEvent
 
 class EventBus:
     """
-    In-memory event bus for MythosMUD.
+    Pure asyncio event bus for MythosMUD.
 
-    This class provides a thread-safe pub/sub system for handling
-    game events. Events are processed asynchronously to avoid
-    blocking the main game loop.
+    This class provides a purely async pub/sub system for handling
+    game events. Events are processed within the existing event loop
+    to maintain computational dimensional integrity without dangerous
+    threading.antipatterns.
 
-    The EventBus maintains subscriptions by event type and processes
-    events in a background thread to ensure non-blocking operation.
+    Events are processed using pure asyncio.Queue with properly managed
+    task lifecycle and graceful shutdown capabilities.
     """
 
     def __init__(self):
-        """Initialize the event bus with empty subscriptions and processing queue."""
+        """Initialize the pure async event bus."""
         self._subscribers: dict[type[BaseEvent], list[Callable]] = defaultdict(list)
-        self._event_queue: Queue = Queue()
-        self._processing_thread: threading.Thread | None = None
+        # Pure asyncio.Queue replaces threading.Queue - Task 1.2: Replace queue
+        self._event_queue: asyncio.Queue = asyncio.Queue()
         self._running: bool = False
-        self._lock = threading.RLock()
         self._logger = get_logger("EventBus")
+        # Task references for proper lifecycle management - Task 1.5
+        self._active_tasks: set[asyncio.Task] = set()
+        self._shutdown_event: asyncio.Event = asyncio.Event()
         self._main_loop: asyncio.AbstractEventLoop | None = None
+        # Fix: Initialize on-demand rather than during __init__
+        self._processing_task: asyncio.Task | None = None
 
-        # Start the event processing thread
-        self._start_processing()
+    def _ensure_async_processing(self):
+        """Ensure async processing is started only when needed and within an event loop."""
+        if not self._running and self._processing_task is None:
+            try:
+                loop = asyncio.get_running_loop()
+                if loop and loop.is_running():
+                    self._running = True
+                    self._processing_task = asyncio.create_task(self._process_events_async())
+                    self._active_tasks.add(self._processing_task)
+                    # Add callback to clean up task reference on completion
+                    self._processing_task.add_done_callback(lambda task: self._active_tasks.discard(task))
+                    self._logger.info("EventBus pure async processing started on-demand")
+            except RuntimeError:
+                # No running loop available - processing will start when first event published
+                self._logger.debug("EventBus will start processing on first publish when event loop available")
 
     def set_main_loop(self, loop: asyncio.AbstractEventLoop):
-        """Set the main event loop for async event handling."""
+        """Set the main event loop - now properly managed for async compatibility."""
         self._main_loop = loop
         self._logger.info("Main event loop set for EventBus")
 
-    def _start_processing(self):
-        """Start the background event processing thread."""
-        with self._lock:
-            if not self._running:
-                self._running = True
-                self._processing_thread = threading.Thread(
-                    target=self._process_events, daemon=True, name="EventBus-Processor"
-                )
-                self._processing_thread.start()
-                self._logger.info("EventBus processing thread started")
+    def _ensure_processing_started(self):
+        """Legacy wrapper for API compatibility during transition."""
+        self._ensure_async_processing()
 
-    def _stop_processing(self):
-        """Stop the background event processing thread."""
-        with self._lock:
-            if self._running:
-                self._running = False
-                # Add a sentinel event to wake up the processing thread
-                self._event_queue.put(None)
-                if self._processing_thread:
-                    self._processing_thread.join(timeout=5.0)
-                self._logger.info("EventBus processing thread stopped")
+    async def _stop_processing(self):
+        """Stop pure async event processing gracefully."""
+        if self._running:
+            self._running = False
+            # Signal shutdown to async processing loop - Task 1.3
+            self._shutdown_event.set()
 
-    def _process_events(self):
-        """Background thread that processes events from the queue."""
-        self._logger.info("EventBus processing thread started")
+            # Cancel all active tasks and wait for graceful shutdown
+            if self._active_tasks:
+                for task in list(self._active_tasks):
+                    task.cancel()
+                try:
+                    await asyncio.wait_for(asyncio.gather(*self._active_tasks, return_exceptions=True), timeout=5.0)
+                except TimeoutError:
+                    self._logger.warning("EventBus shutdown timeout - forcing close")
 
-        while self._running:
-            try:
-                # Get event from queue with timeout
-                event = self._event_queue.get(timeout=1.0)
+            self._logger.info("EventBus pure async processing stopped")
 
-                # Check for sentinel value
-                if event is None:
+    async def _process_events_async(self):
+        """Pure async event processing loop replacing the dangerous threading pattern."""
+        self._logger.info("EventBus pure async processing started")
+
+        try:
+            while self._running:
+                try:
+                    # Pure asyncio await replaces threading/get(timeout) - Task 1.2
+                    event = await asyncio.wait_for(self._event_queue.get(), timeout=1.0)
+
+                    # Check for sentinel shutdown signal
+                    if event is None:
+                        break
+
+                    # Process the event with proper async handling
+                    await self._handle_event_async(event)
+
+                except TimeoutError:
+                    # Timeout is expected when no events are available
+                    continue
+                except Exception as e:
+                    self._logger.error(f"Error processing event: {e}", exc_info=True)
+                    continue
+
+                # Check for shutdown signal
+                if self._shutdown_event.is_set():
                     break
 
-                # Process the event
-                self._handle_event(event)
+        except Exception as e:
+            self._logger.error(f"Fatal error in async event processing: {e}", exc_info=True)
+        finally:
+            self._logger.info("EventBus pure async processing stopped")
 
-            except queue.Empty:
-                # Timeout is expected when no events are available
-                continue
-            except Exception as e:
-                self._logger.error(f"Error processing event: {e}", exc_info=True)
-                continue
-
-        self._logger.info("EventBus processing thread stopped")
-
-    def _handle_event(self, event: BaseEvent):
-        """Handle a single event by calling all registered subscribers."""
+    async def _handle_event_async(self, event: BaseEvent):
+        """Handle a single event by calling all registered subscribers with pure async coordination."""
         event_type = type(event)
         subscribers = self._subscribers.get(event_type, [])
 
@@ -110,72 +138,68 @@ class EventBus:
 
         self._logger.debug(f"Processing {event_type.__name__} event for {len(subscribers)} subscribers")
 
+        import inspect
+
+        # Process subscribers with proper async handling and task lifecycle management - Task 1.5
         for subscriber in subscribers:
             try:
-                import inspect
-
                 # Check if subscriber is async
                 if inspect.iscoroutinefunction(subscriber):
-                    # Handle async subscriber
-                    self._handle_async_subscriber(subscriber, event)
+                    # Create and track task properly for cancellation - Task 1.5: Task References
+                    task = asyncio.create_task(subscriber(event))
+                    self._active_tasks.add(task)
+
+                    # Remove from active tasks when complete
+                    def remove_task(t):
+                        self._active_tasks.discard(t)
+
+                    task.add_done_callback(remove_task)
+                    # Handle task completion with proper exception handling
+                    task.add_done_callback(lambda t, name=subscriber.__name__: self._handle_task_result_async(t, name))
+
+                    self._logger.debug(f"Created tracked task for async subscriber {subscriber.__name__}")
                 else:
-                    # Call sync subscriber directly
+                    # Call sync subscriber directly without threading hybrid antipattern
                     subscriber(event)
             except Exception as e:
                 self._logger.error(f"Error in event subscriber {subscriber.__name__}: {e}")
 
-    def _handle_async_subscriber(self, subscriber: Callable, event: BaseEvent):
-        """Handle async event subscribers properly."""
+    def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str):
+        """Handle async task completion with proper exception extraction."""
         try:
-            # Try to get the main event loop
-            if self._main_loop and self._main_loop.is_running():
-                # Use the main loop to schedule the coroutine
-                asyncio.run_coroutine_threadsafe(subscriber(event), self._main_loop)
-                # We don't wait for the result to avoid blocking
-                self._logger.debug(f"Scheduled async subscriber {subscriber.__name__} in main loop")
-            else:
-                # Fallback: try to get the current running loop
-                try:
-                    current_loop = asyncio.get_running_loop()
-                    # Store the task reference to prevent "never awaited" warnings
-                    task = current_loop.create_task(subscriber(event))
-                    # Add a callback to handle any exceptions
-                    task.add_done_callback(lambda t: self._handle_task_result(t, subscriber.__name__))
-                    self._logger.debug(f"Created task for async subscriber {subscriber.__name__}")
-                except RuntimeError:
-                    # No running loop available, skip async subscriber
-                    # This is expected in test environments without event loops
-                    self._logger.debug(f"Skipping async subscriber {subscriber.__name__} - no event loop available")
-        except Exception as e:
-            self._logger.error(f"Error handling async subscriber {subscriber.__name__}: {e}")
-
-    def _handle_task_result(self, task: asyncio.Task, subscriber_name: str):
-        """Handle the result of an async task to catch any exceptions."""
-        try:
-            # Get the result to ensure any exceptions are properly handled
+            # Get the result to handle exceptions without threading/runtime scheduler crossing
             task.result()
         except Exception as e:
             self._logger.error(f"Error in async subscriber {subscriber_name}: {e}")
 
     def publish(self, event: BaseEvent) -> None:
         """
-        Publish an event to the event bus.
+        Publish an event to the pure asyncio event bus.
 
         Args:
             event: The event to publish
 
-        The event will be processed asynchronously by the background
-        processing thread to avoid blocking the caller.
+        The event will be processed asynchronously using event loop
+        coordination without the dangerous threading hybrid patterns.
         """
         if not isinstance(event, BaseEvent):
             raise ValueError("Event must inherit from BaseEvent")
 
-        self._event_queue.put(event)
-        self._logger.debug(f"Published {type(event).__name__} event")
+        # Begin processing startup on-demand for first event
+        self._ensure_async_processing()
+
+        # Use put_nowait for non-blocking publish (pure asyncio.Queue) - Task 1.2
+        try:
+            self._event_queue.put_nowait(event)
+            self._logger.debug(f"Published {type(event).__name__} event")
+        except asyncio.QueueFull as exc:
+            # Rare case where queue is at capacity - indicates very high load
+            self._logger.warning(f"Event queue at capacity - dropping {type(event).__name__} event")
+            raise RuntimeError("Event bus overloaded") from exc
 
     def subscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> None:
         """
-        Subscribe to events of a specific type.
+        Subscribe to events of a specific type with pure async thread-safe patterns.
 
         Args:
             event_type: The type of event to subscribe to
@@ -190,13 +214,14 @@ class EventBus:
         if not callable(handler):
             raise ValueError("Handler must be callable")
 
-        with self._lock:
-            self._subscribers[event_type].append(handler)
-            self._logger.debug(f"Added subscriber for {event_type.__name__}")
+        # Remove threading dependency - Python dict operations are atomic at GIL
+        # level for simple operations like this, sufficient for single-threaded async
+        self._subscribers[event_type].append(handler)
+        self._logger.debug(f"Added subscriber for {event_type.__name__}")
 
     def unsubscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> bool:
         """
-        Unsubscribe from events of a specific type.
+        Unsubscribe from events of a specific type with pure async coordination.
 
         Args:
             event_type: The type of event to unsubscribe from
@@ -208,15 +233,15 @@ class EventBus:
         if not issubclass(event_type, BaseEvent):
             raise ValueError("Event type must inherit from BaseEvent")
 
-        with self._lock:
-            subscribers = self._subscribers.get(event_type, [])
-            try:
-                subscribers.remove(handler)
-                self._logger.debug(f"Removed subscriber for {event_type.__name__}")
-                return True
-            except ValueError:
-                self._logger.debug(f"Handler not found for {event_type.__name__}")
-                return False
+        # Remove threading dependency - GIL atomic operations suffice for read-only
+        subscribers = self._subscribers.get(event_type, [])
+        try:
+            subscribers.remove(handler)
+            self._logger.debug(f"Removed subscriber for {event_type.__name__}")
+            return True
+        except ValueError:
+            self._logger.debug(f"Handler not found for {event_type.__name__}")
+            return False
 
     def get_subscriber_count(self, event_type: type[BaseEvent]) -> int:
         """
@@ -228,24 +253,42 @@ class EventBus:
         Returns:
             The number of subscribers for the event type
         """
-        with self._lock:
-            return len(self._subscribers.get(event_type, []))
+        # Remove threading - GIL guarantees atomic writes for this simple operation
+        return len(self._subscribers.get(event_type, []))
 
     def get_all_subscriber_counts(self) -> dict[str, int]:
         """
-        Get subscriber counts for all event types.
+        Get subscriber counts for all event types using pure async coordination.
 
         Returns:
             Dictionary mapping event type names to subscriber counts
         """
-        with self._lock:
-            return {event_type.__name__: len(subscribers) for event_type, subscribers in self._subscribers.items()}
+        # Remove threading dependency for this read-only operation
+        return {event_type.__name__: len(subscribers) for event_type, subscribers in self._subscribers.items()}
 
-    def shutdown(self):
-        """Shutdown the event bus and stop the processing thread."""
-        self._logger.info("Shutting down EventBus")
-        self._stop_processing()
+    async def shutdown(self):
+        """Shutdown the pure asyncio event bus with proper grace s period coordination."""
+        self._logger.info("Shutting down pure asyncio EventBus")
+        await self._stop_processing()
 
     def __del__(self):
-        """Cleanup when the EventBus is destroyed."""
-        self.shutdown()
+        """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""
+        if self._running:
+            self._logger.warning("EventBus destroyed without graceful shutdown")
+            # Force immediate shutdown to prevent "no running event loop" errors
+            self._running = False
+            self._shutdown_event.set()
+
+            # Cancel all active tasks immediately, but only if event loop is still running
+            if self._active_tasks:
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop and not loop.is_closed():
+                        for task in list(self._active_tasks):
+                            if not task.done():
+                                task.cancel()
+                except RuntimeError:
+                    # Event loop is closed or not running - skip task cancellation
+                    pass
+                finally:
+                    self._active_tasks.clear()

@@ -30,6 +30,8 @@ class TestSelfMessageExclusionBugs:
     @pytest.fixture
     def connection_manager(self):
         """Create a connection manager for testing."""
+        from ..realtime.connection_manager import ConnectionManager
+
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
         return connection_manager
@@ -37,8 +39,13 @@ class TestSelfMessageExclusionBugs:
     @pytest.fixture
     def event_handler(self, connection_manager):
         """Create an event handler for testing."""
+        from ..events.event_bus import EventBus
+        from ..realtime.event_handler import RealTimeEventHandler
+
         event_bus = EventBus()
-        return RealTimeEventHandler(event_bus)
+        event_handler = RealTimeEventHandler(event_bus)
+        event_handler.connection_manager = connection_manager
+        return event_handler
 
     @pytest.mark.asyncio
     async def test_player_left_event_creates_correct_message_format(self, event_handler):
@@ -60,6 +67,8 @@ class TestSelfMessageExclusionBugs:
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
         mock_room.get_players = Mock(return_value=[])
+        mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
+        mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create and handle a PlayerLeftRoomEvent
@@ -105,6 +114,8 @@ class TestSelfMessageExclusionBugs:
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
         mock_room.get_players = Mock(return_value=[])
+        mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
+        mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create and handle a PlayerEnteredRoomEvent
@@ -201,6 +212,8 @@ class TestEventOrderingAndTimingBugs:
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
         mock_room.get_players = Mock(return_value=[])
+        mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
+        mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Create concurrent movement events
@@ -256,7 +269,6 @@ class TestUUIDSerializationBugs:
 
     def test_uuid_conversion_to_string(self):
         """Test that UUID objects are properly converted to strings."""
-        from server.realtime.connection_manager import ConnectionManager
 
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
@@ -287,7 +299,6 @@ class TestUUIDSerializationBugs:
 
     def test_uuid_conversion_handles_mixed_types(self):
         """Test that UUID conversion handles mixed data types correctly."""
-        from server.realtime.connection_manager import ConnectionManager
 
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
@@ -319,7 +330,6 @@ class TestWebSocketMessageDeliveryBugs:
     @pytest.mark.asyncio
     async def test_failed_message_delivery_handling(self):
         """Test that failed message delivery is handled gracefully."""
-        from server.realtime.connection_manager import ConnectionManager
 
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
@@ -345,7 +355,6 @@ class TestWebSocketMessageDeliveryBugs:
     @pytest.mark.asyncio
     async def test_message_queue_handling_for_disconnected_players(self):
         """Test that messages are queued for disconnected players."""
-        from server.realtime.connection_manager import ConnectionManager
 
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300

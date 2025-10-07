@@ -8,9 +8,13 @@ movements.
 As noted in the Pnakotic Manuscripts, proper testing of dimensional
 event systems is essential for maintaining the integrity of our eldritch
 architecture.
+
+Updated to use pure asyncio patterns as per the architectural transformation
+documented in the asyncio remediation tasks. The EventBus now operates
+within async event loops, requiring proper async test coordination.
 """
 
-import threading
+import asyncio
 import time
 from datetime import datetime
 
@@ -26,6 +30,8 @@ from server.events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
+
+from .conftest import TestingAsyncMixin
 
 
 class TestEventTypes:
@@ -104,8 +110,8 @@ class TestEventTypes:
         assert event.event_type == "NPCLeftRoom"
 
 
-class TestEventBus:
-    """Test the EventBus class."""
+class TestEventBus(TestingAsyncMixin):
+    """Test the EventBus class with async coordination."""
 
     def test_event_bus_creation(self):
         """Test that EventBus can be created successfully."""
@@ -116,15 +122,16 @@ class TestEventBus:
         assert hasattr(event_bus, "_event_queue")
         assert hasattr(event_bus, "_running")
 
-    def test_event_bus_shutdown(self):
+    @pytest.mark.asyncio
+    async def test_event_bus_shutdown(self):
         """Test that EventBus can be shut down properly."""
         event_bus = EventBus()
 
-        # Give the processing thread time to start
-        time.sleep(0.1)
+        # Give the async processing time to start
+        await asyncio.sleep(0.1)
 
         # Shutdown should not raise exceptions
-        event_bus.shutdown()
+        await event_bus.shutdown()
 
         # Verify shutdown
         assert not event_bus._running
@@ -150,7 +157,8 @@ class TestEventBus:
         with pytest.raises(ValueError, match="Handler must be callable"):
             event_bus.subscribe(PlayerEnteredRoom, "not callable")
 
-    def test_subscribe_and_publish(self):
+    @pytest.mark.asyncio
+    async def test_subscribe_and_publish(self):
         """Test basic subscribe and publish functionality."""
         event_bus = EventBus()
         received_events = []
@@ -165,13 +173,17 @@ class TestEventBus:
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
         event_bus.publish(event)
 
-        # Give the processing thread time to process
-        time.sleep(0.1)
+        # Give the async processing time to process
+        await asyncio.sleep(0.1)
 
         assert len(received_events) == 1
         assert received_events[0] == event
 
-    def test_multiple_subscribers(self):
+        # Clean up the EventBus properly
+        await event_bus.shutdown()
+
+    @pytest.mark.asyncio
+    async def test_multiple_subscribers(self):
         """Test that multiple subscribers receive the same event."""
         event_bus = EventBus()
         received_events_1 = []
@@ -191,13 +203,16 @@ class TestEventBus:
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
         event_bus.publish(event)
 
-        # Give the processing thread time to process
-        time.sleep(0.1)
+        # Give the async processing time to process
+        await asyncio.sleep(0.1)
 
         assert len(received_events_1) == 1
         assert len(received_events_2) == 1
         assert received_events_1[0] == event
         assert received_events_2[0] == event
+
+        # Clean up the EventBus properly
+        await event_bus.shutdown()
 
     def test_unsubscribe(self):
         """Test that unsubscribing removes the handler."""
@@ -277,7 +292,8 @@ class TestEventBus:
         assert counts["ObjectAddedToRoom"] == 1
         assert "NPCEnteredRoom" not in counts  # No subscribers
 
-    def test_event_processing_error_handling(self):
+    @pytest.mark.asyncio
+    async def test_event_processing_error_handling(self):
         """Test that errors in event handlers don't crash the system."""
         event_bus = EventBus()
         received_events = []
@@ -296,15 +312,19 @@ class TestEventBus:
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
         event_bus.publish(event)
 
-        # Give the processing thread time to process
-        time.sleep(0.1)
+        # Give the async processing time to process
+        await asyncio.sleep(0.1)
 
         # The good handler should still receive the event
         assert len(received_events) == 1
         assert received_events[0] == event
 
-    def test_thread_safety(self):
-        """Test that EventBus is thread-safe for concurrent operations."""
+        # Clean up the EventBus properly
+        await event_bus.shutdown()
+
+    @pytest.mark.asyncio
+    async def test_concurrent_operations(self):
+        """Test that EventBus handles concurrent operations correctly."""
         event_bus = EventBus()
         received_events = []
 
@@ -313,42 +333,55 @@ class TestEventBus:
 
         event_bus.subscribe(PlayerEnteredRoom, handler)
 
-        # Create multiple threads that publish events
-        def publish_events():
+        # Create multiple async tasks that publish events
+        async def publish_events():
             for i in range(10):
                 event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=f"player{i}", room_id=f"room{i}")
                 event_bus.publish(event)
-                time.sleep(0.01)
+                await asyncio.sleep(0.01)
 
-        threads = []
+        # Create 5 concurrent tasks
+        tasks = []
         for _ in range(5):
-            thread = threading.Thread(target=publish_events)
-            threads.append(thread)
-            thread.start()
+            task = asyncio.create_task(publish_events())
+            tasks.append(task)
 
-        # Wait for all threads to complete
-        for thread in threads:
-            thread.join()
+        # Wait for all tasks to complete
+        await asyncio.gather(*tasks)
 
-        # Give the processing thread time to process all events
-        time.sleep(0.5)
+        # Give the async processing time to process all events
+        await asyncio.sleep(0.5)
 
-        # Should have received 50 events (5 threads * 10 events each)
+        # Should have received 50 events (5 tasks * 10 events each)
         assert len(received_events) == 50
 
-    def test_cleanup_on_destruction(self):
+        # Clean up the EventBus properly
+        await event_bus.shutdown()
+
+    @pytest.mark.asyncio
+    async def test_cleanup_on_destruction(self):
         """Test that EventBus cleans up properly when destroyed."""
         event_bus = EventBus()
 
-        # Give the processing thread time to start
-        time.sleep(0.1)
+        # Publish an event to start the processing
+        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event_bus.publish(event)
 
-        # Verify the thread is running
+        # Give the async processing time to start
+        await asyncio.sleep(0.1)
+
+        # Verify the processing is running
         assert event_bus._running
-        assert event_bus._processing_thread is not None
+        assert event_bus._processing_task is not None
+
+        # Clean up the EventBus properly before deletion
+        await event_bus.shutdown()
+
+        # Verify it's shut down
+        assert not event_bus._running
 
         # Destroy the event bus
         del event_bus
 
         # Give time for cleanup
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)

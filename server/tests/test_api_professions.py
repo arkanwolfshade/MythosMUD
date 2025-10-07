@@ -81,6 +81,22 @@ def sample_profession_with_requirements():
 
 
 @pytest.fixture
+def sample_strongman_profession():
+    """Sample Strongman profession with strength requirement for testing."""
+    profession = Mock(spec=Profession)
+    profession.id = 2
+    profession.name = "Strongman"
+    profession.description = "A physically powerful individual with exceptional strength"
+    profession.flavor_text = "You have developed your body through years of physical training, making you capable of feats that would challenge lesser mortals."
+    profession.stat_requirements = '{"strength": 10}'
+    profession.mechanical_effects = "{}"
+    profession.is_available = True
+    profession.get_stat_requirements.return_value = {"strength": 10}
+    profession.get_mechanical_effects.return_value = {}
+    return profession
+
+
+@pytest.fixture
 def mock_persistence():
     """Mock persistence layer for testing."""
     persistence = Mock()
@@ -347,3 +363,79 @@ class TestProfessionErrorHandling:
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
+
+
+class TestStrongmanProfession:
+    """Test cases specifically for the Strongman profession with stat prerequisites."""
+
+    def test_get_strongman_profession_by_id_success(
+        self, mock_current_user, sample_strongman_profession, mock_persistence, mock_request
+    ):
+        """Test successful retrieval of Strongman profession by ID."""
+        # Setup mocks
+        mock_request.app.state.persistence = mock_persistence
+        mock_persistence.get_profession_by_id.return_value = sample_strongman_profession
+
+        result = get_profession_by_id(2, mock_current_user, mock_request)
+
+        assert result["id"] == 2
+        assert result["name"] == "Strongman"
+        assert result["description"] == "A physically powerful individual with exceptional strength"
+        assert (
+            result["flavor_text"]
+            == "You have developed your body through years of physical training, making you capable of feats that would challenge lesser mortals."
+        )
+        assert result["stat_requirements"] == {"strength": 10}
+        assert result["mechanical_effects"] == {}
+        assert result["is_available"] is True
+        mock_persistence.get_profession_by_id.assert_called_once_with(2)
+
+    def test_strongman_profession_stat_requirements_format(
+        self, mock_current_user, sample_strongman_profession, mock_persistence, mock_request
+    ):
+        """Test that Strongman profession stat requirements are properly formatted."""
+        # Setup mocks
+        mock_request.app.state.persistence = mock_persistence
+        mock_persistence.get_profession_by_id.return_value = sample_strongman_profession
+
+        result = get_profession_by_id(2, mock_current_user, mock_request)
+
+        # Verify stat requirements are correctly parsed and formatted
+        assert result["stat_requirements"] == {"strength": 10}
+        assert isinstance(result["stat_requirements"], dict)
+        assert "strength" in result["stat_requirements"]
+        assert result["stat_requirements"]["strength"] == 10
+
+    def test_strongman_profession_in_profession_list(
+        self,
+        mock_current_user,
+        sample_profession_data,
+        sample_profession_data_2,
+        sample_strongman_profession,
+        mock_persistence,
+        mock_request,
+    ):
+        """Test that Strongman profession appears in profession list."""
+        # Setup mocks
+        mock_request.app.state.persistence = mock_persistence
+        mock_persistence.get_all_professions.return_value = [
+            sample_profession_data,
+            sample_profession_data_2,
+            sample_strongman_profession,
+        ]
+
+        result = get_all_professions(mock_current_user, mock_request)
+
+        assert "professions" in result
+        assert len(result["professions"]) == 3
+
+        # Find the Strongman profession in the list
+        strongman_profession = None
+        for profession in result["professions"]:
+            if profession["id"] == 2 and profession["name"] == "Strongman":
+                strongman_profession = profession
+                break
+
+        assert strongman_profession is not None
+        assert strongman_profession["stat_requirements"] == {"strength": 10}
+        mock_persistence.get_all_professions.assert_called_once()

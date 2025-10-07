@@ -113,7 +113,7 @@ def init_test_database():
         conn.executescript(load_schema())
         conn.commit()
 
-    print("✓ Database schema created")
+    print("[OK] Database schema created")
 
     # Insert sample test players into database
     with sqlite3.connect(TEST_DB_PATH) as conn:
@@ -159,7 +159,7 @@ def init_test_database():
 
         conn.commit()
 
-    print(f"✓ Loaded {len(SAMPLE_PLAYERS)} sample test players")
+    print(f"[OK] Loaded {len(SAMPLE_PLAYERS)} sample test players")
 
     # Insert sample test invites into database
     with sqlite3.connect(TEST_DB_PATH) as conn:
@@ -183,23 +183,23 @@ def init_test_database():
 
         conn.commit()
 
-    print(f"✓ Loaded {len(SAMPLE_INVITES)} sample test invites")
+    print(f"[OK] Loaded {len(SAMPLE_INVITES)} sample test invites")
 
     # Verify the database was created successfully
     with sqlite3.connect(TEST_DB_PATH) as conn:
         cursor = conn.execute("SELECT COUNT(*) FROM users")
         user_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {user_count} users")
+        print(f"[OK] Test database contains {user_count} users")
 
         cursor = conn.execute("SELECT COUNT(*) FROM players")
         player_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {player_count} players")
+        print(f"[OK] Test database contains {player_count} players")
 
         cursor = conn.execute("SELECT COUNT(*) FROM invites")
         invite_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {invite_count} invites")
+        print(f"[OK] Test database contains {invite_count} invites")
 
-    print("✓ Test database initialization completed successfully")
+    print("[OK] Test database initialization completed successfully")
 
 
 if __name__ == "__main__":

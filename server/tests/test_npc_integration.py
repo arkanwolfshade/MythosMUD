@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
+from ..events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from ..game.movement_service import MovementService
 from ..logging_config import get_logger
 from ..models.npc import NPCDefinitionType
@@ -27,6 +27,8 @@ logger = get_logger(__name__)
 @pytest.fixture
 def event_bus():
     """Create an event bus for testing."""
+    from ..events.event_bus import EventBus
+
     return EventBus()
 
 
@@ -257,7 +259,8 @@ class TestNPCCombatIntegration:
         new_hp = aggressive_npc.get_stats()["hp"]
         assert new_hp == initial_hp - 25
 
-    def test_npc_combat_events_integration(self, aggressive_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_combat_events_integration(self, aggressive_npc, event_bus):
         """Test NPC combat event integration."""
         events_received = []
 
@@ -275,9 +278,9 @@ class TestNPCCombatIntegration:
         aggressive_npc.attack_target("test_player_1")
 
         # Wait for event to be processed (EventBus processes asynchronously)
-        import time
+        import asyncio
 
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Check that attack event was published
         assert len(events_received) == 1
@@ -291,7 +294,7 @@ class TestNPCCombatIntegration:
         aggressive_npc.take_damage(30, "physical", "test_player_1")
 
         # Wait for event to be processed
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Check that damage event was published
         assert len(events_received) == 1
@@ -301,7 +304,8 @@ class TestNPCCombatIntegration:
         assert events_received[0].damage_type == "physical"
         assert events_received[0].source_id == "test_player_1"
 
-    def test_npc_death_events_integration(self, aggressive_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_death_events_integration(self, aggressive_npc, event_bus):
         """Test NPC death event integration."""
         events_received = []
 
@@ -319,9 +323,9 @@ class TestNPCCombatIntegration:
         aggressive_npc.take_damage(initial_hp, "physical", "test_player_1")
 
         # Wait for events to be processed
-        import time
+        import asyncio
 
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Check that both damage and death events were published
         assert len(events_received) == 2
@@ -359,7 +363,8 @@ class TestNPCCombatIntegration:
         # Verify NPC is still alive
         assert aggressive_npc.is_alive is True
 
-    def test_npc_combat_damage_types(self, aggressive_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_combat_damage_types(self, aggressive_npc, event_bus):
         """Test NPC combat with different damage types."""
         events_received = []
 
@@ -379,15 +384,16 @@ class TestNPCCombatIntegration:
             aggressive_npc.take_damage(10, damage_type, "test_player_1")
 
             # Wait for event to be processed
-            import time
+            import asyncio
 
-            time.sleep(0.1)
+            await asyncio.sleep(0.1)
 
             assert len(events_received) == 1
             assert events_received[0].damage_type == damage_type
             assert events_received[0].damage == 10
 
-    def test_npc_combat_behavior_trigger_integration(self, aggressive_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_combat_behavior_trigger_integration(self, aggressive_npc, event_bus):
         """Test that NPC combat behaviors trigger correctly."""
         events_received = []
 
@@ -405,9 +411,9 @@ class TestNPCCombatIntegration:
         assert result is True
 
         # Wait for event to be processed
-        import time
+        import asyncio
 
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         assert len(events_received) == 1
         assert events_received[0].event_type == "NPCAttacked"
@@ -448,7 +454,8 @@ class TestNPCCombatIntegration:
         assert stats["hp"] == 120
         assert stats["strength"] == 15
 
-    def test_npc_combat_integration_with_enhanced_attack(self, aggressive_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_combat_integration_with_enhanced_attack(self, aggressive_npc, event_bus):
         """Test NPC attack with enhanced combat integration."""
         from ..npc.combat_integration import NPCCombatIntegration
 
@@ -483,9 +490,9 @@ class TestNPCCombatIntegration:
                 assert result is True
 
                 # Wait for event to be processed
-                import time
+                import asyncio
 
-                time.sleep(0.1)
+                await asyncio.sleep(0.1)
 
                 # Should have attack event
                 assert len(events_received) == 1
@@ -534,7 +541,8 @@ class TestNPCCommunicationIntegration:
         result = shopkeeper_npc.speak("Hello, traveler!", "local")
         assert result is True
 
-    def test_npc_communication_events_integration(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_events_integration(self, shopkeeper_npc, event_bus):
         """Test NPC communication event integration."""
         events_received = []
 
@@ -551,9 +559,9 @@ class TestNPCCommunicationIntegration:
         shopkeeper_npc.speak("Welcome to my shop!")
 
         # Wait for event to be processed
-        import time
+        import asyncio
 
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Check that speak event was published
         assert len(events_received) == 1
@@ -567,7 +575,7 @@ class TestNPCCommunicationIntegration:
         shopkeeper_npc.listen("Hello there!", "test_player_1", "local")
 
         # Wait for event to be processed
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Check that listen event was published
         assert len(events_received) == 1
@@ -577,7 +585,8 @@ class TestNPCCommunicationIntegration:
         assert events_received[0].speaker_id == "test_player_1"
         assert events_received[0].channel == "local"
 
-    def test_npc_communication_channels(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_channels(self, shopkeeper_npc, event_bus):
         """Test NPC communication with different channels."""
         events_received = []
 
@@ -597,15 +606,14 @@ class TestNPCCommunicationIntegration:
             shopkeeper_npc.speak(f"Message on {channel} channel", channel)
 
             # Wait for event to be processed
-            import time
-
-            time.sleep(0.1)
+            await asyncio.sleep(0.1)
 
             assert len(events_received) == 1
             assert events_received[0].channel == channel
             assert events_received[0].message == f"Message on {channel} channel"
 
-    def test_npc_communication_with_target(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_with_target(self, shopkeeper_npc, event_bus):
         """Test NPC communication with specific targets."""
         events_received = []
 
@@ -621,16 +629,15 @@ class TestNPCCommunicationIntegration:
         shopkeeper_npc.speak("Secret message", "whisper", "test_player_1")
 
         # Wait for event to be processed
-        import time
-
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         assert len(events_received) == 1
         assert events_received[0].channel == "whisper"
         assert events_received[0].target_id == "test_player_1"
         assert events_received[0].message == "Secret message"
 
-    def test_npc_communication_integration_with_chat_service(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_integration_with_chat_service(self, shopkeeper_npc, event_bus):
         """Test NPC communication integration with chat service."""
         # Create a mock chat service instead of real one
         mock_chat_service = MagicMock()
@@ -650,9 +657,7 @@ class TestNPCCommunicationIntegration:
         shopkeeper_npc.speak("Welcome to my shop!")
 
         # Wait for event to be processed
-        import time
-
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have communication event
         assert len(events_received) == 1
@@ -663,7 +668,7 @@ class TestNPCCommunicationIntegration:
         shopkeeper_npc.listen("Hello shopkeeper!", "test_player_1", "local")
 
         # Wait for event to be processed
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have listening event
         assert len(events_received) == 1
@@ -673,7 +678,8 @@ class TestNPCCommunicationIntegration:
         # (This is more of a conceptual test since we're using a mock)
         assert mock_chat_service is not None
 
-    def test_npc_communication_integration_system(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_integration_system(self, shopkeeper_npc, event_bus):
         """Test the new NPC communication integration system."""
         from ..npc.communication_integration import NPCCommunicationIntegration
 
@@ -697,9 +703,7 @@ class TestNPCCommunicationIntegration:
         assert result is True
 
         # Wait for event to be processed
-        import time
-
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have speak event
         assert len(events_received) == 1
@@ -713,7 +717,7 @@ class TestNPCCommunicationIntegration:
         assert result is True
 
         # Wait for events to be processed
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have listen event and potentially a response
         assert len(events_received) >= 1
@@ -722,7 +726,8 @@ class TestNPCCommunicationIntegration:
         assert events_received[0].message == "Hello there!"
         assert events_received[0].speaker_id == "test_player_1"
 
-    def test_npc_communication_integration_whisper(self, shopkeeper_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_communication_integration_whisper(self, shopkeeper_npc, event_bus):
         """Test NPC communication integration with whisper functionality."""
         from ..npc.communication_integration import NPCCommunicationIntegration
 
@@ -745,9 +750,7 @@ class TestNPCCommunicationIntegration:
         assert result is True
 
         # Wait for event to be processed
-        import time
-
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have whisper event
         assert len(events_received) == 1
@@ -792,7 +795,8 @@ class TestNPCEventIntegration:
         """Create a test NPC instance."""
         return PassiveMobNPC(mock_npc_definition, "event_test_npc_1")
 
-    def test_npc_event_subscription(self, test_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_event_subscription(self, test_npc, event_bus):
         """Test NPC event subscription capabilities."""
         events_received = []
 
@@ -812,13 +816,14 @@ class TestNPCEventIntegration:
         event_bus.publish(event)
 
         # Give event processing time
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Verify event was received
         assert len(events_received) == 1
         assert events_received[0].player_id == "test_player_1"
 
-    def test_npc_event_reaction_system(self, test_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_event_reaction_system(self, test_npc, event_bus):
         """Test NPC event reaction system."""
         # This test documents how NPCs could react to game events
         # Currently, NPCs don't subscribe to events, but this could be implemented
@@ -833,13 +838,14 @@ class TestNPCEventIntegration:
         event_bus.publish(event)
 
         # Give event processing time
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Note: NPCs don't currently react to events
         # This test documents the expected behavior for future implementation
         assert test_npc.current_room == initial_room  # No reaction yet
 
-    def test_npc_behavior_triggered_by_events(self, test_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_behavior_triggered_by_events(self, test_npc, event_bus):
         """Test that NPC behavior can be triggered by events."""
         # This test documents how NPC behavior could be triggered by events
         # Currently, NPCs use their own behavior engine, but this could be extended
@@ -848,10 +854,11 @@ class TestNPCEventIntegration:
         context = {"player_nearby": True, "time_since_last_action": 35}
 
         # Execute behavior
-        result = asyncio.run(test_npc.execute_behavior(context))
+        result = await test_npc.execute_behavior(context)
         assert result is True
 
-    def test_npc_event_publishing(self, test_npc, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_event_publishing(self, test_npc, event_bus):
         """Test NPC event publishing capabilities."""
         events_received = []
 
@@ -866,7 +873,7 @@ class TestNPCEventIntegration:
         test_npc.move_to_room("earth_arkhamcity_downtown_room_derby_st_002")
 
         # Give event processing time
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Note: NPCs don't currently publish events
         # This test documents the expected behavior for future implementation
@@ -936,14 +943,15 @@ class TestNPCSystemIntegration:
             assert npc.is_active is True
             assert npc.get_behavior_rules() is not None
 
-    def test_npc_system_performance(self, test_npcs):
+    @pytest.mark.asyncio
+    async def test_npc_system_performance(self, test_npcs):
         """Test NPC system performance with multiple NPCs."""
         # Test behavior execution performance
         start_time = time.time()
 
         for npc in test_npcs:
             context = {"time_since_last_action": 35}
-            asyncio.run(npc.execute_behavior(context))
+            await npc.execute_behavior(context)
 
         execution_time = time.time() - start_time
 
@@ -952,12 +960,13 @@ class TestNPCSystemIntegration:
 
         logger.info(f"NPC system execution time: {execution_time:.3f}s for {len(test_npcs)} NPCs")
 
-    def test_npc_system_error_handling(self, test_npcs):
+    @pytest.mark.asyncio
+    async def test_npc_system_error_handling(self, test_npcs):
         """Test NPC system error handling."""
         # Test that errors in one NPC don't affect others
         for npc in test_npcs:
             # Test with invalid context
-            result = asyncio.run(npc.execute_behavior(None))
+            result = await npc.execute_behavior(None)
             assert result is False  # Should handle invalid context gracefully
 
         # Test that all NPCs are still functional
@@ -965,7 +974,8 @@ class TestNPCSystemIntegration:
             assert npc.is_alive is True
             assert npc.is_active is True
 
-    def test_npc_system_integration_with_game_services(self, test_npcs, event_bus):
+    @pytest.mark.asyncio
+    async def test_npc_system_integration_with_game_services(self, test_npcs, event_bus):
         """Test NPC system integration with game services."""
         # Test that NPCs can interact with the event system
         events_received = []
@@ -990,7 +1000,7 @@ class TestNPCSystemIntegration:
         )
 
         # Give event processing time
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Verify events were processed
         assert len(events_received) == 1
@@ -1067,7 +1077,10 @@ class TestNPCEventReactionSystem:
 
         assert "test_npc" not in event_reaction_system._event_subscriptions[PlayerEnteredRoom]
 
-    def test_npc_reaction_to_player_entered_room(self, event_bus, event_reaction_system, shopkeeper_npc_with_reactions):
+    @pytest.mark.asyncio
+    async def test_npc_reaction_to_player_entered_room(
+        self, event_bus, event_reaction_system, shopkeeper_npc_with_reactions
+    ):
         """Test that NPCs react when players enter their room."""
         from ..events.event_types import PlayerEnteredRoom
 
@@ -1091,7 +1104,7 @@ class TestNPCEventReactionSystem:
         event_bus.publish(player_entered_event)
 
         # Wait for event processing
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should have received the player entered event
         assert len(events_received) == 1
@@ -1126,7 +1139,8 @@ class TestNPCEventReactionSystem:
         assert reactions[0].priority == 10
         assert reactions[1].priority == 1
 
-    def test_npc_reaction_cooldown_system(self, event_bus, event_reaction_system):
+    @pytest.mark.asyncio
+    async def test_npc_reaction_cooldown_system(self, event_bus, event_reaction_system):
         """Test that NPC reactions have cooldown periods."""
         from ..events.event_types import PlayerEnteredRoom
         from ..npc.event_reaction_system import NPCEventReaction
@@ -1154,7 +1168,7 @@ class TestNPCEventReactionSystem:
             event_bus.publish(player_entered_event)
 
         # Wait for event processing
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         # Should only have triggered once due to cooldown
         assert reaction_count == 1

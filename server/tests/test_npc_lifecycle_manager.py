@@ -9,6 +9,7 @@ for maintaining the delicate balance between the mundane and the eldritch forces
 that lurk in the shadows of our world.
 """
 
+import asyncio
 import time
 from unittest.mock import MagicMock, patch
 
@@ -116,12 +117,17 @@ class TestNPCLifecycleManager:
         """Create a population controller for testing."""
         with patch("server.npc.population_control.Path") as mock_path:
             mock_path.return_value.iterdir.return_value = []
-            return NPCPopulationController(event_bus, "test_path")
+            return NPCPopulationController(event_bus, spawning_service=None, rooms_data_path="test_path")
 
     @pytest.fixture
     def spawning_service(self, event_bus, population_controller):
         """Create a spawning service for testing."""
-        return NPCSpawningService(event_bus, population_controller)
+        spawning_service = NPCSpawningService(event_bus, population_controller)
+        # Set the spawning service on the population controller
+        population_controller.spawning_service = spawning_service
+        # Ensure the spawning service uses the same event bus as the lifecycle manager
+        spawning_service.event_bus = event_bus
+        return spawning_service
 
     @pytest.fixture
     def lifecycle_manager(self, event_bus, population_controller, spawning_service):
@@ -155,7 +161,8 @@ class TestNPCLifecycleManager:
         assert len(lifecycle_manager.active_npcs) == 0
         assert len(lifecycle_manager.respawn_queue) == 0
 
-    def test_spawn_npc_success(self, lifecycle_manager, shopkeeper_definition):
+    @pytest.mark.asyncio
+    async def test_spawn_npc_success(self, lifecycle_manager, shopkeeper_definition):
         """Test successful NPC spawning."""
         with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
             with patch.object(lifecycle_manager.spawning_service, "_create_npc_instance") as mock_create:
@@ -166,9 +173,7 @@ class TestNPCLifecycleManager:
                 npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
 
                 # Allow time for the NPCEnteredRoom event to be processed and state to transition
-                import time
-
-                time.sleep(0.1)
+                await asyncio.sleep(0.1)
 
                 assert npc_id is not None
                 assert npc_id in lifecycle_manager.lifecycle_records
@@ -338,7 +343,8 @@ class TestNPCLifecycleManager:
                 assert "respawned_npcs" in results
                 assert results["respawned_npcs"] == 1
 
-    def test_event_handling_npc_entered_room(self, lifecycle_manager, event_bus, shopkeeper_definition):
+    @pytest.mark.asyncio
+    async def test_event_handling_npc_entered_room(self, lifecycle_manager, shopkeeper_definition):
         """Test handling NPC entered room events."""
         # Create a lifecycle record in spawning state
         record = NPCLifecycleRecord("npc_001", shopkeeper_definition)
@@ -346,8 +352,9 @@ class TestNPCLifecycleManager:
 
         event = NPCEnteredRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
 
-        event_bus.publish(event)
-        time.sleep(0.1)  # Allow event processing
+        # Use the lifecycle manager's event bus
+        lifecycle_manager.event_bus.publish(event)
+        await asyncio.sleep(0.1)  # Allow async event processing
 
         assert record.current_state == NPCLifecycleState.ACTIVE
         assert len(record.events) == 2  # Both ACTIVATED and SPAWNED events
@@ -356,7 +363,8 @@ class TestNPCLifecycleManager:
         assert NPCLifecycleEvent.ACTIVATED in event_types
         assert NPCLifecycleEvent.SPAWNED in event_types
 
-    def test_event_handling_npc_left_room(self, lifecycle_manager, event_bus, shopkeeper_definition):
+    @pytest.mark.asyncio
+    async def test_event_handling_npc_left_room(self, lifecycle_manager, shopkeeper_definition):
         """Test handling NPC left room events."""
         # Create a lifecycle record
         record = NPCLifecycleRecord("npc_001", shopkeeper_definition)
@@ -364,8 +372,9 @@ class TestNPCLifecycleManager:
 
         event = NPCLeftRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
 
-        event_bus.publish(event)
-        time.sleep(0.1)  # Allow event processing
+        # Use the lifecycle manager's event bus
+        lifecycle_manager.event_bus.publish(event)
+        await asyncio.sleep(0.1)  # Allow async event processing
 
         assert len(record.events) == 1
         assert record.events[0]["event_type"] == NPCLifecycleEvent.DEACTIVATED
