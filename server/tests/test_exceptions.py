@@ -12,13 +12,6 @@ from unittest.mock import patch
 
 import pytest
 
-from ..error_handlers import (
-    CircuitBreaker,
-    ErrorResponse,
-    _get_status_code_for_error,
-    create_error_response,
-    graceful_degradation,
-)
 from ..exceptions import (
     AuthenticationError,
     DatabaseError,
@@ -31,6 +24,13 @@ from ..exceptions import (
     ValidationError,
     create_error_context,
     handle_exception,
+)
+from ..legacy_error_handlers import (
+    CircuitBreaker,
+    ErrorResponse,
+    _get_status_code_for_error,
+    create_error_response,
+    graceful_degradation,
 )
 
 

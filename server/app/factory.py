@@ -20,9 +20,9 @@ from ..api.rooms import room_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
-from ..error_handlers import register_error_handlers
 from ..logging_config import get_logger
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
+from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware
 from .lifespan import lifespan
 
@@ -76,8 +76,10 @@ def create_app() -> FastAPI:
     # Add security headers middleware (add last to ensure headers are added to all responses)
     app.add_middleware(SecurityHeadersMiddleware)
 
-    # Register error handlers
-    register_error_handlers(app)
+    # Setup comprehensive error handling (middleware + exception handlers)
+    # Include details in development mode, hide in production
+    include_details = os.getenv("ENV", "development") != "production"
+    setup_error_handling(app, include_details=include_details)
 
     # Include routers
     app.include_router(auth_router)

@@ -89,9 +89,10 @@ class TestModelConfigurationConsistency:
         with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
             Alias(name="test", command="say hello", extra_field="not_allowed")
 
-        # Stats model now has model_config that forbids extra fields
-        with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
-            Stats(extra_field="not_allowed")
+        # Stats model now allows extra fields for backward compatibility with serialized stats
+        # that may include computed fields like max_health and max_sanity
+        stats = Stats(extra_field="allowed_for_compatibility")
+        assert stats.extra_field == "allowed_for_compatibility"
 
     def test_enum_value_handling(self):
         """Test that models handle enum values consistently."""

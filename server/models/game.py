@@ -76,8 +76,8 @@ class Stats(BaseModel):
     model_config = ConfigDict(
         # Performance: validate assignment for computed fields
         validate_assignment=True,
-        # Security: reject unknown fields to prevent injection
-        extra="forbid",
+        # Allow extra fields for backward compatibility with serialized stats
+        extra="allow",
         # Use enum values for consistency
         use_enum_values=True,
     )
@@ -155,3 +155,153 @@ class Stats(BaseModel):
     def is_insane(self) -> bool:
         """Check if the character has lost their sanity completely."""
         return self.sanity <= 0
+
+
+class InventoryItem(BaseModel):
+    """Represents an item in a player's inventory."""
+
+    __slots__ = ()
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+    )
+
+    item_id: str = Field(..., description="Unique item identifier")
+    quantity: int = Field(default=1, ge=1, description="Number of items")
+
+
+class Player(BaseModel):
+    """
+    Pydantic Player model for game logic and validation.
+
+    This is separate from the SQLAlchemy ORM model in models/player.py
+    and is used for game logic, validation, and testing.
+    """
+
+    __slots__ = ()
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+    )
+
+    id: str = Field(default_factory=lambda: str(__import__("uuid").uuid4()), description="Player unique identifier")
+    name: str = Field(..., min_length=1, max_length=50, description="Player name")
+    current_room_id: str = Field(
+        default="earth_arkhamcity_intersection_derby_high", description="Current room location"
+    )
+    experience_points: int = Field(default=0, ge=0, description="Total experience points")
+    level: int = Field(default=1, ge=1, le=100, description="Player level")
+    stats: Stats = Field(default_factory=Stats, description="Player statistics")
+    inventory: list[InventoryItem] = Field(default_factory=list, description="Player inventory")
+    status_effects: list[StatusEffect] = Field(default_factory=list, description="Active status effects")
+    last_active: datetime = Field(
+        default_factory=lambda: __import__("datetime").datetime.now(__import__("datetime").UTC).replace(tzinfo=None),
+        description="Last activity timestamp",
+    )
+
+    def add_item(self, item_id: str, quantity: int = 1) -> bool:
+        """
+        Add an item to the player's inventory.
+
+        Args:
+            item_id: Unique identifier for the item
+            quantity: Number of items to add
+
+        Returns:
+            bool: True if successful
+        """
+        # Check if item already exists
+        for inv_item in self.inventory:
+            if inv_item.item_id == item_id:
+                # Increase quantity
+                object.__setattr__(inv_item, "quantity", inv_item.quantity + quantity)
+                return True
+
+        # Add new item
+        self.inventory.append(InventoryItem(item_id=item_id, quantity=quantity))
+        return True
+
+    def remove_item(self, item_id: str, quantity: int = 1) -> bool:
+        """
+        Remove an item from the player's inventory.
+
+        Args:
+            item_id: Unique identifier for the item
+            quantity: Number of items to remove
+
+        Returns:
+            bool: True if successful, False if item not found or insufficient quantity
+        """
+        for i, inv_item in enumerate(self.inventory):
+            if inv_item.item_id == item_id:
+                if inv_item.quantity >= quantity:
+                    new_quantity = inv_item.quantity - quantity
+                    if new_quantity == 0:
+                        # Remove item completely
+                        self.inventory.pop(i)
+                    else:
+                        # Decrease quantity
+                        object.__setattr__(inv_item, "quantity", new_quantity)
+                    return True
+                return False
+
+        return False
+
+    def add_status_effect(self, effect: StatusEffect) -> None:
+        """
+        Add a status effect to the player.
+
+        Args:
+            effect: StatusEffect to add
+        """
+        self.status_effects.append(effect)
+
+    def remove_status_effect(self, effect_type: StatusEffectType) -> bool:
+        """
+        Remove a status effect from the player.
+
+        Args:
+            effect_type: Type of effect to remove
+
+        Returns:
+            bool: True if effect was found and removed, False otherwise
+        """
+        for i, effect in enumerate(self.status_effects):
+            if effect.effect_type == effect_type:
+                self.status_effects.pop(i)
+                return True
+        return False
+
+    def get_active_status_effects(self, current_tick: int) -> list[StatusEffect]:
+        """
+        Get all currently active status effects.
+
+        Args:
+            current_tick: Current game tick
+
+        Returns:
+            list[StatusEffect]: List of active effects
+        """
+        return [effect for effect in self.status_effects if effect.is_active(current_tick)]
+
+    def update_last_active(self) -> None:
+        """Update the last_active timestamp to current time."""
+        from datetime import UTC, datetime
+
+        object.__setattr__(self, "last_active", datetime.now(UTC).replace(tzinfo=None))
+
+    def can_carry_weight(self, weight: float) -> bool:
+        """
+        Check if the player can carry additional weight.
+
+        Args:
+            weight: Weight in pounds
+
+        Returns:
+            bool: True if player can carry the weight
+        """
+        # Carrying capacity is based on strength (10 lbs per point)
+        max_capacity = self.stats.strength * 10
+        return weight <= max_capacity

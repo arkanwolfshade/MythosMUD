@@ -11,8 +11,7 @@ implementation of those systems.
 from datetime import datetime
 
 from ..models.alias import Alias
-from ..models.game import AttributeType, Stats, StatusEffect, StatusEffectType
-from ..models.player import Player
+from ..models.game import AttributeType, Player, Stats, StatusEffect, StatusEffectType
 
 # Note: Item, InventoryItem, and NPC models have not been implemented yet.
 # Tests for these models are commented out pending implementation.

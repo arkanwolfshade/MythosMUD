@@ -17,7 +17,6 @@ from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from ..error_handlers.pydantic_error_handler import PydanticErrorHandler
 from ..error_types import (
     ErrorMessages,
     ErrorSeverity,
@@ -42,6 +41,7 @@ from ..exceptions import (
     ValidationError as MythosValidationError,
 )
 from ..logging_config import get_logger
+from .pydantic_error_handler import PydanticErrorHandler
 
 logger = get_logger(__name__)
 
