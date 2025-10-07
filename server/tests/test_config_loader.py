@@ -90,3 +90,34 @@ def test_invalid_types_fallback_to_default(tmp_path):
     assert config["max_connections_per_player"] == config_loader._DEFAULTS["max_connections_per_player"]
     assert isinstance(config["game_tick_rate"], float)
     assert config["game_tick_rate"] == config_loader._DEFAULTS["game_tick_rate"]
+
+
+def test_aliases_dir_required(monkeypatch, tmp_path):
+    """
+    Regression test for ALIASES_DIR configuration requirement.
+
+    This test ensures that the system properly validates the presence of ALIASES_DIR
+    environment variable, preventing silent command processing failures.
+
+    Context: Bug fix for issue where commands failed silently when ALIASES_DIR was not set.
+    """
+    import pytest
+
+    from server.alias_storage import AliasStorage
+
+    # Test 1: AliasStorage should raise ValueError when ALIASES_DIR is not set and no storage_dir provided
+    monkeypatch.delenv("ALIASES_DIR", raising=False)
+    with pytest.raises(ValueError, match="ALIASES_DIR environment variable must be set"):
+        AliasStorage()
+
+    # Test 2: AliasStorage should work when explicit storage_dir is provided
+    test_dir = tmp_path / "aliases"
+    storage = AliasStorage(storage_dir=str(test_dir))
+    assert storage.storage_dir.exists()
+
+    # Test 3: AliasStorage should work when ALIASES_DIR environment variable is set
+    env_dir = tmp_path / "env_aliases"
+    monkeypatch.setenv("ALIASES_DIR", str(env_dir))
+    storage_from_env = AliasStorage()
+    assert storage_from_env.storage_dir == env_dir
+    assert storage_from_env.storage_dir.exists()
