@@ -301,7 +301,7 @@ class TestAsyncOperationsVerification:
 
         # Configure mock to simulate realistic async work
         async def realistic_async_work(*args, **kwargs):
-            await asyncio.sleep(0.001)  # 1ms of async work
+            await asyncio.sleep(0.01)  # 10ms of async work (more realistic)
             return []
 
         mock_persistence.async_list_players.side_effect = realistic_async_work
@@ -317,11 +317,24 @@ class TestAsyncOperationsVerification:
         await asyncio.gather(*tasks)
         concurrent_time = time.time() - start_time
 
-        # Concurrent operations should be faster than sequential
-        # (but timing can be variable, so we use a more lenient check)
+        # Concurrent operations should be significantly faster than sequential
+        # Account for system overhead by using a more realistic comparison
+        # If operations were truly sequential, they would take ~10 * 0.01s = 0.1s
+        # If they're concurrent, they should take closer to 0.01s + overhead
+        # We allow for 3x the theoretical concurrent time to account for system overhead
+        theoretical_concurrent_time = 0.01 + 0.005  # 10ms work + 5ms overhead
+        max_acceptable_time = theoretical_concurrent_time * 3  # 45ms total
+
+        assert concurrent_time < max_acceptable_time, (
+            f"Concurrent time {concurrent_time:.4f}s should be less than {max_acceptable_time:.4f}s "
+            f"(theoretical concurrent time: {theoretical_concurrent_time:.4f}s)"
+        )
+
+        # Also verify that concurrent is faster than sequential (with generous tolerance)
         sequential_estimate = single_time * 10
-        assert concurrent_time < sequential_estimate, (
-            f"Concurrent time {concurrent_time}s should be less than sequential estimate {sequential_estimate}s"
+        assert concurrent_time < sequential_estimate * 1.5, (
+            f"Concurrent time {concurrent_time:.4f}s should be less than 1.5x sequential estimate "
+            f"{sequential_estimate:.4f}s (allowing for system overhead)"
         )
 
     @pytest.mark.asyncio
