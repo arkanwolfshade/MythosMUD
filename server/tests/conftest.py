@@ -69,13 +69,13 @@ if npc_database_url:
         print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
 else:
     # Use absolute path to ensure NPC database is created in the correct location
-    test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "test_npcs.db"
+    test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
     test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
     print(f"[OK] Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
 
-# Ensure we're using the correct path for test logs
-test_logs_dir = project_root / "server" / "tests" / "logs"
+# Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
+test_logs_dir = project_root / "logs" / "unit_test"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
 # Set test configuration file path
 test_config_path = project_root / "server" / "server_config.unit_test.yaml"
@@ -163,12 +163,12 @@ def pytest_configure(config):
             print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
     else:
         # Use absolute path to ensure NPC database is created in the correct location
-        test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "test_npcs.db"
+        test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
         test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
 
-    # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "server" / "tests" / "logs"
+    # Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
+    test_logs_dir = project_root / "logs" / "unit_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
     # Use absolute path for aliases directory to prevent incorrect directory creation
@@ -216,11 +216,9 @@ def test_npc_database():
     import os
 
     # Get the NPC test database path
-    from pathlib import Path
-
     from server.tests.init_npc_test_db import init_npc_test_database
 
-    npc_test_db_path = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+    npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
     # Remove existing database file to ensure clean state
     if npc_test_db_path.exists():

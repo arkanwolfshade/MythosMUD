@@ -26,8 +26,9 @@ def load_npc_schema():
 def init_npc_test_database():
     """Initialize the NPC test database with schema and test data."""
 
-    # NPC Test database path
-    NPC_TEST_DB_PATH = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+    # NPC Test database path - use project root relative path
+    project_root = Path(__file__).parent.parent.parent
+    NPC_TEST_DB_PATH = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
     print(f"Initializing NPC test database at: {NPC_TEST_DB_PATH}")
 

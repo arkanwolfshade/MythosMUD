@@ -1505,7 +1505,7 @@ class TestConnectionManagerComprehensive:
     def test_get_error_statistics(self, connection_manager):
         """Test getting error statistics."""
         # Mock the config to return test configuration
-        mock_config = {"logging": {"environment": "test", "log_base": "server/tests/logs"}}
+        mock_config = {"logging": {"environment": "unit_test", "log_base": "logs/unit_test"}}
 
         with patch("server.config_loader.get_config", return_value=mock_config):
             # Initially empty
@@ -1515,12 +1515,10 @@ class TestConnectionManagerComprehensive:
             assert stats["active_sessions"] == 0
             assert stats["players_with_sessions"] == 0
             # The error log path should be resolved based on test configuration
-            # Test config uses environment: test and log_base: server/tests/logs
+            # Test config uses environment: unit_test and log_base: logs/unit_test
             error_log_path = stats["error_log_path"]
-            assert "server" in error_log_path
-            assert "tests" in error_log_path
             assert "logs" in error_log_path
-            assert "test" in error_log_path
+            assert "unit_test" in error_log_path
             assert error_log_path.endswith("connection_errors.log")
 
         # Add some connections and sessions

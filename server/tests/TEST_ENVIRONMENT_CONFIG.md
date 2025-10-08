@@ -39,7 +39,7 @@ Contains **ONLY secrets**:
 ```env
 # --- Database URLs (Test Databases) ---
 DATABASE_URL=sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db
-NPC_DATABASE_URL=sqlite+aiosqlite:///data/unit_test/npcs/test_npcs.db
+NPC_DATABASE_URL=sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db
 
 # --- Security Secrets (Test Values Only - Not Real Secrets) ---
 MYTHOSMUD_SECRET_KEY=test-secret-key-for-testing-only
@@ -100,7 +100,7 @@ The test suite automatically:
 ## Database Paths
 
 - **Player Database**: `data/unit_test/players/unit_test_players.db`
-- **NPC Database**: `data/unit_test/npcs/test_npcs.db`
+- **NPC Database**: `data/unit_test/npcs/unit_test_npcs.db`
 - **Aliases Directory**: `data/unit_test/players/aliases`
 
 These are automatically created and managed by the test suite.

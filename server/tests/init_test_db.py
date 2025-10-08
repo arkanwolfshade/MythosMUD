@@ -8,8 +8,9 @@ This module provides utilities for setting up test databases with sample data.
 import sqlite3
 from pathlib import Path
 
-# Test database path
-TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "unit_test_players.db"
+# Test database path - use project root relative path
+project_root = Path(__file__).parent.parent.parent
+TEST_DB_PATH = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
 
 # Test database schema is now loaded from server/sql/schema.sql
 
