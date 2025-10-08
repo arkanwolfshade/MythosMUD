@@ -9,7 +9,36 @@ from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
-ROOMS_BASE_PATH = str(Path(__file__).parent.parent / "data" / "rooms")
+
+# Determine environment-aware rooms path
+def _get_rooms_base_path() -> str:
+    """
+    Get the rooms base path based on the current environment.
+
+    Checks MYTHOSMUD_CONFIG_PATH to determine environment (unit_test, e2e_test, local)
+    and returns the appropriate data directory path.
+    """
+    project_root = Path(__file__).parent.parent
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+
+    # Extract environment from config path
+    environment = "local"  # default
+    if "unit_test" in config_path:
+        environment = "unit_test"
+    elif "e2e_test" in config_path:
+        environment = "e2e_test"
+
+    # Try environment-specific path first, fallback to generic data/rooms
+    env_rooms_path = project_root / "data" / environment / "rooms"
+    generic_rooms_path = project_root / "data" / "rooms"
+
+    if env_rooms_path.exists():
+        return str(env_rooms_path)
+    else:
+        return str(generic_rooms_path)
+
+
+ROOMS_BASE_PATH = _get_rooms_base_path()
 
 # Try to import the shared schema validator
 try:

@@ -7,6 +7,7 @@ to appropriate messages for both the player and room occupants.
 """
 
 import json
+import os
 from pathlib import Path
 
 from ..exceptions import ValidationError
@@ -25,12 +26,28 @@ class EmoteService:
 
         Args:
             emote_file_path: Path to the emote definitions JSON file.
-                            Defaults to 'data/emotes.json' relative to project root.
+                            Defaults to environment-aware path based on CONFIG_PATH.
         """
         if emote_file_path is None:
-            # Default to data/emotes.json relative to project root
+            # Determine environment from config path
             project_root = Path(__file__).parent.parent.parent
-            emote_file_path = project_root / "data" / "emotes.json"
+            config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+
+            # Extract environment from config path (e.g., server_config.unit_test.yaml -> unit_test)
+            environment = "local"  # default
+            if "unit_test" in config_path:
+                environment = "unit_test"
+            elif "e2e_test" in config_path:
+                environment = "e2e_test"
+
+            # Try environment-specific path first, fallback to generic data/emotes.json
+            env_emote_path = project_root / "data" / environment / "emotes.json"
+            generic_emote_path = project_root / "data" / "emotes.json"
+
+            if env_emote_path.exists():
+                emote_file_path = env_emote_path
+            else:
+                emote_file_path = generic_emote_path
 
         self.emote_file_path = Path(emote_file_path)
         self.emotes: dict[str, dict] = {}

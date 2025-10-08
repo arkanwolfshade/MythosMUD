@@ -1,30 +1,57 @@
 # Import the module to ensure coverage tracking
+from pathlib import Path
+
 import server.world_loader
 from server.world_loader import load_rooms
 
 
 def test_load_rooms():
-    rooms = load_rooms()
-    assert isinstance(rooms, dict)
-    assert len(rooms) > 0, "No rooms loaded. Add at least one room JSON file."
-    for _room_id, room in rooms.items():
-        assert "id" in room
-        assert "name" in room
-        assert "description" in room
-        assert "zone" in room
-        assert "exits" in room
-        assert isinstance(room["exits"], dict)
+    """Test loading rooms from the unit_test environment."""
+    # Configure path to unit_test environment rooms
+    project_root = Path(__file__).parent.parent.parent
+    unit_test_rooms_path = project_root / "data" / "unit_test" / "rooms"
+
+    # Temporarily patch ROOMS_BASE_PATH to use unit_test environment
+    original_path = server.world_loader.ROOMS_BASE_PATH
+    try:
+        server.world_loader.ROOMS_BASE_PATH = str(unit_test_rooms_path)
+
+        rooms = load_rooms()
+        assert isinstance(rooms, dict)
+        assert len(rooms) > 0, "No rooms loaded. Add at least one room JSON file."
+        for _room_id, room in rooms.items():
+            assert "id" in room
+            assert "name" in room
+            assert "description" in room
+            assert "zone" in room
+            assert "exits" in room
+            isinstance(room["exits"], dict)
+    finally:
+        # Restore original path
+        server.world_loader.ROOMS_BASE_PATH = original_path
 
 
 def test_loader_as_script(capsys):
     """Test that world_loader can be run as a script."""
-    rooms = load_rooms()
-    print(f"Loaded {len(rooms)} rooms:")
-    for _room_id, room in rooms.items():
-        print(f"- {_room_id}: {room['name']}")
-    captured = capsys.readouterr()
-    assert "Loaded" in captured.out
-    assert len(rooms) > 0
+    # Configure path to unit_test environment rooms
+    project_root = Path(__file__).parent.parent.parent
+    unit_test_rooms_path = project_root / "data" / "unit_test" / "rooms"
+
+    # Temporarily patch ROOMS_BASE_PATH to use unit_test environment
+    original_path = server.world_loader.ROOMS_BASE_PATH
+    try:
+        server.world_loader.ROOMS_BASE_PATH = str(unit_test_rooms_path)
+
+        rooms = load_rooms()
+        print(f"Loaded {len(rooms)} rooms:")
+        for _room_id, room in rooms.items():
+            print(f"- {_room_id}: {room['name']}")
+        captured = capsys.readouterr()
+        assert "Loaded" in captured.out
+        assert len(rooms) > 0
+    finally:
+        # Restore original path
+        server.world_loader.ROOMS_BASE_PATH = original_path
 
 
 def test_corrupted_room_file(tmp_path):
