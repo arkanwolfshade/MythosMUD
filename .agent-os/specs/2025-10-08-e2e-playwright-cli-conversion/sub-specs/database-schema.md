@@ -8,7 +8,7 @@ The test database will use the existing `data/` directory structure with dedicat
 
 ### Database Files
 
-- **Test Player Database**: `data/players/test_players.db`
+- **Test Player Database**: `data/players/unit_test_players.db`
 - **Test NPC Database**: `data/npcs/test_npcs.db`
 - **Test Rooms**: `data/rooms/` (shared with development, no modifications needed)
 
@@ -175,7 +175,7 @@ const TEST_PLAYERS: TestPlayer[] = [
 ];
 
 export async function seedTestDatabase(): Promise<void> {
-  const dbPath = join(__dirname, '../../../../../data/players/test_players.db');
+  const dbPath = join(__dirname, '../../../../../data/players/unit_test_players.db');
 
   // Create data/players directory if it doesn't exist
   const dbDir = join(__dirname, '../../../../../data/players');
@@ -191,7 +191,7 @@ export async function seedTestDatabase(): Promise<void> {
 
   const db = new Database(dbPath);
 
-  // Create schema (reuse from server/tests/data/test_players.db structure)
+  // Create schema (reuse from server/tests/data/unit_test_players.db structure)
   await createDatabaseSchema(db);
 
   // Seed test players
@@ -238,7 +238,7 @@ export async function seedTestDatabase(): Promise<void> {
 }
 
 export async function cleanupTestDatabase(): Promise<void> {
-  const dbPath = join(__dirname, '../../../../../data/players/test_players.db');
+  const dbPath = join(__dirname, '../../../../../data/players/unit_test_players.db');
   const db = new Database(dbPath);
 
   // Reset player positions to starting rooms
@@ -374,7 +374,7 @@ test.afterEach(async () => {
 ## Rationale
 
 ### Database Isolation
-- **Separate Test Database**: Using `test_players.db` instead of the development database ensures complete isolation
+- **Separate Test Database**: Using `unit_test_players.db` instead of the development database ensures complete isolation
 - **No Development Data Contamination**: Tests cannot affect development or production data
 - **Predictable Test Environment**: Every test run starts with known baseline data
 

@@ -464,7 +464,7 @@ class TestInviteManagementEndpoints:
         # Check if we can access the test database
         # Use absolute path for test database
         project_root = Path(__file__).parent.parent.parent
-        db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        db_path = project_root / "server" / "tests" / "data" / "players" / "unit_test_players.db"
         with sqlite3.connect(db_path) as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM invites")
             count = cursor.fetchone()[0]

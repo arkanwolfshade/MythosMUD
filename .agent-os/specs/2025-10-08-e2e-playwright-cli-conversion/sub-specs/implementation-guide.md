@@ -144,7 +144,7 @@ const TEST_PLAYERS: TestPlayer[] = [
 ];
 
 export async function seedTestDatabase(): Promise<void> {
-  const dbPath = join(__dirname, '../../../../../data/players/test_players.db');
+  const dbPath = join(__dirname, '../../../../../data/players/unit_test_players.db');
   const dbDir = join(__dirname, '../../../../../data/players');
 
   // Create directory if needed
@@ -223,7 +223,7 @@ export async function seedTestDatabase(): Promise<void> {
 }
 
 export async function cleanupTestDatabase(): Promise<void> {
-  const dbPath = join(__dirname, '../../../../../data/players/test_players.db');
+  const dbPath = join(__dirname, '../../../../../data/players/unit_test_players.db');
 
   if (!existsSync(dbPath)) {
     console.log('⚠️ Test database not found, skipping cleanup');
@@ -927,7 +927,7 @@ test('my test', async ({ page }) => {
 1. ❌ **Don't use fixed waits**: Use `waitForMessage()` instead of `waitForTimeout()`
 2. ❌ **Don't share state between tests**: Each test should be completely independent
 3. ❌ **Don't test implementation details**: Test user-visible behavior only
-4. ❌ **Don't use production database**: Always use `test_players.db`
+4. ❌ **Don't use production database**: Always use `unit_test_players.db`
 5. ❌ **Don't skip cleanup**: Always clean up test data after tests
 6. ❌ **Don't hardcode URLs**: Use `baseURL` from config
 7. ❌ **Don't ignore flaky tests**: Fix the root cause or add proper waits

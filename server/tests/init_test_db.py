@@ -9,7 +9,7 @@ import sqlite3
 from pathlib import Path
 
 # Test database path
-TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
+TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "unit_test_players.db"
 
 # Test database schema is now loaded from server/sql/schema.sql
 

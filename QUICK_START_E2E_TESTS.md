@@ -24,7 +24,7 @@ This will:
 
 - Stop any running servers
 - Start server with `server/server_config.e2e_test.yaml`
-- Use test database: `data/unit_test/players/test_players.db`
+- Use test database: `data/unit_test/players/unit_test_players.db`
 - Open in new window
 
 ### Method B: Manual startup (More control)

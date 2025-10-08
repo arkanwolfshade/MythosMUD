@@ -20,7 +20,7 @@
 # [Old configuration retained for reference only]
 
 # --- Database & Persistence ---
-db_path: ../data/unit_test/players/test_players.db  # Test DB
+db_path: ../data/unit_test/players/unit_test_players.db  # Test DB
 
 
 # --- Logging Configuration ---

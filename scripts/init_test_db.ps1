@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     This script initializes the test database using the unified database
-    initialization script. It creates the database at data/unit_test/players/test_players.db
+    initialization script. It creates the database at data/unit_test/players/unit_test_players.db
     with the current schema including case-insensitive unique constraints.
 
 .EXAMPLE
@@ -19,7 +19,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
 
 # Set the test database path
-$TestDbPath = Join-Path $ProjectRoot "server\tests\data\players\test_players.db"
+$TestDbPath = Join-Path $ProjectRoot "server\tests\data\players\unit_test_players.db"
 
 Write-Host "Initializing MythosMUD Test Database..." -ForegroundColor Green
 Write-Host "Database path: $TestDbPath" -ForegroundColor Yellow

@@ -126,7 +126,7 @@ The project is now **leaner** and **more maintainable**!
 ```
 data/unit_test/
 ├── players/
-│   ├── test_players.db          # Unit test & E2E test player database
+│   ├── unit_test_players.db          # Unit test & E2E test player database
 │   └── aliases/                 # Test player aliases
 ├── npcs/
 │   └── test_npcs.db             # Unit test & E2E test NPC database

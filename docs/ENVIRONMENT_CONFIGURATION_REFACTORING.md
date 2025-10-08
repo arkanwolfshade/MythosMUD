@@ -168,7 +168,7 @@ Structural config is already in `server/server_config.unit_test.yaml` (in git).
 ### For E2E Testing
 1. Run `./scripts/start_e2e_test.ps1` - uses `server_config.e2e_test.yaml`
 2. Run `npm run test:e2e:runtime` in client directory
-3. Uses test database: `data/unit_test/players/test_players.db`
+3. Uses test database: `data/unit_test/players/unit_test_players.db`
 
 ## Benefits
 

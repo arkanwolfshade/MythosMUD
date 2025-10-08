@@ -49,7 +49,7 @@ if database_url:
         print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
 else:
     # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "data" / "unit_test" / "players" / "test_players.db"
+    test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
     test_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
     print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
@@ -144,7 +144,7 @@ def pytest_configure(config):
             print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
     else:
         # Use absolute path to ensure database is created in the correct location
-        test_db_path = project_root / "data" / "unit_test" / "players" / "test_players.db"
+        test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
         test_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 

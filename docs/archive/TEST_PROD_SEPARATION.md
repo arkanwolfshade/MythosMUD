@@ -74,7 +74,7 @@ def _ensure_logging_initialized():
 - **Test**: `server/test_server_config.yaml`
   - Port: 4999
   - Host: 127.0.0.1
-  - Database: `server/tests/data/players/test_players.db`
+  - Database: `server/tests/data/players/unit_test_players.db`
   - Logging: Disabled (`disable_logging: true`)
 
 ## Usage

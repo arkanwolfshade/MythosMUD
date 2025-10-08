@@ -11,7 +11,7 @@ Usage:
 
 Examples:
     python init_database.py data/players/players.db
-    python init_database.py data/unit_test/players/test_players.db
+    python init_database.py data/unit_test/players/unit_test_players.db
 """
 
 import os
@@ -84,7 +84,7 @@ def main():
         print("Usage: python init_database.py <database_path>")
         print("\nExamples:")
         print("  python init_database.py data/local/players/local_players.db")
-        print("  python init_database.py data/unit_test/players/test_players.db")
+        print("  python init_database.py data/unit_test/players/unit_test_players.db")
         sys.exit(1)
 
     db_path = sys.argv[1]

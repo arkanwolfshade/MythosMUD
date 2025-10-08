@@ -14,7 +14,7 @@ if ($Help) {
     Write-Host ""
     Write-Host "This script starts ONLY the backend server with the E2E TEST configuration."
     Write-Host "Playwright will auto-start the Vite dev server (client) during tests."
-    Write-Host "Test database location: data/e2e_test/players/e2e_test_players.db"
+    Write-Host "Test database location: data/e2e_test/players/e2e_unit_test_players.db"db"
     Write-Host ""
     exit 0
 }
@@ -59,7 +59,7 @@ $configPath = Join-Path $PWD "server\server_config.e2e_test.yaml"
 $env:MYTHOSMUD_CONFIG_PATH = $configPath
 
 Write-Host "Config file: $configPath" -ForegroundColor Gray
-Write-Host "Test database: data/e2e_test/players/e2e_test_players.db" -ForegroundColor Gray
+Write-Host "Test database: data/e2e_test/players/e2e_unit_test_players.db" -ForegroundColor Gray
 Write-Host ""
 
 # Start server using the existing start_server.ps1 script

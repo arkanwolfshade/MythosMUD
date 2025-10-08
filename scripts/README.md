@@ -109,7 +109,7 @@ python init_database.py <database_path>
 python init_database.py data/local/players/players.db
 
 # Initialize test database
-python init_database.py data/unit_test/players/test_players.db
+python init_database.py data/unit_test/players/unit_test_players.db
 ```
 
 **Features:**

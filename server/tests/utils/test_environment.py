@@ -70,7 +70,7 @@ class Environment:
 
     async def _setup_database(self):
         """Set up test database"""
-        self.database_path = os.path.join(self.temp_dir, "test_players.db")
+        self.database_path = os.path.join(self.temp_dir, "unit_test_players.db")
         self.npc_database_path = os.path.join(self.temp_dir, "test_npcs.db")
 
         # Create database directory

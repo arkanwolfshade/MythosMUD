@@ -3,7 +3,7 @@
 # Secrets should be in .env.unit_test (not committed to git)
 
 # --- Database & Persistence ---
-db_path: ../data/unit_test/players/unit_test_players.db
+db_path: ../data/unit_test/players/unit_unit_test_players.db
 
 # --- Logging Configuration ---
 logging:
@@ -84,7 +84,7 @@ enable_stack_traces: true
 
 # --- Authentication/Accounts ---
 auth_backend: sqlite
-auth_db_file: ../data/unit_test/unit_test_players.db
+auth_db_file: ../data/unit_test/unit_unit_test_players.db
 registration_enabled: true
 allow_guest_login: false
 

@@ -41,7 +41,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 - **Test Fixtures**:
   - **Authentication Fixture**: `loginAsPlayer(page, username, password)` - handles login flow, MOTD screen, and game entry
-  - **Database Seeding Fixture**: `seedTestDatabase()` - populates `data/players/test_players.db` with known test players
+  - **Database Seeding Fixture**: `seedTestDatabase()` - populates `data/players/unit_test_players.db` with known test players
   - **Database Cleanup Fixture**: `cleanupTestDatabase()` - resets database to known state after tests
   - **Player Creation Fixture**: `createTestPlayer(username, stats)` - creates test player with specific attributes
   - **Room Setup Fixture**: `setupTestRooms()` - ensures test rooms exist in `data/rooms/` structure
@@ -205,7 +205,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 ### Test Data Management
 
-- **Test Database Location**: `data/players/test_players.db` (separate from development database)
+- **Test Database Location**: `data/players/unit_test_players.db` (separate from development database)
 - **Test NPC Database**: `data/npcs/test_npcs.db` (for NPC interaction tests)
 - **Test Rooms**: Use existing `data/rooms/` structure with test-specific room configurations
 - **Seeding Strategy**:
@@ -220,7 +220,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ### Database Cleanup Mechanisms
 
 - **Before Test Suite**:
-  - Backup existing `test_players.db` if present
+  - Backup existing `unit_test_players.db` if present
   - Create fresh test database with schema
   - Seed with baseline test players (ArkanWolfshade, Ithaqua, TestAdmin)
 

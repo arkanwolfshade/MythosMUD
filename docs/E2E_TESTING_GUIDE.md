@@ -142,7 +142,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 ### Test Database Location
 
 Automated tests use a separate test database:
-- **Location**: `data/players/test_players.db`
+- **Location**: `data/players/unit_test_players.db`
 - **Structure**: Matches production database schema
 - **Isolation**: Completely separate from development and production databases
 
@@ -171,7 +171,7 @@ The test database is seeded with three baseline players:
 ### Database Lifecycle
 
 1. **Global Setup** (before all tests):
-   - Backs up existing `test_players.db` if present
+   - Backs up existing `unit_test_players.db` if present
    - Creates fresh database with schema
    - Seeds baseline test players
 
@@ -192,7 +192,7 @@ cd client
 npx ts-node tests/e2e/runtime/fixtures/database.ts
 
 # Remove test database completely
-rm data/players/test_players.db
+rm data/players/unit_test_players.db
 ```
 
 ## Adding New Automated Tests
@@ -464,7 +464,7 @@ npx playwright test --grep-invert @slow
 **A**: Remove it and let global setup recreate it:
 
 ```bash
-rm data/players/test_players.db
+rm data/players/unit_test_players.db
 npm run test:e2e:runtime
 ```
 

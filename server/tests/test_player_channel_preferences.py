@@ -19,7 +19,7 @@ class TestPlayerChannelPreferencesTable:
     @pytest.fixture
     def temp_db_path(self, tmp_path):
         """Create a temporary database for testing."""
-        db_path = tmp_path / "test_players.db"
+        db_path = tmp_path / "unit_test_players.db"
         return str(db_path)
 
     @pytest.fixture
@@ -84,7 +84,7 @@ class TestPlayerPreferencesService:
     @pytest.fixture
     def temp_db_path(self, tmp_path):
         """Create a temporary database for testing."""
-        db_path = tmp_path / "test_players.db"
+        db_path = tmp_path / "unit_test_players.db"
         return str(db_path)
 
     @pytest.fixture
@@ -290,7 +290,7 @@ class TestPlayerPreferencesValidation:
     @pytest.fixture
     def temp_db_path(self, tmp_path):
         """Create a temporary database for testing."""
-        db_path = tmp_path / "test_players.db"
+        db_path = tmp_path / "unit_test_players.db"
         return str(db_path)
 
     @pytest.fixture

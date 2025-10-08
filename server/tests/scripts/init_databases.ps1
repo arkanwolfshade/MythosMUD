@@ -13,13 +13,15 @@ if ($serverProcesses) {
         # Try to stop server gracefully first
         .\scripts\stop_server.ps1
         Start-Sleep -Seconds 3
-    } catch {
+    }
+    catch {
         Write-Host "⚠️  Could not stop server gracefully. Force stopping processes..." -ForegroundColor Yellow
         Get-Process | Where-Object { $_.ProcessName -like "*python*" -or $_.ProcessName -like "*uvicorn*" } | Stop-Process -Force
         Start-Sleep -Seconds 2
     }
     Write-Host "✓ Server stopped" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "✓ Server is not running" -ForegroundColor Green
 }
 
@@ -42,10 +44,12 @@ try {
     $sqliteVersion = sqlite3 --version 2>$null
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✓ SQLite3 found: $sqliteVersion" -ForegroundColor Green
-    } else {
+    }
+    else {
         throw "SQLite3 not found"
     }
-} catch {
+}
+catch {
     Write-Host "❌ SQLite3 not found. Please install SQLite3 and add it to your PATH." -ForegroundColor Red
     Write-Host "You can download it from: https://www.sqlite.org/download.html" -ForegroundColor Yellow
     exit 1
@@ -87,13 +91,14 @@ Write-Host "Creating fresh schema with FastAPI Users v14 compatibility..." -Fore
 Get-Content ./sql/schema.sql | sqlite3 $prodDb
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Production database initialized successfully" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "❌ Failed to initialize production database" -ForegroundColor Red
     exit 1
 }
 
 # Initialize test database
-$testDb = "$testDir/test_players.db"
+$testDb = "$testDir/unit_test_players.db"
 Write-Host "Initializing test database: $testDb" -ForegroundColor Yellow
 
 if (Test-Path $testDb) {
@@ -106,7 +111,8 @@ Write-Host "Creating test database with clean schema..." -ForegroundColor Yellow
 Get-Content ./sql/schema.sql | sqlite3 $testDb
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Test database initialized successfully" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "❌ Failed to initialize test database" -ForegroundColor Red
     exit 1
 }

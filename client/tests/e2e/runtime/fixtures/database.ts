@@ -2,7 +2,7 @@
  * Database Utilities for Runtime E2E Tests
  *
  * Provides functions for seeding and cleaning up the test database.
- * Uses the existing data/ directory structure with a separate test_players.db file.
+ * Uses the existing data/ directory structure with a separate unit_test_players.db file.
  */
 
 import { hash } from 'argon2';
@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
  * Path to test database
  * Uses data/unit_test/players/ directory for isolated test data
  */
-const TEST_DB_PATH = join(__dirname, '../../../../../data/unit_test/players/test_players.db');
+const TEST_DB_PATH = join(__dirname, '../../../../../data/unit_test/players/unit_test_players.db');
 const TEST_DB_DIR = join(__dirname, '../../../../../data/unit_test/players');
 
 /**

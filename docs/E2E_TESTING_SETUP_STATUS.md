@@ -20,7 +20,7 @@
 - ✅ Created 10 test spec files (114 automated tests total)
 - ✅ Added test IDs to UI components (`data-testid` attributes)
 - ✅ Installed Playwright browsers (Chromium, Firefox, Webkit)
-- ✅ Test database seeds correctly to `data/unit_test/players/test_players.db`
+- ✅ Test database seeds correctly to `data/unit_test/players/unit_test_players.db`
 
 ### UI Updates
 
@@ -81,7 +81,7 @@ $env:MYTHOSMUD_CONFIG_PATH = "E:\projects\GitHub\MythosMUD\server\server_config.
 Once server starts properly:
 
 1. ✅ Server starts with test config
-2. ✅ Server uses `data/unit_test/players/test_players.db`
+2. ✅ Server uses `data/unit_test/players/unit_test_players.db`
 3. ✅ Test players can authenticate (ArkanWolfshade/Cthulhu1)
 4. ✅ MOTD screen appears after login
 5. ✅ Game interface loads after MOTD continue

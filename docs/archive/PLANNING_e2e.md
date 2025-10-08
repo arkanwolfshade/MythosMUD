@@ -12,7 +12,7 @@ This document outlines the comprehensive strategy for transforming our existing 
 
 - **50+ test files** covering all major systems
 - **Comprehensive coverage** of authentication, movement, chat, game mechanics
-- **SQLite test database** at `/server/tests/data/players/test_players.db`
+- **SQLite test database** at `/server/tests/data/players/unit_test_players.db`
 - **Mock-based testing** for isolation and speed
 - **70% minimum coverage** requirement (targeting 80%)
 
@@ -29,7 +29,7 @@ This document outlines the comprehensive strategy for transforming our existing 
 
 #### 1.1 Unified Test Environment
 
-- **Shared Test Database**: Reuse `/server/tests/data/players/test_players.db`
+- **Shared Test Database**: Reuse `/server/tests/data/players/unit_test_players.db`
 - **Test Data Generation**: Create bespoke test data for E2E scenarios
 - **Environment Isolation**: Reuse server instances with strong state validation
 - **Test Orchestration**: Coordinate server/client startup and teardown

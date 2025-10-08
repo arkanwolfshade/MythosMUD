@@ -12,7 +12,7 @@ def run_server_tests():
 
     # Set the required environment variables for the subprocess
     env = os.environ.copy()
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/test_players.db"
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
     # Get the project root (one level up from scripts directory)
     project_root = Path(__file__).parent.parent
     # Ensure we're using the correct path for test logs
@@ -58,7 +58,7 @@ def run_server_e2e_tests():
 
     # Set the required environment variables for the subprocess
     env = os.environ.copy()
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/test_players.db"
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
     # Get the project root (one level up from scripts directory)
     project_root = Path(__file__).parent.parent
     # Ensure we're using the correct path for test logs

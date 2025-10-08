@@ -238,8 +238,8 @@ logs/
 server/tests/logs/
 
 # Database files (CRITICAL: Never commit database files)
-server/tests/data/players/test_players.db
-server\tests\data\players\test_players.db
+server/tests/data/players/unit_test_players.db
+server\tests\data\players\unit_test_players.db
 data/players/local_players.db
 
 # Client test output and coverage reports

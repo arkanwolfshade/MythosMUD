@@ -9,7 +9,7 @@ def get_db_path():
     if len(sys.argv) > 1:
         db_type = sys.argv[1].lower()
         if db_type == "test":
-            return "data/unit_test/players/test_players.db"
+            return "data/unit_test/players/unit_test_players.db"
         elif db_type == "prod":
             return "data/local/players/local_players.db"
         else:

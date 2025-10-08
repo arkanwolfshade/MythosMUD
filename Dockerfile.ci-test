@@ -35,7 +35,7 @@ RUN . .venv/bin/activate && playwright install chromium
 RUN . .venv/bin/activate && playwright install-deps
 
 # Set environment variables
-ENV DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/test_players.db"
+ENV DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/unit_test_players.db"
 ENV MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
 ENV MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
 ENV MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"

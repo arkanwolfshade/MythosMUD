@@ -2,7 +2,7 @@
 # This configuration is used for automated E2E testing with Playwright
 
 # --- Database & Persistence ---
-db_path: ../data/e2e_test/players/e2e_test_players.db
+db_path: ../data/e2e_test/players/e2e_unit_test_players.db
 
 # --- Logging Configuration ---
 logging:

@@ -150,7 +150,7 @@ async def main():
     script_dir = Path(__file__).parent
     project_root = script_dir.parent.parent.parent
     prod_db = project_root / "data" / "players" / "players.db"
-    test_db = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db = project_root / "server" / "tests" / "data" / "players" / "unit_test_players.db"
 
     try:
         # Initialize production database
