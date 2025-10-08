@@ -16,8 +16,8 @@ def test_no_database_files_outside_approved_locations():
     Approved locations:
     - /data/players/ (production player databases)
     - /data/npcs/ (production NPC databases)
-    - /server/tests/data/players/ (test player databases)
-    - /server/tests/data/npcs/ (test NPC databases)
+    - /data/unit_test/players/ (test player databases)
+    - /data/unit_test/npcs/ (test NPC databases)
 
     Note: node_modules directories are excluded as they contain external dependencies.
     """
@@ -25,11 +25,12 @@ def test_no_database_files_outside_approved_locations():
     project_root = Path(__file__).parent.parent.parent
 
     # Define approved database locations (relative to project root)
+    # CRITICAL: These are the ONLY approved locations per CRITICAL DATABASE PLACEMENT RULES
     approved_db_locations = [
         project_root / "data" / "players",
         project_root / "data" / "npcs",
-        project_root / "server" / "tests" / "data" / "players",
-        project_root / "server" / "tests" / "data" / "npcs",
+        project_root / "data" / "unit_test" / "players",
+        project_root / "data" / "unit_test" / "npcs",
     ]
 
     # Find all .db files in the project, excluding node_modules
@@ -74,12 +75,12 @@ def test_no_log_files_outside_approved_locations():
 
     Approved locations:
     - /logs/ (project root logs - all environment subdirectories)
-    - /server/tests/logs/ (test logs - all environment subdirectories)
     - /client/logs/ (client logs)
     - /tools/room_toolkit/room_validator/ (room validator logs)
-    - /server/logs/ (server logs - all environment subdirectories)
 
     Note: node_modules directories are excluded as they contain external dependencies.
+    Note: /server/logs/ was removed - all server logs now go to /logs/ at project root
+    Note: /server/tests/logs/ was removed - unit test logs now go to /logs/unit_test/
     """
     # Get the project root directory
     project_root = Path(__file__).parent.parent.parent
@@ -88,10 +89,8 @@ def test_no_log_files_outside_approved_locations():
     # These are the base directories - all subdirectories within them are approved
     approved_log_locations = [
         project_root / "logs",
-        project_root / "server" / "tests" / "logs",
         project_root / "client" / "logs",
         project_root / "tools" / "room_toolkit" / "room_validator",
-        project_root / "server" / "logs",
     ]
 
     # Find all .log files in the project, excluding node_modules

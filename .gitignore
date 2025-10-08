@@ -220,11 +220,16 @@ TASKS.local.md
 .env.prod
 .env.development
 .env.dev
-# Allow test and example environment files
-!.env.test
+# Allow example environment files ONLY (never actual secrets)
 !.env.example
 !*.env.example
 !test.env.example
+!env.*.example
+
+# Ensure test environment secrets are ignored
+.env.unit_test
+.env.e2e_test
+.env.test
 !env.example
 !env.production.example
 
@@ -235,7 +240,7 @@ server/tests/logs/
 # Database files (CRITICAL: Never commit database files)
 server/tests/data/players/test_players.db
 server\tests\data\players\test_players.db
-data/players/players.db
+data/players/local_players.db
 
 # Client test output and coverage reports
 client/coverage/

@@ -27,7 +27,7 @@ This guide provides comprehensive procedures and best practices for integration 
 ```powershell
 # From project root
 ./scripts/stop_server.ps1  # Stop any running instances
-./scripts/start_dev.ps1    # Start both server and client
+./scripts/start_local.ps1    # Start both server and client
 ```
 
 ### Verifying Server Status

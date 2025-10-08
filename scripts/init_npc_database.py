@@ -51,7 +51,7 @@ def init_database_schema(database_path: str, database_name: str) -> bool:
             tables = cursor.fetchall()
             table_names = [table[0] for table in tables]
 
-            print(f"✅ Successfully initialized {database_name} database")
+            print(f"[OK] Successfully initialized {database_name} database")
             print(f"  Created tables: {', '.join(table_names)}")
             return True
 
@@ -59,7 +59,7 @@ def init_database_schema(database_path: str, database_name: str) -> bool:
             conn.close()
 
     except Exception as e:
-        print(f"❌ Error initializing {database_name} database: {e}")
+        print(f"[ERROR] Error initializing {database_name} database: {e}")
         return False
 
 
@@ -79,19 +79,19 @@ def main():
 
     # Initialize test database
     if init_test:
-        test_db_path = "server/tests/data/npcs/test_npcs.db"
+        test_db_path = "data/unit_test/npcs/test_npcs.db"
         success &= init_database_schema(test_db_path, "test")
 
     # Initialize production database
     if init_prod:
-        prod_db_path = "data/npcs/npcs.db"
+        prod_db_path = "data/local/npcs/npcs.db"
         success &= init_database_schema(prod_db_path, "production")
 
     if success:
-        print("\n🎉 All databases initialized successfully!")
+        print("\n[SUCCESS] All databases initialized successfully!")
         sys.exit(0)
     else:
-        print("\n💥 Some databases failed to initialize!")
+        print("\n[ERROR] Some databases failed to initialize!")
         sys.exit(1)
 
 

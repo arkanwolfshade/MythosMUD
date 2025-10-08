@@ -1,6 +1,6 @@
 # mock_data.py
 
-# Mock room data has been moved to JSON files in server/tests/data/rooms/arkham/
+# Mock room data has been moved to JSON files in data/unit_test/rooms/arkham/
 # This file now only contains player-related mock data
 
 

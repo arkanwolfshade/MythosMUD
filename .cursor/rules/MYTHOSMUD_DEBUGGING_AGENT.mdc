@@ -263,7 +263,7 @@ Before concluding any investigation, verify:
 ./scripts/stop_server.ps1
 netstat -an | findstr :54731
 netstat -an | findstr :5173
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 ### Log Analysis
@@ -278,8 +278,8 @@ Get-Content logs/development/client.log -Tail 100
 
 ```powershell
 # Check database integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
-sqlite3 data/players/players.db "SELECT * FROM players;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "SELECT * FROM players;"
 ```
 
 ### Playwright Reproduction

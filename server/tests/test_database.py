@@ -32,7 +32,7 @@ class TestDatabaseConfiguration:
         """Test default DATABASE_URL."""
         # The actual value set by conftest.py uses an absolute path
         # Check that it contains the expected path components (handle both Windows and Unix paths)
-        assert "server/tests/data/players/test_players.db" in DATABASE_URL.replace("\\", "/")
+        assert "data/unit_test/players/test_players.db" in DATABASE_URL.replace("\\", "/")
         assert DATABASE_URL.startswith("sqlite+aiosqlite:///")
 
     def test_metadata_exists(self):

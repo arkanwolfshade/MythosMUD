@@ -48,7 +48,8 @@ from .logging_config import get_logger
 
 logger = get_logger(__name__)
 
-_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "server_config.yaml")
+# CRITICAL: No default config file - explicit configuration is REQUIRED
+# Server must be started with MYTHOSMUD_CONFIG_PATH environment variable
 _config = None
 
 _DEFAULTS = {
@@ -164,18 +165,40 @@ def _get_config_path() -> str:
     """
     Determine the appropriate config file path based on environment.
 
+    REQUIRES: MYTHOSMUD_CONFIG_PATH environment variable must be set.
+
     Returns:
         Path to the config file to use
+
+    Raises:
+        ValueError: If MYTHOSMUD_CONFIG_PATH is not set or file doesn't exist
     """
     # Check for explicit config path from environment variable
     config_path = os.getenv("MYTHOSMUD_CONFIG_PATH")
-    if config_path and os.path.exists(config_path):
-        logger.debug("Using config path from environment", config_path=config_path)
-        return config_path
 
-    # Default to production config file
-    logger.debug("Using default config path", config_path=_CONFIG_PATH)
-    return _CONFIG_PATH
+    if not config_path:
+        error_msg = (
+            "CRITICAL: MYTHOSMUD_CONFIG_PATH environment variable is not set!\n"
+            "The server REQUIRES explicit configuration. Please set MYTHOSMUD_CONFIG_PATH to one of:\n"
+            "  - server/server_config.local.yaml (for local development)\n"
+            "  - server/server_config.unit_test.yaml (for unit tests)\n"
+            "  - server/server_config.e2e_test.yaml (for E2E tests)\n"
+            "  - server/server_config.production.yaml (for production)\n"
+        )
+        logger.error(error_msg)
+        raise ValueError(error_msg)
+
+    if not os.path.exists(config_path):
+        error_msg = (
+            f"CRITICAL: Configuration file not found at: {config_path}\n"
+            f"MYTHOSMUD_CONFIG_PATH is set but the file doesn't exist.\n"
+            f"Please verify the path is correct."
+        )
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
+
+    logger.debug("Using config path from environment", config_path=config_path)
+    return config_path
 
 
 def reset_config():
@@ -188,16 +211,25 @@ def reset_config():
 def get_config(config_path: str = None):
     """
     Load and return the server config as a dict (singleton).
-    Falls back to defaults if config file is missing or invalid.
+
+    REQUIRES: MYTHOSMUD_CONFIG_PATH environment variable must be set.
+
+    Args:
+        config_path: Optional explicit path to config file. If not provided,
+                    uses MYTHOSMUD_CONFIG_PATH environment variable.
+
+    Raises:
+        ValueError: If neither config_path nor MYTHOSMUD_CONFIG_PATH is set
+        FileNotFoundError: If config file doesn't exist
     """
     global _config
-    if _config is not None and (config_path is None or config_path == _CONFIG_PATH):
+    if _config is not None and config_path is None:
         logger.debug("Returning cached config")
         return _config
 
     # Use environment-based path if no specific path provided
     if config_path is None:
-        config_path = _get_config_path()
+        config_path = _get_config_path()  # Will raise if not set
 
     logger.info("Loading configuration", config_path=config_path)
 

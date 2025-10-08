@@ -1,0 +1,160 @@
+# MythosMUD Server Configuration - E2E Test Mode
+# This configuration is used for automated E2E testing with Playwright
+
+# --- Database & Persistence ---
+db_path: ../data/e2e_test/players/e2e_test_players.db
+
+# --- Logging Configuration ---
+logging:
+  environment: e2e_test
+  level: INFO  # Less verbose for test output clarity
+  format: json  # Structured logging for test analysis
+  log_base: ./logs/e2e_test/  # Separate E2E test logs
+  rotation:
+    max_size: 50MB
+    backup_count: 3
+  compression: true
+  disable_logging: false
+
+# --- Network ---
+host: 0.0.0.0  # Server bind address
+port: 54731     # Main game port
+max_connections: 50  # Reduced for testing
+connection_timeout: 60  # seconds
+
+# --- Dual Connection System ---
+dual_connections:
+  enabled: true
+  max_connections_per_player: 4
+  connection_timeout: 300  # seconds
+  health_check_interval: 30  # seconds
+  cleanup_interval: 60  # seconds
+  message_batch_size: 100
+  connection_pool_size: 500  # Reduced for testing
+  performance_monitoring: false  # Disable for cleaner test output
+
+  # WebSocket Configuration
+  websocket:
+    enabled: true
+    ping_interval: 30  # seconds
+    ping_timeout: 10  # seconds
+    max_message_size: 1048576  # 1MB
+
+  # Server-Sent Events Configuration
+  sse:
+    enabled: true
+    retry_timeout: 3000  # milliseconds
+    max_connections: 250  # Reduced for testing
+
+  # Session Management
+  session:
+    timeout: 3600  # seconds (1 hour)
+    cleanup_interval: 300  # seconds (5 minutes)
+    max_sessions_per_player: 5
+
+  # Error Handling
+  error_handling:
+    max_retry_attempts: 3
+    retry_delay: 5  # seconds
+    error_recovery_enabled: true
+
+  # Performance Monitoring
+  monitoring:
+    enabled: false  # Disable for testing
+    metrics_interval: 30  # seconds
+    health_check_interval: 15  # seconds
+    performance_tracking: false
+
+# --- File Paths & Directories ---
+data_dir: ./data/
+player_dir: ../data/e2e_test/players/  # TEST DATABASE LOCATION
+log_dir: ./logs/e2e_test/
+motd_file: ./data/e2e_test/motd.html
+aliases_dir: ../data/e2e_test/players/aliases
+# zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
+
+# --- World & Game Settings ---
+start_room: earth_arkhamcity_sanitarium_room_foyer_001
+starting_level: 1
+allow_multiplay: true
+max_players: 50  # Reduced for testing
+
+# --- Modules/Systems ---
+enable_combat: true
+enable_weather: false  # Disable for deterministic testing
+enable_pvp: false
+# enable_plugins: false  # For future plugin system
+
+# --- Debug ---
+enable_stack_traces: true
+
+# --- Authentication/Accounts ---
+auth_backend: sqlite
+auth_db_file: ../data/e2e_test/users.db  # TEST USERS DATABASE
+registration_enabled: true
+allow_guest_login: false
+
+# --- World Load/Boot Sequence ---
+areas:
+  - ./data/e2e_test/rooms/arkham/
+npcs:
+  - ./data/e2e_test/npcs/guards.json
+quests:
+  - ./data/e2e_test/quests/tutorial.json
+
+# --- Room Validation ---
+room_validation:
+  enable_schema_validation: true  # Enable JSON schema validation of room data
+  strict_validation: false        # If true, server fails to start on validation errors
+  log_validation_errors: true     # Log validation errors to console/logs
+
+# --- Admin/Console/Telnet ---
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
+admin_port: 5001
+enable_remote_console: false
+
+# --- Game Balance & Mechanics ---
+xp_multiplier: 1.0
+hp_regen_rate: 5
+combat_tick_interval: 2  # seconds
+
+# --- NATS Configuration ---
+nats:
+  enabled: true
+  url: nats://localhost:4222
+  max_payload: 1048576  # 1MB max message size
+  reconnect_time_wait: 1
+  max_reconnect_attempts: 5
+  connect_timeout: 5
+  ping_interval: 30
+  max_outstanding_pings: 5
+
+# --- Chat System Configuration ---
+chat:
+  rate_limiting:
+    enabled: true
+    global: 10      # messages per minute
+    local: 20
+    say: 15
+    party: 30
+    whisper: 5
+
+  content_filtering:
+    enabled: true
+    profanity_filter: true
+    keyword_detection: true
+
+  message_history:
+    enabled: true
+    retention_days: 7  # Shorter retention for tests
+    max_messages_per_channel: 500  # Reduced for tests
+
+# --- Runtime/Scheduler ---
+game_tick_rate: 1  # seconds
+weather_update_interval: 60
+save_interval: 300
+
+# --- Future/Advanced ---
+# plugin_dir: ./plugins/
+# scripting_engine: python
+# feature_flags: []

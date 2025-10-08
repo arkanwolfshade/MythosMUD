@@ -6,7 +6,7 @@ This directory contains the test suite for MythosMUD, including test data and da
 
 ### Setup
 
-The test database is located at `server/tests/data/test_players.db` and contains:
+The test database is located at `data/unit_test/players/test_players.db` and contains:
 
 - **Schema**: Same as production database (players and rooms tables)
 - **Test Data**: Pre-populated with test player data
@@ -89,6 +89,7 @@ python -m pytest tests/ -v
 
 Tests use the following configuration:
 
-- **Database**: `server/tests/data/test_players.db`
-- **Log File**: `server/tests/data/test_persistence.log`
+- **Database**: `data/unit_test/players/test_players.db`
+- **Log Directory**: `logs/unit_test/` (project root logs for unit tests)
+- **Config File**: `server/server_config.unit_test.yaml`
 - **Isolation**: Each test uses the same database but with proper cleanup

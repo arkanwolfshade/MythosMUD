@@ -2,7 +2,8 @@ import os
 
 from server import config_loader
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../server_config.yaml")
+# Use unit test configuration for config loader tests
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../server_config.unit_test.yaml")
 
 
 def test_load_main_config_and_validate():
@@ -29,15 +30,32 @@ def test_load_test_config_and_validate():
 
 
 def test_environment_based_config_selection():
-    """Test that environment-based config selection works correctly."""
-    # Since we removed test-specific config logic, this should always use production config
-    config_loader._config = None  # Reset config cache
-    config = config_loader.get_config()
-    # The actual port from the current config (may vary based on environment)
+    """Test that environment-based config selection requires explicit configuration."""
+    import pytest
+
+    # Reset config cache
+    config_loader._config = None
+
+    # Test 1: Should raise ValueError if MYTHOSMUD_CONFIG_PATH is not set
+    import os
+
+    original_path = os.environ.get("MYTHOSMUD_CONFIG_PATH")
+    try:
+        if "MYTHOSMUD_CONFIG_PATH" in os.environ:
+            del os.environ["MYTHOSMUD_CONFIG_PATH"]
+
+        with pytest.raises(ValueError, match="MYTHOSMUD_CONFIG_PATH environment variable is not set"):
+            config_loader.get_config()
+    finally:
+        # Restore original environment
+        if original_path:
+            os.environ["MYTHOSMUD_CONFIG_PATH"] = original_path
+        config_loader._config = None
+
+    # Test 2: Should load config when MYTHOSMUD_CONFIG_PATH is properly set
+    config = config_loader.get_config(CONFIG_PATH)
     assert isinstance(config["port"], int)
-    # The host may vary based on environment, just check it's a valid host
     assert isinstance(config["host"], str)
-    # Check that we have the expected production fields
     assert "database_url" in config
     assert "default_player_stats" in config
 

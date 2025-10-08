@@ -124,7 +124,7 @@ Update any found test files following the same pattern.
 
 1. **Start Development Server:**
    ```bash
-   ./scripts/start_dev.ps1
+   ./scripts/start_local.ps1
    ```
    - Verify server starts without import errors
    - Check logs for any error handler warnings
@@ -191,7 +191,7 @@ make lint
 ### Phase 5: Integration Tests
 ```bash
 # Start server
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 
 # Run manual tests from checklist above
 # Use Postman, curl, or web browser

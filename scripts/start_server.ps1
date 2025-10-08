@@ -47,8 +47,8 @@ param(
     [Parameter(HelpMessage = "Enable auto-reload for development")]
     [switch]$Reload = $true,
 
-    [Parameter(HelpMessage = "Environment to run in (local, test, production)")]
-    [ValidateSet("local", "test", "production")]
+    [Parameter(HelpMessage = "Environment to run in (local, unit_test, e2e_test, production)")]
+    [ValidateSet("local", "unit_test", "e2e_test", "production")]
     [string]$Environment = "local",
 
     [Parameter(HelpMessage = "Show help information")]
@@ -65,7 +65,8 @@ function Load-EnvironmentConfig {
 
     $envFile = switch ($Environment) {
         "local" { ".env.local" }
-        "test" { ".env.test" }
+        "unit_test" { ".env.unit_test" }
+        "e2e_test" { ".env.e2e_test" }
         "production" { ".env.production" }
         default { ".env.local" }
     }
@@ -85,19 +86,40 @@ function Load-EnvironmentConfig {
     }
 }
 
+# Function to get configuration file path based on environment
+function Get-ConfigPath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Environment
+    )
+
+    $configFile = switch ($Environment) {
+        "local" { "server\server_config.local.yaml" }
+        "unit_test" { "server\server_config.unit_test.yaml" }
+        "e2e_test" { "server\server_config.e2e_test.yaml" }
+        "production" { "server\server_config.production.yaml" }
+        default { "server\server_config.local.yaml" }
+    }
+
+    return $configFile
+}
+
 # Function to read server configuration
 function Get-ServerConfig {
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ConfigPath
+    )
 
-    $configPath = "server\server_config.yaml"
     $defaultHost = "127.0.0.1"
     $defaultPort = 54731
 
-    if (Test-Path $configPath) {
+    if (Test-Path $ConfigPath) {
         try {
             # Simple YAML parsing for host and port
-            $configContent = Get-Content $configPath -Raw
+            $configContent = Get-Content $ConfigPath -Raw
             if ($configContent -match "host:\s*([^\s#]+)") {
                 $defaultHost = $matches[1].Trim()
             }
@@ -127,8 +149,26 @@ if ($Help) {
     exit 0
 }
 
+# Get configuration file path based on environment
+$configPath = Get-ConfigPath -Environment $Environment
+$absoluteConfigPath = Join-Path $PWD $configPath
+
+# Verify config file exists
+if (-not (Test-Path $absoluteConfigPath)) {
+    Write-Error "Configuration file not found: $absoluteConfigPath"
+    Write-Host "Available configuration files:" -ForegroundColor Yellow
+    Write-Host "  - server/server_config.local.yaml (for local development)" -ForegroundColor Gray
+    Write-Host "  - server/server_config.unit_test.yaml (for unit tests)" -ForegroundColor Gray
+    Write-Host "  - server/server_config.e2e_test.yaml (for E2E tests)" -ForegroundColor Gray
+    exit 1
+}
+
+# Set environment variable for config path (server will use this)
+$env:MYTHOSMUD_CONFIG_PATH = $absoluteConfigPath
+Write-Host "Using configuration: $absoluteConfigPath" -ForegroundColor Cyan
+
 # Load configuration and set defaults
-$config = Get-ServerConfig
+$config = Get-ServerConfig -ConfigPath $absoluteConfigPath
 if ([string]::IsNullOrEmpty($ServerHost)) {
     $ServerHost = $config.Host
 }
@@ -244,9 +284,10 @@ function Start-MythosMUDServer {
     Write-Host "Starting server on $serverUrl..." -ForegroundColor Cyan
 
     if ($Reload) {
-        # Use Python script to avoid PowerShell wildcard expansion issues
-        $serverCommand = "uv run python start_server.py"
-        Write-Host "Using Python startup script to avoid wildcard expansion" -ForegroundColor Cyan
+        # Use uvicorn CLI with reload for optimal development experience
+        # This provides better reload control and faster iteration than programmatic reload
+        $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port --reload --reload-exclude 'server/tests/*'"
+        Write-Host "Using uvicorn with auto-reload enabled" -ForegroundColor Cyan
     }
     else {
         # Build command arguments for non-reload mode

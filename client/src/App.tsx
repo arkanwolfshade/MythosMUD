@@ -337,6 +337,7 @@ function App() {
                 value={playerName}
                 onChange={e => setPlayerName(e.target.value)}
                 onKeyDown={handleKeyDown}
+                data-testid="username-input"
               />
               <input
                 type="password"
@@ -345,6 +346,7 @@ function App() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 onKeyDown={handleKeyDown}
+                data-testid="password-input"
               />
               {isRegistering && (
                 <input
@@ -364,6 +366,7 @@ function App() {
               className="login-button"
               onClick={isRegistering ? handleRegisterClick : handleLoginClick}
               disabled={isSubmitting}
+              data-testid="login-button"
             >
               {isSubmitting
                 ? isRegistering

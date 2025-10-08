@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     This script initializes the test database using the unified database
-    initialization script. It creates the database at server/tests/data/players/test_players.db
+    initialization script. It creates the database at data/unit_test/players/test_players.db
     with the current schema including case-insensitive unique constraints.
 
 .EXAMPLE

@@ -6,18 +6,18 @@ The backend server for MythosMUD, a Lovecraftian horror MUD game.
 
 ### Core Systems
 
-- **World Loading**: Loads room data from JSON files organized by zones (now in `data/rooms/`)
+- **World Loading**: Loads room data from JSON files organized by zones (now in `data/local/rooms/`)
 - **Player Management**: Complete player character system with stats and persistence
 - **Real-time Game Loop**: Tick-based game loop for processing game events
 - **Status Effects**: Dynamic status effect system for horror mechanics
 
 ### Player Data Storage (NEW)
 
-- Player data is stored as individual files in `data/players/player_<GUID>.json`.
+- Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
 - There is no longer a single `players.json` file.
 - The server dynamically loads player data from these files after authentication.
-- Example: `data/players/player_3ff4b997-1bed-42b9-a96e-0892c9e25357.json`
-- A sample player file for tests is provided as `data/players/player_test-id-123.json`.
+- Example: `data/local/players/player_3ff4b997-1bed-42b9-a96e-0892c9e25357.json`
+- A sample player file for tests is provided as `data/local/players/player_test-id-123.json`.
 
 ### Player Stats System
 
@@ -228,8 +228,8 @@ python test_player_stats.py
 
 ## Data Storage
 
-- Player data is stored as individual files in `data/players/player_<GUID>.json`.
-- Room data is stored in `data/rooms/`.
+- Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
+- Room data is stored in `data/local/rooms/`.
 - The system automatically creates these directories and handles data persistence.
 
 ## Game Mechanics

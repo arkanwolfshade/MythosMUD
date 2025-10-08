@@ -163,8 +163,8 @@ class Environment:
 
     async def _setup_config(self, config_override: dict[str, Any] | None = None):
         """Set up test configuration"""
-        # Load base test configuration
-        self.config = get_config("server/tests/test_server_config.yaml")
+        # Load base test configuration (using project root config)
+        self.config = get_config("server/server_config.unit_test.yaml")
 
         # Override with test-specific settings
         if config_override:

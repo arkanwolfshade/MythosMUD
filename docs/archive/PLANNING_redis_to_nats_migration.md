@@ -185,7 +185,7 @@ class NATSService:
 - [x] Create NATS status checking script (`scripts/nats_status.ps1`)
 - [x] Integrate NATS management into `start_server.ps1`
 - [x] Integrate NATS management into `stop_server.ps1`
-- [x] Update `start_dev.ps1` to inform users about automatic NATS startup
+- [x] Update `start_local.ps1` to inform users about automatic NATS startup
 - [x] Test NATS server automatic start/stop functionality
 - [x] Verify background operation and process management
 

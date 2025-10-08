@@ -26,7 +26,7 @@ from core.schema_validator import SchemaValidator
 @click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
 @click.option("--ignore", help="Comma-separated list of rule types to ignore")
 @click.option("--output-format", type=click.Choice(["console", "json"]), default="console")
-@click.option("--base-path", default="./data/rooms", help="Base directory for room files")
+@click.option("--base-path", default="./data/local/rooms", help="Base directory for room files")
 @click.option("--no-colors", is_flag=True, help="Disable colored output")
 @click.option("--fix", is_flag=True, help="Automatically fix issues (use with caution)")
 @click.option("--backup", is_flag=True, help="Create backup files before fixing")

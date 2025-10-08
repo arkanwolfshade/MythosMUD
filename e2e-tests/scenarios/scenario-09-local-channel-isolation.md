@@ -1,8 +1,10 @@
-# Scenario 9: Local Channel Isolation
+# Scenario 9: Local Channel Isolation **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests local channel isolation between different sub-zones. This scenario verifies that local channel messages are properly isolated to their respective sub-zones, that players in different sub-zones cannot see each other's local messages, and that the sub-zone routing system works correctly for local communication.
+
+**This is a core multi-player scenario** that requires verifying message isolation between players in different sub-zones. No automated alternative is available.
 
 ## Prerequisites
 

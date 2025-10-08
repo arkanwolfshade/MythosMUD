@@ -19,8 +19,8 @@ def run_server_coverage():
     env = dict(**os.environ)
 
     # Set up environment for server tests
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-    env["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/test_players.db"
+    env["ALIASES_DIR"] = "data/unit_test/players/aliases"
 
     result = subprocess.run(cmd, env=env, cwd="server")
     return result.returncode

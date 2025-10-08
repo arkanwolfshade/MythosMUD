@@ -708,7 +708,7 @@ This document provides a comprehensive task breakdown for implementing the dual 
 
 #### Additional Implementation (Beyond Original Task List)
 
-- [x] Created comprehensive test data generator (`server/tests/data/dual_connection_test_data.py`)
+- [x] Created comprehensive test data generator (`data/unit_test/dual_connection_test_data.py`)
 - [x] Implemented `DualConnectionTestData` class with 40+ test players across different scenarios
 - [x] Added `PerformanceTestData` class for load and stress testing scenarios
 - [x] Added `ErrorTestData` class for authentication, connection, and session error scenarios

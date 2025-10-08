@@ -9,9 +9,9 @@ def get_db_path():
     if len(sys.argv) > 1:
         db_type = sys.argv[1].lower()
         if db_type == "test":
-            return "server/tests/data/players/test_players.db"
+            return "data/unit_test/players/test_players.db"
         elif db_type == "prod":
-            return "data/players/players.db"
+            return "data/local/players/local_players.db"
         else:
             print(f"Unknown database type: {db_type}")
             print("Usage: python bootstrap_db.py [prod|test]")

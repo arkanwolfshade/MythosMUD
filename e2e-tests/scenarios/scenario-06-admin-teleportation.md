@@ -1,8 +1,10 @@
-# Scenario 6: Admin Teleportation
+# Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests admin teleportation functionality and privilege handling. This scenario verifies that admin players can teleport other players to different rooms, that non-admin players cannot use teleportation commands, and that teleportation messages are properly broadcast to all relevant players.
+
+**This is a core multi-player scenario** that requires real-time verification of teleportation effects on multiple players. No automated alternative is available.
 
 ## Prerequisites
 

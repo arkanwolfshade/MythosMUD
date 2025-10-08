@@ -14,17 +14,17 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
-# CRITICAL: Load .env.test file FIRST, before any other environment variable setup
+# CRITICAL: Load .env.unit_test file FIRST, before any other environment variable setup
 # This ensures that test-specific database URLs are loaded before any modules
 # that depend on them are imported
 project_root = Path(__file__).parent.parent.parent
-TEST_ENV_PATH = project_root / ".env.test"
+TEST_ENV_PATH = project_root / "server" / "tests" / ".env.unit_test"
 if TEST_ENV_PATH.exists():
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"[OK] Loaded test environment from {TEST_ENV_PATH}")
+    print(f"[OK] Loaded test environment secrets from {TEST_ENV_PATH}")
 else:
     print(f"[WARNING] Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables")
+    print("Using default test environment variables from conftest.py")
 
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
@@ -49,7 +49,7 @@ if database_url:
         print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
 else:
     # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db_path = project_root / "data" / "unit_test" / "players" / "test_players.db"
     test_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
     print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
@@ -69,7 +69,7 @@ if npc_database_url:
         print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
 else:
     # Use absolute path to ensure NPC database is created in the correct location
-    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+    test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "test_npcs.db"
     test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
     print(f"[OK] Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
@@ -78,12 +78,13 @@ else:
 test_logs_dir = project_root / "server" / "tests" / "logs"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
 # Set test configuration file path
-test_config_path = project_root / "server" / "tests" / "test_server_config.yaml"
+test_config_path = project_root / "server" / "server_config.unit_test.yaml"
 os.environ["MYTHOSMUD_CONFIG_PATH"] = str(test_config_path)
+print(f"[OK] Using unit test config: {test_config_path}")
 # Legacy logging environment variables no longer needed - logging is handled by
 # centralized system
 # Use absolute path for aliases directory to prevent incorrect directory creation
-aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+aliases_dir = project_root / "data" / "unit_test" / "players" / "aliases"
 aliases_dir.mkdir(parents=True, exist_ok=True)
 os.environ["ALIASES_DIR"] = str(aliases_dir)
 
@@ -129,7 +130,7 @@ def pytest_configure(config):
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
 
-    # Only set DATABASE_URL if not already set by .env.test
+    # Only set DATABASE_URL if not already set by .env.unit_test
     # Ensure DATABASE_URL is set with absolute path
     database_url = os.getenv("DATABASE_URL")
     if database_url:
@@ -143,7 +144,7 @@ def pytest_configure(config):
             print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
     else:
         # Use absolute path to ensure database is created in the correct location
-        test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        test_db_path = project_root / "data" / "unit_test" / "players" / "test_players.db"
         test_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 
@@ -162,7 +163,7 @@ def pytest_configure(config):
             print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
     else:
         # Use absolute path to ensure NPC database is created in the correct location
-        test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+        test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "test_npcs.db"
         test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
 
@@ -171,7 +172,7 @@ def pytest_configure(config):
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
     # Use absolute path for aliases directory to prevent incorrect directory creation
-    aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+    aliases_dir = project_root / "data" / "unit_test" / "players" / "aliases"
     aliases_dir.mkdir(parents=True, exist_ok=True)
     os.environ["ALIASES_DIR"] = str(aliases_dir)
 

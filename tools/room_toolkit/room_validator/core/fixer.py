@@ -19,7 +19,7 @@ class RoomFixer:
     inconsistencies while preserving the integrity of eldritch architecture.
     """
 
-    def __init__(self, base_path: str = "./data/rooms"):
+    def __init__(self, base_path: str = "./data/local/rooms"):
         """
         Initialize the room fixer.
 

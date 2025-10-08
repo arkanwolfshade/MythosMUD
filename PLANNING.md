@@ -80,11 +80,11 @@ Build a browser-accessible, text-based Multi-User Dungeon (MUD) inspired by the 
 
 **CRITICAL**: Always follow these rules when working on this project:
 
-1. **Server Startup**: ALWAYS use `./scripts/start_dev.ps1` from project root
+1. **Server Startup**: ALWAYS use `./scripts/start_local.ps1` from project root
 2. **Server Shutdown**: ALWAYS use `./scripts/stop_server.ps1` before starting
 3. **Database Placement**:
    - Production: `/data/players/` ONLY
-   - Tests: `/server/tests/data/players/` ONLY
+   - Tests: `/data/unit_test/players/` ONLY
 4. **Testing**: Use `make test` from project root, never from subdirectories
 5. **Linting**: Use `make lint` for code quality checks
 6. **Coverage**: Maintain 80% minimum test coverage (target 90%)
@@ -198,16 +198,16 @@ When multiple tasks are pending, prioritize in this order:
 
 ### Technology Stack
 
-| Layer         | Technology         | Status   | Notes |
-|---------------|-------------------|----------|-------|
-| Front-End     | React + TypeScript | ✅ Implemented | Terminal UI with xterm.js |
-| Back-End      | Python (FastAPI)   | ✅ Implemented | Async, type-safe |
-| Real-Time     | WebSockets + NATS  | ✅ Implemented | Pub/sub messaging |
-| Database      | SQLite (MVP)       | ✅ Implemented | PostgreSQL for production |
-| Auth          | FastAPI Users      | ✅ Implemented | Argon2 password hashing |
-| Testing       | pytest             | ✅ Implemented | 88% coverage |
-| Linting       | ruff               | ✅ Implemented | 120 char line limit |
-| Hosting       | AWS (planned)      | TODO     | EC2/Fargate + RDS |
+| Layer     | Technology         | Status        | Notes                     |
+| --------- | ------------------ | ------------- | ------------------------- |
+| Front-End | React + TypeScript | ✅ Implemented | Terminal UI with xterm.js |
+| Back-End  | Python (FastAPI)   | ✅ Implemented | Async, type-safe          |
+| Real-Time | WebSockets + NATS  | ✅ Implemented | Pub/sub messaging         |
+| Database  | SQLite (MVP)       | ✅ Implemented | PostgreSQL for production |
+| Auth      | FastAPI Users      | ✅ Implemented | Argon2 password hashing   |
+| Testing   | pytest             | ✅ Implemented | 88% coverage              |
+| Linting   | ruff               | ✅ Implemented | 120 char line limit       |
+| Hosting   | AWS (planned)      | TODO          | EC2/Fargate + RDS         |
 
 ### Security Architecture
 
@@ -700,8 +700,8 @@ When multiple tasks are pending, prioritize in this order:
 
 ### Deployment Procedures
 
-- **Database Placement**: Production in `/data/players/`, tests in `/server/tests/data/players/`
-- **Server Startup**: Use `./scripts/start_dev.ps1` from project root
+- **Database Placement**: Production in `/data/players/`, tests in `/data/unit_test/players/`
+- **Server Startup**: Use `./scripts/start_local.ps1` from project root
 - **Server Shutdown**: Use `./scripts/stop_server.ps1` before starting
 - **Environment**: Use uv for Python dependency management
 - **Node.js**: Use NVM for Windows for Node.js management

@@ -150,7 +150,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
 
    ```powershell
    # Windows PowerShell - Start both server and client
-   .\scripts\start_dev.ps1
+   .\scripts\start_local.ps1
    ```
 
    Or start components separately:
@@ -230,7 +230,7 @@ MythosMUD/
 │   └── [game data]            # Emotes, MOTD, visualizations
 │
 ├── scripts/                   # Utility scripts (PowerShell & Python)
-│   ├── start_dev.ps1          # Development server startup
+│   ├── start_local.ps1          # Development server startup
 │   ├── stop_server.ps1        # Server shutdown
 │   ├── start_server.ps1       # Server-only startup
 │   ├── start_client.ps1       # Client-only startup
@@ -281,7 +281,7 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 
 **PowerShell Scripts:**
 
-- `scripts/start_dev.ps1` - Start complete development environment (server + client)
+- `scripts/start_local.ps1` - Start complete development environment (server + client)
 - `scripts/start_server.ps1` - Start the FastAPI server only
 - `scripts/start_client.ps1` - Start the React client only
 - `scripts/stop_server.ps1` - Stop server processes
@@ -298,10 +298,13 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 
 - `make test` - Run all tests from project root
 - `make test-server` - Run server tests only
-- `make test-client` - Run client tests only
+- `make test-client` - Run client unit tests only (Vitest)
+- `make test-client-runtime` - Run automated E2E tests (Playwright)
 - `make lint` - Run linting for both server and client
 - `make format` - Format code for both server and client
 - `make semgrep` - Run security analysis
+
+For multiplayer E2E scenarios, see [e2e-tests/MULTIPLAYER_TEST_RULES.md](e2e-tests/MULTIPLAYER_TEST_RULES.md)
 
 See [scripts/README.md](scripts/README.md) for detailed documentation.
 
@@ -319,7 +322,9 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 - **Testing:**
   - Server: pytest with 75%+ coverage target
   - Client: Vitest for unit tests, Playwright for E2E tests
-  - E2E: Comprehensive multiplayer testing with 21 scenarios
+  - E2E Automated: 114 automated Playwright CLI tests (10 scenarios)
+  - E2E Manual: 11 multiplayer MCP scenarios requiring AI Agent coordination
+  - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
 - **Security:**
   - Semgrep static analysis for security vulnerabilities
   - COPPA compliance verification

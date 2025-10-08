@@ -1,8 +1,10 @@
-# Scenario 13: Whisper Basic
+# Scenario 13: Whisper Basic **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests basic whisper channel functionality for private messaging between players. This scenario verifies that players can send and receive whisper messages, that messages are properly delivered to the intended recipient, and that the whisper system works correctly for private multiplayer communication.
+
+**This is a core multi-player scenario** that requires real-time verification of private message delivery between players. No automated alternative is available.
 
 ## Prerequisites
 

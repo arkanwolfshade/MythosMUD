@@ -1,0 +1,201 @@
+# MythosMUD Server Configuration - Local Development Mode
+# This configuration is used for local development
+# Secrets and credentials should be in .env.local (not committed to git)
+
+# --- Database & Persistence ---
+db_path: ./data/local/players/local_players.db
+
+# --- Logging Configuration ---
+logging:
+  environment: local
+  level: DEBUG
+  format: colored  # json, human, colored (colored = human-readable with colors)
+  log_base: ./logs/local/
+  rotation:
+    max_size: 10MB
+    backup_count: 5
+  compression: false
+  disable_logging: false
+
+# --- Network ---
+host: 0.0.0.0
+port: 54731
+max_connections: 100
+connection_timeout: 60
+
+# --- Dual Connection System ---
+dual_connections:
+  enabled: true
+  max_connections_per_player: 2
+  connection_timeout: 180
+  health_check_interval: 15
+  cleanup_interval: 30
+  message_batch_size: 100
+  connection_pool_size: 1000
+  performance_monitoring: true
+
+  # WebSocket Configuration
+  websocket:
+    enabled: true
+    ping_interval: 30
+    ping_timeout: 10
+    max_message_size: 1048576  # 1MB
+
+  # Server-Sent Events Configuration
+  sse:
+    enabled: true
+    retry_timeout: 3000  # milliseconds
+    max_connections: 500
+
+  # Session Management
+  session:
+    timeout: 3600  # seconds (1 hour)
+    cleanup_interval: 300  # seconds (5 minutes)
+    max_sessions_per_player: 5
+
+  # Error Handling
+  error_handling:
+    max_retry_attempts: 3
+    retry_delay: 5  # seconds
+    error_recovery_enabled: true
+
+  # Performance Monitoring
+  monitoring:
+    enabled: true
+    metrics_interval: 30  # seconds
+    health_check_interval: 15  # seconds
+    performance_tracking: true
+
+# --- File Paths & Directories ---
+data_dir: ./data/local/
+player_dir: ./data/local/players/
+log_dir: ./logs/local/
+motd_file: ./data/local/motd.html
+aliases_dir: ./data/local/players/aliases/
+
+# --- World & Game Settings ---
+start_room: earth_arkhamcity_northside_intersection_derby_high
+starting_level: 1
+allow_multiplay: true
+max_players: 100
+
+# --- Modules/Systems ---
+enable_combat: true
+enable_weather: true
+enable_pvp: false
+
+# --- Debug ---
+enable_stack_traces: true
+
+# --- Authentication/Accounts ---
+auth_backend: sqlite
+auth_db_file: ./data/local/players/local_players.db
+registration_enabled: true
+allow_guest_login: false
+
+# --- World Load/Boot Sequence ---
+areas:
+  - ./data/local/rooms/arkham/
+npcs:
+  - ./data/local/npcs/guards.json
+quests:
+  - ./data/local/quests/tutorial.json
+
+# --- Room Validation ---
+room_validation:
+  enable_schema_validation: true
+  strict_validation: false
+  log_validation_errors: true
+
+# --- Admin/Console/Telnet ---
+# admin_password: Set via MYTHOSMUD_ADMIN_PASSWORD environment variable
+admin_port: 5001
+enable_remote_console: false
+
+# --- Game Balance & Mechanics ---
+xp_multiplier: 1.0
+hp_regen_rate: 5
+combat_tick_interval: 2  # seconds
+
+# --- NATS Configuration ---
+nats:
+  enabled: true
+  url: nats://localhost:4222
+  max_payload: 1048576  # 1MB max message size
+  reconnect_time_wait: 1
+  max_reconnect_attempts: 5
+  connect_timeout: 5
+  ping_interval: 30
+  max_outstanding_pings: 5
+
+# --- Chat System Configuration ---
+chat:
+  rate_limiting:
+    enabled: true
+    global: 10      # messages per minute
+    local: 20
+    say: 15
+    party: 30
+    whisper: 5
+
+  content_filtering:
+    enabled: true
+    profanity_filter: true
+    keyword_detection: true
+
+  message_history:
+    enabled: true
+    retention_days: 30
+    max_messages_per_channel: 1000
+
+# --- Runtime/Scheduler ---
+game_tick_rate: 1  # seconds
+weather_update_interval: 60
+save_interval: 300
+
+# --- Health Check Configuration ---
+health_check:
+  enabled: true
+  interval: 30
+  timeout: 10
+  retries: 3
+
+# --- Backup Configuration ---
+backup:
+  enabled: false
+  interval: 3600
+  retention_days: 7
+  path: ./logs/local/backups
+
+# --- Cache Configuration ---
+cache:
+  ttl: 3600
+  max_size: 1000
+
+# --- Monitoring & Alerting ---
+monitoring:
+  prometheus_enabled: false
+  grafana_enabled: false
+  alertmanager_enabled: false
+  metrics_port: 9090
+  email_alerts_enabled: false
+
+# --- Load Balancing ---
+load_balancing:
+  server_id: 1
+  cluster_mode: false
+  sticky_sessions: true
+
+# --- Feature Flags ---
+features:
+  enable_dual_connections: true
+  enable_session_management: true
+  enable_performance_monitoring: true
+  enable_error_recovery: true
+  enable_connection_health_checks: true
+  enable_message_batching: true
+  enable_connection_pooling: true
+  enable_debug_endpoints: true
+  enable_test_data: true
+  enable_mock_services: true
+  enable_development_tools: true

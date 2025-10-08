@@ -175,7 +175,7 @@ class NPCPopulationController:
     based on zone configurations, player counts, and game state conditions.
     """
 
-    def __init__(self, event_bus: EventBus, spawning_service=None, rooms_data_path: str = "data/rooms"):
+    def __init__(self, event_bus: EventBus, spawning_service=None, rooms_data_path: str = "data/local/rooms"):
         """
         Initialize the NPC population controller.
 
@@ -220,7 +220,7 @@ class NPCPopulationController:
     def _load_zone_configurations(self) -> None:
         """Load zone and sub-zone configurations from JSON files.
 
-        The directory structure is: data/rooms/plane/zone/subzone/
+        The directory structure is: data/local/rooms/plane/zone/subzone/
         We need to traverse: plane -> zone -> subzone to find configurations.
         """
         try:

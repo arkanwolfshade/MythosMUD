@@ -68,7 +68,7 @@ def _ensure_logging_initialized():
 - **Production**: `server/server_config.yaml`
   - Port: 54731
   - Host: 0.0.0.0
-  - Database: `../data/players/players.db`
+  - Database: `../data/players/local_players.db`
   - Logging: Enabled (`disable_logging: false`)
 
 - **Test**: `server/test_server_config.yaml`

@@ -63,7 +63,7 @@ netstat -an | findstr :5173
 
 ```powershell
 # Open SQLite database
-sqlite3 data/players/players.db
+sqlite3 data/players/local_players.db
 ```
 
 ```sql

@@ -1,8 +1,10 @@
-# Scenario 3: Movement Between Rooms
+# Scenario 3: Movement Between Rooms **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests multiplayer visibility when players move between different rooms. This scenario verifies that movement messages are properly broadcast to other players in the same room, and that players can see each other's room transitions.
+
+**This is a core multi-player scenario** that requires real-time verification of movement message broadcasting. No automated alternative is available.
 
 ## Prerequisites
 
