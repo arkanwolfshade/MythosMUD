@@ -64,7 +64,9 @@ class TestServiceDependencyInjection:
             app.state.player_service = PlayerService(mock_persistence)
             from pathlib import Path
 
-            app.state.user_manager = UserManager(data_dir=Path("data/unit_test/user_management"))
+            # Get project root for absolute path (server/tests/test_*.py -> project root)
+            project_root = Path(__file__).parent.parent.parent
+            app.state.user_manager = UserManager(data_dir=project_root / "data" / "unit_test" / "user_management")
             app.state.event_handler = get_real_time_event_handler()
             app.state.event_bus = app.state.event_handler.event_bus
             app.state.connection_manager = connection_manager

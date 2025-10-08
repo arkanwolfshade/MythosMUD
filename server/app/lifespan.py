@@ -84,9 +84,12 @@ async def lifespan(app: FastAPI):
 
         if project_root:
             data_path = project_root / data_path
+            # Resolve to handle any .. or . in the path
+            data_path = data_path.resolve()
         else:
             # Fallback to current directory if project root not found
             data_path = current_dir / data_path
+            data_path = data_path.resolve()
 
     user_management_dir = data_path / "user_management"
     app.state.user_manager = UserManager(data_dir=user_management_dir)
