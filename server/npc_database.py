@@ -11,7 +11,7 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
-from sqlalchemy import event
+from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -75,31 +75,53 @@ def _initialize_npc_database() -> None:
             user_friendly="NPC database cannot be initialized: configuration not loaded",
         )
 
-    # Get npc_db_path from config - FAIL LOUDLY if not present
-    npc_db_path = config.get("npc_db_path")
-    if not npc_db_path:
-        log_and_raise(
-            ValidationError,
-            "npc_db_path not found in configuration",
-            context=context,
-            details={
-                "config_file": "server_config.*.yaml",
-                "required_field": "npc_db_path",
-            },
-            user_friendly="NPC database path not configured in YAML configuration",
+    # Get NPC database URL from config - check npc_database_url first, then npc_db_path
+    # Note: npc_database_url in config could come from NPC_DATABASE_URL env var
+    npc_database_url = config.get("npc_database_url")
+
+    if npc_database_url:
+        # npc_database_url is set (likely from NPC_DATABASE_URL environment variable)
+        if npc_database_url.startswith("sqlite"):
+            # Already a full SQLite URL
+            _npc_database_url = npc_database_url
+            logger.info("Using NPC database URL from environment/config", npc_database_url=_npc_database_url)
+        else:
+            # It's a path - convert to absolute path and construct SQLite URL
+            npc_db_path_obj = Path(npc_database_url).resolve()
+            _npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
+            logger.info(
+                "NPC Database URL configured from path",
+                npc_database_url=_npc_database_url,
+                npc_db_path=str(npc_db_path_obj),
+            )
+    else:
+        # Fall back to npc_db_path from YAML config
+        npc_db_path = config.get("npc_db_path")
+        if not npc_db_path:
+            log_and_raise(
+                ValidationError,
+                "Neither npc_database_url nor npc_db_path found in configuration",
+                context=context,
+                details={
+                    "config_file": "server_config.*.yaml",
+                    "required_field": "npc_db_path or npc_database_url",
+                    "note": "Set NPC_DATABASE_URL environment variable or npc_db_path in YAML",
+                },
+                user_friendly="NPC database path not configured",
+            )
+
+        # Convert npc_db_path to absolute path and construct SQLite URL
+        npc_db_path_obj = Path(npc_db_path).resolve()
+        _npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
+        logger.info(
+            "NPC Database URL configured from YAML",
+            npc_database_url=_npc_database_url,
+            npc_db_path=str(npc_db_path_obj),
         )
-
-    # Convert npc_db_path to absolute path and construct SQLite URL
-    npc_db_path_obj = Path(npc_db_path).resolve()
-    _npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
-
-    logger.info(
-        "NPC Database URL configured from YAML", npc_database_url=_npc_database_url, npc_db_path=str(npc_db_path_obj)
-    )
 
     # Determine pool class based on database URL
     # Use NullPool for tests to prevent SQLite file locking issues
-    pool_class = NullPool if "test" in str(npc_db_path_obj) else StaticPool
+    pool_class = NullPool if "test" in _npc_database_url else StaticPool
 
     # Create async engine for NPC database
     _npc_engine = create_async_engine(
@@ -117,10 +139,18 @@ def _initialize_npc_database() -> None:
     @event.listens_for(_npc_engine.sync_engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         """Enable foreign key constraints for SQLite connections."""
-        if "sqlite" in str(dbapi_connection):
+        conn_str = str(dbapi_connection)
+        conn_type = str(type(dbapi_connection))
+        logger.debug(f"NPC database connect event fired, type: {conn_type}, str: {conn_str[:100]}")
+
+        # Check both the connection string and type for sqlite
+        if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
             cursor = dbapi_connection.cursor()
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.close()
+            logger.debug("Foreign keys enabled for NPC database connection")
+        else:
+            logger.warning(f"Skipping PRAGMA for non-SQLite connection: {conn_type}")
 
     logger.info("NPC Database engine created", pool_class=pool_class.__name__)
 
@@ -226,6 +256,8 @@ async def init_npc_db():
         async with engine.begin() as conn:
             logger.info("Creating NPC database tables")
             await conn.run_sync(npc_metadata.create_all)
+            # Enable foreign key constraints for SQLite
+            await conn.execute(text("PRAGMA foreign_keys = ON"))
             logger.info("NPC database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__

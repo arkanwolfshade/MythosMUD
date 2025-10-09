@@ -102,6 +102,10 @@ def sync_test_environment():
 
     from .utils.test_environment import test_env_manager
 
+    # Save original environment variables to restore after test
+    original_database_url = os.environ.get("DATABASE_URL")
+    original_npc_database_url = os.environ.get("NPC_DATABASE_URL")
+
     # Use unique environment name for each test
     env_name = f"pytest_sync_{uuid.uuid4().hex[:8]}"
 
@@ -115,7 +119,32 @@ def sync_test_environment():
             loop.run_until_complete(test_env_manager.destroy_environment(env_name))
         except Exception:
             pass  # Ignore cleanup errors
-        loop.close()
+        finally:
+            # Restore original environment variables
+            if original_database_url:
+                os.environ["DATABASE_URL"] = original_database_url
+            if original_npc_database_url:
+                os.environ["NPC_DATABASE_URL"] = original_npc_database_url
+
+            # Force re-initialization from restored environment variables
+            # by resetting global state (don't restore old state, let it reinitialize)
+            import server.database
+            import server.npc_database
+
+            server.database._engine = None
+            server.database._async_session_maker = None
+            server.database._database_url = None
+
+            server.npc_database._npc_engine = None
+            server.npc_database._npc_async_session_maker = None
+            server.npc_database._npc_database_url = None
+
+            # Reset config cache to force reload with correct environment variables
+            from server import config_loader
+
+            config_loader._config = None
+
+            loop.close()
 
 
 def pytest_configure(config):

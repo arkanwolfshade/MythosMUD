@@ -10,7 +10,7 @@ import json
 import os
 import sqlite3
 import tempfile
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -191,14 +191,24 @@ class TestDatabaseErrorLogging:
     @pytest.mark.asyncio
     async def test_database_session_error_logging(self):
         """Test error logging in database session management."""
+        # Mock session to raise an exception
+        from unittest.mock import MagicMock
+
         from server.database import get_async_session
 
-        # Mock session to raise an exception
-        with patch("server.database.async_session_maker") as mock_session_maker:
-            mock_session = Mock()
-            mock_session_maker.return_value.__aenter__.return_value = mock_session
-            mock_session.rollback.side_effect = Exception("Session error")
+        mock_session = Mock()
+        mock_session.rollback = AsyncMock(side_effect=Exception("Rollback error"))
 
+        # Create mock context manager
+        mock_context_manager = MagicMock()
+        mock_context_manager.__aenter__ = AsyncMock(return_value=mock_session)
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+
+        # Create mock session maker callable
+        mock_session_maker_callable = MagicMock()
+        mock_session_maker_callable.return_value = mock_context_manager
+
+        with patch("server.database.get_session_maker", return_value=mock_session_maker_callable):
             # This should not raise an exception but should log the error
             try:
                 async for _session in get_async_session():

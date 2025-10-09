@@ -5,7 +5,6 @@ This module tests the database connection, session management,
 and initialization functionality in database.py.
 """
 
-import os
 import tempfile
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
@@ -14,11 +13,12 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.database import (
-    DATABASE_URL,
     close_db,
     ensure_database_directory,
     get_async_session,
     get_database_path,
+    get_engine,
+    get_session_maker,
     init_db,
     metadata,
 )
@@ -28,29 +28,30 @@ from server.exceptions import ValidationError
 class TestDatabaseConfiguration:
     """Test database configuration constants and setup."""
 
-    def test_database_url_default(self):
-        """Test default DATABASE_URL."""
+    def test_database_path_default(self):
+        """Test default database path from configuration."""
         # The actual value set by conftest.py uses an absolute path
         # Check that it contains the expected path components (handle both Windows and Unix paths)
-        assert "data/unit_test/players/unit_test_players.db" in DATABASE_URL.replace("\\", "/")
-        assert DATABASE_URL.startswith("sqlite+aiosqlite:///")
+        db_path = get_database_path()
+        assert "data/unit_test/players/unit_test_players.db" in str(db_path).replace("\\", "/")
 
     def test_metadata_exists(self):
         """Test that metadata is properly initialized."""
         assert metadata is not None
         assert hasattr(metadata, "tables")
 
-    @patch.dict(os.environ, {"DATABASE_URL": "sqlite+aiosqlite:///custom/path.db"})
-    def test_database_url_from_env(self):
-        """Test DATABASE_URL from environment variable."""
-        # Re-import to get the updated value
-        import importlib
+    def test_engine_initialization(self):
+        """Test that engine is properly initialized."""
+        engine = get_engine()
+        assert engine is not None
+        # Engine should be created with aiosqlite
+        assert "aiosqlite" in str(engine.url)
 
-        import server.database
-
-        importlib.reload(server.database)
-
-        assert server.database.DATABASE_URL == "sqlite+aiosqlite:///custom/path.db"
+    def test_session_maker_initialization(self):
+        """Test that session maker is properly initialized."""
+        session_maker = get_session_maker()
+        assert session_maker is not None
+        assert hasattr(session_maker, "kw")  # Session maker has configuration
 
 
 class TestGetDatabasePath:
@@ -58,7 +59,8 @@ class TestGetDatabasePath:
 
     def test_get_database_path_sqlite(self):
         """Test getting database path for SQLite URL."""
-        with patch("server.database.DATABASE_URL", "sqlite+aiosqlite:///path/to/db.db"):
+        # Patch the private _database_url variable after initialization
+        with patch("server.database._database_url", "sqlite+aiosqlite:///path/to/db.db"):
             result = get_database_path()
 
             assert isinstance(result, Path)
@@ -66,7 +68,7 @@ class TestGetDatabasePath:
 
     def test_get_database_path_with_relative_path(self):
         """Test getting database path with relative path."""
-        with patch("server.database.DATABASE_URL", "sqlite+aiosqlite:///./relative/path.db"):
+        with patch("server.database._database_url", "sqlite+aiosqlite:///./relative/path.db"):
             result = get_database_path()
 
             assert isinstance(result, Path)
@@ -74,7 +76,7 @@ class TestGetDatabasePath:
 
     def test_get_database_path_with_absolute_path(self):
         """Test getting database path with absolute path."""
-        with patch("server.database.DATABASE_URL", "sqlite+aiosqlite:////absolute/path.db"):
+        with patch("server.database._database_url", "sqlite+aiosqlite:////absolute/path.db"):
             result = get_database_path()
 
             assert isinstance(result, Path)
@@ -82,7 +84,7 @@ class TestGetDatabasePath:
 
     def test_get_database_path_unsupported_url(self):
         """Test getting database path with unsupported URL."""
-        with patch("server.database.DATABASE_URL", "postgresql://user:pass@localhost/db"):
+        with patch("server.database._database_url", "postgresql://user:pass@localhost/db"):
             with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
@@ -90,7 +92,7 @@ class TestGetDatabasePath:
 
     def test_get_database_path_mysql_url(self):
         """Test getting database path with MySQL URL."""
-        with patch("server.database.DATABASE_URL", "mysql://user:pass@localhost/db"):
+        with patch("server.database._database_url", "mysql://user:pass@localhost/db"):
             with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
 
@@ -162,15 +164,18 @@ class TestGetAsyncSession:
     @pytest.mark.asyncio
     async def test_get_async_session_exception_handling(self):
         """Test that exceptions are properly handled."""
-        with patch("server.database.async_session_maker") as mock_session_maker:
-            mock_session = AsyncMock()
-            mock_session.rollback = AsyncMock()
-            mock_session.close = AsyncMock()
-            mock_session_maker.return_value.__aenter__.return_value = mock_session
+        from unittest.mock import MagicMock
 
-            # Simulate an exception
-            mock_session_maker.return_value.__aenter__.side_effect = RuntimeError("Test error")
+        # Create a mock session context manager that raises an exception
+        mock_context_manager = MagicMock()
+        mock_context_manager.__aenter__ = AsyncMock(side_effect=RuntimeError("Test error"))
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
 
+        # Create a mock session maker callable that returns the context manager
+        mock_session_maker_callable = MagicMock()
+        mock_session_maker_callable.return_value = mock_context_manager
+
+        with patch("server.database.get_session_maker", return_value=mock_session_maker_callable):
             with pytest.raises(RuntimeError):
                 async for _session in get_async_session():
                     pass
@@ -182,10 +187,21 @@ class TestInitDB:
     @pytest.mark.asyncio
     async def test_init_db_creates_tables(self):
         """Test that init_db creates all tables."""
-        with patch("server.database.engine") as mock_engine:
-            mock_conn = AsyncMock()
-            mock_engine.begin.return_value.__aenter__.return_value = mock_conn
+        from unittest.mock import MagicMock
 
+        # Create properly configured mocks for async engine operations
+        mock_conn = AsyncMock()
+
+        # Create a mock async context manager
+        mock_context_manager = MagicMock()
+        mock_context_manager.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+
+        # Create a mock engine with async begin() that returns the context manager
+        mock_engine = MagicMock()
+        mock_engine.begin = MagicMock(return_value=mock_context_manager)
+
+        with patch("server.database.get_engine", return_value=mock_engine):
             # Mock the connection manager to prevent unawaited coroutines
             with patch("server.realtime.connection_manager.connection_manager"):
                 await init_db()
@@ -199,10 +215,21 @@ class TestInitDB:
     @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     async def test_init_db_imports_models(self):
         """Test that init_db imports all required models."""
-        with patch("server.database.engine") as mock_engine:
-            mock_conn = AsyncMock()
-            mock_engine.begin.return_value.__aenter__.return_value = mock_conn
+        from unittest.mock import MagicMock
 
+        # Create properly configured mocks
+        mock_conn = AsyncMock()
+
+        # Create a mock async context manager
+        mock_context_manager = MagicMock()
+        mock_context_manager.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+
+        # Create a mock engine with async begin() that returns the context manager
+        mock_engine = MagicMock()
+        mock_engine.begin = MagicMock(return_value=mock_context_manager)
+
+        with patch("server.database.get_engine", return_value=mock_engine):
             # Mock the imports to ensure they're called
             with patch("builtins.__import__") as mock_import:
                 # Mock the global connection_manager instance to avoid creating unawaited coroutines
@@ -215,9 +242,12 @@ class TestInitDB:
     @pytest.mark.asyncio
     async def test_init_db_engine_begin_failure(self):
         """Test init_db when engine.begin() fails."""
-        with patch("server.database.engine") as mock_engine:
-            mock_engine.begin.side_effect = RuntimeError("Engine error")
+        from unittest.mock import MagicMock
 
+        mock_engine = MagicMock()
+        mock_engine.begin.side_effect = RuntimeError("Engine error")
+
+        with patch("server.database.get_engine", return_value=mock_engine):
             with pytest.raises(RuntimeError):
                 await init_db()
 
@@ -228,9 +258,10 @@ class TestCloseDB:
     @pytest.mark.asyncio
     async def test_close_db_disposes_engine(self):
         """Test that close_db disposes the engine."""
-        with patch("server.database.engine") as mock_engine:
-            mock_engine.dispose = AsyncMock()
+        mock_engine = AsyncMock()
+        mock_engine.dispose = AsyncMock()
 
+        with patch("server.database.get_engine", return_value=mock_engine):
             await close_db()
 
             mock_engine.dispose.assert_called_once()
@@ -238,9 +269,10 @@ class TestCloseDB:
     @pytest.mark.asyncio
     async def test_close_db_engine_dispose_failure(self):
         """Test close_db when engine.dispose() fails."""
-        with patch("server.database.engine") as mock_engine:
-            mock_engine.dispose.side_effect = RuntimeError("Dispose error")
+        mock_engine = AsyncMock()
+        mock_engine.dispose.side_effect = RuntimeError("Dispose error")
 
+        with patch("server.database.get_engine", return_value=mock_engine):
             with pytest.raises(RuntimeError):
                 await close_db()
 
@@ -251,13 +283,22 @@ class TestDatabaseIntegration:
     @pytest.mark.asyncio
     async def test_database_lifecycle(self):
         """Test complete database lifecycle."""
-        with patch("server.database.engine") as mock_engine:
-            mock_engine.dispose = AsyncMock()
+        from unittest.mock import MagicMock
 
-            # Test initialization
-            mock_conn = AsyncMock()
-            mock_engine.begin.return_value.__aenter__.return_value = mock_conn
+        # Create properly configured mocks
+        mock_conn = AsyncMock()
 
+        # Create a mock async context manager
+        mock_context_manager = MagicMock()
+        mock_context_manager.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+
+        # Create a mock engine with begin() that returns the context manager
+        mock_engine = MagicMock()
+        mock_engine.begin = MagicMock(return_value=mock_context_manager)
+        mock_engine.dispose = AsyncMock()
+
+        with patch("server.database.get_engine", return_value=mock_engine):
             await init_db()
             mock_conn.run_sync.assert_called_once()
 
@@ -296,13 +337,13 @@ class TestEdgeCases:
 
     def test_get_database_path_empty_url(self):
         """Test getting database path with empty URL."""
-        with patch("server.database.DATABASE_URL", ""):
+        with patch("server.database._database_url", ""):
             with pytest.raises(ValidationError):
                 get_database_path()
 
     def test_get_database_path_malformed_url(self):
         """Test getting database path with malformed URL."""
-        with patch("server.database.DATABASE_URL", "not-a-url"):
+        with patch("server.database._database_url", "not-a-url"):
             with pytest.raises(ValidationError):
                 get_database_path()
 

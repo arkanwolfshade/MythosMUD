@@ -57,6 +57,7 @@ _DEFAULTS = {
     "port": 54731,
     # Environment-based fields - these will be set from environment variables
     "database_url": None,  # Will be set from DATABASE_URL environment variable
+    "npc_database_url": None,  # Will be set from NPC_DATABASE_URL environment variable
     "admin_password": None,  # Must be set via environment variable
     "invite_codes_file": "invites.json",
     "motd_file": "data/motd.html",
@@ -138,6 +139,7 @@ _FIELD_TYPES = {
     "port": int,
     "logging": dict,
     "database_url": str,
+    "npc_database_url": str,
     "admin_password": str,
     "invite_codes_file": str,
     "motd_file": str,
@@ -292,20 +294,28 @@ def get_config(config_path: str = None):
                     if not isinstance(config[k], list):
                         config[k] = [config[k]] if config[k] is not None else []
                 else:
-                    config[k] = typ(config[k])
+                    # Don't convert None to string 'None' - keep it as None
+                    if config[k] is not None:
+                        config[k] = typ(config[k])
             except Exception:
                 config[k] = _DEFAULTS[k]
         else:
             config[k] = _DEFAULTS[k]
     # Handle environment variables for sensitive data
+    # Only require admin_password for production environments
     if "admin_password" in config and config["admin_password"] is None:
         admin_password = os.getenv("MYTHOSMUD_ADMIN_PASSWORD")
         if admin_password:
             logger.debug("Using MYTHOSMUD_ADMIN_PASSWORD from environment")
             config["admin_password"] = admin_password
+        elif config.get("logging", {}).get("environment") in ["production", "prod"]:
+            # Only require admin password in production
+            logger.error("MYTHOSMUD_ADMIN_PASSWORD environment variable required for production")
+            raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set in production")
         else:
-            logger.warning("MYTHOSMUD_ADMIN_PASSWORD environment variable not set")
-            raise ValueError("MYTHOSMUD_ADMIN_PASSWORD environment variable must be set")
+            # For test/development, use a default password
+            logger.debug("Using default admin password for non-production environment")
+            config["admin_password"] = "test_admin_password"
 
     # Handle environment variables for path configuration
     if "database_url" in config and config["database_url"] is None:
@@ -316,6 +326,14 @@ def get_config(config_path: str = None):
         else:
             logger.error("DATABASE_URL environment variable not set")
             raise ValueError("DATABASE_URL environment variable must be set")
+
+    # Handle NPC_DATABASE_URL environment variable
+    if "npc_database_url" in config and config["npc_database_url"] is None:
+        npc_database_url = os.getenv("NPC_DATABASE_URL")
+        if npc_database_url:
+            logger.debug("Using NPC_DATABASE_URL from environment")
+            config["npc_database_url"] = npc_database_url
+        # If not set, we'll fall back to npc_db_path from YAML (handled later)
 
     if "aliases_dir" in config and config["aliases_dir"] is None:
         aliases_dir = os.getenv("ALIASES_DIR")
@@ -343,8 +361,8 @@ def get_config(config_path: str = None):
         logger.debug("Set DATABASE_URL environment variable from config", database_url=database_url)
 
     # Set NPC_DATABASE_URL environment variable from config if available
-    # This ensures test infrastructure and other components can access it
-    if "npc_db_path" in config and config["npc_db_path"]:
+    # Only set if not already defined (e.g., by test infrastructure)
+    if "npc_db_path" in config and config["npc_db_path"] and not os.getenv("NPC_DATABASE_URL"):
         from pathlib import Path
 
         npc_db_path_obj = Path(config["npc_db_path"]).resolve()

@@ -122,7 +122,11 @@ def _initialize_database() -> None:
     @event.listens_for(_engine.sync_engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         """Enable foreign key constraints for SQLite connections."""
-        if "sqlite" in str(dbapi_connection):
+        conn_str = str(dbapi_connection)
+        conn_type = str(type(dbapi_connection))
+
+        # Check both the connection string and type for sqlite (case-insensitive)
+        if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
             cursor = dbapi_connection.cursor()
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.close()
