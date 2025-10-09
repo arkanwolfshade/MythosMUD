@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from ..config_loader import get_config
 from ..database import init_db
 from ..logging_config import get_logger
-from ..npc_database import init_npc_database
+from ..npc_database import init_npc_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..realtime.event_handler import get_real_time_event_handler
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     app.state.task_registry = task_registry
 
     await init_db()
-    await init_npc_database()
+    await init_npc_db()
     # Initialize real-time event handler first to obtain its EventBus with task tracking
     app.state.event_handler = get_real_time_event_handler(task_registry=task_registry)
     # Ensure the event handler has access to the connection manager

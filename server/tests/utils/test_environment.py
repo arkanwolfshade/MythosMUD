@@ -138,11 +138,11 @@ class Environment:
                 },
             )
 
-            # Replace the global NPC engine reference
+            # Replace the global NPC engine reference (private variables)
             import server.npc_database
 
-            server.npc_database.npc_engine = new_npc_engine
-            server.npc_database.npc_async_session_maker = async_sessionmaker(
+            server.npc_database._npc_engine = new_npc_engine
+            server.npc_database._npc_async_session_maker = async_sessionmaker(
                 new_npc_engine,
                 class_=server.npc_database.AsyncSession,
                 expire_on_commit=False,
@@ -151,9 +151,9 @@ class Environment:
             )
 
             # Initialize NPC database
-            from server.npc_database import init_npc_database
+            from server.npc_database import init_npc_db
 
-            await init_npc_database()
+            await init_npc_db()
             self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
         except Exception as e:
             self.logger.error(f"Database setup failed: {e}")
@@ -204,8 +204,9 @@ class Environment:
             self.logger.warning(f"Error disposing main database engine: {e}")
 
         try:
-            from server.npc_database import npc_engine
+            from server.npc_database import get_npc_engine
 
+            npc_engine = get_npc_engine()
             await npc_engine.dispose()  # Properly dispose of NPC database engine connections
         except Exception as e:
             self.logger.warning(f"Error disposing NPC database engine: {e}")

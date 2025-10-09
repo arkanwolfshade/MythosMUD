@@ -229,7 +229,7 @@ def test_npc_database():
 
     # The SQLAlchemy metadata initialization will happen when the NPC database
     # module is imported and the engine is created. We don't need to call
-    # init_npc_database() here as it's meant for runtime initialization.
+    # init_npc_db() here as it's meant for runtime initialization.
 
     return str(npc_test_db_path)
 
