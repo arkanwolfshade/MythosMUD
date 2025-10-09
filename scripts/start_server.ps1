@@ -275,7 +275,10 @@ function Start-MythosMUDServer {
         [int]$Port,
 
         [Parameter(Mandatory = $true)]
-        [bool]$Reload
+        [bool]$Reload,
+
+        [Parameter(Mandatory = $false)]
+        [string]$EnvFile = ""
     )
 
     # Use 127.0.0.1 for health check even if server binds to 0.0.0.0
@@ -300,8 +303,19 @@ function Start-MythosMUDServer {
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 
     try {
-        # Start the server process from project root
-        Start-Process powershell -ArgumentList "-NoExit", "-Command", $serverCommand -WindowStyle Normal
+        # Build command that loads environment variables first, then starts server
+        # This ensures the spawned process has access to secrets from .env file
+        $envLoadCommand = ""
+        if ($EnvFile -and (Test-Path $EnvFile)) {
+            # Escape single quotes in path for PowerShell string
+            $escapedEnvFile = $EnvFile -replace "'", "''"
+            $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { `$env:(`$matches[1].Trim()) = `$matches[2].Trim() } }; "
+            Write-Host "Environment file will be loaded in spawned process: $EnvFile" -ForegroundColor Cyan
+        }
+        $fullCommand = $envLoadCommand + $serverCommand
+
+        # Start the server process from project root with environment variables loaded
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", $fullCommand -WindowStyle Normal
 
         # Wait for server to start
         Write-Host "Waiting for server to start..." -ForegroundColor Yellow
@@ -357,7 +371,7 @@ try {
     }
 
     # Step 4: Start the server
-    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload
+    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload -EnvFile $envFile
 
     if ($success) {
         Write-Host "MythosMUD Server is ready!" -ForegroundColor Green
