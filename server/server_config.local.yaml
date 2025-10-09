@@ -11,7 +11,7 @@ logging:
   environment: local
   level: DEBUG
   format: colored  # json, human, colored (colored = human-readable with colors)
-  log_base: ./logs/local/
+  log_base: ./logs/
   rotation:
     max_size: 10MB
     backup_count: 5
@@ -70,7 +70,7 @@ dual_connections:
 # --- File Paths & Directories ---
 data_dir: ./data/local/
 player_dir: ./data/local/players/
-log_dir: ./logs/local/
+log_dir: ./logs/
 motd_file: ./data/local/motd.html
 aliases_dir: ./data/local/players/aliases/
 

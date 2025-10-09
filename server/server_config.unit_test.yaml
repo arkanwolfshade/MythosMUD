@@ -11,7 +11,7 @@ logging:
   environment: unit_test
   level: DEBUG  # Full logging for test debugging
   format: json  # Structured logging for test analysis
-  log_base: ./logs/unit_test/  # Test-specific logs
+  log_base: ./logs/  # Base logs directory, environment subdirectory added automatically
   rotation:
     max_size: 5MB
     backup_count: 2
@@ -65,7 +65,7 @@ dual_connections:
 # --- File Paths & Directories ---
 data_dir: ../data/unit_test/
 player_dir: ../data/unit_test/players/
-log_dir: ./logs/unit_test/
+log_dir: ./logs/
 motd_file: ./data/unit_test/motd.html
 aliases_dir: data/unit_test/players/aliases
 

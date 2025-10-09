@@ -328,6 +328,30 @@ def get_config(config_path: str = None):
 
     # Remove legacy persistence_log handling since we now use structured logging
 
+    # Set DATABASE_URL environment variable from config if available
+    # This ensures PersistenceLayer and other components can access it
+    if "database_url" in config and config["database_url"]:
+        # Convert relative paths to absolute for SQLite URLs
+        database_url = config["database_url"]
+        if not database_url.startswith("sqlite"):
+            # It's a path, convert to absolute
+            from pathlib import Path
+
+            db_path_obj = Path(database_url).resolve()
+            database_url = f"sqlite+aiosqlite:///{db_path_obj}"
+        os.environ["DATABASE_URL"] = database_url
+        logger.debug("Set DATABASE_URL environment variable from config", database_url=database_url)
+
+    # Set NPC_DATABASE_URL environment variable from config if available
+    # This ensures test infrastructure and other components can access it
+    if "npc_db_path" in config and config["npc_db_path"]:
+        from pathlib import Path
+
+        npc_db_path_obj = Path(config["npc_db_path"]).resolve()
+        npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
+        os.environ["NPC_DATABASE_URL"] = npc_database_url
+        logger.debug("Set NPC_DATABASE_URL environment variable from config", npc_database_url=npc_database_url)
+
     _config = config
     logger.info(
         "Configuration loaded successfully",

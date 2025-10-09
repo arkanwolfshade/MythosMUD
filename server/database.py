@@ -75,29 +75,36 @@ def _initialize_database() -> None:
             user_friendly="Database cannot be initialized: configuration not loaded",
         )
 
-    # Get db_path from config - FAIL LOUDLY if not present
-    db_path = config.get("db_path")
-    if not db_path:
+    # Get database_url from config - FAIL LOUDLY if not present
+    # Note: db_path in YAML is automatically converted to database_url by config_loader
+    database_url = config.get("database_url")
+    if not database_url:
         log_and_raise(
             ValidationError,
-            "db_path not found in configuration",
+            "database_url not found in configuration",
             context=context,
             details={
                 "config_file": "server_config.*.yaml",
-                "required_field": "db_path",
+                "required_field": "db_path or database_url",
+                "note": "db_path in YAML is automatically converted to database_url",
             },
             user_friendly="Database path not configured in YAML configuration",
         )
 
-    # Convert db_path to absolute path and construct SQLite URL
-    db_path_obj = Path(db_path).resolve()
-    _database_url = f"sqlite+aiosqlite:///{db_path_obj}"
-
-    logger.info("Database URL configured from YAML", database_url=_database_url, db_path=str(db_path_obj))
+    # Handle database_url - could be a path or a full SQLite URL
+    if database_url.startswith("sqlite"):
+        # Already a full SQLite URL (from environment variable)
+        _database_url = database_url
+        logger.info("Using database URL from environment", database_url=_database_url)
+    else:
+        # It's a path from YAML - convert to absolute path and construct SQLite URL
+        db_path_obj = Path(database_url).resolve()
+        _database_url = f"sqlite+aiosqlite:///{db_path_obj}"
+        logger.info("Database URL configured from YAML", database_url=_database_url, db_path=str(db_path_obj))
 
     # Determine pool class based on database URL
     # Use NullPool for tests to prevent SQLite file locking issues
-    pool_class = NullPool if "test" in str(db_path_obj) else StaticPool
+    pool_class = NullPool if "test" in _database_url else StaticPool
 
     # Create async engine
     _engine = create_async_engine(

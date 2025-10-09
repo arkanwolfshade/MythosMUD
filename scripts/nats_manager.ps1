@@ -52,7 +52,7 @@ $NatsServerDir = Split-Path $NatsServerPath -Parent
 $NatsConfigPath = Join-Path $NatsServerDir "nats-server.conf"
 $NatsPort = 4222
 $NatsHttpPort = 8222
-$NatsLogPath = Join-Path $PSScriptRoot "..\logs\development\nats\nats-server.log"
+$NatsLogPath = Join-Path $PSScriptRoot "..\logs\nats\nats-server.log"
 
 # Function to get NATS server path with environment variable support
 function Get-NatsServerPath {

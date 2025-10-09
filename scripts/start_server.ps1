@@ -312,6 +312,14 @@ function Start-MythosMUDServer {
             $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { `$env:(`$matches[1].Trim()) = `$matches[2].Trim() } }; "
             Write-Host "Environment file will be loaded in spawned process: $EnvFile" -ForegroundColor Cyan
         }
+
+        # Set MYTHOSMUD_ENV in the spawned process to ensure logging uses correct directory
+        $mythosmudEnv = [Environment]::GetEnvironmentVariable("MYTHOSMUD_ENV", "Process")
+        if ($mythosmudEnv) {
+            $envLoadCommand += "`$env:MYTHOSMUD_ENV='$mythosmudEnv'; "
+            Write-Host "MYTHOSMUD_ENV=$mythosmudEnv will be set in spawned process" -ForegroundColor Cyan
+        }
+
         $fullCommand = $envLoadCommand + $serverCommand
 
         # Start the server process from project root with environment variables loaded
@@ -357,6 +365,11 @@ try {
 
     # Step 1: Load environment configuration
     Load-EnvironmentConfig -Environment $Environment
+
+    # Step 1.5: Set MYTHOSMUD_ENV for logging system
+    # The logging system uses this environment variable to determine the log directory
+    [Environment]::SetEnvironmentVariable("MYTHOSMUD_ENV", $Environment, "Process")
+    Write-Host "Set MYTHOSMUD_ENV=$Environment for logging system" -ForegroundColor Cyan
 
     # Step 2: Stop existing processes
     Stop-ServerProcesses

@@ -217,7 +217,7 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
-        from server.models.npc_models import NPC  # noqa: F401
+        from server.models.npc import NPCDefinition  # noqa: F401
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
         configure_mappers()

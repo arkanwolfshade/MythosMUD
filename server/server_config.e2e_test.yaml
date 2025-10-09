@@ -10,7 +10,7 @@ logging:
   environment: e2e_test
   level: INFO  # Less verbose for test output clarity
   format: json  # Structured logging for test analysis
-  log_base: ./logs/e2e_test/  # Separate E2E test logs
+  log_base: ./logs/  # Base logs directory, environment subdirectory added automatically
   rotation:
     max_size: 50MB
     backup_count: 3
@@ -69,7 +69,7 @@ dual_connections:
 # --- File Paths & Directories ---
 data_dir: ./data/
 player_dir: ../data/e2e_test/players/  # TEST DATABASE LOCATION
-log_dir: ./logs/e2e_test/
+log_dir: ./logs/
 motd_file: ./data/e2e_test/motd.html
 aliases_dir: ../data/e2e_test/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
