@@ -68,7 +68,7 @@ class TestNPCStartupService:
             patch(
                 "server.services.npc_startup_service.get_npc_instance_service", return_value=mock_npc_instance_service
             ),
-            patch("server.services.npc_startup_service.get_npc_async_session") as mock_session,
+            patch("server.services.npc_startup_service.get_npc_session") as mock_session,
             patch("server.services.npc_startup_service.npc_service") as mock_npc_service,
         ):
             # Setup mocks

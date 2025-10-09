@@ -4,6 +4,7 @@
 
 # --- Database & Persistence ---
 db_path: ./data/local/players/local_players.db
+npc_db_path: ./data/local/npcs/local_npcs.db
 
 # --- Logging Configuration ---
 logging:

@@ -125,10 +125,10 @@ async def lifespan(app: FastAPI):
     )
 
     # Load NPC definitions and spawn rules from database
-    from ..npc_database import get_npc_async_session
+    from ..npc_database import get_npc_session
 
     npc_service = NPCService()
-    async for npc_session in get_npc_async_session():
+    async for npc_session in get_npc_session():
         try:
             # Load NPC definitions
             definitions = await npc_service.get_npc_definitions(npc_session)

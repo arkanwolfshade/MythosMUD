@@ -3,6 +3,7 @@
 
 # --- Database & Persistence ---
 db_path: ../data/e2e_test/players/e2e_unit_test_players.db
+npc_db_path: ../data/e2e_test/npcs/e2e_npcs.db
 
 # --- Logging Configuration ---
 logging:

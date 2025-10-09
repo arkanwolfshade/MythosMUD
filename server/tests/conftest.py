@@ -300,22 +300,20 @@ async def async_database_session():
     from ..database import get_async_session
 
     async for session in get_async_session():
-        try:
-            yield session
-        finally:
-            await session.close()
+        yield session
+        # Session cleanup is handled by get_async_session's context manager
+        break
 
 
 @pytest.fixture
 async def async_npc_database_session():
     """Provide an async NPC database session for tests that need direct NPC database access."""
-    from ..npc_database import get_npc_async_session
+    from ..npc_database import get_npc_session
 
-    async for session in get_npc_async_session():
-        try:
-            yield session
-        finally:
-            await session.close()
+    async for session in get_npc_session():
+        yield session
+        # Session cleanup is handled by get_npc_session's context manager
+        break
 
 
 @pytest.fixture

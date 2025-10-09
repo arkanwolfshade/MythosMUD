@@ -3,14 +3,17 @@ Database configuration for MythosMUD.
 
 This module provides database connection, session management,
 and initialization for the MythosMUD application.
+
+CRITICAL: Database initialization is LAZY and requires configuration to be loaded first.
+         The system will FAIL LOUDLY if configuration is not properly set.
 """
 
-import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
 from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
@@ -24,60 +27,141 @@ from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
-# Database URL configuration - read from environment variables
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
+# LAZY INITIALIZATION: These are initialized on first use, not at import time
+_engine: AsyncEngine | None = None
+_async_session_maker: async_sessionmaker | None = None
+_database_url: str | None = None
+
+
+def _initialize_database() -> None:
+    """
+    Initialize database engine and session maker from configuration.
+
+    CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
+
+    Raises:
+        ValidationError: If configuration is missing or invalid
+    """
+    global _engine, _async_session_maker, _database_url
+
+    # Avoid re-initialization
+    if _engine is not None:
+        return
+
     context = create_error_context()
-    context.metadata["operation"] = "database_config"
-    log_and_raise(
-        ValidationError,
-        "DATABASE_URL environment variable not set",
-        context=context,
-        details={"config_file": "server/env.example"},
-        user_friendly="Database configuration is missing",
+    context.metadata["operation"] = "database_initialization"
+
+    # Import config_loader here to avoid circular imports
+    try:
+        from .config_loader import get_config
+    except ImportError as e:
+        log_and_raise(
+            ValidationError,
+            "Failed to import config_loader - configuration system unavailable",
+            context=context,
+            details={"import_error": str(e)},
+            user_friendly="Critical system error: configuration system not available",
+        )
+
+    # Load configuration - this will FAIL LOUDLY if MYTHOSMUD_CONFIG_PATH not set
+    try:
+        config = get_config()
+    except (ValueError, FileNotFoundError) as e:
+        log_and_raise(
+            ValidationError,
+            f"Failed to load configuration: {e}",
+            context=context,
+            details={"config_error": str(e)},
+            user_friendly="Database cannot be initialized: configuration not loaded",
+        )
+
+    # Get db_path from config - FAIL LOUDLY if not present
+    db_path = config.get("db_path")
+    if not db_path:
+        log_and_raise(
+            ValidationError,
+            "db_path not found in configuration",
+            context=context,
+            details={
+                "config_file": "server_config.*.yaml",
+                "required_field": "db_path",
+            },
+            user_friendly="Database path not configured in YAML configuration",
+        )
+
+    # Convert db_path to absolute path and construct SQLite URL
+    db_path_obj = Path(db_path).resolve()
+    _database_url = f"sqlite+aiosqlite:///{db_path_obj}"
+
+    logger.info("Database URL configured from YAML", database_url=_database_url, db_path=str(db_path_obj))
+
+    # Determine pool class based on database URL
+    # Use NullPool for tests to prevent SQLite file locking issues
+    pool_class = NullPool if "test" in str(db_path_obj) else StaticPool
+
+    # Create async engine
+    _engine = create_async_engine(
+        _database_url,
+        echo=False,
+        poolclass=pool_class,
+        pool_pre_ping=True,
+        connect_args={
+            "check_same_thread": False,
+            "timeout": 30,
+        },
     )
 
-logger.info("Database URL configured", database_url=DATABASE_URL)
+    # Enable foreign key constraints for SQLite
+    @event.listens_for(_engine.sync_engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        """Enable foreign key constraints for SQLite connections."""
+        if "sqlite" in str(dbapi_connection):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
 
-# Create async engine
-# Use NullPool for tests to prevent SQLite file locking issues
-# StaticPool keeps connections open, which causes problems with SQLite in test environments
-pool_class = NullPool if "test" in DATABASE_URL else StaticPool
+    logger.info("Database engine created", pool_class=pool_class.__name__)
 
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    poolclass=pool_class,
-    pool_pre_ping=True,
-    connect_args={
-        "check_same_thread": False,
-        "timeout": 30,
-    },
-)
+    # Create async session maker
+    _async_session_maker = async_sessionmaker(
+        _engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+        autocommit=False,
+        autoflush=False,
+    )
 
-
-# Enable foreign key constraints for SQLite
-@event.listens_for(engine.sync_engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    """Enable foreign key constraints for SQLite connections."""
-    if "sqlite" in str(dbapi_connection):
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
+    logger.info("Database session maker created")
 
 
-logger.info("Database engine created", pool_class=pool_class.__name__)
+def get_engine() -> AsyncEngine:
+    """
+    Get the database engine, initializing if necessary.
 
-# Create async session maker
-async_session_maker = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
+    Returns:
+        AsyncEngine: The database engine
 
-logger.info("Database session maker created")
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    if _engine is None:
+        _initialize_database()
+    return _engine
+
+
+def get_session_maker() -> async_sessionmaker:
+    """
+    Get the async session maker, initializing if necessary.
+
+    Returns:
+        async_sessionmaker: The session maker
+
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    if _async_session_maker is None:
+        _initialize_database()
+    return _async_session_maker
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -91,7 +175,8 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     context.metadata["operation"] = "database_session"
 
     logger.debug("Creating database session")
-    async with async_session_maker() as session:
+    session_maker = get_session_maker()  # Initialize if needed
+    async with session_maker() as session:
         try:
             logger.debug("Database session created successfully")
             yield session
@@ -113,16 +198,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
                     rollback_error=str(rollback_error),
                 )
             raise
-        finally:
-            logger.debug("Closing database session")
-            try:
-                await session.close()
-            except Exception as close_error:
-                logger.warning(
-                    "Error closing database session",
-                    context=context.to_dict(),
-                    close_error=str(close_error),
-                )
+        # Session is automatically closed by the async context manager
 
 
 async def init_db():
@@ -154,6 +230,7 @@ async def init_db():
         logger.debug("Setting up model relationships")
         setup_relationships()
 
+        engine = get_engine()  # Initialize if needed
         async with engine.begin() as conn:
             logger.info("Creating database tables")
             await conn.run_sync(metadata.create_all)
@@ -179,6 +256,7 @@ async def close_db():
 
     logger.info("Closing database connections")
     try:
+        engine = get_engine()  # Initialize if needed
         await engine.dispose()
         logger.info("Database connections closed")
     except Exception as e:
@@ -200,18 +278,22 @@ def get_database_path() -> Path:
     Returns:
         Path: Path to the database file
     """
-    if DATABASE_URL.startswith("sqlite+aiosqlite:///"):
-        db_path = DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+    # Initialize database if needed
+    if _database_url is None:
+        _initialize_database()
+
+    if _database_url.startswith("sqlite+aiosqlite:///"):
+        db_path = _database_url.replace("sqlite+aiosqlite:///", "")
         return Path(db_path)
     else:
         context = create_error_context()
         context.metadata["operation"] = "get_database_path"
-        context.metadata["database_url"] = DATABASE_URL
+        context.metadata["database_url"] = _database_url
         log_and_raise(
             ValidationError,
-            f"Unsupported database URL: {DATABASE_URL}",
+            f"Unsupported database URL: {_database_url}",
             context=context,
-            details={"database_url": DATABASE_URL},
+            details={"database_url": _database_url},
             user_friendly="Unsupported database configuration",
         )
 

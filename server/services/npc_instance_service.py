@@ -14,7 +14,7 @@ from server.events.event_bus import EventBus
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
-from server.npc_database import get_npc_async_session
+from server.npc_database import get_npc_session
 
 from ..logging_config import get_logger
 
@@ -68,7 +68,7 @@ class NPCInstanceService:
         """
         try:
             # Get the NPC definition from database
-            async for session in get_npc_async_session():
+            async for session in get_npc_session():
                 from server.services.npc_service import npc_service
 
                 definition = await npc_service.get_npc_definition(session, definition_id)

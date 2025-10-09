@@ -3,7 +3,8 @@
 # Secrets should be in .env.unit_test (not committed to git)
 
 # --- Database & Persistence ---
-db_path: ../data/unit_test/players/unit_unit_test_players.db
+db_path: ../data/unit_test/players/unit_test_players.db
+npc_db_path: ../data/unit_test/npcs/unit_test_npcs.db
 
 # --- Logging Configuration ---
 logging:

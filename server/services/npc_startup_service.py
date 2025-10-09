@@ -12,7 +12,7 @@ import random
 from typing import Any
 
 from ..logging_config import get_logger
-from ..npc_database import get_npc_async_session
+from ..npc_database import get_npc_session
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service
 
@@ -58,7 +58,7 @@ class NPCStartupService:
             npc_instance_service = get_npc_instance_service()
 
             # Load NPC definitions from database
-            async for npc_session in get_npc_async_session():
+            async for npc_session in get_npc_session():
                 try:
                     # Get all NPC definitions
                     definitions = await npc_service.get_npc_definitions(npc_session)

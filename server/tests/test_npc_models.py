@@ -163,9 +163,11 @@ class TestNPCSpawnRule:
     @pytest.mark.asyncio
     async def test_spawn_rule_creation(self, test_client, test_npc_database):
         """Test creating an NPC spawn rule."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
             # First create an NPC definition
             npc_def = NPCDefinition(
                 name="Spawnable NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
@@ -193,14 +195,20 @@ class TestNPCSpawnRule:
             assert spawn_rule.min_players == 2
             assert spawn_rule.max_players == 10
             assert spawn_rule.get_spawn_conditions() == {"time_of_day": "night", "weather": "foggy"}
-            break
+        finally:
+            try:
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
 
     @pytest.mark.asyncio
     async def test_spawn_rule_default_values(self, test_client, test_npc_database):
         """Test spawn rule with default values."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
             # Create NPC definition
             npc_def = NPCDefinition(
                 name="Default Spawn NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
@@ -217,14 +225,20 @@ class TestNPCSpawnRule:
             assert spawn_rule.min_players == 0
             assert spawn_rule.max_players == 999
             assert spawn_rule.get_spawn_conditions() == {}
-            break
+        finally:
+            try:
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
 
     @pytest.mark.asyncio
     async def test_spawn_rule_foreign_key_constraint(self, test_client, test_npc_database):
         """Test that spawn rules require valid NPC definitions."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
             # Try to create spawn rule with non-existent NPC definition
             spawn_rule = NPCSpawnRule(
                 npc_definition_id=99999,  # Non-existent ID
@@ -235,49 +249,60 @@ class TestNPCSpawnRule:
 
             with pytest.raises(IntegrityError):
                 await session.commit()
-            break
+        finally:
+            try:
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
 
     @pytest.mark.asyncio
     async def test_spawn_rule_json_conditions(self, test_client, test_npc_database):
         """Test complex spawn conditions in JSON format."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        # Complex spawn conditions
+        complex_conditions = {
+            "time_of_day": "night",
+            "weather": ["foggy", "stormy"],
+            "player_level_min": 5,
+            "player_level_max": 20,
+            "zone_population_max": 50,
+            "events": ["full_moon", "eclipse"],
+            "required_items": ["holy_symbol", "silver_weapon"],
+        }
+
+        # Use async context manager properly to avoid GC connection warnings
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
+            # Create NPC definition
+            npc_def = NPCDefinition(
+                name="Conditional Spawn NPC",
+                npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
+                sub_zone_id="arkham_northside",
+            )
+            session.add(npc_def)
+            await session.commit()
+
+            spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
+
+            # Set complex spawn conditions using the setter method
+            spawn_rule.set_spawn_conditions(complex_conditions)
+
+            session.add(spawn_rule)
+            await session.commit()
+
+            # Verify complex conditions are stored correctly
+            retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
+            result = retrieved.get_spawn_conditions()
+
+            assert result == complex_conditions
+        finally:
+            # Properly close the generator to trigger cleanup
             try:
-                # Create NPC definition
-                npc_def = NPCDefinition(
-                    name="Conditional Spawn NPC",
-                    npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
-                    sub_zone_id="arkham_northside",
-                )
-                session.add(npc_def)
-                await session.commit()
-
-                # Complex spawn conditions
-                complex_conditions = {
-                    "time_of_day": "night",
-                    "weather": ["foggy", "stormy"],
-                    "player_level_min": 5,
-                    "player_level_max": 20,
-                    "zone_population_max": 50,
-                    "events": ["full_moon", "eclipse"],
-                    "required_items": ["holy_symbol", "silver_weapon"],
-                }
-
-                spawn_rule = NPCSpawnRule(npc_definition_id=npc_def.id, sub_zone_id="arkham_northside")
-
-                # Set complex spawn conditions using the setter method
-                spawn_rule.set_spawn_conditions(complex_conditions)
-
-                session.add(spawn_rule)
-                await session.commit()
-
-                # Verify complex conditions are stored correctly
-                retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
-                assert retrieved.get_spawn_conditions() == complex_conditions
-            finally:
-                await session.close()
-            break
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
 
 
 class TestNPCModelEnums:
@@ -297,9 +322,12 @@ class TestNPCDatabaseConstraints:
     @pytest.mark.asyncio
     async def test_npc_definition_required_fields(self, test_client, test_npc_database):
         """Test that required fields cannot be null."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        # Use async context manager properly to avoid GC connection warnings
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
             # Test missing name
             npc_def = NPCDefinition(npc_type=NPCDefinitionType.SHOPKEEPER, sub_zone_id="arkham_northside")
             session.add(npc_def)
@@ -308,14 +336,21 @@ class TestNPCDatabaseConstraints:
                 await session.commit()
 
             await session.rollback()
-            break
+        finally:
+            # Properly close the generator to trigger cleanup
+            try:
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
 
     @pytest.mark.asyncio
     async def test_npc_definition_zone_index(self, test_client, test_npc_database):
         """Test that zone-based queries are efficient."""
-        from server.npc_database import get_npc_async_session
+        from server.npc_database import get_npc_session
 
-        async for session in get_npc_async_session():
+        gen = get_npc_session()
+        session = await gen.__anext__()
+        try:
             # Clean up any existing NPC data to avoid conflicts
             from sqlalchemy import text
 
@@ -343,7 +378,6 @@ class TestNPCDatabaseConstraints:
             await session.commit()
 
             # Query by zone (should use index)
-
             arkham_npcs = await session.execute(
                 select(NPCDefinition).filter(NPCDefinition.sub_zone_id == "arkham_northside")
             )
@@ -351,4 +385,8 @@ class TestNPCDatabaseConstraints:
 
             assert len(arkham_results) == 5
             assert all(npc.sub_zone_id == "arkham_northside" for npc in arkham_results)
-            break
+        finally:
+            try:
+                await gen.__anext__()
+            except StopAsyncIteration:
+                pass
