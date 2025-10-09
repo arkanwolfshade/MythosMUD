@@ -2,8 +2,8 @@
 # This configuration is used for automated E2E testing with Playwright
 
 # --- Database & Persistence ---
-db_path: ../data/e2e_test/players/e2e_unit_test_players.db
-npc_db_path: ../data/e2e_test/npcs/e2e_npcs.db
+db_path: data/e2e_test/players/e2e_players.db
+npc_db_path: data/e2e_test/npcs/e2e_npcs.db
 
 # --- Logging Configuration ---
 logging:
@@ -68,10 +68,10 @@ dual_connections:
 
 # --- File Paths & Directories ---
 data_dir: ./data/
-player_dir: ../data/e2e_test/players/  # TEST DATABASE LOCATION
+player_dir: data/e2e_test/players/  # TEST DATABASE LOCATION
 log_dir: ./logs/
-motd_file: ./data/e2e_test/motd.html
-aliases_dir: ../data/e2e_test/players/aliases
+motd_file: data/e2e_test/motd.html
+aliases_dir: data/e2e_test/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---
@@ -91,17 +91,17 @@ enable_stack_traces: true
 
 # --- Authentication/Accounts ---
 auth_backend: sqlite
-auth_db_file: ../data/e2e_test/users.db  # TEST USERS DATABASE
+auth_db_file: data/e2e_test/players/e2e_players.db  # TEST PLAYERS DATABASE
 registration_enabled: true
 allow_guest_login: false
 
 # --- World Load/Boot Sequence ---
 areas:
-  - ./data/e2e_test/rooms/arkham/
+  - data/e2e_test/rooms/arkham/
 npcs:
-  - ./data/e2e_test/npcs/guards.json
+  - data/e2e_test/npcs/guards.json
 quests:
-  - ./data/e2e_test/quests/tutorial.json
+  - data/e2e_test/quests/tutorial.json
 
 # --- Room Validation ---
 room_validation:

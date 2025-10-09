@@ -53,22 +53,22 @@ def run_server_e2e_tests():
     """Run server-side E2E tests (requires running server)"""
     print("Running server E2E tests...")
     print("WARNING: This requires the server to be running!")
-    print("   Make sure to run './scripts/start_local.ps1' first.")
+    print("   Make sure to run './scripts/start_e2e_test.ps1' first.")
     print()
 
     # Set the required environment variables for the subprocess
     env = os.environ.copy()
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/e2e_test/players/e2e_players.db"
     # Get the project root (one level up from scripts directory)
     project_root = Path(__file__).parent.parent
     # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "logs" / "unit_test"
+    test_logs_dir = project_root / "logs" / "e2e_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Set test environment variables for logging
-    env["MYTHOSMUD_ENV"] = "unit_test"
+    env["MYTHOSMUD_ENV"] = "e2e_test"
     env["MYTHOSMUD_TEST_MODE"] = "true"
-    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "server_config.unit_test.yaml")
-    env["ALIASES_DIR"] = "data/unit_test/players/aliases"
+    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "server_config.e2e_test.yaml")
+    env["ALIASES_DIR"] = "data/e2e_test/players/aliases"
 
     print("Running server E2E tests with pytest...")
     # Change to server directory to use the pytest configuration there

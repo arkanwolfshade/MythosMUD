@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-runtime test-server-runtime lint-sqlalchemy
+.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -14,15 +14,15 @@ help:
 	@echo "  test      - Run all tests (server + client)"
 	@echo "  test-server - Run server tests only"
 	@echo "  test-client - Run client unit tests only (Vitest)"
-	@echo "  test-client-runtime - Run automated client E2E tests (Playwright runtime)"
-	@echo "  test-server-runtime - Run server E2E tests (requires running server)"
+	@echo "  test-client-e2e - Run automated client E2E tests (Playwright e2e)"
+	@echo "  test-server-e2e - Run server E2E tests (requires running server)"
 	@echo "  coverage  - Run coverage for both server and client"
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
 	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
 	@echo ""
 	@echo "E2E Testing:"
-	@echo "  make test-client-runtime  - Automated single-player E2E tests (fast)"
+	@echo "  make test-client-e2e  - Automated single-player E2E tests (fast)"
 	@echo "  See e2e-tests/MULTIPLAYER_TEST_RULES.md for multi-player MCP scenarios"
 
 clean:
@@ -47,10 +47,10 @@ test-server:
 test-client:
 	cd $(PROJECT_ROOT) && python scripts/test.py --client-only
 
-test-client-runtime:
+test-client-e2e:
 	cd $(PROJECT_ROOT) && python scripts/test.py --client-e2e-only
 
-test-server-runtime:
+test-server-e2e:
 	cd $(PROJECT_ROOT) && python scripts/test.py --server-e2e-only
 
 coverage:
