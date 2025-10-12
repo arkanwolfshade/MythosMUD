@@ -260,6 +260,10 @@ export const connectionMachine = setup({
         WS_CONNECTING: {
           target: 'connecting_ws',
         },
+        WS_CONNECTED: {
+          target: 'fully_connected',
+          actions: 'markFullyConnected',
+        },
         CONNECT: {
           target: 'connecting_ws',
         },

@@ -200,7 +200,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       }
 
       // Sanitize command input
-      const sanitizedCommand = inputSanitizer.sanitize(command);
+      const sanitizedCommand = inputSanitizer.sanitizeCommand(command);
 
       // Create command message
       const message = JSON.stringify({

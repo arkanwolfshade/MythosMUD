@@ -75,16 +75,16 @@ class NATSService:
             pass
 
         try:
-            # Get NATS connection URL from config
-            nats_url = self.config.get("url", "nats://localhost:4222")
+            # Get NATS connection URL from config (Pydantic attribute access)
+            nats_url = self.config.url
 
-            # Connection options
+            # Connection options (Pydantic attribute access)
             connect_options = {
-                "reconnect_time_wait": self.config.get("reconnect_time_wait", 1),
+                "reconnect_time_wait": self.config.reconnect_time_wait,
                 "max_reconnect_attempts": self._max_retries,
-                "connect_timeout": self.config.get("connect_timeout", 5),
-                "ping_interval": self.config.get("ping_interval", 30),
-                "max_outstanding_pings": self.config.get("max_outstanding_pings", 5),
+                "connect_timeout": self.config.connect_timeout,
+                "ping_interval": self.config.ping_interval,
+                "max_outstanding_pings": self.config.max_outstanding_pings,
             }
 
             logger.info("Connecting to NATS server", url=nats_url, state=self.state_machine.current_state.id)
@@ -123,7 +123,7 @@ class NATSService:
             logger.error(
                 "Failed to connect to NATS server",
                 error=str(e),
-                url=self.config.get("url", "nats://localhost:4222"),
+                url=self.config.url,
                 retry_count=self._connection_retries,
                 max_retries=self._max_retries,
                 state=self.state_machine.current_state.id,

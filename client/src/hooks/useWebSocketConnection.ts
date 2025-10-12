@@ -90,7 +90,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     try {
       // Apply CSRF protection and input sanitization
       const protectedMessage = csrfProtection.addToken(message);
-      const sanitizedMessage = inputSanitizer.sanitize(protectedMessage);
+      const sanitizedMessage = inputSanitizer.sanitizeCommand(protectedMessage);
 
       websocketRef.current.send(sanitizedMessage);
       logger.debug('WebSocketConnection', 'Message sent', { message: sanitizedMessage });
@@ -115,7 +115,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       const wsHost = window.location.host;
       const encodedToken = encodeURIComponent(authToken);
       const encodedSession = encodeURIComponent(sessionId);
-      const wsUrl = `${wsProtocol}//${wsHost}/ws?token=${encodedToken}&session_id=${encodedSession}`;
+      const wsUrl = `${wsProtocol}//${wsHost}/api/ws?token=${encodedToken}&session_id=${encodedSession}`;
 
       logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
 
@@ -134,7 +134,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           }
         }, 30000);
 
-        resourceManager.addInterval(pingIntervalRef.current);
+        resourceManager.registerInterval(pingIntervalRef.current);
 
         onConnectedRef.current?.();
       };

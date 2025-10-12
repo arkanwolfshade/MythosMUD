@@ -85,7 +85,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       const sseSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const encodedToken = encodeURIComponent(authToken);
       const encodedSession = encodeURIComponent(sseSessionId);
-      const sseUrl = `/sse/events?token=${encodedToken}&session_id=${encodedSession}`;
+      const sseUrl = `/api/events?token=${encodedToken}&session_id=${encodedSession}`;
 
       logger.info('SSEConnection', 'Connecting to SSE', { url: sseUrl });
 
@@ -93,7 +93,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       eventSourceRef.current = eventSource;
 
       // Track as resource for cleanup
-      resourceManager.addEventSource(eventSource);
+      resourceManager.registerEventSource(eventSource);
 
       eventSource.onopen = () => {
         logger.info('SSEConnection', 'SSE connected successfully');
