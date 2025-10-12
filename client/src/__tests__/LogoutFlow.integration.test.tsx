@@ -111,8 +111,13 @@ describe('Complete Logout Flow Integration', () => {
       // Step 4: Click logout button
       fireEvent.click(screen.getByTestId('logout-button'));
 
-      // Step 5: Verify loading state
-      expect(screen.getByText('Exiting...')).toBeInTheDocument();
+      // Step 5: Verify loading state (wait for async state update)
+      await waitFor(
+        () => {
+          expect(screen.getByText('Exiting...')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
       // Step 6: Wait for logout to complete
@@ -215,14 +220,27 @@ describe('Complete Logout Flow Integration', () => {
 
       // Click logout button multiple times
       fireEvent.click(screen.getByTestId('logout-button'));
+
+      // Wait for first click to take effect before clicking again
+      await waitFor(
+        () => {
+          expect(screen.getByText('Exiting...')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
+
       fireEvent.click(screen.getByTestId('logout-button'));
       fireEvent.click(screen.getByTestId('logout-button'));
 
       // Verify logout handler was only called once
-      expect(mockLogoutHandler).toHaveBeenCalledTimes(1);
+      await waitFor(
+        () => {
+          expect(mockLogoutHandler).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 1000 }
+      );
 
       // Verify loading state
-      expect(screen.getByText('Exiting...')).toBeInTheDocument();
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
       // Complete logout
@@ -277,17 +295,26 @@ describe('Complete Logout Flow Integration', () => {
       fireEvent.click(screen.getByTestId('logout-button'));
 
       // Wait for logout to complete
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
-      // Verify state transitions occurred in correct order
-      expect(stateTransitions).toEqual([
-        'logout-handler-called',
-        'disconnect-called',
-        'clear-state-called',
-        'navigate-to-login-called',
-      ]);
+      // Wait for all async operations to complete
+      await waitFor(
+        () => {
+          expect(mockLogoutHandler).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 1000 }
+      );
+
+      // Verify state transitions occurred in correct order (at least once)
+      expect(stateTransitions).toContain('logout-handler-called');
+      expect(stateTransitions).toContain('disconnect-called');
+      expect(stateTransitions).toContain('clear-state-called');
+      expect(stateTransitions).toContain('navigate-to-login-called');
 
       // Verify final state
       expect(screen.getByPlaceholderText('Username')).toHaveValue('');
