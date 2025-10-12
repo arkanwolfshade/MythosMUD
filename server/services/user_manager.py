@@ -1022,37 +1022,31 @@ class UserManager:
 
 def _get_proper_data_dir() -> Path:
     """
-    Get the proper data directory resolved relative to project root.
+    Get the proper environment-aware data directory for user management.
 
-    This function uses the same logic as logging_config.py to resolve
-    the data directory relative to the project root, ensuring consistency
-    across the application.
+    Uses LOGGING_ENVIRONMENT from Pydantic config to determine the correct
+    environment subdirectory (local, unit_test, e2e_test, production).
+
+    AI: Environment separation prevents test data pollution.
     """
-    # Note: data_dir not in new config structure, using hardcoded value
-    data_dir = "data"
+    from ..config import get_config
 
-    # Resolve data_dir relative to project root (same logic as logging_config.py)
-    data_path = Path(data_dir)
-    if not data_path.is_absolute():
-        # Find the project root (where pyproject.toml is located)
-        current_dir = Path.cwd()
-        project_root = None
-        for parent in [current_dir] + list(current_dir.parents):
-            if (parent / "pyproject.toml").exists():
-                project_root = parent
-                break
+    config = get_config()
+    environment = config.logging.environment
 
-        if project_root:
-            data_path = project_root / data_path
-            # Resolve to handle any .. or . in the path
-            data_path = data_path.resolve()
-        else:
-            # Fallback to current directory if project root not found
-            data_path = current_dir / data_path
-            data_path = data_path.resolve()
+    # Find the project root (where pyproject.toml is located)
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent
+    while project_root.parent != project_root:
+        if (project_root / "pyproject.toml").exists():
+            break
+        project_root = project_root.parent
 
-    return data_path / "user_management"
+    # CRITICAL: Include environment in path for data isolation
+    # data/{environment}/user_management NOT data/user_management
+    data_path = project_root / "data" / environment / "user_management"
+    return data_path
 
 
-# Global user manager instance with proper path resolution
+# Global user manager instance with environment-aware path resolution
 user_manager = UserManager(data_dir=_get_proper_data_dir())

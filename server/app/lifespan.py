@@ -67,32 +67,21 @@ async def lifespan(app: FastAPI):
 
     app.state.player_service = PlayerService(app.state.persistence)
 
-    # Initialize UserManager with proper data directory from config
+    # Initialize UserManager with environment-aware data directory
     config = get_config()
-    # Note: data_dir not in new config, using hardcoded default
-    data_dir = "data"
+    environment = config.logging.environment
 
-    # Resolve data_dir relative to project root (same logic as logging_config.py)
-    data_path = Path(data_dir)
-    if not data_path.is_absolute():
-        # Find the project root (where pyproject.toml is located)
-        current_dir = Path.cwd()
-        project_root = None
-        for parent in [current_dir] + list(current_dir.parents):
-            if (parent / "pyproject.toml").exists():
-                project_root = parent
-                break
+    # Find the project root (where pyproject.toml is located)
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent
+    while project_root.parent != project_root:
+        if (project_root / "pyproject.toml").exists():
+            break
+        project_root = project_root.parent
 
-        if project_root:
-            data_path = project_root / data_path
-            # Resolve to handle any .. or . in the path
-            data_path = data_path.resolve()
-        else:
-            # Fallback to current directory if project root not found
-            data_path = current_dir / data_path
-            data_path = data_path.resolve()
-
-    user_management_dir = data_path / "user_management"
+    # CRITICAL: Include environment in path for data isolation
+    # data/{environment}/user_management NOT data/user_management
+    user_management_dir = project_root / "data" / environment / "user_management"
     app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
