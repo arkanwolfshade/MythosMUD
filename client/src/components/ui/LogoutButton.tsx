@@ -44,7 +44,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
     ? 'bg-mythos-terminal-surface border-mythos-terminal-error text-mythos-terminal-error opacity-50 cursor-not-allowed hover:bg-mythos-terminal-surface hover:text-mythos-terminal-error hover:animate-none'
     : 'bg-mythos-terminal-surface border-mythos-terminal-error text-mythos-terminal-error hover:bg-mythos-terminal-error hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-error cursor-pointer hover:animate-eldritch-scale';
 
-  const sizeClasses = 'px-4 py-2 text-base';
+  const sizeClasses = 'px-4 py-5 text-base min-h-[44px]';
   const widthClasses = 'w-full';
 
   const classes = [baseClasses, variantClasses, sizeClasses, widthClasses, className].join(' ');

@@ -32,8 +32,9 @@ class TestDatabaseConfiguration:
         """Test default database path from configuration."""
         # The actual value set by conftest.py uses an absolute path
         # Check that it contains the expected path components (handle both Windows and Unix paths)
+        # Test environment sets DATABASE_URL to server/tests/data/players/unit_test_players.db
         db_path = get_database_path()
-        assert "data/unit_test/players/unit_test_players.db" in str(db_path).replace("\\", "/")
+        assert "server/tests/data/players/unit_test_players.db" in str(db_path).replace("\\", "/")
 
     def test_metadata_exists(self):
         """Test that metadata is properly initialized."""

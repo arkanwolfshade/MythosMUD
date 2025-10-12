@@ -29,7 +29,7 @@ test.describe('Logout Error Handling', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Verify logout confirmation appears
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=You have been logged out').first()).toBeVisible({ timeout: 10000 });
 
     // Verify redirect to login page
     await expect(page.locator(SELECTORS.USERNAME_INPUT)).toBeVisible({ timeout: 10000 });
@@ -85,7 +85,7 @@ test.describe('Logout Error Handling', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Verify logout works after recovery
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=You have been logged out').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('should handle session expiry during logout', async ({ page }) => {
@@ -115,7 +115,7 @@ test.describe('Logout Error Handling', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Should handle gracefully and only logout once
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=You have been logged out').first()).toBeVisible({ timeout: 10000 });
 
     // Verify redirect to login
     await expect(page.locator(SELECTORS.USERNAME_INPUT)).toBeVisible({ timeout: 10000 });
@@ -168,13 +168,13 @@ test.describe('Logout Error Handling', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Should still logout successfully
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=You have been logged out').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('should prevent re-logout after successful logout', async ({ page }) => {
     // Logout first
     await page.click(SELECTORS.LOGOUT_BUTTON);
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=You have been logged out').first()).toBeVisible({ timeout: 10000 });
 
     // Verify logout button is no longer accessible
     const logoutButtonExists = await page.locator(SELECTORS.LOGOUT_BUTTON).isVisible();

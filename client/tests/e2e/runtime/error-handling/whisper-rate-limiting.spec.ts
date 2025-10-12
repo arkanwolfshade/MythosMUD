@@ -19,7 +19,7 @@
 import { expect, test } from '@playwright/test';
 import { loginAsPlayer } from '../fixtures/auth';
 import { getMessages, sendCommand, waitForMessage } from '../fixtures/player';
-import { ERROR_MESSAGES, RATE_LIMITS, TEST_PLAYERS } from '../fixtures/test-data';
+import { ERROR_MESSAGES, RATE_LIMITS, TEST_MESSAGES, TEST_PLAYERS } from '../fixtures/test-data';
 
 test.describe('Whisper Rate Limiting', () => {
   test.beforeEach(async ({ page }) => {

@@ -41,6 +41,10 @@ class TestMovementIntegration:
             mock_request.app.state.persistence = mock_persistence
             current_user = {"username": "testplayer"}
             mock_alias_storage = Mock()
+            # Mock get_player_aliases to return empty list (no aliases for this player)
+            mock_alias_storage.get_player_aliases.return_value = []
+            # Mock get_alias to return None (no alias for "go" command)
+            mock_alias_storage.get_alias.return_value = None
 
             # Test go command
             result = await process_command(
@@ -77,6 +81,10 @@ class TestMovementIntegration:
             mock_request.app.state.persistence = mock_persistence
             current_user = {"username": "testplayer"}
             mock_alias_storage = Mock()
+            # Mock get_player_aliases to return empty list (no aliases for this player)
+            mock_alias_storage.get_player_aliases.return_value = []
+            # Mock get_alias to return None (no alias for "go" command)
+            mock_alias_storage.get_alias.return_value = None
 
             # Test go command
             result = await process_command(

@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ..api.admin import npc_router as admin_npc_router
 from ..api.game import game_router
+from ..api.metrics import router as metrics_router
 from ..api.monitoring import router as monitoring_router
 from ..api.players import player_router
 from ..api.professions import profession_router
@@ -94,6 +95,7 @@ def create_app() -> FastAPI:
     app.include_router(profession_router)
     app.include_router(game_router)
     app.include_router(monitoring_router)
+    app.include_router(metrics_router)  # NEW: NATS metrics endpoint (CRITICAL-4)
     app.include_router(realtime_router)
     app.include_router(room_router)
     app.include_router(admin_npc_router)

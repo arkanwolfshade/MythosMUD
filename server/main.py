@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer
 
 from .app.factory import create_app
 from .auth.users import get_current_user
-from .config_loader import get_config
+from .config import get_config
 from .logging_config import get_logger, setup_logging
 
 # Suppress passlib deprecation warning about pkg_resources
@@ -37,7 +37,7 @@ def main():
     """Main entry point for the MythosMUD server."""
     # Set up logging based on configuration
     config = get_config()
-    setup_logging(config)
+    setup_logging(config.to_legacy_dict())
 
     logger.info("Starting MythosMUD server...")
     app = create_app()
@@ -50,8 +50,8 @@ def main():
 
 # Set up logging when module is imported
 config = get_config()
-logger.info("Setting up logging with config", config=config)
-setup_logging(config)
+logger.info("Setting up logging with config", config=config.to_legacy_dict())
+setup_logging(config.to_legacy_dict())
 logger.info("Logging setup completed")
 
 # Create the FastAPI application
@@ -84,8 +84,8 @@ if __name__ == "__main__":
     config = get_config()
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
-        host=config["host"],
-        port=config["port"],
+        host=config.server.host,
+        port=config.server.port,
         reload=True,
         reload_excludes=["server/tests/*"],  # Exclude test directory from hot reloading
         # Use our StructLog system for all logging

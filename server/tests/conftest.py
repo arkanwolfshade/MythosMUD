@@ -33,6 +33,15 @@ os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
 
+# CRITICAL: Pydantic ServerConfig requires SERVER_PORT - set at module level
+# This must happen BEFORE any server modules are imported during collection
+os.environ.setdefault("SERVER_PORT", "54731")
+os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+os.environ.setdefault("MYTHOSMUD_ADMIN_PASSWORD", "test-admin-password-for-development")
+os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+os.environ.setdefault("GAME_ROOM_DATA_PATH", "data/rooms")
+os.environ.setdefault("GAME_ALIASES_DIR", str(project_root / "data" / "unit_test" / "players" / "aliases"))
+
 # CRITICAL: Set database URLs IMMEDIATELY to prevent import-time failures
 # This must happen before any database modules are imported
 
@@ -54,8 +63,8 @@ else:
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
     print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
 
-# Ensure NPC_DATABASE_URL is set with absolute path
-npc_database_url = os.getenv("NPC_DATABASE_URL")
+# Ensure DATABASE_NPC_URL is set with absolute path
+npc_database_url = os.getenv("DATABASE_NPC_URL")
 if npc_database_url:
     # Convert relative paths to absolute paths
     if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
@@ -65,14 +74,14 @@ if npc_database_url:
         relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
         absolute_path = project_root / relative_path
         absolute_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-        print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+        print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
 else:
     # Use absolute path to ensure NPC database is created in the correct location
     test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
     test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
-    print(f"[OK] Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
+    os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
 
 # Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
 test_logs_dir = project_root / "logs" / "unit_test"
@@ -104,7 +113,7 @@ def sync_test_environment():
 
     # Save original environment variables to restore after test
     original_database_url = os.environ.get("DATABASE_URL")
-    original_npc_database_url = os.environ.get("NPC_DATABASE_URL")
+    original_npc_database_url = os.environ.get("DATABASE_NPC_URL")
 
     # Use unique environment name for each test
     env_name = f"pytest_sync_{uuid.uuid4().hex[:8]}"
@@ -124,7 +133,7 @@ def sync_test_environment():
             if original_database_url:
                 os.environ["DATABASE_URL"] = original_database_url
             if original_npc_database_url:
-                os.environ["NPC_DATABASE_URL"] = original_npc_database_url
+                os.environ["DATABASE_NPC_URL"] = original_npc_database_url
 
             # Force re-initialization from restored environment variables
             # by resetting global state (don't restore old state, let it reinitialize)
@@ -140,9 +149,9 @@ def sync_test_environment():
             server.npc_database._npc_database_url = None
 
             # Reset config cache to force reload with correct environment variables
-            from server import config_loader
+            from server.config import reset_config
 
-            config_loader._config = None
+            reset_config()
 
             loop.close()
 
@@ -155,6 +164,10 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+
+    # CRITICAL: Pydantic ServerConfig requires SERVER_PORT
+    os.environ.setdefault("SERVER_PORT", "54731")
+    os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
@@ -177,8 +190,8 @@ def pytest_configure(config):
         test_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 
-    # Ensure NPC_DATABASE_URL is set with absolute path
-    npc_database_url = os.getenv("NPC_DATABASE_URL")
+    # Ensure DATABASE_NPC_URL is set with absolute path
+    npc_database_url = os.getenv("DATABASE_NPC_URL")
     if npc_database_url:
         # Convert relative paths to absolute paths
         if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
@@ -188,13 +201,13 @@ def pytest_configure(config):
             relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
             absolute_path = project_root / relative_path
             absolute_path.parent.mkdir(parents=True, exist_ok=True)
-            os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-            print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+            os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+            print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
     else:
         # Use absolute path to ensure NPC database is created in the correct location
         test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
         test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
 
     # Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
     test_logs_dir = project_root / "logs" / "unit_test"

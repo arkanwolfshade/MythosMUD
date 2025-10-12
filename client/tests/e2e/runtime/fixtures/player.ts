@@ -48,8 +48,9 @@ export async function waitForMessage(
  * @returns Array of message text content
  */
 export async function getMessages(page: Page): Promise<string[]> {
-  const messageElements = await page.locator(SELECTORS.MESSAGE_CONTAINER).all();
-  const messages = await Promise.all(messageElements.map(el => el.textContent()));
+  // Get message text from data-message-text attribute to exclude timestamps
+  const messageElements = await page.locator('.message-text').all();
+  const messages = await Promise.all(messageElements.map(el => el.getAttribute('data-message-text')));
   return messages.map(m => m?.trim() || '').filter(m => m.length > 0);
 }
 

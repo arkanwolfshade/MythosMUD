@@ -465,3 +465,408 @@ class TestPlayerProfessionIntegration:
         assert len(players_with_gutter_rat) == 1
         assert players_with_gutter_rat[0][0] == "Player2"
         assert players_with_gutter_rat[0][1] == "Gutter Rat"
+
+
+class TestProfessionHelperMethods:
+    """Test Profession model helper methods."""
+
+    @pytest.fixture
+    def db_session(self):
+        """Create an in-memory SQLite database for testing."""
+        engine = create_engine("sqlite:///:memory:", echo=False)
+        from server.metadata import metadata
+
+        metadata.create_all(engine)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        yield session
+        session.close()
+
+    def test_get_stat_requirements_valid_json(self, db_session):
+        """Test get_stat_requirements with valid JSON."""
+        # Arrange
+        requirements = {"strength": 12, "intelligence": 10}
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="A learned individual",
+            flavor_text="Knowledge is power",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_stat_requirements()
+
+        # Assert
+        assert result == requirements
+
+    def test_get_stat_requirements_invalid_json(self, db_session):
+        """Test get_stat_requirements with invalid JSON returns empty dict."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="A learned individual",
+            flavor_text="Knowledge",
+            stat_requirements="invalid json{",
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_stat_requirements()
+
+        # Assert
+        assert result == {}
+
+    def test_get_stat_requirements_none_value(self, db_session):
+        """Test get_stat_requirements with None value returns empty dict."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="A learned individual",
+            flavor_text="Knowledge",
+            mechanical_effects="{}",
+        )
+        # Manually set to None to simulate edge case
+        profession.stat_requirements = None
+
+        # Act
+        result = profession.get_stat_requirements()
+
+        # Assert
+        assert result == {}
+
+    def test_set_stat_requirements(self, db_session):
+        """Test set_stat_requirements stores requirements as JSON."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="A fighter",
+            flavor_text="Strength",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        new_requirements = {"strength": 15, "constitution": 14}
+        profession.set_stat_requirements(new_requirements)
+        db_session.commit()
+
+        # Assert
+        assert profession.stat_requirements == json.dumps(new_requirements)
+        assert profession.get_stat_requirements() == new_requirements
+
+    def test_get_mechanical_effects_valid_json(self, db_session):
+        """Test get_mechanical_effects with valid JSON."""
+        # Arrange
+        effects = {"combat_bonus": 2, "magic_bonus": 1}
+        profession = Profession(
+            id=0,
+            name="Mage",
+            description="A spellcaster",
+            flavor_text="Magic",
+            stat_requirements="{}",
+            mechanical_effects=json.dumps(effects),
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_mechanical_effects()
+
+        # Assert
+        assert result == effects
+
+    def test_get_mechanical_effects_invalid_json(self, db_session):
+        """Test get_mechanical_effects with invalid JSON returns empty dict."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Mage",
+            description="A spellcaster",
+            flavor_text="Magic",
+            stat_requirements="{}",
+            mechanical_effects="invalid json{",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_mechanical_effects()
+
+        # Assert
+        assert result == {}
+
+    def test_set_mechanical_effects(self, db_session):
+        """Test set_mechanical_effects stores effects as JSON."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="A fighter",
+            flavor_text="Strength",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        new_effects = {"damage_bonus": 3, "armor_bonus": 2}
+        profession.set_mechanical_effects(new_effects)
+        db_session.commit()
+
+        # Assert
+        assert profession.mechanical_effects == json.dumps(new_effects)
+        assert profession.get_mechanical_effects() == new_effects
+
+    def test_meets_stat_requirements_all_met(self, db_session):
+        """Test meets_stat_requirements when all requirements are met."""
+        # Arrange
+        requirements = {"strength": 12, "intelligence": 10}
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="Learned",
+            flavor_text="Knowledge",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        player_stats = {"strength": 15, "intelligence": 12, "wisdom": 10}
+
+        # Act
+        result = profession.meets_stat_requirements(player_stats)
+
+        # Assert
+        assert result is True
+
+    def test_meets_stat_requirements_not_met(self, db_session):
+        """Test meets_stat_requirements when requirements are not met."""
+        # Arrange
+        requirements = {"strength": 12, "intelligence": 10}
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="Learned",
+            flavor_text="Knowledge",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        player_stats = {"strength": 8, "intelligence": 12}  # strength too low
+
+        # Act
+        result = profession.meets_stat_requirements(player_stats)
+
+        # Assert
+        assert result is False
+
+    def test_meets_stat_requirements_exact_match(self, db_session):
+        """Test meets_stat_requirements with exact stat match."""
+        # Arrange
+        requirements = {"strength": 12, "intelligence": 10}
+        profession = Profession(
+            id=0,
+            name="Scholar",
+            description="Learned",
+            flavor_text="Knowledge",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        player_stats = {"strength": 12, "intelligence": 10}  # Exact match
+
+        # Act
+        result = profession.meets_stat_requirements(player_stats)
+
+        # Assert
+        assert result is True
+
+    def test_meets_stat_requirements_missing_stat_defaults_to_zero(self, db_session):
+        """Test meets_stat_requirements when player missing a required stat."""
+        # Arrange
+        requirements = {"strength": 12}
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="Fighter",
+            flavor_text="Strength",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        player_stats = {"intelligence": 15}  # Missing strength stat
+
+        # Act
+        result = profession.meets_stat_requirements(player_stats)
+
+        # Assert
+        assert result is False  # 0 < 12
+
+    def test_meets_stat_requirements_no_requirements(self, db_session):
+        """Test meets_stat_requirements with no requirements."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Tramp",
+            description="No requirements",
+            flavor_text="Freedom",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        player_stats = {"strength": 5, "intelligence": 5}
+
+        # Act
+        result = profession.meets_stat_requirements(player_stats)
+
+        # Assert
+        assert result is True  # No requirements means always passes
+
+    def test_is_available_for_selection_true(self, db_session):
+        """Test is_available_for_selection when available."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="Fighter",
+            flavor_text="Strength",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+            is_available=True,
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.is_available_for_selection()
+
+        # Assert
+        assert result is True
+
+    def test_is_available_for_selection_false(self, db_session):
+        """Test is_available_for_selection when not available."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="Fighter",
+            flavor_text="Strength",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+            is_available=False,
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.is_available_for_selection()
+
+        # Assert
+        assert result is False
+
+    def test_get_requirement_display_text_no_requirements(self, db_session):
+        """Test get_requirement_display_text with no requirements."""
+        # Arrange
+        profession = Profession(
+            id=0,
+            name="Tramp",
+            description="No requirements",
+            flavor_text="Freedom",
+            stat_requirements="{}",
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_requirement_display_text()
+
+        # Assert
+        assert result == "No requirements"
+
+    def test_get_requirement_display_text_single_requirement(self, db_session):
+        """Test get_requirement_display_text with single requirement."""
+        # Arrange
+        requirements = {"strength": 12}
+        profession = Profession(
+            id=0,
+            name="Warrior",
+            description="Fighter",
+            flavor_text="Strength",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_requirement_display_text()
+
+        # Assert
+        assert result == "Minimum: Strength 12"
+
+    def test_get_requirement_display_text_multiple_requirements(self, db_session):
+        """Test get_requirement_display_text with multiple requirements."""
+        # Arrange
+        requirements = {"strength": 12, "intelligence": 10, "wisdom": 8}
+        profession = Profession(
+            id=0,
+            name="Paladin",
+            description="Holy warrior",
+            flavor_text="Faith and steel",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_requirement_display_text()
+
+        # Assert
+        assert result.startswith("Minimum: ")
+        assert "Strength 12" in result
+        assert "Intelligence 10" in result
+        assert "Wisdom 8" in result
+
+    def test_get_requirement_display_text_capitalization(self, db_session):
+        """Test that stat names are properly capitalized in display text."""
+        # Arrange
+        requirements = {"occult_knowledge": 15}
+        profession = Profession(
+            id=0,
+            name="Cultist",
+            description="Dark practitioner",
+            flavor_text="Forbidden knowledge",
+            stat_requirements=json.dumps(requirements),
+            mechanical_effects="{}",
+        )
+        db_session.add(profession)
+        db_session.commit()
+
+        # Act
+        result = profession.get_requirement_display_text()
+
+        # Assert
+        assert result == "Minimum: Occult_knowledge 15"  # capitalize() only caps first letter

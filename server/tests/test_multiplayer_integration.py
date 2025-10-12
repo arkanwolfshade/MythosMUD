@@ -18,19 +18,27 @@ class TestMultiplayerIntegration:
     """Test multiplayer integration functionality."""
 
     @pytest.fixture
-    def event_bus(self, event_bus):
+    def event_bus(self):
         """Create a test event bus."""
-        return event_bus
+        from ..events import EventBus
+
+        return EventBus()
 
     @pytest.fixture
-    def connection_manager(self, connection_manager):
+    def connection_manager(self, event_bus):
         """Create a test connection manager."""
-        return connection_manager
+        from ..realtime.connection_manager import ConnectionManager
+
+        return ConnectionManager(event_publisher=event_bus)
 
     @pytest.fixture
-    def event_handler(self, event_handler):
+    def event_handler(self, event_bus, connection_manager):
         """Create a test event handler."""
-        return event_handler
+        from ..realtime.event_handler import RealTimeEventHandler
+
+        handler = RealTimeEventHandler(event_bus)
+        handler.connection_manager = connection_manager
+        return handler
 
     @pytest.fixture
     def mock_player(self):
@@ -136,10 +144,12 @@ class TestMultiplayerIntegration:
         connection_manager.online_players = {}
         connection_manager.room_occupants = {}
 
-        # Mock the persistence to return a proper room object
+        # Mock the persistence (it's None by default, need to create it first)
+        mock_persistence = MagicMock()
         mock_room = MagicMock()
         mock_room.id = mock_player.current_room_id
-        connection_manager.persistence.get_room.return_value = mock_room
+        mock_persistence.get_room.return_value = mock_room
+        connection_manager.persistence = mock_persistence
 
         # Simulate player connection
         await connection_manager._track_player_connected("player1", mock_player)

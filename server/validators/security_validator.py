@@ -18,11 +18,12 @@ import strip_ansi
 # Patterns to reject for command injection (expand as needed)
 # These patterns are more specific than the command model validators
 # to avoid false positives while still catching injection attempts
+# NOTE: Focus on actual code execution patterns, not just keywords
 INJECTION_PATTERNS = [
-    r"[;|&]",  # shell metacharacters
-    r"\b(or|and)\b.*=",  # SQL injection
-    r"__import__|eval|exec|system|os\.",  # Python injection
-    r"%[a-zA-Z]",  # format string
+    r"[;|]",  # shell metacharacters (removed & as it's safe in messages)
+    r"\b(or|and)\b.*=",  # SQL injection with assignment (flexible spacing)
+    r"(__import__|eval|exec)\s*\(|os\.system\s*\(|os\.popen\s*\(",  # Python function calls, not keywords
+    r"%\d*[sdxXfFgGeEcCbrpP]",  # format string specifiers (not just %)
     r"<script[^>]*>",  # XSS script tags
     r"javascript:",  # javascript: URLs
     r"on\w+\s*=",  # event handlers (onclick, onload, etc.)
@@ -156,8 +157,9 @@ def validate_message_content(value: str) -> str:
     # First sanitize the input
     sanitized = comprehensive_sanitize_input(value)
 
-    # Check for potentially dangerous characters
-    dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+    # Check for truly dangerous characters (HTML/XSS only)
+    # Allow special chars like !@#$%^&*() as they're safe in messages
+    dangerous_chars = ["<", ">"]  # Only block HTML tags
     found_dangerous = [char for char in dangerous_chars if char in sanitized]
 
     if found_dangerous:
@@ -193,8 +195,8 @@ def validate_action_content(value: str) -> str:
     # First sanitize the input
     sanitized = comprehensive_sanitize_input(value)
 
-    # Check for potentially dangerous characters
-    dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+    # Check for truly dangerous characters (HTML/XSS only)
+    dangerous_chars = ["<", ">"]
     found_dangerous = [char for char in dangerous_chars if char in sanitized]
 
     if found_dangerous:
@@ -314,8 +316,8 @@ def validate_reason_content(value: str) -> str:
     # First sanitize the input
     sanitized = comprehensive_sanitize_input(value)
 
-    # Check for potentially dangerous characters
-    dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+    # Check for truly dangerous characters (HTML/XSS only)
+    dangerous_chars = ["<", ">"]
     found_dangerous = [char for char in dangerous_chars if char in sanitized]
 
     if found_dangerous:
@@ -351,8 +353,8 @@ def validate_pose_content(value: str) -> str:
     # First sanitize the input
     sanitized = comprehensive_sanitize_input(value)
 
-    # Check for potentially dangerous characters
-    dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+    # Check for truly dangerous characters (HTML/XSS only)
+    dangerous_chars = ["<", ">"]
     found_dangerous = [char for char in dangerous_chars if char in sanitized]
 
     if found_dangerous:
@@ -456,9 +458,9 @@ def get_dangerous_characters() -> list[str]:
     Get the list of dangerous characters used in validation.
 
     Returns:
-        List[str]: List of dangerous characters
+        List[str]: List of dangerous characters (HTML/XSS only)
     """
-    return ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
+    return ["<", ">"]  # Only block HTML tags
 
 
 def get_injection_patterns() -> list[str]:

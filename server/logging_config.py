@@ -123,23 +123,40 @@ def detect_environment() -> str:
     Detect the current environment based on various indicators.
 
     Returns:
-        Environment name: "test", "development", "staging", or "production"
-    """
-    # Check if running under pytest
-    if "pytest" in sys.modules or "pytest" in sys.argv[0]:
-        return "test"
+        Environment name: "e2e_test", "unit_test", "local", or "production"
 
-    # Check environment variable
+    Note: Valid environments are defined in server_config.*.yaml files:
+        - e2e_test: End-to-end testing with Playwright
+        - unit_test: Unit and integration testing with pytest
+        - local: Local development
+        - production: Production deployment
+    """
+    # Check if running under pytest (unit tests)
+    if "pytest" in sys.modules or "pytest" in sys.argv[0]:
+        return "unit_test"
+
+    # Check explicit environment variable
     env = os.getenv("MYTHOSMUD_ENV")
     if env:
         return env
 
     # Check if test configuration is being used
     if os.getenv("MYTHOSMUD_TEST_MODE"):
-        return "test"
+        return "unit_test"
 
-    # Default to development
-    return "development"
+    # Try to determine from config path
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+    if "e2e_test" in config_path:
+        return "e2e_test"
+    elif "unit_test" in config_path:
+        return "unit_test"
+    elif "production" in config_path:
+        return "production"
+    elif "local" in config_path:
+        return "local"
+
+    # Default to local (not "development" - that's not a valid environment)
+    return "local"
 
 
 def _event_only_renderer(_logger: Any, _name: str, event_dict: dict[str, Any]) -> str:

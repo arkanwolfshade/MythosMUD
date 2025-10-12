@@ -1028,10 +1028,8 @@ def _get_proper_data_dir() -> Path:
     the data directory relative to the project root, ensuring consistency
     across the application.
     """
-    from ..config_loader import get_config
-
-    config = get_config()
-    data_dir = config.get("data_dir", "data")
+    # Note: data_dir not in new config structure, using hardcoded value
+    data_dir = "data"
 
     # Resolve data_dir relative to project root (same logic as logging_config.py)
     data_path = Path(data_dir)

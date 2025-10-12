@@ -31,6 +31,21 @@ const CHAT_PATTERNS: MessagePattern[] = [
     type: 'chat',
     channelExtractor: /^\[([^\]]+)\]/i,
   },
+  // Local channel messages: "You say locally:"
+  {
+    pattern: /^You say locally:/i,
+    type: 'chat',
+  },
+  // Say channel messages: "You say:" (not "locally")
+  {
+    pattern: /^You say:(?! locally)/i, // Negative lookahead to exclude "You say locally:"
+    type: 'chat',
+  },
+  // Whisper messages: "You whisper to PlayerName:" or "PlayerName whispers to you:"
+  {
+    pattern: /^(?:You whisper to \w+|\w+ whispers to you):/i,
+    type: 'chat',
+  },
   // Chat messages without brackets but with chat verbs
   {
     pattern: /^\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?):/i,
@@ -46,6 +61,18 @@ const CHAT_PATTERNS: MessagePattern[] = [
     pattern: /^\w+\s+(say|says|whisper|whispers|shout|shouts|emote|emotes|tell|tells(?:\s+you)?)(?:\s+|$)/i,
     type: 'chat',
   },
+];
+
+// Error and command response patterns - should be displayed as command responses
+const ERROR_PATTERNS: MessagePattern[] = [
+  { pattern: /^Usage:/i, type: 'command' }, // Usage messages should appear as command responses
+  { pattern: /^Error:/i, type: 'command' }, // Error messages should appear as command responses
+  { pattern: /^You must /i, type: 'command' }, // Validation error messages
+  { pattern: /^Invalid /i, type: 'command' }, // Invalid command/input messages
+  { pattern: /^Cannot /i, type: 'command' }, // Cannot perform action messages
+  { pattern: /^Failed /i, type: 'command' }, // Failed action messages
+  { pattern: /not found|doesn't exist|does not exist/i, type: 'command' }, // Not found messages
+  { pattern: /^Online Players:/i, type: 'command' }, // Who command output
 ];
 
 // System patterns - game events and notifications
@@ -85,11 +112,31 @@ export function determineMessageType(message: string): MessageTypeResult {
   // Check chat patterns first (highest priority)
   for (const pattern of CHAT_PATTERNS) {
     if (pattern.pattern.test(trimmedMessage)) {
-      const channel = pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
+      let channel: string | undefined;
+
+      // Special handling for specific patterns
+      if (/^You say locally:/i.test(trimmedMessage)) {
+        channel = 'local';
+      } else if (/^You say:(?! locally)/i.test(trimmedMessage)) {
+        channel = 'say'; // "You say:" without "locally" goes to say channel
+      } else if (/^(?:You whisper to \w+|\w+ whispers to you):/i.test(trimmedMessage)) {
+        channel = 'whisper';
+      } else {
+        channel = pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
+      }
 
       return {
         type: pattern.type,
         channel,
+      };
+    }
+  }
+
+  // Check error patterns (second priority)
+  for (const pattern of ERROR_PATTERNS) {
+    if (pattern.pattern.test(trimmedMessage)) {
+      return {
+        type: pattern.type,
       };
     }
   }

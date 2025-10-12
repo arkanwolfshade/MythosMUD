@@ -55,14 +55,11 @@ class TestMessageContentValidation:
         assert result is None
 
     def test_validate_message_content_dangerous_characters(self):
-        """Test validation with dangerous characters."""
+        """Test validation with dangerous characters (only HTML tags now blocked)."""
         dangerous_messages = [
-            "Hello<script>alert('xss')</script>",
-            "Hello & goodbye",
-            "Hello; rm -rf /",
-            "Hello | cat /etc/passwd",
-            "Hello $(ls)",
-            "Hello %s",
+            "Hello<script>alert('xss')</script>",  # HTML tags still blocked
+            "Hello<div>content</div>",  # HTML tags still blocked
+            "Test <tag> content",  # HTML-like tags still blocked
         ]
 
         for message in dangerous_messages:
@@ -70,15 +67,15 @@ class TestMessageContentValidation:
                 validate_message_content(message)
 
     def test_validate_message_content_injection_patterns(self):
-        """Test validation with injection patterns."""
+        """Test validation with injection patterns (still blocks actual code execution)."""
         injection_messages = [
-            "Hello; rm -rf /",
-            "Hello | malicious_command",
-            "Hello & dangerous_script",
-            "Hello OR 1=1",
-            "Hello AND password='admin'",
-            "Hello __import__('os')",
-            "Hello eval('malicious')",
+            "Hello; rm -rf /",  # Semicolon still blocked
+            "Hello | malicious_command",  # Pipe still blocked
+            "Hello OR 1=1",  # OR with = assignment blocked
+            "Hello AND password='admin'",  # AND with = assignment blocked
+            "Hello __import__('os')",  # Python import function call blocked
+            "Hello eval('malicious')",  # Python eval function call blocked
+            "Hello os.system('rm')",  # OS system call blocked
         ]
 
         for message in injection_messages:
@@ -104,12 +101,10 @@ class TestActionContentValidation:
             assert result == action
 
     def test_validate_action_content_dangerous_characters(self):
-        """Test validation with dangerous characters in actions."""
+        """Test validation with dangerous characters in actions (only HTML tags now)."""
         dangerous_actions = [
-            "waves & goodbye",
-            "smiles; rm -rf /",
-            "nods | malicious",
-            "looks <script>alert('xss')</script>",
+            "looks <script>alert('xss')</script>",  # HTML tags still blocked
+            "waves <div>content</div>",  # HTML tags still blocked
         ]
 
         for action in dangerous_actions:
@@ -117,11 +112,11 @@ class TestActionContentValidation:
                 validate_action_content(action)
 
     def test_validate_action_content_injection_patterns(self):
-        """Test validation with injection patterns in actions."""
+        """Test validation with injection patterns in actions (semicolon and pipe blocked)."""
         injection_actions = [
-            "waves; rm -rf /",
-            "smiles | cat /etc/passwd",
-            "nods & malicious_command",
+            "waves; rm -rf /",  # Semicolon blocked
+            "smiles | cat /etc/passwd",  # Pipe blocked
+            # Note: & is no longer blocked
         ]
 
         for action in injection_actions:
@@ -229,13 +224,13 @@ class TestCommandContentValidation:
             assert result == command
 
     def test_validate_command_content_injection_patterns(self):
-        """Test validation with injection patterns in commands."""
+        """Test validation with injection patterns in commands (semicolon, pipe, function calls blocked)."""
         injection_commands = [
-            "look; rm -rf /",
-            "go | malicious",
-            "say & dangerous",
-            "emote OR 1=1",
-            "who __import__('os')",
+            "look; rm -rf /",  # Semicolon blocked
+            "go | malicious",  # Pipe blocked
+            "who __import__('os')",  # Python import function call blocked
+            "emote eval('code')",  # Python eval function call blocked
+            "say os.system('rm')",  # OS system call blocked
         ]
 
         for command in injection_commands:
@@ -261,11 +256,10 @@ class TestReasonContentValidation:
             assert result == reason
 
     def test_validate_reason_content_dangerous_characters(self):
-        """Test validation with dangerous characters in reasons."""
+        """Test validation with dangerous characters in reasons (only HTML tags now)."""
         dangerous_reasons = [
-            "Spam<script>alert('xss')</script>",
-            "Bad & behavior",
-            "Harassment; rm -rf /",
+            "Spam<script>alert('xss')</script>",  # HTML tags still blocked
+            "Bad<div>behavior</div>",  # HTML tags still blocked
         ]
 
         for reason in dangerous_reasons:
@@ -291,11 +285,10 @@ class TestPoseContentValidation:
             assert result == pose
 
     def test_validate_pose_content_dangerous_characters(self):
-        """Test validation with dangerous characters in poses."""
+        """Test validation with dangerous characters in poses (only HTML tags now)."""
         dangerous_poses = [
-            "sits<script>alert('xss')</script>",
-            "stands & poses",
-            "leans; rm -rf /",
+            "sits<script>alert('xss')</script>",  # HTML tags still blocked
+            "stands<div>content</div>",  # HTML tags still blocked
         ]
 
         for pose in dangerous_poses:
@@ -410,13 +403,14 @@ class TestUtilityFunctions:
     """Test utility functions for centralized validation."""
 
     def test_get_dangerous_characters(self):
-        """Test getting dangerous characters list."""
+        """Test getting dangerous characters list (only HTML tags now)."""
         dangerous_chars = get_dangerous_characters()
         assert isinstance(dangerous_chars, list)
-        assert len(dangerous_chars) > 0
+        assert len(dangerous_chars) == 2  # Only < and > now
         assert "<" in dangerous_chars
         assert ">" in dangerous_chars
-        assert "&" in dangerous_chars
+        # & is no longer considered dangerous
+        assert "&" not in dangerous_chars
 
     def test_get_injection_patterns(self):
         """Test getting injection patterns list."""

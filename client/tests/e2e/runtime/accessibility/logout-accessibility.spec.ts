@@ -21,7 +21,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { loginAsPlayer } from '../fixtures/auth';
+import { clearAuthState, loginAsPlayer } from '../fixtures/auth';
 import { SELECTORS, TEST_PLAYERS } from '../fixtures/test-data';
 
 test.describe('Logout Accessibility - ARIA Attributes', () => {
@@ -108,7 +108,7 @@ test.describe('Logout Accessibility - Keyboard Navigation', () => {
     await page.keyboard.press('Enter');
 
     // Verify logout occurred
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should be activatable via Space key', async ({ page }) => {
@@ -121,7 +121,7 @@ test.describe('Logout Accessibility - Keyboard Navigation', () => {
     await page.keyboard.press('Space');
 
     // Verify logout occurred
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 });
 
@@ -295,7 +295,7 @@ test.describe('Logout Accessibility - State Management', () => {
     await page.waitForTimeout(500);
 
     // Verify logout processed
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should have accessible error states', async ({ page }) => {
@@ -326,9 +326,9 @@ test.describe('Logout Accessibility - State Management', () => {
     // Wait for logout confirmation
     await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
 
-    // Success message should be accessible
-    const successMessage = page.locator('.success-message, [role="status"], text=You have been logged out');
-    await expect(successMessage.first()).toBeVisible();
+    // Success message should be accessible (verify it's visible and has proper role)
+    const successMessage = page.getByText('You have been logged out', { exact: true });
+    await expect(successMessage).toBeVisible();
   });
 });
 
@@ -394,7 +394,7 @@ test.describe('Logout Accessibility - Comprehensive Validation', () => {
     await page.keyboard.press('Enter');
 
     // Verify logout completed
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true })).toBeVisible({ timeout: 10000 });
 
     // Verify moved to login page
     await expect(page.locator(SELECTORS.USERNAME_INPUT)).toBeVisible({ timeout: 10000 });

@@ -38,20 +38,20 @@ class TestSecurityValidationConstants:
     def test_injection_patterns_coverage(self):
         """Test that injection patterns cover common attack vectors."""
 
-        # Test shell metacharacters - should be in the first pattern
-        shell_pattern = r"[;|&]"
+        # Test shell metacharacters - should match [;|] pattern (& removed as safe in messages)
+        shell_pattern = r"[;|]"
         assert any(pattern == shell_pattern for pattern in INJECTION_PATTERNS)
 
-        # Test SQL injection - should be in the second pattern
+        # Test SQL injection - flexible spacing with .* (more secure than \s*)
         sql_pattern = r"\b(or|and)\b.*="
         assert any(pattern == sql_pattern for pattern in INJECTION_PATTERNS)
 
-        # Test Python injection - should be in the third pattern
-        python_pattern = r"__import__|eval|exec|system|os\."
+        # Test Python injection - now more specific to function calls, not keywords
+        python_pattern = r"(__import__|eval|exec)\s*\(|os\.system\s*\(|os\.popen\s*\("
         assert any(pattern == python_pattern for pattern in INJECTION_PATTERNS)
 
-        # Test format string attacks - should be in the fourth pattern
-        format_pattern = r"%[a-zA-Z]"
+        # Test format string attacks - now more specific to actual format specifiers
+        format_pattern = r"%\d*[sdxXfFgGeEcCbrpP]"
         assert any(pattern == format_pattern for pattern in INJECTION_PATTERNS)
 
     def test_slash_commands_defined(self):
@@ -320,16 +320,16 @@ class TestCentralizedSecurityValidation:
         """Test detection of injection patterns."""
         import re
 
-        # Test patterns that should be detected
+        # Test patterns that SHOULD STILL be detected (actual code execution attempts)
         injection_tests = [
-            "Hello; rm -rf /",
-            "Hello | cat /etc/passwd",
-            "Hello & malicious_command",
-            "Hello OR 1=1",
-            "Hello AND password='admin'",
-            "Hello __import__('os')",
-            "Hello eval('malicious')",
-            "Hello %s %d",
+            "Hello; rm -rf /",  # Semicolon command chaining
+            "Hello | cat /etc/passwd",  # Pipe operator
+            "Hello OR 1=1",  # SQL injection with assignment
+            "Hello AND password='admin'",  # SQL injection with assignment
+            "Hello __import__('os')",  # Python import function call
+            "Hello eval('malicious')",  # Python eval function call
+            "Hello os.system('rm')",  # OS system call
+            "Hello %s %d",  # Format string specifiers
         ]
 
         for test_case in injection_tests:

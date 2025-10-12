@@ -9,6 +9,7 @@ import datetime
 import uuid
 
 from ..alias_storage import AliasStorage
+from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..logging_config import get_logger
 from ..models import Stats
@@ -461,7 +462,9 @@ class PlayerService:
         logger.info("Player deleted successfully", context={"player_id": player_id, "name": player_name})
 
         # Delete player aliases if they exist
-        alias_storage = AliasStorage()
+        config = get_config()
+        aliases_dir = config.game.aliases_dir
+        alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
         alias_storage.delete_player_aliases(player_name)
         logger.debug("Player aliases deleted", context={"player_id": player_id, "name": player_name})
 

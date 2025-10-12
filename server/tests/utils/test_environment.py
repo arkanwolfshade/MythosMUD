@@ -15,7 +15,7 @@ from typing import Any
 import pytest
 import structlog
 
-from server.config_loader import get_config
+from server.config import get_config, reset_config
 from server.database import close_db, init_db
 from server.realtime.connection_manager import ConnectionManager
 
@@ -134,14 +134,19 @@ class Environment:
 
     async def _setup_config(self, config_override: dict[str, Any] | None = None):
         """Set up test configuration"""
-        # Load base test configuration (using project root config)
-        self.config = get_config("server/server_config.unit_test.yaml")
+        # Reset config cache to get fresh configuration
+        reset_config()
+
+        # Load base test configuration (from environment variables)
+        config_obj = get_config()
+        self.config = config_obj.to_legacy_dict()
 
         # Override with test-specific settings
         if config_override:
             self._merge_config(self.config, config_override)
 
-        # Set test-specific paths
+        # Set test-specific paths in config dict
+        # Note: These are legacy dict accesses for backward compatibility
         self.config["db_path"] = self.database_path
         self.config["log_dir"] = os.path.join(self.temp_dir, "logs")
         self.config["player_dir"] = os.path.join(self.temp_dir, "players")

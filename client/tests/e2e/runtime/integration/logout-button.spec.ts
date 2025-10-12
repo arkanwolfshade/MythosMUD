@@ -57,7 +57,7 @@ test.describe('Logout Button - Basic Functionality', () => {
     await logoutButton.click();
 
     // Verify logout confirmation appears
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true }).first()).toBeVisible({ timeout: 10000 });
   });
 
   test('should show logout confirmation message', async ({ page }) => {
@@ -65,7 +65,7 @@ test.describe('Logout Button - Basic Functionality', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Verify specific confirmation text
-    const confirmationMessage = page.locator('text=You have been logged out');
+    const confirmationMessage = page.getByText('You have been logged out', { exact: true }).first();
     await expect(confirmationMessage).toBeVisible({ timeout: 10000 });
 
     // Message should be clear and informative
@@ -79,7 +79,7 @@ test.describe('Logout Button - Basic Functionality', () => {
     await page.click(SELECTORS.LOGOUT_BUTTON);
 
     // Wait for logout confirmation
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true }).first()).toBeVisible({ timeout: 10000 });
 
     // Verify redirect to login page
     await expect(page.locator(SELECTORS.USERNAME_INPUT)).toBeVisible({ timeout: 10000 });
@@ -132,7 +132,7 @@ test.describe('Logout Button - Re-login Workflow', () => {
 
     // Logout again
     await page.click(SELECTORS.LOGOUT_BUTTON);
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true }).first()).toBeVisible({ timeout: 10000 });
   });
 
   test('should maintain logout functionality across multiple sessions', async ({ page }) => {
@@ -201,7 +201,7 @@ test.describe('Logout Button - UI State', () => {
     await page.waitForTimeout(200);
 
     // Verify logout completed
-    await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('You have been logged out', { exact: true }).first()).toBeVisible({ timeout: 10000 });
 
     // Initial state should have been enabled
     expect(initialState.disabled).toBeFalsy();

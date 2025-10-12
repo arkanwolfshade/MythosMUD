@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..config_loader import get_config
+from ..config import get_config
 from ..game.chat_service import ChatService
 from ..game.player_service import PlayerService
 from ..services.rate_limiter import RateLimiter
@@ -48,14 +48,17 @@ class TestGlobalChannelAccessControl:
     def test_global_channel_rate_limit_configuration(self):
         """Test that global channel rate limit is properly configured."""
         config = get_config()
-        assert config["chat"]["rate_limiting"]["global"] == 10
+        # Config is now a Pydantic object with attributes (config.chat.rate_limit_global)
+        # Test environment sets rate_limit_global to 100 (see .env.unit_test.example)
+        assert config.chat.rate_limit_global == 100
 
     def test_global_channel_configuration_structure(self):
         """Test that global channel configuration structure exists."""
         config = get_config()
-        assert "chat" in config
-        assert "rate_limiting" in config["chat"]
-        assert "global" in config["chat"]["rate_limiting"]
+        # Config is now a Pydantic object with attributes
+        assert hasattr(config, "chat")
+        assert hasattr(config.chat, "rate_limit_global")
+        assert hasattr(config.chat, "rate_limit_local")
 
     @pytest.mark.asyncio
     async def test_global_message_level_1_player_allowed(self, chat_service, mock_player_service):
@@ -249,14 +252,14 @@ class TestGlobalChannelAccessControl:
         """Test that global channel configuration is properly validated."""
         config = get_config()
 
-        # Test required configuration keys exist
-        assert "chat" in config
-        assert "rate_limiting" in config["chat"]
-        assert "global" in config["chat"]["rate_limiting"]
+        # Test required configuration attributes exist (Pydantic structure)
+        assert hasattr(config, "chat")
+        assert hasattr(config.chat, "rate_limit_global")
+        assert hasattr(config.chat, "rate_limit_local")
 
         # Test configuration values are valid
-        assert isinstance(config["chat"]["rate_limiting"]["global"], int)
-        assert config["chat"]["rate_limiting"]["global"] > 0
+        assert isinstance(config.chat.rate_limit_global, int)
+        assert config.chat.rate_limit_global > 0
 
     @pytest.mark.asyncio
     async def test_global_message_rate_limiter_integration(self, chat_service, mock_player_service):

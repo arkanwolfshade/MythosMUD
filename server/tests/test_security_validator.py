@@ -201,18 +201,19 @@ class TestInjectionPatterns:
         assert all(isinstance(pattern, str) for pattern in INJECTION_PATTERNS)
 
     def test_shell_metacharacters_pattern(self):
-        """Test that shell metacharacters pattern is present."""
-        shell_pattern = r"[;|&]"
+        """Test that shell metacharacters pattern is present (& removed as safe)."""
+        shell_pattern = r"[;|]"  # & removed as it's safe in messages
         assert shell_pattern in INJECTION_PATTERNS
 
     def test_sql_injection_pattern(self):
-        """Test that SQL injection pattern is present."""
-        sql_pattern = r"\b(or|and)\b.*="
+        """Test that SQL injection pattern is present (flexible spacing with .*)."""
+        sql_pattern = r"\b(or|and)\b.*="  # Updated to match actual pattern
         assert sql_pattern in INJECTION_PATTERNS
 
     def test_python_injection_pattern(self):
-        """Test that Python injection pattern is present."""
-        python_pattern = r"__import__|eval|exec|system|os\."
+        """Test that Python injection pattern is present (function calls, not keywords)."""
+        # Now more specific - detects function calls, not just keywords
+        python_pattern = r"(__import__|eval|exec)\s*\(|os\.system\s*\(|os\.popen\s*\("
         assert python_pattern in INJECTION_PATTERNS
 
 

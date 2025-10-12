@@ -821,6 +821,14 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     const commandName = commandParts[0];
     const commandArgs = commandParts.slice(1);
 
+    console.log('🚨 CLIENT DEBUG: handleCommandSubmit', {
+      originalCommand: command,
+      normalized,
+      commandParts,
+      commandName,
+      commandArgs,
+    });
+
     // Send command to server
     const success = await sendCommand(commandName, commandArgs);
     if (!success) {
@@ -862,12 +870,30 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   };
 
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      // Fallback to just disconnect if no logout handler provided
-      disconnect();
-    }
+    // Add logout confirmation message before logout (only once)
+    const logoutMessage: ChatMessage = {
+      text: 'You have been logged out',
+      timestamp: new Date().toISOString(),
+      messageType: 'system', // System message appears in GameLogPanel
+      isHtml: false,
+    };
+
+    // Add message to state and wait for it to render before logout
+    setGameState(prev => ({
+      ...prev,
+      messages: [...prev.messages, logoutMessage],
+    }));
+
+    // Wait for message to render in GameLogPanel before triggering logout
+    // This ensures the logout confirmation is visible to the user
+    setTimeout(() => {
+      if (onLogout) {
+        onLogout();
+      } else {
+        // Fallback to just disconnect if no logout handler provided
+        disconnect();
+      }
+    }, 500); // 500ms should be enough for React to render the message
   };
 
   return (

@@ -23,11 +23,22 @@ from server.command_handler_unified import (
 )
 
 from ..exceptions import ValidationError
+from ..middleware.command_rate_limiter import command_rate_limiter
 from ..models.room import Room
 
 
 class TestCommunicationCommands:
     """Test communication commands."""
+
+    @pytest.fixture(autouse=True)
+    def reset_rate_limiter(self):
+        """Reset rate limiter before each test to prevent test interference."""
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
+        yield
+        # Cleanup after test
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
 
     @pytest.mark.asyncio
     async def test_process_command_say_no_persistence(self):
@@ -328,6 +339,16 @@ class TestCommunicationCommands:
 class TestUserManagementCommands:
     """Test user management commands."""
 
+    @pytest.fixture(autouse=True)
+    def reset_rate_limiter(self):
+        """Reset rate limiter before each test to prevent test interference."""
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
+        yield
+        # Cleanup after test
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
+
     @pytest.mark.asyncio
     async def test_process_command_mute_no_args(self):
         """Test mute command with no arguments."""
@@ -578,6 +599,16 @@ class TestUserManagementCommands:
 
 class TestMovementAndExplorationCommands:
     """Test movement and exploration commands."""
+
+    @pytest.fixture(autouse=True)
+    def reset_rate_limiter(self):
+        """Reset rate limiter before each test to prevent test interference."""
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
+        yield
+        # Cleanup after test
+        command_rate_limiter.reset_player("testuser")
+        command_rate_limiter.reset_player("targetuser")
 
     @pytest.mark.asyncio
     async def test_process_command_go_no_persistence(self):

@@ -80,15 +80,11 @@ class TestCommandModels:
             SayCommand(message=long_message)
 
     def test_say_command_dangerous_characters(self):
-        """Test SayCommand with dangerous characters."""
+        """Test SayCommand with dangerous characters (only HTML tags and injection patterns now)."""
         dangerous_messages = [
-            "Hello<script>alert('xss')</script>",
-            "Hello & goodbye",
-            "Hello; rm -rf /",
-            "Hello | cat /etc/passwd",
-            "Hello `whoami`",
-            "Hello $(ls)",
-            "Hello %s",
+            "Hello<script>alert('xss')</script>",  # HTML tags blocked
+            "Hello; rm -rf /",  # Semicolon blocked
+            "Hello | cat /etc/passwd",  # Pipe blocked
         ]
 
         for message in dangerous_messages:
@@ -102,11 +98,10 @@ class TestCommandModels:
         assert cmd.action == "waves hello"
 
     def test_emote_command_dangerous_characters(self):
-        """Test EmoteCommand with dangerous characters."""
+        """Test EmoteCommand with dangerous characters (only HTML tags and injection patterns now)."""
         dangerous_actions = [
-            "waves<script>alert('xss')</script>",
-            "waves & goodbye",
-            "waves; rm -rf /",
+            "waves<script>alert('xss')</script>",  # HTML tags blocked
+            "waves; rm -rf /",  # Semicolon blocked
         ]
 
         for action in dangerous_actions:

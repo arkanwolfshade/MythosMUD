@@ -38,9 +38,9 @@ class TestUnknownRoomFix:
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
         # Mock config to return expected default room
-        with patch("server.config_loader.get_config") as mock_get_config:
+        with patch("server.config.get_config") as mock_get_config:
             mock_config = Mock()
-            mock_config.get.return_value = "earth_arkhamcity_northside_intersection_derby_high"
+            mock_config.game.default_player_room = "earth_arkhamcity_northside_intersection_derby_high"
             mock_get_config.return_value = mock_config
 
             player = Player(name="TestPlayer", current_room_id="invalid_room_456")
@@ -59,18 +59,14 @@ class TestUnknownRoomFix:
         persistence = PersistenceLayer(":memory:", "test.log")
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
-        # Mock config to return None, forcing fallback
-        with patch("server.config_loader.get_config") as mock_get_config:
-            mock_config = Mock()
-            mock_config.get.return_value = None
-            mock_get_config.return_value = mock_config
-
+        # Mock config to fail, forcing fallback to hardcoded default
+        with patch("server.config.get_config", side_effect=Exception("Config error")):
             player = Player(name="TestPlayer", current_room_id="invalid_room_789")
 
             # Act
             result = persistence.validate_and_fix_player_room(player)
 
-            # Assert
+            # Assert - should use hardcoded fallback
             expected_room = "earth_arkhamcity_northside_intersection_derby_high"
             assert result is True
             assert player.current_room_id == expected_room
@@ -82,7 +78,7 @@ class TestUnknownRoomFix:
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
         # Mock config to raise an exception
-        with patch("server.config_loader.get_config") as mock_get_config:
+        with patch("server.config.get_config") as mock_get_config:
             mock_get_config.side_effect = Exception("Config error")
 
             player = Player(name="TestPlayer", current_room_id="invalid_room_999")

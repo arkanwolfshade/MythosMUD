@@ -75,7 +75,7 @@ class TestLocalChannelCommandParsing:
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
         # Verify the result
-        assert result["result"] == "You say (local): Hello, fellow investigators!"
+        assert result["result"] == "You say locally: Hello, fellow investigators!"
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with(
             "player123", "Hello, fellow investigators!"
         )
@@ -143,13 +143,14 @@ class TestLocalChannelCommandParsing:
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
-        assert result["result"] == f"You say (local): {long_message}"
+        assert result["result"] == f"You say locally: {long_message}"
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with("player123", long_message)
 
     @pytest.mark.asyncio
     async def test_local_command_parsing_special_characters(self, mock_services, mock_request):
         """Test parsing local channel messages with special characters."""
-        special_message = "Hello! @#$%^&*()_+-=[]{}|;':\",./<>?`~"
+        # Special characters allowed in messages (excluding HTML tags and command separators)
+        special_message = "Hello! @#$%^&*()_+-=[]{}':\",.?`~"  # Removed <, >, ;, | as they're still blocked
 
         command_data = {"command_type": "local", "message": special_message, "args": [special_message]}
         current_user = {"username": "testuser"}
@@ -171,7 +172,7 @@ class TestLocalChannelCommandParsing:
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
-        assert result["result"] == f"You say (local): {special_message}"
+        assert result["result"] == f"You say locally: {special_message}"
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with("player123", special_message)
 
 
@@ -362,7 +363,7 @@ class TestLocalChannelCommandAliases:
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
-        assert result["result"] == "You say (local): Quick message"
+        assert result["result"] == "You say locally: Quick message"
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with("player123", "Quick message")
 
     @pytest.mark.asyncio
@@ -392,7 +393,7 @@ class TestLocalChannelCommandAliases:
         with patch("server.commands.communication_commands.get_username_from_user", return_value="testuser"):
             result = await handle_local_command(command_data, current_user, mock_request, alias_storage, player_name)
 
-        assert result["result"] == "You say (local): Case insensitive message"
+        assert result["result"] == "You say locally: Case insensitive message"
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with(
             "player123", "Case insensitive message"
         )

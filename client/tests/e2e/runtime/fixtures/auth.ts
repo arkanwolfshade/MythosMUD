@@ -44,8 +44,8 @@ export async function loginAsPlayer(page: Page, username: string, password: stri
   // Click Continue button to enter game
   await page.click(SELECTORS.CONTINUE_BUTTON);
 
-  // Wait for game interface to load (Chat panel is good indicator)
-  await expect(page.locator('text=Chat')).toBeVisible({ timeout: TIMEOUTS.GAME_LOAD });
+  // Wait for game interface to load (Chat panel heading is good indicator)
+  await expect(page.getByRole('heading', { name: 'Chat' })).toBeVisible({ timeout: TIMEOUTS.GAME_LOAD });
 
   // Additional wait for room subscription to stabilize
   // This prevents timing issues with message broadcasting
@@ -63,8 +63,8 @@ export async function logout(page: Page): Promise<void> {
   // Click logout button
   await page.click(SELECTORS.LOGOUT_BUTTON);
 
-  // Wait for logout confirmation message
-  await expect(page.locator('text=You have been logged out')).toBeVisible({ timeout: TIMEOUTS.LOGOUT });
+  // Wait for logout confirmation message (using more specific text matcher)
+  await expect(page.getByText('You have been logged out', { exact: true })).toBeVisible({ timeout: TIMEOUTS.LOGOUT });
 
   // Verify redirect to login page
   await expect(page.locator(SELECTORS.USERNAME_INPUT)).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
@@ -78,8 +78,8 @@ export async function logout(page: Page): Promise<void> {
  */
 export async function isLoggedIn(page: Page): Promise<boolean> {
   try {
-    const gameInterface = page.locator('text=Chat');
-    return await gameInterface.isVisible({ timeout: 1000 });
+    const chatHeading = page.getByRole('heading', { name: 'Chat' });
+    return await chatHeading.isVisible({ timeout: 1000 });
   } catch {
     return false;
   }

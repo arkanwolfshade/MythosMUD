@@ -18,6 +18,11 @@ from server.realtime.event_handler import RealTimeEventHandler
 class TestRunningEventLoop:
     """Test EventBus with a running event loop."""
 
+    @pytest.fixture
+    def event_bus(self):
+        """Create an EventBus for testing."""
+        return EventBus()
+
     @pytest.mark.asyncio
     async def test_event_bus_with_running_loop(self):
         """Test that EventBus works properly with a running event loop."""

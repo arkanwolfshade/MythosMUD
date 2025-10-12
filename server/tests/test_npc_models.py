@@ -17,6 +17,20 @@ from server.models.npc import (
 )
 
 
+@pytest.fixture
+def test_client():
+    """Fixture for test client (placeholder for database tests)."""
+    return None
+
+
+@pytest.fixture
+async def test_npc_database():
+    """Fixture to set up NPC test database."""
+    # Database is already initialized in conftest and via create directory
+    yield
+    # Cleanup if needed
+
+
 class TestNPCDefinition:
     """Test the NPCDefinition model."""
 

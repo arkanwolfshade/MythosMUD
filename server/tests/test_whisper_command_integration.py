@@ -94,7 +94,8 @@ class TestWhisperCommandIntegration:
             WhisperCommand(target="TestPlayer", message="Hello<script>alert('xss')</script>")
 
         # Test command injection (dangerous characters are caught first)
-        with pytest.raises(Exception, match="Message contains dangerous characters"):
+        # Semicolons are still blocked - pattern changed
+        with pytest.raises(Exception, match="potentially dangerous pattern"):
             WhisperCommand(target="TestPlayer", message="Hello; say something")
 
     def test_reply_command_injection_prevention(self):
@@ -104,31 +105,36 @@ class TestWhisperCommandIntegration:
             ReplyCommand(message="Hello<script>alert('xss')</script>")
 
         # Test command injection (dangerous characters are caught first)
-        with pytest.raises(Exception, match="Message contains dangerous characters"):
+        # Semicolons are still blocked - pattern changed
+        with pytest.raises(Exception, match="potentially dangerous pattern"):
             ReplyCommand(message="Hello; say something")
 
     def test_whisper_command_error_handling(self):
         """Test whisper command error handling."""
         # Test missing target
-        with pytest.raises(MythosValidationError, match="Failed to create command"):
+        # Error messages no longer wrapped with "Failed to create command:"
+        with pytest.raises(MythosValidationError, match="Usage: whisper"):
             parse_command("whisper")
 
         # Test missing message
-        with pytest.raises(MythosValidationError, match="Failed to create command"):
+        # Error messages no longer wrapped with "Failed to create command:"
+        with pytest.raises(MythosValidationError, match="You must provide a message to whisper"):
             parse_command("whisper TestPlayer")
 
-        # Test empty message
-        with pytest.raises(MythosValidationError, match="Usage: whisper <player> <message>"):
+        # Test empty message (now returns specific error)
+        with pytest.raises(MythosValidationError, match="You must provide a message to whisper"):
             parse_command("whisper TestPlayer    ")
 
     def test_reply_command_error_handling(self):
         """Test reply command error handling."""
         # Test missing message
-        with pytest.raises(MythosValidationError, match="Failed to create command"):
+        # Error messages no longer wrapped with "Failed to create command:"
+        with pytest.raises(MythosValidationError, match="Usage: reply"):
             parse_command("reply")
 
         # Test empty message
-        with pytest.raises(MythosValidationError, match="Failed to create command"):
+        # Error messages no longer wrapped with "Failed to create command:"
+        with pytest.raises(MythosValidationError, match="Usage: reply"):
             parse_command("reply    ")
 
 

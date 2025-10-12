@@ -860,20 +860,41 @@ class ConnectionManager:
                     if connection_id in self.active_websockets:
                         websocket = self.active_websockets[connection_id]
                         try:
-                            await websocket.close(code=1000, reason="New game session established")
-                            session_results["connections_disconnected"] += 1
+                            # Only try to close if WebSocket is actually connected
+                            try:
+                                is_connected = websocket.client_state.name == "CONNECTED"
+                            except (AttributeError, Exception):
+                                # If we can't check state, assume it's not connected
+                                is_connected = False
+                                logger.debug(
+                                    f"Could not check state for WebSocket {connection_id}, assuming disconnected"
+                                )
+
+                            if is_connected:
+                                await websocket.close(code=1000, reason="New game session established")
+                                session_results["connections_disconnected"] += 1
+                            else:
+                                logger.debug(f"Skipping close for WebSocket {connection_id} (not connected)")
+                                session_results["connections_disconnected"] += 1  # Count as disconnected
                         except Exception as e:
-                            error_msg = f"Error closing WebSocket {connection_id} for new session: {e}"
-                            logger.warning(error_msg)
-                            session_results["errors"].append(error_msg)
-                        del self.active_websockets[connection_id]
+                            # Don't let close errors propagate - log and continue
+                            logger.debug(f"Non-critical error closing WebSocket {connection_id}: {e}")
+                            session_results["connections_disconnected"] += 1  # Still count as disconnected
+                        # Clean up from active websockets regardless of close success
+                        try:
+                            del self.active_websockets[connection_id]
+                        except KeyError:
+                            pass  # Already removed, that's fine
 
                     # Clean up connection metadata
                     if connection_id in self.connection_metadata:
                         del self.connection_metadata[connection_id]
 
                 # Remove player from websocket tracking
-                del self.player_websockets[player_id]
+                try:
+                    del self.player_websockets[player_id]
+                except KeyError:
+                    pass  # Already removed
 
             # Disconnect all existing SSE connections
             if player_id in self.active_sse_connections:
@@ -887,13 +908,19 @@ class ConnectionManager:
                     session_results["connections_disconnected"] += 1
 
                 # Remove player from SSE tracking
-                del self.active_sse_connections[player_id]
+                try:
+                    del self.active_sse_connections[player_id]
+                except KeyError:
+                    pass  # Already removed
 
             # Clean up old session tracking
             if player_id in self.player_sessions:
                 old_session_id = self.player_sessions[player_id]
                 if old_session_id in self.session_connections:
-                    del self.session_connections[old_session_id]
+                    try:
+                        del self.session_connections[old_session_id]
+                    except KeyError:
+                        pass  # Already removed
 
             # Update session tracking
             self.player_sessions[player_id] = new_session_id
@@ -1951,12 +1978,12 @@ class ConnectionManager:
             }
 
             # Write to error log file using proper logging configuration
-            from ..config_loader import get_config
-            from ..logging_config import _resolve_log_base, detect_environment
+            from ..config import get_config
+            from ..logging_config import _resolve_log_base
 
             config = get_config()
-            log_base = config.get("logging", {}).get("log_base", "logs")
-            environment = config.get("logging", {}).get("environment", detect_environment())
+            log_base = config.logging.log_base
+            environment = config.logging.environment
 
             resolved_log_base = _resolve_log_base(log_base)
             error_log_path = resolved_log_base / environment / "connection_errors.log"
@@ -2315,12 +2342,12 @@ class ConnectionManager:
             dict: Error statistics
         """
         # Get the proper error log path using logging configuration
-        from ..config_loader import get_config
-        from ..logging_config import _resolve_log_base, detect_environment
+        from ..config import get_config
+        from ..logging_config import _resolve_log_base
 
         config = get_config()
-        log_base = config.get("logging", {}).get("log_base", "logs")
-        environment = config.get("logging", {}).get("environment", detect_environment())
+        log_base = config.logging.log_base
+        environment = config.logging.environment
 
         resolved_log_base = _resolve_log_base(log_base)
         error_log_path = resolved_log_base / environment / "connection_errors.log"

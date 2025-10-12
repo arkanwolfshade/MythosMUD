@@ -51,44 +51,29 @@ def _initialize_database() -> None:
     context = create_error_context()
     context.metadata["operation"] = "database_initialization"
 
-    # Import config_loader here to avoid circular imports
+    # Import config here to avoid circular imports
     try:
-        from .config_loader import get_config
+        from .config import get_config
     except ImportError as e:
         log_and_raise(
             ValidationError,
-            "Failed to import config_loader - configuration system unavailable",
+            "Failed to import config - configuration system unavailable",
             context=context,
             details={"import_error": str(e)},
             user_friendly="Critical system error: configuration system not available",
         )
 
-    # Load configuration - this will FAIL LOUDLY if MYTHOSMUD_CONFIG_PATH not set
+    # Load configuration - this will FAIL LOUDLY with ValidationError if required fields missing
     try:
         config = get_config()
-    except (ValueError, FileNotFoundError) as e:
+        database_url = config.database.url
+    except Exception as e:
         log_and_raise(
             ValidationError,
             f"Failed to load configuration: {e}",
             context=context,
             details={"config_error": str(e)},
-            user_friendly="Database cannot be initialized: configuration not loaded",
-        )
-
-    # Get database_url from config - FAIL LOUDLY if not present
-    # Note: db_path in YAML is automatically converted to database_url by config_loader
-    database_url = config.get("database_url")
-    if not database_url:
-        log_and_raise(
-            ValidationError,
-            "database_url not found in configuration",
-            context=context,
-            details={
-                "config_file": "server_config.*.yaml",
-                "required_field": "db_path or database_url",
-                "note": "db_path in YAML is automatically converted to database_url",
-            },
-            user_friendly="Database path not configured in YAML configuration",
+            user_friendly="Database cannot be initialized: configuration not loaded or invalid",
         )
 
     # Handle database_url - could be a path or a full SQLite URL

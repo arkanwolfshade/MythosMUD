@@ -58,7 +58,7 @@ export const AVAILABLE_CHANNELS: Channel[] = [
 ];
 
 // Default channel to use when no channel is selected
-export const DEFAULT_CHANNEL = 'say';
+export const DEFAULT_CHANNEL = 'local';
 
 // Channel groups for organization
 export const CHANNEL_GROUPS = {

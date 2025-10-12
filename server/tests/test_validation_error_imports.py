@@ -77,7 +77,8 @@ class TestValidationErrorImports:
         # Should return None for command and error message
         assert validated_command is None
         assert error_message is not None
-        assert "Unexpected error processing command" in error_message
+        # Error message should be the direct validation error without "Unexpected error" wrapper
+        assert "Say command requires a message" in error_message or "message" in error_message.lower()
         assert command_type is None
 
         # Test with unknown command

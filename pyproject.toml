@@ -12,6 +12,7 @@ dependencies = [
     "fastapi==0.116.1",
     "uvicorn[standard]==0.35.0",
     "pydantic==2.11.7",
+    "pydantic-settings>=2.0.0",
     "requests==2.32.4",
     "httpx==0.28.1",
     "argon2-cffi>=23.1.0",
@@ -38,6 +39,8 @@ dependencies = [
     "strip-ansi>=0.1.1", # Removes ANSI escape codes
     "playwright>=1.55.0",
     "pytest-timeout>=2.4.0",
+    "networkx>=3.0", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
+    "python-statemachine>=2.5.0",
 ]
 
 [project.optional-dependencies]

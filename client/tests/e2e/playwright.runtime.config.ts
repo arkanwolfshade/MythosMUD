@@ -31,8 +31,8 @@ export default defineConfig({
     timeout: 10 * 1000,
   },
 
-  // Run tests in parallel for faster execution
-  fullyParallel: true,
+  // CRITICAL: Run tests serially to avoid race conditions with shared player accounts
+  fullyParallel: false,
 
   // Fail the build on CI if test.only is accidentally left in
   forbidOnly: !!process.env.CI,
@@ -40,8 +40,8 @@ export default defineConfig({
   // Retry once on CI to handle transient failures
   retries: process.env.CI ? 1 : 0,
 
-  // Use single worker on CI to avoid resource contention
-  workers: process.env.CI ? 1 : undefined,
+  // CRITICAL: Use single worker to prevent race conditions with session management
+  workers: 1,
 
   // Reporter configuration
   reporter: [['html', { outputFolder: 'playwright-report/runtime' }], ['list'], process.env.CI ? ['github'] : ['line']],

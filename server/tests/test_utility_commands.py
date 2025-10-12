@@ -216,7 +216,7 @@ class TestWhoCommand:
             "testuser",
         )
 
-        assert "Online players (3):" in result["result"]
+        assert "Online Players (3):" in result["result"]
         assert "alice" in result["result"]
         assert "bob" in result["result"]
         assert "charlie" in result["result"]
@@ -263,7 +263,7 @@ class TestWhoCommand:
             "testuser",
         )
 
-        assert "Online players (1):" in result["result"]
+        assert "Online Players (1):" in result["result"]
         assert "online_user" in result["result"]
         assert "offline_user" not in result["result"]
 
@@ -1325,7 +1325,7 @@ class TestWhoCommandIntegration:
         )
 
         # Should show 3 online players (excluding offline_user)
-        assert "Online players (3):" in result["result"]
+        assert "Online Players (3):" in result["result"]
         assert "admin_user" in result["result"]
         assert "[ADMIN]" in result["result"]  # Admin indicator
         assert "investigator_alice" in result["result"]
@@ -1387,7 +1387,7 @@ class TestWhoCommandIntegration:
         )
 
         # Should show all 100 players
-        assert "Online players (100):" in result["result"]
+        assert "Online Players (100):" in result["result"]
         assert "player_000" in result["result"]
         assert "player_099" in result["result"]
 
@@ -1435,7 +1435,7 @@ class TestWhoCommandIntegration:
         )
 
         # Should show 2 online players (very_active and active)
-        assert "Online players (2):" in result["result"]
+        assert "Online Players (2):" in result["result"]
         assert "very_active" in result["result"]
         assert "active" in result["result"]
         assert "borderline" not in result["result"]  # Just over threshold
@@ -1466,7 +1466,7 @@ class TestWhoCommandIntegration:
             "testuser",
         )
 
-        assert "Online players (3):" in result["result"]
+        assert "Online Players (3):" in result["result"]
         assert "super_admin" in result["result"]
         assert "moderator" in result["result"]
         assert "regular_user" in result["result"]
@@ -1552,7 +1552,7 @@ class TestWhoCommandIntegration:
             "testuser",
         )
 
-        assert "Online players (4):" in result["result"]
+        assert "Online Players (4):" in result["result"]
         assert "very_long_player_name_with_many_characters" in result["result"]
         assert "player@#$%" in result["result"]
         assert "player123" in result["result"]
@@ -1640,7 +1640,7 @@ class TestWhoCommandPerformance:
         response_time = (end_time - start_time) * 1000  # Convert to milliseconds
 
         # Should show all 1000 players
-        assert "Online players (1000):" in result["result"]
+        assert "Online Players (1000):" in result["result"]
 
         # Performance requirement: response time under 100ms
         assert response_time < 100, f"Response time {response_time:.2f}ms exceeds 100ms limit"
@@ -1728,7 +1728,7 @@ class TestWhoCommandPerformance:
                 mock_alias_storage,
                 "testuser",
             )
-            assert "Online players (2000):" in result["result"]
+            assert "Online Players (2000):" in result["result"]
 
         # Get final memory usage
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -1779,7 +1779,7 @@ class TestWhoCommandPerformance:
             response_time = (end_time - start_time) * 1000
             response_times.append(response_time)
 
-            assert "Online players (200):" in result["result"]
+            assert "Online Players (200):" in result["result"]
 
         # Calculate statistics
         avg_response_time = sum(response_times) / len(response_times)
@@ -1846,7 +1846,7 @@ class TestWhoCommandPerformance:
         end_time = time.time()
         response_time = (end_time - start_time) * 1000
 
-        assert "Online players (1):" in result["result"]
+        assert "Online Players (1):" in result["result"]
         assert response_time < 10, f"Single player response time {response_time:.2f}ms exceeds 10ms limit"
 
         # Test with very long filter term

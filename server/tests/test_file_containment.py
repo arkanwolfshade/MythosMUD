@@ -22,6 +22,8 @@ def test_no_database_files_outside_approved_locations():
     - /data/unit_test/npcs/ (test NPC databases)
     - /data/e2e_test/players/ (e2e test player databases)
     - /data/e2e_test/npcs/ (e2e test NPC databases)
+    - /server/tests/data/players/ (pytest test player databases)
+    - /server/tests/data/npcs/ (pytest test NPC databases)
 
     Note: node_modules directories are excluded as they contain external dependencies.
     """
@@ -39,6 +41,9 @@ def test_no_database_files_outside_approved_locations():
         project_root / "data" / "unit_test" / "npcs",
         project_root / "data" / "e2e_test" / "players",
         project_root / "data" / "e2e_test" / "npcs",
+        # Test-specific database locations (per CRITICAL DATABASE PLACEMENT RULES)
+        project_root / "server" / "tests" / "data" / "players",
+        project_root / "server" / "tests" / "data" / "npcs",
     ]
 
     # Find all .db files in the project, excluding node_modules

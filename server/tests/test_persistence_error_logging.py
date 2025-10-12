@@ -158,7 +158,7 @@ class TestPersistenceErrorLogging:
         )
 
         # Mock config loading to fail
-        with patch("server.config_loader.get_config", side_effect=Exception("Config load failed")):
+        with patch("server.config.get_config", side_effect=Exception("Config load failed")):
             result = self.persistence.validate_and_fix_player_room(player)
 
         # Should still succeed but log warning

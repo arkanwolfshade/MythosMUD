@@ -51,73 +51,34 @@ def _initialize_npc_database() -> None:
     context = create_error_context()
     context.metadata["operation"] = "npc_database_initialization"
 
-    # Import config_loader here to avoid circular imports
+    # Import config here to avoid circular imports
     try:
-        from .config_loader import get_config
+        from .config import get_config
     except ImportError as e:
         log_and_raise(
             ValidationError,
-            "Failed to import config_loader - configuration system unavailable",
+            "Failed to import config - configuration system unavailable",
             context=context,
             details={"import_error": str(e)},
             user_friendly="Critical system error: configuration system not available",
         )
 
-    # Load configuration - this will FAIL LOUDLY if MYTHOSMUD_CONFIG_PATH not set
+    # Load configuration - will FAIL LOUDLY with ValidationError if required fields missing
     try:
         config = get_config()
-    except (ValueError, FileNotFoundError) as e:
+        npc_database_url = config.database.npc_url
+    except Exception as e:
         log_and_raise(
             ValidationError,
             f"Failed to load configuration: {e}",
             context=context,
             details={"config_error": str(e)},
-            user_friendly="NPC database cannot be initialized: configuration not loaded",
+            user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
         )
 
-    # Get NPC database URL from config - check npc_database_url first, then npc_db_path
-    # Note: npc_database_url in config could come from NPC_DATABASE_URL env var
-    npc_database_url = config.get("npc_database_url")
-
-    if npc_database_url:
-        # npc_database_url is set (likely from NPC_DATABASE_URL environment variable)
-        if npc_database_url.startswith("sqlite"):
-            # Already a full SQLite URL
-            _npc_database_url = npc_database_url
-            logger.info("Using NPC database URL from environment/config", npc_database_url=_npc_database_url)
-        else:
-            # It's a path - convert to absolute path and construct SQLite URL
-            npc_db_path_obj = Path(npc_database_url).resolve()
-            _npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
-            logger.info(
-                "NPC Database URL configured from path",
-                npc_database_url=_npc_database_url,
-                npc_db_path=str(npc_db_path_obj),
-            )
-    else:
-        # Fall back to npc_db_path from YAML config
-        npc_db_path = config.get("npc_db_path")
-        if not npc_db_path:
-            log_and_raise(
-                ValidationError,
-                "Neither npc_database_url nor npc_db_path found in configuration",
-                context=context,
-                details={
-                    "config_file": "server_config.*.yaml",
-                    "required_field": "npc_db_path or npc_database_url",
-                    "note": "Set NPC_DATABASE_URL environment variable or npc_db_path in YAML",
-                },
-                user_friendly="NPC database path not configured",
-            )
-
-        # Convert npc_db_path to absolute path and construct SQLite URL
-        npc_db_path_obj = Path(npc_db_path).resolve()
-        _npc_database_url = f"sqlite+aiosqlite:///{npc_db_path_obj}"
-        logger.info(
-            "NPC Database URL configured from YAML",
-            npc_database_url=_npc_database_url,
-            npc_db_path=str(npc_db_path_obj),
-        )
+    # Use NPC database URL from configuration
+    _npc_database_url = npc_database_url
+    logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
     # Determine pool class based on database URL
     # Use NullPool for tests to prevent SQLite file locking issues
