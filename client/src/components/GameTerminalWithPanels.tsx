@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useGameConnection } from '../hooks/useGameConnection';
+import { useGameConnection } from '../hooks/useGameConnectionRefactored';
 import { logger } from '../utils/logger';
 import { useMemoryMonitor } from '../utils/memoryMonitor';
 import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';

@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useGameConnection } from '../../hooks/useGameConnection';
+import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
 import type { GameEvent } from '../../types/game';
 import { GameTerminalWithPanels } from '../GameTerminalWithPanels';
 
 // Mock the useGameConnection hook
-vi.mock('../../hooks/useGameConnection');
+vi.mock('../../hooks/useGameConnectionRefactored');
 const mockUseGameConnection = vi.mocked(useGameConnection);
 
 // Mock the logger

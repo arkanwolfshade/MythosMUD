@@ -1,22 +1,17 @@
 /**
- * XState Inspector integration for development mode.
+ * XState v5 Inspector integration for development mode.
  *
- * Enables visual debugging of state machines in browser DevTools.
- * Only active in development mode to avoid performance impact in production.
+ * For XState v5, use the browser-based Stately Inspector at https://stately.ai/inspect
+ * No npm package needed - just enable inspection in your actor configuration.
  *
- * AI: Visual FSM debugging is invaluable for understanding complex state transitions.
+ * AI: XState v5 uses a simpler, browser-based inspector without dependencies.
  */
-
-import { inspect } from '@xstate/inspect';
 
 /**
  * Initialize XState Inspector for development mode.
  *
- * Opens a visual inspector in a popup window where you can:
- * - See all active state machines
- * - View current states and context
- * - Track state transitions in real-time
- * - Send events manually for testing
+ * For XState v5, simply log instructions for using Stately Inspector.
+ * The inspector connects via browser extension or stately.ai/inspect
  *
  * Usage:
  * ```typescript
@@ -26,29 +21,22 @@ import { inspect } from '@xstate/inspect';
  * }
  * ```
  *
- * AI: Call once at app startup in development mode only.
+ * AI: XState v5 inspector is browser-based - no initialization needed!
  */
 export function initializeXStateInspector(): void {
   if (import.meta.env.DEV) {
-    try {
-      inspect({
-        // Use iframe instead of popup for better dev experience
-        iframe: false,
-        // URL for the inspector (defaults to https://stately.ai/viz)
-        url: 'https://stately.ai/viz?inspect',
-      });
-
-      console.log('[XState Inspector] Initialized - Open https://stately.ai/viz?inspect to view state machines');
-    } catch (error) {
-      console.warn('[XState Inspector] Failed to initialize:', error);
-    }
+    console.log('%c[XState v5 Inspector]', 'color: #2563eb; font-weight: bold;', 'To debug state machines:');
+    console.log('  1. Open https://stately.ai/inspect in a new tab');
+    console.log('  2. State machines will automatically connect');
+    console.log('  3. Or install Stately Inspector browser extension');
+    console.log('  Docs: https://stately.ai/docs/developer-tools');
   }
 }
 
 /**
  * Enable XState Inspector for a specific machine.
  *
- * Add this option when creating a machine actor:
+ * For XState v5, enable inspection by setting inspect option when creating actor:
  * ```typescript
  * const actor = createActor(connectionMachine, {
  *   inspect: getInspectorOptions()
@@ -57,11 +45,13 @@ export function initializeXStateInspector(): void {
  *
  * @returns Inspector configuration object
  *
- * AI: This connects individual machines to the global inspector.
+ * AI: This enables inspection for individual actors in dev mode.
  */
 export function getInspectorOptions() {
-  if (import.meta.env.DEV) {
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
     return {
+      // Enable inspection in dev mode
+      // The browser-based inspector will pick this up automatically
       inspect: true,
     };
   }

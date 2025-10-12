@@ -6,7 +6,7 @@ This document describes the configuration approach for running the MythosMUD tes
 
 MythosMUD uses a **two-tier configuration system** for tests:
 
-1. **`server/server_config.unit_test.yaml`** - Structural configuration (committed to git)
+1. **`.env.unit_test`** - Environment variable configuration (committed as `.env.unit_test.example`)
 2. **`server/tests/.env.unit_test`** - Secrets only (never committed)
 
 This separation ensures:
@@ -16,7 +16,7 @@ This separation ensures:
 
 ## Structural Configuration (YAML)
 
-**File**: `server/server_config.unit_test.yaml`
+**File**: `.env.unit_test` (template: `.env.unit_test.example`)
 
 Contains all **non-secret** test configuration:
 - Database paths (no credentials)
@@ -75,7 +75,7 @@ pytest
 
 The test suite automatically:
 1. Loads secrets from `server/tests/.env.unit_test` (via conftest.py)
-2. Loads structural config from `server/server_config.unit_test.yaml` (via config_loader.py)
+2. Loads configuration from `.env.unit_test` (via Pydantic BaseSettings in `server/config/models.py`)
 3. Creates test databases if they don't exist
 4. Sets up proper directory structure
 
@@ -108,7 +108,7 @@ These are automatically created and managed by the test suite.
 ## Configuration Priority
 
 1. **`.env.unit_test` secrets** (highest priority - overrides everything)
-2. **`server_config.unit_test.yaml`** structural config
+2. **`.env.unit_test`** - Pydantic configuration via environment variables
 3. **Hardcoded defaults** in `conftest.py` (fallback)
 
 ## Security Note

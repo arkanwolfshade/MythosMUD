@@ -13,7 +13,7 @@ import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the useGameConnection hook - must be at top level
-vi.mock('../hooks/useGameConnection', () => ({
+vi.mock('../hooks/useGameConnectionRefactored', () => ({
   useGameConnection: vi.fn(),
 }));
 
@@ -68,7 +68,7 @@ vi.mock('./ui/EldritchIcon', () => ({
   },
 }));
 
-import { useGameConnection } from '../hooks/useGameConnection';
+import { useGameConnection } from '../hooks/useGameConnectionRefactored';
 import { GameTerminalWithPanels } from './GameTerminalWithPanels';
 
 describe('GameTerminalWithPanels - Bug Prevention Tests', () => {

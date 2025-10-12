@@ -8,13 +8,63 @@ AI: DLQ is critical for preventing message loss and enabling forensic analysis.
 """
 
 import json
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from ..config import get_config
 from ..logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class DeadLetterMessage:
+    """
+    Message stored in dead letter queue.
+
+    Contains message data and failure context for forensic analysis.
+
+    AI: Includes all metadata needed to understand and potentially replay the message.
+    """
+
+    subject: str
+    data: dict[str, Any]
+    error: str
+    timestamp: datetime
+    retry_count: int
+    original_headers: dict[str, Any] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert message to dictionary for JSON serialization."""
+        return {
+            "subject": self.subject,
+            "data": self.data,
+            "error": self.error,
+            "timestamp": self.timestamp.isoformat(),
+            "retry_count": self.retry_count,
+            "original_headers": self.original_headers or {},
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "DeadLetterMessage":
+        """Reconstruct message from dictionary."""
+        timestamp_str = data["timestamp"]
+        # Handle both string and datetime inputs
+        if isinstance(timestamp_str, str):
+            timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+        else:
+            timestamp = timestamp_str
+
+        return cls(
+            subject=data["subject"],
+            data=data["data"],
+            error=data["error"],
+            timestamp=timestamp,
+            retry_count=data["retry_count"],
+            original_headers=data.get("original_headers"),
+        )
 
 
 class DeadLetterQueue:
@@ -28,106 +78,137 @@ class DeadLetterQueue:
     AI: File-based DLQ is simple, durable, and doesn't require additional infrastructure.
     """
 
-    def __init__(self, storage_path: str = "logs/dlq"):
+    def __init__(self, storage_dir: str | None = None):
         """
         Initialize dead letter queue.
 
         Args:
-            storage_path: Directory to store DLQ files
+            storage_dir: Optional directory to store DLQ files.
+                        If None, uses logs/{environment}/dlq based on logging config.
 
-        AI: Creates directory structure if it doesn't exist.
+        AI: Creates directory structure if it doesn't exist. Respects environment separation.
         """
-        self.storage_path = Path(storage_path)
-        self.storage_path.mkdir(parents=True, exist_ok=True)
+        if storage_dir is None:
+            # Get environment from config
+            config = get_config()
+            environment = config.logging.environment
+            log_base = config.logging.log_base
 
-        logger.info("DeadLetterQueue initialized", storage_path=str(self.storage_path))
+            # CRITICAL: Use absolute path from project root to prevent creating
+            # dlq in server/logs/ when code is imported from server/ directory
+            project_root = Path(__file__).parent.parent.parent
+            storage_dir = str(project_root / log_base / environment / "dlq")
 
-    async def enqueue(
-        self, message_data: dict[str, Any], error: Exception, retry_count: int, metadata: dict[str, Any] | None = None
-    ) -> str:
+        self.storage_dir = Path(storage_dir)
+        self.storage_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info("DeadLetterQueue initialized", storage_dir=str(self.storage_dir))
+
+    def enqueue(self, message: DeadLetterMessage) -> Path:
         """
         Add failed message to dead letter queue.
 
-        Stores message with full context including error details,
-        retry count, and timestamp for later analysis.
-
         Args:
-            message_data: The message that failed
-            error: The exception that caused failure
-            retry_count: Number of retry attempts made
-            metadata: Additional context about the failure
+            message: Dead letter message to enqueue
 
         Returns:
-            Filepath of the stored DLQ entry
+            Path to stored DLQ file
 
-        AI: Include all context needed for debugging and potential replay.
+        AI: Synchronous version for compatibility with tests.
         """
-        dlq_entry = {
-            "timestamp": datetime.now(UTC).isoformat(),
-            "message": message_data,
-            "error": str(error),
-            "error_type": type(error).__name__,
-            "retry_count": retry_count,
-            "metadata": metadata or {},
-        }
-
-        # Create unique filename with timestamp and microseconds
+        # Create unique filename
         filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}.json"
-        filepath = self.storage_path / filename
+        filepath = self.storage_dir / filename
 
-        try:
-            with open(filepath, "w", encoding="utf-8") as f:
-                json.dump(dlq_entry, f, indent=2, ensure_ascii=False)
+        # Write message to file
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(message.to_dict(), f, indent=2, ensure_ascii=False)
 
-            logger.error(
-                "Message added to dead letter queue",
-                filepath=str(filepath),
-                message_id=message_data.get("message_id"),
-                error=str(error),
-                retry_count=retry_count,
-            )
+        logger.error(
+            "Message added to dead letter queue",
+            filepath=str(filepath),
+            subject=message.subject,
+            error=message.error,
+            retry_count=message.retry_count,
+        )
 
-            return str(filepath)
+        return filepath
 
-        except Exception as write_error:
-            logger.critical(
-                "Failed to write to DLQ - message may be lost!",
-                error=str(write_error),
-                original_error=str(error),
-                message_id=message_data.get("message_id"),
-            )
-            raise
-
-    async def get_pending_count(self) -> int:
+    def dequeue(self) -> dict[str, Any] | None:
         """
-        Get count of messages in DLQ.
+        Retrieve and remove oldest message from DLQ.
 
         Returns:
-            Number of messages currently in DLQ
+            Message data or None if queue is empty
 
-        AI: Useful for monitoring and alerting on DLQ backlog.
+        AI: FIFO processing of failed messages.
+        """
+        dlq_files = sorted(self.storage_dir.glob("dlq_*.json"))
+
+        if not dlq_files:
+            return None
+
+        oldest_file = dlq_files[0]
+
+        try:
+            with open(oldest_file, encoding="utf-8") as f:
+                data = json.load(f)
+
+            # Remove file after reading
+            oldest_file.unlink()
+
+            return data
+        except Exception as e:
+            logger.error("Error dequeuing DLQ message", filepath=str(oldest_file), error=str(e))
+            return None
+
+    def get_statistics(self) -> dict[str, Any]:
+        """
+        Get DLQ statistics.
+
+        Returns:
+            Dictionary with DLQ metrics
+
+        AI: For monitoring dashboards.
         """
         try:
-            count = len(list(self.storage_path.glob("dlq_*.json")))
-            return count
-        except Exception as e:
-            logger.error("Error counting DLQ entries", error=str(e))
-            return 0
+            dlq_files = list(self.storage_dir.glob("dlq_*.json"))
+            total_messages = len(dlq_files)
 
-    async def get_messages(self, limit: int | None = None) -> list[dict[str, Any]]:
+            oldest_age = None
+            if dlq_files:
+                oldest_file = sorted(dlq_files)[0]
+                file_stat = oldest_file.stat()
+                oldest_time = datetime.fromtimestamp(file_stat.st_mtime, UTC)
+                oldest_age = (datetime.now(UTC) - oldest_time).total_seconds()
+
+            return {
+                "total_messages": total_messages,
+                "oldest_message_age": oldest_age,
+                "storage_dir": str(self.storage_dir),
+            }
+        except Exception as e:
+            logger.error("Error getting DLQ statistics", error=str(e))
+            return {
+                "total_messages": 0,
+                "oldest_message_age": None,
+                "storage_dir": str(self.storage_dir),
+            }
+
+    def list_messages(self, limit: int | None = None) -> list[dict[str, Any]]:
         """
-        Retrieve messages from DLQ.
+        List messages in DLQ without removing them.
 
         Args:
-            limit: Maximum number of messages to retrieve (None for all)
+            limit: Maximum number of messages to return
 
         Returns:
-            List of DLQ entries with message data and metadata
+            List of message dictionaries
 
-        AI: For admin dashboards and manual message replay.
+        AI: For admin UI to display pending DLQ messages.
         """
         messages = []
-        dlq_files = sorted(self.storage_path.glob("dlq_*.json"))
+        dlq_files = sorted(self.storage_dir.glob("dlq_*.json"))
 
         if limit:
             dlq_files = dlq_files[:limit]
@@ -135,109 +216,84 @@ class DeadLetterQueue:
         for filepath in dlq_files:
             try:
                 with open(filepath, encoding="utf-8") as f:
-                    entry = json.load(f)
-                    entry["dlq_file"] = str(filepath)
-                    messages.append(entry)
+                    data = json.load(f)
+                    data["dlq_file"] = str(filepath)
+                    messages.append(data)
             except Exception as e:
                 logger.error("Error reading DLQ file", filepath=str(filepath), error=str(e))
                 continue
 
         return messages
 
-    async def remove_message(self, filepath: str) -> bool:
+    def replay_message(self, filepath: str) -> dict[str, Any]:
         """
-        Remove a message from DLQ (after manual processing/replay).
+        Retrieve message for replay and remove from DLQ.
 
         Args:
-            filepath: Path to DLQ file to remove
+            filepath: Path to DLQ file
 
         Returns:
-            True if removed successfully, False otherwise
+            Message data
 
-        AI: Use after successfully replaying or manually resolving a message.
+        AI: For manual replay of failed messages.
         """
-        try:
-            Path(filepath).unlink()
-            logger.info("Message removed from DLQ", filepath=filepath)
-            return True
-        except Exception as e:
-            logger.error("Failed to remove DLQ message", filepath=filepath, error=str(e))
-            return False
+        path = Path(filepath)
 
-    async def get_statistics(self) -> dict[str, Any]:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+
+        path.unlink()
+
+        logger.info("Message replayed from DLQ", filepath=filepath)
+
+        return data
+
+    def delete_message(self, filepath: str) -> None:
         """
-        Get DLQ statistics for monitoring.
+        Delete a message from DLQ without processing.
 
-        Returns:
-            Dictionary with DLQ metrics
+        Args:
+            filepath: Path to DLQ file
 
-        AI: For monitoring dashboards and alerting systems.
+        AI: For discarding messages that can't be replayed.
         """
-        try:
-            dlq_files = list(self.storage_path.glob("dlq_*.json"))
-            total_count = len(dlq_files)
+        Path(filepath).unlink()
+        logger.info("Message deleted from DLQ", filepath=filepath)
 
-            # Get error type distribution
-            error_types: dict[str, int] = {}
-            for filepath in dlq_files:
-                try:
-                    with open(filepath, encoding="utf-8") as f:
-                        entry = json.load(f)
-                        error_type = entry.get("error_type", "unknown")
-                        error_types[error_type] = error_types.get(error_type, 0) + 1
-                except Exception:
-                    continue
-
-            return {
-                "total_messages": total_count,
-                "error_types": error_types,
-                "storage_path": str(self.storage_path),
-            }
-
-        except Exception as e:
-            logger.error("Error getting DLQ statistics", error=str(e))
-            return {"total_messages": 0, "error_types": {}, "storage_path": str(self.storage_path)}
-
-    async def cleanup_old_messages(self, days_to_keep: int = 7) -> int:
+    def cleanup_old_messages(self, max_age_days: int = 7) -> int:
         """
         Clean up old DLQ messages.
 
-        Removes DLQ entries older than specified days to prevent
-        unbounded storage growth.
-
         Args:
-            days_to_keep: Number of days to retain DLQ entries
+            max_age_days: Maximum age of messages to keep
 
         Returns:
-            Number of messages cleaned up
+            Number of messages removed
 
-        AI: Call periodically (e.g., daily) to prevent disk space issues.
+        AI: Prevents unbounded DLQ growth.
         """
         from datetime import timedelta
 
         try:
-            cutoff_time = datetime.now(UTC) - timedelta(days=days_to_keep)
+            cutoff_time = datetime.now(UTC) - timedelta(days=max_age_days)
             removed_count = 0
 
-            for filepath in self.storage_path.glob("dlq_*.json"):
+            for filepath in self.storage_dir.glob("dlq_*.json"):
                 try:
-                    # Extract timestamp from filename
                     file_stat = filepath.stat()
                     file_time = datetime.fromtimestamp(file_stat.st_mtime, UTC)
 
                     if file_time < cutoff_time:
                         filepath.unlink()
                         removed_count += 1
-
                 except Exception as e:
                     logger.warning("Error removing old DLQ file", filepath=str(filepath), error=str(e))
                     continue
 
             if removed_count > 0:
-                logger.info("Cleaned up old DLQ messages", removed_count=removed_count, days_to_keep=days_to_keep)
+                logger.info("Cleaned up old DLQ messages", removed_count=removed_count, max_age_days=max_age_days)
 
             return removed_count
-
         except Exception as e:
             logger.error("Error during DLQ cleanup", error=str(e))
             return 0

@@ -168,7 +168,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       lastErrorRef.current = error instanceof Error ? error.message : 'Unknown WebSocket error';
       onErrorRef.current?.(error as Event);
     }
-  }, [authToken, sessionId, disconnect, resourceManager]);
+  }, [authToken, sessionId, resourceManager]);
 
   // Cleanup on unmount
   useEffect(() => {

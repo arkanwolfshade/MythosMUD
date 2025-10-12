@@ -30,11 +30,14 @@ export type ConnectionState =
  */
 export type ConnectionEvent =
   | { type: 'CONNECT' }
-  | { type: 'SSE_CONNECTED'; sessionId: string }
+  | { type: 'SSE_CONNECTED'; sessionId?: string }
   | { type: 'SSE_FAILED'; error: string }
+  | { type: 'WS_CONNECTING' }
   | { type: 'WS_CONNECTED' }
   | { type: 'WS_FAILED'; error: string }
+  | { type: 'ERROR'; error: string }
   | { type: 'DISCONNECT' }
+  | { type: 'RETRY' }
   | { type: 'RECONNECT' }
   | { type: 'CONNECTION_TIMEOUT' }
   | { type: 'RESET' };
@@ -100,12 +103,19 @@ export const connectionMachine = setup({
      */
     storeSSESession: assign({
       sessionId: ({ event }) => {
-        if (event.type === 'SSE_CONNECTED') {
+        if (event.type === 'SSE_CONNECTED' && event.sessionId) {
           return event.sessionId;
         }
         return null;
       },
       sseUrl: ({ context }) => context.sseUrl,
+    }),
+
+    /**
+     * Store connection start time when connection begins.
+     * AI: Used to track connection duration and timeout.
+     */
+    storeConnectionStartTime: assign({
       connectionStartTime: () => Date.now(),
     }),
 
@@ -115,8 +125,8 @@ export const connectionMachine = setup({
      */
     markFullyConnected: assign({
       lastConnectedTime: () => Date.now(),
-      reconnectAttempts: () => 0,
-      lastError: () => null,
+      reconnectAttempts: 0,
+      lastError: null,
     }),
 
     /**
@@ -207,7 +217,7 @@ export const connectionMachine = setup({
       on: {
         CONNECT: {
           target: 'connecting_sse',
-          actions: 'resetConnection',
+          actions: ['resetConnection', 'storeConnectionStartTime'],
         },
       },
     },
@@ -220,6 +230,10 @@ export const connectionMachine = setup({
         },
         SSE_FAILED: {
           target: 'reconnecting',
+          actions: ['storeError', 'incrementReconnectAttempts'],
+        },
+        ERROR: {
+          target: 'failed',
           actions: ['storeError', 'incrementReconnectAttempts'],
         },
         CONNECTION_TIMEOUT: {
@@ -243,11 +257,18 @@ export const connectionMachine = setup({
 
     sse_connected: {
       on: {
+        WS_CONNECTING: {
+          target: 'connecting_ws',
+        },
         CONNECT: {
           target: 'connecting_ws',
         },
         SSE_FAILED: {
           target: 'reconnecting',
+          actions: ['storeError', 'incrementReconnectAttempts'],
+        },
+        ERROR: {
+          target: 'failed',
           actions: ['storeError', 'incrementReconnectAttempts'],
         },
         DISCONNECT: {
@@ -298,6 +319,14 @@ export const connectionMachine = setup({
           target: 'reconnecting',
           actions: ['storeError', 'incrementReconnectAttempts'],
         },
+        RETRY: {
+          target: 'reconnecting',
+          actions: 'incrementReconnectAttempts',
+        },
+        ERROR: {
+          target: 'reconnecting',
+          actions: ['storeError', 'incrementReconnectAttempts'],
+        },
       },
     },
 
@@ -338,7 +367,13 @@ export const connectionMachine = setup({
         },
         RECONNECT: {
           target: 'connecting_sse',
-          actions: 'resetConnection',
+          actions: ['resetConnection', 'storeConnectionStartTime'],
+        },
+        RETRY: {
+          target: 'reconnecting',
+        },
+        DISCONNECT: {
+          target: 'disconnected',
         },
       },
     },

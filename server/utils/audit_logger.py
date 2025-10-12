@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from ..config import get_config
 from ..logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -30,15 +31,27 @@ class AuditLogger:
     AI: Audit logs should be immutable and stored separately from regular logs.
     """
 
-    def __init__(self, log_directory: str = "logs/audit"):
+    def __init__(self, log_directory: str | None = None):
         """
         Initialize audit logger.
 
         Args:
-            log_directory: Directory to store audit logs
+            log_directory: Optional directory to store audit logs.
+                          If None, uses logs/{environment}/audit based on config.
 
-        AI: Creates directory structure if it doesn't exist.
+        AI: Creates directory structure if it doesn't exist. Respects environment separation.
         """
+        if log_directory is None:
+            # Get environment from config
+            config = get_config()
+            environment = config.logging.environment
+            log_base = config.logging.log_base
+
+            # CRITICAL: Use absolute path from project root to prevent creating
+            # logs in server/logs/ when code is imported from server/ directory
+            project_root = Path(__file__).parent.parent.parent
+            log_directory = str(project_root / log_base / environment / "audit")
+
         self.log_directory = Path(log_directory)
         self.log_directory.mkdir(parents=True, exist_ok=True)
 

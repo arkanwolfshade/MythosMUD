@@ -540,7 +540,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Create alias storage with proper directory from config
     config = get_config()
-    aliases_dir = config.get("aliases_dir")
+    aliases_dir = config.game.aliases_dir
     alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
     request_context.set_alias_storage(alias_storage)
 

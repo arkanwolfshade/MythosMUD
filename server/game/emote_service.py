@@ -33,7 +33,7 @@ class EmoteService:
             project_root = Path(__file__).parent.parent.parent
             config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
 
-            # Extract environment from config path (e.g., server_config.unit_test.yaml -> unit_test)
+            # Extract environment from config (loaded from .env via Pydantic)
             environment = "local"  # default
             if "unit_test" in config_path:
                 environment = "unit_test"

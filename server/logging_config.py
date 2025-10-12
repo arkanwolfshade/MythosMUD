@@ -125,7 +125,7 @@ def detect_environment() -> str:
     Returns:
         Environment name: "e2e_test", "unit_test", "local", or "production"
 
-    Note: Valid environments are defined in server_config.*.yaml files:
+    Note: Valid environments are defined in .env files via LOGGING_ENVIRONMENT:
         - e2e_test: End-to-end testing with Playwright
         - unit_test: Unit and integration testing with pytest
         - local: Local development

@@ -5,15 +5,16 @@ This module handles incoming NATS messages and broadcasts them to WebSocket clie
 It replaces the previous Redis message handler with NATS-based messaging.
 """
 
+from datetime import UTC, datetime
 from typing import Any
 
 from ..logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.connection_manager import connection_manager
-from ..realtime.dead_letter_queue import DeadLetterQueue
+from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
-from ..realtime.nats_retry_handler import NATSRetryHandler, RetryConfig
+from ..realtime.nats_retry_handler import NATSRetryHandler
 
 logger = get_logger("communications.nats_message_handler")
 
@@ -46,8 +47,8 @@ class NATSMessageHandler:
         # AI: These components work together to provide resilient message delivery
         from datetime import timedelta
 
-        self.retry_handler = NATSRetryHandler(config=RetryConfig(max_attempts=3, base_delay=1.0, max_delay=30.0))
-        self.dead_letter_queue = DeadLetterQueue(storage_path="logs/dlq/nats")
+        self.retry_handler = NATSRetryHandler(max_retries=3, base_delay=1.0, max_delay=30.0)
+        self.dead_letter_queue = DeadLetterQueue()  # Uses environment-aware path
         self.circuit_breaker = CircuitBreaker(failure_threshold=5, timeout=timedelta(seconds=60), success_threshold=2)
         self.metrics = metrics_collector  # Shared global metrics instance
 
@@ -55,7 +56,7 @@ class NATSMessageHandler:
             "NATS message handler initialized with error boundaries",
             retry_max_attempts=3,
             circuit_failure_threshold=5,
-            dlq_path="logs/dlq/nats",
+            # DLQ path is environment-aware via DeadLetterQueue initialization
         )
 
     async def start(self, enable_event_subscriptions: bool = True):
@@ -179,9 +180,15 @@ class NATSMessageHandler:
             # Circuit is open, add to DLQ immediately
             logger.error("Circuit breaker open, message added to DLQ", message_id=message_id, error=str(e))
 
-            await self.dead_letter_queue.enqueue(
-                message_data, Exception("Circuit breaker open"), retry_count=0, metadata={"reason": "circuit_open"}
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(e),
+                timestamp=datetime.now(UTC),
+                retry_count=0,
+                original_headers={"reason": "circuit_open"},
             )
+            self.dead_letter_queue.enqueue(dlq_message)
 
             self.metrics.record_message_dlq(channel)
 
@@ -195,9 +202,15 @@ class NATSMessageHandler:
             )
 
             # Add to DLQ as last resort
-            await self.dead_letter_queue.enqueue(
-                message_data, e, retry_count=0, metadata={"reason": "unhandled_exception"}
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(e),
+                timestamp=datetime.now(UTC),
+                retry_count=0,
+                original_headers={"reason": "unhandled_exception"},
             )
+            self.dead_letter_queue.enqueue(dlq_message)
 
             self.metrics.record_message_failed(channel, type(e).__name__)
 
@@ -229,9 +242,15 @@ class NATSMessageHandler:
                 error=str(result),
             )
 
-            await self.dead_letter_queue.enqueue(
-                message_data, result, retry_count=self.retry_handler.config.max_attempts, metadata={"channel": channel}
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(result),
+                timestamp=datetime.now(UTC),
+                retry_count=self.retry_handler.max_retries,
+                original_headers={"channel": channel},
             )
+            self.dead_letter_queue.enqueue(dlq_message)
 
             self.metrics.record_message_dlq(channel)
             self.metrics.record_message_failed(channel, type(result).__name__)

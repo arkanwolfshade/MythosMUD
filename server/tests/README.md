@@ -91,5 +91,5 @@ Tests use the following configuration:
 
 - **Database**: `data/unit_test/players/unit_test_players.db`
 - **Log Directory**: `logs/unit_test/` (project root logs for unit tests)
-- **Config File**: `server/server_config.unit_test.yaml`
+- **Config File**: `.env.unit_test` (template: `.env.unit_test.example`)
 - **Isolation**: Each test uses the same database but with proper cleanup

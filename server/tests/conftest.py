@@ -83,13 +83,12 @@ else:
     os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
     print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
 
-# Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
+# Ensure we're using the correct path for test logs (matches .env.unit_test)
 test_logs_dir = project_root / "logs" / "unit_test"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
-# Set test configuration file path
-test_config_path = project_root / "server" / "server_config.unit_test.yaml"
-os.environ["MYTHOSMUD_CONFIG_PATH"] = str(test_config_path)
-print(f"[OK] Using unit test config: {test_config_path}")
+# Configuration is now loaded from .env.unit_test via Pydantic BaseSettings
+# No YAML config file needed - all settings via environment variables
+print("[OK] Using Pydantic configuration from .env.unit_test")
 # Legacy logging environment variables no longer needed - logging is handled by
 # centralized system
 # Use absolute path for aliases directory to prevent incorrect directory creation
@@ -209,7 +208,7 @@ def pytest_configure(config):
         test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
 
-    # Ensure we're using the correct path for test logs (matches server_config.unit_test.yaml)
+    # Ensure we're using the correct path for test logs (matches .env.unit_test)
     test_logs_dir = project_root / "logs" / "unit_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
