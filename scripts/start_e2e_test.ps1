@@ -51,7 +51,8 @@ if (Test-Path $envFile) {
         if ($_ -match "^([^#][^=]+)=(.*)$") {
             $name = $matches[1].Trim()
             $value = $matches[2].Trim()
-            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+            # Use Set-Item for env: drive to handle all variable names correctly
+            Set-Item -Path "env:$name" -Value $value -Force
         }
     }
 }
@@ -75,7 +76,8 @@ if (Test-Path $envFile) {
         if ($_ -match "^([^#][^=]+)=(.*)$") {
             $name = $matches[1].Trim()
             $value = $matches[2].Trim()
-            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+            # Use Set-Item for env: drive to handle all variable names correctly
+            Set-Item -Path "env:$name" -Value $value -Force
         }
     }
 }
@@ -91,7 +93,7 @@ Write-Host ""
 
 # Start server using the existing start_server.ps1 script
 # Pass explicit parameters to ensure it uses E2E test settings
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; `$env:MYTHOSMUD_CONFIG_PATH='$configPath'; .\scripts\start_server.ps1 -Port 54731 -Environment e2e_test" -WindowStyle Normal
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; `$env:LOGGING_ENVIRONMENT='e2e_test'; .\scripts\start_server.ps1 -Port 54731 -Environment e2e_test" -WindowStyle Normal
 
 Write-Host ""
 Write-Host "E2E Test Server starting in new window..." -ForegroundColor Green

@@ -77,7 +77,8 @@ function Load-EnvironmentConfig {
             if ($_ -match "^([^#][^=]+)=(.*)$") {
                 $name = $matches[1].Trim()
                 $value = $matches[2].Trim()
-                [Environment]::SetEnvironmentVariable($name, $value, "Process")
+                # Use Set-Item for env: drive to handle all variable names correctly
+                Set-Item -Path "env:$name" -Value $value -Force
             }
         }
     }
@@ -285,7 +286,7 @@ function Start-MythosMUDServer {
         if ($EnvFile -and (Test-Path $EnvFile)) {
             # Escape single quotes in path for PowerShell string
             $escapedEnvFile = $EnvFile -replace "'", "''"
-            $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { `$env:(`$matches[1].Trim()) = `$matches[2].Trim() } }; "
+            $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { Set-Item -Path `"env:`$(`$matches[1].Trim())`" -Value `$matches[2].Trim() -Force } }; "
             Write-Host "Environment file will be loaded in spawned process: $EnvFile" -ForegroundColor Cyan
         }
 
