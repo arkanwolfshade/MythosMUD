@@ -108,7 +108,8 @@ if (messages.length === 0) {
 - **Server Port**: 54731 (from `server/server_config.yaml`)
 - **Client Port**: 5173 (from `client/vite.config.ts`)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer)
-- **Database**: `data/players/local_players.db`
+- **Database**: `data/e2e_test/players/e2e_players.db`
+- **Log Directory**: `logs/e2e_test/`
 
 ### Command Syntax
 
@@ -222,16 +223,16 @@ netstat -an | findstr :5173
 
 ```powershell
 # MANDATORY: Check if players exist and their current state
-sqlite3 "data/players/local_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Update players to starting room (ALWAYS run this)
-sqlite3 "data/players/local_players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Verify ArkanWolfshade has admin privileges (ALWAYS run this)
-sqlite3 "data/players/local_players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
 # MANDATORY: Verify the updates worked
-sqlite3 "data/players/local_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
 **MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)

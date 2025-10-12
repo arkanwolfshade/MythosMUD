@@ -83,12 +83,23 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: /^Exits?:/i, type: 'system' },
   { pattern: /^You feel /i, type: 'system' },
   { pattern: /^The room is /i, type: 'system' },
+  // Room descriptions - comprehensive patterns
+  { pattern: /^A section of /i, type: 'system' }, // "A section of High Lane..."
+  { pattern: /^A narrow /i, type: 'system' }, // "A narrow alley..."
+  { pattern: /^A small /i, type: 'system' }, // "A small garden..."
+  { pattern: /^A large /i, type: 'system' }, // "A large hall..."
   { pattern: /^A /i, type: 'system' }, // Room descriptions often start with "A"
-  { pattern: /^You see /i, type: 'system' },
-  { pattern: /^You hear /i, type: 'system' },
-  { pattern: /^You smell /i, type: 'system' },
-  { pattern: /^You taste /i, type: 'system' },
-  { pattern: /^You touch /i, type: 'system' },
+  // Location-based room descriptions
+  { pattern: /^Apple Lane /i, type: 'system' }, // "Apple Lane - Residential Section..."
+  { pattern: /^Apple and Derby /i, type: 'system' }, // "Apple and Derby Intersection..."
+  { pattern: /^High Lane /i, type: 'system' }, // "High Lane - Near Derby Intersection..."
+  { pattern: /^Derby Street /i, type: 'system' }, // "Derby Street..."
+  // Specific room name patterns only - avoid overly broad patterns
+  { pattern: /^[A-Z][a-z]+ [A-Z][a-z]+ - [A-Z][a-z]+ [A-Z][a-z]+/i, type: 'system' }, // "Apple Lane - Residential Section"
+  { pattern: /^[A-Z][a-z]+ and [A-Z][a-z]+ [A-Z][a-z]+/i, type: 'system' }, // "Apple and Derby Intersection"
+  // Specific "You" patterns for system messages only
+  { pattern: /^You feel /i, type: 'system' }, // Keep this one - it's about environmental effects
+  { pattern: /^You are now in /i, type: 'system' }, // Keep this one - it's about location changes
   { pattern: /^The /i, type: 'system' }, // Room descriptions often start with "The"
   { pattern: /^It is /i, type: 'system' },
   { pattern: /^There is /i, type: 'system' },
@@ -142,14 +153,22 @@ export function determineMessageType(message: string): MessageTypeResult {
   }
 
   // Check system patterns
+  console.log('🔍 Checking system patterns for message:', trimmedMessage.substring(0, 50) + '...');
   for (const pattern of SYSTEM_PATTERNS) {
     if (pattern.pattern.test(trimmedMessage)) {
+      console.log(
+        '✅ System pattern matched:',
+        pattern.pattern,
+        'for message:',
+        trimmedMessage.substring(0, 50) + '...'
+      );
       return {
         type: pattern.type,
       };
     }
   }
 
+  console.log('❌ No system patterns matched, defaulting to command');
   // Default to command response
   return { type: 'command' };
 }

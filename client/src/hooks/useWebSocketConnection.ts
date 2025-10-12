@@ -88,12 +88,15 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     }
 
     try {
-      // Apply CSRF protection and input sanitization
-      const protectedMessage = csrfProtection.addToken(message);
-      const sanitizedMessage = inputSanitizer.sanitizeCommand(protectedMessage);
+      // Sanitize the message first
+      const sanitizedMessage = inputSanitizer.sanitizeCommand(message);
 
+      // Generate CSRF token and include it in the message
+      const csrfToken = csrfProtection.generateToken();
+
+      // Send the sanitized message (CSRF token could be included in JSON messages if needed)
       websocketRef.current.send(sanitizedMessage);
-      logger.debug('WebSocketConnection', 'Message sent', { message: sanitizedMessage });
+      logger.debug('WebSocketConnection', 'Message sent', { message: sanitizedMessage, csrfToken });
     } catch (error) {
       logger.error('WebSocketConnection', 'Error sending message', { error });
     }

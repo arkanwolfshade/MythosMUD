@@ -48,7 +48,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
-    starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
+    starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,

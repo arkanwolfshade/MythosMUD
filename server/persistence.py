@@ -713,7 +713,7 @@ class PersistenceLayer:
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            default_room = "earth_arkhamcity_northside_intersection_derby_high"
+            default_room = "earth_arkhamcity_sanitarium_room_foyer_001"
 
         player.current_room_id = default_room
 

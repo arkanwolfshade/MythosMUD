@@ -1,8 +1,6 @@
 ---
-description: Run the modular E2E test suite exactly as written.
 alwaysApply: false
 ---
-
 ## 🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨
 
 **MANDATORY LLM REQUIREMENT:**

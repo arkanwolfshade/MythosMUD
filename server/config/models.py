@@ -166,7 +166,8 @@ class GameConfig(BaseSettings):
     """Game-specific configuration."""
 
     default_player_room: str = Field(
-        default="earth_arkhamcity_northside_intersection_derby_high", description="Default starting room"
+        default="earth_arkhamcity_sanitarium_room_foyer_001",
+        description="Default starting room for E2E tests and new players",
     )
     max_connections_per_player: int = Field(default=3, description="Max simultaneous connections per player")
     rate_limit_window: int = Field(default=60, description="Rate limit window in seconds")

@@ -193,23 +193,34 @@ export function useGameConnection(options: UseGameConnectionOptions) {
 
   // Send command through WebSocket
   const sendCommand = useCallback(
-    (command: string) => {
+    async (command: string, args: string[] = []): Promise<boolean> => {
       if (!connectionState.isConnected) {
         logger.warn('GameConnection', 'Cannot send command: not connected');
-        return;
+        return false;
       }
 
-      // Sanitize command input
-      const sanitizedCommand = inputSanitizer.sanitizeCommand(command);
+      try {
+        // Sanitize command and arguments
+        const sanitizedCommand = inputSanitizer.sanitizeCommand(command);
+        const sanitizedArgs = args.map(arg => inputSanitizer.sanitizeCommand(arg));
 
-      // Create command message
-      const message = JSON.stringify({
-        type: 'command',
-        command: sanitizedCommand,
-        timestamp: new Date().toISOString(),
-      });
+        // Create command message matching the server's expected format
+        const message = JSON.stringify({
+          type: 'game_command',
+          data: {
+            command: sanitizedCommand,
+            args: sanitizedArgs,
+          },
+          timestamp: new Date().toISOString(),
+        });
 
-      wsConnection.sendMessage(message);
+        wsConnection.sendMessage(message);
+        logger.info('GameConnection', 'Command sent', { command: sanitizedCommand, args: sanitizedArgs });
+        return true;
+      } catch (error) {
+        logger.error('GameConnection', 'Failed to send command', { error: String(error) });
+        return false;
+      }
     },
     [connectionState.isConnected, wsConnection]
   );
