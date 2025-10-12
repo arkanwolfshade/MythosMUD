@@ -62,6 +62,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
     """
     try:
         from ..realtime.nats_message_handler import nats_message_handler
+        from ..services.nats_service import nats_service
 
         # Get base metrics from collector
         base_metrics = metrics_collector.get_metrics()
@@ -73,6 +74,10 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
 
             base_metrics["circuit_breaker"].update(circuit_stats)
             base_metrics["dead_letter_queue"] = dlq_stats
+
+        # Add NATS connection state machine stats
+        if nats_service:
+            base_metrics["nats_connection"] = nats_service.get_connection_stats()
 
         logger.info("Metrics retrieved", admin_user=current_user.get("username"))
 

@@ -14,6 +14,7 @@ from typing import Any
 import nats
 
 from ..logging_config import get_logger
+from ..realtime.connection_state_machine import NATSConnectionStateMachine
 
 logger = get_logger("nats")
 
@@ -28,10 +29,12 @@ class NATSService:
 
     def __init__(self, config: dict[str, Any] | None = None):
         """
-        Initialize NATS service.
+        Initialize NATS service with state machine.
 
         Args:
             config: NATS configuration dictionary
+
+        AI: State machine tracks connection lifecycle and prevents invalid state transitions.
         """
         self.config = config or {}
         self.nc: nats.NATS | None = None
@@ -40,13 +43,37 @@ class NATSService:
         self._connection_retries = 0
         self._max_retries = self.config.get("max_reconnect_attempts", 5)
 
+        # NEW: Connection state machine (CRITICAL-1)
+        # AI: FSM provides robust connection management with automatic recovery
+        self.state_machine = NATSConnectionStateMachine(
+            connection_id="nats-primary", max_reconnect_attempts=self._max_retries
+        )
+
     async def connect(self) -> bool:
         """
-        Connect to NATS server.
+        Connect to NATS server with state machine tracking.
 
         Returns:
             True if connection successful, False otherwise
+
+        AI: State machine tracks connection lifecycle and enables circuit breaker integration.
         """
+        # Check if connection attempt is allowed by state machine
+        if not self.state_machine.can_attempt_connection():
+            logger.warning(
+                "Connection attempt blocked by state machine",
+                current_state=self.state_machine.current_state.id,
+                reconnect_attempts=self.state_machine.reconnect_attempts,
+            )
+            return False
+
+        # Transition to connecting state
+        if self.state_machine.current_state.id == "disconnected":
+            self.state_machine.connect()
+        elif self.state_machine.current_state.id == "reconnecting":
+            # Already in reconnecting, continue
+            pass
+
         try:
             # Get NATS connection URL from config
             nats_url = self.config.get("url", "nats://localhost:4222")
@@ -60,7 +87,7 @@ class NATSService:
                 "max_outstanding_pings": self.config.get("max_outstanding_pings", 5),
             }
 
-            logger.info("Connecting to NATS server", url=nats_url)
+            logger.info("Connecting to NATS server", url=nats_url, state=self.state_machine.current_state.id)
 
             # Connect to NATS
             self.nc = await nats.connect(nats_url, **connect_options)
@@ -77,22 +104,50 @@ class NATSService:
             self._running = True
             self._connection_retries = 0
 
-            logger.info("Connected to NATS server successfully", url=nats_url)
+            # Transition to connected state
+            self.state_machine.connected_successfully()
+
+            logger.info(
+                "Connected to NATS server successfully",
+                url=nats_url,
+                state=self.state_machine.current_state.id,
+            )
             return True
 
         except Exception as e:
             self._connection_retries += 1
+
+            # Transition to failed state
+            self.state_machine.connection_failed(e)
+
             logger.error(
                 "Failed to connect to NATS server",
                 error=str(e),
                 url=self.config.get("url", "nats://localhost:4222"),
                 retry_count=self._connection_retries,
                 max_retries=self._max_retries,
+                state=self.state_machine.current_state.id,
             )
+
+            # Check if circuit breaker should be triggered
+            if self.state_machine.should_open_circuit():
+                if self.state_machine.current_state.id == "disconnected":
+                    # Need to be in reconnecting to open circuit
+                    self.state_machine.start_reconnect()
+                self.state_machine.open_circuit()
+                logger.critical(
+                    "NATS connection circuit breaker opened",
+                    state=self.state_machine.current_state.id,
+                )
+
             return False
 
     async def disconnect(self):
-        """Disconnect from NATS and cleanup resources."""
+        """
+        Disconnect from NATS and cleanup resources with state machine tracking.
+
+        AI: State machine transitions to disconnected, enabling clean reconnection.
+        """
         try:
             if self.nc:
                 # Close all subscriptions
@@ -109,7 +164,11 @@ class NATSService:
                 self.subscriptions.clear()
                 self._running = False
 
-                logger.info("Disconnected from NATS server")
+                # Transition to disconnected state
+                if self.state_machine.current_state.id in ["connected", "degraded"]:
+                    self.state_machine.disconnect()
+
+                logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
         except Exception as e:
             logger.error("Error disconnecting from NATS server", error=str(e))
 
@@ -305,21 +364,62 @@ class NATSService:
         """
         return len(self.subscriptions)
 
-    # Event handlers
+    # Event handlers with state machine integration
     def _on_error(self, error):
-        """Handle NATS connection errors."""
-        logger.error("NATS connection error", error=str(error))
+        """
+        Handle NATS connection errors with state machine tracking.
+
+        AI: Errors may trigger degradation or reconnection.
+        """
+        logger.error("NATS connection error", error=str(error), state=self.state_machine.current_state.id)
+
+        # Degrade connection if currently connected
+        if self.state_machine.current_state.id == "connected":
+            self.state_machine.degrade()
 
     def _on_disconnect(self):
-        """Handle NATS disconnection events."""
-        logger.warning("NATS client disconnected")
+        """
+        Handle NATS disconnection events with state machine tracking.
+
+        AI: Disconnection triggers reconnection attempt.
+        """
+        logger.warning("NATS client disconnected", state=self.state_machine.current_state.id)
         self._running = False
 
+        # Transition to reconnecting if we were connected
+        if self.state_machine.current_state.id in ["connected", "degraded"]:
+            self.state_machine.disconnect()
+            self.state_machine.start_reconnect()
+
     def _on_reconnect(self):
-        """Handle NATS reconnection events."""
-        logger.info("NATS client reconnected")
+        """
+        Handle NATS reconnection events with state machine tracking.
+
+        AI: Successful reconnection transitions to connected state.
+        """
+        logger.info("NATS client reconnected", state=self.state_machine.current_state.id)
         self._running = True
         self._connection_retries = 0
+
+        # Transition to connected if we were reconnecting
+        if self.state_machine.current_state.id == "reconnecting":
+            self.state_machine.connected_successfully()
+        elif self.state_machine.current_state.id == "degraded":
+            self.state_machine.recover()
+
+    def get_connection_stats(self) -> dict[str, Any]:
+        """
+        Get connection statistics from state machine.
+
+        Returns:
+            Dictionary with connection state and metrics
+
+        AI: For monitoring dashboards and health checks.
+        """
+        return {
+            "nats_connected": self._running,
+            **self.state_machine.get_stats(),
+        }
 
 
 # Global NATS service instance
