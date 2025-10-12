@@ -144,7 +144,12 @@ def detect_environment() -> str:
     if os.getenv("MYTHOSMUD_TEST_MODE"):
         return "unit_test"
 
-    # Try to determine from config path
+    # Try to determine from LOGGING_ENVIRONMENT (Pydantic config)
+    logging_env = os.getenv("LOGGING_ENVIRONMENT", "")
+    if logging_env in ["e2e_test", "unit_test", "production", "local"]:
+        return logging_env
+
+    # Fallback: check legacy config path for backward compatibility
     config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
     if "e2e_test" in config_path:
         return "e2e_test"

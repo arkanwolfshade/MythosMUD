@@ -9,6 +9,16 @@ import App from '../App';
 import { logoutHandler } from '../utils/logoutHandler';
 import { secureTokenStorage } from '../utils/security';
 
+// Mock the logger
+vi.mock('../utils/logger', () => ({
+  logger: {
+    info: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+  },
+}));
+
 // Mock the logoutHandler utility
 vi.mock('../utils/logoutHandler');
 const mockLogoutHandler = vi.mocked(logoutHandler);
@@ -32,16 +42,23 @@ vi.mock('../utils/security', () => ({
   },
 }));
 
-// Mock the useGameConnection hook
-vi.mock('../hooks/useGameConnection', () => ({
+// Mock the useGameConnection hook (now using refactored version)
+vi.mock('../hooks/useGameConnectionRefactored', () => ({
   useGameConnection: vi.fn(() => ({
     isConnected: true,
     isConnecting: false,
     error: null,
     reconnectAttempts: 0,
+    sseConnected: true,
+    websocketConnected: true,
+    sessionId: 'test-session',
+    connectionHealth: { websocket: 'healthy', sse: 'healthy' },
     connect: vi.fn(),
     disconnect: vi.fn(),
     sendCommand: vi.fn(),
+    createNewSession: vi.fn(),
+    switchToSession: vi.fn(),
+    getConnectionInfo: vi.fn(),
   })),
 }));
 

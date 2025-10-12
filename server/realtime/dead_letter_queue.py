@@ -96,7 +96,14 @@ class DeadLetterQueue:
 
             # CRITICAL: Use absolute path from project root to prevent creating
             # dlq in server/logs/ when code is imported from server/ directory
-            project_root = Path(__file__).parent.parent.parent
+            # Find project root by looking for pyproject.toml
+            current_file = Path(__file__).resolve()
+            project_root = current_file.parent
+            while project_root.parent != project_root:
+                if (project_root / "pyproject.toml").exists():
+                    break
+                project_root = project_root.parent
+
             storage_dir = str(project_root / log_base / environment / "dlq")
 
         self.storage_dir = Path(storage_dir)

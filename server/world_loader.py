@@ -15,18 +15,19 @@ def _get_rooms_base_path() -> str:
     """
     Get the rooms base path based on the current environment.
 
-    Checks MYTHOSMUD_CONFIG_PATH to determine environment (unit_test, e2e_test, local)
-    and returns the appropriate data directory path.
+    Uses LOGGING_ENVIRONMENT from Pydantic config to determine environment.
     """
     project_root = Path(__file__).parent.parent
-    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
 
-    # Extract environment from config path
-    environment = "local"  # default
-    if "unit_test" in config_path:
-        environment = "unit_test"
-    elif "e2e_test" in config_path:
-        environment = "e2e_test"
+    # Use LOGGING_ENVIRONMENT from Pydantic config, with fallback to legacy config path
+    environment = os.getenv("LOGGING_ENVIRONMENT", "local")
+    if not environment or environment not in ["local", "unit_test", "e2e_test", "production"]:
+        # Fallback: try to extract from legacy config path
+        config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+        if "unit_test" in config_path:
+            environment = "unit_test"
+        elif "e2e_test" in config_path:
+            environment = "e2e_test"
 
     # Try environment-specific path first, fallback to generic data/rooms
     env_rooms_path = project_root / "data" / environment / "rooms"

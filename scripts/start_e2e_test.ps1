@@ -67,11 +67,25 @@ Write-Host "Stopping any existing servers..." -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Starting backend server in E2E test mode..." -ForegroundColor Green
 
-# Set configuration path for E2E testing
-$configPath = Join-Path $PWD "server\server_config.e2e_test.yaml"
-$env:MYTHOSMUD_CONFIG_PATH = $configPath
+# Load E2E test environment variables from .env file
+$envFile = Join-Path $PWD ".env.e2e_test"
+if (Test-Path $envFile) {
+    Write-Host "Loading environment from $envFile" -ForegroundColor Cyan
+    Get-Content $envFile | ForEach-Object {
+        if ($_ -match "^([^#][^=]+)=(.*)$") {
+            $name = $matches[1].Trim()
+            $value = $matches[2].Trim()
+            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+        }
+    }
+}
+else {
+    Write-Host "Warning: $envFile not found, using defaults" -ForegroundColor Yellow
+}
 
-Write-Host "Config file: $configPath" -ForegroundColor Gray
+# Set LOGGING_ENVIRONMENT for Pydantic configuration
+$env:LOGGING_ENVIRONMENT = "e2e_test"
+Write-Host "Set LOGGING_ENVIRONMENT=e2e_test for Pydantic config" -ForegroundColor Cyan
 Write-Host "Test database: data/e2e_test/players/e2e_players.db" -ForegroundColor Gray
 Write-Host ""
 

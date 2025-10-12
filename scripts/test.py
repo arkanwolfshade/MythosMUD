@@ -18,11 +18,11 @@ def run_server_tests():
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "logs" / "unit_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Set test environment variables for logging
-    env["MYTHOSMUD_ENV"] = "unit_test"
+    # Set test environment variables for Pydantic configuration
+    env["LOGGING_ENVIRONMENT"] = "unit_test"
     env["MYTHOSMUD_TEST_MODE"] = "true"
-    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "server_config.unit_test.yaml")
-    env["ALIASES_DIR"] = "data/unit_test/players/aliases"
+    # Note: MYTHOSMUD_CONFIG_PATH no longer used - Pydantic loads from .env.unit_test
+    env["GAME_ALIASES_DIR"] = str(project_root / "data" / "unit_test" / "players" / "aliases")
 
     clean_result = subprocess.run(clean_cmd, env=env)
 
@@ -64,11 +64,11 @@ def run_server_e2e_tests():
     # Ensure we're using the correct path for test logs
     test_logs_dir = project_root / "logs" / "e2e_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Set test environment variables for logging
-    env["MYTHOSMUD_ENV"] = "e2e_test"
+    # Set test environment variables for Pydantic configuration
+    env["LOGGING_ENVIRONMENT"] = "e2e_test"
     env["MYTHOSMUD_TEST_MODE"] = "true"
-    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "server_config.e2e_test.yaml")
-    env["ALIASES_DIR"] = "data/e2e_test/players/aliases"
+    # Note: MYTHOSMUD_CONFIG_PATH no longer used - Pydantic loads from .env.e2e_test
+    env["GAME_ALIASES_DIR"] = str(project_root / "data" / "e2e_test" / "players" / "aliases")
 
     print("Running server E2E tests with pytest...")
     # Change to server directory to use the pytest configuration there
