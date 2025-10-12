@@ -205,20 +205,20 @@ dependencies = [
 
 ## Test Coverage Summary
 
-| Component | Tests Added | Tests Passing | Coverage |
-|-----------|-------------|---------------|----------|
-| Configuration | Existing + new | All | ≥80% |
-| Alias Graph | 11 | 11 (100%) | ≥90% |
-| Command Rate Limiter | 13 | 13 (100%) | ≥90% |
-| Command Validator | 27 | 27 (100%) | ≥90% |
-| Audit Logger | 14 | 14 (100%) | ≥90% |
-| Retry Handler | 13 | 13 (100%) | ≥90% |
-| Dead Letter Queue | 13 | 13 (100%) | ≥90% |
-| Circuit Breaker | 16 | 16 (100%) | ≥90% |
-| Metrics Collector | 18 | 18 (100%) | ≥90% |
-| Backend State Machine | 24 | 24 (100%) | ≥90% |
-| Frontend State Machine | 13 | 13 (100%) | ≥90% |
-| **TOTAL** | **162** | **162 (100%)** | **≥85%** |
+| Component              | Tests Added    | Tests Passing  | Coverage |
+| ---------------------- | -------------- | -------------- | -------- |
+| Configuration          | Existing + new | All            | ≥80%     |
+| Alias Graph            | 11             | 11 (100%)      | ≥90%     |
+| Command Rate Limiter   | 13             | 13 (100%)      | ≥90%     |
+| Command Validator      | 27             | 27 (100%)      | ≥90%     |
+| Audit Logger           | 14             | 14 (100%)      | ≥90%     |
+| Retry Handler          | 13             | 13 (100%)      | ≥90%     |
+| Dead Letter Queue      | 13             | 13 (100%)      | ≥90%     |
+| Circuit Breaker        | 16             | 16 (100%)      | ≥90%     |
+| Metrics Collector      | 18             | 18 (100%)      | ≥90%     |
+| Backend State Machine  | 24             | 24 (100%)      | ≥90%     |
+| Frontend State Machine | 13             | 13 (100%)      | ≥90%     |
+| **TOTAL**              | **162**        | **162 (100%)** | **≥85%** |
 
 **Overall Test Suite**: 3,226+ tests passing (97.8% pass rate)
 

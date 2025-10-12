@@ -256,7 +256,9 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
 
         message_data = dlq_entry.get("message")
         if not message_data:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid DLQ entry: missing message data")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid DLQ entry: missing message data"
+            )
 
         # Attempt to replay message
         try:
@@ -292,7 +294,9 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
         raise
     except Exception as e:
         logger.error("Error replaying DLQ message", filepath=filepath, error=str(e))
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message"
+        ) from e
 
 
 @router.delete("/dlq/{filepath:path}")
@@ -329,10 +333,14 @@ async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_
             logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
             return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
         else:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete DLQ message")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete DLQ message"
+            )
 
     except HTTPException:
         raise
     except Exception as e:
         logger.error("Error deleting DLQ message", filepath=filepath, error=str(e))
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message") from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message"
+        ) from e
