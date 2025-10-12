@@ -217,3 +217,122 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting circuit breaker"
         ) from e
+
+
+@router.post("/dlq/{filepath:path}/replay")
+async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
+    """
+    Replay a message from the Dead Letter Queue.
+
+    Attempts to reprocess a failed message. If successful, removes it from DLQ.
+
+    Args:
+        filepath: Path to the DLQ file (relative to DLQ storage)
+
+    Requires admin authentication.
+
+    Returns:
+        Confirmation message with replay status
+
+    AI: For manual incident recovery - use after fixing underlying issue.
+    """
+    try:
+        from ..realtime.nats_message_handler import nats_message_handler
+
+        if not nats_message_handler:
+            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
+
+        # Read the DLQ message
+        import json
+
+        dlq_path = nats_message_handler.dead_letter_queue.storage_path / filepath
+
+        if not dlq_path.exists():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
+
+        # Load message data
+        with open(dlq_path, encoding="utf-8") as f:
+            dlq_entry = json.load(f)
+
+        message_data = dlq_entry.get("message")
+        if not message_data:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid DLQ entry: missing message data")
+
+        # Attempt to replay message
+        try:
+            await nats_message_handler._process_single_message(message_data)
+
+            # Success! Remove from DLQ
+            await nats_message_handler.dead_letter_queue.remove_message(str(dlq_path))
+
+            logger.info(
+                "DLQ message replayed successfully",
+                filepath=filepath,
+                message_id=message_data.get("message_id"),
+                admin_user=current_user.get("username"),
+            )
+
+            return {"status": "success", "message": f"Message replayed and removed from DLQ: {filepath}"}
+
+        except Exception as replay_error:
+            logger.error(
+                "Failed to replay DLQ message",
+                filepath=filepath,
+                error=str(replay_error),
+                admin_user=current_user.get("username"),
+            )
+
+            return {
+                "status": "failed",
+                "message": f"Replay failed: {str(replay_error)}. Message remains in DLQ.",
+                "error": str(replay_error),
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Error replaying DLQ message", filepath=filepath, error=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message") from e
+
+
+@router.delete("/dlq/{filepath:path}")
+async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
+    """
+    Delete a message from the Dead Letter Queue without replaying.
+
+    Use this to discard a message that is not worth replaying.
+
+    Args:
+        filepath: Path to the DLQ file (relative to DLQ storage)
+
+    Requires admin authentication.
+
+    Returns:
+        Confirmation message
+
+    AI: For discarding permanently failed or invalid messages.
+    """
+    try:
+        from ..realtime.nats_message_handler import nats_message_handler
+
+        if not nats_message_handler:
+            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
+
+        dlq_path = nats_message_handler.dead_letter_queue.storage_path / filepath
+
+        if not dlq_path.exists():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
+
+        success = await nats_message_handler.dead_letter_queue.remove_message(str(dlq_path))
+
+        if success:
+            logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
+            return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
+        else:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete DLQ message")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Error deleting DLQ message", filepath=filepath, error=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message") from e
