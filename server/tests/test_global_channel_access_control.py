@@ -49,8 +49,8 @@ class TestGlobalChannelAccessControl:
         """Test that global channel rate limit is properly configured."""
         config = get_config()
         # Config is now a Pydantic object with attributes (config.chat.rate_limit_global)
-        # Test environment sets rate_limit_global to 100 (see .env.unit_test.example)
-        assert config.chat.rate_limit_global == 100
+        # Default rate_limit_global is 10 (Pydantic ChatConfig default)
+        assert config.chat.rate_limit_global == 10
 
     def test_global_channel_configuration_structure(self):
         """Test that global channel configuration structure exists."""

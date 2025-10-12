@@ -177,8 +177,8 @@ class TestLoggingConfig:
         assert legacy["environment"] == "local"
         assert legacy["level"] == "DEBUG"
         assert "rotation" in legacy
-        # Test environment sets rotation_max_size to 10MB (see conftest.py)
-        assert legacy["rotation"]["max_size"] == "10MB"
+        # Default rotation_max_size is 100MB (Pydantic default)
+        assert legacy["rotation"]["max_size"] == "100MB"
 
 
 class TestGameConfig:

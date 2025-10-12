@@ -295,8 +295,10 @@ class TestUnifiedCommandHandler:
         """Test that WebSocket and HTTP produce identical results."""
         # Reset any module-level state that might be polluted
         from server.config import reset_config
+        from server.middleware.command_rate_limiter import command_rate_limiter
 
         reset_config()
+        command_rate_limiter.reset_all()
 
         mock_alias_storage = MagicMock()
         mock_alias_storage.get_alias.return_value = None

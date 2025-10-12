@@ -11,12 +11,14 @@ The `server/tests/conftest.py` (621 lines) was built for the legacy YAML-based c
 ## Current Situation
 
 ### ✅ Completed Work
+
 1. Deleted `server/config_loader.py` (old YAML system)
 2. Created `server/config/` (new Pydantic system)
 3. Fixed 20 original failing tests
 4. Fixed test pollution issues (rate limiter, environment variables)
 
 ### ⚠️ Outstanding Issues
+
 - Original conftest.py (line 143) imports deleted `config_loader` module
 - 55 collection errors when using original conftest.py
 - Test client fixtures need adaptation for new config system
@@ -24,6 +26,7 @@ The `server/tests/conftest.py` (621 lines) was built for the legacy YAML-based c
 ## Migration Strategy
 
 ### Phase 1: Fix Immediate Breakage ✅ COMPLETE
+
 **Status**: Fixed line 143 `config_loader` import
 
 ```python
@@ -37,9 +40,11 @@ reset_config()
 ```
 
 ### Phase 2: Add Critical Missing Environment Variables
+
 **Status**: NEEDED
 
 Original conftest.py sets these via YAML config loading:
+
 - MYTHOSMUD_SECRET_KEY
 - MYTHOSMUD_JWT_SECRET
 - MYTHOSMUD_RESET_TOKEN_SECRET
@@ -48,9 +53,11 @@ Original conftest.py sets these via YAML config loading:
 **Action**: Add to module-level env var setup (lines 29-89)
 
 ### Phase 3: Adapt Test Client Fixtures
+
 **Status**: CRITICAL
 
 #### Current State (lines 278-299)
+
 ```python
 @pytest.fixture
 def test_client():
@@ -62,14 +69,18 @@ def test_client():
 ```
 
 #### Required Changes
+
 The new Pydantic config system initializes `app.state` via **lifespan context manager**.
 
 **Options**:
+
 1. **Use TestClient with lifespan** (Preferred)
+
    ```python
    with TestClient(app) as client:
        yield client
    ```
+
    - ✅ Automatic app.state initialization
    - ✅ Proper NATS handling
    - ⚠️ Requires NATS to be optional in tests
@@ -79,18 +90,22 @@ The new Pydantic config system initializes `app.state` via **lifespan context ma
    - Add NATS mock setup
 
 ### Phase 4: Update All Fixtures Referencing config_loader
+
 **Status**: TODO
 
 **Search pattern**: `config_loader`, `_config`
 
 **Files to check**:
+
 - Line 143: sync_test_environment cleanup
 - Any other fixtures that reset config
 
 ### Phase 5: Add Test Pollution Prevention Fixtures
+
 **Status**: PARTIAL
 
 Add autouse fixtures:
+
 ```python
 @pytest.fixture(autouse=True)
 def reset_rate_limiter():
@@ -110,9 +125,11 @@ def reset_config_cache():
 ## Implementation Plan
 
 ### Step 1: Minimal Changes (SAFE)
+
 Only fix breaking imports, preserve all existing functionality.
 
 **Changes**:
+
 1. Line 143: `config_loader` → `reset_config()` ✅
 2. Add JWT secrets to module-level env vars
 3. Keep all existing fixtures unchanged
@@ -120,23 +137,29 @@ Only fix breaking imports, preserve all existing functionality.
 **Test**: Run full suite, verify < 20 failures
 
 ### Step 2: Add Pollution Prevention (MEDIUM RISK)
+
 Add autouse fixtures for:
+
 - Config cache reset
 - Rate limiter reset
 
 **Test**: Verify pollution fixes hold
 
 ### Step 3: TestClient Lifespan Integration (HIGH RISK)
+
 Modify `test_client` fixture to use lifespan.
 
 **Prerequisites**:
+
 - NATS must be optional in `lifespan.py` ✅ COMPLETE
 - All app.state dependencies must initialize via lifespan
 
 **Test**: Run auth/character tests specifically
 
 ### Step 4: Cleanup YAML Remnants (FINAL)
+
 Remove all YAML config references:
+
 - `MYTHOSMUD_CONFIG_PATH` env var
 - `server_config.unit_test.yaml` references
 
@@ -145,6 +168,7 @@ Remove all YAML config references:
 ### ✅ MIGRATION COMPLETE! (October 12, 2025)
 
 **Test Results After Migration**:
+
 - ✅ 3198 tests PASSING
 - ❌ 4 tests FAILING
 - ⚠️ 49 tests with ERRORS
@@ -180,14 +204,17 @@ Remove all YAML config references:
 ## Risk Assessment
 
 **High Risk**:
+
 - Modifying `test_client` fixture (used by 100+ tests)
 - Changing autouse fixtures (affects all tests)
 
 **Medium Risk**:
+
 - Adding new autouse fixtures (pollution prevention)
 - Changing env var initialization
 
 **Low Risk**:
+
 - Fixing config_loader import
 - Adding missing env vars
 

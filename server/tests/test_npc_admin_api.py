@@ -25,7 +25,7 @@ class TestNPCAdminAPI:
     """Test NPC admin API endpoints."""
 
     @pytest.fixture
-    def app(self, setup_test_environment):
+    def app(self, sync_test_environment):
         """Create FastAPI app for testing."""
         return create_app()
 
