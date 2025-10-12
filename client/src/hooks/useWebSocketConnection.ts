@@ -7,9 +7,9 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
-import { csrfProtection, inputSanitizer } from '../utils/security';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
+import { csrfProtection, inputSanitizer } from '../utils/security';
 
 export interface WebSocketConnectionOptions {
   authToken: string;

@@ -8,12 +8,12 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { inputSanitizer } from '../utils/security';
 import { logger } from '../utils/logger';
+import { inputSanitizer } from '../utils/security';
 import { useConnectionState } from './useConnectionState';
 import { useSSEConnection } from './useSSEConnection';
-import { useWebSocketConnection } from './useWebSocketConnection';
 import { useSessionManagement } from './useSessionManagement';
+import { useWebSocketConnection } from './useWebSocketConnection';
 
 interface GameEvent {
   event_type: string;
