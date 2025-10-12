@@ -11,26 +11,43 @@ interface Stats {
   charisma: number;
 }
 
+interface Profession {
+  id: number;
+  name: string;
+  description: string;
+  flavor_text: string;
+  stat_requirements: Record<string, number>;
+  mechanical_effects: Record<string, number>;
+  is_available: boolean;
+}
+
 interface StatsRollingScreenProps {
   characterName: string;
   onStatsAccepted: (stats: Stats) => void;
   onError: (error: string) => void;
+  onBack?: () => void;
   baseUrl: string;
   authToken: string;
+  professionId?: number;
+  profession?: Profession;
 }
 
 export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   characterName,
   onStatsAccepted,
   onError,
+  onBack,
   baseUrl,
   authToken,
+  professionId,
+  profession,
 }) => {
   const [currentStats, setCurrentStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRerolling, setIsRerolling] = useState(false);
   const [rerollCooldown, setRerollCooldown] = useState(0);
   const [error, setError] = useState('');
+  const [timeoutMessage, setTimeoutMessage] = useState('');
 
   // Roll initial stats when component mounts and authToken is available
   useEffect(() => {
@@ -62,13 +79,27 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         },
         body: JSON.stringify({
           method: '3d6',
+          profession_id: professionId,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
         setCurrentStats(data.stats);
-        logger.info('StatsRollingScreen', 'Stats rolled successfully', { stats: data.stats });
+
+        // Handle timeout message for profession requirements
+        if (data.meets_requirements === false && profession) {
+          setTimeoutMessage(
+            "The cosmic forces resist your chosen path. The eldritch energies have failed to align with your profession's requirements within the allotted time. You must manually reroll to find stats worthy of your chosen calling."
+          );
+        } else {
+          setTimeoutMessage('');
+        }
+
+        logger.info('StatsRollingScreen', 'Stats rolled successfully', {
+          stats: data.stats,
+          meets_requirements: data.meets_requirements,
+        });
       } else if (response.status === 429) {
         // Rate limit exceeded
         const errorData = await response.json();
@@ -110,6 +141,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         },
         body: JSON.stringify({
           method: '3d6',
+          profession_id: professionId,
         }),
       });
 
@@ -147,6 +179,9 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       return;
     }
 
+    // Note: Even if stats do not meet profession requirements, allow acceptance
+    // Tests expect flow to continue to game while UI indicates requirement status
+
     setIsLoading(true);
     setError('');
 
@@ -160,6 +195,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         body: JSON.stringify({
           name: characterName, // This is the username from registration
           stats: currentStats,
+          profession_id: professionId || 0, // Include profession_id, default to 0 (Tramp)
         }),
       });
 
@@ -237,6 +273,18 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       <div className="stats-header">
         <h2>Character Creation</h2>
         <p className="character-name">Character: {characterName}</p>
+        {profession && (
+          <div className="profession-display">
+            <p className="profession-name">Profession: {profession.name}</p>
+            <p className="profession-description">{profession.description}</p>
+          </div>
+        )}
+
+        {timeoutMessage && (
+          <div className="timeout-message">
+            <p className="timeout-text">{timeoutMessage}</p>
+          </div>
+        )}
       </div>
 
       <div className="stats-display">
@@ -272,6 +320,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       {error && <div className="error-message">{error}</div>}
 
       <div className="stats-actions">
+        {onBack && (
+          <button onClick={onBack} className="back-button">
+            Back
+          </button>
+        )}
+
         <button
           onClick={handleReroll}
           disabled={rerollCooldown > 0 || isRerolling || isLoading}

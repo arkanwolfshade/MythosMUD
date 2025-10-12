@@ -114,20 +114,20 @@ class RoomLoader:
         """
         if parsed_filename["type"] == "room":
             if parsed_filename.get("legacy"):
-                # Legacy format: earth_arkham_city_northside_derby_st_001
+                # Legacy format: earth_arkhamcity_northside_derby_st_001
                 street_name = parsed_filename["street"].replace("_", " ")
                 return f"{plane}_{zone}_{sub_zone}_{street_name}_{parsed_filename['number']:03d}"
             else:
-                # New format: earth_arkham_city_northside_room_derby_001
+                # New format: earth_arkhamcity_northside_room_derby_001
                 return f"{plane}_{zone}_{sub_zone}_room_{parsed_filename['street']}_{parsed_filename['number']:03d}"
         else:  # intersection
             if parsed_filename.get("legacy"):
-                # Legacy format: earth_arkham_city_intersection_Derby_High
+                # Legacy format: earth_arkhamcity_intersection_Derby_High
                 street_a = parsed_filename["street_a"].replace("_", " ")
                 street_b = parsed_filename["street_b"].replace("_", " ")
                 return f"{plane}_{zone}_intersection_{street_a}_{street_b}"
             else:
-                # New format: earth_arkham_city_northside_intersection_derby_high
+                # New format: earth_arkhamcity_northside_intersection_derby_high
                 return f"{plane}_{zone}_{sub_zone}_intersection_{parsed_filename['street_a']}_{parsed_filename['street_b']}"
 
     def discover_room_files(self, base_path: str | None = None) -> list[Path]:

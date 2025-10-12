@@ -17,6 +17,36 @@ from .envelope import build_event
 logger = get_logger(__name__)
 
 
+def _get_npc_name_from_instance(npc_id: str) -> str | None:
+    """
+    Get NPC name from the actual NPC instance, preserving original case from database.
+
+    This is the proper way to get NPC names - directly from the database via the NPC instance.
+
+    Args:
+        npc_id: The NPC ID
+
+    Returns:
+        NPC name from the database, or None if instance not found
+    """
+    try:
+        # Get the NPC instance from the spawning service
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if hasattr(npc_instance_service, "spawning_service"):
+            spawning_service = npc_instance_service.spawning_service
+            if npc_id in spawning_service.active_npc_instances:
+                npc_instance = spawning_service.active_npc_instances[npc_id]
+                name = getattr(npc_instance, "name", None)
+                return name
+
+        return None
+    except Exception as e:
+        logger.debug(f"Error getting NPC name from instance for {npc_id}: {e}")
+        return None
+
+
 async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
     """
     Handle a WebSocket connection for a player.
@@ -123,14 +153,52 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         except Exception:
                             pass
 
-                    game_state_event = build_event(
-                        "game_state",
-                        {
-                            "player": {
+                    # Get complete player data with profession information using PlayerService
+                    # This ensures the Status panel displays profession info automatically
+                    try:
+                        # Access app state through connection manager (same pattern as process_websocket_command)
+                        app_state = connection_manager.app.state if connection_manager.app else None
+                        player_service = getattr(app_state, "player_service", None) if app_state else None
+
+                        if player_service:
+                            # Use PlayerService to get complete player data with profession
+                            complete_player_data = player_service._convert_player_to_schema(player)
+                            logger.debug(
+                                "WebSocket handler: Retrieved complete player data with profession",
+                                player_id=player_id_str,
+                                has_profession=bool(getattr(complete_player_data, "profession_name", None)),
+                            )
+
+                            # Convert PlayerRead object to dictionary for JSON serialization
+                            player_data_for_client = (
+                                complete_player_data.model_dump(mode="json")
+                                if hasattr(complete_player_data, "model_dump")
+                                else complete_player_data.dict()
+                            )
+                        else:
+                            # Fallback to basic player data if PlayerService not available
+                            logger.warning(
+                                "PlayerService not available in websocket handler, using basic player data",
+                                player_id=player_id_str,
+                            )
+                            player_data_for_client = {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
                                 "stats": stats_data,
-                            },
+                            }
+                    except Exception as e:
+                        logger.error(f"Error getting complete player data: {e}", player_id=player_id_str)
+                        # Fallback to basic player data
+                        player_data_for_client = {
+                            "name": player.name,
+                            "level": getattr(player, "level", 1),
+                            "stats": stats_data,
+                        }
+
+                    game_state_event = build_event(
+                        "game_state",
+                        {
+                            "player": player_data_for_client,
                             "room": room_data,
                             "occupants": occupant_names,
                             "occupant_count": len(occupant_names),
@@ -245,7 +313,10 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
-        logger.info("🚨 SERVER DEBUG: handle_game_command called", command=command, args=args, player_id=player_id)
+        logger.info(
+            "🚨 SERVER DEBUG: handle_game_command called",
+            context={"command": command, "args": args, "player_id": player_id},
+        )
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -274,7 +345,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
-            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", context={"player": player_id})
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
@@ -322,7 +393,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
-    logger.info("🚨 SERVER DEBUG: process_websocket_command called", command=cmd, args=args, player_id=player_id)
+    logger.info(
+        "🚨 SERVER DEBUG: process_websocket_command called",
+        context={"command": cmd, "args": args, "player_id": player_id},
+    )
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
@@ -568,11 +642,11 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.debug(f"🔍 DEBUG: broadcast_room_update - Room object ID: {id(room)}")
         logger.debug(f"🔍 DEBUG: broadcast_room_update - Room players before any processing: {room.get_players()}")
 
-        # Get room occupants (server-side structs)
-        room_occupants = connection_manager.get_room_occupants(room_id)
-
-        # Transform to list of player names for client (UI expects string[])
+        # Get room occupants (players and NPCs)
         occupant_names = []
+
+        # Get player occupants
+        room_occupants = connection_manager.get_room_occupants(room_id)
         try:
             for occ in room_occupants or []:
                 if isinstance(occ, dict):
@@ -583,6 +657,20 @@ async def broadcast_room_update(player_id: str, room_id: str):
                     occupant_names.append(occ)
         except Exception as e:
             logger.error(f"Error transforming room occupants for room {room_id}: {e}")
+
+        # Get NPC occupants
+        if persistence:
+            npc_ids = room.get_npcs()
+            logger.debug(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
+            for npc_id in npc_ids:
+                # Get NPC name from the actual NPC instance, preserving original case from database
+                npc_name = _get_npc_name_from_instance(npc_id)
+                if npc_name:
+                    logger.debug(f"DEBUG: Got NPC name '{npc_name}' from database for ID '{npc_id}'")
+                    occupant_names.append(npc_name)
+                else:
+                    # Log warning if NPC instance not found - this should not happen in normal operation
+                    logger.warning(f"NPC instance not found for ID: {npc_id} - skipping from room display")
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room

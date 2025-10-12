@@ -243,13 +243,16 @@ async def handle_mute_command(
     duration = int(duration_minutes) if duration_minutes else None  # None means permanent
 
     try:
-        # Get current user ID and name
-        current_user_id = get_username_from_user(current_user)
-
         # Get player service from app state
         player_service = app.state.player_service if app else None
         if not player_service:
             return {"result": "Player service not available."}
+
+        # Get current player's actual player object and ID
+        current_player_obj = player_service.resolve_player_name(player_name)
+        if not current_player_obj:
+            return {"result": "Current player not found."}
+        current_user_id = str(current_player_obj.id)
 
         # Resolve target player name to Player object
         target_player_obj = player_service.resolve_player_name(target_player)
@@ -310,13 +313,16 @@ async def handle_unmute_command(
         return {"result": "Usage: unmute <player_name>"}
 
     try:
-        # Get current user ID and name
-        current_user_id = get_username_from_user(current_user)
-
         # Get player service from app state
         player_service = app.state.player_service if app else None
         if not player_service:
             return {"result": "Player service not available."}
+
+        # Get current player's actual player object and ID
+        current_player_obj = player_service.resolve_player_name(player_name)
+        if not current_player_obj:
+            return {"result": "Current player not found."}
+        current_user_id = str(current_player_obj.id)
 
         # Resolve target player name to Player object
         target_player_obj = player_service.resolve_player_name(target_player)

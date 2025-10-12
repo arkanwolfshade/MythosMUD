@@ -33,7 +33,7 @@ class EventPublisher:
         self.nats_service = nats_service
         self.sequence_number = initial_sequence
 
-        logger.info("EventPublisher initialized", initial_sequence=initial_sequence)
+        logger.info("EventPublisher initialized", context={"initial_sequence": initial_sequence})
 
     async def publish_player_entered_event(
         self,
@@ -215,12 +215,12 @@ class EventPublisher:
                     tick_number=event_data["tick_number"],
                 )
             else:
-                logger.error("Failed to publish game tick event", subject=subject)
+                logger.error("Failed to publish game tick event", context={"subject": subject})
 
             return success
 
         except Exception as e:
-            logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
+            logger.error("Error publishing game tick event", context={"error": str(e), "error_type": type(e).__name__})
             return False
 
     def _create_event_message(

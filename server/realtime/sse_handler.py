@@ -50,17 +50,31 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
         for message in pending_messages:
             yield sse_line(build_event("pending_message", message, player_id=player_id_str))
 
-        # Main event loop
+        # Main event loop with comprehensive cancellation boundaries
         while True:
             try:
-                # Send heartbeat every 30 seconds
+                # Send heartbeat every 30 seconds with proper cancellation handling
                 await asyncio.sleep(30)
-                # Mark presence and send heartbeat
+
+                # Mark presence and send heartbeat with timeout protection
                 connection_manager.mark_player_seen(player_id_str)
                 connection_manager.prune_stale_players()
-                # Clean up orphaned data every 5 minutes (10 heartbeats)
+
+                # Clean up orphaned data every 5 minutes (10 heartbeats) with timeout boundaries
                 if int(time.time() / 30) % 10 == 0:  # Every 5 minutes
-                    await connection_manager.cleanup_orphaned_data()
+                    try:
+                        await asyncio.wait_for(
+                            connection_manager.cleanup_orphaned_data(),
+                            timeout=5.0,  # 5-second timeout for cleanup operations
+                        )
+                    except TimeoutError:
+                        logger.warning(f"Cleanup operation timed out for player {player_id_str}")
+                    except asyncio.CancelledError:
+                        logger.info(f"Cleanup cancelled for player {player_id_str}")
+                        raise  # Re-raise cancelled error to properly handle in outer try/except
+                    except Exception as cleanup_error:
+                        logger.error(f"Cleanup error for player {player_id_str}: {cleanup_error}")
+
                 yield sse_line(build_event("heartbeat", {}, player_id=player_id_str))
 
             except asyncio.CancelledError:
@@ -79,8 +93,17 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
                 break
 
     finally:
-        # Clean up connection
-        connection_manager.disconnect_sse(player_id_str)
+        # Clean up connection - ensure graceful disconnect with error handling
+        try:
+            connection_manager.disconnect_sse(player_id_str)
+        except Exception as cleanup_error:
+            logger.error(f"SSE disconnect error for player {player_id_str}: {cleanup_error}")
+            # Attempt final cleanup notwithstanding disconnect errors
+            try:
+                # Force disconnect without throwing exceptions to prevent finally block failure
+                connection_manager.disconnect_sse(player_id_str)
+            except Exception as final_error:
+                logger.error(f"Final SSE cleanup failed for player {player_id_str}: {final_error}")
 
 
 def format_sse_event(event_type: str, data: dict) -> str:  # Backward compat shim

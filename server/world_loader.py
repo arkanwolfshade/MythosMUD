@@ -59,7 +59,7 @@ def load_zone_config(zone_path: str) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError) as e:
         logger.warning(
             "Could not load zone configuration",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -88,7 +88,7 @@ def load_subzone_config(subzone_path: str) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError) as e:
         logger.warning(
             "Could not load sub-zone configuration",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -101,12 +101,12 @@ def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> st
 
     Args:
         plane: Plane identifier (e.g., 'earth', 'yeng')
-        zone: Zone identifier (e.g., 'arkham_city')
+        zone: Zone identifier (e.g., 'arkhamcity')
         sub_zone: Sub-zone identifier (e.g., 'french_hill')
         room_file: Room file name without extension (e.g., 'S_Garrison_St_001')
 
     Returns:
-        Hierarchical room ID (e.g., 'earth_arkham_city_intersection_derby_high')
+        Hierarchical room ID (e.g., 'earth_arkhamcity_intersection_derby_high')
     """
     components = [plane, zone, sub_zone, room_file]
     return "_".join(components)
@@ -306,7 +306,7 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
                                 context.metadata["error_type"] = type(e).__name__
                                 logger.warning(
                                     "Could not load room file",
-                                    **context.to_dict(),
+                                    context=context.to_dict(),
                                     file_path=file_path,
                                     error=str(e),
                                     error_type=type(e).__name__,
@@ -319,7 +319,7 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
         context.metadata["rooms_base_path"] = ROOMS_BASE_PATH
         logger.warning(
             "Could not access rooms directory",
-            **context.to_dict(),
+            context=context.to_dict(),
             rooms_base_path=ROOMS_BASE_PATH,
             error=str(e),
             error_type=type(e).__name__,

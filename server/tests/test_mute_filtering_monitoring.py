@@ -30,7 +30,7 @@ class TestMuteFilteringMonitoring:
         self.muter_name = "ArkanWolfshade"
         self.target_id = str(uuid.uuid4())
         self.target_name = "Ithaqua"
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Mock player objects
         self.muter_player = MagicMock()
@@ -59,7 +59,7 @@ class TestMuteFilteringMonitoring:
         return chat_service
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_failure_detection(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -102,7 +102,7 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.mute_player.assert_called()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_data_loading_failure_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -133,7 +133,7 @@ class TestMuteFilteringMonitoring:
         mock_user_manager.load_player_mutes.assert_called()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_user_manager_consistency_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -173,7 +173,7 @@ class TestMuteFilteringMonitoring:
         assert mock_user_manager.is_globally_muted.call_count >= 5
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_performance_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -218,7 +218,7 @@ class TestMuteFilteringMonitoring:
         )
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_error_handling_monitoring(
@@ -253,7 +253,7 @@ class TestMuteFilteringMonitoring:
         print(f"Error handling test: {emote_result['error']}")
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_consistency_monitoring(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -311,7 +311,7 @@ class TestMuteFilteringMonitoring:
         assert mock_user_manager.is_globally_muted.call_count >= len(message_types)
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_alerting_system(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -352,7 +352,7 @@ class TestMuteFilteringMonitoring:
         assert failure_rate > 0.8, "Alerting system should trigger for high failure rates"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_health_check(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -437,7 +437,7 @@ class TestMuteFilteringMonitoring:
         ), "Health status should contain all required keys"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_filtering_metrics_collection(self, mock_user_manager, mock_rate_limiter, mock_nats_service):

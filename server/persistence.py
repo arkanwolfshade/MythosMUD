@@ -530,6 +530,64 @@ class PersistenceLayer:
                     user_friendly="Failed to delete player",
                 )
 
+    # --- CRUD for Professions ---
+    def get_all_professions(self) -> list:
+        """Get all available professions."""
+        context = create_error_context()
+        context.metadata["operation"] = "get_all_professions"
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id").fetchall()
+
+                professions = []
+                for row in rows:
+                    profession_data = dict(row)
+                    # Import here to avoid circular imports
+                    from .models.profession import Profession
+
+                    profession = Profession(**profession_data)
+                    professions.append(profession)
+
+                return professions
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving professions: {e}",
+                context=context,
+                details={"error": str(e)},
+                user_friendly="Failed to retrieve professions",
+            )
+
+    def get_profession_by_id(self, profession_id: int) -> object | None:
+        """Get a profession by ID."""
+        context = create_error_context()
+        context.metadata["operation"] = "get_profession_by_id"
+        context.metadata["profession_id"] = profession_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                row = conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,)).fetchone()
+
+                if row:
+                    profession_data = dict(row)
+                    # Import here to avoid circular imports
+                    from .models.profession import Profession
+
+                    profession = Profession(**profession_data)
+                    return profession
+                return None
+        except sqlite3.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving profession {profession_id}: {e}",
+                context=context,
+                details={"profession_id": profession_id, "error": str(e)},
+                user_friendly="Failed to retrieve profession",
+            )
+
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> Room | None:
         """Get a room by ID from the cache and sync with database state."""
@@ -587,7 +645,7 @@ class PersistenceLayer:
             # Log as warning since this is a non-critical operation
             self._logger.warning(
                 "Error syncing room players",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -639,9 +697,9 @@ class PersistenceLayer:
             from .config_loader import get_config
 
             config = get_config()
-            default_room = config.get("default_player_room", "earth_arkham_city_northside_intersection_derby_high")
+            default_room = config.get("default_player_room", "earth_arkhamcity_northside_intersection_derby_high")
             if default_room is None:
-                default_room = "earth_arkham_city_northside_intersection_derby_high"
+                default_room = "earth_arkhamcity_northside_intersection_derby_high"
         except Exception as e:
             # Fallback to hardcoded default if config loading fails
             context = create_error_context()
@@ -650,11 +708,11 @@ class PersistenceLayer:
             context.metadata["old_room_id"] = old_room
             self._logger.warning(
                 "Config loading failed during room validation, using fallback",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            default_room = "earth_arkham_city_northside_intersection_derby_high"
+            default_room = "earth_arkhamcity_northside_intersection_derby_high"
 
         player.current_room_id = default_room
 

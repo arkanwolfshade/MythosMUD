@@ -32,7 +32,7 @@ class TestTemporaryPermanentMutes:
         self.muter_name = "ArkanWolfshade"
         self.target_id = str(uuid.uuid4())
         self.target_name = "Ithaqua"
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Mock player objects
         self.muter_player = MagicMock()
@@ -61,7 +61,7 @@ class TestTemporaryPermanentMutes:
         return chat_service
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_temporary_mute_with_short_duration(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -127,7 +127,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["message"]["content"] == "waves"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_temporary_mute_with_long_duration(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -192,7 +192,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["success"] is False
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_permanent_mute_behavior(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -268,7 +268,7 @@ class TestTemporaryPermanentMutes:
             assert "muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_manual_unmute_after_permanent_mute(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -333,7 +333,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["message"]["content"] == "waves"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_temporary_vs_permanent_mute_consistency(
@@ -398,7 +398,7 @@ class TestTemporaryPermanentMutes:
         assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_global_temporary_vs_permanent_mute(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -466,7 +466,7 @@ class TestTemporaryPermanentMutes:
         assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_duration_edge_cases(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -524,7 +524,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["success"] is False
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_type_priority_with_emotes(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -583,7 +583,7 @@ class TestTemporaryPermanentMutes:
         assert emote_result["message"]["content"] == "waves"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_expiration_timing_with_emotes(self, mock_user_manager, mock_rate_limiter, mock_nats_service):

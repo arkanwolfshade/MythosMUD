@@ -30,7 +30,7 @@ class TestEmoteTypesMuteFiltering:
         self.muter_name = "ArkanWolfshade"
         self.target_id = str(uuid.uuid4())
         self.target_name = "Ithaqua"
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Mock player objects
         self.muter_player = MagicMock()
@@ -59,7 +59,7 @@ class TestEmoteTypesMuteFiltering:
         return chat_service
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_custom_emote_mute_filtering(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -111,7 +111,7 @@ class TestEmoteTypesMuteFiltering:
         assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_predefined_emote_mute_filtering(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -169,7 +169,7 @@ class TestEmoteTypesMuteFiltering:
             assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_multiple_predefined_emotes_mute_filtering(
@@ -243,7 +243,7 @@ class TestEmoteTypesMuteFiltering:
                 assert "globally muted" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_custom_vs_predefined_emote_consistency(
@@ -311,7 +311,7 @@ class TestEmoteTypesMuteFiltering:
             assert "globally muted" in predefined_emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_emote_type_error_handling(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -357,7 +357,7 @@ class TestEmoteTypesMuteFiltering:
             assert "unknown emote" in predefined_emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_emote_type_global_mute_filtering(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -404,7 +404,7 @@ class TestEmoteTypesMuteFiltering:
             assert "globally muted" in predefined_emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_emote_type_rate_limiting(self, mock_user_manager, mock_rate_limiter, mock_nats_service):

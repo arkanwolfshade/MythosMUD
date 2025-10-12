@@ -124,6 +124,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return messageChannel === selectedChannel;
       }
 
+      // Show error messages regardless of channel (they're typically global)
+      if (message.messageType === 'error') {
+        return true;
+      }
+
       return false;
     }
     return true;
@@ -307,6 +312,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 key={index}
                 className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
                 style={{ animationDelay: `${index * 50}ms` }}
+                data-testid="chat-message"
               >
                 {/* Alias Expansion Information */}
                 {message.aliasChain && message.aliasChain.length > 0 && (

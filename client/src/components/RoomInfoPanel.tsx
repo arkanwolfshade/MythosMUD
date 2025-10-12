@@ -23,13 +23,118 @@ interface RoomInfoPanelProps {
   };
 }
 
+/**
+ * Validates room data consistency and applies fixes for common issues.
+ * Based on findings from "Data Consistency in Non-Euclidean Spaces" - Dr. Armitage, 1928
+ */
+function validateAndFixRoomData(room: Room | null): Room | null {
+  if (!room) {
+    console.log('🔍 RoomInfoPanel: No room data to validate');
+    return null;
+  }
+
+  console.log('🔍 RoomInfoPanel: Validating room data', {
+    roomId: room.id,
+    roomName: room.name,
+    hasDescription: !!room.description,
+    hasZone: !!room.zone,
+    hasSubZone: !!room.sub_zone,
+    hasExits: !!room.exits,
+    hasOccupants: !!room.occupants,
+    occupantCount: room.occupant_count,
+  });
+
+  const validatedRoom: Room = { ...room };
+  let fixesApplied = 0;
+
+  // Fix missing or invalid description
+  if (!validatedRoom.description || validatedRoom.description.trim() === '') {
+    validatedRoom.description = 'No description available';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default description');
+  }
+
+  // Fix missing zone
+  if (!validatedRoom.zone) {
+    validatedRoom.zone = 'Unknown';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default zone');
+  }
+
+  // Fix missing sub_zone
+  if (!validatedRoom.sub_zone) {
+    validatedRoom.sub_zone = 'Unknown';
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added default sub_zone');
+  }
+
+  // Fix missing exits
+  if (!validatedRoom.exits) {
+    validatedRoom.exits = {};
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added empty exits object');
+  }
+
+  // Fix missing occupants array
+  if (!validatedRoom.occupants) {
+    validatedRoom.occupants = [];
+    fixesApplied++;
+    console.log('🔍 RoomInfoPanel: Applied fix - added empty occupants array');
+  }
+
+  // Validate occupant count consistency
+  if (validatedRoom.occupants && validatedRoom.occupant_count !== undefined) {
+    const actualCount = validatedRoom.occupants.length;
+    if (actualCount !== validatedRoom.occupant_count) {
+      console.warn('🔍 RoomInfoPanel: Occupant count mismatch detected', {
+        expected: validatedRoom.occupant_count,
+        actual: actualCount,
+        roomId: validatedRoom.id,
+        roomName: validatedRoom.name,
+      });
+
+      // Fix the count to match the actual occupants array
+      validatedRoom.occupant_count = actualCount;
+      fixesApplied++;
+      console.log('🔍 RoomInfoPanel: Applied fix - corrected occupant count to match occupants array');
+    }
+  }
+
+  // Validate room data structure
+  if (!validatedRoom.id || !validatedRoom.name) {
+    console.error('🔍 RoomInfoPanel: Critical room data missing', {
+      hasId: !!validatedRoom.id,
+      hasName: !!validatedRoom.name,
+    });
+    return null;
+  }
+
+  if (fixesApplied > 0) {
+    console.log('🔍 RoomInfoPanel: Room data validation completed', {
+      roomId: validatedRoom.id,
+      roomName: validatedRoom.name,
+      fixesApplied,
+    });
+  } else {
+    console.log('🔍 RoomInfoPanel: Room data is valid, no fixes needed', {
+      roomId: validatedRoom.id,
+      roomName: validatedRoom.name,
+    });
+  }
+
+  return validatedRoom;
+}
+
 export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   console.log('🔍 RoomInfoPanel render called with room:', room);
   console.log('🔍 RoomInfoPanel room type:', typeof room);
   console.log('🔍 RoomInfoPanel room keys:', room ? Object.keys(room) : []);
 
+  // Validate room data consistency and apply fixes
+  const validatedRoom = validateAndFixRoomData(room);
+
   // For development mode, show mock room data if no real room data is available
-  const displayRoom = room || {
+  const displayRoom = validatedRoom || {
     id: 'dev-room-1',
     name: 'Miskatonic University Library',
     description:
@@ -80,10 +185,44 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
 
   const formatLocationName = (location: string): string => {
     if (!location || location === 'Unknown') return 'Unknown';
-    return location
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+
+    // Handle underscore-separated words
+    if (location.includes('_')) {
+      return location
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    // Handle camelCase words (like 'arkhamCity' -> 'Arkham City')
+    if (/[a-z][A-Z]/.test(location)) {
+      return location
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // Insert space before capital letters
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    // Handle specific known patterns for concatenated lowercase words
+    // This is a pragmatic approach for common MUD location patterns
+    const knownPatterns: Record<string, string> = {
+      arkhamcity: 'Arkham City',
+      universitylibrary: 'University Library',
+      cityhall: 'City Hall',
+      policeheadquarters: 'Police Headquarters',
+      hospital: 'Hospital',
+      library: 'Library',
+      university: 'University',
+      arkham: 'Arkham',
+    };
+
+    const lowerLocation = location.toLowerCase();
+    if (knownPatterns[lowerLocation]) {
+      return knownPatterns[lowerLocation];
+    }
+
+    // Fallback: capitalize first letter
+    return location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
   };
 
   const formatDescription = (description: string): string => {
@@ -92,31 +231,37 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   };
 
   const formatOccupantName = (name: string): string => {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    // Preserve the original casing as set by the server - no modification needed
+    // to honor the academic integrity of proper names like "Dr. Francis Morgan"
+    return name;
   };
 
   return (
-    <div className="room-info-panel">
+    <div className="room-info-panel" data-testid="room-info-panel">
       <div className="room-info-content">
         {/* Room Name */}
-        <div className="room-name">
+        <div className="room-name" data-testid="room-name">
           <h4>{displayRoom.name}</h4>
         </div>
 
         {/* Zone */}
         <div className="room-zone">
           <span className="zone-label">Zone:</span>
-          <span className="zone-value">{formatLocationName(displayRoom.zone || 'Unknown')}</span>
+          <span className="zone-value" data-testid="zone-value">
+            {formatLocationName(displayRoom.zone || 'Unknown')}
+          </span>
         </div>
 
         {/* Subzone */}
         <div className="room-subzone">
           <span className="subzone-label">Subzone:</span>
-          <span className="subzone-value">{formatLocationName(displayRoom.sub_zone || 'Unknown')}</span>
+          <span className="subzone-value" data-testid="subzone-value">
+            {formatLocationName(displayRoom.sub_zone || 'Unknown')}
+          </span>
         </div>
 
         {/* Description */}
-        <div className="room-description">
+        <div className="room-description" data-testid="room-description">
           <span className="description-label">Description:</span>
           <p className="description-text">{formatDescription(displayRoom.description)}</p>
         </div>
@@ -140,7 +285,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
             <span className="occupants-label">
               Occupants
               {typeof displayRoom.occupant_count === 'number' && (
-                <span className="occupant-count-badge">({displayRoom.occupant_count})</span>
+                <span className="occupant-count-badge" data-testid="occupant-count">
+                  ({displayRoom.occupant_count})
+                </span>
               )}
             </span>
           </div>
@@ -150,7 +297,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
                 {displayRoom.occupants.map((occupant, index) => (
                   <div key={index} className="occupant-item">
                     <span className="occupant-indicator">●</span>
-                    <span className="occupant-name">{formatOccupantName(occupant)}</span>
+                    <span className="occupant-name" data-testid="occupant-name">
+                      {formatOccupantName(occupant)}
+                    </span>
                   </div>
                 ))}
               </div>

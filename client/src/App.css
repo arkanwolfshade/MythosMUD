@@ -167,3 +167,281 @@ body {
   font-family: 'Courier New', monospace;
   overflow: hidden;
 }
+
+/* Profession Selection Screen Styles */
+.profession-selection-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.profession-selection-container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profession-selection-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profession-selection-header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px #00ff00;
+  color: #00ff00;
+}
+
+.character-welcome {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #00ff00;
+}
+
+.profession-instructions {
+  font-size: 1.1rem;
+  color: #00ff00;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.professions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profession-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.profession-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.profession-card:hover::before {
+  left: 100%;
+}
+
+.profession-card:hover {
+  border-color: #00ff00;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.profession-card.selected {
+  border-color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+}
+
+.profession-card:focus {
+  outline: 2px solid #00ff00;
+  outline-offset: 2px;
+}
+
+.profession-header {
+  margin-bottom: 1rem;
+}
+
+.profession-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00ff00;
+  margin: 0;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.profession-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profession-description {
+  font-size: 1.1rem;
+  color: #00ff00;
+  opacity: 0.9;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.profession-flavor-text {
+  font-size: 1rem;
+  color: #00ff00;
+  opacity: 0.7;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.profession-requirements {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.stat-requirements {
+  font-size: 1rem;
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.stat-requirements.highlighted {
+  color: #ffff00;
+  text-shadow: 0 0 5px #ffff00;
+}
+
+.profession-selection-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.back-button,
+.next-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: 2px solid #00ff00;
+  background: transparent;
+  color: #00ff00;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.back-button:hover,
+.next-button:hover:not(:disabled) {
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #666;
+  color: #666;
+}
+
+.next-button:disabled:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-container h2,
+.error-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #00ff00;
+}
+
+.error-message {
+  color: #ff4444;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.retry-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid #00ff00;
+  background: transparent;
+  color: #00ff00;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  margin-right: 1rem;
+}
+
+.retry-button:hover {
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+/* Stats Rolling Screen Back Button */
+.stats-actions .back-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid #00ff00;
+  background: transparent;
+  color: #00ff00;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  margin-right: 1rem;
+}
+
+.stats-actions .back-button:hover {
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profession-selection-screen {
+    padding: 1rem;
+  }
+
+  .profession-selection-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .professions-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .profession-selection-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .back-button,
+  .next-button {
+    width: 100%;
+  }
+
+  .stats-actions .back-button {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}

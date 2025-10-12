@@ -8,15 +8,15 @@ As noted in the Pnakotic Manuscripts: "The bridge between old and new must be
 constructed with care, lest the foundations of both be compromised."
 """
 
-import logging
 from typing import Any
 
 from pydantic import ValidationError
 
+from ..logging_config import get_logger
 from .command_parser import CommandParser, parse_command
 from .error_logging import create_error_context
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class CommandProcessor:

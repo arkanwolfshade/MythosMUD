@@ -109,7 +109,7 @@ Use the project-manager subagent to read @.agent-os/product/roadmap.md and mark 
     EVALUATE: Did executed tasks complete any roadmap item(s)?
     IF NO:
       SKIP this entire step
-      PROCEED to step 6
+      PROCEED to step 5
     IF YES:
       CONTINUE with roadmap check
   </preliminary_check>
@@ -177,9 +177,9 @@ Use the project-manager subagent to create a recap document in .agent-os/recaps/
 
 </step>
 
-<step number="7" subagent="project-manager" name="completion_summary">
+<step number="6" subagent="project-manager" name="completion_summary">
 
-### Step 7: Completion Summary
+### Step 6: Completion Summary
 
 Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
 
@@ -225,9 +225,9 @@ Use the project-manager subagent to create a structured summary message with emo
 
 </step>
 
-<step number="8" subagent="project-manager" name="completion_notification">
+<step number="7" subagent="project-manager" name="completion_notification">
 
-### Step 8: Task Completion Notification
+### Step 7: Task Completion Notification
 
 Use the project-manager subagent to play a system sound to alert the user that tasks are complete.
 

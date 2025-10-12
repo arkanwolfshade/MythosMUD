@@ -14,5 +14,27 @@
     }
   },
   "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
-  "window.titleBarStyle": "custom"
+  "window.titleBarStyle": "custom",
+  "files.exclude": {
+    "**/.env": true,
+    "**/.env.local": false,
+    "**/.env.production": true,
+    "**/.env.prod": true,
+    "**/.env.development": false,
+    "**/.env.dev": false,
+    "**/.env.test": false,
+    "**/.env.example": false,
+    "**/test.env.example": false,
+    "**/*.env.example": false,
+    "**/env.example": false,
+    "**/env.production.example": false
+  },
+  "files.associations": {
+    "*.env.example": "properties",
+    "test.env.example": "properties",
+    ".env.test": "properties",
+    ".env.example": "properties",
+    "env.example": "properties",
+    "env.production.example": "properties"
+  }
 }

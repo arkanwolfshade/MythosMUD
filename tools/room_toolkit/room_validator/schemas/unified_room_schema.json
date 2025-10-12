@@ -38,7 +38,7 @@
     },
     "environment": {
       "type": "string",
-      "enum": ["indoors", "outdoors", "underwater"],
+      "enum": ["indoors", "outdoors", "underwater", "intersection", "street_paved"],
       "default": "outdoors",
       "description": "Environmental classification for this room"
     },
@@ -57,7 +57,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",
@@ -87,7 +87,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",
@@ -117,7 +117,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",
@@ -147,7 +147,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",
@@ -177,7 +177,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",
@@ -207,7 +207,7 @@
                 "target": {
                   "type": "string",
                   "pattern": "^[a-z0-9_]+$",
-                  "description": "Target room ID (full room ID format)"
+                  "description": "Target room ID"
                 },
                 "flags": {
                   "type": "array",

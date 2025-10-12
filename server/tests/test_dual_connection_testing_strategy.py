@@ -10,7 +10,7 @@ of our forbidden knowledge transmission protocols across multiple
 connection types.
 """
 
-import time
+import asyncio
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -31,11 +31,38 @@ class TestDualConnectionSystem:
     def mock_websocket(self):
         """Create a mock WebSocket connection."""
         websocket = AsyncMock(spec=WebSocket)
+
+        # Configure AsyncMock methods to return immediately and be trackable
+        websocket.accept = AsyncMock(return_value=None)
+        websocket.close = AsyncMock(return_value=None)
+        websocket.ping = AsyncMock(return_value=None)
+        websocket.send_json = AsyncMock(return_value=None)
+        websocket.receive_text = AsyncMock(return_value="")
+
+        # Ensure the mocks are properly configured for immediate return
+        websocket.accept.return_value = None
+        websocket.close.return_value = None
+        websocket.ping.return_value = None
+        websocket.send_json.return_value = None
+        websocket.receive_text.return_value = ""
+
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
+
+        return websocket
+
+    def _create_mock_websocket(self):
+        """Create a properly configured mock WebSocket."""
+        websocket = AsyncMock(spec=WebSocket)
         websocket.accept = AsyncMock()
         websocket.close = AsyncMock()
         websocket.ping = AsyncMock()
         websocket.send_json = AsyncMock()
         websocket.receive_text = AsyncMock()
+        # Mock client_state for connection health checks
+        websocket.client_state = Mock()
+        websocket.client_state.name = "CONNECTED"
         return websocket
 
     @pytest.fixture
@@ -150,19 +177,8 @@ class TestDualConnectionSystem:
         session_id = "session_123"
 
         # Create multiple mock WebSockets
-        websocket1 = AsyncMock(spec=WebSocket)
-        websocket1.accept = AsyncMock()
-        websocket1.close = AsyncMock()
-        websocket1.ping = AsyncMock()
-        websocket1.send_json = AsyncMock()
-        websocket1.receive_text = AsyncMock()
-
-        websocket2 = AsyncMock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
-        websocket2.send_json = AsyncMock()
-        websocket2.receive_text = AsyncMock()
+        websocket1 = self._create_mock_websocket()
+        websocket2 = self._create_mock_websocket()
 
         # Execute - Connect first WebSocket
         result1 = await connection_manager.connect_websocket(websocket1, player_id, session_id)
@@ -337,19 +353,19 @@ class TestDualConnectionSystem:
 
         # Create a WebSocket that will fail ping
         dead_websocket = AsyncMock(spec=WebSocket)
-        dead_websocket.accept = AsyncMock()
-        dead_websocket.close = AsyncMock()
+        dead_websocket.accept = AsyncMock(return_value=None)
+        dead_websocket.close = AsyncMock(return_value=None)
         dead_websocket.ping = AsyncMock(side_effect=Exception("Connection dead"))
-        dead_websocket.send_json = AsyncMock()
-        dead_websocket.receive_text = AsyncMock()
+        dead_websocket.send_json = AsyncMock(return_value=None)
+        dead_websocket.receive_text = AsyncMock(return_value="")
 
         # Create a healthy WebSocket
         healthy_websocket = AsyncMock(spec=WebSocket)
-        healthy_websocket.accept = AsyncMock()
-        healthy_websocket.close = AsyncMock()
-        healthy_websocket.ping = AsyncMock()
-        healthy_websocket.send_json = AsyncMock()
-        healthy_websocket.receive_text = AsyncMock()
+        healthy_websocket.accept = AsyncMock(return_value=None)
+        healthy_websocket.close = AsyncMock(return_value=None)
+        healthy_websocket.ping = AsyncMock(return_value=None)
+        healthy_websocket.send_json = AsyncMock(return_value=None)
+        healthy_websocket.receive_text = AsyncMock(return_value="")
 
         # Connect both WebSockets
         dead_result = await connection_manager.connect_websocket(dead_websocket, player_id, session_id)
@@ -365,11 +381,11 @@ class TestDualConnectionSystem:
 
         # Now try to connect a new WebSocket - this should clean up the dead one
         new_websocket = AsyncMock(spec=WebSocket)
-        new_websocket.accept = AsyncMock()
-        new_websocket.close = AsyncMock()
-        new_websocket.ping = AsyncMock()
-        new_websocket.send_json = AsyncMock()
-        new_websocket.receive_text = AsyncMock()
+        new_websocket.accept = AsyncMock(return_value=None)
+        new_websocket.close = AsyncMock(return_value=None)
+        new_websocket.ping = AsyncMock(return_value=None)
+        new_websocket.send_json = AsyncMock(return_value=None)
+        new_websocket.receive_text = AsyncMock(return_value="")
 
         new_result = await connection_manager.connect_websocket(new_websocket, player_id, session_id)
         assert new_result is True
@@ -442,12 +458,7 @@ class TestDualConnectionSystem:
         # Test multiple WebSocket connections (should be allowed)
         websockets = []
         for _i in range(3):  # Test with 3 connections
-            websocket = AsyncMock(spec=WebSocket)
-            websocket.accept = AsyncMock()
-            websocket.close = AsyncMock()
-            websocket.ping = AsyncMock()
-            websocket.send_json = AsyncMock()
-            websocket.receive_text = AsyncMock()
+            websocket = self._create_mock_websocket()
             websockets.append(websocket)
 
             result = await connection_manager.connect_websocket(websocket, player_id, session_id)
@@ -515,7 +526,8 @@ class TestDualConnectionSystem:
 
         # Test metadata update
         original_last_seen = websocket_metadata.last_seen
-        time.sleep(0.1)  # Longer delay to ensure timestamp difference
+        # Use asyncio.sleep instead of time.sleep for better async compatibility
+        await asyncio.sleep(0.1)  # Longer delay to ensure timestamp difference
         connection_manager.mark_player_seen(player_id)
 
         # Verify last_seen was updated

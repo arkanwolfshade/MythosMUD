@@ -14,7 +14,7 @@ test.describe('Help Command Tests', () => {
     await expect(page.locator('h1')).toContainText('MythosMUD');
     await expect(page.locator('input[type="text"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
-    await expect(page.locator('button:has-text("Enter the MUD")')).toBeVisible();
+    await expect(page.locator('button:has-text("Enter the Void")')).toBeVisible();
   });
 
   test('should not allow help command when not authenticated', async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('Help Command Tests', () => {
 
     // For now, we'll just verify the basic page structure
     await expect(page.locator('h1')).toContainText('MythosMUD');
-    await expect(page.locator('.auth-container')).toBeVisible();
+    await expect(page.locator('.login-container')).toBeVisible();
   });
 
   test('should handle help command with arguments', async ({ page }) => {

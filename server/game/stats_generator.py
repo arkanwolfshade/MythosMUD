@@ -7,6 +7,7 @@ ranges while ensuring they meet class prerequisites.
 """
 
 import random
+import time
 
 from ..logging_config import get_logger
 from ..models import AttributeType, Stats
@@ -245,6 +246,123 @@ class StatsGenerator:
         stats = self.roll_stats(method)
         available_classes = self.get_available_classes(stats)
         return stats, available_classes
+
+    def roll_stats_with_profession(
+        self, method: str = "3d6", profession_id: int = 0, timeout_seconds: float = 1.0, max_attempts: int = 10
+    ) -> tuple[Stats, bool]:
+        """
+        Roll stats and validate against profession requirements.
+
+        Args:
+            method: The rolling method to use
+            profession_id: The profession ID to validate against
+            timeout_seconds: Maximum time in seconds to spend rolling for valid stats
+            max_attempts: Maximum number of attempts to roll stats that meet requirements
+
+        Returns:
+            Tuple[Stats, bool]: (stats, meets_requirements)
+        """
+        logger.info(
+            "Rolling stats with profession validation",
+            method=method,
+            profession_id=profession_id,
+            timeout_seconds=timeout_seconds,
+            max_attempts=max_attempts,
+        )
+
+        logger.debug(f"DEBUG: Starting profession-based stats rolling for profession_id={profession_id}")
+
+        # Get profession requirements from persistence
+        try:
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+            profession = persistence.get_profession_by_id(profession_id)
+
+            if not profession:
+                raise ValueError(f"Invalid profession ID: {profession_id}")
+
+            stat_requirements = profession.get_stat_requirements()
+            logger.debug(f"DEBUG: Retrieved profession {profession_id} with requirements: {stat_requirements}")
+
+        except Exception as e:
+            logger.error(f"Error retrieving profession {profession_id}: {e}")
+            raise ValueError(f"Invalid profession ID: {profession_id}") from e
+
+        # If no requirements, just roll normally
+        if not stat_requirements:
+            stats = self.roll_stats(method)
+            logger.info("Profession has no stat requirements, returning normal roll")
+            logger.debug(f"DEBUG: No requirements found for profession {profession_id}, rolling normally")
+            return stats, True
+
+        # Try to roll stats that meet profession requirements within timeout and attempt limits
+        start_time = time.time()
+        attempt = 0
+
+        logger.debug(f"DEBUG: Starting validation loop with {timeout_seconds}s timeout and max_attempts={max_attempts}")
+        while (time.time() - start_time) < timeout_seconds and attempt < max_attempts:
+            attempt += 1
+            stats = self.roll_stats(method)
+            logger.debug(f"DEBUG: Attempt {attempt}: Rolled stats: {stats.model_dump()}")
+
+            # Check if stats meet profession requirements
+            meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+            logger.debug(f"DEBUG: Attempt {attempt}: Meets requirements: {meets_requirements}")
+
+            if meets_requirements:
+                elapsed_time = time.time() - start_time
+                logger.info(
+                    "Valid stats rolled for profession",
+                    attempt=attempt,
+                    profession_id=profession_id,
+                    elapsed_time=elapsed_time,
+                )
+                return stats, True
+
+            logger.debug(
+                "Stats don't meet profession requirements, retrying",
+                attempt=attempt,
+                profession_id=profession_id,
+                requirements=stat_requirements,
+            )
+
+        # Limits reached - return the last roll with failure status
+        elapsed_time = time.time() - start_time
+        logger.warning(
+            "Limits reached while rolling stats for profession requirements",
+            profession_id=profession_id,
+            timeout_seconds=timeout_seconds,
+            elapsed_time=elapsed_time,
+            attempts_made=attempt,
+        )
+        stats = self.roll_stats(method)
+        meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+        return stats, meets_requirements
+
+    def _check_profession_requirements(self, stats: Stats, requirements: dict[str, int]) -> bool:
+        """
+        Check if stats meet profession requirements.
+
+        Args:
+            stats: The character's stats
+            requirements: Dictionary of stat requirements (e.g., {"strength": 12, "intelligence": 14})
+
+        Returns:
+            bool: True if all requirements are met
+        """
+        logger.debug(f"DEBUG: Checking requirements {requirements} against stats {stats.model_dump()}")
+        for stat_name, min_value in requirements.items():
+            stat_value = getattr(stats, stat_name, None)
+            logger.debug(f"DEBUG: Checking {stat_name}: {stat_value} >= {min_value}")
+            if stat_value is None:
+                logger.warning(f"Unknown stat name in requirements: {stat_name}")
+                return False
+            if stat_value < min_value:
+                logger.debug(f"DEBUG: Requirement failed: {stat_name} {stat_value} < {min_value}")
+                return False
+        logger.debug("DEBUG: All requirements met")
+        return True
 
     def get_stat_summary(self, stats: Stats) -> dict[str, any]:
         """

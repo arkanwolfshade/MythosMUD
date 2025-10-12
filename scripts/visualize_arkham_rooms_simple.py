@@ -98,7 +98,7 @@ def create_graph(rooms: dict, intersections: dict, connections: set) -> nx.Graph
     return G
 
 
-def visualize_graph(G: nx.Graph, output_path: str = "arkham_city_rooms_graph.png"):
+def visualize_graph(G: nx.Graph, output_path: str = "arkhamcity_rooms_graph.png"):
     """Create a visual representation of the graph."""
     plt.figure(figsize=(20, 16))
 
@@ -175,7 +175,7 @@ def print_statistics(rooms: dict, intersections: dict, connections: set):
 
 def main():
     """Main function to generate the visualization."""
-    zone_path = "data/rooms/earth/arkham_city"
+    zone_path = "data/rooms/earth/arkhamcity"
 
     if not os.path.exists(zone_path):
         print(f"Error: Zone path {zone_path} not found!")

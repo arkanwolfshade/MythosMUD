@@ -121,7 +121,7 @@ class TestLocalChannelService:
     ):
         """Create a ChatService instance with mocked dependencies."""
         with (
-            patch("server.game.chat_service.nats_service", mock_nats_service),
+            patch("server.services.nats_service.nats_service", mock_nats_service),
             patch("server.game.chat_service.chat_logger", mock_chat_logger),
             patch("server.game.chat_service.rate_limiter", mock_rate_limiter),
             patch("server.game.chat_service.user_manager", mock_user_manager),
@@ -135,7 +135,7 @@ class TestLocalChannelService:
         player = MagicMock()
         player.player_id = "test-player-123"
         player.name = "TestPlayer"
-        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player.level = 1
         return player
 
@@ -327,19 +327,19 @@ class TestLocalChannelSubZoneExtraction:
 
     def test_extract_subzone_from_room_id(self):
         """Test extracting sub-zone from room ID."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = self._extract_subzone(room_id)
         assert subzone == "northside"
 
     def test_extract_subzone_from_different_room(self):
         """Test extracting sub-zone from different room ID."""
-        room_id = "earth_arkham_city_downtown_market_square"
+        room_id = "earth_arkhamcity_downtown_market_square"
         subzone = self._extract_subzone(room_id)
         assert subzone == "downtown"
 
     def test_extract_subzone_from_campus_room(self):
         """Test extracting sub-zone from campus room."""
-        room_id = "earth_arkham_city_campus_library_main"
+        room_id = "earth_arkhamcity_campus_library_main"
         subzone = self._extract_subzone(room_id)
         assert subzone == "campus"
 
@@ -366,7 +366,7 @@ class TestLocalChannelSubZoneExtraction:
         Extract sub-zone from room ID.
 
         Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-        Example: earth_arkham_city_northside_intersection_derby_high
+        Example: earth_arkhamcity_northside_intersection_derby_high
         """
         if not room_id:
             return None
@@ -375,10 +375,10 @@ class TestLocalChannelSubZoneExtraction:
         if len(parts) < 4:
             return None
 
-        # The sub-zone is the fourth part (index 3)
-        # Format: earth_arkham_city_northside_intersection_derby_high
-        # Parts: [0]earth [1]arkham [2]city [3]northside [4]intersection [5]derby [6]high
-        return parts[3]
+        # The sub-zone is the third part (index 2) for arkhamcity format
+        # Format: earth_arkhamcity_northside_intersection_derby_high
+        # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
+        return parts[2]
 
 
 class TestLocalChannelIntegration:
@@ -443,7 +443,7 @@ class TestLocalChannelIntegration:
     ):
         """Create a ChatService instance with mocked dependencies."""
         with (
-            patch("server.game.chat_service.nats_service", mock_nats_service),
+            patch("server.services.nats_service.nats_service", mock_nats_service),
             patch("server.game.chat_service.chat_logger", mock_chat_logger),
             patch("server.game.chat_service.rate_limiter", mock_rate_limiter),
             patch("server.game.chat_service.user_manager", mock_user_manager),
@@ -458,7 +458,7 @@ class TestLocalChannelIntegration:
         player = MagicMock()
         player.player_id = "test-player-123"
         player.name = "TestPlayer"
-        player.current_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         player.level = 1
         mock_player_service.get_player_by_id.return_value = player
 
@@ -476,14 +476,14 @@ class TestLocalChannelIntegration:
         player1 = MagicMock()
         player1.player_id = "player1"
         player1.name = "Player1"
-        player1.current_room_id = "earth_arkham_city_northside_room_high_ln_001"
+        player1.current_room_id = "earth_arkhamcity_northside_room_high_ln_001"
         player1.level = 1
 
         # Test downtown
         player2 = MagicMock()
         player2.player_id = "player2"
         player2.name = "Player2"
-        player2.current_room_id = "earth_arkham_city_downtown_market_square"
+        player2.current_room_id = "earth_arkhamcity_downtown_market_square"
         player2.level = 1
 
         # Send messages from different sub-zones

@@ -188,28 +188,23 @@ class TestDatabaseErrorLogging:
         # and is tested through the persistence layer initialization
         pass
 
-    def test_database_session_error_logging(self):
+    @pytest.mark.asyncio
+    async def test_database_session_error_logging(self):
         """Test error logging in database session management."""
-        import asyncio
-
         from server.database import get_async_session
 
-        async def test_session_error():
-            # Mock session to raise an exception
-            with patch("server.database.async_session_maker") as mock_session_maker:
-                mock_session = Mock()
-                mock_session_maker.return_value.__aenter__.return_value = mock_session
-                mock_session.rollback.side_effect = Exception("Session error")
+        # Mock session to raise an exception
+        with patch("server.database.async_session_maker") as mock_session_maker:
+            mock_session = Mock()
+            mock_session_maker.return_value.__aenter__.return_value = mock_session
+            mock_session.rollback.side_effect = Exception("Session error")
 
-                # This should not raise an exception but should log the error
+            # This should not raise an exception but should log the error
+            try:
                 async for _session in get_async_session():
                     raise Exception("Test error")
-
-        # Run the async test - it should handle the error gracefully
-        try:
-            asyncio.run(test_session_error())
-        except Exception:
-            pass  # Expected to raise
+            except Exception:
+                pass  # Expected to raise
 
     def test_get_database_path_unsupported_url(self):
         """Test error logging for unsupported database URL."""
@@ -264,8 +259,8 @@ class TestWorldLoaderErrorLogging:
         # Mock ROOMS_BASE_PATH to point to our temp directory
         with patch("server.world_loader.ROOMS_BASE_PATH", self.temp_dir):
             # Create the directory structure
-            os.makedirs(os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone"))
-            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone", "invalid.json"))
+            os.makedirs(os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone"))
+            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone", "invalid.json"))
 
             # Load world data
             load_hierarchical_world()
@@ -297,8 +292,8 @@ class TestWorldLoaderErrorLogging:
 
         # Mock ROOMS_BASE_PATH and create directory structure
         with patch("server.world_loader.ROOMS_BASE_PATH", self.temp_dir):
-            os.makedirs(os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone"))
-            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkham_city", "test_subzone", "test_room.json"))
+            os.makedirs(os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone"))
+            os.rename(room_file, os.path.join(self.temp_dir, "earth", "arkhamcity", "test_subzone", "test_room.json"))
 
             # Mock validator to return validation errors
             mock_validator = Mock()

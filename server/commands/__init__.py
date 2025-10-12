@@ -24,6 +24,7 @@ from .alias_commands import (
 from .command_service import CommandService
 from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
 from .exploration_commands import handle_go_command, handle_look_command
+from .npc_admin_commands import handle_npc_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
@@ -64,4 +65,6 @@ __all__ = [
     "handle_quit_command",
     "handle_status_command",
     "handle_inventory_command",
+    # NPC Admin commands
+    "handle_npc_command",
 ]

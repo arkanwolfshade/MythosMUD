@@ -105,7 +105,7 @@ def _is_player_muted_by_receiver(self, receiver_id: str, sender_id: str) -> bool
 ### Test Data
 - **Player A**: ArkanWolfshade (muter)
 - **Player B**: Ithaqua (muted player)
-- **Room**: `earth_arkham_city_sanitarium_room_hallway_001`
+- **Room**: `earth_arkhamcity_sanitarium_room_hallway_001`
 - **Mute File**: `data/user_management/mutes_ArkanWolfshade.json`
 
 ### Test Commands
@@ -185,7 +185,7 @@ Verify if the issue affects only emotes or other message types:
 -- Both players in same room
 SELECT name, current_room_id FROM players
 WHERE name IN ('ArkanWolfshade', 'Ithaqua');
--- Result: Both in 'earth_arkham_city_sanitarium_room_hallway_001'
+-- Result: Both in 'earth_arkhamcity_sanitarium_room_hallway_001'
 ```
 
 ### Mute Data File

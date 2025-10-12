@@ -4,22 +4,21 @@
 
 Global tech stack defaults for Agent OS projects, overridable in project-specific `.agent-os/product/tech-stack.md`.
 
-- App Framework: TypeScript and React; and Python
-- Language: Python 3.12, TypeScript 5.9.2, React 19.1.1
-- Primary Database: SQLite (development), PostgreSQL 17+ (production)
-- ORM: SQLAlchemy 2.0+
-- Backend Framework: FastAPI 0.116.1
-- JavaScript Framework: React 19.1.1
-- Build Tool: Vite 7.1.3
+- App Framework: Ruby on Rails 8.0+
+- Language: Ruby 3.2+
+- Primary Database: PostgreSQL 17+
+- ORM: Active Record
+- JavaScript Framework: React latest stable
+- Build Tool: Vite
 - Import Strategy: Node.js modules
-- Package Manager: npm (client), uv (server)
+- Package Manager: npm
 - Node Version: 22 LTS
-- CSS Framework: TailwindCSS 4.1.12
-- UI Components: Custom Mythos-themed components
-- UI Installation: Direct component imports
-- Font Provider: System fonts (Courier New for terminal theme)
+- CSS Framework: TailwindCSS 4.0+
+- UI Components: Instrumental Components latest
+- UI Installation: Via development gems group
+- Font Provider: Google Fonts
 - Font Loading: Self-hosted for performance
-- Icons: Lucide React 0.540.0
+- Icons: Lucide React components
 - Application Hosting: Digital Ocean App Platform/Droplets
 - Hosting Region: Primary region based on user base
 - Database Hosting: Digital Ocean Managed PostgreSQL

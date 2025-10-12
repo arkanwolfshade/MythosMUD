@@ -73,7 +73,7 @@ aliases_dir: ./data/players/aliases
 # zone_dir, npc_dir, quest_dir, plugin_dir, etc. can be added as needed
 
 # --- World & Game Settings ---
-start_room: earth_arkham_city_northside_intersection_derby_high
+start_room: earth_arkhamcity_northside_intersection_derby_high
 starting_level: 1
 allow_multiplay: true
 max_players: 100

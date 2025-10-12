@@ -47,12 +47,15 @@ class Player(Base):
     status_effects = Column(Text(), nullable=False, default="[]")
 
     # Location and progression
-    current_room_id = Column(String(length=50), nullable=False, default="earth_arkham_city_intersection_derby_high")
+    current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_intersection_derby_high")
     experience_points = Column(Integer(), default=0, nullable=False)
     level = Column(Integer(), default=1, nullable=False)
 
     # Admin status
     is_admin = Column(Integer(), default=0, nullable=False)  # SQLite doesn't have BOOLEAN, use INTEGER
+
+    # Profession
+    profession_id = Column(Integer(), default=0, nullable=False)
 
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)

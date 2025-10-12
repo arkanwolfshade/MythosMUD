@@ -297,12 +297,37 @@ describe('Complete Logout Flow Integration', () => {
 
     it('should handle logout with character creation state', async () => {
       // Setup: User is authenticated but has no character
-      mockFetch.mockResolvedValueOnce({
+      const mockLoginResponse = {
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: false,
         }),
+      };
+
+      const mockProfessionsResponse = {
+        ok: true,
+        json: async () => [
+          {
+            id: 0,
+            name: 'Tramp',
+            description: 'A wandering soul with no particular skills or connections.',
+            flavor_text:
+              'You have spent your days drifting from place to place, learning to survive on your wits alone.',
+            stat_requirements: {},
+            mechanical_effects: {},
+            is_available: true,
+          },
+        ],
+      };
+
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/login')) {
+          return Promise.resolve(mockLoginResponse);
+        } else if (url.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse);
+        }
+        return Promise.reject(new Error('Unexpected URL'));
       });
 
       render(<App />);
@@ -313,11 +338,11 @@ describe('Complete Logout Flow Integration', () => {
       fireEvent.click(screen.getByText('Enter the Void'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
-      // Verify user is in stats rolling screen
-      expect(screen.getByTestId('stats-rolling-screen')).toBeInTheDocument();
+      // Verify user is in profession selection screen
+      expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
 
       // Mock logout handler
       mockLogoutHandler.mockImplementation(async ({ disconnect, clearState, navigateToLogin }) => {

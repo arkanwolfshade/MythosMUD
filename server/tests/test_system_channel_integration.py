@@ -38,7 +38,7 @@ class TestSystemChannelIntegration:
         self.mock_nats_service.is_connected = Mock(return_value=True)
 
         # Patch global services
-        self.nats_patcher = patch("server.game.chat_service.nats_service", self.mock_nats_service)
+        self.nats_patcher = patch("server.services.nats_service.nats_service", self.mock_nats_service)
         self.chat_logger_patcher = patch("server.game.chat_service.chat_logger", self.mock_chat_logger)
         self.rate_limiter_patcher = patch("server.game.chat_service.rate_limiter", self.mock_rate_limiter)
         self.user_manager_patcher = patch("server.game.chat_service.user_manager", self.mock_user_manager)

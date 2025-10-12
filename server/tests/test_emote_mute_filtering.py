@@ -47,15 +47,15 @@ class TestEmoteMuteFiltering:
         self.sender_player = Mock()
         self.sender_player.id = str(uuid.uuid4())
         self.sender_player.name = "Ithaqua"
-        self.sender_player.current_room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.sender_player.current_room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         self.receiver_player = Mock()
         self.receiver_player.id = str(uuid.uuid4())
         self.receiver_player.name = "ArkanWolfshade"
-        self.receiver_player.current_room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.receiver_player.current_room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Test data from the bug report
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
         self.sender_id = self.sender_player.id
         self.receiver_id = self.receiver_player.id
 
@@ -193,9 +193,7 @@ class TestEmoteMuteFiltering:
     def test_is_player_muted_by_receiver_returns_true_when_muted(self):
         """Test that _is_player_muted_by_receiver returns True when receiver has muted sender."""
         # Setup
-        with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-            mock_user_manager = Mock()
-            mock_user_manager_class.return_value = mock_user_manager
+        with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = True
             mock_user_manager.is_player_muted_by_others.return_value = False
             mock_user_manager.is_admin.return_value = False
@@ -211,9 +209,7 @@ class TestEmoteMuteFiltering:
     def test_is_player_muted_by_receiver_returns_false_when_not_muted(self):
         """Test that _is_player_muted_by_receiver returns False when receiver has not muted sender."""
         # Setup
-        with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-            mock_user_manager = Mock()
-            mock_user_manager_class.return_value = mock_user_manager
+        with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = False
             mock_user_manager.is_player_muted_by_others.return_value = False
             mock_user_manager.is_admin.return_value = False
@@ -229,9 +225,7 @@ class TestEmoteMuteFiltering:
     def test_is_player_muted_by_receiver_handles_global_mute(self):
         """Test that _is_player_muted_by_receiver handles global mute correctly."""
         # Setup
-        with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-            mock_user_manager = Mock()
-            mock_user_manager_class.return_value = mock_user_manager
+        with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = False
             mock_user_manager.is_player_muted_by_others.return_value = True  # Sender is globally muted
             mock_user_manager.is_admin.return_value = False  # Receiver is not admin
@@ -246,9 +240,7 @@ class TestEmoteMuteFiltering:
     def test_is_player_muted_by_receiver_allows_admin_to_see_globally_muted(self):
         """Test that _is_player_muted_by_receiver allows admins to see globally muted players."""
         # Setup
-        with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-            mock_user_manager = Mock()
-            mock_user_manager_class.return_value = mock_user_manager
+        with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = False
             mock_user_manager.is_player_muted_by_others.return_value = True  # Sender is globally muted
             mock_user_manager.is_admin.return_value = True  # Receiver is admin
@@ -263,9 +255,7 @@ class TestEmoteMuteFiltering:
     def test_is_player_muted_by_receiver_handles_exception(self):
         """Test that _is_player_muted_by_receiver handles exceptions gracefully."""
         # Setup
-        with patch("server.services.user_manager.UserManager") as mock_user_manager_class:
-            mock_user_manager = Mock()
-            mock_user_manager_class.return_value = mock_user_manager
+        with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.load_player_mutes.side_effect = Exception("Database error")
 
             # Execute

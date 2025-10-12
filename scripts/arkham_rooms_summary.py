@@ -161,7 +161,7 @@ def print_room_listing(rooms: dict, intersections: dict):
                     print("      Exits: None")
 
 
-def generate_dot_file(rooms: dict, intersections: dict, connections: set, output_path: str = "arkham_city_graph.dot"):
+def generate_dot_file(rooms: dict, intersections: dict, connections: set, output_path: str = "arkhamcity_graph.dot"):
     """Generate a DOT file for visualization with Graphviz."""
     print(f"\nGenerating DOT file: {output_path}")
 
@@ -203,12 +203,12 @@ def generate_dot_file(rooms: dict, intersections: dict, connections: set, output
         f.write("}\n")
 
     print(f"DOT file saved as {output_path}")
-    print("You can visualize this with Graphviz: dot -Tpng arkham_city_graph.dot -o arkham_city_graph.png")
+    print("You can visualize this with Graphviz: dot -Tpng arkhamcity_graph.dot -o arkhamcity_graph.png")
 
 
 def main():
     """Main function to analyze the room data."""
-    zone_path = "data/rooms/earth/arkham_city"
+    zone_path = "data/rooms/earth/arkhamcity"
 
     if not os.path.exists(zone_path):
         print(f"Error: Zone path {zone_path} not found!")

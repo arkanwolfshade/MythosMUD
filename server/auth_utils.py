@@ -79,7 +79,7 @@ def create_access_token(
     algorithm: str = ALGORITHM,
 ) -> str:
     """Create a JWT access token."""
-    logger.debug("Creating access token", user_id=data.get("sub"), expires_delta=expires_delta)
+    logger.debug("Creating access token", expires_delta=expires_delta)
 
     to_encode = data.copy()
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -87,10 +87,10 @@ def create_access_token(
 
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
-        logger.debug("Access token created successfully", user_id=data.get("sub"))
+        logger.debug("Access token created successfully")
         return token
     except Exception as e:
-        logger.error("Failed to create access token", error=str(e), user_id=data.get("sub"))
+        logger.error("Failed to create access token", error=str(e))
         log_and_raise(
             AuthenticationError,
             f"Failed to create access token: {e}",
@@ -107,7 +107,7 @@ def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str
 
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
-        logger.debug("Access token decoded successfully", user_id=payload.get("sub"))
+        logger.debug("Access token decoded successfully")
         return payload
     except JWTError as e:
         logger.warning("JWT decode error", error=str(e))

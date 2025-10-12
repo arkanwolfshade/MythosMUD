@@ -9,12 +9,13 @@ import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
+from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
 from .logging_config import get_logger
@@ -39,19 +40,33 @@ if not DATABASE_URL:
 logger.info("Database URL configured", database_url=DATABASE_URL)
 
 # Create async engine
+# Use NullPool for tests to prevent SQLite file locking issues
+# StaticPool keeps connections open, which causes problems with SQLite in test environments
+pool_class = NullPool if "test" in DATABASE_URL else StaticPool
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
-    poolclass=StaticPool,
+    poolclass=pool_class,
     pool_pre_ping=True,
-    pool_recycle=3600,
     connect_args={
         "check_same_thread": False,
         "timeout": 30,
     },
 )
 
-logger.info("Database engine created", pool_class="StaticPool", pool_recycle=3600)
+
+# Enable foreign key constraints for SQLite
+@event.listens_for(engine.sync_engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    """Enable foreign key constraints for SQLite connections."""
+    if "sqlite" in str(dbapi_connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+
+logger.info("Database engine created", pool_class=pool_class.__name__)
 
 # Create async session maker
 async_session_maker = async_sessionmaker(
@@ -85,7 +100,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             context.metadata["error_message"] = str(e)
             logger.error(
                 "Database session error",
-                **context.to_dict(),
+                context=context.to_dict(),
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -94,7 +109,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback database session",
-                    **context.to_dict(),
+                    context=context.to_dict(),
                     rollback_error=str(rollback_error),
                 )
             raise
@@ -105,7 +120,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as close_error:
                 logger.warning(
                     "Error closing database session",
-                    **context.to_dict(),
+                    context=context.to_dict(),
                     close_error=str(close_error),
                 )
 
@@ -142,13 +157,15 @@ async def init_db():
         async with engine.begin() as conn:
             logger.info("Creating database tables")
             await conn.run_sync(metadata.create_all)
+            # Enable foreign key constraints for SQLite
+            await conn.execute(text("PRAGMA foreign_keys = ON"))
             logger.info("Database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
             "Database initialization failed",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -169,7 +186,7 @@ async def close_db():
         context.metadata["error_message"] = str(e)
         logger.error(
             "Error closing database connections",
-            **context.to_dict(),
+            context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )

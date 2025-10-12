@@ -71,17 +71,90 @@ class Environment:
     async def _setup_database(self):
         """Set up test database"""
         self.database_path = os.path.join(self.temp_dir, "test_players.db")
+        self.npc_database_path = os.path.join(self.temp_dir, "test_npcs.db")
 
         # Create database directory
         os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
+        os.makedirs(os.path.dirname(self.npc_database_path), exist_ok=True)
 
         # Set environment variable for database URL
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{self.database_path}"
+        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{self.npc_database_path}"
 
         try:
-            # Initialize database
+            # Recreate database engine with new URL
+            from server.database import engine
+
+            await engine.dispose()  # Close existing connections
+
+            # Import and recreate engine with new URL
+            from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+            from sqlalchemy.pool import NullPool
+
+            new_engine = create_async_engine(
+                os.environ["DATABASE_URL"],
+                echo=False,
+                poolclass=NullPool,
+                pool_pre_ping=True,
+                connect_args={
+                    "check_same_thread": False,
+                    "timeout": 30,
+                },
+            )
+
+            # Replace the global engine reference
+            import server.database
+
+            server.database.engine = new_engine
+            server.database.async_session_maker = async_sessionmaker(
+                new_engine,
+                class_=server.database.AsyncSession,
+                expire_on_commit=False,
+                autocommit=False,
+                autoflush=False,
+            )
+
+            # Initialize main database
             await init_db()
             self.logger.info("Database setup complete", db_path=self.database_path)
+
+            # Recreate NPC database engine with new URL
+            from server.npc_database import npc_engine as old_npc_engine
+
+            await old_npc_engine.dispose()  # Close existing NPC connections
+
+            # Import and recreate NPC engine with new URL
+            from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+            from sqlalchemy.pool import NullPool
+
+            new_npc_engine = create_async_engine(
+                os.environ["NPC_DATABASE_URL"],
+                echo=False,
+                poolclass=NullPool,
+                pool_pre_ping=True,
+                connect_args={
+                    "check_same_thread": False,
+                    "timeout": 30,
+                },
+            )
+
+            # Replace the global NPC engine reference
+            import server.npc_database
+
+            server.npc_database.npc_engine = new_npc_engine
+            server.npc_database.npc_async_session_maker = async_sessionmaker(
+                new_npc_engine,
+                class_=server.npc_database.AsyncSession,
+                expire_on_commit=False,
+                autocommit=False,
+                autoflush=False,
+            )
+
+            # Initialize NPC database
+            from server.npc_database import init_npc_database
+
+            await init_npc_database()
+            self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
         except Exception as e:
             self.logger.error(f"Database setup failed: {e}")
             # For tests, we can continue without a real database
@@ -123,7 +196,24 @@ class Environment:
 
     async def _cleanup_database(self):
         """Clean up database"""
-        await close_db()
+        try:
+            from server.database import engine
+
+            await engine.dispose()  # Properly dispose of main database engine connections
+        except Exception as e:
+            self.logger.warning(f"Error disposing main database engine: {e}")
+
+        try:
+            from server.npc_database import npc_engine
+
+            await npc_engine.dispose()  # Properly dispose of NPC database engine connections
+        except Exception as e:
+            self.logger.warning(f"Error disposing NPC database engine: {e}")
+
+        try:
+            await close_db()
+        except Exception as e:
+            self.logger.warning(f"Error closing database connections: {e}")
 
     def _merge_config(self, base_config: dict[str, Any], override_config: dict[str, Any]):
         """Merge configuration dictionaries"""

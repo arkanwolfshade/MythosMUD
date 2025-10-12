@@ -31,7 +31,7 @@ class TestMuteUnmuteWorkflowIntegration:
         self.muter_name = "ArkanWolfshade"
         self.target_id = str(uuid.uuid4())
         self.target_name = "Ithaqua"
-        self.room_id = "earth_arkham_city_sanitarium_room_hallway_001"
+        self.room_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Mock player objects
         self.muter_player = MagicMock()
@@ -60,7 +60,7 @@ class TestMuteUnmuteWorkflowIntegration:
         return chat_service
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_complete_mute_unmute_workflow_custom_emote(
@@ -118,7 +118,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert emote_result["message"]["content"] == "dance"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_complete_mute_unmute_workflow_predefined_emote(
@@ -183,7 +183,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert "twibbles" in emote_result["message"]["content"]
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_temporary_mute_expiration_workflow(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -240,7 +240,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert emote_result["message"]["content"] == "wave"
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_permanent_mute_workflow(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -301,7 +301,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert emote_result["success"] is True
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_global_mute_workflow_with_emotes(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -353,7 +353,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert emote_result["success"] is True
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_workflow_with_different_emote_types(
@@ -427,7 +427,7 @@ class TestMuteUnmuteWorkflowIntegration:
             assert "dances" in predefined_emote_result["message"]["content"]
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_workflow_error_handling(self, mock_user_manager, mock_rate_limiter, mock_nats_service):
@@ -461,7 +461,7 @@ class TestMuteUnmuteWorkflowIntegration:
         assert "not found" in emote_result["error"].lower()
 
     @pytest.mark.asyncio
-    @patch("server.game.chat_service.nats_service")
+    @patch("server.services.nats_service.nats_service")
     @patch("server.game.chat_service.rate_limiter")
     @patch("server.game.chat_service.user_manager")
     async def test_mute_workflow_with_rate_limiting(self, mock_user_manager, mock_rate_limiter, mock_nats_service):

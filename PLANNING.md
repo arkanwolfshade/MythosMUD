@@ -627,7 +627,6 @@ When multiple tasks are pending, prioritize in this order:
 #### Month 3-4: Infrastructure
 
 - [ ] **Database Migration**: Migrate from SQLite to PostgreSQL
-- [ ] **Caching Layer**: Implement Redis for session management
 - [ ] **Load Balancing**: Implement load balancing for horizontal scaling
 - [ ] **Monitoring**: Comprehensive monitoring and alerting
 

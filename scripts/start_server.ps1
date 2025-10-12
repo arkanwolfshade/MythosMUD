@@ -79,7 +79,8 @@ function Load-EnvironmentConfig {
                 [Environment]::SetEnvironmentVariable($name, $value, "Process")
             }
         }
-    } else {
+    }
+    else {
         Write-Host "Warning: Environment file $envFile not found" -ForegroundColor Yellow
     }
 }
@@ -207,13 +208,16 @@ function Start-NatsServerForMythosMUD {
             $natsStarted = Start-NatsServer -UseConfig -Background
             if ($natsStarted) {
                 Write-Host "NATS server started successfully" -ForegroundColor Green
-            } else {
+            }
+            else {
                 Write-Host "Warning: Failed to start NATS server" -ForegroundColor Yellow
             }
-        } else {
+        }
+        else {
             Write-Host "NATS server is already running" -ForegroundColor Green
         }
-    } else {
+    }
+    else {
         Write-Host "Warning: NATS manager not found at $natsManagerPath" -ForegroundColor Yellow
     }
 }
@@ -239,11 +243,16 @@ function Start-MythosMUDServer {
     $serverUrl = "http://" + $ServerHost + ":" + $Port
     Write-Host "Starting server on $serverUrl..." -ForegroundColor Cyan
 
-    $reloadFlag = if ($Reload) { "--reload" } else { "" }
-
-    # Run uvicorn from project root with proper module path
-    # Use our StructLog system for all logging
-    $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag"
+    if ($Reload) {
+        # Use Python script to avoid PowerShell wildcard expansion issues
+        $serverCommand = "uv run python start_server.py"
+        Write-Host "Using Python startup script to avoid wildcard expansion" -ForegroundColor Cyan
+    }
+    else {
+        # Build command arguments for non-reload mode
+        $commandArgs = @("uv", "run", "uvicorn", "server.main:app", "--host", $ServerHost, "--port", $Port.ToString())
+        $serverCommand = ($commandArgs | ForEach-Object { if ($_ -contains ' ') { "`"$_`"" } else { $_ } }) -join ' '
+    }
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 

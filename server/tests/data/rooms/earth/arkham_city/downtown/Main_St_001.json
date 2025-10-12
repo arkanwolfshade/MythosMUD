@@ -1,13 +1,13 @@
 {
-  "id": "earth_arkham_city_downtown_Main_St_001",
+  "id": "earth_arkhamcity_downtown_Main_St_001",
   "name": "Main Street",
   "description": "The bustling main thoroughfare of Arkham's downtown district. Shops and restaurants line both sides of the street, their awnings flapping in the breeze. The sound of horse-drawn carriages and the chatter of townspeople fills the air.",
   "plane": "earth",
-  "zone": "arkham_city",
+  "zone": "arkhamcity",
   "sub_zone": "downtown",
   "environment": "outdoors",
   "exits": {
-    "north": "earth_arkham_city_downtown_Main_St_002",
+    "north": "earth_arkhamcity_downtown_Main_St_002",
     "south": null,
     "east": null,
     "west": null,

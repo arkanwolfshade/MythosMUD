@@ -11,66 +11,22 @@ from pathlib import Path
 # Test database path
 TEST_DB_PATH = Path(__file__).parent / "data" / "players" / "test_players.db"
 
-# Test database schema (FastAPI Users v14 compatible)
-TEST_SCHEMA = (
-    "-- Users table for authentication (FastAPI Users v14 compatible)\n"
-    "CREATE TABLE IF NOT EXISTS users (\n"
-    "    id TEXT PRIMARY KEY NOT NULL,\n"
-    "    -- UUID as TEXT for SQLite compatibility\n"
-    "    email TEXT UNIQUE NOT NULL,\n"
-    "    username TEXT UNIQUE NOT NULL,\n"
-    "    hashed_password TEXT NOT NULL,\n"
-    "    is_active BOOLEAN NOT NULL DEFAULT 1,\n"
-    "    is_superuser BOOLEAN NOT NULL DEFAULT 0,\n"
-    "    is_verified BOOLEAN NOT NULL DEFAULT 0,\n"
-    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n"
-    ");\n"
-    "\n"
-    "-- Players table for game data\n"
-    "CREATE TABLE IF NOT EXISTS players (\n"
-    "    player_id TEXT PRIMARY KEY NOT NULL,\n"
-    "    user_id TEXT NOT NULL UNIQUE,\n"
-    "    name TEXT UNIQUE NOT NULL,\n"
-    '    stats TEXT NOT NULL DEFAULT \'{"health": 100, "sanity": 100, "strength": 10}\',\n'
-    "    inventory TEXT NOT NULL DEFAULT '[]',\n"
-    "    status_effects TEXT NOT NULL DEFAULT '[]',\n"
-    "    current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',\n"
-    "    experience_points INTEGER NOT NULL DEFAULT 0,\n"
-    "    level INTEGER NOT NULL DEFAULT 1,\n"
-    "    is_admin INTEGER NOT NULL DEFAULT 0,\n"
-    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    last_active DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE\n"
-    ");\n"
-    "\n"
-    "-- Invites table for invite-only registration\n"
-    "CREATE TABLE IF NOT EXISTS invites (\n"
-    "    id TEXT PRIMARY KEY NOT NULL,\n"
-    "    invite_code TEXT UNIQUE NOT NULL,\n"
-    "    created_by_user_id TEXT,\n"
-    "    used_by_user_id TEXT,\n"
-    "    used BOOLEAN NOT NULL DEFAULT 0,\n"
-    "    expires_at DATETIME,\n"
-    "    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
-    "    FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL,\n"
-    "    FOREIGN KEY (used_by_user_id) REFERENCES users(id) ON DELETE SET NULL\n"
-    ");\n"
-    "\n"
-    "-- Create indexes for better performance\n"
-    "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);\n"
-    "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);\n"
-    "CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);\n"
-    "CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);\n"
-    "CREATE INDEX IF NOT EXISTS idx_players_is_admin ON players(is_admin);\n"
-    "CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);\n"
-    "CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);\n"
-)
+# Test database schema is now loaded from server/sql/schema.sql
 
 
 def load_schema():
-    """Load the test database schema."""
-    return TEST_SCHEMA
+    """Load the test database schema from SQL files."""
+    from pathlib import Path
+
+    # Get the project root directory (go up from server/tests to project root)
+    project_root = Path(__file__).parent.parent.parent
+    schema_file = project_root / "server" / "sql" / "schema.sql"
+
+    if not schema_file.exists():
+        raise FileNotFoundError(f"Schema file not found: {schema_file}")
+
+    with open(schema_file, encoding="utf-8") as f:
+        return f.read()
 
 
 # Sample test user data
@@ -104,7 +60,7 @@ SAMPLE_PLAYERS = [
         "stats": '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0}',
         "inventory": "[]",
         "status_effects": "[]",
-        "current_room_id": "earth_arkham_city_intersection_derby_high",
+        "current_room_id": "earth_arkhamcity_intersection_derby_high",
         "experience_points": 0,
         "level": 1,
     },
@@ -153,13 +109,15 @@ def init_test_database():
 
     # Create database and schema
     with sqlite3.connect(TEST_DB_PATH) as conn:
+        conn.execute("PRAGMA foreign_keys = ON")
         conn.executescript(load_schema())
         conn.commit()
 
-    print("✓ Database schema created")
+    print("[OK] Database schema created")
 
     # Insert sample test players into database
     with sqlite3.connect(TEST_DB_PATH) as conn:
+        conn.execute("PRAGMA foreign_keys = ON")
         for user_data in SAMPLE_USERS:
             conn.execute(
                 """
@@ -201,7 +159,7 @@ def init_test_database():
 
         conn.commit()
 
-    print(f"✓ Loaded {len(SAMPLE_PLAYERS)} sample test players")
+    print(f"[OK] Loaded {len(SAMPLE_PLAYERS)} sample test players")
 
     # Insert sample test invites into database
     with sqlite3.connect(TEST_DB_PATH) as conn:
@@ -225,23 +183,23 @@ def init_test_database():
 
         conn.commit()
 
-    print(f"✓ Loaded {len(SAMPLE_INVITES)} sample test invites")
+    print(f"[OK] Loaded {len(SAMPLE_INVITES)} sample test invites")
 
     # Verify the database was created successfully
     with sqlite3.connect(TEST_DB_PATH) as conn:
         cursor = conn.execute("SELECT COUNT(*) FROM users")
         user_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {user_count} users")
+        print(f"[OK] Test database contains {user_count} users")
 
         cursor = conn.execute("SELECT COUNT(*) FROM players")
         player_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {player_count} players")
+        print(f"[OK] Test database contains {player_count} players")
 
         cursor = conn.execute("SELECT COUNT(*) FROM invites")
         invite_count = cursor.fetchone()[0]
-        print(f"✓ Test database contains {invite_count} invites")
+        print(f"[OK] Test database contains {invite_count} invites")
 
-    print("✓ Test database initialization completed successfully")
+    print("[OK] Test database initialization completed successfully")
 
 
 if __name__ == "__main__":

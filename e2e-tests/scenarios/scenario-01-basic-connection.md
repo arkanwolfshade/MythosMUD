@@ -10,7 +10,7 @@ Tests basic multiplayer connection and disconnection messaging between two playe
 
 **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
 
-1. **Database State**: Both players are in `earth_arkham_city_sanitarium_room_foyer_001`
+1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
@@ -22,7 +22,7 @@ Tests basic multiplayer connection and disconnection messaging between two playe
 ## Test Configuration
 
 - **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkham_city_sanitarium_room_foyer_001`)
+- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
 - **Testing Approach**: Playwright MCP (multi-tab interaction required)
 - **Timeout Settings**: Use configurable timeouts from master rules
 

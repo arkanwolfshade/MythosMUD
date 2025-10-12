@@ -47,7 +47,7 @@ def clean_command_input(command: str) -> str:
     """Clean and normalize command input by collapsing multiple spaces and stripping whitespace."""
     cleaned = re.sub(r"\s+", " ", command).strip()
     if cleaned != command:
-        logger.debug("Command input cleaned", original=command, cleaned=cleaned)
+        logger.debug("Command input cleaned", context={"original": command, "cleaned": cleaned})
     return cleaned
 
 
@@ -73,7 +73,7 @@ def normalize_command(command: str) -> str:
     # Remove leading slash if present
     if command.startswith("/"):
         normalized = command[1:].strip()
-        logger.debug("Slash prefix removed from command", original=command, normalized=normalized)
+        logger.debug("Slash prefix removed from command", context={"original": command, "normalized": normalized})
         return normalized
 
     return command
@@ -225,11 +225,13 @@ async def process_command_unified(
     if not player_name:
         player_name = get_username_from_user(current_user)
 
-    logger.debug("=== UNIFIED COMMAND HANDLER: Processing command ===", player=player_name, command=command_line)
+    logger.debug(
+        "=== UNIFIED COMMAND HANDLER: Processing command ===", context={"player": player_name, "command": command_line}
+    )
 
     # Step 1: Basic validation
     if not command_line:
-        logger.debug("Empty command received", player=player_name)
+        logger.debug("Empty command received", context={"player": player_name})
         return {"result": ""}
 
     if len(command_line) > MAX_COMMAND_LENGTH:
@@ -241,21 +243,21 @@ async def process_command_unified(
     # Step 2: Clean and normalize command
     command_line = clean_command_input(command_line)
     if not command_line:
-        logger.debug("Empty command after cleaning", player=player_name)
+        logger.debug("Empty command after cleaning", context={"player": player_name})
         return {"result": ""}
 
     command_line = normalize_command(command_line)
     if not command_line:
-        logger.debug("Empty command after normalization", player=player_name)
+        logger.debug("Empty command after normalization", context={"player": player_name})
         return {"result": ""}
 
     # Step 3: Initialize alias storage if not provided
     if not alias_storage:
         try:
             alias_storage = AliasStorage()
-            logger.debug("AliasStorage initialized", player=player_name)
+            logger.debug("AliasStorage initialized", context={"player": player_name})
         except Exception as e:
-            logger.error("Failed to initialize AliasStorage", player=player_name, error=str(e))
+            logger.error("Failed to initialize AliasStorage", context={"player": player_name, "error": str(e)})
             alias_storage = None
 
     # Step 4: Parse command and arguments
@@ -263,7 +265,10 @@ async def process_command_unified(
     cmd = parts[0].lower()
     args = parts[1:]
 
-    logger.debug("Command parsed", player=player_name, command=cmd, args=args, original_command=command_line)
+    logger.debug(
+        "Command parsed",
+        context={"player": player_name, "command": cmd, "args": args, "original_command": command_line},
+    )
 
     # Step 5: Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
@@ -318,7 +323,7 @@ async def process_command_with_validation(
             return {"result": error_message}
 
         if not validated_command:
-            logger.warning("No validated command returned", player=player_name)
+            logger.warning("No validated command returned", context={"player": player_name})
             return {"result": "Invalid command format"}
 
         # Extract command data for processing
@@ -336,7 +341,7 @@ async def process_command_with_validation(
         return result
 
     except ValidationError as e:
-        logger.warning("Command validation error", player=player_name, error=str(e))
+        logger.warning("Command validation error", context={"player": player_name, "error": str(e)})
         return {"result": str(e)}
     except Exception as e:
         logger.error("Error processing command", player=player_name, error=str(e), exc_info=True)

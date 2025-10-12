@@ -58,7 +58,7 @@ class TestLocalChannelNATSIntegration:
         # Create a local channel message
         message_data = {
             "channel": "local",
-            "room_id": "earth_arkham_city_northside_intersection_derby_high",
+            "room_id": "earth_arkhamcity_northside_intersection_derby_high",
             "sender_id": "test-player-123",
             "sender_name": "TestPlayer",
             "content": "Hello, local area!",
@@ -74,7 +74,7 @@ class TestLocalChannelNATSIntegration:
         call_args = nats_handler._broadcast_to_room_with_filtering.call_args
 
         # Check room_id
-        assert call_args[0][0] == "earth_arkham_city_northside_intersection_derby_high"
+        assert call_args[0][0] == "earth_arkhamcity_northside_intersection_derby_high"
 
         # Check event structure
         event = call_args[0][1]
@@ -94,7 +94,7 @@ class TestLocalChannelNATSIntegration:
     @pytest.mark.asyncio
     async def test_room_subscription_includes_local_channel(self, nats_handler, mock_nats_service):
         """Test that subscribing to a room includes local channel subscription."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         await nats_handler.subscribe_to_room(room_id)
 
@@ -113,7 +113,7 @@ class TestLocalChannelNATSIntegration:
     @pytest.mark.asyncio
     async def test_room_unsubscription_includes_local_channel(self, nats_handler, mock_nats_service):
         """Test that unsubscribing from a room includes local channel unsubscription."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         # First subscribe to the room
         nats_handler.subscriptions = {f"chat.say.{room_id}": True, f"chat.local.{room_id}": True}
@@ -154,7 +154,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
     @pytest.mark.asyncio
     async def test_subzone_subscription_creation(self, nats_handler, mock_nats_service):
         """Test creating sub-zone subscriptions for local channels."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
         subzone_subject = get_subzone_local_channel_subject(room_id)
 
@@ -170,7 +170,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
     @pytest.mark.asyncio
     async def test_subzone_unsubscription(self, nats_handler, mock_nats_service):
         """Test unsubscribing from sub-zone subscriptions."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
 
         # Mock the unsubscribe_from_subzone method (to be implemented)
@@ -186,7 +186,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         # Mock the connection manager
         with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
             mock_connection_manager.online_players = {
-                "test-player-123": {"current_room_id": "earth_arkham_city_northside_intersection_derby_high"}
+                "test-player-123": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
             }
 
             # Mock sub-zone subscription methods
@@ -194,8 +194,8 @@ class TestLocalChannelSubZoneSubscriptionManagement:
             nats_handler.unsubscribe_from_subzone = AsyncMock()
 
             # Simulate player moving from northside to downtown
-            old_room_id = "earth_arkham_city_northside_intersection_derby_high"
-            new_room_id = "earth_arkham_city_downtown_market_square"
+            old_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+            new_room_id = "earth_arkhamcity_downtown_market_square"
 
             old_subzone = extract_subzone_from_room_id(old_room_id)
             new_subzone = extract_subzone_from_room_id(new_room_id)
@@ -235,9 +235,9 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         # Mock the connection manager
         with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
             mock_connection_manager.online_players = {
-                "player1": {"current_room_id": "earth_arkham_city_northside_intersection_derby_high"},
-                "player2": {"current_room_id": "earth_arkham_city_northside_room_high_ln_001"},
-                "player3": {"current_room_id": "earth_arkham_city_northside_room_high_ln_002"},
+                "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"},
+                "player2": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_001"},
+                "player3": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_002"},
             }
 
             # Mock sub-zone subscription methods
@@ -263,7 +263,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         # Mock the connection manager
         with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
             mock_connection_manager.online_players = {
-                "player1": {"current_room_id": "earth_arkham_city_northside_intersection_derby_high"}
+                "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
             }
 
             # Mock sub-zone subscription methods
@@ -291,12 +291,12 @@ class TestLocalChannelNATSSubjectPatterns:
 
     def test_local_channel_subject_patterns(self):
         """Test that local channel subjects follow the correct patterns."""
-        room_id = "earth_arkham_city_northside_intersection_derby_high"
+        room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
 
         # Test room-specific local channel subject
         room_subject = f"chat.local.{room_id}"
-        assert room_subject == "chat.local.earth_arkham_city_northside_intersection_derby_high"
+        assert room_subject == "chat.local.earth_arkhamcity_northside_intersection_derby_high"
 
         # Test sub-zone local channel subject
         subzone_subject = get_subzone_local_channel_subject(room_id)
@@ -308,7 +308,7 @@ class TestLocalChannelNATSSubjectPatterns:
 
     def test_local_channel_subject_validation(self):
         """Test validation of local channel subject patterns."""
-        valid_room_id = "earth_arkham_city_northside_intersection_derby_high"
+        valid_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         invalid_room_id = "invalid_room_id"
 
         # Valid room ID should produce valid subjects
@@ -324,9 +324,9 @@ class TestLocalChannelNATSSubjectPatterns:
 
     def test_local_channel_subject_consistency(self):
         """Test consistency of local channel subjects across different rooms in same sub-zone."""
-        room1 = "earth_arkham_city_northside_intersection_derby_high"
-        room2 = "earth_arkham_city_northside_room_high_ln_001"
-        room3 = "earth_arkham_city_northside_room_high_ln_002"
+        room1 = "earth_arkhamcity_northside_intersection_derby_high"
+        room2 = "earth_arkhamcity_northside_room_high_ln_001"
+        room3 = "earth_arkhamcity_northside_room_high_ln_002"
 
         # All rooms in the same sub-zone should have the same sub-zone subject
         subzone_subject1 = get_subzone_local_channel_subject(room1)
