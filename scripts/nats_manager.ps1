@@ -18,7 +18,7 @@
 # Try to find NATS server in common locations
 $NatsServerPath = $null
 $PossiblePaths = @(
-    "C:\Users\$env:USERNAME\AppData\Local\Microsoft\WinGet\Packages\NATSAuthors.NATSServer_Microsoft.Winget.Source_8wekyb3d8bbwe\nats-server-v2.10.25-windows-amd64\nats-server.exe",
+    "C:\Users\tyler\Downloads\nats-server-v2.11.9-windows-amd64\nats-server-v2.11.9-windows-amd64\nats-server.exe",
     "C:\nats-server\nats-server.exe",
     "E:\nats-server\nats-server.exe",
     "nats-server"  # If it's in PATH
