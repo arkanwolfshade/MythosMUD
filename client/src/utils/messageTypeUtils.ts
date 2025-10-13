@@ -72,7 +72,6 @@ const ERROR_PATTERNS: MessagePattern[] = [
   { pattern: /^Cannot /i, type: 'command' }, // Cannot perform action messages
   { pattern: /^Failed /i, type: 'command' }, // Failed action messages
   { pattern: /not found|doesn't exist|does not exist/i, type: 'command' }, // Not found messages
-  { pattern: /^Online Players:/i, type: 'command' }, // Who command output
 ];
 
 // System patterns - game events and notifications
@@ -83,6 +82,11 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   // Room descriptions - MOST RELIABLE PATTERN: Contains "Exits:" anywhere in the message
   // This pattern catches ALL room descriptions regardless of how they start or what follows
   { pattern: /Exits?:/i, type: 'system' },
+  // Who command responses - player listings and information
+  { pattern: /^Online Players \(\d+\):/i, type: 'system' },
+  { pattern: /^Players matching .+ \(\d+\):/i, type: 'system' },
+  { pattern: /^No players are currently online\.?$/i, type: 'system' },
+  { pattern: /^No players found\.?$/i, type: 'system' },
   { pattern: /^You feel /i, type: 'system' },
   { pattern: /^The room is /i, type: 'system' },
   // Room descriptions - comprehensive patterns
