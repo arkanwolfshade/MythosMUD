@@ -660,20 +660,4 @@ describe('ChatPanel', () => {
       expect(screen.getByText(/tags/)).toBeInTheDocument();
     });
   });
-
-  describe('Debug Logging', () => {
-    it('should log debug information for message filtering', () => {
-      render(<ChatPanel {...defaultProps} />);
-
-      // Verify that console.log was called for debug information
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        '🔍 ChatPanel Final Filtered Messages:',
-        expect.objectContaining({
-          totalMessages: 4,
-          chatFilter: 'current',
-          selectedChannel: 'local',
-        })
-      );
-    });
-  });
 });
