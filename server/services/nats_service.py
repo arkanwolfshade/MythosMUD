@@ -13,6 +13,7 @@ from typing import Any
 
 import nats
 
+from ..config.models import NATSConfig
 from ..logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
 
@@ -27,21 +28,29 @@ class NATSService:
     and managing real-time communication between players using NATS.
     """
 
-    def __init__(self, config: dict[str, Any] | None = None):
+    def __init__(self, config: NATSConfig | dict[str, Any] | None = None):
         """
         Initialize NATS service with state machine.
 
         Args:
-            config: NATS configuration dictionary
+            config: NATS configuration (NATSConfig model, dict, or None for defaults)
 
         AI: State machine tracks connection lifecycle and prevents invalid state transitions.
+        AI: Accepts dict for backward compatibility but converts to Pydantic model for type safety.
         """
-        self.config = config or {}
+        # Convert dict to Pydantic model or use default if None
+        if isinstance(config, dict):
+            self.config = NATSConfig(**config)
+        elif config is None:
+            self.config = NATSConfig()
+        else:
+            self.config = config
+
         self.nc: nats.NATS | None = None
         self.subscriptions: dict[str, Any] = {}
         self._running = False
         self._connection_retries = 0
-        self._max_retries = self.config.get("max_reconnect_attempts", 5)
+        self._max_retries = self.config.max_reconnect_attempts
 
         # NEW: Connection state machine (CRITICAL-1)
         # AI: FSM provides robust connection management with automatic recovery

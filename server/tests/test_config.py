@@ -187,7 +187,7 @@ class TestGameConfig:
     def test_valid_game_config(self):
         """Test valid game configuration."""
         config = GameConfig(aliases_dir="data/aliases")
-        assert config.default_player_room == "earth_arkhamcity_northside_intersection_derby_high"
+        assert config.default_player_room == "earth_arkhamcity_sanitarium_room_foyer_001"
         assert config.max_connections_per_player == 3
 
     def test_invalid_max_connections_too_low(self):

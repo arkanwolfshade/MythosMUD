@@ -40,7 +40,7 @@ class TestUnknownRoomFix:
         # Mock config to return expected default room
         with patch("server.config.get_config") as mock_get_config:
             mock_config = Mock()
-            mock_config.game.default_player_room = "earth_arkhamcity_northside_intersection_derby_high"
+            mock_config.game.default_player_room = "earth_arkhamcity_sanitarium_room_foyer_001"
             mock_get_config.return_value = mock_config
 
             player = Player(name="TestPlayer", current_room_id="invalid_room_456")
@@ -49,7 +49,7 @@ class TestUnknownRoomFix:
             result = persistence.validate_and_fix_player_room(player)
 
             # Assert
-            expected_room = "earth_arkhamcity_northside_intersection_derby_high"
+            expected_room = "earth_arkhamcity_sanitarium_room_foyer_001"
             assert result is True
             assert player.current_room_id == expected_room
 
@@ -67,7 +67,7 @@ class TestUnknownRoomFix:
             result = persistence.validate_and_fix_player_room(player)
 
             # Assert - should use hardcoded fallback
-            expected_room = "earth_arkhamcity_northside_intersection_derby_high"
+            expected_room = "earth_arkhamcity_sanitarium_room_foyer_001"
             assert result is True
             assert player.current_room_id == expected_room
 
@@ -87,6 +87,6 @@ class TestUnknownRoomFix:
             result = persistence.validate_and_fix_player_room(player)
 
             # Assert
-            expected_room = "earth_arkhamcity_northside_intersection_derby_high"
+            expected_room = "earth_arkhamcity_sanitarium_room_foyer_001"
             assert result is True
             assert player.current_room_id == expected_room

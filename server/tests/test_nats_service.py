@@ -61,7 +61,10 @@ class TestNATSService:
 
         service = NATSService(config)
 
-        assert service.config == config
+        # Config is converted to NATSConfig Pydantic model
+        assert service.config.url == "nats://test-server:4222"
+        assert service.config.max_reconnect_attempts == 10
+        assert service.config.connect_timeout == 10
         assert service._max_retries == 10
 
     @pytest.mark.asyncio

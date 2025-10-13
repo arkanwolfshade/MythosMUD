@@ -47,7 +47,7 @@ class Player(Base):
     status_effects = Column(Text(), nullable=False, default="[]")
 
     # Location and progression
-    current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_intersection_derby_high")
+    current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
     experience_points = Column(Integer(), default=0, nullable=False)
     level = Column(Integer(), default=1, nullable=False)
 

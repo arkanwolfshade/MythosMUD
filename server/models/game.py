@@ -189,7 +189,7 @@ class Player(BaseModel):
     id: str = Field(default_factory=lambda: str(__import__("uuid").uuid4()), description="Player unique identifier")
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
     current_room_id: str = Field(
-        default="earth_arkhamcity_intersection_derby_high", description="Current room location"
+        default="earth_arkhamcity_sanitarium_room_foyer_001", description="Current room location"
     )
     experience_points: int = Field(default=0, ge=0, description="Total experience points")
     level: int = Field(default=1, ge=1, le=100, description="Player level")
