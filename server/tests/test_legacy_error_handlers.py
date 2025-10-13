@@ -80,9 +80,7 @@ class TestErrorResponse:
 
     def test_error_response_to_response(self):
         """Test ErrorResponse.to_response() method."""
-        response = ErrorResponse(
-            error_type=ErrorType.AUTHENTICATION_FAILED, message="Auth failed", status_code=401
-        )
+        response = ErrorResponse(error_type=ErrorType.AUTHENTICATION_FAILED, message="Auth failed", status_code=401)
 
         json_response = response.to_response()
 
