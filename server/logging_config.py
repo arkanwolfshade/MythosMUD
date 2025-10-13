@@ -131,13 +131,16 @@ def detect_environment() -> str:
         - local: Local development
         - production: Production deployment
     """
+    # Define valid environments to prevent invalid directory creation
+    VALID_ENVIRONMENTS = ["e2e_test", "unit_test", "production", "local"]
+
     # Check if running under pytest (unit tests)
     if "pytest" in sys.modules or "pytest" in sys.argv[0]:
         return "unit_test"
 
-    # Check explicit environment variable
+    # Check explicit environment variable (with validation)
     env = os.getenv("MYTHOSMUD_ENV")
-    if env:
+    if env and env in VALID_ENVIRONMENTS:
         return env
 
     # Check if test configuration is being used
@@ -146,7 +149,7 @@ def detect_environment() -> str:
 
     # Try to determine from LOGGING_ENVIRONMENT (Pydantic config)
     logging_env = os.getenv("LOGGING_ENVIRONMENT", "")
-    if logging_env in ["e2e_test", "unit_test", "production", "local"]:
+    if logging_env in VALID_ENVIRONMENTS:
         return logging_env
 
     # Fallback: check legacy config path for backward compatibility

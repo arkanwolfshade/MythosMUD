@@ -145,21 +145,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     return true;
   });
 
-  // Debug logging for final filtered messages
-  console.log('🔍 ChatPanel Final Filtered Messages:', {
-    totalMessages: messages.length,
-    filteredCount: filteredMessages.length,
-    chatFilter,
-    selectedChannel,
-    filteredMessages: filteredMessages.map(m => ({
-      text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
-      messageType: m.messageType,
-      channel: m.channel,
-      timestamp: m.timestamp,
-    })),
-    timestamp: new Date().toISOString(),
-  });
-
   const formatTimestamp = (timestamp: string): string => {
     try {
       const date = new Date(timestamp);

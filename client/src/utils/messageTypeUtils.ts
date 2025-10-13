@@ -136,39 +136,24 @@ export function determineMessageType(message: string): MessageTypeResult {
         channel = pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
       }
 
-      return {
-        type: pattern.type,
-        channel,
-      };
+      return { type: pattern.type, channel };
     }
   }
 
   // Check error patterns (second priority)
   for (const pattern of ERROR_PATTERNS) {
     if (pattern.pattern.test(trimmedMessage)) {
-      return {
-        type: pattern.type,
-      };
+      return { type: pattern.type };
     }
   }
 
   // Check system patterns
-  console.log('🔍 Checking system patterns for message:', trimmedMessage.substring(0, 50) + '...');
   for (const pattern of SYSTEM_PATTERNS) {
     if (pattern.pattern.test(trimmedMessage)) {
-      console.log(
-        '✅ System pattern matched:',
-        pattern.pattern,
-        'for message:',
-        trimmedMessage.substring(0, 50) + '...'
-      );
-      return {
-        type: pattern.type,
-      };
+      return { type: pattern.type };
     }
   }
 
-  console.log('❌ No system patterns matched, defaulting to command');
   // Default to command response
   return { type: 'command' };
 }
