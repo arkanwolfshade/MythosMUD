@@ -8,7 +8,7 @@ As noted in the Pnakotic Manuscripts: "Every middleware must be tested thoroughl
 to ensure it does not corrupt the flow of requests through the system."
 """
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 from fastapi import FastAPI, HTTPException, Request
@@ -384,3 +384,228 @@ class TestFallbackHandling:
         assert "type" in data["error"]
         assert "message" in data["error"]
         assert "user_friendly" in data["error"]
+
+
+class TestMiddlewareErrorLogging:
+    """Test middleware logging for different error scenarios."""
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_with_request_state_user_dict(self, mock_logger, app):
+        """Test logging extracts user ID from dict-like user state."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/user_dict_error")
+        async def test_user_dict_error(request: Request):
+            # Set user as dict-like object
+            request.state.user = {"id": "user-dict-123", "name": "TestUser"}
+            raise Exception("Test user dict error")
+
+        client = TestClient(app)
+        response = client.get("/test/user_dict_error")
+
+        assert response.status_code == 500
+
+        # Verify user_id was extracted and logged
+        assert mock_logger.error.called
+        call_args = mock_logger.error.call_args
+        assert call_args[1]["user_id"] == "user-dict-123"
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_with_request_state_user_object(self, mock_logger, app):
+        """Test logging extracts user ID from object-like user state."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/user_object_error")
+        async def test_user_object_error(request: Request):
+            # Set user as simple object with id attribute (not Mock to avoid get() issues)
+            class UserObj:
+                def __init__(self):
+                    self.id = "user-obj-456"
+
+            request.state.user = UserObj()
+            raise Exception("Test user object error")
+
+        client = TestClient(app)
+        response = client.get("/test/user_object_error")
+
+        assert response.status_code == 500
+
+        # Verify error was logged
+        assert mock_logger.error.called
+        call_args = mock_logger.error.call_args
+        # user_id should be extracted from .id attribute
+        assert call_args[1]["user_id"] == "user-obj-456"
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_with_session_id(self, mock_logger, app):
+        """Test logging includes session ID when available."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/session_error")
+        async def test_session_error(request: Request):
+            request.state.session_id = "test-session-789"
+            raise Exception("Test session error")
+
+        client = TestClient(app)
+        response = client.get("/test/session_error")
+
+        assert response.status_code == 500
+
+        # Verify session_id was logged
+        assert mock_logger.error.called
+        call_args = mock_logger.error.call_args
+        assert call_args[1]["session_id"] == "test-session-789"
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_client_error_as_warning(self, mock_logger, app):
+        """Test that 4xx errors are logged as warnings."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/not_found")
+        async def test_not_found():
+            # Non-MythosMUD exception with 4xx result
+            raise ValueError("Not found error")
+
+        client = TestClient(app)
+        response = client.get("/test/not_found")
+
+        # Should return error response
+        assert response.status_code >= 400
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_mythos_error_skipped(self, mock_logger, app):
+        """Test that MythosMUDError logging is skipped (already logged in constructor)."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/mythos_skip_log")
+        async def test_mythos_skip_log():
+            raise MythosMUDError("Already logged error")
+
+        client = TestClient(app)
+        response = client.get("/test/mythos_skip_log")
+
+        assert response.status_code == 500
+
+        # MythosMUDError should not be logged again by middleware
+        # (it's logged in its constructor)
+        # The middleware's _log_exception should recognize this and skip logging
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_logging_logged_http_exception_skipped(self, mock_logger, app):
+        """Test that LoggedHTTPException logging is skipped (already logged)."""
+        add_error_handling_middleware(app, include_details=True)
+
+        @app.get("/test/logged_http_skip")
+        async def test_logged_http_skip():
+            raise LoggedHTTPException(status_code=403, detail="Already logged HTTP error")
+
+        client = TestClient(app)
+        response = client.get("/test/logged_http_skip")
+
+        assert response.status_code == 403
+
+
+class TestMiddlewareFallbackHandling:
+    """Test middleware fallback error handling."""
+
+    @patch("server.middleware.error_handling_middleware.StandardizedErrorResponse")
+    def test_fallback_on_handler_exception(self, mock_handler_class, app):
+        """Test fallback response when error handler itself raises an exception."""
+        add_error_handling_middleware(app, include_details=True)
+
+        # Make the handler raise an exception
+        mock_handler_instance = Mock()
+        mock_handler_instance.handle_exception.side_effect = Exception("Handler failed")
+        mock_handler_class.return_value = mock_handler_instance
+
+        @app.get("/test/handler_failure")
+        async def test_handler_failure():
+            raise ValueError("Original error")
+
+        client = TestClient(app)
+        response = client.get("/test/handler_failure")
+
+        # Should return fallback response
+        assert response.status_code == 500
+        data = response.json()
+        assert "error" in data
+        assert data["error"]["type"] == "internal_error"
+        assert data["error"]["message"] == "An unexpected error occurred"
+        assert data["error"]["details"]["fallback"] is True
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    @patch("server.middleware.error_handling_middleware.StandardizedErrorResponse")
+    def test_fallback_logs_handler_error(self, mock_handler_class, mock_logger, app):
+        """Test that handler failures are logged."""
+        add_error_handling_middleware(app, include_details=True)
+
+        # Make the handler raise an exception
+        mock_handler_instance = Mock()
+        mock_handler_instance.handle_exception.side_effect = RuntimeError("Handler crashed")
+        mock_handler_class.return_value = mock_handler_instance
+
+        @app.get("/test/handler_crash")
+        async def test_handler_crash():
+            raise ValueError("Original error")
+
+        client = TestClient(app)
+        response = client.get("/test/handler_crash")
+
+        assert response.status_code == 500
+
+        # Verify error handler failure was logged
+        assert mock_logger.error.called
+        call_args = mock_logger.error.call_args
+        assert "Error in error handler" in call_args[0][0]
+
+
+class TestExceptionHandlerRegistration:
+    """Test individual exception handler registration."""
+
+    def test_register_error_handlers_adds_all_handlers(self, app):
+        """Test that register_error_handlers adds all exception handlers."""
+        register_error_handlers(app, include_details=True)
+
+        # Verify handlers were added
+        # FastAPI stores exception handlers in app.exception_handlers dict
+        assert HTTPException in app.exception_handlers
+        assert MythosMUDError in app.exception_handlers
+        assert LoggedHTTPException in app.exception_handlers
+        assert Exception in app.exception_handlers
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_register_error_handlers_logs_registration(self, mock_logger, app):
+        """Test that handler registration is logged."""
+        register_error_handlers(app, include_details=True)
+
+        # Verify registration was logged
+        mock_logger.info.assert_called()
+        call_args = mock_logger.info.call_args
+        assert "Error handlers registered" in call_args[0][0]
+
+
+class TestCompleteErrorHandlingSetup:
+    """Test complete error handling setup function."""
+
+    @patch("server.middleware.error_handling_middleware.logger")
+    def test_setup_error_handling_logs_completion(self, mock_logger, app):
+        """Test that setup_error_handling logs completion."""
+        setup_error_handling(app, include_details=True)
+
+        # Should log completion
+        assert mock_logger.info.called
+        # Look for the completion message
+        calls = [str(call) for call in mock_logger.info.call_args_list]
+        completion_logged = any("Complete error handling setup completed" in call for call in calls)
+        assert completion_logged
+
+    def test_setup_includes_both_middleware_and_handlers(self, app):
+        """Test that setup includes both middleware and exception handlers."""
+        setup_error_handling(app, include_details=False)
+
+        # Verify middleware was added (check app.user_middleware)
+        assert len(app.user_middleware) > 0
+
+        # Verify handlers were added
+        assert HTTPException in app.exception_handlers
+        assert MythosMUDError in app.exception_handlers

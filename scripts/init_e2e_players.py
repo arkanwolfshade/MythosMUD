@@ -25,7 +25,8 @@ except ImportError:
     sys.exit(1)
 
 # E2E test database path (matches .env.e2e_test configuration)
-E2E_DB_PATH = project_root / "data" / "e2e_test" / "players.db"
+# CRITICAL: Must use approved database location per DATABASE PLACEMENT RULES
+E2E_DB_PATH = project_root / "data" / "e2e_test" / "players" / "e2e_test_players.db"
 
 # Password hashing context matching production configuration
 pwd_context = CryptContext(

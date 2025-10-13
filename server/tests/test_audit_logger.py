@@ -245,3 +245,79 @@ class TestAuditLogger:
                 assert "timestamp" in entry
                 assert "event_type" in entry
                 assert "player" in entry
+
+    def test_log_security_event_critical_severity(self, audit_logger):
+        """Test logging security event with critical severity."""
+        audit_logger.log_security_event(
+            event_type="injection_attempt",
+            player_name="attacker",
+            description="SQL injection attempt detected",
+            severity="critical",
+            metadata={"payload": "' OR '1'='1"},
+        )
+
+        log_file = audit_logger._get_log_file_path()
+        with open(log_file, encoding="utf-8") as f:
+            log_entry = json.loads(f.readline())
+
+        assert log_entry["severity"] == "critical"
+        assert log_entry["security_event_type"] == "injection_attempt"
+
+    def test_log_alias_expansion_with_cycle(self, audit_logger):
+        """Test logging alias expansion when cycle is detected."""
+        audit_logger.log_alias_expansion(
+            player_name="player1",
+            alias_name="bad_alias",
+            expanded_command="bad_alias",
+            cycle_detected=True,
+            expansion_depth=10,
+        )
+
+        log_file = audit_logger._get_log_file_path()
+        with open(log_file, encoding="utf-8") as f:
+            log_entry = json.loads(f.readline())
+
+        assert log_entry["cycle_detected"] is True
+        assert log_entry["alias_name"] == "bad_alias"
+
+    def test_get_recent_entries_invalid_json_line(self, audit_logger):
+        """Test get_recent_entries handles invalid JSON lines gracefully."""
+        # Write a valid entry
+        audit_logger.log_command("player1", "test", success=True)
+
+        # Manually write an invalid JSON line
+        log_file = audit_logger._get_log_file_path()
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write("invalid json line\n")
+
+        # Write another valid entry
+        audit_logger.log_command("player2", "test", success=True)
+
+        # Should still return the valid entries
+        recent = audit_logger.get_recent_entries(hours=24)
+        assert len(recent) == 2  # Only valid entries
+
+    def test_get_recent_entries_with_corrupted_timestamp(self, audit_logger):
+        """Test get_recent_entries handles corrupted timestamp."""
+        # Manually write an entry with invalid timestamp
+        log_file = audit_logger._get_log_file_path()
+        corrupted_entry = '{"timestamp":"invalid","event_type":"test","player":"player1"}\n'
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(corrupted_entry)
+
+        # Should handle gracefully
+        recent = audit_logger.get_recent_entries(hours=24)
+        # Entry with invalid timestamp should be skipped
+        assert isinstance(recent, list)
+
+    def test_get_recent_entries_missing_required_field(self, audit_logger):
+        """Test get_recent_entries handles missing required fields."""
+        # Manually write an entry without timestamp
+        log_file = audit_logger._get_log_file_path()
+        corrupted_entry = '{"event_type":"test","player":"player1"}\n'
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(corrupted_entry)
+
+        # Should handle gracefully
+        recent = audit_logger.get_recent_entries(hours=24)
+        assert isinstance(recent, list)

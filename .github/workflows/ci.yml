@@ -50,7 +50,9 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for database initialization
-          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/unit_test_players.db"
+          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
+          export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
+          export DATABASE_NPC_URL="sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
@@ -61,7 +63,9 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for database verification
-          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/unit_test_players.db"
+          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
+          export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
+          export DATABASE_NPC_URL="sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
@@ -76,7 +80,9 @@ jobs:
         run: |
           source .venv/bin/activate
           # Set test environment variables for pytest
-          export DATABASE_URL="sqlite+aiosqlite:///./server/tests/data/players/unit_test_players.db"
+          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
+          export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
+          export DATABASE_NPC_URL="sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db"
           export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
           export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
           export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"

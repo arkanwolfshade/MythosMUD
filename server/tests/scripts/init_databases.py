@@ -150,7 +150,8 @@ async def main():
     script_dir = Path(__file__).parent
     project_root = script_dir.parent.parent.parent
     prod_db = project_root / "data" / "players" / "players.db"
-    test_db = project_root / "server" / "tests" / "data" / "players" / "unit_test_players.db"
+    # CRITICAL: Use approved database location per DATABASE PLACEMENT RULES
+    test_db = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
 
     try:
         # Initialize production database

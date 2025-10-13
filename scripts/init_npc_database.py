@@ -170,7 +170,8 @@ def main():
 
     # Initialize e2e test database
     if init_e2e:
-        e2e_db_path = "data/e2e_test/npcs/e2e_npcs.db"
+        # CRITICAL: Use approved database location per DATABASE PLACEMENT RULES
+        e2e_db_path = "data/e2e_test/npcs/e2e_test_npcs.db"
         success &= init_database_schema(e2e_db_path, "e2e_test", populate_seed=True)
 
     # Initialize unit test database

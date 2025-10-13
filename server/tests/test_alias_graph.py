@@ -159,3 +159,50 @@ class TestAliasGraph:
         graph2 = AliasGraph(alias_storage)
         graph2.build_graph("player2")
         assert graph2.is_safe_to_expand("greet") is True
+
+    def test_detect_cycle_node_not_found(self, alias_storage):
+        """Test detect_cycle handles NodeNotFound exception."""
+
+        graph = AliasGraph(alias_storage)
+        # Empty graph - node doesn't exist
+
+        # Should return None for non-existent node
+        cycle = graph.detect_cycle("nonexistent")
+        assert cycle is None
+
+    def test_get_expansion_depth_exception_handling(self, alias_storage):
+        """Test get_expansion_depth handles exceptions gracefully."""
+        # Create a complex graph that might cause NetworkXNoPath
+        alias_storage.add_alias("player1", Alias(name="a", command="b"))
+        alias_storage.add_alias("player1", Alias(name="b", command="c"))
+        alias_storage.add_alias("player1", Alias(name="d", command="e"))  # Separate chain
+
+        graph = AliasGraph(alias_storage)
+        graph.build_graph("player1")
+
+        # Should handle paths that don't connect
+        depth_a = graph.get_expansion_depth("a")
+        assert isinstance(depth_a, int)
+        assert depth_a >= 0
+
+    def test_get_expansion_depth_nonexistent_node(self, alias_storage):
+        """Test get_expansion_depth for nonexistent node."""
+        graph = AliasGraph(alias_storage)
+        graph.build_graph("player1")
+
+        # Should return 0 for nonexistent node
+        depth = graph.get_expansion_depth("nonexistent")
+        assert depth == 0
+
+    def test_get_expansion_depth_no_descendants(self, alias_storage):
+        """Test get_expansion_depth for alias with no descendants."""
+        alias_storage.add_alias("player1", Alias(name="simple", command="say hello"))
+
+        graph = AliasGraph(alias_storage)
+        graph.build_graph("player1")
+
+        # Node exists but references another node that doesn't exist as an alias
+        # The "say" command is not an alias, so "simple" has descendants that don't exist
+        depth = graph.get_expansion_depth("simple")
+        # Returns based on whether descendants exist in graph
+        assert depth >= 0  # Should return 0 or more

@@ -19,7 +19,8 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
 
 # Set the test database path
-$TestDbPath = Join-Path $ProjectRoot "server\tests\data\players\unit_test_players.db"
+# CRITICAL: Must use approved location per DATABASE PLACEMENT RULES
+$TestDbPath = Join-Path $ProjectRoot "data\unit_test\players\unit_test_players.db"
 
 Write-Host "Initializing MythosMUD Test Database..." -ForegroundColor Green
 Write-Host "Database path: $TestDbPath" -ForegroundColor Yellow

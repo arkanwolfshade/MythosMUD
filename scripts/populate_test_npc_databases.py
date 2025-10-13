@@ -103,7 +103,8 @@ def main():
         sys.exit(1)
 
     # Populate e2e_test database
-    e2e_db = Path("data/e2e_test/npcs/e2e_npcs.db")
+    # CRITICAL: Use approved database location per DATABASE PLACEMENT RULES
+    e2e_db = Path("data/e2e_test/npcs/e2e_test_npcs.db")
     e2e_success = populate_database(e2e_db, npc_definitions, npc_spawn_rules)
 
     # Populate unit_test database

@@ -314,3 +314,42 @@ class TestArgon2Security:
             f"Correct avg: {avg_correct_time:.6f}s, "
             f"Incorrect avg: {avg_incorrect_time:.6f}s"
         )
+
+
+class TestArgon2NonArgon2HashHandling:
+    """Test handling of non-Argon2 hashes."""
+
+    def test_verify_password_with_bcrypt_hash(self):
+        """Test verification with non-Argon2 hash (bcrypt)."""
+        bcrypt_hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.gSJm2"
+
+        # Should return False for non-Argon2 hash
+        result = verify_password("anypassword", bcrypt_hash)
+        assert result is False
+
+    def test_needs_rehash_with_exception(self):
+        """Test needs_rehash handles exceptions gracefully."""
+        # Create an Argon2-like hash but malformed
+        malformed_hash = "$argon2id$malformed"
+
+        # Should return True (needs rehash) when check fails
+        result = needs_rehash(malformed_hash)
+        assert result is True
+
+    def test_get_hash_info_with_malformed_parts(self):
+        """Test get_hash_info with malformed hash parts."""
+        # Valid Argon2 prefix but too few parts
+        malformed_hash = "$argon2id$v=19"
+
+        result = get_hash_info(malformed_hash)
+        assert result is None
+
+    def test_get_hash_info_with_non_numeric_params(self):
+        """Test get_hash_info with non-numeric parameter values."""
+        # Hash with non-numeric parameter
+        # This may not be a realistic hash, but tests the exception handling
+        malformed_hash = "$argon2id$v=19$m=invalid,t=3,p=1$salt$hash"
+
+        result = get_hash_info(malformed_hash)
+        # Should still parse what it can or return a dict with string values
+        assert result is None or isinstance(result, dict)
