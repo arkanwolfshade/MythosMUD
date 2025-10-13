@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnectionRefactored';
 import { logger } from '../utils/logger';
 import { useMemoryMonitor } from '../utils/memoryMonitor';
-import { debugMessageCategorization, determineMessageType } from '../utils/messageTypeUtils';
+import { determineMessageType } from '../utils/messageTypeUtils';
 import { inputSanitizer } from '../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../utils/statusParser';
 
@@ -434,7 +434,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
               // Use intelligent message type categorization
               const messageTypeResult = determineMessageType(message);
-              debugMessageCategorization(message, messageTypeResult);
 
               const chatMessage = {
                 text: message,
@@ -454,44 +453,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 messageLength: message.length,
               });
 
-              // CRITICAL DEBUG: Track message array state
-              console.log('🔍 CRITICAL DEBUG: Before adding message to updates.messages', {
-                hasUpdatesMessages: !!updates.messages,
-                updatesMessagesLength: updates.messages?.length || 0,
-                currentMessagesRefLength: currentMessagesRef.current.length,
-                messageToAdd: chatMessage,
-              });
-
               if (!updates.messages) {
                 updates.messages = [...currentMessagesRef.current];
-                console.log('🔍 CRITICAL DEBUG: Created new updates.messages array', {
-                  newLength: updates.messages.length,
-                  copiedFrom: currentMessagesRef.current.length,
-                });
               }
 
               updates.messages.push(chatMessage);
-
-              console.log('🔍 CRITICAL DEBUG: After adding message to updates.messages', {
-                updatesMessagesLength: updates.messages.length,
-                lastMessage: updates.messages[updates.messages.length - 1],
-                allMessages: updates.messages.map(m => ({
-                  text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
-                  messageType: m.messageType,
-                  channel: m.channel,
-                })),
-              });
-
-              // Debug logging for message routing
-              console.log('🔍 Message Processing Debug:', {
-                originalMessage: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
-                categorizedType: messageTypeResult.type,
-                extractedChannel: messageTypeResult.channel,
-                finalMessageType: chatMessage.messageType,
-                finalChannel: chatMessage.channel,
-                timestamp: event.timestamp,
-                totalMessages: updates.messages.length,
-              });
             }
             break;
           }
@@ -820,14 +786,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     const commandParts = normalized.split(/\s+/);
     const commandName = commandParts[0];
     const commandArgs = commandParts.slice(1);
-
-    console.log('🚨 CLIENT DEBUG: handleCommandSubmit', {
-      originalCommand: command,
-      normalized,
-      commandParts,
-      commandName,
-      commandArgs,
-    });
 
     // Send command to server
     const success = await sendCommand(commandName, commandArgs);

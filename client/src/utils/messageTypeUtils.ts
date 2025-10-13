@@ -80,7 +80,9 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: /has entered the game\.?$/i, type: 'system' },
   { pattern: /has left the game\.?$/i, type: 'system' },
   { pattern: /^You are now in /i, type: 'system' },
-  { pattern: /^Exits?:/i, type: 'system' },
+  // Room descriptions - MOST RELIABLE PATTERN: Contains "Exits:" anywhere in the message
+  // This pattern catches ALL room descriptions regardless of how they start or what follows
+  { pattern: /Exits?:/i, type: 'system' },
   { pattern: /^You feel /i, type: 'system' },
   { pattern: /^The room is /i, type: 'system' },
   // Room descriptions - comprehensive patterns
@@ -201,20 +203,4 @@ export function isChatContent(text: string): boolean {
   }
 
   return false;
-}
-
-/**
- * Debug utility to log message categorization details
- *
- * @param message - The message being categorized
- * @param result - The categorization result
- */
-export function debugMessageCategorization(message: string, result: MessageTypeResult): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 Message Categorization Debug:', {
-      message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
-      result,
-      timestamp: new Date().toISOString(),
-    });
-  }
 }

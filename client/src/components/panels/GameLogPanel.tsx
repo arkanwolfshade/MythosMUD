@@ -86,6 +86,11 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
 
   // Filter and categorize messages
   const filteredMessages = messages.filter(message => {
+    // Always exclude chat messages from Game Log Panel - they belong in Chat Panel
+    if (message.messageType === 'chat') {
+      return false;
+    }
+
     // Apply message type filter
     if (messageFilter !== 'all' && message.messageType !== messageFilter) {
       return false;
