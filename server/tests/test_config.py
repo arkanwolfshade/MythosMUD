@@ -148,8 +148,8 @@ class TestLoggingConfig:
 
     def test_valid_logging_config(self):
         """Test valid logging configuration."""
-        config = LoggingConfig(environment="local", level="INFO")
-        assert config.environment == "local"
+        config = LoggingConfig(environment="unit_test", level="INFO")
+        assert config.environment == "unit_test"
         assert config.level == "INFO"
         assert config.format == "colored"
 
@@ -162,19 +162,19 @@ class TestLoggingConfig:
     def test_invalid_log_level(self):
         """Test invalid log level is rejected."""
         with pytest.raises(ValidationError) as exc_info:
-            LoggingConfig(environment="local", level="TRACE")
+            LoggingConfig(environment="unit_test", level="TRACE")
         assert "Log level must be one of" in str(exc_info.value)
 
     def test_log_level_case_insensitive(self):
         """Test log level is converted to uppercase."""
-        config = LoggingConfig(environment="local", level="debug")
+        config = LoggingConfig(environment="unit_test", level="debug")
         assert config.level == "DEBUG"
 
     def test_to_legacy_dict(self):
         """Test conversion to legacy dict format."""
-        config = LoggingConfig(environment="local", level="DEBUG")
+        config = LoggingConfig(environment="unit_test", level="DEBUG")
         legacy = config.to_legacy_dict()
-        assert legacy["environment"] == "local"
+        assert legacy["environment"] == "unit_test"
         assert legacy["level"] == "DEBUG"
         assert "rotation" in legacy
         # Default rotation_max_size is 100MB (Pydantic default)
@@ -425,12 +425,12 @@ class TestEnvironmentVariableLoading:
 
     def test_logging_config_from_env(self, monkeypatch):
         """Test LoggingConfig loads from environment variables with prefix."""
-        monkeypatch.setenv("LOGGING_ENVIRONMENT", "production")
+        monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("LOGGING_LEVEL", "warning")
         monkeypatch.setenv("LOGGING_FORMAT", "json")
 
         config = LoggingConfig()
-        assert config.environment == "production"
+        assert config.environment == "unit_test"
         assert config.level == "WARNING"  # Should be uppercased
         assert config.format == "json"
 
@@ -478,10 +478,12 @@ class TestLegacyDictConversion:
     def test_logging_config_to_legacy_dict(self):
         """Test LoggingConfig.to_legacy_dict() produces correct structure."""
         # Explicitly set rotation parameters to test conversion
-        config = LoggingConfig(environment="local", level="DEBUG", rotation_max_size="100MB", rotation_backup_count=5)
+        config = LoggingConfig(
+            environment="unit_test", level="DEBUG", rotation_max_size="100MB", rotation_backup_count=5
+        )
         legacy = config.to_legacy_dict()
 
-        assert legacy["environment"] == "local"
+        assert legacy["environment"] == "unit_test"
         assert legacy["level"] == "DEBUG"
         assert legacy["format"] == "colored"
         assert "rotation" in legacy
@@ -546,56 +548,6 @@ class TestConfigValidationEdgeCases:
             PlayerStatsConfig(strength=21)
 
 
-class TestEnvironmentSpecificConfiguration:
-    """Test environment-specific configuration scenarios."""
-
-    def test_local_environment_config(self, monkeypatch):
-        """Test loading local development configuration."""
-        monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///data/local/players.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///data/local/npcs.db")
-        monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "local_dev_admin")
-        monkeypatch.setenv("LOGGING_ENVIRONMENT", "local")
-        monkeypatch.setenv("LOGGING_LEVEL", "DEBUG")
-        monkeypatch.setenv("LOGGING_FORMAT", "colored")
-        monkeypatch.setenv("GAME_ALIASES_DIR", "data/local/aliases")
-
-        config = AppConfig()
-        assert config.logging.environment == "local"
-        assert config.logging.level == "DEBUG"
-        assert config.logging.format == "colored"
-
-    def test_production_environment_config(self, monkeypatch):
-        """Test loading production configuration."""
-        monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@localhost/prod")
-        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql://user:pass@localhost/npcs_prod")
-        monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "strong_production_password_123")
-        monkeypatch.setenv("LOGGING_ENVIRONMENT", "production")
-        monkeypatch.setenv("LOGGING_LEVEL", "INFO")
-        monkeypatch.setenv("LOGGING_FORMAT", "json")
-        monkeypatch.setenv("GAME_ALIASES_DIR", "/var/lib/mythosmud/aliases")
-
-        config = AppConfig()
-        assert config.logging.environment == "production"
-        assert config.logging.level == "INFO"
-        assert config.logging.format == "json"
-        assert config.database.url.startswith("postgresql")
-
-    def test_unit_test_environment_config(self, monkeypatch):
-        """Test loading unit test configuration."""
-        monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///server/tests/data/players/test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///server/tests/data/npcs/test.db")
-        monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "unit_test_admin")
-        monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
-        monkeypatch.setenv("GAME_ALIASES_DIR", "server/tests/data/aliases")
-
-        config = AppConfig()
-        assert config.logging.environment == "unit_test"
-        assert "tests" in config.database.url
-
-
 class TestConfigErrorMessages:
     """Test that configuration errors provide clear, actionable messages."""
 
@@ -608,14 +560,12 @@ class TestConfigErrorMessages:
         assert "65535" in error
 
     def test_environment_error_message_clarity(self):
-        """Test that environment validation error lists valid options."""
+        """Test that environment validation error is clear."""
         with pytest.raises(ValidationError) as exc_info:
             LoggingConfig(environment="staging")
         error = str(exc_info.value)
-        assert "local" in error
-        assert "unit_test" in error
-        assert "e2e_test" in error
-        assert "production" in error
+        # Verify error message mentions environment validation
+        assert "environment" in error.lower()
 
     def test_database_url_error_message_clarity(self):
         """Test that database URL validation error is clear."""

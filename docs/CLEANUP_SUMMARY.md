@@ -204,7 +204,7 @@ data/local/
 │   ├── local_players.db        # Local development player database
 │   └── aliases/                # Local player aliases
 ├── npcs/
-│   └── npcs.db                 # Local development NPC database
+│   └── local_npcs.db           # Local development NPC database
 ├── rooms/
 │   └── earth/                  # Room data by plane
 │       └── arkhamcity/         # Zone-specific rooms

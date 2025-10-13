@@ -105,7 +105,7 @@ def main():
 
     # Populate production database
     if populate_prod:
-        prod_db_path = "data/local/npcs/npcs.db"
+        prod_db_path = "data/local/npcs/local_npcs.db"
         success &= populate_database(prod_db_path, "production")
 
     if success:
