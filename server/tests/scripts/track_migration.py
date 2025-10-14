@@ -198,7 +198,7 @@ def print_summary(progress: dict[str, any]) -> None:
     # Progress bar
     bar_length = 50
     filled = int(bar_length * progress["progress_percentage"] / 100)
-    bar = "█" * filled + "░" * (bar_length - filled)
+    bar = "=" * filled + "-" * (bar_length - filled)
     print(f"[{bar}] {progress['progress_percentage']:.1f}%")
     print()
 
@@ -213,7 +213,7 @@ def print_summary(progress: dict[str, any]) -> None:
         if stats["subdirs"]:
             for subdir, count in stats["subdirs"].items():
                 if count > 0:
-                    print(f"  └─ {subdir}: {count}")
+                    print(f"  - {subdir}: {count}")
     print()
 
 
@@ -319,7 +319,7 @@ def generate_report(progress: dict[str, any]) -> str:
     # Progress visualization
     bar_length = 50
     filled = int(bar_length * progress["progress_percentage"] / 100)
-    bar = "█" * filled + "░" * (bar_length - filled)
+    bar = "=" * filled + "-" * (bar_length - filled)
     report.append(f"```\n[{bar}] {progress['progress_percentage']:.1f}%\n```")
     report.append("")
 
