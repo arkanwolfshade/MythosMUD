@@ -3,6 +3,37 @@ Test configuration and fixtures for MythosMUD server tests.
 
 This module sets up environment variables and provides common fixtures
 for all tests in the MythosMUD server.
+
+New Test Structure:
+-------------------
+The test suite is organized hierarchically:
+
+- fixtures/          - Shared test fixtures and utilities
+- unit/              - Unit tests (isolated component tests)
+  - api/             - API endpoint tests
+  - commands/        - Command handler tests
+  - chat/            - Chat/communication tests
+  - player/          - Player management tests
+  - npc/             - NPC system tests
+  - world/           - Room/world tests
+  - events/          - Event system tests
+  - auth/            - Authentication tests
+  - infrastructure/  - Core infrastructure tests
+  - middleware/      - Middleware tests
+  - models/          - Data model tests
+  - services/        - Service layer tests
+  - realtime/        - Real-time communication tests
+  - logging/         - Logging tests
+  - utilities/       - Utility tests
+- integration/       - Integration tests (component interactions)
+- e2e/               - End-to-end tests
+- performance/       - Performance benchmarks
+- security/          - Security tests
+- coverage/          - Coverage improvement tests
+- regression/        - Bug fix regression tests
+- monitoring/        - Monitoring tests
+- verification/      - Verification tests
+- scripts/           - Test setup and migration scripts
 """
 
 import asyncio
@@ -108,7 +139,7 @@ def sync_test_environment():
     """Synchronous wrapper for test_environment async fixture"""
     import uuid
 
-    from .utils.test_environment import test_env_manager
+    from .fixtures.test_environment import test_env_manager
 
     # Save original environment variables to restore after test
     original_database_url = os.environ.get("DATABASE_URL")

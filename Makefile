@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy
+.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -52,6 +52,43 @@ test-client-e2e:
 
 test-server-e2e:
 	cd $(PROJECT_ROOT) && python scripts/test.py --server-e2e-only
+
+# New hierarchical test targets
+test-unit:
+	cd $(PROJECT_ROOT) && pytest server/tests/unit -v
+
+test-integration:
+	cd $(PROJECT_ROOT) && pytest server/tests/integration -v
+
+test-e2e:
+	cd $(PROJECT_ROOT) && pytest server/tests/e2e -v
+
+test-security:
+	cd $(PROJECT_ROOT) && pytest server/tests/security -v
+
+test-performance:
+	cd $(PROJECT_ROOT) && pytest server/tests/performance -v
+
+test-coverage:
+	cd $(PROJECT_ROOT) && pytest server/tests/coverage -v
+
+test-regression:
+	cd $(PROJECT_ROOT) && pytest server/tests/regression -v
+
+test-monitoring:
+	cd $(PROJECT_ROOT) && pytest server/tests/monitoring -v
+
+test-verification:
+	cd $(PROJECT_ROOT) && pytest server/tests/verification -v
+
+test-all:
+	cd $(PROJECT_ROOT) && pytest server/tests -v
+
+test-fast:
+	cd $(PROJECT_ROOT) && pytest server/tests/unit -v -x
+
+test-slow:
+	cd $(PROJECT_ROOT) && pytest server/tests -v -m slow
 
 coverage:
 	cd $(PROJECT_ROOT) && python scripts/coverage.py

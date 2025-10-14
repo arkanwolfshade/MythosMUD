@@ -101,6 +101,44 @@ skip_glob = ["**/node_modules/**", "**/__pycache__/**", "**/.git/**"]
 force_sort_within_sections = true
 lines_after_imports = 2
 
+[tool.pytest.ini_options]
+testpaths = ["server/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+# Test discovery patterns
+norecursedirs = [".git", ".tox", "dist", "build", "*.egg", "__pycache__", "node_modules"]
+
+# Markers for test categories
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "security: Security tests",
+    "performance: Performance tests",
+    "slow: Slow running tests",
+    "regression: Bug fix regression tests",
+    "coverage: Coverage improvement tests",
+    "monitoring: Monitoring tests",
+    "verification: Verification tests"
+]
+
+# Coverage settings
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--cov=server",
+    "--cov-branch",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+
+# Async support
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
 [dependency-groups]
 dev = [
     "ruff>=0.12.5",
