@@ -6,8 +6,8 @@ validate the base API router and common dependencies used across all API endpoin
 
 from fastapi import APIRouter
 
-from ..api.base import CurrentUser, api_router
-from ..auth.users import get_current_user
+from server.api.base import CurrentUser, api_router
+from server.auth.users import get_current_user
 
 
 class TestAPIRouter:
@@ -61,14 +61,14 @@ class TestModuleImports:
 
     def test_api_base_imports(self):
         """Test that all necessary imports are available."""
-        from ..api.base import CurrentUser, api_router
+        from server.api.base import CurrentUser, api_router
 
         assert api_router is not None
         assert CurrentUser is not None
 
     def test_auth_users_import(self):
         """Test that get_current_user can be imported."""
-        from ..auth.users import get_current_user
+        from server.auth.users import get_current_user
 
         assert get_current_user is not None
         assert callable(get_current_user)

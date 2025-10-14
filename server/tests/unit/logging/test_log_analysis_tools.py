@@ -15,8 +15,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
-# Add the scripts directory to the path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
+# Add the scripts directory to the path (from server/tests/unit/logging -> root/scripts)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "scripts"))
 
 from analyze_error_logs import LogAnalyzer
 from error_monitoring import ErrorMonitor

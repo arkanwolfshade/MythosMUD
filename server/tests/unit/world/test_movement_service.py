@@ -28,19 +28,25 @@ class TestMovementService:
     def test_movement_service_creation(self):
         """Test that MovementService can be created successfully."""
         event_bus = Mock(spec=EventBus)
-        service = MovementService(event_bus)
+        mock_persistence = Mock()
 
-        assert service is not None
-        assert service._event_bus == event_bus
-        assert hasattr(service, "_persistence")
-        assert hasattr(service, "_lock")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService(event_bus)
+
+            assert service is not None
+            assert service._event_bus == event_bus
+            assert hasattr(service, "_persistence")
+            assert hasattr(service, "_lock")
 
     def test_movement_service_creation_without_event_bus(self):
         """Test that MovementService can be created without EventBus."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        assert service is not None
-        assert service._event_bus is None
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            assert service is not None
+            assert service._event_bus is None
 
     def test_move_player_success(self):
         """Test successful player movement."""
@@ -87,32 +93,44 @@ class TestMovementService:
 
     def test_move_player_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            service.move_player("", "room1", "room2")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
+                service.move_player("", "room1", "room2")
 
     def test_move_player_empty_from_room_id(self):
         """Test that empty from room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="From room ID cannot be empty"):
-            service.move_player("player1", "", "room2")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="From room ID cannot be empty"):
+                service.move_player("player1", "", "room2")
 
     def test_move_player_empty_to_room_id(self):
         """Test that empty to room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="To room ID cannot be empty"):
-            service.move_player("player1", "room1", "")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="To room ID cannot be empty"):
+                service.move_player("player1", "room1", "")
 
     def test_move_player_same_room(self):
         """Test that moving to the same room returns False."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        result = service.move_player("player1", "room1", "room1")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
 
-        assert result is False
+            result = service.move_player("player1", "room1", "room1")
+
+            assert result is False
 
     def test_move_player_from_room_not_found(self):
         """Test that moving from non-existent room returns False."""
@@ -229,17 +247,23 @@ class TestMovementService:
 
     def test_add_player_to_room_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            service.add_player_to_room("", "room1")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
+                service.add_player_to_room("", "room1")
 
     def test_add_player_to_room_empty_room_id(self):
         """Test that empty room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
-            service.add_player_to_room("player1", "")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Room ID cannot be empty"):
+                service.add_player_to_room("player1", "")
 
     def test_remove_player_from_room_success(self):
         """Test successful removal of player from room."""
@@ -287,17 +311,23 @@ class TestMovementService:
 
     def test_remove_player_from_room_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            service.remove_player_from_room("", "room1")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
+                service.remove_player_from_room("", "room1")
 
     def test_remove_player_from_room_empty_room_id(self):
         """Test that empty room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
-            service.remove_player_from_room("player1", "")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Room ID cannot be empty"):
+                service.remove_player_from_room("player1", "")
 
     def test_get_player_room_success(self):
         """Test getting player's current room."""
@@ -328,10 +358,13 @@ class TestMovementService:
 
     def test_get_player_room_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            service.get_player_room("")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
+                service.get_player_room("")
 
     def test_get_room_players_success(self):
         """Test getting players in a room."""
@@ -362,10 +395,13 @@ class TestMovementService:
 
     def test_get_room_players_empty_room_id(self):
         """Test that empty room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
-            service.get_room_players("")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Room ID cannot be empty"):
+                service.get_room_players("")
 
     def test_validate_player_location_success(self):
         """Test validating player location returns True."""
@@ -411,17 +447,23 @@ class TestMovementService:
 
     def test_validate_player_location_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            service.validate_player_location("", "room1")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Player ID cannot be empty"):
+                service.validate_player_location("", "room1")
 
     def test_validate_player_location_empty_room_id(self):
         """Test that empty room ID raises ValidationError."""
-        service = MovementService()
+        mock_persistence = Mock()
 
-        with pytest.raises(ValidationError, match="Room ID cannot be empty"):
-            service.validate_player_location("player1", "")
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            service = MovementService()
+
+            with pytest.raises(ValidationError, match="Room ID cannot be empty"):
+                service.validate_player_location("player1", "")
 
     def test_serial_movements(self):
         """Test that movements are handled correctly in serial execution."""

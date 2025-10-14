@@ -10,7 +10,7 @@ is essential for preventing eldritch denial-of-service attacks.
 
 from datetime import UTC, datetime, timedelta
 
-from ..middleware.command_rate_limiter import CommandRateLimiter
+from server.middleware.command_rate_limiter import CommandRateLimiter
 
 
 class TestCommandRateLimiterStats:

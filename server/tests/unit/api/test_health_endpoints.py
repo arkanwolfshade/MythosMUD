@@ -13,8 +13,8 @@ from unittest.mock import Mock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
-from ..models.health import (
+from server.app.factory import create_app
+from server.models.health import (
     ConnectionsComponent,
     DatabaseComponent,
     HealthComponents,

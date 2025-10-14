@@ -14,7 +14,7 @@ import pytest
 from starlette.requests import Request
 from starlette.responses import Response
 
-from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
+from server.middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 
 
 class TestComprehensiveLoggingMiddleware:

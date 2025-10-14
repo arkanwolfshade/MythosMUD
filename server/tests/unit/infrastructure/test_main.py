@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 
 # Import the app directly to avoid import issues
-from ..main import app
+from server.main import app
 
 
 class TestFastAPIApp:
@@ -371,7 +371,7 @@ class TestWebSocketEndpoints:
 
         # Patch at the point of use in server.api.real_time
         with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
-            from ..api.real_time import websocket_endpoint_route
+            from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
             mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
@@ -384,7 +384,7 @@ class TestWebSocketEndpoints:
 
         # Patch at the point of use in server.api.real_time
         with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
-            from ..api.real_time import websocket_endpoint_route
+            from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
             mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
@@ -397,7 +397,7 @@ class TestWebSocketEndpoints:
 
         # Patch at the point of use in server.api.real_time
         with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
-            from ..api.real_time import websocket_endpoint_route
+            from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
             mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)

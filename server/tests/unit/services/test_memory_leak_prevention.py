@@ -11,7 +11,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..app.task_registry import TaskRegistry
+from server.app.task_registry import TaskRegistry
 
 
 class TestOrphanedTaskDetection:
@@ -39,7 +39,7 @@ class TestOrphanedTaskDetection:
     @pytest.mark.asyncio
     async def test_gametick_service_task_tracking(self):
         """Test GameTickService task creation tracking."""
-        from ..services.game_tick_service import GameTickService
+        from server.services.game_tick_service import GameTickService
 
         mock_publisher = Mock()
 
@@ -63,8 +63,8 @@ class TestOrphanedTaskDetection:
     @pytest.mark.asyncio
     async def test_eventbus_subscriber_cleanup(self):
         """Test EventBus properly tracks subscriber tasks for prevention."""
-        from ..events.event_bus import EventBus
-        from ..events.event_types import BaseEvent
+        from server.events.event_bus import EventBus
+        from server.events.event_types import BaseEvent
 
         event_bus = EventBus()
 

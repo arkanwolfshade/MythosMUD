@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import WebSocket
 
-from ..realtime.connection_manager import connection_manager
+from server.realtime.connection_manager import connection_manager
 
 
 class TestWebSocketConnectionStability:

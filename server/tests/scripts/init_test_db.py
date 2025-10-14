@@ -9,7 +9,8 @@ import sqlite3
 from pathlib import Path
 
 # Test database path - use project root relative path
-project_root = Path(__file__).parent.parent.parent
+# from server/tests/scripts -> server/tests -> server -> project_root
+project_root = Path(__file__).parent.parent.parent.parent
 TEST_DB_PATH = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
 
 # Test database schema is now loaded from server/sql/schema.sql
@@ -19,8 +20,9 @@ def load_schema():
     """Load the test database schema from SQL files."""
     from pathlib import Path
 
-    # Get the project root directory (go up from server/tests to project root)
-    project_root = Path(__file__).parent.parent.parent
+    # Get the project root directory (go up from server/tests/scripts to project root)
+    # server/tests/scripts -> server/tests -> server -> project_root
+    project_root = Path(__file__).parent.parent.parent.parent
     schema_file = project_root / "server" / "sql" / "schema.sql"
 
     if not schema_file.exists():
@@ -103,7 +105,13 @@ SAMPLE_INVITES = [
 
 def init_test_database():
     """Initialize the test database with schema and test data."""
+    import os
+
     print(f"Initializing test database at: {TEST_DB_PATH}")
+
+    # Set DATABASE_URL for tests that need it (convert Windows path to POSIX for SQLite URL)
+    db_path_posix = str(TEST_DB_PATH).replace("\\", "/")
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{db_path_posix}"
 
     # Ensure the data directory exists
     TEST_DB_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -276,23 +276,30 @@ class TestAsyncOperationsVerification:
     @pytest.mark.asyncio
     async def test_async_operations_with_real_persistence_layer(self):
         """Test async operations with a real persistence layer instance."""
-        # Create a real persistence layer (this will use SQLite)
-        persistence = PersistenceLayer()
+        import os
+        from unittest.mock import patch
 
-        # Test that async methods exist and are callable
-        assert hasattr(persistence, "async_list_players")
-        assert hasattr(persistence, "async_get_player")
-        assert hasattr(persistence, "async_get_room")
+        # Set DATABASE_URL environment variable for test
+        test_db_url = "sqlite:///./data/unit_test/players/test_players.db"
 
-        # Test that they return values (even if empty)
-        players = await persistence.async_list_players()
-        assert isinstance(players, list)
+        with patch.dict(os.environ, {"DATABASE_URL": test_db_url}):
+            # Create a real persistence layer (this will use SQLite)
+            persistence = PersistenceLayer()
 
-        player = await persistence.async_get_player("nonexistent")
-        assert player is None
+            # Test that async methods exist and are callable
+            assert hasattr(persistence, "async_list_players")
+            assert hasattr(persistence, "async_get_player")
+            assert hasattr(persistence, "async_get_room")
 
-        room = await persistence.async_get_room("nonexistent")
-        assert room is None
+            # Test that they return values (even if empty)
+            players = await persistence.async_list_players()
+            assert isinstance(players, list)
+
+            player = await persistence.async_get_player("nonexistent")
+            assert player is None
+
+            room = await persistence.async_get_room("nonexistent")
+            assert room is None
 
     @pytest.mark.asyncio
     async def test_async_operations_performance_benchmark(self, mock_persistence):

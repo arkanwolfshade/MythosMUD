@@ -29,12 +29,13 @@ from server.exceptions import (
     LoggedHTTPException,
     MythosMUDError,
     RateLimitError,
+    ResourceNotFoundError,
     create_error_context,
 )
 from server.exceptions import (
     ValidationError as MythosValidationError,
 )
-from server.tests.utils.test_error_logging import ErrorLoggingTestMixin
+from server.tests.fixtures.test_error_logging import ErrorLoggingTestMixin
 
 
 class TestErrorContextLogging:
@@ -558,8 +559,8 @@ class TestAPIErrorLoggingIntegration:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.create_player") as mock_create_player:
-                # Setup mock to raise ValidationError
-                mock_create_player.side_effect = ValidationError("Player name already exists")
+                # Setup mock to raise MythosValidationError
+                mock_create_player.side_effect = MythosValidationError("Player name already exists")
 
                 with patch("server.api.players.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
@@ -578,8 +579,8 @@ class TestAPIErrorLoggingIntegration:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.delete_player") as mock_delete_player:
-                # Setup mock to raise ValidationError
-                mock_delete_player.side_effect = ValidationError("Player not found")
+                # Setup mock to raise ResourceNotFoundError (proper error type for "not found")
+                mock_delete_player.side_effect = ResourceNotFoundError("Player not found")
 
                 with patch("server.api.players.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
@@ -779,18 +780,19 @@ class TestAuthenticationErrorLoggingIntegration:
 
     def test_authentication_failure_logging(self, test_mixin):
         """Test error logging for authentication failures."""
-        # Test that ValidationError can be raised for authentication failures
-        with pytest.raises(ValidationError) as exc_info:
-            raise ValidationError("Invalid credentials")
+        # Test that AuthenticationError can be raised for authentication failures
+        with pytest.raises(AuthenticationError) as exc_info:
+            raise AuthenticationError("Invalid credentials")
 
         # Verify the error message
         assert "Invalid credentials" in str(exc_info.value)
 
     def test_authorization_failure_logging(self, test_mixin):
         """Test error logging for authorization failures."""
-        # Test that ValidationError can be raised for authorization failures
-        with pytest.raises(ValidationError) as exc_info:
-            raise ValidationError("Insufficient permissions")
+        # Test that AuthenticationError can be raised for authorization failures
+        # (authorization is part of authentication/access control)
+        with pytest.raises(AuthenticationError) as exc_info:
+            raise AuthenticationError("Insufficient permissions")
 
         # Verify the error message
         assert "Insufficient permissions" in str(exc_info.value)
@@ -809,10 +811,10 @@ class TestErrorLoggingEndToEnd:
         # Test that different error types can be raised and caught
         error_types = []
 
-        # Test ValidationError
-        with pytest.raises(ValidationError):
-            raise ValidationError("API error")
-        error_types.append("ValidationError")
+        # Test MythosValidationError (our custom validation error)
+        with pytest.raises(MythosValidationError):
+            raise MythosValidationError("API error")
+        error_types.append("MythosValidationError")
 
         # Test DatabaseError
         with pytest.raises(DatabaseError):
@@ -820,7 +822,7 @@ class TestErrorLoggingEndToEnd:
         error_types.append("DatabaseError")
 
         # Verify that different error types are represented
-        assert "ValidationError" in error_types, "ValidationError should be tested"
+        assert "MythosValidationError" in error_types, "MythosValidationError should be tested"
         assert "DatabaseError" in error_types, "DatabaseError should be tested"
 
     def test_error_logging_context_preservation(self, test_mixin):

@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from ..services.nats_service import NATSService, nats_service
+from server.services.nats_service import NATSService, nats_service
 
 
 class TestNATSService:

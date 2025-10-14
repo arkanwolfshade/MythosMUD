@@ -12,7 +12,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ..commands.system_commands import handle_help_command
+from server.commands.system_commands import handle_help_command
 
 
 class TestHelpCommand:

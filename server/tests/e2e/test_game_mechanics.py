@@ -10,8 +10,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..exceptions import ValidationError
-from ..game.mechanics import GameMechanicsService
+from server.exceptions import ValidationError
+from server.game.mechanics import GameMechanicsService
 
 
 class TestGameMechanicsService:

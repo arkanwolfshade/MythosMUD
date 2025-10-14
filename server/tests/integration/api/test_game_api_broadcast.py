@@ -9,7 +9,7 @@ from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
 
-from ..main import app
+from server.main import app
 
 
 class TestGameApiBroadcast:
@@ -28,7 +28,7 @@ class TestGameApiBroadcast:
         path in the broadcast_message endpoint.
         """
         # Mock the authentication dependency to return a user
-        from ..auth.users import get_current_user
+        from server.auth.users import get_current_user
 
         # Create a mock user object with required attributes
         mock_user = Mock()

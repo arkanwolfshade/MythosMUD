@@ -268,7 +268,7 @@ def test_env_vars():
 @pytest.fixture(scope="session")
 def test_database():
     """Initialize test database with proper schema."""
-    from server.tests.init_test_db import init_test_database
+    from server.tests.scripts.init_test_db import init_test_database
 
     # Initialize the test database
     init_test_database()
@@ -327,7 +327,7 @@ def test_client():
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import get_real_time_event_handler
-    from ..tests.init_test_db import init_test_database
+    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()
@@ -350,7 +350,7 @@ async def async_test_client():
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import get_real_time_event_handler
-    from ..tests.init_test_db import init_test_database
+    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()

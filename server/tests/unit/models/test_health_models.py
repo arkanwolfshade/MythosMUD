@@ -8,7 +8,7 @@ proper serialization, deserialization, and configuration behavior.
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
-from ..models.health import (
+from server.models.health import (
     ConnectionsComponent,
     DatabaseComponent,
     HealthComponents,

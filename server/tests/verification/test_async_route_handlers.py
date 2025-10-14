@@ -14,7 +14,7 @@ import pytest
 from fastapi import Depends, FastAPI, Request
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
+from server.app.factory import create_app
 
 
 class TestAsyncRouteHandlers:

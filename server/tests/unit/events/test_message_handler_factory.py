@@ -11,8 +11,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from fastapi import WebSocket
 
-from ..error_types import ErrorType
-from ..realtime.message_handler_factory import (
+from server.error_types import ErrorType
+from server.realtime.message_handler_factory import (
     ChatMessageHandler,
     CommandMessageHandler,
     MessageHandler,

@@ -11,7 +11,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from ..services.user_manager import UserManager
+from server.services.user_manager import UserManager
 
 
 class TestUserManager:

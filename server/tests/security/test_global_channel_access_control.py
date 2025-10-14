@@ -9,11 +9,11 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..config import get_config
-from ..game.chat_service import ChatService
-from ..game.player_service import PlayerService
-from ..services.rate_limiter import RateLimiter
-from ..services.user_manager import UserManager
+from server.config import get_config
+from server.game.chat_service import ChatService
+from server.game.player_service import PlayerService
+from server.services.rate_limiter import RateLimiter
+from server.services.user_manager import UserManager
 
 
 class TestGlobalChannelAccessControl:

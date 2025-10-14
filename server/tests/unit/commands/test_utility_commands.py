@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ..commands.utility_commands import (
+from server.commands.utility_commands import (
     filter_players_by_name,
     format_player_entry,
     format_player_location,
@@ -22,7 +22,7 @@ from ..commands.utility_commands import (
     handle_status_command,
     handle_who_command,
 )
-from ..exceptions import ValidationError
+from server.exceptions import ValidationError
 
 
 class TestGetUsernameFromUser:

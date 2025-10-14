@@ -20,10 +20,9 @@ from server.command_handler_unified import (
     process_command_unified,
 )
 from server.exceptions import ValidationError
+from server.models.room import Room
+from server.realtime.request_context import create_websocket_request_context
 from server.utils.command_processor import CommandProcessor, get_command_processor
-
-from ..models.room import Room
-from ..realtime.request_context import create_websocket_request_context
 
 # Import models from the modular structure
 
@@ -526,52 +525,49 @@ class TestUnifiedCommandHandler:
         mock_alias.get_expanded_command.return_value = "loop"  # Self-referencing alias
         mock_alias_storage.get_alias.return_value = mock_alias
 
-        # Mock the command processor to accept "loop" as a valid command
-        with patch("server.command_handler_unified.command_processor") as mock_processor:
-            mock_processor.process_command_string.return_value = (MagicMock(), None, "look")
-            mock_processor.extract_command_data.return_value = {"direction": "north"}
+        # Mock the rate limiter to allow all commands
+        with patch("server.command_handler_unified.command_rate_limiter") as mock_rate_limiter:
+            mock_rate_limiter.is_allowed.return_value = True
 
-            # Mock the command service to return a valid response
-            with patch("server.command_handler_unified.command_service") as mock_service:
-                mock_service.process_command = AsyncMock(return_value={"result": "Test response"})
+            # Mock the command processor to accept "loop" as a valid command
+            with patch("server.command_handler_unified.command_processor") as mock_processor:
+                mock_processor.process_command_string.return_value = (MagicMock(), None, "look")
+                mock_processor.extract_command_data.return_value = {"direction": "north"}
 
-                # Mock the handle_expanded_command to simulate recursive calls
-                with patch("server.command_handler_unified.handle_expanded_command") as mock_handle:
-                    # Simulate the recursive behavior by calling the original function
-                    # but with a depth that exceeds the limit
-                    async def mock_handle_expanded(
-                        command_line, current_user, request, alias_storage, player_name, depth=0, alias_chain=None
-                    ):
-                        if depth > 10:
-                            return {"result": "Alias expansion too deep - possible loop detected"}
-                        # Simulate recursive call
-                        return await mock_handle_expanded(
-                            command_line, current_user, request, alias_storage, player_name, depth + 1, alias_chain
+                # Mock the command service to return a valid response
+                with patch("server.command_handler_unified.command_service") as mock_service:
+                    mock_service.process_command = AsyncMock(return_value={"result": "Test response"})
+
+                    # Mock the handle_expanded_command to simulate depth exceeded error
+                    with patch("server.command_handler_unified.handle_expanded_command") as mock_handle:
+                        # Return error message indicating depth exceeded
+                        mock_handle.return_value = {"result": "Alias expansion too deep - possible loop detected"}
+
+                        result = await process_command_unified(
+                            "loop", mock_user, mock_request, alias_storage=mock_alias_storage, player_name="testuser"
                         )
 
-                    mock_handle.side_effect = mock_handle_expanded
-
-                    result = await process_command_unified(
-                        "loop", mock_user, mock_request, alias_storage=mock_alias_storage, player_name="testuser"
-                    )
-
-                    # Should detect the loop and return an error
-                    assert "alias expansion too deep" in result["result"].lower()
+                        # Should detect the loop and return an error
+                        assert "alias expansion too deep" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_error_handling(self, mock_user, mock_request):
         """Test error handling in unified command handler."""
         # Test with invalid command that would cause an exception
-        # Mock the logger to avoid Unicode encoding issues on Windows
-        with patch("server.command_handler_unified.logger") as mock_logger:
-            with patch("server.command_handler_unified.command_processor") as mock_processor:
-                mock_processor.process_command_string.side_effect = Exception("Test error")
+        # Mock the rate limiter to allow all commands
+        with patch("server.command_handler_unified.command_rate_limiter") as mock_rate_limiter:
+            mock_rate_limiter.is_allowed.return_value = True
 
-                result = await process_command_unified("invalid", mock_user, mock_request, player_name="testuser")
+            # Mock the logger to avoid Unicode encoding issues on Windows
+            with patch("server.command_handler_unified.logger") as mock_logger:
+                with patch("server.command_handler_unified.command_processor") as mock_processor:
+                    mock_processor.process_command_string.side_effect = Exception("Test error")
 
-                assert "error occurred" in result["result"].lower()
-                # Verify error was logged
-                assert mock_logger.error.called
+                    result = await process_command_unified("invalid", mock_user, mock_request, player_name="testuser")
+
+                    assert "error occurred" in result["result"].lower()
+                    # Verify error was logged
+                    assert mock_logger.error.called
 
     @pytest.mark.asyncio
     async def test_player_name_extraction(self, mock_request):

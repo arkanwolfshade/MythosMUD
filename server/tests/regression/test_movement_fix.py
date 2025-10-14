@@ -7,11 +7,11 @@ and ensures that the fixes are working correctly.
 
 from unittest.mock import Mock
 
-from ..events import EventBus
-from ..game.movement_service import MovementService
-from ..models import Player
-from ..models.room import Room
-from ..persistence import PersistenceLayer
+from server.events import EventBus
+from server.game.movement_service import MovementService
+from server.models import Player
+from server.models.room import Room
+from server.persistence import PersistenceLayer
 
 
 class TestMovementFixes:

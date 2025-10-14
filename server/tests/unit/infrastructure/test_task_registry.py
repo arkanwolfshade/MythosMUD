@@ -10,7 +10,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..app.task_registry import TaskMetadata, TaskRegistry, get_registry, register_task
+from server.app.task_registry import TaskMetadata, TaskRegistry, get_registry, register_task
 
 
 class TestTaskRegistryCore:
@@ -256,7 +256,7 @@ class TestTaskRegistryGlobalFunctions:
 
     def test_unregister_global_dedicated_function(self):
         """Test the convenience function for unregistering tasks globally."""
-        from ..app.task_registry import unregister_task
+        from server.app.task_registry import unregister_task
 
         success = unregister_task("task/unknown_id")
         # Unregistered is expected to return False for missing targets

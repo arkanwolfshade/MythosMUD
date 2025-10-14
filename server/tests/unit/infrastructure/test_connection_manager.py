@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from fastapi import WebSocket
 
-from ..realtime.connection_manager import ConnectionManager, ConnectionMetadata, MemoryMonitor
+from server.realtime.connection_manager import ConnectionManager, ConnectionMetadata, MemoryMonitor
 
 
 class TestConnectionManagerComprehensive:

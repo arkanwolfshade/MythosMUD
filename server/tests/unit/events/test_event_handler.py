@@ -93,7 +93,7 @@ class TestEventHandlerBroadcasting:
     @pytest.fixture
     def event_bus(self):
         """Create an EventBus with proper event loop setup."""
-        from ..events import EventBus
+        from server.events import EventBus
 
         return EventBus()
 
@@ -132,6 +132,16 @@ class TestEventHandlerBroadcasting:
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Mock room sync service to pass through the event with the correct player_id
+        def mock_process_event(evt):
+            evt.sequence_number = 1
+            return evt
+
+        event_handler.room_sync_service._process_event_with_ordering = Mock(side_effect=mock_process_event)
+
+        # Mock chat logger
+        event_handler.chat_logger.log_player_joined_room = Mock()
 
         # Create and publish event
         event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
@@ -176,6 +186,16 @@ class TestEventHandlerBroadcasting:
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Mock room sync service to pass through the event with the correct player_id
+        def mock_process_event(evt):
+            evt.sequence_number = 1
+            return evt
+
+        event_handler.room_sync_service._process_event_with_ordering = Mock(side_effect=mock_process_event)
+
+        # Mock chat logger
+        event_handler.chat_logger.log_player_left_room = Mock()
 
         # Create and publish event
         event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")

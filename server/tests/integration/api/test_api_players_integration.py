@@ -13,8 +13,8 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
-from ..models.player import Player
+from server.app.factory import create_app
+from server.models.player import Player
 
 
 class TestPlayerAPIIntegration:

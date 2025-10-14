@@ -17,10 +17,10 @@ from unittest.mock import Mock
 import pytest
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
-from ..events.event_types import PlayerEnteredRoom
-from ..models.room import Room
-from ..services.room_sync_service import RoomSyncService
+from server.app.factory import create_app
+from server.events.event_types import PlayerEnteredRoom
+from server.models.room import Room
+from server.services.room_sync_service import RoomSyncService
 
 
 class TestEventProcessingOrder:

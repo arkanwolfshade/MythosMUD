@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from ..realtime.connection_manager import ConnectionManager
+from server.realtime.connection_manager import ConnectionManager
 
 
 class TestConnectionManagerOccupantEvents:

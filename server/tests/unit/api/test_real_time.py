@@ -11,7 +11,7 @@ import pytest
 from fastapi import HTTPException, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
-from ..api.real_time import (
+from server.api.real_time import (
     realtime_router,
     sse_events,
     sse_events_token,

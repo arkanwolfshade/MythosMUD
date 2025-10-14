@@ -11,11 +11,10 @@ import pytest
 from fastapi import Request
 from fastapi.testclient import TestClient
 
+from server.app.factory import create_app
+from server.dependencies import get_player_service, get_player_service_for_testing, get_room_service
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
-
-from ..app.factory import create_app
-from ..dependencies import get_player_service, get_player_service_for_testing, get_room_service
 
 
 class TestDependencyInjection:
@@ -32,7 +31,7 @@ class TestDependencyInjection:
         service = get_player_service(mock_request)
 
         # Verify it's a PlayerService instance
-        from ..game.player_service import PlayerService
+        from server.game.player_service import PlayerService
 
         assert isinstance(service, PlayerService)
         assert service.persistence == mock_persistence
@@ -48,7 +47,7 @@ class TestDependencyInjection:
         service = get_room_service(mock_request)
 
         # Verify it's a RoomService instance
-        from ..game.room_service import RoomService
+        from server.game.room_service import RoomService
 
         assert isinstance(service, RoomService)
         assert service.persistence == mock_persistence

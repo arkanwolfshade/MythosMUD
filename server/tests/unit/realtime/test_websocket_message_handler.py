@@ -10,8 +10,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import WebSocket
 
-from ..error_types import ErrorType
-from ..realtime.websocket_handler import handle_game_command, handle_websocket_message
+from server.error_types import ErrorType
+from server.realtime.websocket_handler import handle_game_command, handle_websocket_message
 
 
 class TestWebSocketMessageHandler:

@@ -34,7 +34,7 @@ class TestValidationErrorImports:
         """Test that custom ValidationError can be imported without conflicts."""
         # This test ensures we can import our custom ValidationError
         # without namespace collisions
-        from ..exceptions import ValidationError as MythosValidationError
+        from server.exceptions import ValidationError as MythosValidationError
 
         # Verify it's the correct type
         assert MythosValidationError is not None
@@ -169,7 +169,7 @@ class TestValidationErrorNamespaceCollision:
         # Test importing in different orders
         from pydantic import ValidationError as PydanticValidationError
 
-        from ..exceptions import ValidationError as MythosValidationError
+        from server.exceptions import ValidationError as MythosValidationError
 
         # Verify both are available and distinct
         assert PydanticValidationError is not MythosValidationError
@@ -177,7 +177,7 @@ class TestValidationErrorNamespaceCollision:
         # Test reverse order
         from pydantic import ValidationError as PydanticValidationError2
 
-        from ..exceptions import ValidationError as MythosValidationError2
+        from server.exceptions import ValidationError as MythosValidationError2
 
         # Verify they're still distinct
         assert PydanticValidationError2 is not MythosValidationError2
@@ -197,7 +197,7 @@ class TestValidationErrorNamespaceCollision:
         # Verify imports still work after reload
         from pydantic import ValidationError as PydanticValidationError
 
-        from ..exceptions import ValidationError as MythosValidationError
+        from server.exceptions import ValidationError as MythosValidationError
 
         assert PydanticValidationError is not MythosValidationError
 

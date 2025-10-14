@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from ..game.chat_service import ChatService
+from server.game.chat_service import ChatService
 
 
 class TestWhisperChannelStrategy:

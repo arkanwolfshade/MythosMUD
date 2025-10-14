@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from ..realtime.sse_handler import (
+from server.realtime.sse_handler import (
     broadcast_game_event,
     format_sse_event,
     game_event_stream,

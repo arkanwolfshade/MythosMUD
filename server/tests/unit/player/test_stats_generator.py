@@ -9,8 +9,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ..game.stats_generator import StatsGenerator
-from ..models import AttributeType, Stats
+from server.game.stats_generator import StatsGenerator
+from server.models import AttributeType, Stats
 
 
 class TestStatsGenerator:

@@ -10,8 +10,8 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from ..alias_storage import AliasStorage
-from ..models import Alias
+from server.alias_storage import AliasStorage
+from server.models import Alias
 
 
 class TestAliasStorage:

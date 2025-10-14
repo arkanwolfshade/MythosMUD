@@ -15,11 +15,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ..events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
-from ..game.movement_service import MovementService
-from ..logging_config import get_logger
-from ..models.npc import NPCDefinitionType
-from ..npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
+from server.events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
+from server.game.movement_service import MovementService
+from server.logging_config import get_logger
+from server.models.npc import NPCDefinitionType
+from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
 
 logger = get_logger(__name__)
 
@@ -27,7 +27,7 @@ logger = get_logger(__name__)
 @pytest.fixture
 def event_bus():
     """Create an event bus for testing."""
-    from ..events.event_bus import EventBus
+    from server.events.event_bus import EventBus
 
     return EventBus()
 
@@ -268,7 +268,7 @@ class TestNPCCombatIntegration:
             events_received.append(event)
 
         # Subscribe to combat events
-        from ..events.event_types import NPCAttacked, NPCDied, NPCTookDamage
+        from server.events.event_types import NPCAttacked, NPCDied, NPCTookDamage
 
         event_bus.subscribe(NPCAttacked, capture_combat_events)
         event_bus.subscribe(NPCTookDamage, capture_combat_events)
@@ -313,7 +313,7 @@ class TestNPCCombatIntegration:
             events_received.append(event)
 
         # Subscribe to death events
-        from ..events.event_types import NPCDied, NPCTookDamage
+        from server.events.event_types import NPCDied, NPCTookDamage
 
         event_bus.subscribe(NPCDied, capture_death_events)
         event_bus.subscribe(NPCTookDamage, capture_death_events)
@@ -344,7 +344,7 @@ class TestNPCCombatIntegration:
 
     def test_npc_combat_with_game_mechanics_integration(self, aggressive_npc, event_bus):
         """Test NPC combat integration with game mechanics service."""
-        from ..game.mechanics import GameMechanicsService
+        from server.game.mechanics import GameMechanicsService
 
         # Create a mock persistence layer
         mock_persistence = MagicMock()
@@ -372,7 +372,7 @@ class TestNPCCombatIntegration:
             events_received.append(event)
 
         # Subscribe to damage events
-        from ..events.event_types import NPCTookDamage
+        from server.events.event_types import NPCTookDamage
 
         event_bus.subscribe(NPCTookDamage, capture_damage_events)
 
@@ -401,7 +401,7 @@ class TestNPCCombatIntegration:
             events_received.append(event)
 
         # Subscribe to all combat events
-        from ..events.event_types import NPCAttacked, NPCTookDamage
+        from server.events.event_types import NPCAttacked, NPCTookDamage
 
         event_bus.subscribe(NPCAttacked, capture_events)
         event_bus.subscribe(NPCTookDamage, capture_events)
@@ -431,7 +431,7 @@ class TestNPCCombatIntegration:
 
     def test_npc_combat_integration_system(self, aggressive_npc, event_bus):
         """Test the new NPC combat integration system."""
-        from ..npc.combat_integration import NPCCombatIntegration
+        from server.npc.combat_integration import NPCCombatIntegration
 
         # Create combat integration
         combat_integration = NPCCombatIntegration(event_bus)
@@ -457,7 +457,7 @@ class TestNPCCombatIntegration:
     @pytest.mark.asyncio
     async def test_npc_combat_integration_with_enhanced_attack(self, aggressive_npc, event_bus):
         """Test NPC attack with enhanced combat integration."""
-        from ..npc.combat_integration import NPCCombatIntegration
+        from server.npc.combat_integration import NPCCombatIntegration
 
         # Mock the persistence layer to prevent database access issues
         mock_persistence = MagicMock()
@@ -481,7 +481,7 @@ class TestNPCCombatIntegration:
                     events_received.append(event)
 
                 # Subscribe to combat events
-                from ..events.event_types import NPCAttacked
+                from server.events.event_types import NPCAttacked
 
                 event_bus.subscribe(NPCAttacked, capture_events)
 
@@ -550,7 +550,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCListened, NPCSpoke
+        from server.events.event_types import NPCListened, NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
         event_bus.subscribe(NPCListened, capture_communication_events)
@@ -594,7 +594,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCSpoke
+        from server.events.event_types import NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
 
@@ -621,7 +621,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCSpoke
+        from server.events.event_types import NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
 
@@ -648,7 +648,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCListened, NPCSpoke
+        from server.events.event_types import NPCListened, NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
         event_bus.subscribe(NPCListened, capture_communication_events)
@@ -681,7 +681,7 @@ class TestNPCCommunicationIntegration:
     @pytest.mark.asyncio
     async def test_npc_communication_integration_system(self, shopkeeper_npc, event_bus):
         """Test the new NPC communication integration system."""
-        from ..npc.communication_integration import NPCCommunicationIntegration
+        from server.npc.communication_integration import NPCCommunicationIntegration
 
         # Create communication integration
         communication_integration = NPCCommunicationIntegration(event_bus)
@@ -693,7 +693,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCListened, NPCSpoke
+        from server.events.event_types import NPCListened, NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
         event_bus.subscribe(NPCListened, capture_communication_events)
@@ -729,7 +729,7 @@ class TestNPCCommunicationIntegration:
     @pytest.mark.asyncio
     async def test_npc_communication_integration_whisper(self, shopkeeper_npc, event_bus):
         """Test NPC communication integration with whisper functionality."""
-        from ..npc.communication_integration import NPCCommunicationIntegration
+        from server.npc.communication_integration import NPCCommunicationIntegration
 
         # Create communication integration
         communication_integration = NPCCommunicationIntegration(event_bus)
@@ -741,7 +741,7 @@ class TestNPCCommunicationIntegration:
             events_received.append(event)
 
         # Subscribe to communication events
-        from ..events.event_types import NPCSpoke
+        from server.events.event_types import NPCSpoke
 
         event_bus.subscribe(NPCSpoke, capture_communication_events)
 
@@ -1013,15 +1013,15 @@ class TestNPCEventReactionSystem:
     @pytest.fixture
     def event_reaction_system(self, event_bus):
         """Create an event reaction system for testing."""
-        from ..npc.event_reaction_system import NPCEventReactionSystem
+        from server.npc.event_reaction_system import NPCEventReactionSystem
 
         return NPCEventReactionSystem(event_bus)
 
     @pytest.fixture
     def shopkeeper_npc_with_reactions(self, event_bus, event_reaction_system):
         """Create a shopkeeper NPC with event reactions."""
-        from ..models.npc import NPCDefinition
-        from ..npc.behaviors import ShopkeeperNPC
+        from server.models.npc import NPCDefinition
+        from server.npc.behaviors import ShopkeeperNPC
 
         definition = NPCDefinition(
             name="Test Shopkeeper",
@@ -1045,8 +1045,8 @@ class TestNPCEventReactionSystem:
 
     def test_register_npc_reactions(self, event_reaction_system):
         """Test registering reactions for an NPC."""
-        from ..events.event_types import PlayerEnteredRoom
-        from ..npc.event_reaction_system import NPCEventReactionTemplates
+        from server.events.event_types import PlayerEnteredRoom
+        from server.npc.event_reaction_system import NPCEventReactionTemplates
 
         # Create a simple reaction
         reaction = NPCEventReactionTemplates.player_entered_room_greeting("test_npc", "Hello!")
@@ -1062,7 +1062,7 @@ class TestNPCEventReactionSystem:
 
     def test_unregister_npc_reactions(self, event_reaction_system):
         """Test unregistering reactions for an NPC."""
-        from ..npc.event_reaction_system import NPCEventReactionTemplates
+        from server.npc.event_reaction_system import NPCEventReactionTemplates
 
         # Register a reaction
         reaction = NPCEventReactionTemplates.player_entered_room_greeting("test_npc", "Hello!")
@@ -1073,7 +1073,7 @@ class TestNPCEventReactionSystem:
 
         # Check that it was unregistered
         assert "test_npc" not in event_reaction_system._npc_reactions
-        from ..events.event_types import PlayerEnteredRoom
+        from server.events.event_types import PlayerEnteredRoom
 
         assert "test_npc" not in event_reaction_system._event_subscriptions[PlayerEnteredRoom]
 
@@ -1082,7 +1082,7 @@ class TestNPCEventReactionSystem:
         self, event_bus, event_reaction_system, shopkeeper_npc_with_reactions
     ):
         """Test that NPCs react when players enter their room."""
-        from ..events.event_types import PlayerEnteredRoom
+        from server.events.event_types import PlayerEnteredRoom
 
         events_received = []
 
@@ -1113,8 +1113,8 @@ class TestNPCEventReactionSystem:
 
     def test_npc_reaction_priority_system(self, event_reaction_system):
         """Test that NPC reactions are executed in priority order."""
-        from ..events.event_types import PlayerEnteredRoom
-        from ..npc.event_reaction_system import NPCEventReaction
+        from server.events.event_types import PlayerEnteredRoom
+        from server.npc.event_reaction_system import NPCEventReaction
 
         # Create reactions with different priorities
         low_priority_reaction = NPCEventReaction(
@@ -1142,8 +1142,8 @@ class TestNPCEventReactionSystem:
     @pytest.mark.asyncio
     async def test_npc_reaction_cooldown_system(self, event_bus, event_reaction_system):
         """Test that NPC reactions have cooldown periods."""
-        from ..events.event_types import PlayerEnteredRoom
-        from ..npc.event_reaction_system import NPCEventReaction
+        from server.events.event_types import PlayerEnteredRoom
+        from server.npc.event_reaction_system import NPCEventReaction
 
         reaction_count = 0
 
@@ -1175,7 +1175,7 @@ class TestNPCEventReactionSystem:
 
     def test_npc_reaction_stats(self, event_reaction_system):
         """Test getting NPC reaction statistics."""
-        from ..npc.event_reaction_system import NPCEventReactionTemplates
+        from server.npc.event_reaction_system import NPCEventReactionTemplates
 
         # Register reactions
         greeting_reaction = NPCEventReactionTemplates.player_entered_room_greeting("test_npc", "Hello!")
@@ -1198,8 +1198,8 @@ class TestNPCEventReactionSystem:
 
     def test_npc_reaction_templates(self):
         """Test the predefined reaction templates."""
-        from ..events.event_types import NPCAttacked, NPCListened, PlayerEnteredRoom, PlayerLeftRoom
-        from ..npc.event_reaction_system import NPCEventReactionTemplates
+        from server.events.event_types import NPCAttacked, NPCListened, PlayerEnteredRoom, PlayerLeftRoom
+        from server.npc.event_reaction_system import NPCEventReactionTemplates
 
         # Test greeting template
         greeting_reaction = NPCEventReactionTemplates.player_entered_room_greeting("test_npc", "Hello!")
@@ -1223,8 +1223,8 @@ class TestNPCEventReactionSystem:
 
     def test_npc_automatic_reaction_registration(self, event_bus, event_reaction_system):
         """Test that NPCs automatically register reactions when created with reaction system."""
-        from ..models.npc import NPCDefinition
-        from ..npc.behaviors import ShopkeeperNPC
+        from server.models.npc import NPCDefinition
+        from server.npc.behaviors import ShopkeeperNPC
 
         definition = NPCDefinition(
             name="Test Shopkeeper",

@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from ..exceptions import (
+from server.exceptions import (
     AuthenticationError,
     DatabaseError,
     ErrorContext,
@@ -25,7 +25,7 @@ from ..exceptions import (
     create_error_context,
     handle_exception,
 )
-from ..legacy_error_handlers import (
+from server.legacy_error_handlers import (
     CircuitBreaker,
     ErrorResponse,
     _get_status_code_for_error,
@@ -258,7 +258,7 @@ class TestErrorResponse:
 
     def test_error_response_to_dict(self):
         """Test converting ErrorResponse to dictionary."""
-        from ..error_types import ErrorType
+        from server.error_types import ErrorType
 
         response = ErrorResponse(
             error_type=ErrorType.INTERNAL_ERROR, message="Test message", details={"detail": "value"}
@@ -272,7 +272,7 @@ class TestErrorResponse:
 
     def test_error_response_to_response(self):
         """Test converting ErrorResponse to FastAPI JSONResponse."""
-        from ..error_types import ErrorType
+        from server.error_types import ErrorType
 
         response = ErrorResponse(error_type=ErrorType.INTERNAL_ERROR, message="Test message", status_code=400)
 

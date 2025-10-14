@@ -30,8 +30,7 @@ from server.events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-
-from .conftest import TestingAsyncMixin
+from server.tests.conftest import TestingAsyncMixin
 
 
 class TestEventTypes:

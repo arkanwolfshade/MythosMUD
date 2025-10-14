@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ..models.room import Room
+from server.models.room import Room
 
 
 class TestMovementIntegration:

@@ -9,9 +9,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
-from ..models import Player
-from ..models.room import Room
+from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+from server.models import Player
+from server.models.room import Room
 
 
 class TestMultiplayerIntegration:
@@ -20,21 +20,21 @@ class TestMultiplayerIntegration:
     @pytest.fixture
     def event_bus(self):
         """Create a test event bus."""
-        from ..events import EventBus
+        from server.events import EventBus
 
         return EventBus()
 
     @pytest.fixture
     def connection_manager(self, event_bus):
         """Create a test connection manager."""
-        from ..realtime.connection_manager import ConnectionManager
+        from server.realtime.connection_manager import ConnectionManager
 
         return ConnectionManager(event_publisher=event_bus)
 
     @pytest.fixture
     def event_handler(self, event_bus, connection_manager):
         """Create a test event handler."""
-        from ..realtime.event_handler import RealTimeEventHandler
+        from server.realtime.event_handler import RealTimeEventHandler
 
         handler = RealTimeEventHandler(event_bus)
         handler.connection_manager = connection_manager

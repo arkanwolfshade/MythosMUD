@@ -10,7 +10,7 @@ Following the security protocols outlined in the Arkham Security Manual.
 import pytest
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
+from server.app.factory import create_app
 
 
 class TestSecurityHeadersVerification:

@@ -11,12 +11,14 @@ from unittest.mock import Mock, patch
 import pytest
 
 from server.exceptions import RateLimitError
+from server.services.rate_limiter import RateLimiter, rate_limiter
+from server.utils.rate_limiter import (
+    RateLimiter as UtilsRateLimiter,
+)
 from server.utils.rate_limiter import (
     character_creation_limiter,
     stats_roll_limiter,
 )
-
-from ..services.rate_limiter import RateLimiter, rate_limiter
 
 
 class TestRateLimiter:
@@ -576,7 +578,7 @@ class TestRateLimiterInitialization:
 
     def test_default_initialization(self):
         """Test rate limiter initializes with default values."""
-        limiter = RateLimiter()
+        limiter = UtilsRateLimiter()
 
         assert limiter.max_requests == 10
         assert limiter.window_seconds == 60
@@ -584,7 +586,7 @@ class TestRateLimiterInitialization:
 
     def test_custom_initialization(self):
         """Test rate limiter initializes with custom values."""
-        limiter = RateLimiter(max_requests=5, window_seconds=30)
+        limiter = UtilsRateLimiter(max_requests=5, window_seconds=30)
 
         assert limiter.max_requests == 5
         assert limiter.window_seconds == 30
@@ -595,7 +597,7 @@ class TestRateLimitChecking:
 
     def test_check_rate_limit_first_request(self):
         """Test first request is always allowed."""
-        limiter = RateLimiter(max_requests=5)
+        limiter = UtilsRateLimiter(max_requests=5)
 
         result = limiter.check_rate_limit("user1")
 
@@ -604,7 +606,7 @@ class TestRateLimitChecking:
 
     def test_check_rate_limit_within_limit(self):
         """Test requests within limit are allowed."""
-        limiter = RateLimiter(max_requests=3)
+        limiter = UtilsRateLimiter(max_requests=3)
 
         # Make 3 requests (all should succeed)
         assert limiter.check_rate_limit("user1") is True
@@ -615,7 +617,7 @@ class TestRateLimitChecking:
 
     def test_check_rate_limit_at_limit(self):
         """Test request at exactly the limit is denied."""
-        limiter = RateLimiter(max_requests=3)
+        limiter = UtilsRateLimiter(max_requests=3)
 
         # Make 3 requests (all should succeed)
         for _ in range(3):
@@ -626,7 +628,7 @@ class TestRateLimitChecking:
 
     def test_check_rate_limit_old_requests_cleaned(self):
         """Test old requests are cleaned up from the window."""
-        limiter = RateLimiter(max_requests=2, window_seconds=1)
+        limiter = UtilsRateLimiter(max_requests=2, window_seconds=1)
 
         # Make 2 requests (fill the limit)
         limiter.check_rate_limit("user1")
@@ -640,7 +642,7 @@ class TestRateLimitChecking:
 
     def test_check_rate_limit_multiple_users_independent(self):
         """Test rate limits are independent per user."""
-        limiter = RateLimiter(max_requests=2)
+        limiter = UtilsRateLimiter(max_requests=2)
 
         # Fill limit for user1
         limiter.check_rate_limit("user1")
@@ -658,7 +660,7 @@ class TestGetRateLimitInfo:
 
     def test_get_rate_limit_info_no_requests(self):
         """Test getting info when no requests made."""
-        limiter = RateLimiter(max_requests=10, window_seconds=60)
+        limiter = UtilsRateLimiter(max_requests=10, window_seconds=60)
 
         info = limiter.get_rate_limit_info("user1")
 
@@ -671,7 +673,7 @@ class TestGetRateLimitInfo:
 
     def test_get_rate_limit_info_with_requests(self):
         """Test getting info with active requests."""
-        limiter = RateLimiter(max_requests=10, window_seconds=60)
+        limiter = UtilsRateLimiter(max_requests=10, window_seconds=60)
 
         # Make some requests
         limiter.check_rate_limit("user1")
@@ -687,7 +689,7 @@ class TestGetRateLimitInfo:
 
     def test_get_rate_limit_info_retry_after(self):
         """Test retry_after calculation."""
-        limiter = RateLimiter(max_requests=2, window_seconds=10)
+        limiter = UtilsRateLimiter(max_requests=2, window_seconds=10)
 
         # Fill the limit
         limiter.check_rate_limit("user1")
@@ -704,14 +706,14 @@ class TestEnforceRateLimit:
 
     def test_enforce_rate_limit_allows_request(self):
         """Test enforce allows request when within limit."""
-        limiter = RateLimiter(max_requests=5)
+        limiter = UtilsRateLimiter(max_requests=5)
 
         # Should not raise exception
         limiter.enforce_rate_limit("user1")
 
     def test_enforce_rate_limit_raises_on_exceed(self):
         """Test enforce raises RateLimitError when limit exceeded."""
-        limiter = RateLimiter(max_requests=2)
+        limiter = UtilsRateLimiter(max_requests=2)
 
         # Fill the limit
         limiter.enforce_rate_limit("user1")

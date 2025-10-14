@@ -11,8 +11,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ..api.real_time import realtime_router
-from ..realtime.connection_manager import ConnectionManager
+from server.api.real_time import realtime_router
+from server.realtime.connection_manager import ConnectionManager
 
 
 @pytest.fixture

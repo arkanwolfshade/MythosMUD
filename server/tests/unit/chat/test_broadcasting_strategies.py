@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from ..realtime.channel_broadcasting_strategies import (
+from server.realtime.channel_broadcasting_strategies import (
     ChannelBroadcastingStrategy,
     ChannelBroadcastingStrategyFactory,
     GlobalChannelStrategy,
@@ -20,7 +20,7 @@ from ..realtime.channel_broadcasting_strategies import (
     WhisperChannelStrategy,
     channel_strategy_factory,
 )
-from ..realtime.nats_message_handler import NATSMessageHandler
+from server.realtime.nats_message_handler import NATSMessageHandler
 
 
 class TestChannelBroadcastingStrategies:
@@ -544,7 +544,7 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_with_nats_handler(self, mock_connection_manager):
         """Test that strategies work correctly with NATS handler."""
-        from ..realtime.nats_message_handler import NATSMessageHandler
+        from server.realtime.nats_message_handler import NATSMessageHandler
 
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
@@ -566,7 +566,7 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_global_channel(self, mock_connection_manager):
         """Test that global channel strategy works with NATS handler."""
-        from ..realtime.nats_message_handler import NATSMessageHandler
+        from server.realtime.nats_message_handler import NATSMessageHandler
 
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
@@ -583,7 +583,7 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_whisper_channel(self, mock_connection_manager):
         """Test that whisper channel strategy works with NATS handler."""
-        from ..realtime.nats_message_handler import NATSMessageHandler
+        from server.realtime.nats_message_handler import NATSMessageHandler
 
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
@@ -600,7 +600,7 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_unknown_channel(self, mock_connection_manager):
         """Test that unknown channel strategy works with NATS handler."""
-        from ..realtime.nats_message_handler import NATSMessageHandler
+        from server.realtime.nats_message_handler import NATSMessageHandler
 
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()

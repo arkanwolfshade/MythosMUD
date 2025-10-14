@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..realtime.event_publisher import EventPublisher
+from server.realtime.event_publisher import EventPublisher
 
 
 class TestEventPublisher:

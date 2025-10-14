@@ -9,7 +9,7 @@ As noted in the Pnakotic Manuscripts: "Security must be consistent across all
 gateways, lest the ancient ones find a way through the cracks in our defenses."
 """
 
-from ..validators.security_validator import (
+from server.validators.security_validator import (
     INJECTION_PATTERNS,
     SLASH_COMMANDS,
     comprehensive_sanitize_input,

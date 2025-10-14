@@ -9,9 +9,9 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..events import PlayerEnteredRoom
-from ..realtime.connection_manager import ConnectionManager
-from ..realtime.event_handler import RealTimeEventHandler
+from server.events import PlayerEnteredRoom
+from server.realtime.connection_manager import ConnectionManager
+from server.realtime.event_handler import RealTimeEventHandler
 
 
 class TestSelfMessageBug:
@@ -70,7 +70,10 @@ class TestSelfMessageBug:
     @pytest.mark.asyncio
     async def test_player_left_excludes_self(self, event_handler, connection_manager):
         """Test that PlayerLeftRoom event excludes the leaving player."""
-        from ..events.event_types import PlayerLeftRoom
+        from server.events.event_types import PlayerLeftRoom
+
+        # CRITICAL: Assign the mocked connection manager to the event handler
+        event_handler.connection_manager = connection_manager
 
         # Mock broadcast_to_room for this test
         connection_manager.broadcast_to_room = AsyncMock()
@@ -85,6 +88,26 @@ class TestSelfMessageBug:
         mock_player.name = "TestPlayer"
         connection_manager._get_player = Mock(return_value=mock_player)
 
+        # Mock persistence.get_room for chat logging
+        mock_room = Mock()
+        mock_room.name = "Test Room"
+        connection_manager.persistence = Mock()
+        connection_manager.persistence.get_room = Mock(return_value=mock_room)
+
+        # Mock the room sync service to just pass through the event
+        event_handler.room_sync_service._process_event_with_ordering = Mock(return_value=event)
+
+        # Mock the chat logger to avoid errors
+        event_handler.chat_logger.log_player_left_room = Mock()
+
+        # Mock _send_room_occupants_update to avoid errors
+        event_handler._send_room_occupants_update = AsyncMock()
+
+        # Mock _create_player_left_message to return a test message
+        event_handler._create_player_left_message = Mock(
+            return_value={"event_type": "player_left", "player_id": "test_player_123"}
+        )
+
         # Handle the event
         await event_handler._handle_player_left(event)
 
@@ -94,22 +117,28 @@ class TestSelfMessageBug:
         assert call_args[1]["exclude_player"] == "test_player_123"
 
     @pytest.mark.asyncio
-    async def test_broadcast_to_room_excludes_player(self, connection_manager):
+    async def test_broadcast_to_room_excludes_player(self):
         """Test that broadcast_to_room properly excludes the specified player."""
-        # Mock room subscriptions
-        connection_manager.room_subscriptions = {"test_room": {"player1", "player2", "player3"}}
+        # Create a fresh connection manager without broadcast_to_room mocked
+        cm = ConnectionManager()
+        cm.send_personal_message = AsyncMock()
+
+        # Mock room_manager to return subscribers
+        mock_room_manager = Mock()
+        mock_room_manager.get_room_subscribers = Mock(return_value={"player1", "player2", "player3"})
+        cm.room_manager = mock_room_manager
 
         # Create a test event
         test_event = {"event_type": "test", "data": "test"}
 
         # Broadcast to room with exclude_player
-        await connection_manager.broadcast_to_room("test_room", test_event, exclude_player="player2")
+        await cm.broadcast_to_room("test_room", test_event, exclude_player="player2")
 
         # Verify send_personal_message was called for all players except player2
-        assert connection_manager.send_personal_message.call_count == 2
+        assert cm.send_personal_message.call_count == 2
 
         # Get the calls
-        calls = connection_manager.send_personal_message.call_args_list
+        calls = cm.send_personal_message.call_args_list
         player_ids_sent_to = [call[0][0] for call in calls]
 
         # Should have sent to player1 and player3, but not player2
@@ -118,22 +147,28 @@ class TestSelfMessageBug:
         assert "player2" not in player_ids_sent_to
 
     @pytest.mark.asyncio
-    async def test_broadcast_to_room_no_exclude(self, connection_manager):
+    async def test_broadcast_to_room_no_exclude(self):
         """Test that broadcast_to_room sends to all players when no exclude_player."""
-        # Mock room subscriptions
-        connection_manager.room_subscriptions = {"test_room": {"player1", "player2", "player3"}}
+        # Create a fresh connection manager without broadcast_to_room mocked
+        cm = ConnectionManager()
+        cm.send_personal_message = AsyncMock()
+
+        # Mock room_manager to return subscribers
+        mock_room_manager = Mock()
+        mock_room_manager.get_room_subscribers = Mock(return_value={"player1", "player2", "player3"})
+        cm.room_manager = mock_room_manager
 
         # Create a test event
         test_event = {"event_type": "test", "data": "test"}
 
         # Broadcast to room without exclude_player
-        await connection_manager.broadcast_to_room("test_room", test_event)
+        await cm.broadcast_to_room("test_room", test_event)
 
         # Verify send_personal_message was called for all players
-        assert connection_manager.send_personal_message.call_count == 3
+        assert cm.send_personal_message.call_count == 3
 
         # Get the calls
-        calls = connection_manager.send_personal_message.call_args_list
+        calls = cm.send_personal_message.call_args_list
         player_ids_sent_to = [call[0][0] for call in calls]
 
         # Should have sent to all players

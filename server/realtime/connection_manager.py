@@ -283,7 +283,9 @@ class ConnectionManager:
 
     async def unsubscribe_from_room(self, player_id: str, room_id: str):
         """Unsubscribe a player from a room (compatibility method)."""
-        return self.room_manager.unsubscribe_from_room(player_id, room_id)
+        # Resolve canonical room ID first (must match subscribe_to_room behavior)
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        return self.room_manager.unsubscribe_from_room(player_id, canonical_id)
 
     def _canonical_room_id(self, room_id: str | None) -> str | None:
         """Resolve a room id to the canonical Room.id value (compatibility method)."""

@@ -15,7 +15,7 @@ from unittest.mock import AsyncMock
 import pytest
 from fastapi.testclient import TestClient
 
-from ..app.factory import create_app
+from server.app.factory import create_app
 
 
 class TestComprehensiveIntegration:

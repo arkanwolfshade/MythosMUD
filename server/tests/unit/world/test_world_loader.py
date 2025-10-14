@@ -8,7 +8,8 @@ from server.world_loader import load_rooms
 def test_load_rooms():
     """Test loading rooms from the unit_test environment."""
     # Configure path to unit_test environment rooms
-    project_root = Path(__file__).parent.parent.parent
+    # Path: server/tests/unit/world/test_world_loader.py -> project root
+    project_root = Path(__file__).parent.parent.parent.parent.parent
     unit_test_rooms_path = project_root / "data" / "unit_test" / "rooms"
 
     # Temporarily patch ROOMS_BASE_PATH to use unit_test environment
@@ -34,7 +35,8 @@ def test_load_rooms():
 def test_loader_as_script(capsys):
     """Test that world_loader can be run as a script."""
     # Configure path to unit_test environment rooms
-    project_root = Path(__file__).parent.parent.parent
+    # Path: server/tests/unit/world/test_world_loader.py -> project root
+    project_root = Path(__file__).parent.parent.parent.parent.parent
     unit_test_rooms_path = project_root / "data" / "unit_test" / "rooms"
 
     # Temporarily patch ROOMS_BASE_PATH to use unit_test environment

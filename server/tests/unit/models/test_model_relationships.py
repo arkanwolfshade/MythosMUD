@@ -2,10 +2,10 @@
 
 import pytest
 
-from ..models.invite import Invite
-from ..models.player import Player
-from ..models.relationships import setup_relationships
-from ..models.user import User
+from server.models.invite import Invite
+from server.models.player import Player
+from server.models.relationships import setup_relationships
+from server.models.user import User
 
 
 class TestModelsRelationships:
@@ -137,7 +137,7 @@ class TestModelsRelationships:
 
     def test_relationships_import_structure(self):
         """Test that all necessary imports are available in the relationships module."""
-        from ..models.relationships import setup_relationships
+        from server.models.relationships import setup_relationships
 
         # Test that we can import the function
         assert setup_relationships is not None
@@ -180,8 +180,8 @@ class TestModelsRelationships:
         # Check that the module has proper docstring by reading the file
         from pathlib import Path
 
-        # Get the path to the relationships module
-        relationships_path = Path(__file__).parent.parent / "models" / "relationships.py"
+        # Get the path to the relationships module (in server/models, not tests)
+        relationships_path = Path(__file__).parent.parent.parent.parent / "models" / "relationships.py"
 
         # Read the file content
         content = relationships_path.read_text(encoding="utf-8")
@@ -193,10 +193,10 @@ class TestModelsRelationships:
     def test_relationships_imports_work(self):
         """Test that all necessary imports work correctly."""
         # Test that we can import all the required modules
-        from ..models.invite import Invite
-        from ..models.player import Player
-        from ..models.relationships import setup_relationships
-        from ..models.user import User
+        from server.models.invite import Invite
+        from server.models.player import Player
+        from server.models.relationships import setup_relationships
+        from server.models.user import User
 
         # Test that all imports are successful
         assert setup_relationships is not None

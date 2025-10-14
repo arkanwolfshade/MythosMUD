@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from ..services.chat_logger import ChatLogger
+from server.services.chat_logger import ChatLogger
 
 
 class TestGlobalChannelLogging:

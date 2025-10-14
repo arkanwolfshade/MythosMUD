@@ -10,8 +10,8 @@ implementation of those systems.
 
 from datetime import datetime
 
-from ..models.alias import Alias
-from ..models.game import AttributeType, Player, Stats, StatusEffect, StatusEffectType
+from server.models.alias import Alias
+from server.models.game import AttributeType, Player, Stats, StatusEffect, StatusEffectType
 
 # Note: Item, InventoryItem, and NPC models have not been implemented yet.
 # Tests for these models are commented out pending implementation.

@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
-from ..models import Alias
+from server.models import Alias
 
 
 class TestAliasModel:

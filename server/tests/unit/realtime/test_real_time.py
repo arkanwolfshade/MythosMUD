@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import WebSocket
 
-from ..realtime.connection_manager import connection_manager
+from server.realtime.connection_manager import connection_manager
 
 
 class TestConnectionManager:
@@ -29,6 +29,8 @@ class TestConnectionManager:
         self.manager.pending_messages.clear()
         self.manager.connection_attempts.clear()
         self.manager.persistence = None
+        # Also clear the room_manager's persistence to ensure canonical_room_id works correctly
+        self.manager.room_manager.persistence = None
 
         self.mock_websocket = AsyncMock(spec=WebSocket)
         self.player_id = "test_player"
@@ -161,12 +163,26 @@ class TestConnectionManager:
     async def test_unsubscribe_from_room(self):
         """Test room unsubscription."""
         # First subscribe
-        await self.manager.subscribe_to_room(self.player_id, self.room_id)
+        subscribe_result = await self.manager.subscribe_to_room(self.player_id, self.room_id)
+        assert subscribe_result is True, "Subscribe should succeed"
+        assert self.room_id in self.manager.room_subscriptions, "Room should be in subscriptions after subscribe"
+        assert self.player_id in self.manager.room_subscriptions[self.room_id], (
+            "Player should be in room after subscribe"
+        )
 
         # Then unsubscribe
-        await self.manager.unsubscribe_from_room(self.player_id, self.room_id)
+        unsubscribe_result = await self.manager.unsubscribe_from_room(self.player_id, self.room_id)
+        # The result should be truthy (True or AsyncMock that's been called)
+        # Don't strictly enforce type to allow for test mocking scenarios
+        assert unsubscribe_result or unsubscribe_result is None, (
+            f"Unsubscribe should succeed, got: {unsubscribe_result}"
+        )
 
-        assert self.room_id not in self.manager.room_subscriptions
+        # After unsubscribing the only player, the room entry should be removed
+        assert self.room_id not in self.manager.room_subscriptions, (
+            f"Room should not be in subscriptions after unsubscribe. "
+            f"Current subscriptions: {self.manager.room_subscriptions}"
+        )
 
     def test_get_next_sequence(self):
         """Test sequence number generation."""

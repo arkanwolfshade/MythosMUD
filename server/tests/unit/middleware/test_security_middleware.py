@@ -13,7 +13,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.testclient import TestClient
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from ..app.factory import create_app
+from server.app.factory import create_app
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):

@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..game.chat_service import ChatMessage, ChatService
+from server.game.chat_service import ChatMessage, ChatService
 
 
 class TestChatMessage:

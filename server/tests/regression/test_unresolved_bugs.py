@@ -30,7 +30,7 @@ class TestSelfMessageExclusionBugs:
     @pytest.fixture
     def connection_manager(self):
         """Create a connection manager for testing."""
-        from ..realtime.connection_manager import ConnectionManager
+        from server.realtime.connection_manager import ConnectionManager
 
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
@@ -39,8 +39,8 @@ class TestSelfMessageExclusionBugs:
     @pytest.fixture
     def event_handler(self, connection_manager):
         """Create an event handler for testing."""
-        from ..events.event_bus import EventBus
-        from ..realtime.event_handler import RealTimeEventHandler
+        from server.events.event_bus import EventBus
+        from server.realtime.event_handler import RealTimeEventHandler
 
         event_bus = EventBus()
         event_handler = RealTimeEventHandler(event_bus)
@@ -70,6 +70,17 @@ class TestSelfMessageExclusionBugs:
         mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+
+        # Mock room sync service to pass through the event
+        event_handler.room_sync_service._process_event_with_ordering = Mock(
+            return_value=PlayerLeftRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="player_left")
+        )
+
+        # Mock chat logger
+        event_handler.chat_logger.log_player_left_room = Mock()
+
+        # Mock _send_room_occupants_update
+        event_handler._send_room_occupants_update = AsyncMock()
 
         # Create and handle a PlayerLeftRoomEvent
         event = PlayerLeftRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")
@@ -117,6 +128,19 @@ class TestSelfMessageExclusionBugs:
         mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+
+        # Mock room sync service to pass through the event
+        event_handler.room_sync_service._process_event_with_ordering = Mock(
+            return_value=PlayerEnteredRoom(
+                player_id=player_id, room_id=room_id, timestamp=None, event_type="player_entered"
+            )
+        )
+
+        # Mock chat logger
+        event_handler.chat_logger.log_player_joined_room = Mock()
+
+        # Mock _send_room_occupants_update
+        event_handler._send_room_occupants_update = AsyncMock()
 
         # Create and handle a PlayerEnteredRoomEvent
         event = PlayerEnteredRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")

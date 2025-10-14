@@ -13,8 +13,8 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from ..commands.command_service import CommandService
-from ..game.chat_service import ChatService
+from server.commands.command_service import CommandService
+from server.game.chat_service import ChatService
 
 
 class TestSystemChannelIntegration:

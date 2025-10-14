@@ -11,11 +11,11 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..exceptions import DatabaseError
-from ..exceptions import ValidationError as CustomValidationError
-from ..game.player_service import PlayerService
-from ..models import Stats
-from ..schemas.player import PlayerRead
+from server.exceptions import DatabaseError
+from server.exceptions import ValidationError as CustomValidationError
+from server.game.player_service import PlayerService
+from server.models import Stats
+from server.schemas.player import PlayerRead
 
 
 @pytest.mark.asyncio

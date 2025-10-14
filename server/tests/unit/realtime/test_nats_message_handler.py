@@ -11,9 +11,8 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
+from server.realtime.nats_message_handler import NATSMessageHandler, get_nats_message_handler
 from server.services.nats_service import NATSService
-
-from ..realtime.nats_message_handler import NATSMessageHandler, get_nats_message_handler
 
 
 class TestNATSMessageHandler:

@@ -11,9 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import FastAPI
 
-from server.app.lifespan import TICK_INTERVAL, game_tick_loop
-
-from ..app.lifespan import lifespan
+from server.app.lifespan import TICK_INTERVAL, game_tick_loop, lifespan
 
 
 class TestTickIntervalConstant:

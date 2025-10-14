@@ -21,10 +21,9 @@ from server.command_handler_unified import (
     normalize_command,
     process_command,
 )
-
-from ..exceptions import ValidationError
-from ..middleware.command_rate_limiter import command_rate_limiter
-from ..models.room import Room
+from server.exceptions import ValidationError
+from server.middleware.command_rate_limiter import command_rate_limiter
+from server.models.room import Room
 
 
 class TestCommunicationCommands:

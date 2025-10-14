@@ -12,9 +12,9 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
-from ..game.chat_service import ChatService
-from ..game.player_service import PlayerService
-from ..realtime.nats_message_handler import NATSMessageHandler
+from server.game.chat_service import ChatService
+from server.game.player_service import PlayerService
+from server.realtime.nats_message_handler import NATSMessageHandler
 
 
 class TestEmoteMuteFiltering:

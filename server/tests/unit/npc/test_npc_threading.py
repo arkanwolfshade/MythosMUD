@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ..logging_config import get_logger
+from server.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -26,7 +26,7 @@ class TestNPCMessageQueue:
     @pytest.fixture
     def mock_npc_message_queue(self):
         """Create a mock NPC message queue for testing."""
-        from ..npc.threading import NPCMessageQueue
+        from server.npc.threading import NPCMessageQueue
 
         queue = NPCMessageQueue()
         return queue
@@ -131,7 +131,7 @@ class TestNPCThreadManager:
     @pytest.fixture
     def mock_npc_thread_manager(self):
         """Create a mock NPC thread manager for testing."""
-        from ..npc.threading import NPCThreadManager
+        from server.npc.threading import NPCThreadManager
 
         manager = NPCThreadManager()
         return manager
@@ -241,7 +241,7 @@ class TestNPCActionMessageTypes:
 
     def test_move_action_message(self):
         """Test move action message creation and serialization."""
-        from ..npc.threading import NPCActionMessage, NPCActionType
+        from server.npc.threading import NPCActionMessage, NPCActionType
 
         message = NPCActionMessage(
             action_type=NPCActionType.MOVE,
@@ -265,7 +265,7 @@ class TestNPCActionMessageTypes:
 
     def test_attack_action_message(self):
         """Test attack action message creation and serialization."""
-        from ..npc.threading import NPCActionMessage, NPCActionType
+        from server.npc.threading import NPCActionMessage, NPCActionType
 
         message = NPCActionMessage(
             action_type=NPCActionType.ATTACK,
@@ -287,7 +287,7 @@ class TestNPCActionMessageTypes:
 
     def test_speak_action_message(self):
         """Test speak action message creation and serialization."""
-        from ..npc.threading import NPCActionMessage, NPCActionType
+        from server.npc.threading import NPCActionMessage, NPCActionType
 
         message = NPCActionMessage(
             action_type=NPCActionType.SPEAK,
@@ -309,7 +309,7 @@ class TestNPCActionMessageTypes:
 
     def test_json_serialization(self):
         """Test JSON serialization and deserialization of action messages."""
-        from ..npc.threading import NPCActionMessage, NPCActionType
+        from server.npc.threading import NPCActionMessage, NPCActionType
 
         message = NPCActionMessage(
             action_type=NPCActionType.MOVE, npc_id="test_npc_1", target_room="room_1", timestamp=time.time()
@@ -332,7 +332,7 @@ class TestNPCThreadSafeCommunication:
     @pytest.fixture
     def mock_communication_bridge(self):
         """Create a mock communication bridge for testing."""
-        from ..npc.threading import NPCCommunicationBridge
+        from server.npc.threading import NPCCommunicationBridge
 
         bridge = NPCCommunicationBridge()
         return bridge
@@ -410,7 +410,7 @@ class TestNPCThreadLifecycleManagement:
     @pytest.fixture
     def mock_npc_lifecycle_manager(self):
         """Create a mock NPC lifecycle manager for testing."""
-        from ..npc.threading import NPCLifecycleManager
+        from server.npc.threading import NPCLifecycleManager
 
         manager = NPCLifecycleManager()
         return manager
@@ -509,7 +509,7 @@ class TestNPCThreadingIntegration:
     @pytest.mark.asyncio
     async def test_full_npc_threading_workflow(self):
         """Test complete NPC threading workflow."""
-        from ..npc.threading import (
+        from server.npc.threading import (
             NPCActionMessage,
             NPCActionType,
             NPCCommunicationBridge,
@@ -567,7 +567,7 @@ class TestNPCThreadingIntegration:
     @pytest.mark.asyncio
     async def test_npc_threading_error_handling(self):
         """Test error handling in NPC threading system."""
-        from ..npc.threading import NPCThreadManager
+        from server.npc.threading import NPCThreadManager
 
         thread_manager = NPCThreadManager()
 
@@ -587,7 +587,7 @@ class TestNPCThreadingIntegration:
     @pytest.mark.asyncio
     async def test_npc_threading_performance(self):
         """Test NPC threading system performance."""
-        from ..npc.threading import NPCMessageQueue, NPCThreadManager
+        from server.npc.threading import NPCMessageQueue, NPCThreadManager
 
         thread_manager = NPCThreadManager()
         message_queue = NPCMessageQueue()

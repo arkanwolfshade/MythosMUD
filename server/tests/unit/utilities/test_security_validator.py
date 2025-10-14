@@ -7,7 +7,7 @@ Focuses on testing sanitization (cleaning) rather than validation (rejection)
 to ensure user expression freedom is preserved.
 """
 
-from ..validators.security_validator import (
+from server.validators.security_validator import (
     INJECTION_PATTERNS,
     comprehensive_sanitize_input,
     sanitize_unicode_input,

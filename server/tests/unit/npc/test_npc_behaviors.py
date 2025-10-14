@@ -14,8 +14,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ..logging_config import get_logger
-from ..models.npc import NPCDefinitionType
+from server.logging_config import get_logger
+from server.models.npc import NPCDefinitionType
 
 logger = get_logger(__name__)
 
@@ -44,7 +44,7 @@ class TestNPCBaseClass:
     @pytest.fixture
     def mock_npc_base(self, mock_npc_definition):
         """Create a mock NPC base instance for testing."""
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         npc = PassiveMobNPC(mock_npc_definition, "test_npc_1")
         return npc
@@ -140,7 +140,8 @@ class TestNPCBaseClass:
     def test_npc_base_movement(self, mock_npc_base):
         """Test NPC movement functionality."""
         new_room = "earth_arkhamcity_downtown_room_derby_st_002"
-        result = mock_npc_base.move_to_room(new_room)
+        # Use simple movement mode (use_integration=False) to avoid dependency on persistence/event bus
+        result = mock_npc_base.move_to_room(new_room, use_integration=False)
         assert result is True
         assert mock_npc_base.current_room == new_room
 
@@ -164,7 +165,7 @@ class TestNPCBaseClass:
 
     def test_npc_base_deserialization(self, mock_npc_definition):
         """Test NPC base deserialization from persistence."""
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         # Create initial NPC
         npc = PassiveMobNPC(mock_npc_definition, "test_npc_1")
@@ -187,7 +188,7 @@ class TestBehaviorEngine:
     @pytest.fixture
     def mock_behavior_engine(self):
         """Create a mock behavior engine for testing."""
-        from ..npc.behaviors import BehaviorEngine
+        from server.npc.behaviors import BehaviorEngine
 
         engine = BehaviorEngine()
         return engine
@@ -378,7 +379,7 @@ class TestShopkeeperNPC:
     @pytest.fixture
     def mock_shopkeeper(self, mock_shopkeeper_definition):
         """Create a mock shopkeeper NPC instance."""
-        from ..npc.behaviors import ShopkeeperNPC
+        from server.npc.behaviors import ShopkeeperNPC
 
         shopkeeper = ShopkeeperNPC(mock_shopkeeper_definition, "shopkeeper_1")
         return shopkeeper
@@ -471,7 +472,7 @@ class TestPassiveMobNPC:
     @pytest.fixture
     def mock_passive_mob(self, mock_passive_mob_definition):
         """Create a mock passive mob NPC instance."""
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         passive_mob = PassiveMobNPC(mock_passive_mob_definition, "passive_mob_1")
         return passive_mob
@@ -535,7 +536,7 @@ class TestAggressiveMobNPC:
     @pytest.fixture
     def mock_aggressive_mob(self, mock_aggressive_mob_definition):
         """Create a mock aggressive mob NPC instance."""
-        from ..npc.behaviors import AggressiveMobNPC
+        from server.npc.behaviors import AggressiveMobNPC
 
         aggressive_mob = AggressiveMobNPC(mock_aggressive_mob_definition, "aggressive_mob_1")
         return aggressive_mob
@@ -617,7 +618,7 @@ class TestAIIntegrationStubs:
     @pytest.fixture
     def mock_ai_npc(self, mock_ai_npc_definition):
         """Create a mock NPC with AI integration."""
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         ai_npc = PassiveMobNPC(mock_ai_npc_definition, "ai_npc_1")
         return ai_npc
@@ -652,7 +653,7 @@ class TestNPCBehaviorIntegration:
     @pytest.mark.asyncio
     async def test_npc_behavior_workflow(self):
         """Test complete NPC behavior workflow."""
-        from ..npc.behaviors import ShopkeeperNPC
+        from server.npc.behaviors import ShopkeeperNPC
 
         # Create NPC definition
         npc_def = MagicMock()
@@ -686,7 +687,7 @@ class TestNPCBehaviorIntegration:
     @pytest.mark.asyncio
     async def test_npc_behavior_performance(self):
         """Test NPC behavior system performance."""
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         # Create multiple NPCs
         npc_count = 10
@@ -730,7 +731,7 @@ class TestNPCBehaviorIntegration:
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
 
         # Should handle invalid configuration gracefully
-        from ..npc.behaviors import PassiveMobNPC
+        from server.npc.behaviors import PassiveMobNPC
 
         npc = PassiveMobNPC(npc_def, "error_npc")
         assert npc is not None

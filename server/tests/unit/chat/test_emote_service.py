@@ -15,8 +15,8 @@ from unittest.mock import patch
 
 import pytest
 
-from ..exceptions import ValidationError
-from ..game.emote_service import EmoteService
+from server.exceptions import ValidationError
+from server.game.emote_service import EmoteService
 
 
 class TestEmoteService:

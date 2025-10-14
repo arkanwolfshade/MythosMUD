@@ -10,7 +10,7 @@ to maintaining the integrity of our digital realm against the chaos of the outer
 
 import pytest
 
-from ..validators.security_validator import (
+from server.validators.security_validator import (
     check_dangerous_characters,
     check_injection_patterns,
     get_dangerous_characters,
