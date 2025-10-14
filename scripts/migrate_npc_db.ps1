@@ -42,7 +42,8 @@ Write-Host "Checking current schema..." -ForegroundColor Yellow
 $currentSchema = sqlite3 $dbPath "PRAGMA table_info(npc_spawn_rules);"
 if ($currentSchema -match "min_players") {
     Write-Host "✓ Found old schema with min_players/max_players columns" -ForegroundColor Yellow
-} elseif ($currentSchema -match "min_population") {
+}
+elseif ($currentSchema -match "min_population") {
     Write-Host "⚠️  Database already has min_population/max_population columns" -ForegroundColor Yellow
     Write-Host "Migration may have already been applied" -ForegroundColor Yellow
     $response = Read-Host "Continue anyway? (y/n)"
@@ -50,7 +51,8 @@ if ($currentSchema -match "min_players") {
         Write-Host "Migration cancelled" -ForegroundColor Yellow
         exit 0
     }
-} else {
+}
+else {
     Write-Host "❌ npc_spawn_rules table not found or has unexpected schema" -ForegroundColor Red
     exit 1
 }
@@ -100,7 +102,8 @@ Remove-Item $tempSqlFile -Force
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✓ Migration applied successfully" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "❌ Migration failed" -ForegroundColor Red
     Write-Host "Restoring from backup..." -ForegroundColor Yellow
     Copy-Item $backupPath $dbPath -Force
@@ -114,7 +117,8 @@ Write-Host "Verifying new schema..." -ForegroundColor Yellow
 $newSchema = sqlite3 $dbPath "PRAGMA table_info(npc_spawn_rules);"
 if ($newSchema -match "min_population") {
     Write-Host "✓ Schema verified: min_population/max_population columns present" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "❌ Schema verification failed" -ForegroundColor Red
     Write-Host "Restoring from backup..." -ForegroundColor Yellow
     Copy-Item $backupPath $dbPath -Force

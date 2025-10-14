@@ -76,7 +76,7 @@ def main():
         "-e",
         default="local",
         choices=["local", "e2e_test", "unit_test"],
-        help="Environment to migrate (default: local)"
+        help="Environment to migrate (default: local)",
     )
     args = parser.parse_args()
 
