@@ -65,7 +65,8 @@ class TestServiceDependencyInjection:
             from pathlib import Path
 
             # Get project root for absolute path (server/tests/test_*.py -> project root)
-            project_root = Path(__file__).parent.parent.parent
+            # Path: server/tests/unit/services/test_dependency_injection.py -> server/tests/unit/services -> server/tests/unit -> server/tests -> server -> project root
+            project_root = Path(__file__).parent.parent.parent.parent.parent
             app.state.user_manager = UserManager(data_dir=project_root / "data" / "unit_test" / "user_management")
             app.state.event_handler = get_real_time_event_handler()
             app.state.event_bus = app.state.event_handler.event_bus
