@@ -2,6 +2,36 @@
 
 This directory contains the test suite for MythosMUD, including test data and database setup.
 
+## 📋 Test Suite Refactoring
+
+**Important:** The test suite is undergoing a major reorganization to improve maintainability and discoverability.
+
+### Documentation
+- 📖 [Test Refactoring Summary](../../docs/TEST_REFACTORING_SUMMARY.md) - Executive overview
+- 🗺️ [Test Suite Refactoring Plan](../../docs/TEST_SUITE_REFACTORING_PLAN.md) - Complete strategy
+- 📍 [Test Migration Mapping](../../docs/TEST_MIGRATION_MAPPING.md) - File-by-file mapping
+- 🧭 [Test Organization Guide](./TEST_ORGANIZATION_GUIDE.md) - Quick reference for developers
+
+### Tools
+- 📊 [Migration Tracking Script](./scripts/track_migration.py) - Track refactoring progress
+
+```bash
+# Show migration summary
+python server/tests/scripts/track_migration.py
+
+# Show detailed status
+python server/tests/scripts/track_migration.py --detailed
+
+# Validate migration
+python server/tests/scripts/track_migration.py --validate
+```
+
+### Quick Reference
+
+**Where should I put a new test?** See the [Test Organization Guide](./TEST_ORGANIZATION_GUIDE.md)
+
+**Current Status:** Migration in progress - see tracking script for latest status
+
 ## Test Database
 
 ### Setup
