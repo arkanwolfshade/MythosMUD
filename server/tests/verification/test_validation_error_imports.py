@@ -11,10 +11,10 @@ for maintaining the delicate balance between order and chaos in our digital real
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
-from ..exceptions import ValidationError as MythosValidationError
-from ..models.command import SayCommand
-from ..utils.command_parser import CommandParser
-from ..utils.command_processor import CommandProcessor
+from server.exceptions import ValidationError as MythosValidationError
+from server.models.command import SayCommand
+from server.utils.command_parser import CommandParser
+from server.utils.command_processor import CommandProcessor
 
 
 class TestValidationErrorImports:

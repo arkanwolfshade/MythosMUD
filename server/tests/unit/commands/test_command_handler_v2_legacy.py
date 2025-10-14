@@ -12,6 +12,8 @@ from unittest.mock import Mock
 
 import pytest
 
+from server.utils.command_processor import CommandProcessor, get_command_processor
+
 from ..command_handler_unified import (
     CommandRequest,
     clean_command_input,
@@ -19,7 +21,6 @@ from ..command_handler_unified import (
     process_command,
     process_command_unified,
 )
-from ..utils.command_processor import CommandProcessor, get_command_processor
 
 
 class TestCommandHandlerV2:

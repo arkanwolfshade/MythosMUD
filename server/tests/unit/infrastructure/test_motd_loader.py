@@ -9,7 +9,7 @@ import os
 import tempfile
 from unittest.mock import patch
 
-from ..utils.motd_loader import load_motd
+from server.utils.motd_loader import load_motd
 
 
 class TestLoadMotd:

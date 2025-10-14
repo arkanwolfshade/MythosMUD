@@ -7,9 +7,9 @@ command parsing, validation, and execution.
 
 import pytest
 
-from ..exceptions import ValidationError as MythosValidationError
-from ..models.command import CommandType, ReplyCommand, WhisperCommand
-from ..utils.command_parser import parse_command
+from server.exceptions import ValidationError as MythosValidationError
+from server.models.command import CommandType, ReplyCommand, WhisperCommand
+from server.utils.command_parser import parse_command
 
 
 class TestWhisperCommandIntegration:
@@ -143,7 +143,7 @@ class TestWhisperCommandHelp:
 
     def test_whisper_command_help_included(self):
         """Test that whisper command help is included in general help."""
-        from ..utils.command_parser import get_command_help
+        from server.utils.command_parser import get_command_help
 
         help_text = get_command_help()
         assert "whisper <player> <message> - Send private message to player" in help_text
@@ -151,14 +151,14 @@ class TestWhisperCommandHelp:
 
     def test_whisper_command_specific_help(self):
         """Test specific help for whisper command."""
-        from ..utils.command_parser import get_command_help
+        from server.utils.command_parser import get_command_help
 
         help_text = get_command_help("whisper")
         assert "whisper <player> <message> - Send private message to player" in help_text
 
     def test_reply_command_specific_help(self):
         """Test specific help for reply command."""
-        from ..utils.command_parser import get_command_help
+        from server.utils.command_parser import get_command_help
 
         help_text = get_command_help("reply")
         assert "reply <message> - Reply to last whisper received" in help_text

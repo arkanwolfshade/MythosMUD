@@ -7,6 +7,8 @@ This module tests the secure command parsing and validation functionality.
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
+from server.utils.command_parser import CommandParser, get_command_help, parse_command, validate_command_safety
+
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
     AddAdminCommand,
@@ -28,7 +30,6 @@ from ..models.command import (
     UnmuteCommand,
     UnmuteGlobalCommand,
 )
-from ..utils.command_parser import CommandParser, get_command_help, parse_command, validate_command_safety
 
 
 class TestCommandModels:
