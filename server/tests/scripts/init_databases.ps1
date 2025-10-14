@@ -26,8 +26,9 @@ else {
 }
 
 # Create directories if they don't exist
-$prodDir = "../../data/players"
-$testDir = "./tests/data/players"
+# Paths relative to server/tests/scripts/
+$prodDir = "../../../data/players"
+$testDir = "../../../data/unit_test/players"
 
 if (!(Test-Path $prodDir)) {
     New-Item -ItemType Directory -Path $prodDir -Force

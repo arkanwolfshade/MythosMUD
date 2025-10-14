@@ -111,10 +111,10 @@ class NPCSpawnRuleCreate(BaseModel):
     """Model for creating NPC spawn rules."""
 
     npc_definition_id: int = Field(..., gt=0)
-    spawn_probability: float = Field(..., ge=0.0, le=1.0)
-    max_population: int = Field(..., ge=0)
+    sub_zone_id: str = Field(..., min_length=1, max_length=50)
+    min_players: int = Field(default=0, ge=0)
+    max_players: int = Field(default=999, ge=0)
     spawn_conditions: dict[str, Any] = Field(default_factory=dict)
-    required_npc: bool = False
 
 
 class NPCSpawnRuleResponse(BaseModel):
@@ -122,10 +122,10 @@ class NPCSpawnRuleResponse(BaseModel):
 
     id: int
     npc_definition_id: int
-    spawn_probability: float
-    max_population: int
+    sub_zone_id: str
+    min_players: int
+    max_players: int
     spawn_conditions: dict[str, Any]
-    required_npc: bool
 
     @classmethod
     def from_orm(cls, spawn_rule: NPCSpawnRule) -> "NPCSpawnRuleResponse":
@@ -133,12 +133,12 @@ class NPCSpawnRuleResponse(BaseModel):
         return cls(
             id=spawn_rule.id,
             npc_definition_id=spawn_rule.npc_definition_id,
-            spawn_probability=spawn_rule.spawn_probability,
-            max_population=spawn_rule.max_population,
+            sub_zone_id=spawn_rule.sub_zone_id,
+            min_players=spawn_rule.min_players,
+            max_players=spawn_rule.max_players,
             spawn_conditions=json.loads(spawn_rule.spawn_conditions)
             if isinstance(spawn_rule.spawn_conditions, str)
             else spawn_rule.spawn_conditions,
-            required_npc=spawn_rule.required_npc,
         )
 
 

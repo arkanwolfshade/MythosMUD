@@ -3,9 +3,9 @@
 
 Write-Host "Verifying MythosMUD databases..." -ForegroundColor Green
 
-# Database paths
-$prodDb = "../../data/players/players.db"
-$testDb = "./tests/data/players/unit_test_players.db"
+# Database paths (relative to server/tests/scripts/)
+$prodDb = "../../../data/players/players.db"
+$testDb = "../../../data/unit_test/players/unit_test_players.db"
 
 # Required tables
 $requiredTables = @("users", "players", "invites")
