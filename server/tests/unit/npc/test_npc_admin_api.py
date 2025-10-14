@@ -42,6 +42,7 @@ from server.api.admin.npc import (
     update_npc_definition,
     validate_admin_permission,
 )
+from server.exceptions import LoggedHTTPException
 from server.models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 
 
@@ -215,7 +216,13 @@ class TestCreateNPCDefinitionEndpoint:
     @patch("server.api.admin.npc.get_npc_session")
     @patch("server.api.admin.npc.npc_service")
     async def test_create_npc_definition_success(
-        self, mock_npc_service, mock_get_npc_session, mock_get_auth, mock_validate, mock_current_user, sample_npc_definition
+        self,
+        mock_npc_service,
+        mock_get_npc_session,
+        mock_get_auth,
+        mock_validate,
+        mock_current_user,
+        sample_npc_definition,
     ):
         """Test successful NPC definition creation."""
         mock_validate.return_value = None
@@ -311,7 +318,7 @@ class TestUpdateNPCDefinitionEndpoint:
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
     async def test_update_npc_definition_success(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session, sample_npc_definition
+        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, sample_npc_definition
     ):
         """Test successful NPC definition update."""
         mock_validate.return_value = None
@@ -319,6 +326,7 @@ class TestUpdateNPCDefinitionEndpoint:
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
 
+        mock_session = AsyncMock()
         mock_session.commit = AsyncMock()
         mock_npc_service.update_npc_definition = AsyncMock(return_value=sample_npc_definition)
 
@@ -336,7 +344,7 @@ class TestUpdateNPCDefinitionEndpoint:
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
     async def test_update_npc_definition_not_found(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session
+        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user
     ):
         """Test updating non-existent definition."""
         mock_validate.return_value = None
@@ -344,6 +352,7 @@ class TestUpdateNPCDefinitionEndpoint:
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
 
+        mock_session = AsyncMock()
         mock_npc_service.update_npc_definition = AsyncMock(return_value=None)
 
         npc_data = NPCDefinitionUpdate(name="Updated Name")
@@ -364,7 +373,7 @@ class TestDeleteNPCDefinitionEndpoint:
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
     async def test_delete_npc_definition_success(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session
+        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user
     ):
         """Test successful NPC definition deletion."""
         mock_validate.return_value = None
@@ -372,6 +381,7 @@ class TestDeleteNPCDefinitionEndpoint:
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
 
+        mock_session = AsyncMock()
         mock_session.commit = AsyncMock()
         mock_npc_service.delete_npc_definition = AsyncMock(return_value=True)
 
@@ -388,7 +398,7 @@ class TestDeleteNPCDefinitionEndpoint:
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
     async def test_delete_npc_definition_not_found(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session
+        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user
     ):
         """Test deleting non-existent definition."""
         mock_validate.return_value = None
@@ -396,6 +406,7 @@ class TestDeleteNPCDefinitionEndpoint:
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
 
+        mock_session = AsyncMock()
         mock_npc_service.delete_npc_definition = AsyncMock(return_value=False)
 
         with pytest.raises(HTTPException) as exc_info:
@@ -690,14 +701,14 @@ class TestSpawnRulesEndpoints:
     @patch("server.api.admin.npc.validate_admin_permission")
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
-    async def test_get_spawn_rules_success(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session
-    ):
+    async def test_get_spawn_rules_success(self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user):
         """Test successful spawn rules retrieval."""
         mock_validate.return_value = None
         mock_auth_service = MagicMock()
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
+
+        mock_session = AsyncMock()
 
         sample_rule = NPCSpawnRule(
             id=1,
@@ -719,15 +730,14 @@ class TestSpawnRulesEndpoints:
     @patch("server.api.admin.npc.validate_admin_permission")
     @patch("server.api.admin.npc.get_admin_auth_service")
     @patch("server.api.admin.npc.npc_service")
-    async def test_create_spawn_rule_success(
-        self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user, mock_session
-    ):
+    async def test_create_spawn_rule_success(self, mock_npc_service, mock_get_auth, mock_validate, mock_current_user):
         """Test successful spawn rule creation."""
         mock_validate.return_value = None
         mock_auth_service = MagicMock()
         mock_auth_service.get_username.return_value = "testadmin"
         mock_get_auth.return_value = mock_auth_service
 
+        mock_session = AsyncMock()
         mock_session.commit = AsyncMock()
 
         sample_rule = NPCSpawnRule(
@@ -741,7 +751,9 @@ class TestSpawnRulesEndpoints:
 
         mock_npc_service.create_spawn_rule = AsyncMock(return_value=sample_rule)
 
-        spawn_rule_data = NPCSpawnRuleCreate(npc_definition_id=1, spawn_probability=0.5, max_population=5)
+        spawn_rule_data = NPCSpawnRuleCreate(
+            npc_definition_id=1, sub_zone_id="default", spawn_probability=0.5, max_population=5
+        )
 
         result = await create_npc_spawn_rule(
             spawn_rule_data=spawn_rule_data, current_user=mock_current_user, session=mock_session, request=None
@@ -814,10 +826,10 @@ class TestErrorHandling:
     @pytest.mark.asyncio
     @patch("server.api.admin.npc.validate_admin_permission")
     @patch("server.api.admin.npc.get_admin_auth_service")
-    @patch("server.api.admin.npc.get_async_session")
+    @patch("server.api.admin.npc.get_npc_session")
     @patch("server.api.admin.npc.npc_service")
     async def test_endpoint_handles_generic_exceptions(
-        self, mock_npc_service, mock_get_session, mock_get_auth, mock_validate, mock_current_user
+        self, mock_npc_service, mock_get_npc_session, mock_get_auth, mock_validate, mock_current_user
     ):
         """Test endpoints handle generic exceptions."""
         mock_validate.return_value = None
@@ -830,10 +842,10 @@ class TestErrorHandling:
         async def mock_session_generator():
             yield mock_session
 
-        mock_get_session.return_value = mock_session_generator()
+        mock_get_npc_session.return_value = mock_session_generator()
         mock_npc_service.get_npc_definitions = AsyncMock(side_effect=RuntimeError("Database failure"))
 
-        with pytest.raises(RuntimeError, match="Database failure"):
+        with pytest.raises(LoggedHTTPException, match="Error retrieving NPC definitions"):
             await get_npc_definitions(current_user=mock_current_user, request=None)
 
 

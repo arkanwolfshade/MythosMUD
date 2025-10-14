@@ -12,8 +12,8 @@ from pathlib import Path
 def load_npc_schema():
     """Load the NPC test database schema from SQL files."""
 
-    # Get the project root directory (go up from server/tests to project root)
-    project_root = Path(__file__).parent.parent.parent
+    # Get the project root directory (go up from server/tests/scripts to project root)
+    project_root = Path(__file__).parent.parent.parent.parent
     schema_file = project_root / "server" / "sql" / "npc_schema.sql"
 
     if not schema_file.exists():
@@ -25,7 +25,7 @@ def load_npc_schema():
 
 def get_npc_seed_data():
     """Extract seed data from the local NPC database."""
-    project_root = Path(__file__).parent.parent.parent
+    project_root = Path(__file__).parent.parent.parent.parent
     local_db = project_root / "data" / "local" / "npcs" / "local_npcs.db"
 
     if not local_db.exists():
@@ -91,7 +91,7 @@ def init_npc_test_database():
     """Initialize the NPC test database with schema and test data."""
 
     # NPC Test database path - use project root relative path
-    project_root = Path(__file__).parent.parent.parent
+    project_root = Path(__file__).parent.parent.parent.parent
     NPC_TEST_DB_PATH = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
     print(f"Initializing NPC test database at: {NPC_TEST_DB_PATH}")

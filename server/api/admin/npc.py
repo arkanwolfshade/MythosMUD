@@ -23,6 +23,7 @@ from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
 from ...logging_config import get_logger
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from ...npc_database import get_npc_session
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
@@ -167,8 +168,6 @@ async def get_npc_definitions(
         logger.info("NPC definitions requested", context={"user": auth_service.get_username(current_user)})
 
         # Get NPC definitions from database using NPC database session
-        from server.npc_database import get_npc_session
-
         async for npc_session in get_npc_session():
             definitions = await npc_service.get_npc_definitions(npc_session)
             break
@@ -206,8 +205,6 @@ async def create_npc_definition(
         )
 
         # Create NPC definition in database using NPC database session
-        from server.npc_database import get_npc_session
-
         async for npc_session in get_npc_session():
             definition = await npc_service.create_npc_definition(
                 session=npc_session,
@@ -254,8 +251,6 @@ async def get_npc_definition(
         )
 
         # Get NPC definition from database using NPC database session
-        from server.npc_database import get_npc_session
-
         async for npc_session in get_npc_session():
             definition = await npc_service.get_npc_definition(npc_session, definition_id)
             break

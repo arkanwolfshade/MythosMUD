@@ -390,7 +390,7 @@ class TestAuditorShutdown:
     async def test_stop_audit_scheduler_cancels_task(self, mock_get_manager):
         """Test stopping auditor cancels background task."""
         mock_manager = MagicMock()
-        mock_task = AsyncMock()
+        mock_task = MagicMock()  # Use MagicMock instead of AsyncMock for task
         mock_task.done.return_value = False
         mock_task.cancel = MagicMock()
         mock_manager.create_tracked_task.return_value = mock_task

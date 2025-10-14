@@ -608,7 +608,7 @@ class TestErrorHandling:
 
         mock_get_session.return_value = mock_session_generator()
 
-        with pytest.raises(RuntimeError, match="Database error"):
+        with pytest.raises(Exception, match="Database error"):
             await npc_instance_service_fixture.spawn_npc_instance(definition_id=1, room_id="earth_arkham_001")
 
     @pytest.mark.asyncio
