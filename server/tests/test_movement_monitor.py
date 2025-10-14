@@ -307,3 +307,58 @@ class TestMovementMonitor:
         assert metrics["avg_movement_time_ms"] == 75.0
         assert metrics["max_movement_time_ms"] == 150.0
         assert metrics["min_movement_time_ms"] == 25.0
+
+    def test_get_alerts_high_integrity_violation_rate(self):
+        """Test alert when integrity violation rate is high.
+
+        AI: Tests line 219 in movement_monitor.py where high integrity violation
+        rate triggers an alert. Covers the alert generation for data integrity issues.
+        """
+        monitor = MovementMonitor()
+
+        # Record many integrity checks with violations
+        for _ in range(20):
+            monitor.record_integrity_check(violation_found=True)
+
+        # Record only a few movements to make violation rate high
+        monitor.record_movement_attempt("player1", "room1", "room2", True, 50.0)
+
+        alerts = monitor.get_alerts()
+        # Should have an alert about high integrity violation rate
+        assert len(alerts) > 0
+        # One of the alerts should be about integrity violations
+        assert any("integrity" in alert.lower() for alert in alerts)
+
+    def test_get_alerts_slow_average_movement_time(self):
+        """Test alert when average movement time exceeds threshold.
+
+        AI: Tests line 222 in movement_monitor.py where slow average movement
+        times trigger an alert. Covers the performance monitoring alert path.
+        """
+        monitor = MovementMonitor()
+
+        # Record movements with very slow times (threshold is 1000ms)
+        for i in range(10):
+            monitor.record_movement_attempt(f"player{i}", "room1", "room2", True, 2000.0)
+
+        alerts = monitor.get_alerts()
+        assert len(alerts) > 0
+        assert any("Slow average movement time" in alert for alert in alerts)
+
+    def test_reset_movement_monitor_creates_new_monitor(self):
+        """Test reset_movement_monitor when no monitor exists.
+
+        AI: Tests line 295 in movement_monitor.py where a new MovementMonitor
+        is created if none exists. Covers the initialization path in reset function.
+        """
+        # This test uses the module-level reset function
+        from server.game.movement_monitor import reset_movement_monitor
+
+        # Call reset which should ensure a monitor exists
+        reset_movement_monitor()
+
+        # Get the monitor and verify it's initialized
+        monitor = get_movement_monitor()
+        assert monitor is not None
+        metrics = monitor.get_metrics()
+        assert metrics["total_movements"] == 0

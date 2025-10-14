@@ -242,3 +242,77 @@ class TestTokenExpiry:
 
         assert decoded is not None
         assert "exp" in decoded
+
+
+class TestAuthUtilsErrorPaths:
+    """Test error paths in auth utilities."""
+
+    def test_hash_password_exception_handling(self):
+        """Test password hashing exception handling.
+
+        AI: Tests lines 45-52 in auth_utils.py where we catch and wrap exceptions
+        during password hashing. Covers the error logging and re-raising path.
+        """
+        from server.exceptions import AuthenticationError
+
+        # Mock argon2_hash_password to raise an exception
+        with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("Hash error")):
+            import pytest
+
+            with pytest.raises(AuthenticationError) as exc_info:
+                hash_password("test_password")
+
+            assert "Password hashing failed" in str(exc_info.value)
+
+    def test_verify_password_exception_returns_false(self):
+        """Test password verification exception handling.
+
+        AI: Tests lines 70-72 in auth_utils.py where exceptions during password
+        verification are caught and return False. Covers the exception safety path.
+        """
+        # Mock argon2_verify_password to raise an exception
+        with patch("server.auth_utils.argon2_verify_password", side_effect=RuntimeError("Verify error")):
+            result = verify_password("test_password", "some_hash")
+
+            # Should return False on exception, not raise
+            assert result is False
+
+    def test_create_access_token_exception_handling(self):
+        """Test access token creation exception handling.
+
+        AI: Tests lines 92-99 in auth_utils.py where we catch and wrap exceptions
+        during JWT token creation. Covers the error logging and re-raising path.
+        """
+        import pytest
+
+        from server.exceptions import AuthenticationError
+
+        # Mock jwt.encode to raise an exception
+        with patch("server.auth_utils.jwt.encode", side_effect=ValueError("Encode error")):
+            with pytest.raises(AuthenticationError) as exc_info:
+                create_access_token({"sub": "test_user"})
+
+            assert "Failed to create access token" in str(exc_info.value)
+
+    def test_decode_access_token_unexpected_exception(self):
+        """Test decode token handles unexpected exceptions.
+
+        AI: Tests lines 115-117 in auth_utils.py where unexpected exceptions
+        during token decoding are caught and return None. Covers the generic
+        exception handler path.
+        """
+        # Mock jwt.decode to raise an unexpected exception (not JWTError)
+        with patch("server.auth_utils.jwt.decode", side_effect=RuntimeError("Unexpected error")):
+            result = decode_access_token("some_token")
+
+            # Should return None on unexpected exception, not raise
+            assert result is None
+
+    def test_decode_access_token_none_input(self):
+        """Test decode token with None input.
+
+        AI: Tests lines 104-106 in auth_utils.py where None token input
+        returns None immediately. Covers the null input validation path.
+        """
+        result = decode_access_token(None)
+        assert result is None

@@ -340,3 +340,303 @@ class TestPlayerPreferencesValidation:
 
         for json_str in invalid_jsons:
             assert preferences_service._is_valid_json_array(json_str) is False
+
+
+class TestPlayerPreferencesServiceErrorPaths:
+    """Test error handling paths in PlayerPreferencesService."""
+
+    @pytest.fixture
+    def temp_db_path(self, tmp_path):
+        """Create a temporary database for testing."""
+        db_path = tmp_path / "unit_test_players.db"
+        return str(db_path)
+
+    @pytest.fixture
+    def preferences_service(self, temp_db_path):
+        """Create a PlayerPreferencesService instance with test database."""
+        return PlayerPreferencesService(temp_db_path)
+
+    def test_create_player_preferences_invalid_player_id(self, preferences_service):
+        """Test creating preferences with invalid player ID.
+
+        AI: Tests line 110 in player_preferences_service.py where invalid player_id
+        returns error. Covers the validation failure path.
+        """
+        result = preferences_service.create_player_preferences("")
+        assert result["success"] is False
+        assert "error" in result
+
+    def test_create_player_preferences_already_exists(self, preferences_service):
+        """Test creating preferences when they already exist.
+
+        AI: Tests lines 127-129 in player_preferences_service.py where we check
+        if preferences already exist and return error. Covers the duplicate check path.
+        """
+        player_id = "test-player-duplicate"
+
+        # Create once
+        result1 = preferences_service.create_player_preferences(player_id)
+        assert result1["success"] is True
+
+        # Try to create again
+        result2 = preferences_service.create_player_preferences(player_id)
+        assert result2["success"] is False
+        assert "already exist" in result2["error"].lower()
+
+    def test_get_player_preferences_invalid_player_id(self, preferences_service):
+        """Test getting preferences with invalid player ID.
+
+        AI: Tests line 142 in player_preferences_service.py where invalid player_id
+        returns error in get_player_preferences. Covers validation path.
+        """
+        result = preferences_service.get_player_preferences("")
+        assert result["success"] is False
+
+    def test_get_player_preferences_not_found(self, preferences_service):
+        """Test getting preferences for nonexistent player.
+
+        AI: Tests lines 157-158 in player_preferences_service.py where we return
+        error when player preferences don't exist. Covers the not-found path.
+        """
+        result = preferences_service.get_player_preferences("nonexistent-player")
+        assert result["success"] is False
+        assert "not found" in result["error"].lower()
+
+    def test_update_default_channel_invalid_player_id(self, preferences_service):
+        """Test updating channel with invalid player ID.
+
+        AI: Tests line 187 in player_preferences_service.py where invalid player_id
+        returns error. Covers validation in update_default_channel.
+        """
+        result = preferences_service.update_default_channel("", "local")
+        assert result["success"] is False
+
+    def test_update_default_channel_invalid_channel(self, preferences_service):
+        """Test updating to invalid channel.
+
+        AI: Tests line 199 in player_preferences_service.py where invalid channel
+        returns error. Covers channel validation path.
+        """
+        player_id = "test-player-channel"
+        preferences_service.create_player_preferences(player_id)
+
+        result = preferences_service.update_default_channel(player_id, "invalid_channel")
+        assert result["success"] is False
+        assert "invalid" in result["error"].lower()
+
+    def test_mute_channel_invalid_player_id(self, preferences_service):
+        """Test muting channel with invalid player ID.
+
+        AI: Tests line 232 in player_preferences_service.py where invalid player_id
+        returns error in mute_channel. Covers validation path.
+        """
+        result = preferences_service.mute_channel("", "local")
+        assert result["success"] is False
+
+    def test_mute_channel_invalid_channel(self, preferences_service):
+        """Test muting invalid channel.
+
+        AI: Tests line 249 in player_preferences_service.py where invalid channel
+        returns error. Covers channel validation in mute_channel.
+        """
+        player_id = "test-player-mute"
+        preferences_service.create_player_preferences(player_id)
+
+        result = preferences_service.mute_channel(player_id, "invalid_channel")
+        assert result["success"] is False
+
+    def test_unmute_channel_invalid_player_id(self, preferences_service):
+        """Test unmuting channel with invalid player ID.
+
+        AI: Tests line 290 in player_preferences_service.py where invalid player_id
+        returns error in unmute_channel. Covers validation path.
+        """
+        result = preferences_service.unmute_channel("", "local")
+        assert result["success"] is False
+
+    def test_unmute_channel_invalid_channel(self, preferences_service):
+        """Test unmuting invalid channel.
+
+        AI: Tests line 303 in player_preferences_service.py where invalid channel
+        returns error in unmute_channel. Covers channel validation path.
+        """
+        player_id = "test-player-unmute"
+        preferences_service.create_player_preferences(player_id)
+
+        result = preferences_service.unmute_channel(player_id, "invalid_channel")
+        assert result["success"] is False
+
+    def test_get_muted_channels_invalid_player_id(self, preferences_service):
+        """Test getting muted channels with invalid player ID.
+
+        AI: Tests line 343 in player_preferences_service.py where invalid player_id
+        returns error. Covers validation in get_muted_channels.
+        """
+        result = preferences_service.get_muted_channels("")
+        assert result["success"] is False
+
+    def test_get_muted_channels_not_found(self, preferences_service):
+        """Test getting muted channels for nonexistent player.
+
+        AI: Tests line 352 in player_preferences_service.py where we return
+        error for nonexistent player. Covers the not-found path.
+        """
+        result = preferences_service.get_muted_channels("nonexistent-player")
+        assert result["success"] is False
+        assert "not found" in result["error"].lower()
+
+    def test_is_channel_muted_invalid_player_id(self, preferences_service):
+        """Test checking if channel muted with invalid player ID.
+
+        AI: Tests line 373 in player_preferences_service.py where invalid player_id
+        returns error. Covers validation in is_channel_muted.
+        """
+        result = preferences_service.is_channel_muted("", "local")
+        assert result["success"] is False
+
+    def test_is_channel_muted_invalid_channel(self, preferences_service):
+        """Test checking if invalid channel is muted.
+
+        AI: Tests line 385 in player_preferences_service.py where invalid channel
+        returns error. Covers channel validation in is_channel_muted.
+        """
+        player_id = "test-player-check"
+        preferences_service.create_player_preferences(player_id)
+
+        result = preferences_service.is_channel_muted(player_id, "invalid_channel")
+        assert result["success"] is False
+
+    def test_is_channel_muted_not_found(self, preferences_service):
+        """Test checking if channel muted for nonexistent player.
+
+        AI: Tests line 385 in player_preferences_service.py where we return
+        error for nonexistent player. Covers the not-found path.
+        """
+        result = preferences_service.is_channel_muted("nonexistent-player", "local")
+        assert result["success"] is False
+        assert "not found" in result["error"].lower()
+
+    def test_delete_player_preferences_invalid_player_id(self, preferences_service):
+        """Test deleting preferences with invalid player ID.
+
+        AI: Tests line 407 in player_preferences_service.py where invalid player_id
+        returns error in delete_player_preferences. Covers validation path.
+        """
+        result = preferences_service.delete_player_preferences("")
+        assert result["success"] is False
+
+    def test_delete_player_preferences_not_found(self, preferences_service):
+        """Test deleting preferences for nonexistent player.
+
+        AI: Tests the delete path for nonexistent player. May return success
+        (no-op) or error depending on implementation.
+        """
+        result = preferences_service.delete_player_preferences("nonexistent-player")
+        # Service handles this gracefully - check that it returns a result
+        assert "success" in result
+
+    def test_database_exception_in_get_preferences(self, temp_db_path):
+        """Test database exception handling in get_player_preferences.
+
+        AI: Tests lines 171-173 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+
+        # Corrupt the database path to cause an exception
+        service.db_path = "/invalid/path/that/does/not/exist/test.db"
+
+        result = service.get_player_preferences("test-player")
+        assert result["success"] is False
+        assert "error" in result
+
+    def test_database_exception_in_update_channel(self, temp_db_path):
+        """Test database exception handling in update_default_channel.
+
+        AI: Tests lines 216-218 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+        player_id = "test-player-update"
+        service.create_player_preferences(player_id)
+
+        # Corrupt the database path to cause an exception
+        service.db_path = "/invalid/path/test.db"
+
+        result = service.update_default_channel(player_id, "global")
+        assert result["success"] is False
+        assert "error" in result
+
+    def test_database_exception_in_mute_channel(self, temp_db_path):
+        """Test database exception handling in mute_channel.
+
+        AI: Tests lines 274-276 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+        player_id = "test-player-mute"
+        service.create_player_preferences(player_id)
+
+        # Corrupt the database path
+        service.db_path = "/invalid/path/test.db"
+
+        result = service.mute_channel(player_id, "local")
+        assert result["success"] is False
+
+    def test_unmute_channel_not_in_muted_list(self, preferences_service):
+        """Test unmuting a channel that isn't muted.
+
+        AI: Tests line 293 in player_preferences_service.py where we handle
+        unmuting a channel that isn't in the muted list.
+        """
+        player_id = "test-player-unmute-none"
+        preferences_service.create_player_preferences(player_id)
+
+        # Try to unmute a channel that was never muted
+        result = preferences_service.unmute_channel(player_id, "local")
+        # Should still succeed
+        assert result["success"] is True
+
+    def test_database_exception_in_unmute_channel(self, temp_db_path):
+        """Test database exception handling in unmute_channel.
+
+        AI: Tests lines 328-330 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+        player_id = "test-player-unmute-err"
+        service.create_player_preferences(player_id)
+
+        # Corrupt the database path
+        service.db_path = "/invalid/path/test.db"
+
+        result = service.unmute_channel(player_id, "local")
+        assert result["success"] is False
+
+    def test_database_exception_in_get_muted_channels(self, temp_db_path):
+        """Test database exception handling in get_muted_channels.
+
+        AI: Tests line 352 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+
+        # Corrupt the database path
+        service.db_path = "/invalid/path/test.db"
+
+        result = service.get_muted_channels("test-player")
+        assert result["success"] is False
+
+    def test_database_exception_in_is_channel_muted(self, temp_db_path):
+        """Test database exception handling in is_channel_muted.
+
+        AI: Tests line 376 in player_preferences_service.py where we catch
+        and handle database exceptions. Covers the exception handler path.
+        """
+        service = PlayerPreferencesService(temp_db_path)
+
+        # Corrupt the database path
+        service.db_path = "/invalid/path/test.db"
+
+        result = service.is_channel_muted("test-player", "local")
+        assert result["success"] is False

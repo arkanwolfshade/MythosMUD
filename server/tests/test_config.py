@@ -170,6 +170,16 @@ class TestLoggingConfig:
         config = LoggingConfig(environment="unit_test", level="debug")
         assert config.level == "DEBUG"
 
+    def test_invalid_log_format(self):
+        """Test invalid log format is rejected.
+
+        AI: Tests line 140 in config/models.py where invalid log formats are validated.
+        Covers the ValueError raise path when format is not in valid_formats list.
+        """
+        with pytest.raises(ValidationError) as exc_info:
+            LoggingConfig(environment="unit_test", level="INFO", format="invalid_format")
+        assert "Log format must be one of" in str(exc_info.value)
+
     def test_to_legacy_dict(self):
         """Test conversion to legacy dict format."""
         config = LoggingConfig(environment="unit_test", level="DEBUG")

@@ -601,3 +601,33 @@ class TestRoomServiceLayer:
         # Verify result
         assert isinstance(result, list)
         assert len(result) == 0
+
+    @pytest.mark.asyncio
+    async def test_validate_exit_exists_room_with_no_exits(self):
+        """Test exit validation when room has no exits.
+
+        AI: Tests the debug logging path when a room exists but has no exits defined.
+        Covers lines 198-199 in room_service.py where we log and return False.
+        """
+        # Create a mock room with no exits
+        mock_room = Mock()
+        mock_room.to_dict.return_value = {
+            "id": "test_room_no_exits",
+            "name": "Dead End Room",
+            "description": "A room with no way out",
+            # No exits key or empty exits
+        }
+
+        # Mock async_get_room to return our room with no exits
+        self.mock_persistence.async_get_room.return_value = mock_room
+
+        # Validate exit from room with no exits to destination
+        result = await self.room_service.validate_exit_exists("test_room_no_exits", "test_room_2")
+
+        # Should return False since there are no exits
+        assert result is False
+
+        # Test with explicitly empty exits dict
+        mock_room.to_dict.return_value["exits"] = {}
+        result = await self.room_service.validate_exit_exists("test_room_no_exits", "test_room_2")
+        assert result is False

@@ -331,6 +331,22 @@ class TestPlayer:
 
         assert player.remove_item("nonexistent", 1) is False
 
+    def test_player_remove_item_insufficient_quantity(self):
+        """Test removing more items than available.
+
+        AI: Tests line 248 in models/game.py where we return False when trying to
+        remove more items than the player has in inventory. Covers the edge case
+        where item exists but quantity is insufficient.
+        """
+        player = Player(name="TestPlayer")
+        player.add_item("potion", 2)  # Add 2 potions
+
+        # Try to remove more than we have
+        assert player.remove_item("potion", 5) is False
+        # Inventory should remain unchanged
+        assert len(player.inventory) == 1
+        assert player.inventory[0].quantity == 2
+
     def test_player_add_status_effect(self):
         """Test the add_status_effect method."""
         player = Player(name="TestPlayer")

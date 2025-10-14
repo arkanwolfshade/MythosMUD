@@ -210,6 +210,22 @@ class TestExceptionHandling:
         assert handled_error.message == "Connection failed"
         assert handled_error.details["original_type"] == "ConnectionError"
 
+    def test_handle_exception_os_error(self):
+        """Test converting OSError to ResourceNotFoundError.
+
+        AI: Tests line 304 in exceptions.py where OSError (parent of FileNotFoundError)
+        is converted to ResourceNotFoundError. This covers the fallback path for OS-level
+        errors that aren't specifically FileNotFoundError.
+        """
+        context = create_error_context(user_id="testuser")
+        # Use a generic OSError, not FileNotFoundError (which is tested separately)
+        original_error = OSError("Permission denied")
+        handled_error = handle_exception(original_error, context)
+
+        assert isinstance(handled_error, ResourceNotFoundError)
+        assert handled_error.message == "Permission denied"
+        assert handled_error.details["original_type"] == "OSError"
+
     def test_handle_exception_generic(self):
         """Test converting generic exception to MythosMUDError."""
         context = create_error_context(user_id="testuser")

@@ -361,3 +361,25 @@ class TestProfessionStatPrerequisites:
         # Test with requirement one above minimum
         meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 11})
         assert meets_requirements is False
+
+    def test_roll_stats_with_validation_never_succeeds(self):
+        """Test roll_stats_with_validation when stats never meet requirements.
+
+        AI: Tests the fallback path when maximum attempts are exhausted without
+        meeting class requirements. Covers the warning log and final return path
+        in roll_stats_with_validation method (lines 235-248 in stats_generator.py).
+        """
+        # Mock roll_stats to always return stats that don't meet occultist requirements
+        # (occultist needs intelligence >= 14, wisdom >= 12)
+        low_stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=8, wisdom=8, charisma=10)
+
+        with patch.object(self.stats_generator, "roll_stats", return_value=low_stats):
+            stats, available_classes = self.stats_generator.roll_stats_with_validation(
+                method="3d6", required_class="occultist", max_attempts=3
+            )
+
+            # Should return stats even though they don't meet requirements
+            assert isinstance(stats, Stats)
+            assert isinstance(available_classes, list)
+            # Occultist should not be in available classes
+            assert "occultist" not in available_classes

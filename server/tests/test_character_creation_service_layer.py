@@ -271,3 +271,30 @@ class TestCharacterCreationServiceLayer:
         """Test getting description for an unknown class."""
         description = self.character_creation_service._get_class_description("unknown_class")
         assert "mysterious character with unknown capabilities" in description
+
+    def test_get_available_classes_info_with_string_prerequisites(self):
+        """Test getting available classes info when prerequisites use string keys.
+
+        AI: Tests the else branch (line 232 in character_creation_service.py) where
+        prerequisite keys don't have a .value attribute and need to be converted to
+        strings. This covers the fallback path for non-enum prerequisite keys.
+        """
+        # Mock CLASS_PREREQUISITES with string keys instead of enums
+        from unittest.mock import patch
+
+        string_prerequisites = {
+            "test_class": {
+                "strength": 12,  # String key, not an enum
+                "intelligence": 10,
+            }
+        }
+
+        with patch.object(self.character_creation_service.stats_generator, "CLASS_PREREQUISITES", string_prerequisites):
+            result = self.character_creation_service.get_available_classes_info()
+
+            assert isinstance(result, dict)
+            assert "classes" in result
+            assert "test_class" in result["classes"]
+            # Verify the string keys were properly converted
+            assert "strength" in result["classes"]["test_class"]["prerequisites"]
+            assert result["classes"]["test_class"]["prerequisites"]["strength"] == 12
