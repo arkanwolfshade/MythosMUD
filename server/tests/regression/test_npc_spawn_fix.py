@@ -19,8 +19,8 @@ class TestNPCSpawnFix:
             id=1,
             npc_definition_id=1,
             sub_zone_id="arkhamcity/downtown",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "any", "weather": "any", "special_events": []}',
         )
 
@@ -47,8 +47,8 @@ class TestNPCSpawnFix:
             id=2,
             npc_definition_id=2,
             sub_zone_id="arkhamcity/sanitarium",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "night", "weather": "storm"}',
         )
 
@@ -74,8 +74,8 @@ class TestNPCSpawnFix:
             id=3,
             npc_definition_id=3,
             sub_zone_id="arkhamcity/warehouse",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"special_events": []}',
         )
 
@@ -95,8 +95,8 @@ class TestNPCSpawnFix:
             id=4,
             npc_definition_id=4,
             sub_zone_id="arkhamcity/port",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "any", "weather": "clear", "special_events": []}',
         )
 

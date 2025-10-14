@@ -9,7 +9,7 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logging_config import get_logger
@@ -515,16 +515,16 @@ class NPCService:
         try:
             # Count NPC definitions by type
             definitions_result = await session.execute(
-                select(NPCDefinition.npc_type, session.query(NPCDefinition.id).count()).group_by(NPCDefinition.npc_type)
+                select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)
             )
             definitions_by_type = dict(definitions_result.all())
 
             # Count total definitions
-            total_definitions_result = await session.execute(select(session.query(NPCDefinition.id).count()))
+            total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))
             total_definitions = total_definitions_result.scalar()
 
             # Count spawn rules
-            spawn_rules_result = await session.execute(select(session.query(NPCSpawnRule.id).count()))
+            spawn_rules_result = await session.execute(select(func.count(NPCSpawnRule.id)))
             total_spawn_rules = spawn_rules_result.scalar()
 
             stats = {

@@ -57,8 +57,8 @@ def sample_spawn_rule():
         id=1,
         npc_definition_id=1,
         sub_zone_id="arkhamcity_downtown",
-        min_players=0,
-        max_players=999,
+        min_population=0,
+        max_population=999,
         spawn_conditions=json.dumps({"time_of_day": "any"}),
     )
     return rule
@@ -413,8 +413,8 @@ class TestCreateSpawnRule:
             session=mock_session,
             npc_definition_id=1,
             sub_zone_id="arkhamcity_downtown",
-            min_players=0,
-            max_players=10,
+            min_population=0,
+            max_population=10,
             spawn_conditions={"time": "day"},
         )
 
@@ -436,28 +436,28 @@ class TestCreateSpawnRule:
     async def test_create_spawn_rule_invalid_min_players(
         self, npc_service_instance, mock_session, sample_npc_definition
     ):
-        """Test creating spawn rule with invalid min_players."""
+        """Test creating spawn rule with invalid min_population."""
         npc_service_instance.get_npc_definition = AsyncMock(return_value=sample_npc_definition)
 
-        with pytest.raises(ValueError, match="Min players must be non-negative"):
+        with pytest.raises(ValueError, match="Min population must be non-negative"):
             await npc_service_instance.create_spawn_rule(
-                session=mock_session, npc_definition_id=1, sub_zone_id="arkhamcity_downtown", min_players=-1
+                session=mock_session, npc_definition_id=1, sub_zone_id="arkhamcity_downtown", min_population=-1
             )
 
     @pytest.mark.asyncio
     async def test_create_spawn_rule_invalid_max_players(
         self, npc_service_instance, mock_session, sample_npc_definition
     ):
-        """Test creating spawn rule with max < min players."""
+        """Test creating spawn rule with max < min population."""
         npc_service_instance.get_npc_definition = AsyncMock(return_value=sample_npc_definition)
 
-        with pytest.raises(ValueError, match="Max players must be >= min players"):
+        with pytest.raises(ValueError, match="Max population must be >= min population"):
             await npc_service_instance.create_spawn_rule(
                 session=mock_session,
                 npc_definition_id=1,
                 sub_zone_id="arkhamcity_downtown",
-                min_players=10,
-                max_players=5,
+                min_population=10,
+                max_population=5,
             )
 
 
@@ -713,12 +713,12 @@ class TestErrorMessages:
     async def test_create_spawn_rule_invalid_range_message(
         self, npc_service_instance, mock_session, sample_npc_definition
     ):
-        """Test invalid player range error is informative."""
+        """Test invalid population range error is informative."""
         npc_service_instance.get_npc_definition = AsyncMock(return_value=sample_npc_definition)
 
         with pytest.raises(ValueError) as exc_info:
             await npc_service_instance.create_spawn_rule(
-                session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_players=10, max_players=5
+                session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_population=10, max_population=5
             )
 
         error_msg = str(exc_info.value)
@@ -768,17 +768,17 @@ class TestEdgeCases:
     async def test_create_spawn_rule_with_zero_min_players(
         self, npc_service_instance, mock_session, sample_npc_definition
     ):
-        """Test creating spawn rule with min_players=0."""
+        """Test creating spawn rule with min_population=0."""
         npc_service_instance.get_npc_definition = AsyncMock(return_value=sample_npc_definition)
         mock_session.add = MagicMock()
         mock_session.flush = AsyncMock()
         mock_session.refresh = AsyncMock()
 
         result = await npc_service_instance.create_spawn_rule(
-            session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_players=0, max_players=999
+            session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_population=0, max_population=999
         )
 
-        assert result.min_players == 0
+        assert result.min_population == 0
 
 
 class TestIntegrationScenarios:
@@ -827,7 +827,7 @@ class TestIntegrationScenarios:
 
         # 1. Create spawn rule
         created = await npc_service_instance.create_spawn_rule(
-            session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_players=0, max_players=10
+            session=mock_session, npc_definition_id=1, sub_zone_id="zone", min_population=0, max_population=10
         )
         assert created.npc_definition_id == 1
 

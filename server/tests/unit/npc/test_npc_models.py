@@ -23,12 +23,7 @@ def test_client():
     return None
 
 
-@pytest.fixture
-async def test_npc_database():
-    """Fixture to set up NPC test database."""
-    # Database is already initialized in conftest and via create directory
-    yield
-    # Cleanup if needed
+# test_npc_database fixture removed - using the one from conftest.py which properly initializes the database
 
 
 class TestNPCDefinition:
@@ -193,8 +188,8 @@ class TestNPCSpawnRule:
             spawn_rule = NPCSpawnRule(
                 npc_definition_id=npc_def.id,
                 sub_zone_id="arkham_northside",
-                min_players=2,
-                max_players=10,
+                min_population=2,
+                max_population=10,
             )
 
             # Set spawn conditions using the setter method
@@ -206,8 +201,8 @@ class TestNPCSpawnRule:
             assert spawn_rule.id is not None
             assert spawn_rule.npc_definition_id == npc_def.id
             assert spawn_rule.sub_zone_id == "arkham_northside"
-            assert spawn_rule.min_players == 2
-            assert spawn_rule.max_players == 10
+            assert spawn_rule.min_population == 2
+            assert spawn_rule.max_population == 10
             assert spawn_rule.get_spawn_conditions() == {"time_of_day": "night", "weather": "foggy"}
         finally:
             try:
@@ -236,8 +231,8 @@ class TestNPCSpawnRule:
             session.add(spawn_rule)
             await session.commit()
 
-            assert spawn_rule.min_players == 0
-            assert spawn_rule.max_players == 999
+            assert spawn_rule.min_population == 0
+            assert spawn_rule.max_population == 999
             assert spawn_rule.get_spawn_conditions() == {}
         finally:
             try:

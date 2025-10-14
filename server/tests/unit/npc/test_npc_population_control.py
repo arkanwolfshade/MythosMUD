@@ -432,7 +432,7 @@ class TestNPCPopulationController:
 
         # Add NPCs up to max population
         for i in range(passive_mob_definition.max_population):
-            stats.add_npc(passive_mob_definition.npc_type, f"room_{i:03d}", False)
+            stats.add_npc(passive_mob_definition.npc_type, f"room_{i:03d}", False, passive_mob_definition.id)
 
         # Test that no more NPCs can spawn
         zone_config = population_controller.get_zone_configuration(zone_key)
@@ -898,8 +898,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=definition.id,
             sub_zone_id="test_zone",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions='{"player_level": {"min": 5, "max": 15}, "sanity": {"min": 50, "max": 100}}',
         )
 
@@ -940,8 +940,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=definition.id,
             sub_zone_id="test_zone",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions='{"weather": ["clear", "overcast", "mist"], "time_of_day": ["day", "dusk"]}',
         )
 
@@ -977,8 +977,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=definition.id,
             sub_zone_id="test_zone",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions='{"required_condition": "value", "optional_condition": "optional"}',
         )
 
@@ -1005,8 +1005,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=definition.id,
             sub_zone_id="test_zone",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions="{}",
         )
 
@@ -1125,8 +1125,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=definition.id,
             sub_zone_id="test_zone",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions="invalid json",
         )
 

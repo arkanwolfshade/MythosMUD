@@ -199,11 +199,14 @@ class PeriodicOrphanAuditor:
                 if not self.coordinator_task.done():
                     logger.debug("Auditor coordinator shutdown is underway per cancellation order")
 
-            self.audit_running = False
             logger.warning("Orphan coordinate periodic posteriors scheduler halted")
 
         except Exception as shutdown_obstructing_error:
             logger.error(f"Coordinator shutdown encountered an impediment: {shutdown_obstructing_error}")
+
+        finally:
+            # Always set audit_running to False, even if cancellation fails
+            self.audit_running = False
 
 
 def create_lifespan_memory_service():

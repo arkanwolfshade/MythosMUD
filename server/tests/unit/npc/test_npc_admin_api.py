@@ -122,8 +122,8 @@ class TestNPCSpawnRuleResponseModel:
             id=1,
             npc_definition_id=1,
             sub_zone_id="zone",
-            min_players=0,
-            max_players=10,
+            min_population=0,
+            max_population=10,
             spawn_conditions=json.dumps({"time": "day"}),
         )
 
@@ -212,10 +212,10 @@ class TestCreateNPCDefinitionEndpoint:
     @pytest.mark.asyncio
     @patch("server.api.admin.npc.validate_admin_permission")
     @patch("server.api.admin.npc.get_admin_auth_service")
-    @patch("server.api.admin.npc.get_async_session")
+    @patch("server.api.admin.npc.get_npc_session")
     @patch("server.api.admin.npc.npc_service")
     async def test_create_npc_definition_success(
-        self, mock_npc_service, mock_get_session, mock_get_auth, mock_validate, mock_current_user, sample_npc_definition
+        self, mock_npc_service, mock_get_npc_session, mock_get_auth, mock_validate, mock_current_user, sample_npc_definition
     ):
         """Test successful NPC definition creation."""
         mock_validate.return_value = None
@@ -229,7 +229,7 @@ class TestCreateNPCDefinitionEndpoint:
         async def mock_session_generator():
             yield mock_session
 
-        mock_get_session.return_value = mock_session_generator()
+        mock_get_npc_session.return_value = mock_session_generator()
         mock_npc_service.create_npc_definition = AsyncMock(return_value=sample_npc_definition)
 
         npc_data = NPCDefinitionCreate(
@@ -703,8 +703,8 @@ class TestSpawnRulesEndpoints:
             id=1,
             npc_definition_id=1,
             sub_zone_id="zone",
-            min_players=0,
-            max_players=10,
+            min_population=0,
+            max_population=10,
             spawn_conditions=json.dumps({"time": "day"}),
         )
 
@@ -734,8 +734,8 @@ class TestSpawnRulesEndpoints:
             id=1,
             npc_definition_id=1,
             sub_zone_id="default",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions=json.dumps({}),
         )
 

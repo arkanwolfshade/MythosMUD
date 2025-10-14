@@ -286,15 +286,26 @@ def test_database():
 def test_npc_database():
     """Initialize NPC test database with proper schema."""
     import os
+    import time
 
     # Get the NPC test database path
-    from server.tests.init_npc_test_db import init_npc_test_database
+    from server.tests.scripts.init_npc_test_db import init_npc_test_database
 
     npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
     # Remove existing database file to ensure clean state
+    # Handle Windows file locking with retry logic
     if npc_test_db_path.exists():
-        os.unlink(npc_test_db_path)
+        for attempt in range(3):
+            try:
+                os.unlink(npc_test_db_path)
+                break
+            except PermissionError:
+                if attempt < 2:
+                    time.sleep(0.1)  # Brief delay before retry
+                else:
+                    # If we can't delete it, let init_npc_test_database recreate it
+                    pass
 
     # Initialize the NPC test database with schema
     init_npc_test_database()

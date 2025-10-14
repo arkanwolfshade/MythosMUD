@@ -77,7 +77,7 @@ def populate_npc_data(conn, npc_definitions, npc_spawn_rules):
     # Insert NPC spawn rules
     insert_rule_sql = """
     INSERT INTO npc_spawn_rules
-    (id, npc_definition_id, sub_zone_id, min_players, max_players, spawn_conditions)
+    (id, npc_definition_id, sub_zone_id, min_population, max_population, spawn_conditions)
     VALUES (?, ?, ?, ?, ?, ?)
     """
     cursor.executemany(insert_rule_sql, npc_spawn_rules)

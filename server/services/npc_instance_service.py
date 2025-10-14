@@ -15,6 +15,7 @@ from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 from server.npc_database import get_npc_session
+from server.services.npc_service import npc_service
 
 from ..logging_config import get_logger
 
@@ -69,8 +70,6 @@ class NPCInstanceService:
         try:
             # Get the NPC definition from database
             async for session in get_npc_session():
-                from server.services.npc_service import npc_service
-
                 definition = await npc_service.get_npc_definition(session, definition_id)
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
@@ -477,10 +476,10 @@ class NPCInstanceService:
         Extract zone key from room ID.
 
         Args:
-            room_id: Room ID like "earth_arkhamcity_downtown_001"
+            room_id: Room ID like "earth_arkhamcity_downtown_001" or "earth_arkham"
 
         Returns:
-            Zone key like "arkham/city"
+            Zone key like "arkham/city" or "arkham/unknown" for short format
         """
         try:
             # Split room_id by underscores
@@ -492,6 +491,9 @@ class NPCInstanceService:
                 zone = parts[1] if len(parts) > 1 else "unknown"
                 subzone = parts[2] if len(parts) > 2 else "unknown"
                 return f"{zone}/{subzone}"
+            elif len(parts) == 2:
+                # Short format: earth_zone
+                return f"{parts[1]}/unknown"
             else:
                 return "unknown/unknown"
 

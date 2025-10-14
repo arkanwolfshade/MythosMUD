@@ -174,8 +174,8 @@ class TestNPCSpawningService:
         return NPCSpawnRule(
             npc_definition_id=shopkeeper_definition.id,
             sub_zone_id="downtown",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions="{}",
         )
 
@@ -185,8 +185,8 @@ class TestNPCSpawningService:
         return NPCSpawnRule(
             npc_definition_id=passive_mob_definition.id,
             sub_zone_id="downtown",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "day", "weather": "clear"}',
         )
 
@@ -300,6 +300,7 @@ class TestNPCSpawningService:
         # Mock population stats with no existing NPCs
         stats = MagicMock(spec=PopulationStats)
         stats.npcs_by_type = {}
+        stats.npcs_by_definition = {}
 
         with patch.object(spawning_service.population_controller, "get_population_stats", return_value=stats):
             requests = spawning_service._evaluate_spawn_requirements(shopkeeper_definition, zone_config, "room_001")
@@ -322,6 +323,7 @@ class TestNPCSpawningService:
         # Mock population stats
         stats = MagicMock(spec=PopulationStats)
         stats.npcs_by_type = {}
+        stats.npcs_by_definition = {}
 
         # Mock population controller
         spawning_service.population_controller.current_game_state = {
