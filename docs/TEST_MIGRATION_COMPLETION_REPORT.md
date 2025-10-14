@@ -27,36 +27,36 @@ The test suite refactoring has been successfully completed ahead of schedule!
 
 ### Unit Tests: 130 files
 
-| Subdirectory | Files | Key Components |
-|--------------|-------|----------------|
-| api | 8 | Base API, players, professions, health, monitoring, realtime |
-| commands | 7 | Command handler, validation, admin, utility, rate limiter |
-| chat | 11 | Chat service, emote, whisper, local/global channels, broadcasting |
-| player | 10 | Player service, stats, character creation/recovery, preferences |
-| npc | 11 | Models, behaviors, spawning, lifecycle, population, admin |
-| world | 9 | Room models/service, world loader, movement, hierarchy |
-| events | 6 | Event bus, publisher, handler, message factory |
-| auth | 5 | Auth, JWT, Argon2, email utilities |
-| infrastructure | 15 | Config, database, app factory, lifespan, DI, persistence |
-| middleware | 4 | Error handling, logging, security, CORS |
-| models | 7 | Base models, relationships, profession, health, alias |
-| services | 7 | Health, game tick, memory cleanup, metrics, DI, leak prevention |
-| realtime | 11 | WebSocket, SSE, NATS handlers, retry, dead letter queue |
-| logging | 6 | Audit, chat, admin actions, log analysis, channel logging |
-| utilities | 13 | Security, validation, rate limiter, circuit breaker, aliases, error handlers |
+| Subdirectory   | Files | Key Components                                                               |
+| -------------- | ----- | ---------------------------------------------------------------------------- |
+| api            | 8     | Base API, players, professions, health, monitoring, realtime                 |
+| commands       | 7     | Command handler, validation, admin, utility, rate limiter                    |
+| chat           | 11    | Chat service, emote, whisper, local/global channels, broadcasting            |
+| player         | 10    | Player service, stats, character creation/recovery, preferences              |
+| npc            | 11    | Models, behaviors, spawning, lifecycle, population, admin                    |
+| world          | 9     | Room models/service, world loader, movement, hierarchy                       |
+| events         | 6     | Event bus, publisher, handler, message factory                               |
+| auth           | 5     | Auth, JWT, Argon2, email utilities                                           |
+| infrastructure | 15    | Config, database, app factory, lifespan, DI, persistence                     |
+| middleware     | 4     | Error handling, logging, security, CORS                                      |
+| models         | 7     | Base models, relationships, profession, health, alias                        |
+| services       | 7     | Health, game tick, memory cleanup, metrics, DI, leak prevention              |
+| realtime       | 11    | WebSocket, SSE, NATS handlers, retry, dead letter queue                      |
+| logging        | 6     | Audit, chat, admin actions, log analysis, channel logging                    |
+| utilities      | 13    | Security, validation, rate limiter, circuit breaker, aliases, error handlers |
 
 ### Integration Tests: 30 files
 
-| Subdirectory | Files | Key Components |
-|--------------|-------|----------------|
-| api | 4 | Player API, dual connection, monitoring, game API |
-| commands | 1 | Admin teleport integration |
-| chat | 4 | Whisper, player preferences, mute workflow, system channel |
-| events | 7 | Event flow, broadcasting, realtime handler, WebSocket, connection manager |
-| npc | 4 | NPC integration, room integration, admin commands |
-| movement | 2 | Movement integration, room synchronization |
-| nats | 3 | NATS integration, connection manager, local channel |
-| comprehensive | 5 | Comprehensive, simple, bug prevention, alias, logging |
+| Subdirectory  | Files | Key Components                                                            |
+| ------------- | ----- | ------------------------------------------------------------------------- |
+| api           | 4     | Player API, dual connection, monitoring, game API                         |
+| commands      | 1     | Admin teleport integration                                                |
+| chat          | 4     | Whisper, player preferences, mute workflow, system channel                |
+| events        | 7     | Event flow, broadcasting, realtime handler, WebSocket, connection manager |
+| npc           | 4     | NPC integration, room integration, admin commands                         |
+| movement      | 2     | Movement integration, room synchronization                                |
+| nats          | 3     | NATS integration, connection manager, local channel                       |
+| comprehensive | 5     | Comprehensive, simple, bug prevention, alias, logging                     |
 
 ### E2E Tests: 5 files
 - Multiplayer integration and messaging

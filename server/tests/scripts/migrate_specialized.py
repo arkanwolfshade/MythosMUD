@@ -75,7 +75,10 @@ MIGRATION_MAP = {
     ],
     "coverage": [
         ("test_command_handler_coverage.py", "coverage/test_command_handler_coverage.py"),
-        ("test_command_handler_unified_coverage.py", "coverage/test_command_handler_unified_coverage_legacy.py"),  # To merge
+        (
+            "test_command_handler_unified_coverage.py",
+            "coverage/test_command_handler_unified_coverage_legacy.py",
+        ),  # To merge
         ("test_command_rate_limiter_coverage.py", "coverage/test_command_rate_limiter_coverage.py"),
         ("test_comprehensive_logging_coverage.py", "coverage/test_comprehensive_logging_coverage.py"),
         ("test_system_commands_coverage.py", "coverage/test_system_commands_coverage.py"),
@@ -107,7 +110,10 @@ MIGRATION_MAP = {
         ("test_async_route_handlers.py", "verification/test_async_route_handlers.py"),
         ("test_base_testing_async.py", "verification/test_base_testing_async.py"),
         ("test_pure_async_eventbus_verification.py", "verification/test_pure_async_eventbus_verification.py"),
-        ("test_event_bus_pure_asyncio_verification.py", "verification/test_event_bus_pure_asyncio_verification_legacy.py"),  # To merge
+        (
+            "test_event_bus_pure_asyncio_verification.py",
+            "verification/test_event_bus_pure_asyncio_verification_legacy.py",
+        ),  # To merge
         ("test_running_event_loop.py", "verification/test_running_event_loop.py"),
         ("test_help_topic_validation.py", "verification/test_help_topic_validation.py"),
         ("test_validation_error_imports.py", "verification/test_validation_error_imports.py"),

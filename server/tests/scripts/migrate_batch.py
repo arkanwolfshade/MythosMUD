@@ -81,7 +81,10 @@ MIGRATION_MAP = {
         ("test_global_channel_commands.py", "unit/chat/test_global_channel.py"),
         ("test_system_channel.py", "unit/chat/test_system_channel.py"),
         ("test_channel_broadcasting_strategies.py", "unit/chat/test_broadcasting_strategies.py"),
-        ("test_channel_broadcasting_strategies_implementation.py", "unit/chat/test_broadcasting_strategies_impl_legacy.py"),  # To merge
+        (
+            "test_channel_broadcasting_strategies_implementation.py",
+            "unit/chat/test_broadcasting_strategies_impl_legacy.py",
+        ),  # To merge
     ],
     # Phase 3: Feature Domains - API
     "api": [
@@ -123,7 +126,10 @@ MIGRATION_MAP = {
         ("test_sse_auth.py", "unit/realtime/test_sse_auth.py"),
         ("test_nats_service.py", "unit/realtime/test_nats_service.py"),
         ("test_nats_message_handler.py", "unit/realtime/test_nats_message_handler.py"),
-        ("test_nats_message_handler_subzone.py", "unit/realtime/test_nats_message_handler_subzone_legacy.py"),  # To merge
+        (
+            "test_nats_message_handler_subzone.py",
+            "unit/realtime/test_nats_message_handler_subzone_legacy.py",
+        ),  # To merge
         ("test_nats_retry_handler.py", "unit/realtime/test_nats_retry_handler.py"),
         ("test_dead_letter_queue.py", "unit/realtime/test_dead_letter_queue.py"),
         ("test_real_time.py", "unit/realtime/test_real_time.py"),
@@ -156,7 +162,10 @@ MIGRATION_MAP = {
         ("test_centralized_validation_functions.py", "unit/utilities/test_validation_functions.py"),
         ("test_error_handlers.py", "unit/utilities/test_error_handlers.py"),
         ("test_legacy_error_handlers.py", "unit/utilities/test_legacy_error_handlers_legacy.py"),  # To merge
-        ("test_standardized_error_handling.py", "unit/utilities/test_standardized_error_handling_legacy.py"),  # To merge
+        (
+            "test_standardized_error_handling.py",
+            "unit/utilities/test_standardized_error_handling_legacy.py",
+        ),  # To merge
         ("test_standardized_responses.py", "unit/utilities/test_standardized_responses.py"),
         ("test_pydantic_error_handler.py", "unit/utilities/test_pydantic_error_handler.py"),
     ],
