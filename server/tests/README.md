@@ -30,7 +30,7 @@ python server/tests/scripts/track_migration.py --validate
 
 **Where should I put a new test?** See the [Test Organization Guide](./TEST_ORGANIZATION_GUIDE.md)
 
-**Current Status:** ✅ **MIGRATION COMPLETE!** All 210 test files migrated. See [Completion Report](../../docs/TEST_MIGRATION_COMPLETION_REPORT.md)
+**Current Status:** ✅ **MIGRATION & CONSOLIDATION COMPLETE!** All 210 files migrated and 28 legacy files consolidated into 181 optimized test files. See [Final Summary](../../docs/TEST_REFACTORING_FINAL_SUMMARY.md)
 
 ## Test Database
 
