@@ -11,25 +11,20 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import WebSocket
 
-from server.realtime.connection_manager import connection_manager
+from server.realtime.connection_manager import ConnectionManager
 
 
 class TestConnectionManager:
-    """Test ConnectionManager class."""
+    """Test ConnectionManager class with isolated instances."""
 
     def setup_method(self):
-        """Set up test fixtures."""
-        self.manager = connection_manager
-        # Reset the connection manager state between tests
-        self.manager.active_websockets.clear()
-        self.manager.player_websockets.clear()
-        self.manager.active_sse_connections.clear()
-        self.manager.room_subscriptions.clear()
-        self.manager.sequence_counter = 0
-        self.manager.pending_messages.clear()
-        self.manager.connection_attempts.clear()
+        """Set up test fixtures with isolated ConnectionManager instance."""
+        # Create isolated instance for each test (not singleton)
+        # This prevents test pollution and ensures independence
+        self.manager = ConnectionManager()
+
+        # Initialize with None persistence to avoid database dependencies
         self.manager.persistence = None
-        # Also clear the room_manager's persistence to ensure canonical_room_id works correctly
         self.manager.room_manager.persistence = None
 
         self.mock_websocket = AsyncMock(spec=WebSocket)

@@ -240,6 +240,19 @@ class TestEventOrderingAndTimingBugs:
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
+        # Mock room sync service to pass through events with correct player_id
+        def mock_process_event(evt):
+            evt.sequence_number = 1
+            return evt
+
+        event_handler.room_sync_service._process_event_with_ordering = Mock(side_effect=mock_process_event)
+
+        # Mock chat logger
+        event_handler.chat_logger.log_player_left_room = Mock()
+
+        # Mock _send_room_occupants_update
+        event_handler._send_room_occupants_update = AsyncMock()
+
         # Create concurrent movement events
         event_1 = PlayerLeftRoom(player_id=player_1_id, room_id=room_id, timestamp=None, event_type="")
 

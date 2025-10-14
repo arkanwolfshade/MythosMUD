@@ -277,10 +277,14 @@ class TestAsyncOperationsVerification:
     async def test_async_operations_with_real_persistence_layer(self):
         """Test async operations with a real persistence layer instance."""
         import os
+        from pathlib import Path
         from unittest.mock import patch
 
-        # Set DATABASE_URL environment variable for test
-        test_db_url = "sqlite:///./data/unit_test/players/test_players.db"
+        # Set DATABASE_URL environment variable for test with ABSOLUTE path
+        # Path: server/tests/verification/test_async_operations_verification.py -> server/tests/verification -> server/tests -> server -> project root
+        project_root = Path(__file__).parent.parent.parent.parent
+        test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
+        test_db_url = f"sqlite+aiosqlite:///{test_db_path}"
 
         with patch.dict(os.environ, {"DATABASE_URL": test_db_url}):
             # Create a real persistence layer (this will use SQLite)
