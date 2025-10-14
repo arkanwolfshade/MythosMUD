@@ -465,12 +465,16 @@ class NPCPopulationController:
         # Check spawn rules
         if definition.id in self.spawn_rules:
             logger.info(f"Found {len(self.spawn_rules[definition.id])} spawn rules for NPC {definition.id}")
+            # Get current NPC count for population checks
+            current_npc_count = stats.npcs_by_definition.get(definition.id, 0) if stats else 0
+
             for i, rule in enumerate(self.spawn_rules[definition.id]):
                 logger.info(f"Checking spawn rule {i + 1} for NPC {definition.id}")
 
-                if not rule.can_spawn_for_player_count(self.current_game_state["player_count"]):
+                # Check if current NPC population is below the rule's max_population limit
+                if not rule.can_spawn_with_population(current_npc_count):
                     logger.info(
-                        f"Spawn rule {i + 1} failed player count check (current players: {self.current_game_state['player_count']})"
+                        f"Spawn rule {i + 1} failed population check (current NPCs: {current_npc_count}, max: {rule.max_population})"
                     )
                     continue
 

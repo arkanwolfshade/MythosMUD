@@ -315,7 +315,7 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                select(NPCSpawnRule).order_by(NPCSpawnRule.sub_zone_id, NPCSpawnRule.min_players)
+                select(NPCSpawnRule).order_by(NPCSpawnRule.sub_zone_id, NPCSpawnRule.min_population)
             )
             rules = result.scalars().all()
 
@@ -357,8 +357,8 @@ class NPCService:
         session: AsyncSession,
         npc_definition_id: int,
         sub_zone_id: str,
-        min_players: int = 0,
-        max_players: int = 999,
+        min_population: int = 0,
+        max_population: int = 999,
         spawn_conditions: dict[str, Any] | None = None,
     ) -> NPCSpawnRule:
         """
@@ -368,8 +368,8 @@ class NPCService:
             session: Database session
             npc_definition_id: NPC definition ID
             sub_zone_id: Sub-zone ID
-            min_players: Minimum player count
-            max_players: Maximum player count
+            min_population: Minimum NPC population count
+            max_population: Maximum NPC population count
             spawn_conditions: Spawn conditions dictionary
 
         Returns:
@@ -384,18 +384,18 @@ class NPCService:
             if not definition:
                 raise ValueError(f"NPC definition not found: {npc_definition_id}")
 
-            # Validate player counts
-            if min_players < 0:
-                raise ValueError(f"Min players must be non-negative, got: {min_players}")
-            if max_players < min_players:
-                raise ValueError(f"Max players must be >= min players, got: {max_players} < {min_players}")
+            # Validate population counts
+            if min_population < 0:
+                raise ValueError(f"Min population must be non-negative, got: {min_population}")
+            if max_population < min_population:
+                raise ValueError(f"Max population must be >= min population, got: {max_population} < {min_population}")
 
             # Create spawn rule
             rule = NPCSpawnRule(
                 npc_definition_id=npc_definition_id,
                 sub_zone_id=sub_zone_id,
-                min_players=min_players,
-                max_players=max_players,
+                min_population=min_population,
+                max_population=max_population,
                 spawn_conditions=json.dumps(spawn_conditions or {}),
             )
 

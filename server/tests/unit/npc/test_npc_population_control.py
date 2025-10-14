@@ -323,8 +323,8 @@ class TestNPCPopulationController:
         return NPCSpawnRule(
             npc_definition_id=shopkeeper_definition.id,
             sub_zone_id="arkhamcity/downtown",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions="{}",
         )
 
@@ -334,8 +334,8 @@ class TestNPCPopulationController:
         return NPCSpawnRule(
             npc_definition_id=passive_mob_definition.id,
             sub_zone_id="arkhamcity/downtown",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "day", "weather": "clear"}',
         )
 
@@ -765,8 +765,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=shopkeeper_definition.id,
             sub_zone_id="downtown",
-            min_players=0,
-            max_players=999,
+            min_population=0,
+            max_population=999,
             spawn_conditions="{}",  # Empty conditions - should always pass
         )
         return rule
@@ -777,8 +777,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=passive_mob_definition.id,
             sub_zone_id="downtown",
-            min_players=1,
-            max_players=5,
+            min_population=1,
+            max_population=5,
             spawn_conditions='{"time_of_day": "day", "weather": ["clear", "overcast"], "player_level_min": 1}',
         )
         return rule
@@ -789,8 +789,8 @@ class TestNPCPopulationManagement:
         rule = NPCSpawnRule(
             npc_definition_id=aggressive_mob_definition.id,
             sub_zone_id="downtown",
-            min_players=2,
-            max_players=8,
+            min_population=2,
+            max_population=8,
             spawn_conditions='{"time_of_day": "night", "weather": ["fog", "rain"], "player_level_min": 3}',
         )
         return rule
@@ -816,28 +816,29 @@ class TestNPCPopulationManagement:
         assert aggressive_mob_definition.can_spawn(1) is True
         assert aggressive_mob_definition.can_spawn(2) is False
 
-    def test_npc_spawn_rule_player_count_validation(
+    def test_npc_spawn_rule_population_validation(
         self, spawn_rule_shopkeeper, spawn_rule_passive_mob, spawn_rule_aggressive_mob
     ):
-        """Test that spawn rules properly validate player counts."""
-        # Shopkeeper: any player count
-        assert spawn_rule_shopkeeper.can_spawn_for_player_count(0) is True
-        assert spawn_rule_shopkeeper.can_spawn_for_player_count(1) is True
-        assert spawn_rule_shopkeeper.can_spawn_for_player_count(10) is True
+        """Test that spawn rules properly validate NPC population counts."""
+        # Shopkeeper: max 999 NPCs (essentially unlimited)
+        assert spawn_rule_shopkeeper.can_spawn_with_population(0) is True
+        assert spawn_rule_shopkeeper.can_spawn_with_population(1) is True
+        assert spawn_rule_shopkeeper.can_spawn_with_population(998) is True
+        assert spawn_rule_shopkeeper.can_spawn_with_population(999) is False  # At max
 
-        # Passive mob: 1-5 players
-        assert spawn_rule_passive_mob.can_spawn_for_player_count(0) is False
-        assert spawn_rule_passive_mob.can_spawn_for_player_count(1) is True
-        assert spawn_rule_passive_mob.can_spawn_for_player_count(3) is True
-        assert spawn_rule_passive_mob.can_spawn_for_player_count(5) is True
-        assert spawn_rule_passive_mob.can_spawn_for_player_count(6) is False
+        # Passive mob: max 5 NPCs
+        assert spawn_rule_passive_mob.can_spawn_with_population(0) is True
+        assert spawn_rule_passive_mob.can_spawn_with_population(1) is True
+        assert spawn_rule_passive_mob.can_spawn_with_population(4) is True
+        assert spawn_rule_passive_mob.can_spawn_with_population(5) is False  # At max
+        assert spawn_rule_passive_mob.can_spawn_with_population(6) is False  # Over max
 
-        # Aggressive mob: 2-8 players
-        assert spawn_rule_aggressive_mob.can_spawn_for_player_count(1) is False
-        assert spawn_rule_aggressive_mob.can_spawn_for_player_count(2) is True
-        assert spawn_rule_aggressive_mob.can_spawn_for_player_count(5) is True
-        assert spawn_rule_aggressive_mob.can_spawn_for_player_count(8) is True
-        assert spawn_rule_aggressive_mob.can_spawn_for_player_count(9) is False
+        # Aggressive mob: max 8 NPCs
+        assert spawn_rule_aggressive_mob.can_spawn_with_population(0) is True
+        assert spawn_rule_aggressive_mob.can_spawn_with_population(2) is True
+        assert spawn_rule_aggressive_mob.can_spawn_with_population(7) is True
+        assert spawn_rule_aggressive_mob.can_spawn_with_population(8) is False  # At max
+        assert spawn_rule_aggressive_mob.can_spawn_with_population(9) is False  # Over max
 
     def test_npc_spawn_rule_condition_checking(
         self, spawn_rule_shopkeeper, spawn_rule_passive_mob, spawn_rule_aggressive_mob

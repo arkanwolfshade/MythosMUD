@@ -225,10 +225,18 @@ class NPCSpawningService:
                 logger.debug(f"Population limit reached for {definition_name} in {zone_key}")
                 return spawn_requests
 
+        # Get current NPC count for this specific definition
+        current_npc_count = stats.npcs_by_definition.get(definition.id, 0) if stats else 0
+
         # Check spawn rules
         if definition.id in self.population_controller.spawn_rules:
             for rule in self.population_controller.spawn_rules[definition.id]:
-                if not rule.can_spawn_for_player_count(self.population_controller.current_game_state["player_count"]):
+                # Check if current NPC population allows spawning more instances
+                if not rule.can_spawn_with_population(current_npc_count):
+                    logger.debug(
+                        f"Spawn rule population limit reached for {definition.name} "
+                        f"(current: {current_npc_count}, max: {rule.max_population})"
+                    )
                     continue
 
                 if not rule.check_spawn_conditions(self.population_controller.current_game_state):

@@ -32,21 +32,27 @@ Successfully addressed critical test failures across 7 test modules, reducing fa
 **Issues Fixed**:
 - **Model Mismatch**: `NPCSpawnRuleResponse` and `NPCSpawnRuleCreate` expected fields that don't exist in the database model:
   - Expected: `spawn_probability`, `max_population`, `required_npc`
-  - Actual: `min_players`, `max_players`, `sub_zone_id`
+  - Actual: `min_population`, `max_population`, `sub_zone_id`
 - **Mock Path Issues**: Tests patched `get_npc_session` instead of `get_async_session`
+- **Misleading Field Names**: Original field names `min_players`/`max_players` were misleading - they control NPC population counts, not player counts
 
 **Solutions Applied**:
-- Updated `NPCSpawnRuleResponse` model to match actual database schema:
+- Renamed database fields for clarity:
+  - `min_players` → `min_population` (minimum NPC instances)
+  - `max_players` → `max_population` (maximum NPC instances)
+- Updated `NPCSpawnRuleResponse` model to match corrected database schema:
   ```python
   class NPCSpawnRuleResponse(BaseModel):
       id: int
       npc_definition_id: int
       sub_zone_id: str
-      min_players: int
-      max_players: int
+      min_population: int
+      max_population: int
       spawn_conditions: dict[str, Any]
   ```
 - Updated `NPCSpawnRuleCreate` model similarly
+- Created Alembic migration script for existing databases
+- Updated all service layer methods and documentation
 - Changed mock patches from `get_npc_session` to `get_async_session` throughout
 
 **Test Result**: NPC API model tests now pass

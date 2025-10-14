@@ -112,8 +112,8 @@ class NPCSpawnRuleCreate(BaseModel):
 
     npc_definition_id: int = Field(..., gt=0)
     sub_zone_id: str = Field(..., min_length=1, max_length=50)
-    min_players: int = Field(default=0, ge=0)
-    max_players: int = Field(default=999, ge=0)
+    min_population: int = Field(default=0, ge=0)
+    max_population: int = Field(default=999, ge=0)
     spawn_conditions: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -123,8 +123,8 @@ class NPCSpawnRuleResponse(BaseModel):
     id: int
     npc_definition_id: int
     sub_zone_id: str
-    min_players: int
-    max_players: int
+    min_population: int
+    max_population: int
     spawn_conditions: dict[str, Any]
 
     @classmethod
@@ -134,8 +134,8 @@ class NPCSpawnRuleResponse(BaseModel):
             id=spawn_rule.id,
             npc_definition_id=spawn_rule.npc_definition_id,
             sub_zone_id=spawn_rule.sub_zone_id,
-            min_players=spawn_rule.min_players,
-            max_players=spawn_rule.max_players,
+            min_population=spawn_rule.min_population,
+            max_population=spawn_rule.max_population,
             spawn_conditions=json.loads(spawn_rule.spawn_conditions)
             if isinstance(spawn_rule.spawn_conditions, str)
             else spawn_rule.spawn_conditions,
