@@ -23,8 +23,6 @@ class TestServiceDependencyInjection:
     def app(self):
         """Create FastAPI app for testing with mocked external dependencies."""
         with (
-            patch("server.app.lifespan.init_db"),
-            patch("server.app.lifespan.init_npc_database"),
             patch("server.services.nats_service.nats_service") as mock_nats,
             patch("server.persistence.get_persistence") as mock_get_persistence,
         ):

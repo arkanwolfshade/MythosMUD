@@ -10,11 +10,11 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..exceptions import DatabaseError
-from ..exceptions import ValidationError as CustomValidationError
-from ..game.player_service import PlayerService
-from ..models import Stats
-from ..schemas.player import PlayerRead
+from server.exceptions import DatabaseError
+from server.exceptions import ValidationError as CustomValidationError
+from server.game.player_service import PlayerService
+from server.models import Stats
+from server.schemas.player import PlayerRead
 
 
 class TestPlayerServiceLayer:
@@ -44,7 +44,7 @@ class TestPlayerServiceLayer:
         assert isinstance(result, PlayerRead)
         assert result.name == "TestPlayer"
         assert result.profession_id == 0
-        assert result.current_room_id == "earth_arkhamcity_northside_intersection_derby_high"
+        assert result.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
         # Verify persistence calls
         self.mock_persistence.async_get_player_by_name.assert_called_once_with("TestPlayer")

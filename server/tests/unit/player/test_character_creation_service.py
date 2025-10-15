@@ -10,9 +10,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..exceptions import ValidationError as CustomValidationError
-from ..game.character_creation_service import CharacterCreationService
-from ..models import Stats
+from server.exceptions import ValidationError as CustomValidationError
+from server.game.character_creation_service import CharacterCreationService
+from server.models import Stats
 
 
 class TestCharacterCreationServiceLayer:

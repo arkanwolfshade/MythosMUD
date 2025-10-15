@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..game.room_service import RoomService
+from server.game.room_service import RoomService
 
 
 class TestRoomServiceLayer:
