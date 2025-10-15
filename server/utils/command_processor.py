@@ -165,6 +165,10 @@ class CommandProcessor:
         if hasattr(validated_command, "filter_name"):
             command_data["filter_name"] = validated_command.filter_name
 
+        # Extract args field for commands that need it (like shutdown)
+        if hasattr(validated_command, "args"):
+            command_data["args"] = validated_command.args
+
         logger.debug(f"Extracted command data: type={command_data['command_type']}, keys={list(command_data.keys())}")
 
         return command_data

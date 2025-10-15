@@ -152,6 +152,8 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     },
     onDisconnect: () => {
       logger.info('GameConnection', 'WebSocket disconnected');
+      // Notify the connection state machine that WebSocket failed
+      connectionState.onWSFailed('WebSocket disconnected');
       onDisconnectRef.current?.();
     },
   });
@@ -240,6 +242,22 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       reconnectAttempts: connectionState.reconnectAttempts,
     };
   }, [session.sessionId, wsConnection.isConnected, sseConnection.isConnected, connectionState]);
+
+  // Connection state monitoring - detect when all connections are lost
+  const wasConnectedRef = useRef(false);
+  useEffect(() => {
+    const wasConnected = wasConnectedRef.current;
+    const isCurrentlyConnected = connectionState.isConnected;
+
+    // If we were connected but are no longer connected, trigger onDisconnect
+    if (wasConnected && !isCurrentlyConnected) {
+      logger.info('GameConnection', 'All connections lost, triggering onDisconnect callback');
+      options.onDisconnect?.();
+    }
+
+    // Update the ref for next comparison
+    wasConnectedRef.current = isCurrentlyConnected;
+  }, [connectionState.isConnected, options.onDisconnect, disconnect, options]);
 
   return {
     // State (mapped for backward compatibility)

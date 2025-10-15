@@ -287,6 +287,7 @@ async def roll_character_stats(
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
+    request: Request = None,
 ):
     """
     Roll random stats for character creation.
@@ -296,6 +297,17 @@ async def roll_character_stats(
 
     Rate limited to 10 requests per minute per user.
     """
+    # Check if server is shutting down
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+    from ..utils.error_logging import create_error_context
+
+    if request and is_shutdown_pending(request.app):
+        context = create_error_context(user_id=str(current_user.id) if current_user else None)
+        context.metadata["operation"] = "roll_stats"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(
+            status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
+        )
     # Check if user is authenticated
     logger.debug(f"Authentication check - current_user: {current_user}")
     if not current_user:
@@ -412,6 +424,19 @@ async def create_character_with_stats(
 
     Rate limited to 5 creations per 5 minutes per user.
     """
+    # Check if server is shutting down
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    if request and is_shutdown_pending(request.app):
+        from ..utils.error_logging import create_error_context
+
+        context = create_error_context(user_id=str(current_user.id) if current_user else None)
+        context.metadata["operation"] = "create_character"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(
+            status_code=503, detail=get_shutdown_blocking_message("character_creation"), context=context
+        )
+
     # Check if user is authenticated
     if not current_user:
         context = create_context_from_request(request)

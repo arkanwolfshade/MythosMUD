@@ -100,7 +100,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   authToken,
   onLogout,
   isLoggingOut = false,
-  onDisconnect,
+  onDisconnect: _onDisconnect,
 }) => {
   const [gameState, setGameState] = useState<GameState>({
     player: null,
@@ -625,6 +625,74 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             logger.debug('GameTerminalWithPanels', 'Received pong event');
             break;
           }
+          case 'shutdown_notification': {
+            const message = event.data.message as string;
+            const secondsRemaining = event.data.seconds_remaining as number;
+            const channel = event.data.channel as string;
+
+            if (message) {
+              logger.info('GameTerminalWithPanels', 'Processing shutdown notification', {
+                message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                secondsRemaining,
+                channel,
+                timestamp: event.timestamp,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: channel || ('system' as const),
+              };
+
+              updates.messages.push(chatMessage);
+
+              logger.info('GameTerminalWithPanels', 'Added shutdown notification to updates', {
+                messageType: 'system',
+                channel: channel || 'system',
+                totalMessages: updates.messages.length,
+              });
+            }
+            break;
+          }
+          case 'shutdown_cancelled': {
+            const message = event.data.message as string;
+            const channel = event.data.channel as string;
+
+            if (message) {
+              logger.info('GameTerminalWithPanels', 'Processing shutdown cancellation', {
+                message: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+                channel,
+                timestamp: event.timestamp,
+              });
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              const chatMessage = {
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system' as const,
+                channel: channel || ('system' as const),
+              };
+
+              updates.messages.push(chatMessage);
+
+              logger.info('GameTerminalWithPanels', 'Added shutdown cancellation to updates', {
+                messageType: 'system',
+                channel: channel || 'system',
+                totalMessages: updates.messages.length,
+              });
+            }
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,
@@ -693,6 +761,37 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     [processEventQueue]
   ); // Only depend on processEventQueue
 
+  // Handle connection loss - trigger logout flow when all connections are lost
+  const handleConnectionLoss = useCallback(() => {
+    logger.info('GameTerminalWithPanels', 'Connection lost, triggering logout flow');
+    console.log('GameTerminalWithPanels: handleConnectionLoss called, onLogout:', !!onLogout);
+
+    // Add connection lost message
+    const connectionLostMessage: ChatMessage = {
+      text: 'Connection to server lost. Returning to login screen...',
+      timestamp: new Date().toISOString(),
+      messageType: 'system',
+      isHtml: false,
+    };
+
+    // Add message to state and wait for it to render before logout
+    setGameState(prev => ({
+      ...prev,
+      messages: [...prev.messages, connectionLostMessage],
+    }));
+
+    // Wait for message to render before triggering logout
+    setTimeout(() => {
+      console.log('GameTerminalWithPanels: About to call onLogout, onLogout:', !!onLogout);
+      if (onLogout) {
+        console.log('GameTerminalWithPanels: Calling onLogout');
+        onLogout();
+      } else {
+        console.log('GameTerminalWithPanels: onLogout is not available');
+      }
+    }, 1000); // 1 second to show the message
+  }, [onLogout]);
+
   // Memoize the connect handler
   const handleConnect = useCallback(() => {
     logger.info('GameTerminalWithPanels', 'Connected to game server');
@@ -703,7 +802,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   // Memoize the disconnect handler
   const handleDisconnect = useCallback(() => {
     logger.info('GameTerminalWithPanels', 'Disconnected from game server');
-  }, []); // Empty dependency array - this function should never change
+    // Trigger the connection loss handler
+    handleConnectionLoss();
+  }, [handleConnectionLoss]); // Include handleConnectionLoss in dependencies
 
   // Memoize the error handler
   const handleError = useCallback((error: string) => {
@@ -720,12 +821,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     onError: handleError,
   });
 
-  // Register the disconnect function with the parent component
-  useEffect(() => {
-    if (onDisconnect) {
-      onDisconnect(disconnect);
-    }
-  }, [onDisconnect, disconnect]);
+  // Note: Connection loss handling is now done through the handleDisconnect callback
+  // which is passed to the useGameConnection hook
 
   // Connect once on mount; disconnect on unmount.
   // Important: Avoid including changing dependencies (like connect/disconnect identity or state)

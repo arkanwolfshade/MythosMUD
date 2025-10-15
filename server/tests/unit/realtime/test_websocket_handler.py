@@ -69,6 +69,11 @@ class TestWebSocketConnection:
         player_id = "test_player_123"
         session_id = "session_456"
 
+        # Mock app state to indicate no shutdown pending
+        mock_app = Mock()
+        mock_app.state.server_shutdown_pending = False
+        mock_websocket.app = mock_app
+
         # Mock player and room data
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -107,6 +112,12 @@ class TestWebSocketConnection:
         """Test WebSocket connection handling when connection fails."""
         # Setup
         player_id = "test_player_123"
+
+        # Mock app state to indicate no shutdown pending
+        mock_app = Mock()
+        mock_app.state.server_shutdown_pending = False
+        mock_websocket.app = mock_app
+
         mock_connection_manager.connect_websocket.return_value = False
 
         # Execute
@@ -123,6 +134,11 @@ class TestWebSocketConnection:
         """Test WebSocket connection handling with JSON decode error."""
         # Setup
         player_id = "test_player_123"
+
+        # Mock app state to indicate no shutdown pending
+        mock_app = Mock()
+        mock_app.state.server_shutdown_pending = False
+        mock_websocket.app = mock_app
 
         mock_player = Mock()
         mock_player.name = "TestPlayer"

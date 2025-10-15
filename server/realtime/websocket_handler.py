@@ -56,6 +56,21 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
         player_id: The player's ID
         session_id: Optional session ID for dual connection management
     """
+    # Check if server is shutting down - prevent new connections
+    # Import here to avoid circular imports
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    # Try to get app from websocket state (may not always be available)
+    try:
+        if hasattr(websocket, "app") and is_shutdown_pending(websocket.app):
+            error_message = get_shutdown_blocking_message("motd_progression")
+            await websocket.send_json({"type": "error", "message": error_message})
+            await websocket.close(code=1001, reason="Server shutting down")
+            logger.info(f"Rejected WebSocket connection for {player_id} - server shutting down")
+            return
+    except Exception as e:
+        logger.debug(f"Could not check shutdown status in WebSocket connection: {e}")
+
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 
