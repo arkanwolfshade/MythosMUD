@@ -1,69 +1,129 @@
-# React + TypeScript + Vite
+# MythosMUD Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite frontend for MythosMUD.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Start development server
+npm run dev
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+# Build for production
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Testing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+### Unit Tests (Vitest)
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+# Run unit tests
+npm run test:unit
+
+# Run with coverage
+npm run test:coverage
+
+# Watch mode
+npm run test:unit:watch
 ```
+
+### E2E Tests (Playwright)
+
+#### Automated E2E Runtime Tests
+
+Automated single-player E2E tests that run in CI/CD:
+
+```bash
+# Run all automated E2E tests
+npm run test:e2e:runtime
+
+# Run in headed mode (see browser)
+npm run test:e2e:runtime:headed
+
+# Run in debug mode (step through tests)
+npm run test:e2e:runtime:debug
+
+# Run in UI mode (interactive)
+npm run test:e2e:runtime:ui
+```
+
+**Test Coverage:**
+
+- 114 automated tests across 10 scenarios
+- Error handling, accessibility, integration testing
+- Runs in <5 minutes
+- Full CI/CD integration
+
+**See**: [E2E Testing Guide](../docs/E2E_TESTING_GUIDE.md) for detailed information.
+
+#### Multiplayer MCP Scenarios
+
+For multi-player scenarios requiring AI Agent coordination:
+
+**See**: [Multiplayer Test Rules](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
+
+## Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+```
+
+## Tech Stack
+
+- **Framework**: React 19
+- **Language**: TypeScript 5.9
+- **Build Tool**: Vite 7
+- **Styling**: TailwindCSS 4
+- **State**: Zustand
+- **Testing**: Vitest + Playwright
+- **Linting**: ESLint + Prettier
+
+## Project Structure
+
+```
+client/
+├── src/
+│   ├── components/     # React components
+│   ├── hooks/          # Custom React hooks
+│   ├── contexts/       # React contexts
+│   ├── services/       # API services
+│   ├── types/          # TypeScript types
+│   ├── utils/          # Utility functions
+│   └── App.tsx         # Main app component
+├── tests/
+│   ├── e2e/
+│   │   ├── runtime/    # Automated E2E tests
+│   │   │   ├── fixtures/         # Test fixtures
+│   │   │   ├── error-handling/   # Error tests
+│   │   │   ├── accessibility/    # Accessibility tests
+│   │   │   ├── admin/            # Admin tests
+│   │   │   └── integration/      # Integration tests
+│   │   └── playwright.runtime.config.ts
+│   └── unit/           # Vitest unit tests
+├── public/             # Static assets
+└── package.json
+```
+
+## Environment Variables
+
+Create a `.env` file in the client directory:
+
+```env
+VITE_API_URL=http://localhost:54731
+VITE_WS_URL=ws://localhost:54731/ws
+```
+
+## Contributing
+
+See [DEVELOPMENT.md](../DEVELOPMENT.md) for development guidelines.
+
+## License
+
+See [LICENSE](../LICENSE) for licensing information.

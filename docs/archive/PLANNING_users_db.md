@@ -200,7 +200,7 @@ server/
 server/tests/
 ├── data/
 │   ├── test_users.db    ✅ NEW: Test database with users, players, invites tables
-│   ├── test_players.db  ✅ UPDATED: Test database with new schema
+│   ├── unit_test_players.db  ✅ UPDATED: Test database with new schema
 │   └── test_persistence.log
 ├── init_test_db.py      ✅ UPDATED: Initialize test database with new schema
 ├── verify_test_db.py    ✅ UPDATED: Verify test database structure

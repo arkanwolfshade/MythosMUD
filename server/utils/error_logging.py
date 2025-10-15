@@ -152,7 +152,7 @@ def log_and_raise_http(
     raise HTTPException(status_code=status_code, detail=detail)
 
 
-def create_context_from_request(request: Request) -> ErrorContext:
+def create_context_from_request(request: Request | None) -> ErrorContext:
     """
     Create error context from a FastAPI request.
 
@@ -160,35 +160,47 @@ def create_context_from_request(request: Request) -> ErrorContext:
     error context for logging and debugging.
 
     Args:
-        request: FastAPI request object
+        request: FastAPI request object (can be None for testing)
 
     Returns:
         ErrorContext with request information
     """
-    # Extract request metadata
-    metadata = {
-        "path": str(request.url),
-        "method": request.method,
-        "user_agent": request.headers.get("user-agent", ""),
-        "content_type": request.headers.get("content-type", ""),
-        "content_length": request.headers.get("content-length", ""),
-        "remote_addr": getattr(request.client, "host", "") if request.client else "",
-    }
+    # Handle None request (for testing scenarios)
+    if request is None:
+        metadata = {
+            "path": "unknown",
+            "method": "unknown",
+            "user_agent": "",
+            "content_type": "",
+            "content_length": "",
+            "remote_addr": "",
+        }
+    else:
+        # Extract request metadata
+        metadata = {
+            "path": str(request.url),
+            "method": request.method,
+            "user_agent": request.headers.get("user-agent", ""),
+            "content_type": request.headers.get("content-type", ""),
+            "content_length": request.headers.get("content-length", ""),
+            "remote_addr": getattr(request.client, "host", "") if request.client else "",
+        }
 
     # Extract user information if available
     user_id = None
     session_id = None
 
     # Try to get user info from request state (if authentication middleware has set it)
-    if hasattr(request.state, "user_id"):
-        user_id = request.state.user_id
-    if hasattr(request.state, "session_id"):
-        session_id = request.state.session_id
+    if request and hasattr(request, "state"):
+        if hasattr(request.state, "user_id"):
+            user_id = request.state.user_id
+        if hasattr(request.state, "session_id"):
+            session_id = request.state.session_id
 
     return create_error_context(
         user_id=user_id,
         session_id=session_id,
-        request_id=str(request.url),
+        request_id=str(request.url) if request else "unknown",
         metadata=metadata,
     )
 

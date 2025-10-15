@@ -3,9 +3,9 @@
 
 Write-Host "Verifying MythosMUD databases..." -ForegroundColor Green
 
-# Database paths
-$prodDb = "../../data/players/players.db"
-$testDb = "./tests/data/players/test_players.db"
+# Database paths (relative to server/tests/scripts/)
+$prodDb = "../../../data/players/players.db"
+$testDb = "../../../data/unit_test/players/unit_test_players.db"
 
 # Required tables
 $requiredTables = @("users", "players", "invites")
@@ -38,15 +38,18 @@ function Test-Database {
             if ($missing.Count -gt 0) {
                 Write-Host "❌ $dbName` missing tables: $missing" -ForegroundColor Red
                 return $false
-            } else {
+            }
+            else {
                 Write-Host "✅ $dbName` has all required tables" -ForegroundColor Green
                 return $true
             }
-        } else {
+        }
+        else {
             Write-Host "❌ $dbName`: Error reading database" -ForegroundColor Red
             return $false
         }
-    } catch {
+    }
+    catch {
         Write-Host "❌ $dbName`: Error - $($_.Exception.Message)" -ForegroundColor Red
         return $false
     }
@@ -64,7 +67,8 @@ if ($prodOk -and $testOk) {
     Write-Host "🎉 All databases verified successfully!" -ForegroundColor Green
     Write-Host "Both databases contain: users, players, invites tables" -ForegroundColor Green
     exit 0
-} else {
+}
+else {
     Write-Host "❌ Database verification failed!" -ForegroundColor Red
     if (!$prodOk) {
         Write-Host "Production database needs attention" -ForegroundColor Yellow

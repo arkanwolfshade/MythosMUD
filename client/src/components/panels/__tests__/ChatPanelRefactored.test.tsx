@@ -199,7 +199,7 @@ describe('ChatPanelRefactored', () => {
           timestamp: '2024-01-01T10:01:00Z',
           isHtml: false,
           messageType: 'chat' as const,
-          channel: 'say', // Use 'say' to match default selectedChannel
+          channel: 'local', // Use 'local' to match DEFAULT_CHANNEL
         },
       ];
 

@@ -86,6 +86,11 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
 
   // Filter and categorize messages
   const filteredMessages = messages.filter(message => {
+    // Always exclude chat messages from Game Log Panel - they belong in Chat Panel
+    if (message.messageType === 'chat') {
+      return false;
+    }
+
     // Apply message type filter
     if (messageFilter !== 'all' && message.messageType !== messageFilter) {
       return false;
@@ -216,12 +221,12 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
           </div>
         ) : (
           filteredMessages.map((message, index) => (
-            <div key={index} className="message-item">
+            <div key={index} className="message message-item" data-testid="game-log-message">
               <div className="flex items-start space-x-2">
                 <span className="text-xs text-mythos-terminal-text-secondary flex-shrink-0">
                   {formatTimestamp(message.timestamp)}
                 </span>
-                <div className={`flex-1 ${getMessageClass(message.messageType)}`}>
+                <div className={`flex-1 ${getMessageClass(message.messageType)}`} data-message-text={message.text}>
                   {message.isHtml ? (
                     <div
                       dangerouslySetInnerHTML={{

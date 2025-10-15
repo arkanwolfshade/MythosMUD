@@ -1,8 +1,10 @@
-# Scenario 2: Clean Game State on Connection
+# Scenario 2: Clean Game State on Connection **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests that players don't see stale/previous game state information when connecting. This scenario verifies that each new connection starts with a clean slate and doesn't inherit messages or state from previous sessions.
+
+**This is a core multi-player scenario** that requires verifying state isolation between multiple player sessions. No automated alternative is available.
 
 ## Prerequisites
 

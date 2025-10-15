@@ -1,8 +1,16 @@
-# Scenario 7: Who Command
+# Scenario 7: Who Command **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
-Tests the who command functionality for player listing and filtering. This scenario verifies that players can see other online players, that the who command displays proper information including locations, and that the command works correctly for both admin and non-admin players.
+Tests the who command functionality for multi-player visibility and real-time updates. This scenario verifies that players can see OTHER online players in the who list and that the list updates correctly as players connect and disconnect.
+
+**⚠️ AUTOMATED TESTS AVAILABLE**: Single-player who command functionality is tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/who-command.spec.ts` for:
+- Command output format verification
+- Location information display
+- Single player visibility
+- Response time testing
+
+This MCP scenario focuses ONLY on multi-player aspects that cannot be automated.
 
 ## Prerequisites
 

@@ -57,7 +57,7 @@ const getFontSizeClass = (): string => {
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message, index }) => {
   return (
     <div
-      className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
+      className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Alias Expansion Information */}

@@ -55,14 +55,14 @@ Stops MythosMUD server processes using multiple detection methods.
 .\stop_server.ps1 -Force -Verbose
 ```
 
-### `start_dev.ps1`
+### `start_local.ps1`
 
 Starts the complete MythosMUD development environment (both FastAPI server and React client).
 
 **Usage:**
 
 ```powershell
-.\start_dev.ps1
+.\start_local.ps1
 ```
 
 **Features:**
@@ -106,10 +106,10 @@ python init_database.py <database_path>
 **Examples:**
 ```bash
 # Initialize production database
-python init_database.py data/players/players.db
+python init_database.py data/local/players/players.db
 
 # Initialize test database
-python init_database.py server/tests/data/players/test_players.db
+python init_database.py data/unit_test/players/unit_test_players.db
 ```
 
 **Features:**

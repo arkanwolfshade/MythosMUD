@@ -23,6 +23,7 @@ from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
 from ...logging_config import get_logger
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from ...npc_database import get_npc_session
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
@@ -111,10 +112,10 @@ class NPCSpawnRuleCreate(BaseModel):
     """Model for creating NPC spawn rules."""
 
     npc_definition_id: int = Field(..., gt=0)
-    spawn_probability: float = Field(..., ge=0.0, le=1.0)
-    max_population: int = Field(..., ge=0)
+    sub_zone_id: str = Field(..., min_length=1, max_length=50)
+    min_population: int = Field(default=0, ge=0)
+    max_population: int = Field(default=999, ge=0)
     spawn_conditions: dict[str, Any] = Field(default_factory=dict)
-    required_npc: bool = False
 
 
 class NPCSpawnRuleResponse(BaseModel):
@@ -122,10 +123,10 @@ class NPCSpawnRuleResponse(BaseModel):
 
     id: int
     npc_definition_id: int
-    spawn_probability: float
+    sub_zone_id: str
+    min_population: int
     max_population: int
     spawn_conditions: dict[str, Any]
-    required_npc: bool
 
     @classmethod
     def from_orm(cls, spawn_rule: NPCSpawnRule) -> "NPCSpawnRuleResponse":
@@ -133,12 +134,12 @@ class NPCSpawnRuleResponse(BaseModel):
         return cls(
             id=spawn_rule.id,
             npc_definition_id=spawn_rule.npc_definition_id,
-            spawn_probability=spawn_rule.spawn_probability,
+            sub_zone_id=spawn_rule.sub_zone_id,
+            min_population=spawn_rule.min_population,
             max_population=spawn_rule.max_population,
             spawn_conditions=json.loads(spawn_rule.spawn_conditions)
             if isinstance(spawn_rule.spawn_conditions, str)
             else spawn_rule.spawn_conditions,
-            required_npc=spawn_rule.required_npc,
         )
 
 
@@ -167,9 +168,7 @@ async def get_npc_definitions(
         logger.info("NPC definitions requested", context={"user": auth_service.get_username(current_user)})
 
         # Get NPC definitions from database using NPC database session
-        from server.npc_database import get_npc_async_session
-
-        async for npc_session in get_npc_async_session():
+        async for npc_session in get_npc_session():
             definitions = await npc_service.get_npc_definitions(npc_session)
             break
 
@@ -206,9 +205,7 @@ async def create_npc_definition(
         )
 
         # Create NPC definition in database using NPC database session
-        from server.npc_database import get_npc_async_session
-
-        async for npc_session in get_npc_async_session():
+        async for npc_session in get_npc_session():
             definition = await npc_service.create_npc_definition(
                 session=npc_session,
                 name=npc_data.name,
@@ -254,9 +251,7 @@ async def get_npc_definition(
         )
 
         # Get NPC definition from database using NPC database session
-        from server.npc_database import get_npc_async_session
-
-        async for npc_session in get_npc_async_session():
+        async for npc_session in get_npc_session():
             definition = await npc_service.get_npc_definition(npc_session, definition_id)
             break
 

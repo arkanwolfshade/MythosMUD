@@ -47,8 +47,8 @@ param(
     [Parameter(HelpMessage = "Enable auto-reload for development")]
     [switch]$Reload = $true,
 
-    [Parameter(HelpMessage = "Environment to run in (local, test, production)")]
-    [ValidateSet("local", "test", "production")]
+    [Parameter(HelpMessage = "Environment to run in (local, unit_test, e2e_test, production)")]
+    [ValidateSet("local", "unit_test", "e2e_test", "production")]
     [string]$Environment = "local",
 
     [Parameter(HelpMessage = "Show help information")]
@@ -65,7 +65,8 @@ function Load-EnvironmentConfig {
 
     $envFile = switch ($Environment) {
         "local" { ".env.local" }
-        "test" { ".env.test" }
+        "unit_test" { ".env.unit_test" }
+        "e2e_test" { ".env.e2e_test" }
         "production" { ".env.production" }
         default { ".env.local" }
     }
@@ -76,7 +77,8 @@ function Load-EnvironmentConfig {
             if ($_ -match "^([^#][^=]+)=(.*)$") {
                 $name = $matches[1].Trim()
                 $value = $matches[2].Trim()
-                [Environment]::SetEnvironmentVariable($name, $value, "Process")
+                # Use Set-Item for env: drive to handle all variable names correctly
+                Set-Item -Path "env:$name" -Value $value -Force
             }
         }
     }
@@ -85,33 +87,54 @@ function Load-EnvironmentConfig {
     }
 }
 
-# Function to read server configuration
+# Function to get environment file path based on environment
+function Get-EnvFilePath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Environment
+    )
+
+    $envFile = switch ($Environment) {
+        "local" { ".env.local" }
+        "unit_test" { ".env.unit_test" }
+        "e2e_test" { ".env.e2e_test" }
+        "production" { ".env.production" }
+        default { ".env.local" }
+    }
+
+    return $envFile
+}
+
+# Function to read server configuration from environment
 function Get-ServerConfig {
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EnvFile
+    )
 
-    $configPath = "server\server_config.yaml"
     $defaultHost = "127.0.0.1"
     $defaultPort = 54731
 
-    if (Test-Path $configPath) {
+    if (Test-Path $EnvFile) {
         try {
-            # Simple YAML parsing for host and port
-            $configContent = Get-Content $configPath -Raw
-            if ($configContent -match "host:\s*([^\s#]+)") {
+            # Parse .env file for SERVER_HOST and SERVER_PORT
+            $envContent = Get-Content $EnvFile -Raw
+            if ($envContent -match "SERVER_HOST\s*=\s*([^\s#]+)") {
                 $defaultHost = $matches[1].Trim()
             }
-            if ($configContent -match "port:\s*(\d+)") {
+            if ($envContent -match "SERVER_PORT\s*=\s*(\d+)") {
                 $defaultPort = [int]$matches[1]
             }
-            Write-Host "Loaded config from $configPath" -ForegroundColor Gray
+            Write-Host "Loaded config from $EnvFile" -ForegroundColor Gray
         }
         catch {
-            Write-Host "Warning: Could not parse config file, using defaults" -ForegroundColor Yellow
+            Write-Host "Warning: Could not parse .env file, using defaults" -ForegroundColor Yellow
         }
     }
     else {
-        Write-Host "Warning: Config file not found at $configPath, using defaults" -ForegroundColor Yellow
+        Write-Host "Warning: .env file not found at $EnvFile, using defaults" -ForegroundColor Yellow
     }
 
     Write-Host "Config loaded - Host: $defaultHost, Port: $defaultPort" -ForegroundColor Cyan
@@ -127,14 +150,8 @@ if ($Help) {
     exit 0
 }
 
-# Load configuration and set defaults
-$config = Get-ServerConfig
-if ([string]::IsNullOrEmpty($ServerHost)) {
-    $ServerHost = $config.Host
-}
-if ($Port -eq 0) {
-    $Port = $config.Port
-}
+# Configuration is now handled in the main execution block below
+# (Pydantic BaseSettings loads from .env files automatically)
 
 # Function to terminate server processes
 function Stop-ServerProcesses {
@@ -235,7 +252,10 @@ function Start-MythosMUDServer {
         [int]$Port,
 
         [Parameter(Mandatory = $true)]
-        [bool]$Reload
+        [bool]$Reload,
+
+        [Parameter(Mandatory = $false)]
+        [string]$EnvFile = ""
     )
 
     # Use 127.0.0.1 for health check even if server binds to 0.0.0.0
@@ -244,9 +264,12 @@ function Start-MythosMUDServer {
     Write-Host "Starting server on $serverUrl..." -ForegroundColor Cyan
 
     if ($Reload) {
-        # Use Python script to avoid PowerShell wildcard expansion issues
-        $serverCommand = "uv run python start_server.py"
-        Write-Host "Using Python startup script to avoid wildcard expansion" -ForegroundColor Cyan
+        # Use uvicorn CLI with reload for optimal development experience
+        # This provides better reload control and faster iteration than programmatic reload
+        # Note: Removed --reload-exclude to avoid PowerShell glob expansion issues
+        # Uvicorn's default reload behavior works well without explicit exclusions
+        $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port --reload"
+        Write-Host "Using uvicorn with auto-reload enabled" -ForegroundColor Cyan
     }
     else {
         # Build command arguments for non-reload mode
@@ -257,8 +280,27 @@ function Start-MythosMUDServer {
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 
     try {
-        # Start the server process from project root
-        Start-Process powershell -ArgumentList "-NoExit", "-Command", $serverCommand -WindowStyle Normal
+        # Build command that loads environment variables first, then starts server
+        # This ensures the spawned process has access to secrets from .env file
+        $envLoadCommand = ""
+        if ($EnvFile -and (Test-Path $EnvFile)) {
+            # Escape single quotes in path for PowerShell string
+            $escapedEnvFile = $EnvFile -replace "'", "''"
+            $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { Set-Item -Path `"env:`$(`$matches[1].Trim())`" -Value `$matches[2].Trim() -Force } }; "
+            Write-Host "Environment file will be loaded in spawned process: $EnvFile" -ForegroundColor Cyan
+        }
+
+        # Set MYTHOSMUD_ENV in the spawned process to ensure logging uses correct directory
+        $mythosmudEnv = [Environment]::GetEnvironmentVariable("MYTHOSMUD_ENV", "Process")
+        if ($mythosmudEnv) {
+            $envLoadCommand += "`$env:MYTHOSMUD_ENV='$mythosmudEnv'; "
+            Write-Host "MYTHOSMUD_ENV=$mythosmudEnv will be set in spawned process" -ForegroundColor Cyan
+        }
+
+        $fullCommand = $envLoadCommand + $serverCommand
+
+        # Start the server process from project root with environment variables loaded
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", $fullCommand -WindowStyle Normal
 
         # Wait for server to start
         Write-Host "Waiting for server to start..." -ForegroundColor Yellow
@@ -298,23 +340,55 @@ function Start-MythosMUDServer {
 try {
     Write-Host "Starting MythosMUD Server..." -ForegroundColor Green
 
-    # Step 1: Load environment configuration
+    # Step 1: Get environment file path
+    $envFile = Get-EnvFilePath -Environment $Environment
+    $absoluteEnvFile = Join-Path $PWD $envFile
+
+    # Verify .env file exists
+    if (-not (Test-Path $absoluteEnvFile)) {
+        Write-Error "Environment file not found: $absoluteEnvFile"
+        Write-Host ""
+        Write-Host "Available environment files:" -ForegroundColor Yellow
+        Write-Host "  - .env.local (for local development)" -ForegroundColor Gray
+        Write-Host "  - .env.unit_test (for unit tests)" -ForegroundColor Gray
+        Write-Host "  - .env.e2e_test (for E2E tests)" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Copy the appropriate .env.*.example file to create your environment file:" -ForegroundColor Cyan
+        Write-Host "  cp .env.local.example .env.local" -ForegroundColor Gray
+        exit 1
+    }
+
+    # Step 2: Load environment configuration
     Load-EnvironmentConfig -Environment $Environment
 
-    # Step 2: Stop existing processes
+    # Step 2.5: Set LOGGING_ENVIRONMENT for Pydantic configuration
+    # The Pydantic config uses this to determine log directories
+    [Environment]::SetEnvironmentVariable("LOGGING_ENVIRONMENT", $Environment, "Process")
+    Write-Host "Set LOGGING_ENVIRONMENT=$Environment for Pydantic config" -ForegroundColor Cyan
+
+    # Step 3: Read config from .env file for display purposes
+    $config = Get-ServerConfig -EnvFile $absoluteEnvFile
+    if ([string]::IsNullOrEmpty($ServerHost)) {
+        $ServerHost = $config.Host
+    }
+    if ($Port -eq 0) {
+        $Port = $config.Port
+    }
+
+    # Step 4: Stop existing processes
     Stop-ServerProcesses
 
-    # Step 2.5: Start NATS server
+    # Step 5: Start NATS server
     Start-NatsServerForMythosMUD
 
-    # Step 3: Check if port is free
+    # Step 6: Check if port is free
     if (Test-PortInUse -Port $Port) {
         Write-Host "Port $Port is still in use. Please check for other processes." -ForegroundColor Red
         exit 1
     }
 
-    # Step 4: Start the server
-    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload
+    # Step 7: Start the server
+    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload -EnvFile $absoluteEnvFile
 
     if ($success) {
         Write-Host "MythosMUD Server is ready!" -ForegroundColor Green

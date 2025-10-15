@@ -1,8 +1,10 @@
-# Scenario 5: Chat Messages Between Players
+# Scenario 5: Chat Messages Between Players **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests chat message broadcasting between players in the same room. This scenario verifies that players can send and receive chat messages, that messages are properly formatted, and that the chat system works correctly for multiplayer communication.
+
+**This is a core multi-player scenario** that requires bidirectional chat message verification between players. No automated alternative is available.
 
 ## Prerequisites
 

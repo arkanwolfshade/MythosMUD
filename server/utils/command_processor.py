@@ -10,8 +10,9 @@ constructed with care, lest the foundations of both be compromised."
 
 from typing import Any
 
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
+from ..exceptions import ValidationError as MythosValidationError
 from ..logging_config import get_logger
 from .command_parser import CommandParser, parse_command
 from .error_logging import create_error_context
@@ -57,7 +58,7 @@ class CommandProcessor:
 
             return validated_command, None, command_type
 
-        except ValidationError as e:
+        except PydanticValidationError as e:
             # Handle Pydantic validation errors
             error_details = []
             for error in e.errors():
@@ -75,6 +76,13 @@ class CommandProcessor:
             logger.warning(f"Command validation failed: {error_message}")
 
             return None, f"Invalid command: {error_message}", None
+
+        except MythosValidationError as e:
+            # Handle validation errors with user-friendly messages
+            error_message = str(e)
+            logger.warning(f"Command validation failed: {error_message}")
+
+            return None, error_message, None
 
         except ValueError as e:
             # Handle parser-specific errors (e.g., unknown commands)
@@ -129,6 +137,9 @@ class CommandProcessor:
 
         if hasattr(validated_command, "message"):
             command_data["message"] = validated_command.message
+
+        if hasattr(validated_command, "target"):
+            command_data["target"] = validated_command.target
 
         if hasattr(validated_command, "action"):
             command_data["action"] = validated_command.action

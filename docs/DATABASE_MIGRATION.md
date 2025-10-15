@@ -5,18 +5,18 @@
 ### Current Situation
 We have two database files with different schemas:
 
-1. **`data/players/players.db`** - Old schema (68KB)
+1. **`data/players/local_players.db`** - Old schema (68KB)
 2. **`data/players/players_new.db`** - New schema (64KB)
 
 ### Schema Comparison
 
-| Component | Old Schema (`players.db`) | New Schema (`players_new.db`) |
-|-----------|---------------------------|-------------------------------|
-| **Users Table** | `id` (TEXT) | `user_id` (UUID) |
-| **Players Table** | `id` (TEXT) | `player_id` (UUID) |
-| **Foreign Keys** | `user_id` (TEXT) | `user_id` (UUID) |
-| **Invites Table** | `created_by`, `used_by` | `used_by_user_id` only |
-| **User Fields** | `is_verified` present | `is_verified` removed |
+| Component         | Old Schema (`local_players.db`) | New Schema (`players_new.db`) |
+| ----------------- | ------------------------------- | ----------------------------- |
+| **Users Table**   | `id` (TEXT)                     | `user_id` (UUID)              |
+| **Players Table** | `id` (TEXT)                     | `player_id` (UUID)            |
+| **Foreign Keys**  | `user_id` (TEXT)                | `user_id` (UUID)              |
+| **Invites Table** | `created_by`, `used_by`         | `used_by_user_id` only        |
+| **User Fields**   | `is_verified` present           | `is_verified` removed         |
 
 ## ✅ **RECOMMENDATION: Use `players_new.db`**
 
@@ -53,23 +53,23 @@ DATABASE_URL = "sqlite+aiosqlite:///../../data/players/players_new.db"
 ## 🚨 **Migration Actions Required**
 
 ### For Production Deployment:
-1. **Backup old database** (already done: `players.db.backup`)
+1. **Backup old database** (already done: `local_players.db.backup`)
 2. **Verify data integrity** in `players_new.db`
 3. **Test all database operations** with new schema
 4. **Update any hardcoded references** to old database
 
 ### For Development:
 1. **Use `players_new.db`** as the primary database
-2. **Keep `players.db`** as backup until migration is complete
+2. **Keep `local_players.db`** as backup until migration is complete
 3. **Test all CRUD operations** with new schema
 
 ## 📊 **Database Statistics**
 
-| Database | Size | Tables | Last Modified |
-|----------|------|--------|---------------|
-| `players.db` | 68KB | 3 | 8/2/2025 12:32:58 AM |
-| `players_new.db` | 64KB | 3 | 8/2/2025 12:32:58 AM |
-| `players.db.backup` | 68KB | 3 | Backup of old schema |
+| Database                  | Size | Tables | Last Modified        |
+| ------------------------- | ---- | ------ | -------------------- |
+| `local_players.db`        | 68KB | 3      | 8/2/2025 12:32:58 AM |
+| `players_new.db`          | 64KB | 3      | 8/2/2025 12:32:58 AM |
+| `local_players.db.backup` | 68KB | 3      | Backup of old schema |
 
 ## 🔍 **Verification Commands**
 

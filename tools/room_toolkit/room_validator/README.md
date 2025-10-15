@@ -24,7 +24,7 @@ uv pip install -r requirements.txt
 2. Run the validator:
 
 ```bash
-python validator.py --base-path ../data/rooms
+python validator.py --base-path ../data/local/rooms
 ```
 
 ## Usage
@@ -144,7 +144,7 @@ The validator supports both legacy string format and new object format for exits
 
 ```
 🔍 Room Validator v1.0
-📁 Scanning ../data/rooms...
+📁 Scanning ../data/local/rooms...
 
 ✅ arkham zone: 7 rooms discovered
 

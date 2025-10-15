@@ -1,8 +1,10 @@
-# Scenario 10: Local Channel Movement
+# Scenario 10: Local Channel Movement **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests local channel message routing based on player movement. This scenario verifies that local channel messages are properly routed when players move between sub-zones, that message delivery is updated in real-time based on player location, and that the movement-based routing system works correctly for local communication.
+
+**This is a core multi-player scenario** that requires verifying movement-based message routing between players. No automated alternative is available.
 
 ## Prerequisites
 

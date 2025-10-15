@@ -5,11 +5,16 @@ This module handles incoming NATS messages and broadcasts them to WebSocket clie
 It replaces the previous Redis message handler with NATS-based messaging.
 """
 
+from datetime import UTC, datetime
 from typing import Any
 
 from ..logging_config import get_logger
+from ..middleware.metrics_collector import metrics_collector
+from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.connection_manager import connection_manager
+from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
+from ..realtime.nats_retry_handler import NATSRetryHandler
 
 logger = get_logger("communications.nats_message_handler")
 
@@ -24,10 +29,12 @@ class NATSMessageHandler:
 
     def __init__(self, nats_service):
         """
-        Initialize NATS message handler.
+        Initialize NATS message handler with error boundaries.
 
         Args:
             nats_service: NATS service instance for subscribing to subjects
+
+        AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         """
         self.nats_service = nats_service
         self.subscriptions = {}
@@ -36,7 +43,21 @@ class NATSMessageHandler:
         self.subzone_subscriptions = {}  # subzone -> subscription_count
         self.player_subzone_subscriptions = {}  # player_id -> subzone
 
-        logger.info("NATS message handler initialized")
+        # NEW: Error boundary components (CRITICAL-4)
+        # AI: These components work together to provide resilient message delivery
+        from datetime import timedelta
+
+        self.retry_handler = NATSRetryHandler(max_retries=3, base_delay=1.0, max_delay=30.0)
+        self.dead_letter_queue = DeadLetterQueue()  # Uses environment-aware path
+        self.circuit_breaker = CircuitBreaker(failure_threshold=5, timeout=timedelta(seconds=60), success_threshold=2)
+        self.metrics = metrics_collector  # Shared global metrics instance
+
+        logger.info(
+            "NATS message handler initialized with error boundaries",
+            retry_max_attempts=3,
+            circuit_failure_threshold=5,
+            # DLQ path is environment-aware via DeadLetterQueue initialization
+        )
 
     async def start(self, enable_event_subscriptions: bool = True):
         """
@@ -134,67 +155,178 @@ class NATSMessageHandler:
 
     async def _handle_nats_message(self, message_data: dict[str, Any]):
         """
-        Handle incoming NATS message and broadcast to WebSocket clients.
+        Handle incoming NATS message with error boundaries.
+
+        Wraps message processing with retry logic, circuit breaker,
+        and dead letter queue for resilient delivery.
 
         Args:
             message_data: Message data from NATS
+
+        AI: Entry point with full error boundary protection.
         """
+        channel = message_data.get("channel", "unknown")
+        message_id = message_data.get("message_id", "unknown")
+
         try:
-            logger.debug("=== NATS MESSAGE HANDLER DEBUG: Received NATS message ===")
-            logger.debug(f"Message data: {message_data}")
-            logger.debug(f"Message type: {type(message_data)}")
-            logger.debug(
-                f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}"
+            # Process through circuit breaker
+            # AI: Circuit breaker fails fast when service is degraded
+            await self.circuit_breaker.call(self._process_message_with_retry, message_data)
+
+            # Record successful processing
+            self.metrics.record_message_processed(channel)
+
+        except CircuitBreakerOpen as e:
+            # Circuit is open, add to DLQ immediately
+            logger.error("Circuit breaker open, message added to DLQ", message_id=message_id, error=str(e))
+
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(e),
+                timestamp=datetime.now(UTC),
+                retry_count=0,
+                original_headers={"reason": "circuit_open"},
             )
+            self.dead_letter_queue.enqueue(dlq_message)
 
-            # Check if this is an event message
-            if message_data.get("event_type"):
-                await self._handle_event_message(message_data)
-                return
-
-            # Handle chat messages (existing logic)
-            # Extract message details
-            channel = message_data.get("channel")
-            room_id = message_data.get("room_id")
-            party_id = message_data.get("party_id")
-            target_player_id = message_data.get("target_player_id")
-            sender_id = message_data.get("sender_id")
-            sender_name = message_data.get("sender_name")
-            content = message_data.get("content")
-            message_id = message_data.get("message_id")
-            timestamp = message_data.get("timestamp")
-            target_id = message_data.get("target_id")
-            target_name = message_data.get("target_name")
-
-            # Validate required fields
-            if not all([channel, sender_id, sender_name, content, message_id]):
-                logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
-                return
-
-            # Format message content based on channel type
-            formatted_message = self._format_message_content(channel, sender_name, content)
-
-            # Create WebSocket event
-            chat_event = build_event(
-                "chat_message",
-                {
-                    "sender_id": str(sender_id),
-                    "player_name": sender_name,
-                    "channel": channel,
-                    "message": formatted_message,
-                    "message_id": message_id,
-                    "timestamp": timestamp,
-                    "target_id": target_id,
-                    "target_name": target_name,
-                },
-                player_id=str(sender_id),
-            )
-
-            # Broadcast based on channel type
-            await self._broadcast_by_channel_type(channel, chat_event, room_id, party_id, target_player_id, sender_id)
+            self.metrics.record_message_dlq(channel)
 
         except Exception as e:
-            logger.error("Error handling NATS message", error=str(e), message_data=message_data)
+            # Unexpected error - should not happen if retry logic works correctly
+            logger.critical(
+                "Unhandled error in message processing - this indicates a bug!",
+                message_id=message_id,
+                error=str(e),
+                exc_info=True,
+            )
+
+            # Add to DLQ as last resort
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(e),
+                timestamp=datetime.now(UTC),
+                retry_count=0,
+                original_headers={"reason": "unhandled_exception"},
+            )
+            self.dead_letter_queue.enqueue(dlq_message)
+
+            self.metrics.record_message_failed(channel, type(e).__name__)
+
+    async def _process_message_with_retry(self, message_data: dict[str, Any]):
+        """
+        Process message with retry logic.
+
+        Attempts message processing with exponential backoff on failures.
+        If all retries fail, adds message to dead letter queue.
+
+        Args:
+            message_data: Message data to process
+
+        Raises:
+            Exception: If message processing fails after all retries
+
+        AI: This method is called by circuit breaker, retries on transient failures.
+        """
+        channel = message_data.get("channel", "unknown")
+
+        # Attempt processing with retry
+        success, result = await self.retry_handler.retry_with_backoff(self._process_single_message, message_data)
+
+        if not success:
+            # All retries exhausted, add to DLQ
+            logger.error(
+                "Message failed after all retries, adding to DLQ",
+                message_id=message_data.get("message_id"),
+                error=str(result),
+            )
+
+            dlq_message = DeadLetterMessage(
+                subject=channel,
+                data=message_data,
+                error=str(result),
+                timestamp=datetime.now(UTC),
+                retry_count=self.retry_handler.max_retries,
+                original_headers={"channel": channel},
+            )
+            self.dead_letter_queue.enqueue(dlq_message)
+
+            self.metrics.record_message_dlq(channel)
+            self.metrics.record_message_failed(channel, type(result).__name__)
+
+            # Re-raise to trigger circuit breaker
+            raise result
+
+    async def _process_single_message(self, message_data: dict[str, Any]):
+        """
+        Process a single NATS message (original logic, can raise exceptions).
+
+        Args:
+            message_data: Message data from NATS
+
+        Raises:
+            ValueError: If required fields are missing
+            Exception: Any processing error
+
+        AI: This is the core processing logic - exceptions trigger retries.
+        """
+        logger.debug("=== NATS MESSAGE HANDLER DEBUG: Processing message ===")
+        logger.debug(f"Message data: {message_data}")
+        logger.debug(f"Message type: {type(message_data)}")
+        logger.debug(f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}")
+
+        # Check if this is an event message
+        if message_data.get("event_type"):
+            await self._handle_event_message(message_data)
+            return
+
+        # Handle chat messages (existing logic)
+        # Extract message details
+        channel = message_data.get("channel")
+        room_id = message_data.get("room_id")
+        party_id = message_data.get("party_id")
+        target_player_id = message_data.get("target_player_id")
+        sender_id = message_data.get("sender_id")
+        sender_name = message_data.get("sender_name")
+        content = message_data.get("content")
+        message_id = message_data.get("message_id")
+        timestamp = message_data.get("timestamp")
+        target_id = message_data.get("target_id")
+        target_name = message_data.get("target_name")
+
+        # For whisper messages, ensure target_player_id is set from target_id
+        # (chat_service publishes "target_id" but broadcasting expects "target_player_id")
+        if channel == "whisper" and target_id and not target_player_id:
+            target_player_id = target_id
+
+        # Validate required fields
+        if not all([channel, sender_id, sender_name, content, message_id]):
+            logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
+            raise ValueError("Missing required message fields")
+
+        # Format message content based on channel type
+        formatted_message = self._format_message_content(channel, sender_name, content)
+
+        # Create WebSocket event
+        chat_event = build_event(
+            "chat_message",
+            {
+                "sender_id": str(sender_id),
+                "player_name": sender_name,
+                "channel": channel,
+                "message": formatted_message,
+                "message_id": message_id,
+                "timestamp": timestamp,
+                "target_id": target_id,
+                "target_name": target_name,
+            },
+            player_id=str(sender_id),
+        )
+
+        # Broadcast based on channel type
+        # AI: This can raise exceptions if broadcasting fails
+        await self._broadcast_by_channel_type(channel, chat_event, room_id, party_id, target_player_id, sender_id)
 
     async def _broadcast_by_channel_type(
         self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str

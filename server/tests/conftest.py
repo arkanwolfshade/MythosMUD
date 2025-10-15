@@ -3,6 +3,37 @@ Test configuration and fixtures for MythosMUD server tests.
 
 This module sets up environment variables and provides common fixtures
 for all tests in the MythosMUD server.
+
+New Test Structure:
+-------------------
+The test suite is organized hierarchically:
+
+- fixtures/          - Shared test fixtures and utilities
+- unit/              - Unit tests (isolated component tests)
+  - api/             - API endpoint tests
+  - commands/        - Command handler tests
+  - chat/            - Chat/communication tests
+  - player/          - Player management tests
+  - npc/             - NPC system tests
+  - world/           - Room/world tests
+  - events/          - Event system tests
+  - auth/            - Authentication tests
+  - infrastructure/  - Core infrastructure tests
+  - middleware/      - Middleware tests
+  - models/          - Data model tests
+  - services/        - Service layer tests
+  - realtime/        - Real-time communication tests
+  - logging/         - Logging tests
+  - utilities/       - Utility tests
+- integration/       - Integration tests (component interactions)
+- e2e/               - End-to-end tests
+- performance/       - Performance benchmarks
+- security/          - Security tests
+- coverage/          - Coverage improvement tests
+- regression/        - Bug fix regression tests
+- monitoring/        - Monitoring tests
+- verification/      - Verification tests
+- scripts/           - Test setup and migration scripts
 """
 
 import asyncio
@@ -14,17 +45,17 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
-# CRITICAL: Load .env.test file FIRST, before any other environment variable setup
+# CRITICAL: Load .env.unit_test file FIRST, before any other environment variable setup
 # This ensures that test-specific database URLs are loaded before any modules
 # that depend on them are imported
 project_root = Path(__file__).parent.parent.parent
-TEST_ENV_PATH = project_root / ".env.test"
+TEST_ENV_PATH = project_root / "server" / "tests" / ".env.unit_test"
 if TEST_ENV_PATH.exists():
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"[OK] Loaded test environment from {TEST_ENV_PATH}")
+    print(f"[OK] Loaded test environment secrets from {TEST_ENV_PATH}")
 else:
-    print(f"[WARN] Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables")
+    print(f"[WARNING] Test environment file not found at {TEST_ENV_PATH}")
+    print("Using default test environment variables from conftest.py")
 
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
@@ -32,6 +63,15 @@ os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
 os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
+
+# CRITICAL: Pydantic ServerConfig requires SERVER_PORT - set at module level
+# This must happen BEFORE any server modules are imported during collection
+os.environ.setdefault("SERVER_PORT", "54731")
+os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+os.environ.setdefault("MYTHOSMUD_ADMIN_PASSWORD", "test-admin-password-for-development")
+os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+os.environ.setdefault("GAME_ROOM_DATA_PATH", "data/rooms")
+os.environ.setdefault("GAME_ALIASES_DIR", str(project_root / "data" / "unit_test" / "players" / "aliases"))
 
 # CRITICAL: Set database URLs IMMEDIATELY to prevent import-time failures
 # This must happen before any database modules are imported
@@ -49,13 +89,13 @@ if database_url:
         print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
 else:
     # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+    test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
     test_db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
     print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
 
-# Ensure NPC_DATABASE_URL is set with absolute path
-npc_database_url = os.getenv("NPC_DATABASE_URL")
+# Ensure DATABASE_NPC_URL is set with absolute path
+npc_database_url = os.getenv("DATABASE_NPC_URL")
 if npc_database_url:
     # Convert relative paths to absolute paths
     if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
@@ -65,25 +105,25 @@ if npc_database_url:
         relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
         absolute_path = project_root / relative_path
         absolute_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-        print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+        print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
 else:
     # Use absolute path to ensure NPC database is created in the correct location
-    test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+    test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
     test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
-    print(f"[OK] Set NPC_DATABASE_URL to: {os.environ['NPC_DATABASE_URL']}")
+    os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
 
-# Ensure we're using the correct path for test logs
-test_logs_dir = project_root / "server" / "tests" / "logs"
+# Ensure we're using the correct path for test logs (matches .env.unit_test)
+test_logs_dir = project_root / "logs" / "unit_test"
 test_logs_dir.mkdir(parents=True, exist_ok=True)
-# Set test configuration file path
-test_config_path = project_root / "server" / "tests" / "test_server_config.yaml"
-os.environ["MYTHOSMUD_CONFIG_PATH"] = str(test_config_path)
+# Configuration is now loaded from .env.unit_test via Pydantic BaseSettings
+# No YAML config file needed - all settings via environment variables
+print("[OK] Using Pydantic configuration from .env.unit_test")
 # Legacy logging environment variables no longer needed - logging is handled by
 # centralized system
 # Use absolute path for aliases directory to prevent incorrect directory creation
-aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+aliases_dir = project_root / "data" / "unit_test" / "players" / "aliases"
 aliases_dir.mkdir(parents=True, exist_ok=True)
 os.environ["ALIASES_DIR"] = str(aliases_dir)
 
@@ -99,7 +139,11 @@ def sync_test_environment():
     """Synchronous wrapper for test_environment async fixture"""
     import uuid
 
-    from .utils.test_environment import test_env_manager
+    from .fixtures.test_environment import test_env_manager
+
+    # Save original environment variables to restore after test
+    original_database_url = os.environ.get("DATABASE_URL")
+    original_npc_database_url = os.environ.get("DATABASE_NPC_URL")
 
     # Use unique environment name for each test
     env_name = f"pytest_sync_{uuid.uuid4().hex[:8]}"
@@ -114,7 +158,32 @@ def sync_test_environment():
             loop.run_until_complete(test_env_manager.destroy_environment(env_name))
         except Exception:
             pass  # Ignore cleanup errors
-        loop.close()
+        finally:
+            # Restore original environment variables
+            if original_database_url:
+                os.environ["DATABASE_URL"] = original_database_url
+            if original_npc_database_url:
+                os.environ["DATABASE_NPC_URL"] = original_npc_database_url
+
+            # Force re-initialization from restored environment variables
+            # by resetting global state (don't restore old state, let it reinitialize)
+            import server.database
+            import server.npc_database
+
+            server.database._engine = None
+            server.database._async_session_maker = None
+            server.database._database_url = None
+
+            server.npc_database._npc_engine = None
+            server.npc_database._npc_async_session_maker = None
+            server.npc_database._npc_database_url = None
+
+            # Reset config cache to force reload with correct environment variables
+            from server.config import reset_config
+
+            reset_config()
+
+            loop.close()
 
 
 def pytest_configure(config):
@@ -126,10 +195,14 @@ def pytest_configure(config):
     os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
     os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
 
+    # CRITICAL: Pydantic ServerConfig requires SERVER_PORT
+    os.environ.setdefault("SERVER_PORT", "54731")
+    os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
 
-    # Only set DATABASE_URL if not already set by .env.test
+    # Only set DATABASE_URL if not already set by .env.unit_test
     # Ensure DATABASE_URL is set with absolute path
     database_url = os.getenv("DATABASE_URL")
     if database_url:
@@ -143,12 +216,12 @@ def pytest_configure(config):
             print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
     else:
         # Use absolute path to ensure database is created in the correct location
-        test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
+        test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
         test_db_path.parent.mkdir(parents=True, exist_ok=True)
         os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
 
-    # Ensure NPC_DATABASE_URL is set with absolute path
-    npc_database_url = os.getenv("NPC_DATABASE_URL")
+    # Ensure DATABASE_NPC_URL is set with absolute path
+    npc_database_url = os.getenv("DATABASE_NPC_URL")
     if npc_database_url:
         # Convert relative paths to absolute paths
         if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
@@ -158,20 +231,20 @@ def pytest_configure(config):
             relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
             absolute_path = project_root / relative_path
             absolute_path.parent.mkdir(parents=True, exist_ok=True)
-            os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-            print(f"[OK] Converted NPC_DATABASE_URL to absolute path: {os.environ['NPC_DATABASE_URL']}")
+            os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
+            print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
     else:
         # Use absolute path to ensure NPC database is created in the correct location
-        test_npc_db_path = project_root / "server" / "tests" / "data" / "npcs" / "test_npcs.db"
+        test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
         test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
 
-    # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "server" / "tests" / "logs"
+    # Ensure we're using the correct path for test logs (matches .env.unit_test)
+    test_logs_dir = project_root / "logs" / "unit_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
     # Legacy logging environment variables no longer needed - logging is handled by centralized system
     # Use absolute path for aliases directory to prevent incorrect directory creation
-    aliases_dir = project_root / "server" / "tests" / "data" / "players" / "aliases"
+    aliases_dir = project_root / "data" / "unit_test" / "players" / "aliases"
     aliases_dir.mkdir(parents=True, exist_ok=True)
     os.environ["ALIASES_DIR"] = str(aliases_dir)
 
@@ -195,7 +268,7 @@ def test_env_vars():
 @pytest.fixture(scope="session")
 def test_database():
     """Initialize test database with proper schema."""
-    from server.tests.init_test_db import init_test_database
+    from server.tests.scripts.init_test_db import init_test_database
 
     # Initialize the test database
     init_test_database()
@@ -213,24 +286,33 @@ def test_database():
 def test_npc_database():
     """Initialize NPC test database with proper schema."""
     import os
+    import time
 
     # Get the NPC test database path
-    from pathlib import Path
+    from server.tests.scripts.init_npc_test_db import init_npc_test_database
 
-    from server.tests.init_npc_test_db import init_npc_test_database
-
-    npc_test_db_path = Path(__file__).parent / "data" / "npcs" / "test_npcs.db"
+    npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
     # Remove existing database file to ensure clean state
+    # Handle Windows file locking with retry logic
     if npc_test_db_path.exists():
-        os.unlink(npc_test_db_path)
+        for attempt in range(3):
+            try:
+                os.unlink(npc_test_db_path)
+                break
+            except PermissionError:
+                if attempt < 2:
+                    time.sleep(0.1)  # Brief delay before retry
+                else:
+                    # If we can't delete it, let init_npc_test_database recreate it
+                    pass
 
     # Initialize the NPC test database with schema
     init_npc_test_database()
 
     # The SQLAlchemy metadata initialization will happen when the NPC database
     # module is imported and the engine is created. We don't need to call
-    # init_npc_database() here as it's meant for runtime initialization.
+    # init_npc_db() here as it's meant for runtime initialization.
 
     return str(npc_test_db_path)
 
@@ -256,7 +338,7 @@ def test_client():
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import get_real_time_event_handler
-    from ..tests.init_test_db import init_test_database
+    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()
@@ -279,7 +361,7 @@ async def async_test_client():
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import get_real_time_event_handler
-    from ..tests.init_test_db import init_test_database
+    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()
@@ -301,22 +383,20 @@ async def async_database_session():
     from ..database import get_async_session
 
     async for session in get_async_session():
-        try:
-            yield session
-        finally:
-            await session.close()
+        yield session
+        # Session cleanup is handled by get_async_session's context manager
+        break
 
 
 @pytest.fixture
 async def async_npc_database_session():
     """Provide an async NPC database session for tests that need direct NPC database access."""
-    from ..npc_database import get_npc_async_session
+    from ..npc_database import get_npc_session
 
-    async for session in get_npc_async_session():
-        try:
-            yield session
-        finally:
-            await session.close()
+    async for session in get_npc_session():
+        yield session
+        # Session cleanup is handled by get_npc_session's context manager
+        break
 
 
 @pytest.fixture

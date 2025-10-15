@@ -55,7 +55,7 @@ async def handle_say_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         if not player_obj:
             return {"result": "Player not found."}
 
@@ -214,7 +214,7 @@ async def handle_local_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
         if not player_obj:
             return {"result": "Player not found."}
@@ -240,7 +240,7 @@ async def handle_local_command(
                 room=current_room_id,
                 message_id=result.get("message", {}).get("id"),
             )
-            return {"result": f"You say (local): {message}"}
+            return {"result": f"You say locally: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
             logger.warning(f"Local command failed for {player_name}: {error_msg}")
@@ -293,7 +293,7 @@ async def handle_global_command(
 
     try:
         # Get player object to check level and get player ID
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
         if not player_obj:
             return {"result": "Player not found."}
@@ -376,7 +376,7 @@ async def handle_system_command(
 
     try:
         # Get player object to find current room
-        player_obj = player_service.resolve_player_name(player_name)
+        player_obj = await player_service.resolve_player_name(player_name)
         if not player_obj:
             return {"result": "Player not found."}
 
@@ -456,14 +456,14 @@ async def handle_whisper_command(
 
     try:
         # Get sender player object
-        sender_obj = player_service.resolve_player_name(player_name)
+        sender_obj = await player_service.resolve_player_name(player_name)
         if not sender_obj:
             return {"result": "Player not found."}
 
         # Get target player object
-        target_obj = player_service.resolve_player_name(target)
+        target_obj = await player_service.resolve_player_name(target)
         if not target_obj:
-            return {"result": "You whisper into the aether."}
+            return {"result": f"Player '{target}' not found"}
 
         # Check if trying to whisper to self
         if sender_obj.id == target_obj.id:
@@ -539,7 +539,7 @@ async def handle_reply_command(
 
     try:
         # Get sender player object
-        sender_obj = player_service.resolve_player_name(player_name)
+        sender_obj = await player_service.resolve_player_name(player_name)
         if not sender_obj:
             return {"result": "Player not found."}
 

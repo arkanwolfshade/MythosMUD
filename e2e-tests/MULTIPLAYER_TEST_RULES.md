@@ -1,5 +1,28 @@
 # MythosMUD Multiplayer Test Rules - Master Documentation
 
+## 📊 E2E Testing Overview
+
+MythosMUD uses a **hybrid E2E testing approach**:
+
+### Automated Playwright CLI Tests (10 Scenarios)
+- **114 automated tests** covering error handling, accessibility, and integration
+- **Location**: `client/tests/e2e/runtime/`
+- **Execution**: `make test-client-runtime` or `npm run test:e2e:runtime`
+- **Runtime**: <5 minutes for all automated tests
+- **CI/CD**: Fully integrated with GitHub Actions
+- **See**: [E2E Testing Guide](../docs/E2E_TESTING_GUIDE.md)
+
+### Playwright MCP Scenarios (11 Scenarios)
+- **11 multi-player scenarios** requiring AI Agent coordination
+- **Location**: `e2e-tests/scenarios/`
+- **Execution**: Via AI Agent with Playwright MCP (this document)
+- **Runtime**: ~5-8 minutes per scenario (~60-90 minutes total)
+- **Purpose**: Real-time multi-player coordination testing
+
+**This document covers ONLY the 11 MCP scenarios that require multi-player coordination.**
+
+---
+
 ## 🤖 CRITICAL AI EXECUTOR REQUIREMENTS 🤖
 
 **🚨 STOP! READ THIS FIRST! 🚨**
@@ -85,7 +108,8 @@ if (messages.length === 0) {
 - **Server Port**: 54731 (from `server/server_config.yaml`)
 - **Client Port**: 5173 (from `client/vite.config.ts`)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer)
-- **Database**: `data/players/players.db`
+- **Database**: `data/e2e_test/players/e2e_players.db`
+- **Log Directory**: `logs/e2e_test/`
 
 ### Command Syntax
 
@@ -138,7 +162,7 @@ if (messages.length === 0) {
 2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an | findstr :54731` and `netstat -an | findstr :5173`
 3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
 4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
-5. **ONE START ONLY**: Run `./scripts/start_dev.ps1` with `is_background: false` exactly ONCE
+5. **ONE START ONLY**: Run `./scripts/start_local.ps1` with `is_background: false` exactly ONCE
 6. **IF IT SAYS "Press any key to exit"**: The server is running - DO NOT start another
 
 ### PRE-COMMAND CHECKLIST
@@ -148,7 +172,7 @@ Before running ANY server command, ask yourself:
 - Did I already start a server in this session? (YES = STOP, don't start another)
 - Am I about to use `is_background: true`? (YES = STOP, use false instead)
 - Did I run `stop_server.ps1` first? (NO = STOP, run it first)
-- Am I about to run `start_dev.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
+- Am I about to run `start_local.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
 
 ## MANDATORY PRE-EXECUTION CHECKLIST
 
@@ -199,16 +223,16 @@ netstat -an | findstr :5173
 
 ```powershell
 # MANDATORY: Check if players exist and their current state
-sqlite3 "data/players/players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Update players to starting room (ALWAYS run this)
-sqlite3 "data/players/players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Verify ArkanWolfshade has admin privileges (ALWAYS run this)
-sqlite3 "data/players/players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
 # MANDATORY: Verify the updates worked
-sqlite3 "data/players/players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
 **MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)
@@ -222,7 +246,7 @@ sqlite3 "data/players/players.db" "SELECT name, current_room_id, is_admin FROM p
 **Cursor Command**: Start the development server
 
 ```powershell
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 **Wait**: 180 seconds (3 minutes) for server to fully start on low-performance machines
@@ -312,7 +336,7 @@ After each step, document:
 ## Security and Environment
 
 - **Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users
-- **Database Placement**: Verify database files are in correct locations (/data/players/ for production, /server/tests/data/players/ for tests)
+- **Database Placement**: Verify database files are in correct locations (/data/players/ for production, /data/unit_test/players/ for tests)
 - **Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
 
 ## VIOLATION CONSEQUENCES

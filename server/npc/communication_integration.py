@@ -10,13 +10,20 @@ essential for maintaining the illusion of sentient entities within our
 eldritch digital realm.
 """
 
+from __future__ import annotations
+
 import time
+from typing import TYPE_CHECKING
 
 from ..events import EventBus
 from ..events.event_types import NPCListened, NPCSpoke
-from ..game.chat_service import ChatService
 from ..logging_config import get_logger
 from ..persistence import get_persistence
+
+# Import ChatService only for type checking to avoid circular dependency
+# AI: ChatService is only needed for type annotations, not runtime
+if TYPE_CHECKING:
+    from ..game.chat_service import ChatService
 
 logger = get_logger(__name__)
 

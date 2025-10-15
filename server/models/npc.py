@@ -163,9 +163,9 @@ class NPCSpawnRule(Base):
     # Sub-zone information
     sub_zone_id = Column(String(50), nullable=False, index=True)
 
-    # Player count requirements
-    min_players = Column(Integer, default=0, nullable=False)
-    max_players = Column(Integer, default=999, nullable=False)
+    # NPC population requirements (min/max instances of this NPC type)
+    min_population = Column(Integer, default=0, nullable=False)
+    max_population = Column(Integer, default=999, nullable=False)
 
     # Spawn conditions stored as JSON
     spawn_conditions = Column(
@@ -190,9 +190,9 @@ class NPCSpawnRule(Base):
         """Set spawn conditions from dictionary."""
         self.spawn_conditions = json.dumps(conditions)
 
-    def can_spawn_for_player_count(self, player_count: int) -> bool:
-        """Check if this rule allows spawning for given player count."""
-        return self.min_players <= player_count <= self.max_players
+    def can_spawn_with_population(self, current_population: int) -> bool:
+        """Check if this rule allows spawning given current NPC population."""
+        return current_population < self.max_population
 
     def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
         """Check if current game state meets spawn conditions."""

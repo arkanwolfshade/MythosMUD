@@ -1,162 +1,413 @@
-# Lint Remediation Prompt - Cursor Executable Version
+# Lint Remediation Prompt - AI-Optimized Version
 
-## Project Linting Configuration
+*"In the arcane libraries of code quality, we discover that proper linting requires systematic error categorization, methodical remediation patterns, and thorough validation protocols. The path to clean code lies not in hasty fixes, but in structured lint remediation and comprehensive verification."*
 
-- **Python Backend**: Uses Ruff linter with flake8-bugbear rules
-- **React Frontend**: Uses ESLint with React hooks plugin
-- **Line Length**: 120 characters maximum
-- **Command**: `make lint` (runs both Python and React linting)
+## 🎯 MANDATORY AI EXECUTION PROTOCOL
 
-## Step-by-Step Remediation Process
+**CRITICAL**: You MUST follow this exact sequence. Do not skip steps or deviate from the order.
 
-### 1. Initial Assessment
+### Phase 1: Initial Assessment (REQUIRED FIRST)
 
 ```bash
-# Run linting to identify all current issues
+# Step 1: Run linting to get current state
 make lint
 ```
 
-### 2. Categorize Findings
+**AI ACTION**: Capture the complete lint output. If lint passes, STOP - no remediation needed.
 
-Lint findings typically fall into these categories:
+**AI RULE**: If lint fails, continue to Phase 2. If lint passes, document success and exit.
 
-#### A. Python/Ruff Issues
+### Phase 2: Categorize and Prioritize Lint Issues
 
-- **B007**: Loop control variable not used within loop body
-- **E501**: Line too long (handled by line-length setting)
-- **F401**: Imported but unused
-- **I001**: Import sorting issues
-- **UP**: Python upgrade suggestions
+**AI DECISION TREE**: For each lint issue, categorize into ONE of these priority levels:
 
-#### B. React/ESLint Issues
+#### 🔴 CRITICAL (Fix First - Blocking Issues)
 
-- **react-hooks/exhaustive-deps**: Missing dependencies in useEffect/useCallback
-- **@typescript-eslint/no-unused-vars**: Unused variables
-- **max-len**: Line length violations
+- **Python compilation errors** (prevents execution)
+- **TypeScript compilation errors** (prevents build)
+- **Import resolution failures** (breaks module loading)
+- **Syntax errors** (invalid code structure)
 
-### 3. Systematic Fixing Approach
+#### 🟡 HIGH PRIORITY (Fix Second - Core Functionality)
 
-#### For Python Issues
+- **Unused imports/variables** (code quality issues)
+- **Import sorting violations** (I001, isort issues)
+- **Line length violations** (E501, max-len)
+- **Missing dependencies in hooks** (react-hooks/exhaustive-deps)
 
-1. **Unused Loop Variables (B007)**:
+#### 🟢 MEDIUM PRIORITY (Fix Third - Enhancement)
 
-   ```python
-   # Before:
-   for player_id, websocket in mock_websockets.items():
-       websocket.send_json.assert_called()
+- **Unused loop variables** (B007)
+- **Code style violations** (formatting issues)
+- **Deprecated patterns** (UP upgrade suggestions)
+- **Performance warnings** (optimization opportunities)
 
-   # After:
-   for _player_id, websocket in mock_websockets.items():
-       websocket.send_json.assert_called()
-   ```
+#### 🔵 LOW PRIORITY (Fix Last - Polish)
 
-2. **Import Issues (F401, I001)**:
-   - Remove unused imports
-   - Sort imports according to isort rules
-   - Use `# noqa: F401` for intentional unused imports in `__init__.py`
+- **Minor style inconsistencies** (non-functional)
+- **Documentation warnings** (non-blocking)
+- **Optional best practices** (nice-to-have)
 
-3. **Line Length (E501)**:
-   - Break long lines at logical points
-   - Use parentheses for implicit line continuation
-   - Consider extracting variables for complex expressions
+### Phase 3: Systematic Fixing Process
 
-#### For React Issues
+**AI RULE**: Fix ONE category at a time. Do not move to the next category until current one is resolved.
 
-1. **Missing Dependencies (react-hooks/exhaustive-deps)**:
+#### For Each Issue Category
 
-   ```typescript
-   // Option 1: Add missing dependency
-   const callback = useCallback(() => {
-       // function body
-   }, [dependency1, dependency2, missingDependency]);
+1. **IDENTIFY**: Use specific tools to locate the exact issues
+2. **ANALYZE**: Understand root cause before attempting fix
+3. **FIX**: Apply targeted solution using search_replace tool
+4. **VERIFY**: Run lint again to confirm fix works
+5. **VALIDATE**: Ensure no regressions introduced
 
-   // Option 2: Remove dependency array if not needed
-   const callback = useCallback(() => {
-       // function body
-   }, []);
-   ```
+### Phase 4: Tool Selection Guide
 
-2. **Unused Variables (@typescript-eslint/no-unused-vars)**:
-   - Remove unused variables
-   - Prefix with underscore: `_unusedVariable`
-   - Use `// eslint-disable-next-line` for intentional cases
+**AI TOOL MAPPING**: Use these specific tools for each issue type:
 
-### 4. Quality Assurance Checklist
+#### Python/Ruff Issues
 
-- [ ] All lint issues resolved (run `make lint` again)
-- [ ] No functionality broken (existing tests still pass)
-- [ ] Code follows project conventions (120 char limit, naming)
-- [ ] Changes are minimal and focused
-- [ ] No new lint issues introduced
+```bash
+# REQUIRED: Check specific Ruff issues
+uv run ruff check --line-length=120 .
+```
 
-### 5. Common Patterns and Solutions
+**AI ACTION**: Use `grep` to find specific error codes, `read_file` to examine files, `search_replace` to fix issues.
 
-#### Test File Patterns
+#### React/ESLint Issues
+
+```bash
+# REQUIRED: Check specific ESLint issues
+cd client && npx eslint --fix .
+```
+
+**AI ACTION**: Use `grep` to find specific error codes, `read_file` to examine files, `search_replace` to fix issues.
+
+### Phase 5: Fix Implementation Patterns
+
+#### 🔴 CRITICAL FIXES - Compilation Errors
 
 ```python
-# Unused loop variables in tests
-for _player_id, websocket in mock_websockets.items():
-    websocket.send_json.assert_called()
+# Pattern 1: Fix missing imports
+# BEFORE: NameError: name 'Component' is not defined
+# AFTER: Add missing import
+from .component import Component
 
-# Unused test parameters
-def test_function(_unused_param):
-    pass
+# Pattern 2: Fix syntax errors
+# BEFORE: def function(  # Missing closing parenthesis
+# AFTER:  def function():
 ```
-
-#### React Hook Patterns
 
 ```typescript
-// Proper dependency management
-const memoizedCallback = useCallback(() => {
-    doSomething(a, b);
-}, [a, b]);
+// Pattern 1: Fix missing imports
+// BEFORE: Component not defined
+// AFTER: Add missing import
+import { Component } from './Component';
 
-// Stable references
-const stableCallback = useCallback(() => {
-    doSomething();
-}, []); // Empty deps for stable functions
+// Pattern 2: Fix TypeScript errors
+// BEFORE: Property 'title' does not exist
+// AFTER: Define proper interface
+interface Props {
+  title: string;
+}
 ```
 
-### 6. Error Handling
+#### 🟡 HIGH PRIORITY FIXES - Code Quality Issues
 
-If fixes introduce new issues:
+```python
+# Pattern 1: Fix unused imports
+# BEFORE: import os  # F401: imported but unused
+# AFTER:  Remove unused import
 
-1. Revert problematic changes
-2. Investigate root cause
-3. Apply more targeted fixes
-4. Test incrementally
+# Pattern 2: Fix import sorting
+# BEFORE: import b; import a  # I001: import sorting
+# AFTER:  import a; import b
 
-### 7. Final Verification
+# Pattern 3: Fix line length
+# BEFORE: very_long_line_that_exceeds_120_characters_limit
+# AFTER:  Break into multiple lines
+very_long_line_that_exceeds_120_characters_limit = (
+    "broken into multiple lines"
+)
+```
+
+```typescript
+// Pattern 1: Fix unused variables
+// BEFORE: const unusedVar = 'value';  // @typescript-eslint/no-unused-vars
+// AFTER:  Remove unused variable or prefix with underscore
+
+// Pattern 2: Fix hook dependencies
+// BEFORE: useEffect(() => { fetchData(userId); }, []);  // Missing dependency
+// AFTER:  useEffect(() => { fetchData(userId); }, [userId]);
+```
+
+#### 🟢 MEDIUM PRIORITY FIXES - Style Issues
+
+```python
+# Pattern 1: Fix unused loop variables
+# BEFORE: for player_id, websocket in items():  # B007: unused variable
+# AFTER:  for _player_id, websocket in items():  # Prefix with underscore
+
+# Pattern 2: Fix deprecated patterns
+# BEFORE: dict.keys()  # UP: use list(dict.keys())
+# AFTER:  list(dict.keys())
+```
+
+### Phase 6: Verification Protocol
+
+**AI MANDATORY CHECKS**: After each fix, run these commands in order:
 
 ```bash
-# Verify all lint issues resolved
+# 1. Verify Python linting
 make lint
 
-# Ensure tests still pass
-make test
+# 2. Check specific Ruff issues
+uv run ruff check --line-length=120 .
 
-# Check code coverage maintained
-make coverage
+# 3. Check specific ESLint issues
+cd client && npx eslint --fix .
 ```
 
-## Best Practices
+**AI RULE**: If ANY check fails, STOP and fix the issue before proceeding.
 
-1. **Incremental Fixes**: Fix one category of issues at a time
-2. **Preserve Functionality**: Only change what's necessary for linting
-3. **Follow Conventions**: Maintain project's coding standards
-4. **Test After Changes**: Verify no regressions introduced
-5. **Document Complex Fixes**: Add comments for non-obvious changes
+### Phase 7: Success Validation
 
-## Troubleshooting
+**AI SUCCESS CRITERIA**: All of these must pass:
 
-- **Ruff Issues**: Check `pyproject.toml` for rule configurations
-- **ESLint Issues**: Check `client/eslint.config.js` for rule settings
-- **Pre-commit Hooks**: Ensure local hooks match CI/CD requirements
-- **IDE Integration**: Verify editor settings align with project config
+- [ ] `make lint` exits with code 0
+- [ ] No Python/Ruff errors remaining
+- [ ] No React/ESLint errors remaining
+- [ ] No new lint violations introduced
+- [ ] All critical and high-priority issues resolved
 
-## Success Criteria
+## 🚨 AI ERROR HANDLING
 
-- `make lint` exits with code 0
-- All existing tests pass
-- No new lint violations introduced
-- Code maintains readability and functionality
+### If Lint Still Fails After Fixes
+
+1. **STOP** - Do not continue with more fixes
+2. **ANALYZE** - Use `grep` to find specific remaining errors
+3. **INVESTIGATE** - Check if the fix introduced new issues
+4. **REVERT** - If fix caused problems, revert and try different approach
+5. **REPORT** - Document what was attempted and why it failed
+
+### If Multiple Categories Have Issues
+
+1. **PRIORITIZE** - Always fix CRITICAL first, then HIGH, then MEDIUM, then LOW
+2. **ISOLATE** - Fix one category completely before moving to next
+3. **VALIDATE** - Run verification protocol after each category
+4. **DOCUMENT** - Keep track of what was fixed in each category
+
+## 📋 AI EXECUTION CHECKLIST
+
+**Before Starting:**
+
+- [ ] Confirm you are in the project root directory
+- [ ] Verify you have access to `make lint` command
+- [ ] Understand the priority system (CRITICAL → HIGH → MEDIUM → LOW)
+
+**During Execution:**
+
+- [ ] Follow the exact sequence: Assessment → Categorize → Fix → Verify
+- [ ] Fix ONE category at a time
+- [ ] Run verification protocol after each category
+- [ ] Document what was fixed and why
+
+**After Completion:**
+
+- [ ] All success criteria met
+- [ ] No regressions introduced
+- [ ] All critical and high-priority issues resolved
+- [ ] Lint passes with `make lint`
+
+## 🔧 COMMON FIX TEMPLATES
+
+### Template 1: Python Import Fix
+
+```python
+# BEFORE: F401 - imported but unused
+import os
+import sys
+def function():
+    return "hello"
+
+# AFTER: Remove unused imports
+def function():
+    return "hello"
+```
+
+### Template 2: Python Import Sorting Fix
+
+```python
+# BEFORE: I001 - import sorting
+import sys
+import os
+from typing import List
+
+# AFTER: Proper import order
+import os
+import sys
+
+from typing import List
+```
+
+### Template 3: Python Line Length Fix
+
+```python
+# BEFORE: E501 - line too long
+very_long_variable_name = "this is a very long string that exceeds the 120 character limit and needs to be broken down"
+
+# AFTER: Break into multiple lines
+very_long_variable_name = (
+    "this is a very long string that exceeds the 120 character limit "
+    "and needs to be broken down"
+)
+```
+
+### Template 4: React Hook Dependency Fix
+
+```typescript
+// BEFORE: react-hooks/exhaustive-deps
+useEffect(() => {
+  fetchData(userId);
+}, []); // Missing userId dependency
+
+// AFTER: Include all dependencies
+useEffect(() => {
+  fetchData(userId);
+}, [userId]); // Include userId dependency
+```
+
+### Template 5: TypeScript Unused Variable Fix
+
+```typescript
+// BEFORE: @typescript-eslint/no-unused-vars
+const unusedVariable = 'value';
+const usedVariable = 'value';
+
+// AFTER: Remove unused or prefix with underscore
+const _unusedVariable = 'value'; // Prefix with underscore
+const usedVariable = 'value';
+```
+
+## 🎯 AI SUCCESS METRICS
+
+**Primary Success**: `make lint` passes with exit code 0
+**Secondary Success**: All Python/Ruff and React/ESLint checks pass
+**Tertiary Success**: No new lint violations introduced
+
+**AI RULE**: Primary success is mandatory. Secondary and tertiary are preferred but not blocking.
+
+## 📊 LINT ISSUE CATEGORIZATION GUIDE
+
+### Python/Ruff Error Codes
+
+| Code | Category | Priority | Description | Fix Pattern |
+|------|----------|----------|-------------|-------------|
+| F401 | Import | HIGH | Imported but unused | Remove import |
+| I001 | Import | HIGH | Import sorting | Reorder imports |
+| E501 | Style | HIGH | Line too long | Break into lines |
+| B007 | Style | MEDIUM | Unused loop variable | Prefix with _ |
+| UP | Upgrade | MEDIUM | Python upgrade suggestion | Update syntax |
+
+### React/ESLint Error Codes
+
+| Code | Category | Priority | Description | Fix Pattern |
+|------|----------|----------|-------------|-------------|
+| react-hooks/exhaustive-deps | Hook | HIGH | Missing dependencies | Add to deps array |
+| @typescript-eslint/no-unused-vars | Variable | HIGH | Unused variables | Remove or prefix with _ |
+| max-len | Style | HIGH | Line too long | Break into lines |
+| prefer-const | Style | MEDIUM | Use const instead of let | Change to const |
+
+## 🔍 DEBUGGING GUIDE
+
+### If Lint Command Fails
+
+```bash
+# Check if make command exists
+which make
+
+# Check if lint script exists
+ls scripts/lint.py
+
+# Run lint script directly
+python scripts/lint.py
+
+# Check Ruff installation
+uv run ruff --version
+
+# Check ESLint installation
+cd client && npx eslint --version
+```
+
+### If Specific Issues Persist
+
+```bash
+# Check Ruff configuration
+cat pyproject.toml | grep -A 20 "\[tool.ruff\]"
+
+# Check ESLint configuration
+cat client/eslint.config.js
+
+# Run Ruff with verbose output
+uv run ruff check --line-length=120 . --verbose
+
+# Run ESLint with verbose output
+cd client && npx eslint . --debug
+```
+
+## 🚀 OPTIMIZATION TIPS
+
+### For Large Codebases
+
+1. **Focus on Critical Issues First** - Fix compilation errors before style issues
+2. **Use Incremental Fixes** - Fix one file at a time
+3. **Leverage Auto-fix** - Use `--fix` flag when possible
+4. **Batch Similar Issues** - Group similar fixes together
+
+### For Performance
+
+1. **Use Specific Paths** - Run lint on specific directories when possible
+2. **Enable Caching** - Use lint caching for faster subsequent runs
+3. **Parallel Processing** - Run Python and React linting in parallel when possible
+
+## 📝 DOCUMENTATION REQUIREMENTS
+
+### Required Documentation for Each Fix
+
+1. **Issue Description** - What was the lint error?
+2. **Root Cause** - Why did it occur?
+3. **Fix Applied** - What change was made?
+4. **Verification** - How was it confirmed fixed?
+5. **Impact** - Any side effects or considerations?
+
+### Example Documentation Format
+
+```text
+FIX: F401 - Unused import in server/auth/utils.py
+CAUSE: Import was added but never used in the code
+CHANGE: Removed unused 'os' import
+VERIFY: Ran 'uv run ruff check server/auth/utils.py' - no errors
+IMPACT: No functional changes, cleaner code
+```
+
+## 🎯 AI EXECUTION SUCCESS CRITERIA
+
+**MANDATORY SUCCESS CONDITIONS:**
+
+1. **Lint Passes**: `make lint` exits with code 0
+2. **No Regressions**: All existing functionality preserved
+3. **Code Quality**: All critical and high-priority issues resolved
+4. **Documentation**: All fixes properly documented
+
+**OPTIONAL SUCCESS CONDITIONS:**
+
+1. **Style Consistency**: All medium-priority issues resolved
+2. **Performance**: No performance degradation
+3. **Maintainability**: Code is easier to maintain
+
+**AI RULE**: Focus on mandatory success conditions first. Optional conditions are nice-to-have but not blocking.
+
+---
+
+**Remember**: This prompt focuses on investigating and fixing lint issues systematically. Always run lint after making changes and ensure no regressions are introduced.
+
+**AI INSTRUCTION**: Follow the exact sequence outlined above. Do not skip steps or deviate from the priority order. Your success will be measured by the successful execution of `make lint` with exit code 0.

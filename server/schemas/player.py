@@ -16,9 +16,7 @@ class PlayerBase(BaseModel):
     """Base player schema with common fields."""
 
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
-    current_room_id: str = Field(
-        default="earth_arkhamcity_northside_intersection_derby_high", description="Current room ID"
-    )
+    current_room_id: str = Field(default="earth_arkhamcity_sanitarium_room_foyer_001", description="Current room ID")
     experience_points: int = Field(default=0, ge=0, description="Experience points")
     level: int = Field(default=1, ge=1, description="Player level")
 

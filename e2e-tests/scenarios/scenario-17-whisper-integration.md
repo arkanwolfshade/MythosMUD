@@ -1,8 +1,17 @@
-# Scenario 17: Whisper Integration
+# Scenario 17: Whisper Integration **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
-Tests whisper channel system integration with other game systems. This scenario verifies that the whisper system properly integrates with player management, location tracking, message broadcasting, authentication, and other game systems, ensuring seamless operation across all integrated components.
+Tests whisper message delivery between players in real-time. This scenario verifies that whisper messages are properly delivered to the intended recipient and that the whisper system maintains privacy across player sessions.
+
+**⚠️ AUTOMATED TESTS AVAILABLE**: Whisper integration points are tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/whisper-integration.spec.ts` for:
+- Player management integration
+- Authentication integration
+- Rate limiting integration
+- Error handling integration
+- Performance testing
+
+This MCP scenario focuses ONLY on cross-player message delivery verification that requires real-time multi-player coordination.
 
 ## Prerequisites
 

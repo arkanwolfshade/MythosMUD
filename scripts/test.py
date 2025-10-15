@@ -12,17 +12,17 @@ def run_server_tests():
 
     # Set the required environment variables for the subprocess
     env = os.environ.copy()
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
     # Get the project root (one level up from scripts directory)
     project_root = Path(__file__).parent.parent
     # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "server" / "tests" / "logs"
+    test_logs_dir = project_root / "logs" / "unit_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Set test environment variables for logging
-    env["MYTHOSMUD_ENV"] = "test"
+    # Set test environment variables for Pydantic configuration
+    env["LOGGING_ENVIRONMENT"] = "unit_test"
     env["MYTHOSMUD_TEST_MODE"] = "true"
-    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "tests" / "test_server_config.yaml")
-    env["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    # Note: MYTHOSMUD_CONFIG_PATH no longer used - Pydantic loads from .env.unit_test
+    env["GAME_ALIASES_DIR"] = str(project_root / "data" / "unit_test" / "players" / "aliases")
 
     clean_result = subprocess.run(clean_cmd, env=env)
 
@@ -41,6 +41,8 @@ def run_server_tests():
         "-v",
         "--tb=short",
         "--ignore=tests/test_e2e_multiplayer_connection_messaging.py",
+        "-m",
+        "not e2e",  # Exclude tests marked with @pytest.mark.e2e
     ]
     result = subprocess.run(cmd, env=env, cwd=server_dir)
 
@@ -50,29 +52,39 @@ def run_server_tests():
 def run_server_e2e_tests():
     """Run server-side E2E tests (requires running server)"""
     print("Running server E2E tests...")
-    print("⚠️  WARNING: This requires the server to be running!")
-    print("   Make sure to run './scripts/start_dev.ps1' first.")
+    print("WARNING: This requires the server to be running!")
+    print("   Make sure to run './scripts/start_e2e_test.ps1' first.")
     print()
 
     # Set the required environment variables for the subprocess
     env = os.environ.copy()
-    env["DATABASE_URL"] = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+    # CRITICAL: Use approved database location per DATABASE PLACEMENT RULES
+    env["DATABASE_URL"] = "sqlite+aiosqlite:///data/e2e_test/players/e2e_test_players.db"
     # Get the project root (one level up from scripts directory)
     project_root = Path(__file__).parent.parent
     # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "server" / "tests" / "logs"
+    test_logs_dir = project_root / "logs" / "e2e_test"
     test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Set test environment variables for logging
-    env["MYTHOSMUD_ENV"] = "test"
+    # Set test environment variables for Pydantic configuration
+    env["LOGGING_ENVIRONMENT"] = "e2e_test"
     env["MYTHOSMUD_TEST_MODE"] = "true"
-    env["MYTHOSMUD_CONFIG_PATH"] = str(project_root / "server" / "tests" / "test_server_config.yaml")
-    env["ALIASES_DIR"] = "server/tests/data/players/aliases"
+    # Note: MYTHOSMUD_CONFIG_PATH no longer used - Pydantic loads from .env.e2e_test
+    env["GAME_ALIASES_DIR"] = str(project_root / "data" / "e2e_test" / "players" / "aliases")
 
     print("Running server E2E tests with pytest...")
     # Change to server directory to use the pytest configuration there
     server_dir = project_root / "server"
-    # Run only E2E tests
-    cmd = ["uv", "run", "pytest", "tests/test_e2e_multiplayer_connection_messaging.py", "-v", "--tb=short"]
+    # Run only E2E tests (only the existing e2e file and tests marked with @pytest.mark.e2e)
+    cmd = [
+        "uv",
+        "run",
+        "pytest",
+        "tests/test_e2e_multiplayer_connection_messaging.py",
+        "-v",
+        "--tb=short",
+        "-m",
+        "e2e",  # Include only tests marked with @pytest.mark.e2e
+    ]
     result = subprocess.run(cmd, env=env, cwd=server_dir)
 
     return result.returncode
@@ -103,26 +115,26 @@ def run_client_tests():
 
 
 def run_client_e2e_tests():
-    """Run client-side E2E tests (Playwright tests)"""
-    print("Running client E2E tests...")
-    print("⚠️  WARNING: This requires both server and client to be running!")
-    print("   Make sure to run './scripts/start_dev.ps1' first.")
+    """Run client-side E2E runtime tests (Automated Playwright tests)"""
+    print("Running client E2E runtime tests (automated)...")
+    print("WARNING: This requires both server and client to be running!")
+    print("   Make sure to run './scripts/start_local.ps1' first.")
     print()
 
     # Get the project root
     project_root = Path(__file__).parent.parent
     client_dir = project_root / "client"
 
-    # Run Playwright E2E tests
-    print("  Running Playwright E2E tests...")
-    playwright_cmd = "npm run test"
+    # Run Playwright runtime E2E tests (automated tests, not MCP scenarios)
+    print("  Running Playwright runtime E2E tests...")
+    playwright_cmd = "npm run test:e2e:runtime"
     playwright_result = subprocess.run(playwright_cmd, shell=True, cwd=client_dir)
 
     if playwright_result.returncode != 0:
-        print("  Playwright E2E tests failed")
+        print("  Playwright runtime E2E tests failed")
         return playwright_result.returncode
 
-    print("  Client E2E tests passed!")
+    print("  Client E2E runtime tests passed!")
     return 0
 
 

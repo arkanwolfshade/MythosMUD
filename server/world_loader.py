@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import Any
 
 from .exceptions import ValidationError
@@ -8,29 +9,52 @@ from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
-ROOMS_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "rooms"))
+
+# Determine environment-aware rooms path
+def _get_rooms_base_path() -> str:
+    """
+    Get the rooms base path based on the current environment.
+
+    Uses LOGGING_ENVIRONMENT from Pydantic config to determine environment.
+    """
+    project_root = Path(__file__).parent.parent
+
+    # Use LOGGING_ENVIRONMENT from Pydantic config, with fallback to legacy config path
+    environment = os.getenv("LOGGING_ENVIRONMENT", "local")
+    if not environment or environment not in ["local", "unit_test", "e2e_test", "production"]:
+        # Fallback: try to extract from legacy config path
+        config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+        if "unit_test" in config_path:
+            environment = "unit_test"
+        elif "e2e_test" in config_path:
+            environment = "e2e_test"
+
+    # Try environment-specific path first, fallback to generic data/rooms
+    env_rooms_path = project_root / "data" / environment / "rooms"
+    generic_rooms_path = project_root / "data" / "rooms"
+
+    if env_rooms_path.exists():
+        return str(env_rooms_path)
+    else:
+        return str(generic_rooms_path)
+
+
+ROOMS_BASE_PATH = _get_rooms_base_path()
 
 # Try to import the shared schema validator
 try:
-    import os
     import sys
+    from pathlib import Path
 
     # Add the project root to the path to find the schemas package
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
+    project_root = Path(__file__).parent.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
 
     # Try importing with absolute path
-    try:
-        from schemas.validator import SchemaValidator, create_validator
+    from schemas.validator import SchemaValidator, create_validator
 
-        SCHEMA_VALIDATION_AVAILABLE = True
-    except ImportError:
-        # Fallback: try importing with relative path
-        sys.path.insert(0, os.path.join(project_root, "schemas"))
-        from validator import SchemaValidator, create_validator
-
-        SCHEMA_VALIDATION_AVAILABLE = True
+    SCHEMA_VALIDATION_AVAILABLE = True
 
 except ImportError as e:
     SCHEMA_VALIDATION_AVAILABLE = False
@@ -224,7 +248,8 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
         "validation_errors": {},  # Track validation errors by room ID
     }
 
-    if not os.path.exists(ROOMS_BASE_PATH):
+    rooms_path = Path(ROOMS_BASE_PATH)
+    if not rooms_path.exists():
         return world_data
 
     # Create schema validator if validation is enabled
@@ -236,38 +261,37 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
             logger.warning(f"Could not create schema validator: {e}")
 
     try:
-        for plane in os.listdir(ROOMS_BASE_PATH):
-            plane_path = os.path.join(ROOMS_BASE_PATH, plane)
-            if not os.path.isdir(plane_path):
+        for plane_path in rooms_path.iterdir():
+            if not plane_path.is_dir():
                 continue
+            plane = plane_path.name
 
-            for zone in os.listdir(plane_path):
-                zone_path = os.path.join(plane_path, zone)
-                if not os.path.isdir(zone_path):
+            for zone_path in plane_path.iterdir():
+                if not zone_path.is_dir():
                     continue
+                zone = zone_path.name
 
-                zone_config = load_zone_config(zone_path)
+                zone_config = load_zone_config(str(zone_path))
                 if zone_config:
                     world_data["zone_configs"][f"{plane}/{zone}"] = zone_config
 
-                for sub_zone in os.listdir(zone_path):
-                    subzone_path = os.path.join(zone_path, sub_zone)
-                    if not os.path.isdir(subzone_path):
+                for subzone_path in zone_path.iterdir():
+                    if not subzone_path.is_dir():
                         continue
+                    sub_zone = subzone_path.name
 
-                    subzone_config = load_subzone_config(subzone_path)
+                    subzone_config = load_subzone_config(str(subzone_path))
                     if subzone_config:
                         config_key = f"{plane}/{zone}/{sub_zone}"
                         world_data["subzone_configs"][config_key] = subzone_config
 
-                    for filename in os.listdir(subzone_path):
-                        if filename.endswith(".json") and not filename.startswith("subzone_config"):
-                            file_path = os.path.join(subzone_path, filename)
+                    for file_path in subzone_path.iterdir():
+                        if file_path.suffix == ".json" and not file_path.stem.startswith("subzone_config"):
                             try:
                                 with open(file_path, encoding="utf-8") as f:
                                     room_data = json.load(f)
 
-                                    room_file_name = filename.replace(".json", "")
+                                    room_file_name = file_path.stem
                                     new_room_id = generate_room_id(plane, zone, sub_zone, room_file_name)
 
                                     if "plane" not in room_data:
@@ -284,7 +308,7 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
                                     # Validate room data if schema validation is enabled
                                     if enable_schema_validation:
                                         validation_errors = validate_room_data(
-                                            room_data, file_path, validator, strict_validation
+                                            room_data, str(file_path), validator, strict_validation
                                         )
                                         if validation_errors:
                                             world_data["validation_errors"][new_room_id] = validation_errors
@@ -302,12 +326,12 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
                             except (OSError, json.JSONDecodeError) as e:
                                 context = create_error_context()
                                 context.metadata["operation"] = "load_room_file"
-                                context.metadata["file_path"] = file_path
+                                context.metadata["file_path"] = str(file_path)
                                 context.metadata["error_type"] = type(e).__name__
                                 logger.warning(
                                     "Could not load room file",
                                     context=context.to_dict(),
-                                    file_path=file_path,
+                                    file_path=str(file_path),
                                     error=str(e),
                                     error_type=type(e).__name__,
                                 )

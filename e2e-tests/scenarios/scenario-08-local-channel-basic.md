@@ -1,8 +1,10 @@
-# Scenario 8: Local Channel Basic
+# Scenario 8: Local Channel Basic **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests basic local channel communication functionality. This scenario verifies that players can send and receive local channel messages, that messages are properly broadcast to players in the same sub-zone, and that the local channel system works correctly for basic multiplayer communication.
+
+**This is a core multi-player scenario** that requires bidirectional local message verification between players in same sub-zone. No automated alternative is available.
 
 ## Prerequisites
 

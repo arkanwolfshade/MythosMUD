@@ -31,7 +31,7 @@ Generates Mythos-themed invite codes using the database storage system with Fast
 **Usage:**
 ```bash
 # Set environment variable first
-$env:DATABASE_URL="sqlite+aiosqlite:///./data/players/players.db"
+$env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 python generate_invites.py
 ```
 
@@ -47,7 +47,7 @@ Alternative invite generation script using the database storage system.
 **Usage:**
 ```bash
 # Set environment variable first
-$env:DATABASE_URL="sqlite+aiosqlite:///./data/players/players.db"
+$env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 python generate_invites_db.py
 ```
 
@@ -62,7 +62,7 @@ Utility script to check and list invite codes in the database.
 **Usage:**
 ```bash
 # Set environment variable first
-$env:DATABASE_URL="sqlite+aiosqlite:///./data/players/players.db"
+$env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 
 # List all invite codes
 python check_invites.py list

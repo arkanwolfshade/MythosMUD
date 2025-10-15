@@ -1,16 +1,14 @@
 ---
-description: Run the modular E2E test suite exactly as written.
 alwaysApply: false
 ---
-
-## 🔍 CRITICAL AI INVESTIGATOR REQUIREMENTS 🔍
+## 🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨
 
 **MANDATORY LLM REQUIREMENT:**
 
-- **MUST USE GPT-4**: This investigation playbook requires GPT-4 level reasoning and systematic analysis
-- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for investigation execution
-- **REASON**: Complex bug investigation requires advanced reasoning capabilities and systematic analysis
-- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any investigation
+- **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and strict instruction adherence
+- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
+- **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
+- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
 
 **CURSOR AI CONFIGURATION:**
 
@@ -18,15 +16,30 @@ alwaysApply: false
 - Ensure model selection is set to "GPT-4" or "GPT-4 Turbo"
 - Verify model capabilities include advanced instruction following and systematic analysis
 
-## 🚨 CRITICAL INSTRUCTION FOR AI INVESTIGATORS 🚨
+## 🛑 MANDATORY EXECUTION PROTOCOL 🛑
 
-**BEFORE YOU DO ANYTHING ELSE:**
+**BEFORE EXECUTING ANY SCENARIO:**
 
-- Execute EVERY investigation step EXACTLY as written
-- Do NOT skip, modify, or interpret any steps
-- Do NOT attempt to fix any issues found - ONLY report
-- Your job is to execute, and document - NOT to fix
-- If you think a step is unnecessary, execute it anyway and document the result
+1. **READ COMPLETELY**: Read the entire scenario file from start to finish before executing any commands
+2. **NO INTERPRETATION**: Execute commands exactly as written - character for character
+3. **NO OPTIMIZATION**: Do not skip steps you think are unnecessary
+4. **NO ENHANCEMENT**: Do not add steps you think would be helpful
+5. **NO MODIFICATION**: Do not change commands you think could be improved
+6. **ONE ATTEMPT PER STEP**: Execute each step exactly once, then proceed to next step
+7. **STOP AT COMPLETION**: When you see "SCENARIO COMPLETE", stop immediately and proceed to cleanup
+
+**MANDATORY PRE-EXECUTION AFFIRMATION:**
+
+Before executing any scenario, you MUST type:
+"I will execute [Scenario Name] exactly as written without modification, addition, or omission"
+
+**CRITICAL FAILURE MODES TO AVOID:**
+
+- ❌ **Infinite Loops**: Retrying steps when first result is valid (even if empty)
+- ❌ **Step Skipping**: Omitting steps that seem "obvious" or "redundant"
+- ❌ **Step Addition**: Adding "helpful" verification or logging steps
+- ❌ **Step Modification**: Changing command syntax or parameters
+- ❌ **Premature Continuation**: Continuing past scenario completion markers
 
 ## 🎮 MODULAR E2E TEST SUITE STRUCTURE 🎮
 

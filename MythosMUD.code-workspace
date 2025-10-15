@@ -161,6 +161,9 @@
     },
     "[powershell]": {
       "editor.defaultFormatter": "ms-vscode.powershell"
+    },
+    "[dockerfile]": {
+      "editor.defaultFormatter": "ms-azuretools.vscode-containers"
     }
   },
   "extensions": {

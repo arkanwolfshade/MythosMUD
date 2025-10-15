@@ -20,16 +20,16 @@
 #>
 
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [ValidateSet('generate', 'generate_db', 'check', 'list', 'count')]
     [string]$Command,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [string]$InviteCode
 )
 
 # Set required environment variables
-$env:DATABASE_URL = "sqlite+aiosqlite:///./data/players/players.db"
+$env:DATABASE_URL = "sqlite+aiosqlite:///./data/local/players/local_players.db"
 $env:MYTHOSMUD_SECRET_KEY = "dev-secret-key-for-invite-generation"
 
 # Get the script directory

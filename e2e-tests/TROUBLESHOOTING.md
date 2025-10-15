@@ -9,7 +9,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Issue 1: Server Won't Start
 
 **Symptoms**:
-- `./scripts/start_dev.ps1` fails
+- `./scripts/start_local.ps1` fails
 - Server startup errors
 - Port already in use errors
 
@@ -23,19 +23,19 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 2. **Verify database file exists and is accessible**:
    ```powershell
-   Test-Path "data/players/players.db"
+   Test-Path "data/e2e_test/players/e2e_players.db"
    ```
 
 3. **Check server logs for detailed error information**:
    ```powershell
-   Get-Content logs/development/server.log -Tail 50
+   Get-Content logs/e2e_test/server.log -Tail 50
    ```
 
 4. **Restart with proper shutdown sequence**:
    ```powershell
    ./scripts/stop_server.ps1
    Start-Sleep -Seconds 5
-   ./scripts/start_dev.ps1
+   ./scripts/start_local.ps1
    ```
 
 5. **Low-Performance Machine Specific**:
@@ -69,7 +69,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 3. **Verify database contains test players**:
    ```powershell
-   sqlite3 data/players/players.db "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   sqlite3 data/e2e_test/players/e2e_players.db "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
    ```
 
 4. **Check network connectivity**:
@@ -116,7 +116,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 4. **Check server logs for message broadcasting errors**:
    ```powershell
-   Get-Content logs/development/server.log -Tail 100 | Select-String "message|broadcast|websocket"
+   Get-Content logs/e2e_test/server.log -Tail 100 | Select-String "message|broadcast|websocket"
    ```
 
 5. **Low-Performance Machine Specific**:
@@ -139,7 +139,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 1. **Use SQLite CLI to verify player state**:
    ```powershell
-   sqlite3 data/players/players.db
+   sqlite3 data/e2e_test/players/e2e_players.db
    ```
 
    ```sql
@@ -158,13 +158,13 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 2. **Check database file permissions**:
    ```powershell
-   Get-Acl "data/players/players.db" | Format-List
+   Get-Acl "data/e2e_test/players/e2e_players.db" | Format-List
    ```
 
 3. **Restore from backup if needed**:
    ```powershell
    # If database is corrupted
-   Copy-Item "data/players/players.db.backup" "data/players/players.db"
+   Copy-Item "data/e2e_test/players/e2e_players.db.backup" "data/e2e_test/players/e2e_players.db"
    ```
 
 ### Issue 5: Browser Automation Failures
@@ -276,7 +276,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 netstat -an | findstr :54731
 
 # Check server logs
-Get-Content logs/development/server.log -Tail 50
+Get-Content logs/e2e_test/server.log -Tail 50
 
 # Check server health endpoint
 Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
@@ -286,10 +286,10 @@ Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsi
 
 ```powershell
 # Check player state
-sqlite3 data/players/players.db "SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+sqlite3 data/e2e_test/players/e2e_players.db "SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # Check database integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/e2e_test/players/e2e_players.db "PRAGMA integrity_check;"
 ```
 
 ### Check Browser State
@@ -329,7 +329,7 @@ If all else fails:
    ```powershell
    ./scripts/stop_server.ps1
    Start-Sleep -Seconds 10
-   ./scripts/start_dev.ps1
+   ./scripts/start_local.ps1
    ```
 
 4. **Verify clean startup**:

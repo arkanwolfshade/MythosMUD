@@ -25,6 +25,15 @@ class HealthStatus(str, Enum):
 class ServerComponent(BaseModel):
     """Server component health status and metrics."""
 
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Use enum values for consistency
+        use_enum_values=True,
+        # Performance: freeze for immutability
+        frozen=True,
+    )
+
     status: HealthStatus = Field(..., description="Server health status")
     uptime_seconds: float = Field(..., description="Server uptime in seconds")
     memory_usage_mb: float = Field(..., description="Memory usage in MB")
@@ -34,6 +43,15 @@ class ServerComponent(BaseModel):
 class DatabaseComponent(BaseModel):
     """Database component health status and metrics."""
 
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Use enum values for consistency
+        use_enum_values=True,
+        # Performance: freeze for immutability
+        frozen=True,
+    )
+
     status: HealthStatus = Field(..., description="Database health status")
     connection_count: int = Field(..., description="Active database connections")
     last_query_time_ms: float | None = Field(None, description="Last query response time in milliseconds")
@@ -41,6 +59,15 @@ class DatabaseComponent(BaseModel):
 
 class ConnectionsComponent(BaseModel):
     """Connection manager health status and metrics."""
+
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Use enum values for consistency
+        use_enum_values=True,
+        # Performance: freeze for immutability
+        frozen=True,
+    )
 
     status: HealthStatus = Field(..., description="Connection manager health status")
     active_connections: int = Field(..., description="Current active connections")
@@ -50,6 +77,13 @@ class ConnectionsComponent(BaseModel):
 
 class HealthComponents(BaseModel):
     """Health status for all system components."""
+
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Performance: freeze for immutability
+        frozen=True,
+    )
 
     server: ServerComponent = Field(..., description="Server component health")
     database: DatabaseComponent = Field(..., description="Database component health")
@@ -96,6 +130,13 @@ class HealthResponse(BaseModel):
 
 class HealthErrorResponse(BaseModel):
     """Error response for health check failures."""
+
+    model_config = ConfigDict(
+        # Security: reject unknown fields to prevent injection
+        extra="forbid",
+        # Performance: freeze for immutability
+        frozen=True,
+    )
 
     error: str = Field(..., description="Error message")
     detail: str = Field(..., description="Detailed error information")

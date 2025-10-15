@@ -52,49 +52,118 @@ $NatsServerDir = Split-Path $NatsServerPath -Parent
 $NatsConfigPath = Join-Path $NatsServerDir "nats-server.conf"
 $NatsPort = 4222
 $NatsHttpPort = 8222
-$NatsLogPath = Join-Path $PSScriptRoot "..\logs\development\nats\nats-server.log"
+$NatsLogPath = Join-Path $PSScriptRoot "..\logs\nats\nats-server.log"
 
-# Function to get NATS server path with environment variable support
+# Function to auto-detect NATS server installation
+function Find-NatsServerInstallation {
+    [CmdletBinding()]
+    param()
+
+    # Check common installation locations
+    $searchPaths = @(
+        # WinGet installation location
+        "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\NATSAuthors.NATSServer*\nats-server-*\nats-server.exe",
+        # PATH
+        "nats-server"
+    )
+
+    foreach ($pattern in $searchPaths) {
+        if ($pattern -eq "nats-server") {
+            # Check if it's in PATH
+            try {
+                $pathExe = Get-Command "nats-server" -ErrorAction Stop
+                Write-Verbose "Found NATS in PATH: $($pathExe.Source)"
+                return $pathExe.Source
+            }
+            catch {
+                continue
+            }
+        }
+        else {
+            # Use Get-ChildItem with wildcards
+            $found = Get-ChildItem -Path $pattern -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) {
+                Write-Verbose "Found NATS at: $($found.FullName)"
+                return $found.FullName
+            }
+        }
+    }
+
+    return $null
+}
+
+# Function to get NATS server path with auto-detection fallback
 function Get-NatsServerPath {
     [CmdletBinding()]
     param()
 
-    # Check if NATS_SERVER_PATH environment variable is set
-    if (-not $env:NATS_SERVER_PATH) {
-        Write-Error "NATS_SERVER_PATH environment variable is not set. Please set this variable to the path of your NATS server executable."
-        return $null
-    }
+    # First: Check if NATS_SERVER_PATH environment variable is set
+    if ($env:NATS_SERVER_PATH) {
+        $envPath = $env:NATS_SERVER_PATH.Trim()
 
-    $envPath = $env:NATS_SERVER_PATH.Trim()
-
-    # Check for empty environment variable
-    if ($envPath -eq "") {
-        Write-Error "NATS_SERVER_PATH environment variable is set but empty. Please set this variable to the path of your NATS server executable."
-        return $null
-    }
-
-    # Check if the path exists
-    if (-not (Test-Path $envPath)) {
-        Write-Error "NATS_SERVER_PATH points to non-existent file: $envPath. Please verify the path is correct."
-        return $null
-    }
-
-    # Validate that it's actually a NATS server
-    try {
-        $versionOutput = & $envPath --version 2>$null
-        if ($versionOutput -like "*nats-server*") {
-            Write-Verbose "Using NATS server from environment variable: $envPath"
-            return $envPath
+        # Check for placeholder value
+        if ($envPath -like "*YourUsername*") {
+            Write-Warning "NATS_SERVER_PATH contains placeholder 'YourUsername'. Attempting auto-detection..."
+            # Fall through to auto-detection
         }
-        else {
-            Write-Error "NATS_SERVER_PATH points to invalid executable (not a NATS server): $envPath. Version output: $versionOutput"
-            return $null
+        elseif ($envPath -ne "") {
+            # Check if the path exists
+            if (Test-Path $envPath) {
+                # Validate that it's actually a NATS server
+                try {
+                    $versionOutput = & $envPath --version 2>$null
+                    if ($versionOutput -like "*nats-server*") {
+                        Write-Verbose "Using NATS server from environment variable: $envPath"
+                        return $envPath
+                    }
+                }
+                catch {
+                    Write-Warning "NATS_SERVER_PATH points to invalid executable. Attempting auto-detection..."
+                    # Fall through to auto-detection
+                }
+            }
+            else {
+                Write-Warning "NATS_SERVER_PATH points to non-existent file: $envPath. Attempting auto-detection..."
+                # Fall through to auto-detection
+            }
         }
     }
-    catch {
-        Write-Error "NATS_SERVER_PATH points to invalid executable (cannot execute --version): $envPath. Error: $($_.Exception.Message)"
-        return $null
+
+    # Second: Auto-detect NATS installation
+    Write-Host "Auto-detecting NATS server installation..." -ForegroundColor Gray
+    $detectedPath = Find-NatsServerInstallation
+
+    if ($detectedPath) {
+        # Validate the detected path
+        try {
+            $versionOutput = & $detectedPath --version 2>$null
+            if ($versionOutput -like "*nats-server*") {
+                Write-Host "Auto-detected NATS server at: $detectedPath" -ForegroundColor Green
+                Write-Host "Tip: Set NATS_SERVER_PATH environment variable to skip auto-detection" -ForegroundColor Gray
+                return $detectedPath
+            }
+        }
+        catch {
+            # Continue to error below
+        }
     }
+
+    # Third: Error - couldn't find NATS
+    Write-Error @"
+NATS server not found!
+
+Attempted:
+1. Environment variable NATS_SERVER_PATH (not set or invalid)
+2. Auto-detection in WinGet packages (not found)
+3. System PATH (not found)
+
+Please either:
+- Set NATS_SERVER_PATH environment variable, or
+- Install NATS via: winget install NATSAuthors.NATSServer
+
+For more info: https://docs.nats.io/running-a-nats-service/introduction/installation
+"@
+    return $null
 }
 
 # Function to ensure NATS log directory exists

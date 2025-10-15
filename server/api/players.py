@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from ..auth.users import get_current_user
+from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
@@ -45,18 +46,16 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 
 
 @player_router.post("/", response_model=PlayerRead)
-def create_player(
+async def create_player(
     name: str,
-    starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
+    starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Create a new player character."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     try:
-        return player_service.create_player(name, starting_room_id)
+        return await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
     except ValidationError:
         context = create_context_from_request(request)
         if current_user:
@@ -67,27 +66,43 @@ def create_player(
 
 
 @player_router.get("/", response_model=list[PlayerRead])
-def list_players(
+async def list_players(
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a list of all players."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-    return player_service.list_players()
+    return await player_service.list_players()
+
+
+@player_router.get("/available-classes")
+async def get_available_classes(
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get information about all available character classes and their prerequisites.
+    """
+    stats_generator = StatsGenerator()
+
+    class_info = {}
+    for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
+        class_info[class_name] = {
+            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
+            "description": get_class_description(class_name),
+        }
+
+    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
 @player_router.get("/{player_id}", response_model=PlayerRead)
-def get_player(
+async def get_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by ID."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
-    player = player_service.get_player_by_id(player_id)
+    player = await player_service.get_player_by_id(player_id)
     if not player:
         context = create_context_from_request(request)
         if current_user:
@@ -99,16 +114,14 @@ def get_player(
 
 
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
-def get_player_by_name(
+async def get_player_by_name(
     player_name: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Get a specific player by name."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
-    player = player_service.get_player_by_name(player_name)
+    player = await player_service.get_player_by_name(player_name)
     if not player:
         context = create_context_from_request(request)
         if current_user:
@@ -120,17 +133,15 @@ def get_player_by_name(
 
 
 @player_router.delete("/{player_id}")
-def delete_player(
+async def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Delete a player character."""
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     try:
-        success, message = player_service.delete_player(player_id)
+        success, message = await player_service.delete_player(player_id)
         if not success:
             context = create_context_from_request(request)
             if current_user:
@@ -149,142 +160,130 @@ def delete_player(
 
 # Player stats and effects endpoints
 @player_router.post("/{player_id}/sanity-loss")
-def apply_sanity_loss(
+async def apply_sanity_loss(
     player_id: str,
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply sanity loss to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.apply_sanity_loss(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_sanity_loss(player, amount, source)
-    return {"message": f"Applied {amount} sanity loss to {player.name}"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/fear")
-def apply_fear(
+async def apply_fear(
     player_id: str,
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply fear to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.apply_fear(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_fear(player, amount, source)
-    return {"message": f"Applied {amount} fear to {player.name}"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/corruption")
-def apply_corruption(
+async def apply_corruption(
     player_id: str,
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Apply corruption to a player."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.apply_corruption(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.apply_corruption(player, amount, source)
-    return {"message": f"Applied {amount} corruption to {player.name}"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/occult-knowledge")
-def gain_occult_knowledge(
+async def gain_occult_knowledge(
     player_id: str,
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Gain occult knowledge (with sanity loss)."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.gain_occult_knowledge(player_id, amount, source)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.gain_occult_knowledge(player, amount, source)
-    return {"message": f"Gained {amount} occult knowledge for {player.name}"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/heal")
-def heal_player(
+async def heal_player(
     player_id: str,
     amount: int,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Heal a player's health."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.heal_player(player_id, amount)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.heal_player(player, amount)
-    return {"message": f"Healed {player.name} for {amount} health"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/damage")
-def damage_player(
+async def damage_player(
     player_id: str,
     amount: int,
     damage_type: str = "physical",
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """Damage a player's health."""
-    persistence = request.app.state.persistence
-    player = persistence.get_player(player_id)
-    if not player:
+    try:
+        return await player_service.damage_player(player_id, amount, damage_type)
+    except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
-        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
-
-    persistence.damage_player(player, amount, damage_type)
-    return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+        raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 # Character Creation and Stats Generation Endpoints
-def roll_character_stats(
-    method: str,
-    required_class: str | None,
-    max_attempts: int,
-    *,
+@player_router.post("/roll-stats")
+async def roll_character_stats(
+    method: str = "3d6",
+    required_class: str | None = None,
+    max_attempts: int = 10,
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
@@ -403,6 +402,7 @@ async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     current_user: User = Depends(get_current_user),
     request: Request = None,
+    player_service: PlayerService = PlayerServiceDep,
 ):
     """
     Create a new character with specific stats.
@@ -435,9 +435,6 @@ async def create_character_with_stats(
             context=context,
         ) from e
 
-    persistence = request.app.state.persistence
-    player_service = PlayerService(persistence)
-
     try:
         # Validate that character name matches username
         if request_data.name != current_user.username:
@@ -453,16 +450,16 @@ async def create_character_with_stats(
 
         # Determine starting room from request or config default
         try:
-            from ..config_loader import get_config
+            from ..config import get_config
 
-            default_start_room = get_config().get("start_room", "earth_arkhamcity_northside_intersection_derby_high")
+            default_start_room = get_config().game.default_player_room
         except Exception:
             default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
 
         starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
 
         # Create player with stats
-        player = player_service.create_player_with_stats(
+        player = await player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
             profession_id=request_data.profession_id,
@@ -497,7 +494,7 @@ async def create_character_with_stats(
 
 
 @player_router.post("/validate-stats")
-def validate_character_stats(
+async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
@@ -538,25 +535,6 @@ def validate_character_stats(
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "validate_stats"
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT, context=context) from e
-
-
-@player_router.get("/available-classes")
-def get_available_classes(
-    current_user: User = Depends(get_current_user),
-):
-    """
-    Get information about all available character classes and their prerequisites.
-    """
-    stats_generator = StatsGenerator()
-
-    class_info = {}
-    for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
-        class_info[class_name] = {
-            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
-            "description": get_class_description(class_name),
-        }
-
-    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
 def get_class_description(class_name: str) -> str:

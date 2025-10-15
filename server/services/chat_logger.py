@@ -34,12 +34,12 @@ class ChatLogger:
         """
         if log_dir is None:
             # Use environment-based configuration like the rest of the system
-            from ..config_loader import get_config
-            from ..logging_config import _resolve_log_base, detect_environment
+            from ..config import get_config
+            from ..logging_config import _resolve_log_base
 
             config = get_config()
-            log_base = config.get("logging", {}).get("log_base", "logs")
-            environment = config.get("logging", {}).get("environment", detect_environment())
+            log_base = config.logging.log_base
+            environment = config.logging.environment
 
             resolved_log_base = _resolve_log_base(log_base)
             self.log_dir = resolved_log_base / environment

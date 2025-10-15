@@ -509,7 +509,7 @@ def print_simple_statistics(rooms: dict, intersections: dict, connections: set):
 
 def main():
     """Main function to generate the simplified visualization."""
-    zone_path = "data/rooms/earth/arkhamcity"
+    zone_path = "data/local/rooms/earth/arkhamcity"
 
     if not os.path.exists(zone_path):
         print(f"Error: Zone path {zone_path} not found!")

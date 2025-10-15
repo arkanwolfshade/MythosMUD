@@ -91,7 +91,7 @@ Create a JSON schema that validates:
 
 **Functionality:**
 
-- Recursively scan `./data/rooms/` directory for all `.json` files
+- Recursively scan `./data/local/rooms/` directory for all `.json` files
 - Parse JSON files with error handling for malformed files
 - Build room database indexed by room ID
 - Support progress indicators for large datasets
@@ -222,7 +222,7 @@ Use Click framework for command-line interface:
 @click.option('--schema-only', is_flag=True, help='Only validate JSON schema')
 @click.option('--ignore', help='Comma-separated list of rule types to ignore')
 @click.option('--format', type=click.Choice(['console', 'json']), default='console')
-@click.option('--base-path', default='./data/rooms', help='Base directory for room files')
+@click.option('--base-path', default='./data/local/rooms', help='Base directory for room files')
 def main(zone, verbose, schema_only, ignore, format, base_path):
     # Implementation here
 ```
@@ -255,7 +255,7 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 
 ```
 🔍 Room Validator v1.0
-📁 Scanning ./data/rooms/...
+📁 Scanning ./data/local/rooms/...
 
 ✅ arkham zone: 7 rooms discovered
 ⚠️  dungeon zone: 0 rooms (empty zone)

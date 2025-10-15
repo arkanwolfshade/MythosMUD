@@ -15,12 +15,10 @@ import warnings
 
 from fastapi import Depends
 from fastapi.security import HTTPBearer
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
 from .auth.users import get_current_user
-from .config_loader import get_config
+from .config import get_config
 from .logging_config import get_logger, setup_logging
 
 # Suppress passlib deprecation warning about pkg_resources
@@ -31,32 +29,20 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 logger = get_logger(__name__)
 
 
-class ErrorLoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to log all errors and exceptions."""
-
-    async def dispatch(self, request: StarletteRequest, call_next):
-        try:
-            response = await call_next(request)
-            return response
-        except Exception as e:
-            logger.error("Unhandled exception in request", path=request.url.path, error=str(e), exc_info=True)
-            # Re-raise the exception to maintain the error handling chain
-            raise e
+# ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
+# which provides the same functionality plus request/response logging and better organization
 
 
 def main():
     """Main entry point for the MythosMUD server."""
-    from .config_loader import get_config
-
     # Set up logging based on configuration
     config = get_config()
-    setup_logging(config)
+    setup_logging(config.to_legacy_dict())
 
     logger.info("Starting MythosMUD server...")
     app = create_app()
 
-    # Add error logging middleware
-    app.add_middleware(ErrorLoggingMiddleware)
+    # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
 
     logger.info("MythosMUD server started successfully")
     return app
@@ -64,15 +50,12 @@ def main():
 
 # Set up logging when module is imported
 config = get_config()
-logger.info("Setting up logging with config", config=config)
-setup_logging(config)
+logger.info("Setting up logging with config", config=config.to_legacy_dict())
+setup_logging(config.to_legacy_dict())
 logger.info("Logging setup completed")
 
 # Create the FastAPI application
 app = create_app()
-
-# Add error logging middleware
-app.add_middleware(ErrorLoggingMiddleware)
 
 # Security
 security = HTTPBearer()
@@ -101,8 +84,8 @@ if __name__ == "__main__":
     config = get_config()
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
-        host=config["host"],
-        port=config["port"],
+        host=config.server.host,
+        port=config.server.port,
         reload=True,
         reload_excludes=["server/tests/*"],  # Exclude test directory from hot reloading
         # Use our StructLog system for all logging

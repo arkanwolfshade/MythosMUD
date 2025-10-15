@@ -7,7 +7,7 @@ from configured files, with fallback handling for missing or corrupted files.
 
 import os
 
-from ..config_loader import get_config
+from ..config import get_config
 from ..logging_config import get_logger
 from .error_logging import create_error_context
 
