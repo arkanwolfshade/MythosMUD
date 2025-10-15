@@ -19,7 +19,7 @@ class TestRoomLoader:
     def test_init_with_default_path(self):
         """Test RoomLoader initialization with default path."""
         loader = RoomLoader()
-        assert loader.base_path == Path("./data/rooms")
+        assert loader.base_path == Path("./data/local/rooms")
         assert loader.room_database == {}
         assert loader.parsing_errors == []
 

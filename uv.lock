@@ -1044,17 +1044,20 @@ dependencies = [
     { name = "httpx" },
     { name = "jsonschema" },
     { name = "nats-py" },
+    { name = "networkx" },
     { name = "playwright" },
     { name = "pre-commit" },
     { name = "psutil" },
     { name = "pwdlib", extra = ["bcrypt"] },
     { name = "pydantic" },
+    { name = "pydantic-settings" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
     { name = "pytest-timeout" },
     { name = "python-dotenv" },
     { name = "python-jose" },
+    { name = "python-statemachine" },
     { name = "requests" },
     { name = "setuptools" },
     { name = "sqlalchemy" },
@@ -1103,6 +1106,7 @@ requires-dist = [
     { name = "jsonschema", specifier = ">=4.21.0" },
     { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.10.5" },
     { name = "nats-py", specifier = ">=2.6.0" },
+    { name = "networkx", specifier = ">=3.0" },
     { name = "networkx", marker = "extra == 'dev'", specifier = ">=3.5" },
     { name = "numpy", marker = "extra == 'dev'", specifier = ">=2.3.2" },
     { name = "playwright", specifier = ">=1.55.0" },
@@ -1111,6 +1115,7 @@ requires-dist = [
     { name = "psutil", specifier = ">=6.0.0" },
     { name = "pwdlib", extras = ["bcrypt"], specifier = "==0.2.1" },
     { name = "pydantic", specifier = "==2.11.7" },
+    { name = "pydantic-settings", specifier = ">=2.0.0" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.4.1" },
     { name = "pytest-asyncio", specifier = ">=0.24.0" },
@@ -1120,6 +1125,7 @@ requires-dist = [
     { name = "pytest-timeout", specifier = ">=2.4.0" },
     { name = "python-dotenv", specifier = "==1.0.0" },
     { name = "python-jose", specifier = "==3.5.0" },
+    { name = "python-statemachine", specifier = ">=2.5.0" },
     { name = "requests", specifier = "==2.32.4" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.12.5" },
     { name = "semgrep", marker = "extra == 'dev'", specifier = ">=1.132.0" },
@@ -1602,6 +1608,20 @@ wheels = [
 ]
 
 [[package]]
+name = "pydantic-settings"
+version = "2.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/20/c5/dbbc27b814c71676593d1c3f718e6cd7d4f00652cefa24b75f7aa3efb25e/pydantic_settings-2.11.0.tar.gz", hash = "sha256:d0e87a1c7d33593beb7194adb8470fc426e95ba02af83a0f23474a04c9a08180", size = 188394, upload-time = "2025-09-24T14:19:11.764Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/d6/887a1ff844e64aa823fb4905978d882a633cfe295c32eacad582b78a7d8b/pydantic_settings-2.11.0-py3-none-any.whl", hash = "sha256:fe2cea3413b9530d10f3a5875adffb17ada5c1e1bab0b2885546d7310415207c", size = 48608, upload-time = "2025-09-24T14:19:10.015Z" },
+]
+
+[[package]]
 name = "pyee"
 version = "13.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1741,6 +1761,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f3/87/f44d7c9f274c7ee665a29b885ec97089ec5dc034c7f3fafa03da9e39a09e/python_multipart-0.0.20.tar.gz", hash = "sha256:8dd0cab45b8e23064ae09147625994d090fa46f5b0d1e13af944c331a7fa9d13", size = 37158, upload-time = "2024-12-16T19:45:46.972Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/45/58/38b5afbc1a800eeea951b9285d3912613f2603bdf897a4ab0f4bd7f405fc/python_multipart-0.0.20-py3-none-any.whl", hash = "sha256:8a62d3a8335e06589fe01f2a3e178cdcc632f3fbe0d492ad9ee0ec35aab1f104", size = 24546, upload-time = "2024-12-16T19:45:44.423Z" },
+]
+
+[[package]]
+name = "python-statemachine"
+version = "2.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/91/4f05f3931d1e9b1df71b17dc08c43feddf2bed7dbf13f95323df2cc8e340/python_statemachine-2.5.0.tar.gz", hash = "sha256:ae88cd22e47930b92b983a2176e61d811e571b69897be2568ec812c2885fb93a", size = 403718, upload-time = "2024-12-03T17:58:49.833Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bf/2d/1c95ebe84df60d630f8e855d1df2c66368805444ac167e9b50f29eabe917/python_statemachine-2.5.0-py3-none-any.whl", hash = "sha256:0ed53846802c17037fcb2a92323f4bc0c833290fa9d17a3587c50886c1541e62", size = 50415, upload-time = "2024-12-03T17:58:47.375Z" },
 ]
 
 [[package]]

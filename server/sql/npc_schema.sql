@@ -1,7 +1,6 @@
 -- NPC Subsystem Database Schema
 -- SQLite DDL for NPC tables: npc_definitions, npc_spawn_rules, npc_relationships
 -- This schema supports the NPC subsystem with sub-zone-based population management
-
 -- NPC Definitions table
 -- Stores static NPC data including stats, behaviors, and configuration
 CREATE TABLE IF NOT EXISTS npc_definitions (
@@ -27,19 +26,17 @@ CREATE TABLE IF NOT EXISTS npc_definitions (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 -- NPC Spawn Rules table
--- Defines conditions under which NPCs should be spawned
+-- Defines NPC population management rules
 CREATE TABLE IF NOT EXISTS npc_spawn_rules (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     npc_definition_id INTEGER NOT NULL,
     sub_zone_id TEXT NOT NULL,
-    min_players INTEGER DEFAULT 0,
-    max_players INTEGER DEFAULT 999,
+    min_population INTEGER DEFAULT 0,
+    max_population INTEGER DEFAULT 999,
     spawn_conditions TEXT NOT NULL DEFAULT '{}',
     FOREIGN KEY (npc_definition_id) REFERENCES npc_definitions(id) ON DELETE CASCADE
 );
-
 -- NPC Relationships table
 -- Defines relationships between NPCs (alliances, enmities, etc.)
 CREATE TABLE IF NOT EXISTS npc_relationships (
@@ -54,7 +51,6 @@ CREATE TABLE IF NOT EXISTS npc_relationships (
     FOREIGN KEY (npc_id_2) REFERENCES npc_definitions(id) ON DELETE CASCADE,
     UNIQUE(npc_id_1, npc_id_2)
 );
-
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_npc_definitions_sub_zone ON npc_definitions(sub_zone_id);
 CREATE INDEX IF NOT EXISTS idx_npc_definitions_type ON npc_definitions(npc_type);
@@ -64,6 +60,5 @@ CREATE INDEX IF NOT EXISTS idx_npc_spawn_rules_sub_zone ON npc_spawn_rules(sub_z
 CREATE INDEX IF NOT EXISTS idx_npc_spawn_rules_npc_def ON npc_spawn_rules(npc_definition_id);
 CREATE INDEX IF NOT EXISTS idx_npc_relationships_npc1 ON npc_relationships(npc_id_1);
 CREATE INDEX IF NOT EXISTS idx_npc_relationships_npc2 ON npc_relationships(npc_id_2);
-
 -- Create unique constraints
 CREATE UNIQUE INDEX IF NOT EXISTS idx_npc_definitions_name_sub_zone ON npc_definitions(name, sub_zone_id);

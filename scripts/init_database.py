@@ -11,7 +11,7 @@ Usage:
 
 Examples:
     python init_database.py data/players/players.db
-    python init_database.py server/tests/data/players/test_players.db
+    python init_database.py data/unit_test/players/unit_test_players.db
 """
 
 import os
@@ -35,7 +35,7 @@ def backup_existing_database(db_path: str):
     if os.path.exists(db_path):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_path = f"{db_path}.backup.{timestamp}"
-        print(f"⚠️  Database already exists. Creating backup: {backup_path}")
+        print(f"WARNING: Database already exists. Creating backup: {backup_path}")
         os.rename(db_path, backup_path)
         return backup_path
     return None
@@ -49,12 +49,12 @@ def verify_schema(db_path: str):
         # Check tables exist
         cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in cursor.fetchall()]
-        print(f"✓ Tables created: {tables}")
+        print(f"[OK] Tables created: {tables}")
 
         # Check unique indexes exist
         cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE '%_unique'")
         unique_indexes = [row[0] for row in cursor.fetchall()]
-        print(f"✓ Unique indexes: {unique_indexes}")
+        print(f"[OK] Unique indexes: {unique_indexes}")
 
         # Verify case-insensitive constraints work
         try:
@@ -67,10 +67,10 @@ def verify_schema(db_path: str):
                 "INSERT INTO users (id, email, username, hashed_password) VALUES (?, ?, ?, ?)",
                 ("test2", "test2@example.com", "testuser", "hash"),
             )
-            print("❌ Case-insensitive constraint test failed - duplicate usernames were allowed")
+            print("[ERROR] Case-insensitive constraint test failed - duplicate usernames were allowed")
             return False
         except sqlite3.IntegrityError:
-            print("✓ Case-insensitive constraint test passed - duplicate usernames properly rejected")
+            print("[OK] Case-insensitive constraint test passed - duplicate usernames properly rejected")
             # Clean up test data
             conn.execute("DELETE FROM users WHERE id IN ('test1', 'test2')")
             conn.commit()
@@ -83,8 +83,8 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: python init_database.py <database_path>")
         print("\nExamples:")
-        print("  python init_database.py data/players/players.db")
-        print("  python init_database.py server/tests/data/players/test_players.db")
+        print("  python init_database.py data/local/players/local_players.db")
+        print("  python init_database.py data/unit_test/players/unit_test_players.db")
         sys.exit(1)
 
     db_path = sys.argv[1]
@@ -106,22 +106,22 @@ def main():
             conn.executescript(schema)
             conn.commit()
 
-        print(f"✓ Database initialized successfully at {db_path}")
+        print(f"[OK] Database initialized successfully at {db_path}")
 
         # Verify schema
         if verify_schema(db_path):
-            print("\n🎉 Database initialization completed successfully!")
-            print("✓ Schema includes: users, players, invites tables")
-            print("✓ Case-insensitive unique constraints on username and player name")
-            print("✓ FastAPI Users v14 compatible schema")
+            print("\n[SUCCESS] Database initialization completed successfully!")
+            print("[OK] Schema includes: users, players, invites tables")
+            print("[OK] Case-insensitive unique constraints on username and player name")
+            print("[OK] FastAPI Users v14 compatible schema")
             if backup_path:
-                print(f"✓ Previous database backed up to: {backup_path}")
+                print(f"[OK] Previous database backed up to: {backup_path}")
         else:
-            print("\n❌ Database verification failed!")
+            print("\n[ERROR] Database verification failed!")
             sys.exit(1)
 
     except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
+        print(f"[ERROR] Database initialization failed: {e}")
         sys.exit(1)
 
 

@@ -164,7 +164,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             <MotdContent />
           </div>
           <div className="motd-actions">
-            <button className="continue-button" onClick={() => setShowMotd(false)}>
+            <button className="continue-button" onClick={() => setShowMotd(false)} data-testid="continue-button">
               Continue
             </button>
           </div>

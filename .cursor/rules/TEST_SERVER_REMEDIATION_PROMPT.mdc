@@ -116,7 +116,7 @@ Test failures typically fall into these categories:
 CHECKPOINT: Database remediation complete
 EXECUTE: uv run pytest server/tests/test_database.py -v
 VERIFY: All database tests pass
-DOCUMENT: Fixed schema issue in test_players.db
+DOCUMENT: Fixed schema issue in unit_test_players.db
 CONTINUE: Proceed to next failure category
 ```
 
@@ -154,16 +154,16 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Check database integrity
-   sqlite3 server/tests/data/players/test_players.db "PRAGMA integrity_check;"
-   sqlite3 server/tests/data/players/test_players.db ".schema"
+   sqlite3 server/tests/data/players/unit_test_players.db "PRAGMA integrity_check;"
+   sqlite3 server/tests/data/players/unit_test_players.db ".schema"
    ```
 
 3. **Check Test Data**:
 
    ```bash
    # Verify test data consistency
-   sqlite3 server/tests/data/players/test_players.db "SELECT COUNT(*) FROM players;"
-   sqlite3 server/tests/data/players/test_players.db "SELECT * FROM players LIMIT 5;"
+   sqlite3 server/tests/data/players/unit_test_players.db "SELECT COUNT(*) FROM players;"
+   sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players LIMIT 5;"
    ```
 
 #### For Authentication Failures
@@ -314,7 +314,7 @@ def test_command_validation():
 # Set test environment variables
 export MYTHOSMUD_ENV=test
 export MYTHOSMUD_TEST_MODE=true
-export DATABASE_URL=sqlite+aiosqlite:///server/tests/data/players/test_players.db
+export DATABASE_URL=sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db
 export MYTHOSMUD_CONFIG_PATH=server/tests/test_server_config.yaml
 export ALIASES_DIR=server/tests/data/players/aliases
 ```
@@ -324,7 +324,7 @@ export ALIASES_DIR=server/tests/data/players/aliases
 ```yaml
 # server/tests/test_server_config.yaml
 database:
-  url: "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+  url: "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
   echo: false
 
 logging:
@@ -350,7 +350,7 @@ logging:
 
 ```python
 # Ensure proper database URL configuration
-DATABASE_URL = "sqlite+aiosqlite:///server/tests/data/players/test_players.db"
+DATABASE_URL = "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
 
 # Use proper async database session handling
 async with get_db_session() as session:
@@ -407,8 +407,8 @@ uv run pytest server/tests/ --cov=server --cov-report=html
 
 ```bash
 # Check test database state
-sqlite3 server/tests/data/players/test_players.db ".tables"
-sqlite3 server/tests/data/players/test_players.db "SELECT * FROM players;"
+sqlite3 server/tests/data/players/unit_test_players.db ".tables"
+sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players;"
 
 # Check test logs
 tail -f server/tests/logs/test.log

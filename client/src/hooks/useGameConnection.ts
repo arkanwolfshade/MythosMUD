@@ -673,6 +673,15 @@ export function useGameConnection({
           csrf_token: csrfToken,
         },
       };
+
+      console.log('🚨 CLIENT DEBUG: Sending command', {
+        originalCommand: command,
+        originalArgs: args,
+        sanitizedCommand,
+        sanitizedArgs,
+        fullCommandData: commandData,
+      });
+
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command: sanitizedCommand, args: sanitizedArgs });
       return true;

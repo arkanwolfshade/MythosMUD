@@ -1,25 +1,47 @@
 # Test Environment Configuration
 
-This document describes the environment variables required for running the MythosMUD test suite.
+This document describes the configuration approach for running the MythosMUD test suite.
 
-## Required Environment Variables
+## Configuration Architecture
 
-The test suite requires the following environment variables to be set:
+MythosMUD uses a **two-tier configuration system** for tests:
 
-### Database Configuration
+1. **`.env.unit_test`** - Environment variable configuration (committed as `.env.unit_test.example`)
+2. **`server/tests/.env.unit_test`** - Secrets only (never committed)
 
-```bash
-# Main player database for tests
-DATABASE_URL=sqlite+aiosqlite:///server/tests/data/players/test_players.db
+This separation ensures:
+- ✅ Behavioral settings are version-controlled and consistent
+- ✅ Secrets are isolated and never accidentally committed
+- ✅ Clear distinction between "how it works" vs "credentials"
 
-# NPC database for tests
-NPC_DATABASE_URL=sqlite+aiosqlite:///server/tests/data/npcs/test_npcs.db
-```
+## Structural Configuration (YAML)
 
-### Security Configuration (Test Values)
+**File**: `.env.unit_test` (template: `.env.unit_test.example`)
 
-```bash
-# Security keys for testing (use test values only)
+Contains all **non-secret** test configuration:
+- Database paths (no credentials)
+- Logging levels and formats
+- Feature flags (enable_test_data, enable_debug_endpoints, etc.)
+- Rate limits and timeouts
+- NATS configuration
+- Chat system settings
+- Performance tuning
+- Game mechanics
+
+**This file IS committed to git** - it defines how the test server behaves.
+
+## Secrets Configuration (.env)
+
+**File**: `server/tests/.env.unit_test`
+
+Contains **ONLY secrets**:
+
+```env
+# --- Database URLs (Test Databases) ---
+DATABASE_URL=sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db
+NPC_DATABASE_URL=sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db
+
+# --- Security Secrets (Test Values Only - Not Real Secrets) ---
 MYTHOSMUD_SECRET_KEY=test-secret-key-for-testing-only
 MYTHOSMUD_JWT_SECRET=test-jwt-secret-for-testing-only
 MYTHOSMUD_RESET_TOKEN_SECRET=test-reset-token-secret-for-testing-only
@@ -27,55 +49,70 @@ MYTHOSMUD_VERIFICATION_TOKEN_SECRET=test-verification-token-secret-for-testing-o
 MYTHOSMUD_ADMIN_PASSWORD=test-admin-password
 ```
 
-### Additional Test Configuration
-
-```bash
-# Alias storage for tests
-ALIASES_DIR=server/tests/data/players/aliases
-
-# Development settings for tests
-DEBUG=true
-LOG_LEVEL=DEBUG
-
-# Test-specific settings
-ENVIRONMENT=test
-ENABLE_TEST_DATA=true
-ENABLE_DEBUG_ENDPOINTS=true
-```
+**This file is NOT committed to git** - it contains secrets (even if they're test secrets).
 
 ## Setting Up Test Environment
 
-### Option 1: Environment Variables
-
-Set these variables in your shell before running tests:
+### Step 1: Create Secrets File
 
 ```bash
-export DATABASE_URL="sqlite+aiosqlite:///server/tests/data/players/test_players.db"
-export NPC_DATABASE_URL="sqlite+aiosqlite:///server/tests/data/npcs/test_npcs.db"
-# ... other variables
+# Copy the example to create your local test secrets file
+cp server/tests/env.unit_test.example server/tests/.env.unit_test
+
+# No need to edit - the defaults work for testing
 ```
 
-### Option 2: Test Configuration File
-
-Create a `.env.test` file in the project root with the above configuration:
+### Step 2: Run Tests
 
 ```bash
-# Copy the example configuration
-cp server/tests/test.env.example .env.test
-# Edit as needed
+# From project root
+make test-server
+
+# Or directly with pytest
+cd server
+pytest
 ```
 
-### Option 3: Programmatic Configuration
+The test suite automatically:
+1. Loads secrets from `server/tests/.env.unit_test` (via conftest.py)
+2. Loads configuration from `.env.unit_test` (via Pydantic BaseSettings in `server/config/models.py`)
+3. Creates test databases if they don't exist
+4. Sets up proper directory structure
 
-The test suite automatically configures these variables in `conftest.py` if they are not already set.
+## What Changed (Migration from Old Approach)
+
+### Old Approach ❌
+- **`.env.unit_test`** (in project root) - Had EVERYTHING mixed together
+- **`server/tests/test.env.example`** - Example file
+- **`server/tests/test_server_config.yaml`** - Test config
+
+### New Approach ✅
+- **`server/server_config.unit_test.yaml`** - Structural configuration (committed)
+- **`server/tests/.env.unit_test`** - Secrets only (not committed)
+- **`server/tests/env.unit_test.example`** - Template for secrets
+
+### Benefits
+- ✅ Clear separation of secrets vs configuration
+- ✅ Easier to review configuration changes in git
+- ✅ Reduced risk of committing secrets
+- ✅ Consistent with production/local/e2e test patterns
 
 ## Database Paths
 
-- **Player Database**: `server/tests/data/players/test_players.db`
-- **NPC Database**: `server/tests/data/npcs/test_npcs.db`
+- **Player Database**: `data/unit_test/players/unit_test_players.db`
+- **NPC Database**: `data/unit_test/npcs/unit_test_npcs.db`
+- **Aliases Directory**: `data/unit_test/players/aliases`
 
-These databases are automatically created and managed by the test suite.
+These are automatically created and managed by the test suite.
+
+## Configuration Priority
+
+1. **`.env.unit_test` secrets** (highest priority - overrides everything)
+2. **`.env.unit_test`** - Pydantic configuration via environment variables
+3. **Hardcoded defaults** in `conftest.py` (fallback)
 
 ## Security Note
 
 **NEVER** use production security keys in test configurations. Always use test-specific values that are clearly marked as such.
+
+The test values in `env.unit_test.example` are safe for testing but should still not be committed when you create your local `.env.unit_test` file.

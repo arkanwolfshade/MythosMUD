@@ -155,7 +155,7 @@ Before starting ANY investigation, confirm:
 # Check if server is running
 ./scripts/stop_server.ps1
 # Wait for shutdown confirmation
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 - Document server startup process
@@ -178,8 +178,8 @@ grep -i "password\|credential\|token" logs/development/server.log
 
 ```bash
 # Check database connection and integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
-sqlite3 data/players/players.db "SELECT COUNT(*) FROM players;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "SELECT COUNT(*) FROM players;"
 ```
 
 - Document database status
@@ -262,7 +262,7 @@ grep -i "movement\|go\|room\|location" logs/development/server.log
 
 ```bash
 # Check player location data
-sqlite3 data/players/players.db "SELECT username, current_room_id FROM players;"
+sqlite3 data/players/local_players.db "SELECT username, current_room_id FROM players;"
 # Check room data integrity
 find data/rooms/ -name "*.json" -exec python -m json.tool {} \; > /dev/null
 ```
@@ -374,7 +374,7 @@ netstat -an | findstr :54731
 
 ```bash
 # Check chat-related database operations
-sqlite3 data/players/players.db ".schema" | grep -i chat
+sqlite3 data/players/local_players.db ".schema" | grep -i chat
 ```
 
 - Verify chat data storage and retrieval
@@ -464,7 +464,7 @@ grep -i "memory\|cpu\|resource" logs/development/server.log
 
 ```bash
 # Check database performance
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 # Check for slow queries in logs
 grep -i "duration.*ms" logs/development/server.log | sort -k5 -nr
 ```

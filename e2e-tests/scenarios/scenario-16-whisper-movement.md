@@ -1,8 +1,10 @@
-# Scenario 16: Whisper Movement
+# Scenario 16: Whisper Movement **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests whisper channel functionality across different player locations. This scenario verifies that whisper messages work correctly when players are in different rooms, that whisper delivery is not affected by player movement, and that the whisper system maintains privacy and proper message delivery regardless of player location.
+
+**This is a core multi-player scenario** that requires verifying cross-location whisper delivery between players in real-time. No automated alternative is available.
 
 ## Prerequisites
 

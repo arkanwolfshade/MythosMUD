@@ -32,7 +32,7 @@ def save_room_file(file_path: Path, room_data: dict) -> None:
         raise ValueError(f"Failed to save {file_path}: {e}") from e
 
 
-def fix_room_references(base_path: str = "./data/rooms/earth/arkhamcity/northside") -> None:
+def fix_room_references(base_path: str = "./data/local/rooms/earth/arkhamcity/northside") -> None:
     """
     Fix room ID references in the northside area.
 

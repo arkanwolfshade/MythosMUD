@@ -26,6 +26,14 @@ describe('messageTypeUtils', () => {
         'Exits: north, south, east, west',
         'You feel a sense of dread...',
         'The room is dark and foreboding.',
+        // Room descriptions from movement commands
+        'A section of High Lane where the street widens slightly as it approaches the intersection with W. Derby Street.',
+        'A narrow alley between two ancient buildings.',
+        'A small garden with overgrown vegetation.',
+        'A large hall with ornate decorations.',
+        'The ancient library contains countless tomes of forbidden knowledge.',
+        'There is a mysterious door in the corner.',
+        'There are several exits leading in different directions.',
       ];
 
       systemMessages.forEach(message => {

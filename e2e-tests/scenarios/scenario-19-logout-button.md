@@ -1,8 +1,18 @@
-# Scenario 19: Logout Button
+# Scenario 19: Logout Button **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
-Tests basic logout button functionality and user session termination. This scenario verifies that the logout button works correctly, that users can properly log out of their sessions, that logout confirmation is provided, and that the logout system works correctly for multiplayer interaction.
+Tests logout message broadcasting to other players. This scenario verifies that when a player logs out, other players in the game see the logout notification message in real-time.
+
+**⚠️ AUTOMATED TESTS AVAILABLE**: Logout button functionality is tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/logout-button.spec.ts` for:
+- Button visibility and accessibility
+- Click functionality and UI state changes
+- Logout confirmation message
+- Redirect to login page
+- Re-login functionality
+- Button styling verification
+
+This MCP scenario focuses ONLY on logout message broadcasting that requires real-time multi-player verification.
 
 ## Prerequisites
 

@@ -1,8 +1,10 @@
-# Scenario 4: Muting System and Emotes
+# Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests the muting system and emote functionality across game sessions. This scenario verifies that players can mute and unmute other players, and that muted players' emotes are properly blocked while other communication remains unaffected.
+
+**This is a core multi-player scenario** that requires verifying muted player's messages are blocked for specific player while visible to others. No automated alternative is available.
 
 ## Prerequisites
 

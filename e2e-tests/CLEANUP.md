@@ -63,7 +63,7 @@ netstat -an | findstr :5173
 
 ```powershell
 # Open SQLite database
-sqlite3 data/players/players.db
+sqlite3 data/e2e_test/players/e2e_players.db
 ```
 
 ```sql
@@ -89,9 +89,9 @@ SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfsha
 
 ```powershell
 # Archive server logs (if needed)
-if (Test-Path "logs/development/server.log") {
+if (Test-Path "logs/e2e_test/server.log") {
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    Move-Item "logs/development/server.log" "logs/development/server.log.$timestamp"
+    Move-Item "logs/e2e_test/server.log" "logs/e2e_test/server.log.$timestamp"
 }
 
 # Archive client logs (if needed)

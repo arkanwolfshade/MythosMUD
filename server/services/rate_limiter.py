@@ -9,7 +9,7 @@ import time
 from collections import defaultdict, deque
 from typing import Any
 
-from ..config_loader import get_config
+from ..config import get_config
 from ..logging_config import get_logger
 from .chat_logger import chat_logger
 
@@ -28,23 +28,35 @@ class RateLimiter:
         """Initialize the rate limiter with configuration-based limits."""
         # Load rate limits from configuration
         config = get_config()
-        chat_config = config.get("chat", {})
-        rate_limiting_config = chat_config.get("rate_limiting", {})
 
-        # Default rate limits (messages per minute) - fallback if config not available
-        default_limits = {
-            "global": 10,  # Global channel - most restrictive
-            "local": 20,  # Local area channel
-            "say": 15,  # Room-based chat
-            "party": 30,  # Party chat - more permissive
-            "whisper": 5,  # Private messages - very restrictive
-            "system": 100,  # System messages - very permissive
-            "admin": 50,  # Admin channel
-        }
-
-        # Use configured limits or fall back to defaults
-        self.limits = rate_limiting_config.get("limits", default_limits)
-        self.enabled = rate_limiting_config.get("enabled", True)
+        # Handle both new Pydantic config and legacy dict format
+        if hasattr(config, "chat"):
+            # New Pydantic config system
+            self.limits = {
+                "global": config.chat.rate_limit_global,
+                "local": config.chat.rate_limit_local,
+                "say": config.chat.rate_limit_say,
+                "party": config.chat.rate_limit_party,
+                "whisper": config.chat.rate_limit_whisper,
+                "system": 100,  # System messages - not in config
+                "admin": 50,  # Admin channel - not in config
+            }
+            self.enabled = True
+        else:
+            # Legacy dict format (for backward compatibility with tests)
+            chat_config = config.get("chat", {})
+            rate_limiting_config = chat_config.get("rate_limiting", {})
+            default_limits = {
+                "global": 10,
+                "local": 20,
+                "say": 15,
+                "party": 30,
+                "whisper": 5,
+                "system": 100,
+                "admin": 50,
+            }
+            self.limits = rate_limiting_config.get("limits", default_limits)
+            self.enabled = rate_limiting_config.get("enabled", True)
 
         # Sliding window storage: {player_id: {channel: deque(timestamps)}}
         self.windows = defaultdict(lambda: defaultdict(deque))

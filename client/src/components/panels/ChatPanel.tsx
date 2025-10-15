@@ -114,14 +114,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
     if (chatFilter === 'all') return true;
     if (chatFilter === 'current') {
-      // Filter for current channel messages - handle both 'chat' and 'command' messages with chat content
-      const isChatMessage =
-        message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text));
-
-      // If it's a chat message, also check if it belongs to the current channel
-      if (isChatMessage) {
-        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-        return messageChannel === selectedChannel;
+      // Show all command responses (user initiated actions should always be visible)
+      if (message.messageType === 'command') {
+        return true;
       }
 
       // Show error messages regardless of channel (they're typically global)
@@ -129,24 +124,25 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return true;
       }
 
+      // Filter for current channel messages - handle chat messages
+      const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
+
+      // If it's a chat message, check the channel
+      if (isChatMessage) {
+        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+
+        // ALWAYS show whisper messages (private messages should always be visible)
+        if (messageChannel === 'whisper') {
+          return true;
+        }
+
+        // For other channels, filter by selected channel
+        return messageChannel === selectedChannel;
+      }
+
       return false;
     }
     return true;
-  });
-
-  // Debug logging for final filtered messages
-  console.log('🔍 ChatPanel Final Filtered Messages:', {
-    totalMessages: messages.length,
-    filteredCount: filteredMessages.length,
-    chatFilter,
-    selectedChannel,
-    filteredMessages: filteredMessages.map(m => ({
-      text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
-      messageType: m.messageType,
-      channel: m.channel,
-      timestamp: m.timestamp,
-    })),
-    timestamp: new Date().toISOString(),
   });
 
   const formatTimestamp = (timestamp: string): string => {
@@ -246,7 +242,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   }}
                 >
                   <div
-                    className={`w-2 h-2 rounded-full ${getActivityColor(activityLevel)} transition-all duration-300 ${activityLevel === 'high' ? 'animate-pulse' : ''}`}
+                    className={`w-2 h-2 rounded-full ${getActivityColor(activityLevel)} transition-all duration-300`}
                   ></div>
                   <span className="text-xs text-mythos-terminal-text-secondary group-hover:text-mythos-terminal-primary transition-colors duration-200">
                     {channel.name}
@@ -310,7 +306,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             {filteredMessages.map((message, index) => (
               <div
                 key={index}
-                className="p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
+                className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
                 style={{ animationDelay: `${index * 50}ms` }}
                 data-testid="chat-message"
               >
@@ -342,7 +338,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
                 {/* Message Content */}
                 <div
-                  className={`${getFontSizeClass()} leading-relaxed ${getMessageClass(message.messageType)}`}
+                  className={`message-text ${getFontSizeClass()} leading-relaxed ${getMessageClass(
+                    message.messageType
+                  )}`}
+                  data-message-text={message.text}
                   dangerouslySetInnerHTML={{
                     __html: message.isHtml
                       ? message.isCompleteHtml
@@ -352,14 +351,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   }}
                   onContextMenu={e => {
                     e.preventDefault();
-                    const username = message.aliasChain?.[0]?.original.split(' ')[0];
-                    if (username && !isUserIgnored(username)) {
-                      if (confirm(`Ignore messages from ${username}?`)) {
-                        addIgnoredUser(username);
-                      }
-                    }
+                    // TODO: Implement user ignore functionality
+                    // const username = message.aliasChain?.[0]?.original.split(' ')[0];
+                    // if (username && !isUserIgnored(username)) {
+                    //   if (confirm(`Ignore messages from ${username}?`)) {
+                    //     addIgnoredUser(username);
+                    //   }
+                    // }
                   }}
-                  title="Right-click to ignore user"
+                  title="Right-click for options"
                 />
               </div>
             ))}

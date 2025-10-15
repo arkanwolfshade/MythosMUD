@@ -7,7 +7,7 @@ injection and ensure type safety.
 
 import re
 
-from pydantic import ValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..logging_config import get_logger
@@ -233,7 +233,10 @@ class CommandParser:
                     MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
                 )
 
-        except ValidationError as e:
+        except MythosValidationError:
+            # Re-raise MythosValidationError without wrapping it
+            raise
+        except PydanticValidationError as e:
             logger.warning("Command validation failed", command=command, args=args, errors=e.errors())
             context = create_error_context()
             context.metadata = {"command": command, "args": args, "validation_errors": e.errors()}
@@ -288,9 +291,16 @@ class CommandParser:
             context = create_error_context()
             context.metadata = {"args": args}
             log_and_raise(
-                MythosValidationError, "Local command requires a message", context=context, logger_name=__name__
+                MythosValidationError,
+                "You must provide a message to send locally",
+                context=context,
+                logger_name=__name__,
             )
         message = " ".join(args)
+        if len(message) > 500:
+            context = create_error_context()
+            context.metadata = {"args": args, "message_length": len(message)}
+            log_and_raise(MythosValidationError, "Local message too long", context=context, logger_name=__name__)
         return LocalCommand(message=message)
 
     def _create_system_command(self, args: list[str]) -> SystemCommand:
@@ -565,7 +575,8 @@ class CommandParser:
 
     def _create_whisper_command(self, args: list[str]) -> WhisperCommand:
         """Create a WhisperCommand from parsed arguments."""
-        if len(args) < 2:
+        # Check if target is provided
+        if len(args) < 1:
             context = create_error_context()
             context.metadata = {"args": args, "arg_count": len(args)}
             log_and_raise(
@@ -573,14 +584,20 @@ class CommandParser:
             )
 
         target = args[0]
-        message = " ".join(args[1:])
+        message = " ".join(args[1:]) if len(args) > 1 else ""
 
+        # Check if message is provided (not empty or whitespace-only)
         if not message.strip():
             context = create_error_context()
-            context.metadata = {"args": args, "message": message}
+            context.metadata = {"args": args, "target": target}
             log_and_raise(
-                MythosValidationError, "Usage: whisper <player> <message>", context=context, logger_name=__name__
+                MythosValidationError, "You must provide a message to whisper", context=context, logger_name=__name__
             )
+
+        if len(message) > 500:
+            context = create_error_context()
+            context.metadata = {"args": args, "message_length": len(message)}
+            log_and_raise(MythosValidationError, "Whisper message too long", context=context, logger_name=__name__)
 
         return WhisperCommand(target=target, message=message)
 

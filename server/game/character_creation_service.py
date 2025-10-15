@@ -152,7 +152,7 @@ class CharacterCreationService:
         name: str,
         stats: dict,
         profession_id: int = 0,
-        starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
+        starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,
     ) -> dict[str, Any]:
         """

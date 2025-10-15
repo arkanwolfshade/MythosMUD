@@ -19,11 +19,15 @@ from pydantic import BaseModel
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
 from .commands.command_service import CommandService
-from .config_loader import get_config
+from .config import get_config
 from .exceptions import ValidationError
 from .logging_config import get_logger
+from .middleware.command_rate_limiter import command_rate_limiter
+from .utils.alias_graph import AliasGraph
+from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
+from .validators.command_validator import CommandValidator
 
 logger = get_logger(__name__)
 
@@ -34,7 +38,8 @@ command_service = CommandService()
 command_processor = get_command_processor()
 
 # Configuration
-MAX_COMMAND_LENGTH = get_config().get("max_command_length", 1000)
+MAX_COMMAND_LENGTH = get_config().game.max_command_length
+MAX_EXPANDED_COMMAND_LENGTH = CommandValidator.MAX_EXPANDED_COMMAND_LENGTH
 
 
 class CommandRequest(BaseModel):
@@ -229,7 +234,22 @@ async def process_command_unified(
         "=== UNIFIED COMMAND HANDLER: Processing command ===", context={"player": player_name, "command": command_line}
     )
 
-    # Step 1: Basic validation
+    # Step 1: Command Rate Limiting (NEW - CRITICAL-3)
+    # AI: Prevent command flooding and DoS attacks
+    if not command_rate_limiter.is_allowed(player_name):
+        wait_time = command_rate_limiter.get_wait_time(player_name)
+        logger.warning("Command rate limit exceeded", player=player_name, wait_time=wait_time)
+        # Log security event
+        audit_logger.log_security_event(
+            event_type="rate_limit_violation",
+            player_name=player_name,
+            description=f"Command rate limit exceeded, wait {wait_time:.1f}s",
+            severity="medium",
+            metadata={"wait_time": wait_time},
+        )
+        return {"result": f"Too many commands. Please wait {wait_time:.1f} seconds."}
+
+    # Step 2: Basic validation
     if not command_line:
         logger.debug("Empty command received", context={"player": player_name})
         return {"result": ""}
@@ -240,7 +260,27 @@ async def process_command_unified(
         )
         return {"result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)"}
 
-    # Step 2: Clean and normalize command
+    # Step 3: Command Content Validation (NEW - CRITICAL-3)
+    # AI: Prevent command injection and malicious input
+    is_valid, validation_error = CommandValidator.validate_command_content(command_line)
+    if not is_valid:
+        logger.warning(
+            "Command validation failed",
+            player=player_name,
+            error=validation_error,
+            command=CommandValidator.sanitize_for_logging(command_line),
+        )
+        # Log security event
+        audit_logger.log_security_event(
+            event_type="command_injection_attempt",
+            player_name=player_name,
+            description=validation_error,
+            severity="high",
+            metadata={"command_sample": command_line[:100]},
+        )
+        return {"result": "Invalid command format"}
+
+    # Step 4: Clean and normalize command
     command_line = clean_command_input(command_line)
     if not command_line:
         logger.debug("Empty command after cleaning", context={"player": player_name})
@@ -254,7 +294,9 @@ async def process_command_unified(
     # Step 3: Initialize alias storage if not provided
     if not alias_storage:
         try:
-            alias_storage = AliasStorage()
+            config = get_config()
+            aliases_dir = config.game.aliases_dir
+            alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
             logger.debug("AliasStorage initialized", context={"player": player_name})
         except Exception as e:
             logger.error("Failed to initialize AliasStorage", context={"player": player_name, "error": str(e)})
@@ -275,13 +317,107 @@ async def process_command_unified(
         logger.debug("Processing alias management command", player=player_name, command=cmd)
         return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
 
-    # Step 6: Check for alias expansion
+    # Step 6: Check for alias expansion with cycle detection (ENHANCED - CRITICAL-3)
     if alias_storage:
         alias = alias_storage.get_alias(player_name, cmd)
         if alias:
-            logger.debug("Alias found, expanding", player=player_name, alias_name=alias.name, original_command=cmd)
+            logger.debug(
+                "Alias found, checking safety", player=player_name, alias_name=alias.name, original_command=cmd
+            )
+
+            # NEW: Build alias dependency graph and check for cycles
+            # AI: This prevents "alias bombs" - recursive aliases that create infinite loops
+            alias_graph = AliasGraph(alias_storage)
+            alias_graph.build_graph(player_name)
+
+            if not alias_graph.is_safe_to_expand(alias.name):
+                cycle = alias_graph.detect_cycle(alias.name)
+                cycle_path = " → ".join(cycle) if cycle else "unknown"
+
+                logger.warning(
+                    "Circular alias dependency detected - expansion blocked",
+                    player=player_name,
+                    alias=alias.name,
+                    cycle=cycle,
+                )
+
+                # Log security event
+                audit_logger.log_alias_expansion(
+                    player_name=player_name,
+                    alias_name=alias.name,
+                    expanded_command="[BLOCKED - Circular dependency]",
+                    cycle_detected=True,
+                    expansion_depth=0,
+                )
+
+                return {
+                    "result": f"Alias '{alias.name}' contains circular dependency: {cycle_path}\n"
+                    f"Please remove the circular reference using 'unalias {alias.name}'"
+                }
+
+            # NEW: Check expansion depth as additional safety measure
+            expansion_depth = alias_graph.get_expansion_depth(alias.name)
+            if expansion_depth > 10:  # Reasonable depth limit
+                logger.warning(
+                    "Alias expansion depth too deep", player=player_name, alias=alias.name, depth=expansion_depth
+                )
+                return {
+                    "result": f"Alias '{alias.name}' has excessive expansion depth ({expansion_depth} levels). "
+                    f"Maximum allowed is 10."
+                }
+
             # Expand the alias
             expanded_command = alias.get_expanded_command(args)
+
+            # NEW: Validate expanded command length
+            # AI: Prevent expansion attacks where small aliases expand to huge commands
+            if len(expanded_command) > MAX_EXPANDED_COMMAND_LENGTH:
+                logger.warning(
+                    "Expanded command exceeds length limit",
+                    player=player_name,
+                    alias=alias.name,
+                    length=len(expanded_command),
+                    max_length=MAX_EXPANDED_COMMAND_LENGTH,
+                )
+                # Log security event
+                audit_logger.log_alias_expansion(
+                    player_name=player_name,
+                    alias_name=alias.name,
+                    expanded_command="[BLOCKED - Too long]",
+                    cycle_detected=False,
+                    expansion_depth=expansion_depth,
+                )
+                return {
+                    "result": f"Expanded command too long ({len(expanded_command)} chars, max {MAX_EXPANDED_COMMAND_LENGTH})"
+                }
+
+            # NEW: Validate expanded command content
+            is_valid_expanded, expanded_error = CommandValidator.validate_expanded_command(expanded_command)
+            if not is_valid_expanded:
+                logger.warning(
+                    "Expanded command validation failed", player=player_name, alias=alias.name, error=expanded_error
+                )
+                # Log security event
+                audit_logger.log_security_event(
+                    event_type="malicious_alias_detected",
+                    player_name=player_name,
+                    description=f"Alias expands to dangerous content: {expanded_error}",
+                    severity="high",
+                    metadata={"alias": alias.name},
+                )
+                return {"result": f"Alias expansion blocked: {expanded_error}"}
+
+            # Log successful alias expansion
+            audit_logger.log_alias_expansion(
+                player_name=player_name,
+                alias_name=alias.name,
+                expanded_command=expanded_command,
+                cycle_detected=False,
+                expansion_depth=expansion_depth,
+            )
+
+            logger.debug("Alias safe to expand", player=player_name, alias_name=alias.name, depth=expansion_depth)
+
             # Recursively process the expanded command (with depth limit to prevent loops)
             result = await handle_expanded_command(
                 expanded_command, current_user, request, alias_storage, player_name, depth=0, alias_chain=[]
@@ -338,10 +474,45 @@ async def process_command_with_validation(
         )
 
         logger.debug("Command processed successfully", player=player_name, command_type=command_type)
+
+        # NEW: Audit logging for security-sensitive commands (CRITICAL-3)
+        # AI: Log admin/privileged commands for security auditing and compliance
+        if CommandValidator.is_security_sensitive(command_line):
+            # Extract session and IP if available
+            session_id = getattr(request.state, "session_id", None) if hasattr(request, "state") else None
+            ip_address = getattr(request.client, "host", None) if hasattr(request, "client") else None
+
+            audit_logger.log_command(
+                player_name=player_name,
+                command=command_line,
+                success=True,  # If we got here, command was successful
+                result=str(result.get("result", ""))[:500],  # Truncate result
+                ip_address=ip_address,
+                session_id=session_id,
+                metadata={"command_type": command_type},
+            )
+
+            logger.info(
+                "Security-sensitive command executed",
+                player=player_name,
+                command=CommandValidator.sanitize_for_logging(command_line),
+            )
+
         return result
 
     except ValidationError as e:
         logger.warning("Command validation error", context={"player": player_name, "error": str(e)})
+
+        # NEW: Audit log validation failures for security-sensitive commands (CRITICAL-3)
+        if CommandValidator.is_security_sensitive(command_line):
+            audit_logger.log_command(
+                player_name=player_name,
+                command=command_line,
+                success=False,
+                result=f"Validation error: {str(e)}",
+                metadata={"error_type": "ValidationError"},
+            )
+
         return {"result": str(e)}
     except Exception as e:
         logger.error("Error processing command", player=player_name, error=str(e), exc_info=True)

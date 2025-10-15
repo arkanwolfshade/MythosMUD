@@ -78,10 +78,10 @@ kill -9 <process_id>
 **Database Corruption**
 ```bash
 # Check database integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 
 # If corruption detected, restore from backup
-cp data/players/players.db.backup data/players/players.db
+cp data/players/local_players.db.backup data/players/local_players.db
 ```
 
 **Connection Pool Exhaustion**
@@ -276,7 +276,7 @@ grep -i "room.*not found\|room.*invalid" logs/development/world.log
 **Player State Issues**
 ```bash
 # Check player data integrity
-sqlite3 data/players/players.db "SELECT COUNT(*) FROM players WHERE current_room_id IS NULL;"
+sqlite3 data/players/local_players.db "SELECT COUNT(*) FROM players WHERE current_room_id IS NULL;"
 
 # Look for player state errors
 grep -i "player.*state\|player.*not found" logs/development/server.log
@@ -352,7 +352,7 @@ ENABLE_DEBUG_LOGGING = True
 
 # Restart server to apply changes
 ./scripts/stop_server.ps1
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 #### Trace Specific Operations
@@ -387,16 +387,16 @@ python -c "import pstats; pstats.Stats('profile.stats').sort_stats('cumulative')
 ./scripts/stop_server.ps1
 
 # Backup current database
-cp data/players/players.db data/players/players.db.emergency_backup
+cp data/players/local_players.db data/players/local_players.db.emergency_backup
 
 # Restore from last known good backup
-cp data/players/players.db.backup data/players/players.db
+cp data/players/local_players.db.backup data/players/local_players.db
 
 # Verify database integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 
 # Restart server
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 #### Log File Management
@@ -407,7 +407,7 @@ mv logs/development/*.log logs/archives/$(date +%Y%m%d_%H%M%S)/
 
 # Restart server to create new log files
 ./scripts/stop_server.ps1
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 #### Memory Recovery
@@ -418,7 +418,7 @@ ps aux | grep mythosmud
 # Restart server if memory usage is excessive
 ./scripts/stop_server.ps1
 sleep 5
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 ### Incident Response
@@ -434,7 +434,7 @@ python scripts/error_monitoring.py --log-dir logs/development --alerts
 python scripts/analyze_error_logs.py --log-dir logs/development --report
 # Fix issues
 # Restart server
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 #### System Unresponsive
@@ -449,7 +449,7 @@ pkill -f mythosmud
 ls -la core.*
 
 # Restart server
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 #### Data Corruption
@@ -464,10 +464,10 @@ tar -czf emergency_backup_$(date +%Y%m%d_%H%M%S).tar.gz data/
 tar -xzf latest_backup.tar.gz
 
 # Verify data integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 
 # Restart server
-./scripts/start_dev.ps1
+./scripts/start_local.ps1
 ```
 
 ## Prevention Strategies
@@ -518,7 +518,7 @@ python scripts/analyze_error_logs.py --log-dir logs/development --report > weekl
 find logs/ -name "*.log.*" -mtime +7 -delete
 
 # Check database integrity
-sqlite3 data/players/players.db "PRAGMA integrity_check;"
+sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 ```
 
 #### Monthly Reviews

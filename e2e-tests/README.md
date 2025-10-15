@@ -78,6 +78,36 @@ e2e-tests/
   - Backward compatibility analysis
   - Performance improvements
 
+### AI Execution Improvement Documentation (NEW)
+
+- **`AI_EXECUTION_IMPROVEMENTS.md`** - Comprehensive guide to improvements:
+  - Overview of changes made
+  - Detailed explanation of each improvement
+  - How improvements prevent failures
+  - Implementation roadmap
+  - How to update existing scenarios
+
+- **`AI_EXECUTOR_QUICK_REFERENCE.md`** - Quick reference card for AI executors:
+  - Seven commandments for execution
+  - Common traps to avoid
+  - Quick decision guides
+  - The golden rule
+  - Keep visible during execution
+
+- **`EXECUTION_GUARDS.md`** - Enhanced with real-world failure patterns:
+  - 8 documented AI execution failures
+  - What went wrong and why
+  - Correct behaviors to follow
+  - Learning from mistakes
+  - Anti-pattern examples
+
+- **`SCENARIO_TEMPLATE.md`** - Template for creating/updating scenarios:
+  - Mandatory execution contract
+  - Step boundary format
+  - Execution guard examples
+  - Completion checklist format
+  - Unmissable completion markers
+
 ### Individual Scenario Files
 
 Each scenario file follows a standardized structure:

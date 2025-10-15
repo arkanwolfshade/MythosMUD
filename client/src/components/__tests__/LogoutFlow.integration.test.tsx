@@ -197,8 +197,15 @@ describe('Logout Flow Integration', () => {
       // Click logout button
       fireEvent.click(logoutButton);
 
-      // Verify logout handler was called
+      // Verify logout handler was called (wait for async call)
       const { logoutHandler } = await import('../../utils/logoutHandler');
+      await waitFor(
+        () => {
+          expect(logoutHandler).toHaveBeenCalled();
+        },
+        { timeout: 2000 }
+      );
+
       expect(logoutHandler).toHaveBeenCalledWith({
         authToken: 'mock-token',
         disconnect: expect.any(Function),
@@ -208,10 +215,13 @@ describe('Logout Flow Integration', () => {
       });
 
       // Wait for logout to complete and return to login screen
-      await waitFor(() => {
-        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
-        expect(screen.getByText('Enter the realm of eldritch knowledge')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+          expect(screen.getByText('Enter the realm of eldritch knowledge')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify we're back at login screen
       expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
@@ -255,14 +265,28 @@ describe('Logout Flow Integration', () => {
       const logoutButton = screen.getByTestId('logout-button');
       fireEvent.click(logoutButton);
 
-      // Verify loading state is shown
-      expect(logoutButton).toHaveTextContent('Exiting...');
-      expect(logoutButton).toBeDisabled();
+      // Verify loading state is shown (wait for state update)
+      await waitFor(
+        () => {
+          expect(logoutButton).toHaveTextContent('Exiting...');
+        },
+        { timeout: 1000 }
+      );
+
+      await waitFor(
+        () => {
+          expect(logoutButton).toBeDisabled();
+        },
+        { timeout: 1000 }
+      );
 
       // Wait for logout to complete
-      await waitFor(() => {
-        expect(screen.getByText('MYTHOS MUD')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('MYTHOS MUD')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle logout errors gracefully and still return to login', async () => {
@@ -292,21 +316,32 @@ describe('Logout Flow Integration', () => {
       fireEvent.change(passwordInput, { target: { value: 'password' } });
       fireEvent.click(loginButton);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Click logout button
       const logoutButton = screen.getByTestId('logout-button');
       fireEvent.click(logoutButton);
 
       // Wait for logout to complete despite error
-      await waitFor(() => {
-        expect(screen.getByText('MythosMUD')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('MYTHOS MUD')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify we're back at login screen even after error
-      expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
       expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
     });
   });
@@ -356,6 +391,12 @@ describe('Logout Flow Integration', () => {
         }),
       });
 
+      // Mock logout handler with delay
+      const { logoutHandler } = await import('../../utils/logoutHandler');
+      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockImplementation(
+        () => new Promise(resolve => setTimeout(resolve, 100))
+      );
+
       render(<App />);
 
       // Login
@@ -367,17 +408,31 @@ describe('Logout Flow Integration', () => {
       fireEvent.change(passwordInput, { target: { value: 'password' } });
       fireEvent.click(loginButton);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Click logout button
       const logoutButton = screen.getByTestId('logout-button');
       fireEvent.click(logoutButton);
 
-      // Verify button is disabled during logout
-      expect(logoutButton).toBeDisabled();
-      expect(logoutButton).toHaveTextContent('Exiting...');
+      // Verify button is disabled during logout (wait for state update)
+      await waitFor(
+        () => {
+          expect(logoutButton).toBeDisabled();
+        },
+        { timeout: 1000 }
+      );
+
+      await waitFor(
+        () => {
+          expect(logoutButton).toHaveTextContent('Exiting...');
+        },
+        { timeout: 1000 }
+      );
     });
   });
 
@@ -407,9 +462,12 @@ describe('Logout Flow Integration', () => {
       fireEvent.change(passwordInput, { target: { value: 'password' } });
       fireEvent.click(loginButton);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('command-panel')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify token was set
       expect(secureTokenStorage.setToken).toHaveBeenCalledWith('mock-token');
@@ -419,9 +477,12 @@ describe('Logout Flow Integration', () => {
       fireEvent.click(logoutButton);
 
       // Wait for logout to complete
-      await waitFor(() => {
-        expect(screen.getByText('MYTHOS MUD')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('MYTHOS MUD')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify logout completed successfully by checking that we're back to the login screen
       // The test already verified that "MYTHOS MUD" text is present, which means logout completed

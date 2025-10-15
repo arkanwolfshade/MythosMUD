@@ -1,8 +1,17 @@
-# Scenario 12: Local Channel Integration
+# Scenario 12: Local Channel Integration **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
-Tests local channel system integration with other game systems. This scenario verifies that the local channel system properly integrates with player management, location tracking, message broadcasting, and other game systems, ensuring seamless operation across all integrated components.
+Tests local channel message broadcasting and real-time delivery to multiple players in the same sub-zone. This scenario verifies that local messages are properly broadcast to all players in the same sub-zone in real-time.
+
+**⚠️ AUTOMATED TESTS AVAILABLE**: Local channel integration points are tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/local-channel-integration.spec.ts` for:
+- Player management integration
+- Location tracking integration
+- Error handling integration
+- Logging integration
+- Performance testing
+
+This MCP scenario focuses ONLY on message broadcasting verification that requires real-time multi-player coordination.
 
 ## Prerequisites
 

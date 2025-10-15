@@ -100,12 +100,12 @@ def main():
 
     # Populate test database
     if populate_test:
-        test_db_path = "server/tests/data/npcs/test_npcs.db"
+        test_db_path = "data/unit_test/npcs/test_npcs.db"
         success &= populate_database(test_db_path, "test")
 
     # Populate production database
     if populate_prod:
-        prod_db_path = "data/npcs/npcs.db"
+        prod_db_path = "data/local/npcs/local_npcs.db"
         success &= populate_database(prod_db_path, "production")
 
     if success:

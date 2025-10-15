@@ -48,7 +48,7 @@ player_router = APIRouter(prefix="/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
-    starting_room_id: str = "earth_arkhamcity_northside_intersection_derby_high",
+    starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
@@ -450,9 +450,9 @@ async def create_character_with_stats(
 
         # Determine starting room from request or config default
         try:
-            from ..config_loader import get_config
+            from ..config import get_config
 
-            default_start_room = get_config().get("start_room", "earth_arkhamcity_northside_intersection_derby_high")
+            default_start_room = get_config().game.default_player_room
         except Exception:
             default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
 

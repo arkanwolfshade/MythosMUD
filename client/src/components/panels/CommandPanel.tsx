@@ -82,11 +82,45 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
     let command = commandInput.trim();
 
+    // List of standalone system commands that should never have channel shortcuts prepended
+    const standaloneCommands = [
+      'admin',
+      'alias',
+      'aliases',
+      'emote',
+      'go',
+      'goto',
+      'help',
+      'inventory',
+      'look',
+      'logout',
+      'me',
+      'mute',
+      'pose',
+      'quit',
+      'status',
+      'teleport',
+      'unalias',
+      'unmute',
+      'w',
+      'whisper',
+      'who',
+    ];
+    const firstWord = command.split(/\s+/)[0].toLowerCase();
+    const isStandaloneCommand = standaloneCommands.includes(firstWord);
+
     // If the command doesn't start with a slash and we're not on the 'say' channel,
-    // prepend the channel command
-    if (!command.startsWith('/') && currentChannel !== 'say') {
+    // prepend the channel command ONLY if:
+    // 1. The command doesn't already start with the channel name
+    // 2. The command is NOT a standalone system command
+    if (!command.startsWith('/') && currentChannel !== 'say' && !isStandaloneCommand) {
       const channel = AVAILABLE_CHANNELS.find(c => c.id === currentChannel);
-      if (channel?.shortcut) {
+      // Don't prepend if command already starts with the channel name
+      const commandLower = command.toLowerCase();
+      const channelName = channel?.id || '';
+      const alreadyHasChannelPrefix = commandLower.startsWith(channelName + ' ') || commandLower === channelName;
+
+      if (channel?.shortcut && !alreadyHasChannelPrefix) {
         command = `/${channel.shortcut} ${command}`;
       }
     }

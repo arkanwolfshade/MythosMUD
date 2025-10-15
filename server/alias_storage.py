@@ -78,10 +78,16 @@ class AliasStorage:
         for alias_data in data.get("aliases", []):
             try:
                 # Convert timestamp strings back to datetime objects
+                # Handle both "Z" suffix and timezone-aware formats
                 if "created_at" in alias_data:
-                    alias_data["created_at"] = datetime.fromisoformat(alias_data["created_at"].replace("Z", "+00:00"))
+                    ts_str = alias_data["created_at"]
+                    # Remove "Z" and any timezone suffix, keep only naive datetime
+                    ts_str = ts_str.replace("Z", "").split("+")[0]
+                    alias_data["created_at"] = datetime.fromisoformat(ts_str)
                 if "updated_at" in alias_data:
-                    alias_data["updated_at"] = datetime.fromisoformat(alias_data["updated_at"].replace("Z", "+00:00"))
+                    ts_str = alias_data["updated_at"]
+                    ts_str = ts_str.replace("Z", "").split("+")[0]
+                    alias_data["updated_at"] = datetime.fromisoformat(ts_str)
 
                 alias = Alias(**alias_data)
                 aliases.append(alias)

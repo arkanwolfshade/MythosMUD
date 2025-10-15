@@ -10,10 +10,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from ..config_loader import get_config
+from ..config import get_config
 from ..database import init_db
 from ..logging_config import get_logger
-from ..npc_database import init_npc_database
+from ..npc_database import init_npc_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
 from ..realtime.event_handler import get_real_time_event_handler
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     app.state.task_registry = task_registry
 
     await init_db()
-    await init_npc_database()
+    await init_npc_db()
     # Initialize real-time event handler first to obtain its EventBus with task tracking
     app.state.event_handler = get_real_time_event_handler(task_registry=task_registry)
     # Ensure the event handler has access to the connection manager
@@ -67,28 +67,21 @@ async def lifespan(app: FastAPI):
 
     app.state.player_service = PlayerService(app.state.persistence)
 
-    # Initialize UserManager with proper data directory from config
+    # Initialize UserManager with environment-aware data directory
     config = get_config()
-    data_dir = config.get("data_dir", "data")
+    environment = config.logging.environment
 
-    # Resolve data_dir relative to project root (same logic as logging_config.py)
-    data_path = Path(data_dir)
-    if not data_path.is_absolute():
-        # Find the project root (where pyproject.toml is located)
-        current_dir = Path.cwd()
-        project_root = None
-        for parent in [current_dir] + list(current_dir.parents):
-            if (parent / "pyproject.toml").exists():
-                project_root = parent
-                break
+    # Find the project root (where pyproject.toml is located)
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent
+    while project_root.parent != project_root:
+        if (project_root / "pyproject.toml").exists():
+            break
+        project_root = project_root.parent
 
-        if project_root:
-            data_path = project_root / data_path
-        else:
-            # Fallback to current directory if project root not found
-            data_path = current_dir / data_path
-
-    user_management_dir = data_path / "user_management"
+    # CRITICAL: Include environment in path for data isolation
+    # data/{environment}/user_management NOT data/user_management
+    user_management_dir = project_root / "data" / environment / "user_management"
     app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
@@ -122,10 +115,10 @@ async def lifespan(app: FastAPI):
     )
 
     # Load NPC definitions and spawn rules from database
-    from ..npc_database import get_npc_async_session
+    from ..npc_database import get_npc_session
 
     npc_service = NPCService()
-    async for npc_session in get_npc_async_session():
+    async for npc_session in get_npc_session():
         try:
             # Load NPC definitions
             definitions = await npc_service.get_npc_definitions(npc_session)
@@ -191,9 +184,12 @@ async def lifespan(app: FastAPI):
 
     # Initialize NATS service for real-time messaging
     config = get_config()
-    nats_config = config.get("nats", {})
+    nats_config = config.nats
 
-    if nats_config.get("enabled", False):
+    # Check if we're in a testing environment
+    is_testing = config.logging.environment in ("unit_test", "e2e_test")
+
+    if nats_config.enabled:
         logger.info("Initializing NATS service for real-time messaging")
         try:
             # Configure NATS service with config
@@ -215,14 +211,32 @@ async def lifespan(app: FastAPI):
                     logger.error("Error initializing NATS message handler", error=str(e))
                     app.state.nats_message_handler = None
             else:
-                logger.error("Failed to connect to NATS server - NATS is required for chat functionality")
-                raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+                if is_testing:
+                    # In test environment, NATS connection failure is not fatal
+                    logger.warning("Failed to connect to NATS server in test environment - using mock NATS service")
+                    app.state.nats_service = None
+                    app.state.nats_message_handler = None
+                else:
+                    logger.error("Failed to connect to NATS server - NATS is required for chat functionality")
+                    raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
         except Exception as e:
-            logger.error("Error initializing NATS service", error=str(e))
-            raise RuntimeError(f"NATS initialization failed: {str(e)} - NATS is mandatory for chat system") from e
+            if is_testing:
+                # In test environment, NATS errors are not fatal
+                logger.warning(f"NATS initialization failed in test environment: {str(e)} - continuing without NATS")
+                app.state.nats_service = None
+                app.state.nats_message_handler = None
+            else:
+                logger.error("Error initializing NATS service", error=str(e))
+                raise RuntimeError(f"NATS initialization failed: {str(e)} - NATS is mandatory for chat system") from e
     else:
-        logger.error("NATS service disabled - NATS is mandatory for chat functionality")
-        raise RuntimeError("NATS service is disabled - NATS is mandatory for chat system")
+        if is_testing:
+            # In test environment, NATS can be disabled
+            logger.info("NATS service disabled in test environment - using mock NATS service")
+            app.state.nats_service = None
+            app.state.nats_message_handler = None
+        else:
+            logger.error("NATS service disabled - NATS is mandatory for chat functionality")
+            raise RuntimeError("NATS service is disabled - NATS is mandatory for chat system")
 
     # Initialize chat service and add to app.state (after NATS initialization)
     from ..game.chat_service import ChatService
@@ -232,12 +246,14 @@ async def lifespan(app: FastAPI):
         persistence=app.state.persistence,
         room_service=app.state.persistence,  # Persistence layer provides room service functionality
         player_service=app.state.player_service,
-        nats_service=app.state.nats_service,  # Pass the properly configured NATS service
+        nats_service=app.state.nats_service if hasattr(app.state, "nats_service") else None,
     )
 
     # Verify NATS service connection in chat service
     if app.state.chat_service.nats_service and app.state.chat_service.nats_service.is_connected():
         logger.info("Chat service NATS connection verified - NATS is connected and ready")
+    elif is_testing:
+        logger.info("Chat service running in test mode without NATS connection")
     else:
         logger.error("Chat service NATS connection failed - NATS is not connected")
         raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")

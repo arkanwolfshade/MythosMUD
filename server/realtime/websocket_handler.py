@@ -393,10 +393,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
-    logger.info(
-        "🚨 SERVER DEBUG: process_websocket_command called",
-        context={"command": cmd, "args": args, "player_id": player_id},
-    )
+    logger.info(f"🚨 SERVER DEBUG: process_websocket_command called - cmd='{cmd}', args={args}, player_id={player_id}")
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
@@ -524,6 +521,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     # Use the unified command handler for all commands
     from ..alias_storage import AliasStorage
     from ..command_handler_unified import process_command_unified
+    from ..config import get_config
     from ..realtime.request_context import create_websocket_request_context
 
     # Create proper request context for WebSocket using real app state
@@ -540,8 +538,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     # Get player name for the command handler
     player_name = getattr(player, "name", "Unknown")
 
-    # Create alias storage
-    alias_storage = AliasStorage()
+    # Create alias storage with proper directory from config
+    config = get_config()
+    aliases_dir = config.game.aliases_dir
+    alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
     request_context.set_alias_storage(alias_storage)
 
     # Verify app state services are available (they should already be in the real app state)
@@ -553,8 +553,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         logger.warning("Missing required app state services - player_service or user_manager not available")
 
     # Process the command using the unified command handler
+    command_line = f"{cmd} {' '.join(args)}".strip()
+    logger.info(f"🚨 SERVER DEBUG: Reconstructed command_line='{command_line}' from cmd='{cmd}' and args={args}")
     result = await process_command_unified(
-        command_line=f"{cmd} {' '.join(args)}".strip(),
+        command_line=command_line,
         current_user=player,
         request=request_context,
         alias_storage=alias_storage,

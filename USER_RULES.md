@@ -22,12 +22,12 @@
 - Run: `netstat -an | findstr :5173`
 - Both should return empty results before starting server
 
-### Only THEN can you run ./scripts/start_dev.ps1 with is_background: false
+### Only THEN can you run ./scripts/start_local.ps1 with is_background: false
 - One start command only
 - Use `is_background: false` to see output
 - Wait for "Press any key to exit" message
 
-### If start_dev.ps1 fails or shows errors, DO NOT run it again - investigate the error first
+### If start_local.ps1 fails or shows errors, DO NOT run it again - investigate the error first
 - Don't try multiple starts
 - Read the error message carefully
 - Fix the underlying issue before retrying

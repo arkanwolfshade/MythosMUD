@@ -1,0 +1,1 @@
+"""Test suite - Regression category."""

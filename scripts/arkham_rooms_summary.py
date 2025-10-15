@@ -208,7 +208,7 @@ def generate_dot_file(rooms: dict, intersections: dict, connections: set, output
 
 def main():
     """Main function to analyze the room data."""
-    zone_path = "data/rooms/earth/arkhamcity"
+    zone_path = "data/local/rooms/earth/arkhamcity"
 
     if not os.path.exists(zone_path):
         print(f"Error: Zone path {zone_path} not found!")

@@ -1,11 +1,20 @@
 """
 Middleware package for MythosMUD server.
 
-This package contains various middleware components for the FastAPI application,
-including security headers, logging, and other cross-cutting concerns.
+This package contains middleware components for FastAPI integration,
+including error handling, logging, and request tracking.
 """
 
-from .comprehensive_logging import ComprehensiveLoggingMiddleware
-from .security_headers import SecurityHeadersMiddleware
+from .error_handling_middleware import (
+    ErrorHandlingMiddleware,
+    add_error_handling_middleware,
+    register_error_handlers,
+    setup_error_handling,
+)
 
-__all__ = ["ComprehensiveLoggingMiddleware", "SecurityHeadersMiddleware"]
+__all__ = [
+    "ErrorHandlingMiddleware",
+    "add_error_handling_middleware",
+    "register_error_handlers",
+    "setup_error_handling",
+]

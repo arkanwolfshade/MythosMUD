@@ -11,6 +11,8 @@ vi.mock('../utils/logger', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
   },
 }));
 

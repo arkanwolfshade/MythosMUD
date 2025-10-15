@@ -9,9 +9,9 @@ This document outlines the requirements for extending the MythosMUD room schema 
 ### Existing Schema
 
 - **Current Structure**: Flat room-based organization with simple zone identifiers
-- **File Organization**: `data/rooms/{zone}/{zone}_{room_number}.json`
+- **File Organization**: `data/local/rooms/{zone}/{zone}_{room_number}.json`
 - **Schema Location**: `room_validator/schemas/room_schema.json`
-- **Example**: `data/rooms/arkham/arkham_001.json`
+- **Example**: `data/local/rooms/arkham/arkham_001.json`
 
 ### Current Limitations
 
@@ -36,7 +36,7 @@ Plane → Zone → Sub-zone → Room
 ### 2. Directory Structure
 
 ```
-data/rooms/
+data/local/rooms/
 ├── earth/
 │   ├── arkhamcity/
 │   │   ├── french_hill/

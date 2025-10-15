@@ -697,12 +697,10 @@ class PersistenceLayer:
         # Room doesn't exist, move player to default starting room from config
         old_room = player.current_room_id
         try:
-            from .config_loader import get_config
+            from .config import get_config
 
             config = get_config()
-            default_room = config.get("default_player_room", "earth_arkhamcity_northside_intersection_derby_high")
-            if default_room is None:
-                default_room = "earth_arkhamcity_northside_intersection_derby_high"
+            default_room = config.game.default_player_room
         except Exception as e:
             # Fallback to hardcoded default if config loading fails
             context = create_error_context()
@@ -715,7 +713,7 @@ class PersistenceLayer:
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            default_room = "earth_arkhamcity_northside_intersection_derby_high"
+            default_room = "earth_arkhamcity_sanitarium_room_foyer_001"
 
         player.current_room_id = default_room
 

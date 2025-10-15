@@ -1,7 +1,7 @@
 """
 Room loader for discovering and parsing room definition files.
 
-This module handles the discovery of room files in the data/rooms directory
+This module handles the discovery of room files in the data/local/rooms directory
 structure and provides utilities for loading and parsing room data.
 """
 
@@ -21,7 +21,7 @@ class RoomLoader:
     architecture.
     """
 
-    def __init__(self, base_path: str = "./data/rooms"):
+    def __init__(self, base_path: str = "./data/local/rooms"):
         """
         Initialize the room loader.
 
@@ -181,7 +181,7 @@ class RoomLoader:
                 # Extract location from file path
                 path_parts = file_path.parts
                 if len(path_parts) >= 4:
-                    # Expected: .../data/rooms/{plane}/{zone}/{subzone}/filename.json
+                    # Expected: .../data/local/rooms/{plane}/{zone}/{subzone}/filename.json
                     plane = path_parts[-4]
                     zone = path_parts[-3]
                     sub_zone = path_parts[-2]

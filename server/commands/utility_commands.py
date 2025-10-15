@@ -216,7 +216,7 @@ async def handle_who_command(
                         player_entries.append(format_player_entry(player))
 
                     player_list = ", ".join(player_entries)
-                    result = f"Online players ({len(online_players)}): {player_list}"
+                    result = f"Online Players ({len(online_players)}): {player_list}"
                     logger.debug(
                         "Who command successful", context={"player": player_name, "count": len(online_players)}
                     )

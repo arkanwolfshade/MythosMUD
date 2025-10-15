@@ -1,8 +1,10 @@
-# Scenario 1: Basic Connection/Disconnection Flow
+# Scenario 1: Basic Connection/Disconnection Flow **[REQUIRES MULTI-PLAYER]**
 
 ## Overview
 
 Tests basic multiplayer connection and disconnection messaging between two players. This scenario verifies that players can connect to the game, see each other's connection/disconnection events, and that the messaging system works correctly.
+
+**This is a core multi-player scenario** that requires real-time verification of message broadcasting. No automated alternative is available.
 
 **⚠️ TIMING ARTIFACT NOTICE**: This scenario may fail due to a known timing issue where the first player may not be properly subscribed to the room when the second player connects. This prevents connection messages from being received. The connection message broadcasting system is working correctly, but there's a race condition in room subscription timing.
 
