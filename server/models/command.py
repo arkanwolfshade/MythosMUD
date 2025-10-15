@@ -70,6 +70,8 @@ class CommandType(str, Enum):
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
+    # Admin server management commands
+    SHUTDOWN = "shutdown"
 
 
 class BaseCommand(BaseModel):
@@ -417,6 +419,20 @@ class LogoutCommand(BaseCommand):
     command_type: Literal[CommandType.LOGOUT] = CommandType.LOGOUT
 
 
+class ShutdownCommand(BaseCommand):
+    """
+    Command for shutting down the server (admin only).
+
+    Args can be:
+    - Empty: Default 10 second countdown
+    - Number: Countdown duration in seconds
+    - "cancel": Cancel active shutdown
+    """
+
+    command_type: Literal[CommandType.SHUTDOWN] = CommandType.SHUTDOWN
+    args: list[str] = Field(default_factory=list, description="Optional countdown seconds or 'cancel'")
+
+
 class WhisperCommand(BaseCommand):
     """Command for whispering to a specific player."""
 
@@ -477,6 +493,7 @@ Command = (
     | InventoryCommand
     | QuitCommand
     | LogoutCommand
+    | ShutdownCommand
     | WhisperCommand
     | ReplyCommand
 )

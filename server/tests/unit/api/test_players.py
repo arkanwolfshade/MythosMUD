@@ -130,6 +130,7 @@ def mock_request():
     """Mock FastAPI request object."""
     request = Mock()
     request.app.state.persistence = Mock()
+    request.app.state.server_shutdown_pending = False  # No shutdown by default
     return request
 
 

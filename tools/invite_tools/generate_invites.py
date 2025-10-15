@@ -20,7 +20,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from server.config_loader import get_config
+from server.config import get_config
 from server.models.invite import Invite
 
 # Mythos-themed words and concepts for invite codes

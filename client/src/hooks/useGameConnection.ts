@@ -701,6 +701,22 @@ export function useGameConnection({
     }
   }, [connect, state.isConnected, state.isConnecting]); // Include all dependencies
 
+  // Connection state monitoring - detect when all connections are lost
+  const wasConnectedRef = useRef(false);
+  useEffect(() => {
+    const wasConnected = wasConnectedRef.current;
+    const isCurrentlyConnected = state.isConnected;
+
+    // If we were connected but are no longer connected, trigger onDisconnect
+    if (wasConnected && !isCurrentlyConnected) {
+      logger.info('GameConnection', 'All connections lost, triggering onDisconnect callback');
+      onDisconnectRef.current?.();
+    }
+
+    // Update the ref for next comparison
+    wasConnectedRef.current = isCurrentlyConnected;
+  }, [state.isConnected]);
+
   // Session management functions
   const createNewSession = useCallback(() => {
     const newSessionId = generateSessionId();

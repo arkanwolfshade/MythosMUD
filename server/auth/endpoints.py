@@ -95,6 +95,15 @@ async def register_user(
     This endpoint validates the invite code and creates a new user account.
     The invite code is marked as used after successful registration.
     """
+    # Check if server is shutting down
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    if is_shutdown_pending(request.app):
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "register_user"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
+
     logger.info(f"Registration attempt for username: {user_create.username}")
 
     # Generate unique bogus email if not provided
@@ -216,6 +225,15 @@ async def login_user(
     This endpoint validates user credentials and returns a JWT token
     for authenticated requests.
     """
+    # Check if server is shutting down
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    if is_shutdown_pending(http_request.app):
+        context = create_context_from_request(http_request)
+        context.metadata["operation"] = "login_user"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
+
     logger.info(f"Login attempt for username: {request.username}")
 
     from sqlalchemy import select

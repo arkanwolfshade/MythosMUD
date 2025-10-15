@@ -33,6 +33,7 @@ from ..models.command import (
     QuitCommand,
     ReplyCommand,
     SayCommand,
+    ShutdownCommand,
     StatusCommand,
     SystemCommand,
     TeleportCommand,
@@ -90,6 +91,8 @@ class CommandParser:
             # Communication commands
             CommandType.WHISPER.value: self._create_whisper_command,
             CommandType.REPLY.value: self._create_reply_command,
+            # Admin server management commands
+            CommandType.SHUTDOWN.value: self._create_shutdown_command,
         }
 
     def parse_command(self, command_string: str) -> Command:
@@ -572,6 +575,17 @@ class CommandParser:
         # Logout command ignores arguments (like quit command)
         # This allows for commands like "logout force now" to work
         return LogoutCommand()
+
+    def _create_shutdown_command(self, args: list[str]) -> ShutdownCommand:
+        """
+        Create ShutdownCommand from arguments.
+
+        Args can be:
+        - Empty: Default 10 second countdown
+        - Number: Countdown duration in seconds
+        - "cancel": Cancel active shutdown
+        """
+        return ShutdownCommand(args=args)
 
     def _create_whisper_command(self, args: list[str]) -> WhisperCommand:
         """Create a WhisperCommand from parsed arguments."""

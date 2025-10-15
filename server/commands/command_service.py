@@ -25,6 +25,7 @@ from .admin_commands import (
     handle_unmute_command,
     handle_unmute_global_command,
 )
+from .admin_shutdown_command import handle_shutdown_command
 from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
 from .communication_commands import (
     handle_global_command,
@@ -93,6 +94,8 @@ class CommandService:
             # Admin teleport commands (confirmation removed for immediate execution)
             "teleport": handle_teleport_command,
             "goto": handle_goto_command,
+            # Admin server management commands
+            "shutdown": handle_shutdown_command,
             # Utility commands
             "who": handle_who_command,
             "quit": handle_quit_command,

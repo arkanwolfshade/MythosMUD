@@ -29,6 +29,10 @@ class TestWebSocketConnectionEvents:
         websocket.send_json = AsyncMock()
         websocket.receive_text = AsyncMock()
         websocket.close = AsyncMock()
+        # Mock app state to indicate no shutdown pending
+        mock_app = Mock()
+        mock_app.state.server_shutdown_pending = False
+        websocket.app = mock_app
         return websocket
 
     @pytest.fixture
