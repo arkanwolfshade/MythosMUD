@@ -2,9 +2,9 @@
 
 ## Progress Summary
 
-- **Completed**: Tasks 1-2 (Database Schema & Migration, Core Combat State Management)
-- **In Progress**: Task 3 (Combat Command System) - 60% complete
-- **Remaining**: Tasks 4-10 (Event Integration, Messaging, NPC Integration, Player Integration, Security, Testing, Deployment)
+- **Completed**: Tasks 1-3 (Database Schema & Migration, Core Combat State Management, Combat Command System)
+- **In Progress**: Task 4 (Event System Integration) - 40% complete
+- **Remaining**: Tasks 5-10 (Messaging, NPC Integration, Player Integration, Security, Testing, Deployment)
 
 ## Tasks
 
@@ -25,12 +25,12 @@
   - [x] 2.7 Create combat event system (CombatStarted, CombatEnded, PlayerAttacked)
   - [x] 2.8 Implement basic combat command handler with attack aliases
 
-- [ ] 3. Combat Command System
+- [x] 3. Combat Command System
   - [x] 3.1 Write tests for combat command validation and processing
   - [x] 3.2 Implement attack command handler with target validation
   - [x] 3.3 Implement command aliases (punch, kick, strike) for attack command
-  - [ ] 3.4 Integrate with existing command validation and rate limiting
-  - [ ] 3.5 Verify all combat command tests pass
+  - [x] 3.4 Integrate with existing command validation and rate limiting
+  - [x] 3.5 Verify all combat command tests pass
 
 - [ ] 4. Event System Integration
   - [x] 4.1 Write tests for combat event publishing and handling

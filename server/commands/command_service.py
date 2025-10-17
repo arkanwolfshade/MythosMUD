@@ -26,7 +26,17 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
-from .alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
+from .alias_commands import (
+    handle_alias_command,
+    handle_aliases_command,
+    handle_unalias_command,
+)
+from .combat import (
+    handle_attack_command,
+    handle_kick_command,
+    handle_punch_command,
+    handle_strike_command,
+)
 from .communication_commands import (
     handle_global_command,
     handle_local_command,
@@ -104,6 +114,11 @@ class CommandService:
             "inventory": handle_inventory_command,
             # NPC Admin commands
             "npc": handle_npc_command,
+            # Combat commands
+            "attack": handle_attack_command,
+            "punch": handle_punch_command,
+            "kick": handle_kick_command,
+            "strike": handle_strike_command,
         }
 
     async def process_validated_command(
