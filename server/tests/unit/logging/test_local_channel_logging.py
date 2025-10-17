@@ -33,10 +33,9 @@ class TestLocalChannelLogging:
 
     def test_local_channel_log_directory_structure(self, chat_logger):
         """Test that local channel log directories are created correctly."""
-        # Verify that the local channel directory is created
-        local_dir = chat_logger.log_dir / "chat" / "local"
-        assert local_dir.exists()
-        assert local_dir.is_dir()
+        # Verify that the main log directory is created (flat structure)
+        assert chat_logger.log_dir.exists()
+        assert chat_logger.log_dir.is_dir()
 
     def test_get_local_channel_log_file(self, chat_logger):
         """Test getting local channel log file path for a specific sub-zone."""
@@ -44,8 +43,8 @@ class TestLocalChannelLogging:
         log_file = chat_logger._get_local_channel_log_file(subzone)
 
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        expected_filename = f"local_{subzone}_{today}.log"
-        expected_path = chat_logger.log_dir / "chat" / "local" / expected_filename
+        expected_filename = f"chat_local_{subzone}_{today}.log"
+        expected_path = chat_logger.log_dir / expected_filename
 
         assert log_file == expected_path
 
@@ -217,7 +216,7 @@ class TestLocalChannelLogging:
 
         # Verify separate log files were created for each date
         for date_str in dates:
-            log_file = chat_logger.log_dir / "chat" / "local" / f"local_{subzone}_{date_str}.log"
+            log_file = chat_logger.log_dir / f"chat_local_{subzone}_{date_str}.log"
             assert log_file.exists()
 
             with open(log_file, encoding="utf-8") as f:
@@ -232,7 +231,8 @@ class TestLocalChannelLogging:
 
         for subzone in subzones:
             log_file = chat_logger._get_local_channel_log_file(subzone)
-            log_file.parent.mkdir(parents=True, exist_ok=True)
+            # Ensure directory exists before creating files
+            chat_logger.log_dir.mkdir(parents=True, exist_ok=True)
             with open(log_file, "w", encoding="utf-8") as f:
                 f.write('{"test": "data"}\n')
 
@@ -242,7 +242,7 @@ class TestLocalChannelLogging:
         # Verify all expected files are returned
         assert len(log_files) == len(subzones)
         for subzone in subzones:
-            expected_path = chat_logger.log_dir / "chat" / "local" / f"local_{subzone}_{today}.log"
+            expected_path = chat_logger.log_dir / f"chat_local_{subzone}_{today}.log"
             assert str(expected_path) in log_files
 
     def test_get_local_channel_log_stats(self, chat_logger):
@@ -281,8 +281,9 @@ class TestLocalChannelLogging:
         dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04"]
 
         for date_str in dates:
-            log_file = chat_logger.log_dir / "chat" / "local" / f"local_{subzone}_{date_str}.log"
-            log_file.parent.mkdir(parents=True, exist_ok=True)
+            log_file = chat_logger.log_dir / f"chat_local_{subzone}_{date_str}.log"
+            # Ensure directory exists before creating files
+            chat_logger.log_dir.mkdir(parents=True, exist_ok=True)
             with open(log_file, "w", encoding="utf-8") as f:
                 f.write('{"test": "data"}\n')
 
@@ -311,7 +312,7 @@ class TestLocalChannelLogging:
 
         # Verify recent files still exist
         for date_str in ["2025-01-03", "2025-01-04"]:
-            log_file = chat_logger.log_dir / "chat" / "local" / f"local_{subzone}_{date_str}.log"
+            log_file = chat_logger.log_dir / f"chat_local_{subzone}_{date_str}.log"
             assert log_file.exists()
 
     def test_log_local_channel_message_serial_access(self, chat_logger):
@@ -395,14 +396,12 @@ class TestLocalChannelLogging:
 
     def test_local_channel_log_directory_permissions(self, chat_logger):
         """Test that local channel log directories have correct permissions."""
-        local_dir = chat_logger.log_dir / "chat" / "local"
-
-        # Verify directory exists and is writable
-        assert local_dir.exists()
-        assert local_dir.is_dir()
+        # Verify main log directory exists and is writable
+        assert chat_logger.log_dir.exists()
+        assert chat_logger.log_dir.is_dir()
 
         # Test that we can write to the directory
-        test_file = local_dir / "test_permissions.txt"
+        test_file = chat_logger.log_dir / "test_permissions.txt"
         test_file.write_text("test")
         assert test_file.exists()
         test_file.unlink()  # Clean up

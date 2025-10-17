@@ -57,7 +57,7 @@ class AuditLogger:
                     break
                 project_root = project_root.parent
 
-            log_directory = str(project_root / log_base / environment / "audit")
+            log_directory = str(project_root / log_base / environment)
 
         self.log_directory = Path(log_directory)
         self.log_directory.mkdir(parents=True, exist_ok=True)

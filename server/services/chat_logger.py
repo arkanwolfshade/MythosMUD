@@ -46,12 +46,8 @@ class ChatLogger:
         else:
             self.log_dir = Path(log_dir)
 
-        self._ensure_log_directories()
-
-        # Create subdirectories for different log types
-        self.chat_dir = self.log_dir / "chat"
-        self.moderation_dir = self.log_dir / "moderation"
-        self.system_dir = self.log_dir / "system"
+        # No longer create subdirectories - write all files to environment directory
+        # with prefixed names to distinguish log types
 
         # Thread-safe logging queue and writer thread
         self._log_queue = queue.Queue()
@@ -62,13 +58,9 @@ class ChatLogger:
         logger.info("ChatLogger initialized", log_dir=str(self.log_dir))
 
     def _ensure_log_directories(self):
-        """Ensure log directories exist."""
-        for subdir in ["chat", "moderation", "system"]:
-            (self.log_dir / subdir).mkdir(parents=True, exist_ok=True)
-
-        # Create local channel subdirectory
-        local_dir = self.log_dir / "chat" / "local"
-        local_dir.mkdir(parents=True, exist_ok=True)
+        """Ensure log directory exists."""
+        # Only ensure the main environment directory exists
+        self.log_dir.mkdir(parents=True, exist_ok=True)
 
     def _start_writer_thread(self):
         """Start the background writer thread for thread-safe file writing."""
@@ -177,8 +169,8 @@ class ChatLogger:
             Path to the local channel log file for the sub-zone
         """
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        filename = f"local_{subzone}_{today}.log"
-        return self.log_dir / "chat" / "local" / filename
+        filename = f"chat_local_{subzone}_{today}.log"
+        return self.log_dir / filename
 
     def _get_current_log_file(self, log_type: str) -> Path:
         """
@@ -191,16 +183,8 @@ class ChatLogger:
             Path to current log file
         """
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        filename = f"{log_type}_{today}.log"
-
-        if log_type == "chat":
-            return self.chat_dir / filename
-        elif log_type == "moderation":
-            return self.moderation_dir / filename
-        elif log_type == "system":
-            return self.system_dir / filename
-        else:
-            raise ValueError(f"Unknown log type: {log_type}")
+        filename = f"chat_{log_type}_{today}.log"
+        return self.log_dir / filename
 
     def _write_log_entry(self, log_type: str, entry: dict[str, Any]):
         """
@@ -223,20 +207,6 @@ class ChatLogger:
 
         except Exception as e:
             logger.error("Failed to queue log entry", error=str(e), log_type=log_type, entry=entry)
-
-    def _queue_log_entry(self, log_type: str, file_path: Path, content: str):
-        """
-        Queue a log entry for writing by the background thread.
-
-        Args:
-            log_type: Type of log entry for debugging
-            file_path: Path to the log file
-            content: JSON content to write
-        """
-        try:
-            self._log_queue.put({"type": log_type, "file_path": str(file_path), "content": content})
-        except Exception as e:
-            logger.error("Failed to queue log entry", error=str(e), log_type=log_type)
 
     def log_chat_message(self, message_data: dict[str, Any]):
         """
@@ -596,7 +566,7 @@ class ChatLogger:
             Path to the global channel log file
         """
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        return self.log_dir / "chat" / "global" / f"global_{today}.log"
+        return self.log_dir / f"chat_global_{today}.log"
 
     def log_system_channel_message(self, message_data: dict[str, Any]):
         """
@@ -702,7 +672,7 @@ class ChatLogger:
             Path to the whisper channel log file
         """
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        return self.log_dir / "chat" / "whisper" / f"whisper_{today}.log"
+        return self.log_dir / f"chat_whisper_{today}.log"
 
     def _get_system_channel_log_file(self) -> Path:
         """
@@ -712,7 +682,7 @@ class ChatLogger:
             Path to the system channel log file
         """
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        return self.log_dir / "chat" / "system" / f"system_{today}.log"
+        return self.log_dir / f"chat_system_{today}.log"
 
     def get_global_channel_log_files(self) -> list[str]:
         """
@@ -721,11 +691,7 @@ class ChatLogger:
         Returns:
             List of string paths to global channel log files
         """
-        global_dir = self.log_dir / "chat" / "global"
-        if not global_dir.exists():
-            return []
-
-        return [str(f) for f in global_dir.glob("global_*.log")]
+        return [str(f) for f in self.log_dir.glob("chat_global_*.log")]
 
     def get_global_channel_log_stats(self) -> dict[str, Any]:
         """
@@ -739,10 +705,10 @@ class ChatLogger:
 
         for log_file_path in log_files:
             log_file = Path(log_file_path)
-            # Extract date from filename (global_<date>.log)
+            # Extract date from filename (chat_global_<date>.log)
             filename = log_file.name
-            if filename.startswith("global_") and filename.endswith(".log"):
-                date = filename[7:-4]  # Remove "global_" prefix and ".log" suffix
+            if filename.startswith("chat_global_") and filename.endswith(".log"):
+                date = filename[12:-4]  # Remove "chat_global_" prefix and ".log" suffix
 
                 if log_file.exists():
                     stats["global_channels"][date] = {
@@ -798,11 +764,7 @@ class ChatLogger:
         Returns:
             List of string paths to local channel log files
         """
-        local_dir = self.log_dir / "chat" / "local"
-        if not local_dir.exists():
-            return []
-
-        return [str(f) for f in local_dir.glob("local_*.log")]
+        return [str(f) for f in self.log_dir.glob("chat_local_*.log")]
 
     def get_local_channel_log_stats(self) -> dict[str, Any]:
         """
@@ -816,10 +778,10 @@ class ChatLogger:
 
         for log_file_path in log_files:
             log_file = Path(log_file_path)
-            # Extract subzone from filename (local_<subzone>_<date>.log)
+            # Extract subzone from filename (chat_local_<subzone>_<date>.log)
             filename = log_file.name
-            if filename.startswith("local_") and filename.endswith(".log"):
-                parts = filename[6:-4].split("_")  # Remove "local_" prefix and ".log" suffix
+            if filename.startswith("chat_local_") and filename.endswith(".log"):
+                parts = filename[11:-4].split("_")  # Remove "chat_local_" prefix and ".log" suffix
                 if len(parts) >= 2:
                     subzone = parts[0]
                     date = "_".join(parts[1:])  # Rejoin date parts in case of hyphens
@@ -856,12 +818,8 @@ class ChatLogger:
         deleted_files = []
         current_time = datetime.now(UTC)
         cutoff_date = current_time - timedelta(days=days_to_keep)
-        local_dir = self.log_dir / "chat" / "local"
 
-        if not local_dir.exists():
-            return deleted_files
-
-        for log_file in local_dir.glob("local_*.log"):
+        for log_file in self.log_dir.glob("chat_local_*.log"):
             try:
                 # Check if file is older than cutoff date
                 file_mtime = datetime.fromtimestamp(log_file.stat().st_mtime, UTC)

@@ -81,6 +81,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
 
     Enhanced with Windows-specific file locking handling to prevent
     PermissionError: [WinError 32] exceptions during concurrent access.
+    Now recursively processes subdirectories to ensure all log files are rotated.
 
     Args:
         env_log_dir: Path to the environment-specific log directory
@@ -91,8 +92,17 @@ def _rotate_log_files(env_log_dir: Path) -> None:
     # Generate timestamp for rotation
     timestamp = datetime.now(UTC).strftime("%Y_%m_%d_%H%M%S")
 
-    # Get all log files in the directory
-    log_files = list(env_log_dir.glob("*.log"))
+    # Get all log files in the directory and subdirectories
+    # Include .log, .jsonl, and other common log file extensions
+    log_files = []
+    log_files.extend(env_log_dir.glob("*.log"))
+    log_files.extend(env_log_dir.glob("*.jsonl"))
+    log_files.extend(env_log_dir.rglob("*.log"))  # Recursive search
+    log_files.extend(env_log_dir.rglob("*.jsonl"))  # Recursive search
+
+    # Remove duplicates and filter out already rotated files
+    log_files = list(set(log_files))
+    log_files = [f for f in log_files if not f.name.endswith(f".{timestamp}")]
 
     if not log_files:
         return
@@ -114,7 +124,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                     # This helps detect file locking issues before attempting to rename
                     if sys.platform == "win32":
                         try:
-                            with open(log_file, "a") as _f:
+                            with open(log_file, "a", encoding="utf-8") as _f:
                                 pass  # Just test if we can open the file
                         except (PermissionError, OSError):
                             if attempt < max_retries - 1:
