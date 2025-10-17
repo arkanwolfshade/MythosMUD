@@ -125,5 +125,5 @@ run:
 all:
 	cd $(PROJECT_ROOT) && make format
 	cd $(PROJECT_ROOT) && make lint
-	cd $(PROJECT_ROOT) && make coverage
+	cd $(PROJECT_ROOT) && make test-all
 	cd $(PROJECT_ROOT) && make build

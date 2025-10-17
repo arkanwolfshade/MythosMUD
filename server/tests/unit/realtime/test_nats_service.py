@@ -49,7 +49,7 @@ class TestNATSService:
         assert self.nats_service.subscriptions == {}
         assert self.nats_service._running is False
         assert self.nats_service._connection_retries == 0
-        assert self.nats_service._max_retries == 5
+        assert self.nats_service._max_retries == 3
 
     def test_nats_service_initialization_with_config(self):
         """Test NATSService initialization with custom config."""
