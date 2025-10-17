@@ -22,6 +22,10 @@ class TestPlayerGuidFormatter:
         # Create mock player service
         self.mock_player_service = Mock()
 
+        # Create mock persistence layer
+        self.mock_persistence = Mock()
+        self.mock_player_service.persistence = self.mock_persistence
+
         # Create formatter instance
         self.formatter = PlayerGuidFormatter(
             player_service=self.mock_player_service,
@@ -74,27 +78,36 @@ class TestPlayerGuidFormatter:
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
 
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        # Mock persistence layer
+        mock_persistence = Mock()
+        mock_persistence.get_player.return_value = mock_player
+        self.mock_player_service.persistence = mock_persistence
 
         guid = "123e4567-e89b-12d3-a456-426614174000"
         result = self.formatter._get_player_name(guid)
 
         assert result == "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.assert_called_once_with(guid)
+        mock_persistence.get_player.assert_called_once_with(guid)
 
     def test_get_player_name_not_found(self):
         """Test player name lookup when player not found."""
-        self.mock_player_service.get_player_by_id.return_value = None
+        # Mock persistence layer
+        mock_persistence = Mock()
+        mock_persistence.get_player.return_value = None
+        self.mock_player_service.persistence = mock_persistence
 
         guid = "123e4567-e89b-12d3-a456-426614174000"
         result = self.formatter._get_player_name(guid)
 
         assert result is None
-        self.mock_player_service.get_player_by_id.assert_called_once_with(guid)
+        mock_persistence.get_player.assert_called_once_with(guid)
 
     def test_get_player_name_exception(self):
         """Test player name lookup when exception occurs."""
-        self.mock_player_service.get_player_by_id.side_effect = Exception("Database error")
+        # Mock persistence layer
+        mock_persistence = Mock()
+        mock_persistence.get_player.side_effect = Exception("Database error")
+        self.mock_player_service.persistence = mock_persistence
 
         guid = "123e4567-e89b-12d3-a456-426614174000"
         result = self.formatter._get_player_name(guid)
@@ -118,7 +131,7 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         message = "Player 123e4567-e89b-12d3-a456-426614174000 connected"
         result = self.formatter._convert_player_guids(message)
@@ -128,7 +141,7 @@ class TestPlayerGuidFormatter:
 
     def test_convert_player_guids_not_found(self):
         """Test GUID conversion when player not found."""
-        self.mock_player_service.get_player_by_id.return_value = None
+        self.mock_persistence.get_player.return_value = None
 
         with patch.object(self.formatter, "_log_lookup_failure") as mock_log_failure:
             message = "Player 123e4567-e89b-12d3-a456-426614174000 connected"
@@ -153,7 +166,7 @@ class TestPlayerGuidFormatter:
                 return player
             return None
 
-        self.mock_player_service.get_player_by_id.side_effect = mock_get_player
+        self.mock_persistence.get_player.side_effect = mock_get_player
 
         message = "Players 123e4567-e89b-12d3-a456-426614174000 and 550e8400-e29b-41d4-a716-446655440000 are online"
         result = self.formatter._convert_player_guids(message)
@@ -171,7 +184,7 @@ class TestPlayerGuidFormatter:
                 return player
             return None  # Second GUID not found
 
-        self.mock_player_service.get_player_by_id.side_effect = mock_get_player
+        self.mock_persistence.get_player.side_effect = mock_get_player
 
         with patch.object(self.formatter, "_log_lookup_failure") as mock_log_failure:
             message = (
@@ -195,7 +208,7 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create a log record
         record = logging.LogRecord(
@@ -239,7 +252,7 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         results = []
         errors = []
@@ -272,7 +285,7 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create message with many GUIDs
         guid = "123e4567-e89b-12d3-a456-426614174000"
@@ -307,7 +320,7 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Test with uppercase GUID
         message = "Player 123E4567-E89B-12D3-A456-426614174000 connected"
@@ -319,7 +332,7 @@ class TestPlayerGuidFormatter:
     def test_recursive_error_logging_prevention(self):
         """Test that error logging doesn't create infinite loops with formatted GUIDs."""
         # Mock player service to return None (player not found)
-        self.mock_player_service.get_player_by_id.return_value = None
+        self.mock_persistence.get_player.return_value = None
 
         # Create a message that would trigger error logging
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
@@ -347,27 +360,27 @@ class TestPlayerGuidFormatter:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Test GUID in WebSocket context (should NOT be processed)
         websocket_message = "Dead WebSocket connection 123e4567-e89b-12d3-a456-426614174000 for player"
         result = self.formatter._convert_player_guids(websocket_message)
         # Should return original message without processing the WebSocket GUID
         assert result == websocket_message
-        # Should not call player service for WebSocket GUIDs
-        self.mock_player_service.get_player_by_id.assert_not_called()
+        # Should not call persistence layer for WebSocket GUIDs
+        self.mock_persistence.get_player.assert_not_called()
 
         # Reset mock
-        self.mock_player_service.reset_mock()
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.reset_mock()
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Test GUID in player context (should be processed)
         player_message = "Player 123e4567-e89b-12d3-a456-426614174000 moved to room"
         result = self.formatter._convert_player_guids(player_message)
         expected = "Player <TestPlayer>: 123e4567-e89b-12d3-a456-426614174000 moved to room"
         assert result == expected
-        # Should call player service for player GUIDs
-        self.mock_player_service.get_player_by_id.assert_called_once_with("123e4567-e89b-12d3-a456-426614174000")
+        # Should call persistence layer for player GUIDs
+        self.mock_persistence.get_player.assert_called_once_with("123e4567-e89b-12d3-a456-426614174000")
 
     def test_context_detection_methods(self):
         """Test the context detection methods work correctly."""
