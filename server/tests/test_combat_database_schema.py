@@ -6,6 +6,7 @@ including JSON field validation and data migration scripts.
 """
 
 import json
+import uuid
 
 import pytest
 from sqlalchemy import text
@@ -38,12 +39,13 @@ class TestCombatDatabaseSchema:
         await init_db()
 
         async for session in get_async_session():
-            # Create test NPC with combat stats
+            # Create test NPC with combat stats using unique identifiers
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Test Rat",
+                name=f"Test Rat {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_1",
-                base_stats='{"hp": 10, "max_hp": 10, "xp_value": 5, "dexterity": 12}',
+                sub_zone_id=f"test_zone_base_stats_{unique_id}",
+                base_stats=('{"hp": 10, "max_hp": 10, "xp_value": 5, "dexterity": 12}'),
                 behavior_config="{}",
             )
 
@@ -66,16 +68,18 @@ class TestCombatDatabaseSchema:
 
         async for session in get_async_session():
             combat_messages = {
-                "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
-                "attack_defender": "{attacker_name} swings their fist at you and hits you for {damage} damage",
-                "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
+                "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
+                "attack_defender": ("{attacker_name} swings their fist at you and hits you for {damage} damage"),
+                "attack_other": ("{attacker_name} swings their fist at {target_name} and hits for {damage} damage"),
                 "death_message": "The {npc_name} collapses, dead",
             }
 
+            # Create test NPC with unique identifiers
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Test Goblin",
+                name=f"Test Goblin {unique_id}",
                 npc_type="aggressive_mob",
-                sub_zone_id="test_zone_2",
+                sub_zone_id=f"test_zone_combat_messages_{unique_id}",
                 base_stats='{"hp": 15, "max_hp": 15, "xp_value": 10}',
                 behavior_config=json.dumps({"combat_messages": combat_messages}),
             )
@@ -98,12 +102,21 @@ class TestCombatDatabaseSchema:
 
         async for session in get_async_session():
             # Test valid combat data
-            valid_stats = {"hp": 10, "max_hp": 10, "xp_value": 5, "dexterity": 12, "strength": 10, "constitution": 8}
+            valid_stats = {
+                "hp": 10,
+                "max_hp": 10,
+                "xp_value": 5,
+                "dexterity": 12,
+                "strength": 10,
+                "constitution": 8,
+            }
 
+            # Create test NPC with unique identifiers
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Valid Combat NPC",
+                name=f"Valid Combat NPC {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_3",
+                sub_zone_id=f"test_zone_validation_{unique_id}",
                 base_stats=json.dumps(valid_stats),
                 behavior_config="{}",
             )
@@ -117,7 +130,7 @@ class TestCombatDatabaseSchema:
             assert stats["xp_value"] >= 0  # XP should be non-negative
             assert 1 <= stats["dexterity"] <= 20  # Dexterity should be 1-20
             assert 1 <= stats["strength"] <= 20  # Strength should be 1-20
-            assert 1 <= stats["constitution"] <= 20  # Constitution should be 1-20
+            assert 1 <= stats["constitution"] <= 20  # Constitution 1-20
 
     @pytest.mark.asyncio
     async def test_invalid_combat_data_handling(self):
@@ -127,10 +140,11 @@ class TestCombatDatabaseSchema:
 
         async for session in get_async_session():
             # Test invalid JSON
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Invalid JSON NPC",
+                name=f"Invalid JSON NPC {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_4",
+                sub_zone_id=f"test_zone_invalid_{unique_id}",
                 base_stats='{"invalid": json}',  # Invalid JSON
                 behavior_config="{}",
             )
@@ -152,16 +166,18 @@ class TestCombatDatabaseSchema:
         async for session in get_async_session():
             # Test message templates with required variables
             combat_messages = {
-                "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
-                "attack_defender": "{attacker_name} swings their fist at you and hits you for {damage} damage",
-                "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
+                "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
+                "attack_defender": ("{attacker_name} swings their fist at you and hits you for {damage} damage"),
+                "attack_other": ("{attacker_name} swings their fist at {target_name} and hits for {damage} damage"),
                 "death_message": "The {npc_name} collapses, dead",
             }
 
+            # Create test NPC with unique identifiers
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Template Test NPC",
+                name=f"Template Test NPC {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_5",
+                sub_zone_id=f"test_zone_template_{unique_id}",
                 base_stats='{"hp": 10, "max_hp": 10, "xp_value": 5}',
                 behavior_config=json.dumps({"combat_messages": combat_messages}),
             )
@@ -192,10 +208,11 @@ class TestCombatDataMigration:
 
         async for session in get_async_session():
             # Create NPC without combat data
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Pre-Migration NPC",
+                name=f"Pre-Migration NPC {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_6",
+                sub_zone_id=f"test_zone_migration_{unique_id}",
                 base_stats='{"hp": 10}',
                 behavior_config="{}",
             )
@@ -219,9 +236,9 @@ class TestCombatDataMigration:
             # Add default combat messages
             config = npc.get_behavior_config()
             config["combat_messages"] = {
-                "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
-                "attack_defender": "{attacker_name} swings their fist at you and hits you for {damage} damage",
-                "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
+                "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
+                "attack_defender": ("{attacker_name} swings their fist at you and hits you for {damage} damage"),
+                "attack_other": ("{attacker_name} swings their fist at {target_name} and hits for {damage} damage"),
                 "death_message": "The {npc_name} collapses, dead",
             }
             npc.set_behavior_config(config)
@@ -248,13 +265,18 @@ class TestCombatDataMigration:
 
         async for session in get_async_session():
             # Create NPC with existing data
-            existing_stats = {"hp": 20, "max_hp": 20, "custom_field": "custom_value"}
+            existing_stats = {
+                "hp": 20,
+                "max_hp": 20,
+                "custom_field": "custom_value",
+            }
             existing_config = {"custom_behavior": "custom_setting"}
 
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Existing Data NPC",
+                name=f"Existing Data NPC {unique_id}",
                 npc_type="aggressive_mob",
-                sub_zone_id="test_zone_7",
+                sub_zone_id=f"test_zone_preserve_{unique_id}",
                 base_stats=json.dumps(existing_stats),
                 behavior_config=json.dumps(existing_config),
             )
@@ -274,7 +296,7 @@ class TestCombatDataMigration:
             config = npc.get_behavior_config()
             if "combat_messages" not in config:
                 config["combat_messages"] = {
-                    "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
+                    "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
                     "death_message": "The {npc_name} collapses, dead",
                 }
             npc.set_behavior_config(config)
@@ -300,10 +322,11 @@ class TestCombatDataMigration:
 
         async for session in get_async_session():
             # Create NPC with minimal data
+            unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
-                name="Minimal NPC",
+                name=f"Minimal NPC {unique_id}",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone_8",
+                sub_zone_id=f"test_zone_minimal_{unique_id}",
                 base_stats="{}",
                 behavior_config="{}",
             )
@@ -324,7 +347,7 @@ class TestCombatDataMigration:
             npc.set_base_stats(stats)
 
             config["combat_messages"] = {
-                "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
+                "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
                 "death_message": "The {npc_name} collapses, dead",
             }
             npc.set_behavior_config(config)

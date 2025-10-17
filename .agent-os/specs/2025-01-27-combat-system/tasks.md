@@ -2,9 +2,9 @@
 
 ## Progress Summary
 
-- **Completed**: Tasks 1-4 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration)
-- **In Progress**: Task 5 (Combat Messaging System) - 60% complete
-- **Remaining**: Tasks 6-10 (NPC Integration, Player Integration, Security, Testing, Deployment)
+- **Completed**: Tasks 1-5 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System)
+- **In Progress**: Task 6 (NPC Combat Integration)
+- **Remaining**: Tasks 7-10 (Player Integration, Security, Testing, Deployment)
 
 ## Tasks
 
@@ -39,12 +39,12 @@
   - [x] 4.4 Implement NATS event publishing for combat events
   - [x] 4.5 Verify all event system tests pass
 
-- [ ] 5. Combat Messaging System
+- [x] 5. Combat Messaging System
   - [x] 5.1 Write tests for combat message generation and formatting
   - [x] 5.2 Implement CombatMessageService with perspective-based message templates
   - [x] 5.3 Implement variable substitution for combat messages (attacker, defender, other)
-  - [ ] 5.4 Integrate with existing real-time messaging system for room broadcasting
-  - [ ] 5.5 Verify all messaging tests pass
+  - [x] 5.4 Integrate with existing real-time messaging system for room broadcasting
+  - [x] 5.5 Verify all messaging tests pass
 
 - [ ] 6. NPC Combat Integration
   - [ ] 6.1 Write tests for NPC combat behaviors and lifecycle integration
