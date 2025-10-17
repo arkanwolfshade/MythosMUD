@@ -227,7 +227,6 @@ TASKS.local.md
 !env.*.example
 
 # Ensure test environment secrets are ignored
-.env.unit_test
 .env.e2e_test
 .env.test
 !env.example
