@@ -11,8 +11,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from server.services.chat_logger import ChatLogger
 
 
@@ -37,45 +35,43 @@ class TestChatLogger:
 
     def test_chat_logger_initialization(self):
         """Test ChatLogger initialization creates required directories."""
-        # Verify directories were created
-        assert (self.log_dir / "chat").exists()
-        assert (self.log_dir / "moderation").exists()
-        assert (self.log_dir / "system").exists()
+        # Verify main log directory was created
+        assert self.log_dir.exists()
 
         # Verify attributes are set correctly
         assert self.chat_logger.log_dir == self.log_dir
-        assert self.chat_logger.chat_dir == self.log_dir / "chat"
-        assert self.chat_logger.moderation_dir == self.log_dir / "moderation"
-        assert self.chat_logger.system_dir == self.log_dir / "system"
 
     def test_get_current_log_file_chat(self):
         """Test getting current log file path for chat type."""
         log_file = self.chat_logger._get_current_log_file("chat")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        expected_filename = f"chat_{today}.log"
+        expected_filename = f"chat_chat_{today}.log"
 
-        assert log_file == self.chat_logger.chat_dir / expected_filename
+        assert log_file == self.log_dir / expected_filename
 
     def test_get_current_log_file_moderation(self):
         """Test getting current log file path for moderation type."""
         log_file = self.chat_logger._get_current_log_file("moderation")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        expected_filename = f"moderation_{today}.log"
+        expected_filename = f"chat_moderation_{today}.log"
 
-        assert log_file == self.chat_logger.moderation_dir / expected_filename
+        assert log_file == self.log_dir / expected_filename
 
     def test_get_current_log_file_system(self):
         """Test getting current log file path for system type."""
         log_file = self.chat_logger._get_current_log_file("system")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        expected_filename = f"system_{today}.log"
+        expected_filename = f"chat_system_{today}.log"
 
-        assert log_file == self.chat_logger.system_dir / expected_filename
+        assert log_file == self.log_dir / expected_filename
 
     def test_get_current_log_file_invalid_type(self):
-        """Test getting current log file with invalid type raises ValueError."""
-        with pytest.raises(ValueError, match="Unknown log type: invalid"):
-            self.chat_logger._get_current_log_file("invalid")
+        """Test getting current log file with invalid type creates prefixed filename."""
+        log_file = self.chat_logger._get_current_log_file("invalid")
+        today = datetime.now(UTC).strftime("%Y-%m-%d")
+        expected_filename = f"chat_invalid_{today}.log"
+
+        assert log_file == self.log_dir / expected_filename
 
     def test_write_log_entry_success(self):
         """Test successful log entry writing."""
@@ -496,9 +492,9 @@ class TestChatLogger:
 
         # Verify paths are correct
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        assert paths["chat"] == self.chat_logger.chat_dir / f"chat_{today}.log"
-        assert paths["moderation"] == self.chat_logger.moderation_dir / f"moderation_{today}.log"
-        assert paths["system"] == self.chat_logger.system_dir / f"system_{today}.log"
+        assert paths["chat"] == self.log_dir / f"chat_chat_{today}.log"
+        assert paths["moderation"] == self.log_dir / f"chat_moderation_{today}.log"
+        assert paths["system"] == self.log_dir / f"chat_system_{today}.log"
 
     def test_get_log_stats_empty_files(self):
         """Test getting log stats for empty log files."""
@@ -591,21 +587,17 @@ class TestChatLogger:
             assert entry["type"] == "system"
 
     def test_ensure_log_directories_creates_missing_dirs(self):
-        """Test that _ensure_log_directories creates missing directories."""
-        # Remove directories
+        """Test that _ensure_log_directories creates the main log directory."""
+        # Remove main directory
         import shutil
 
-        shutil.rmtree(self.log_dir / "chat", ignore_errors=True)
-        shutil.rmtree(self.log_dir / "moderation", ignore_errors=True)
-        shutil.rmtree(self.log_dir / "system", ignore_errors=True)
+        shutil.rmtree(self.log_dir, ignore_errors=True)
 
-        # Recreate directories
+        # Recreate directory
         self.chat_logger._ensure_log_directories()
 
-        # Verify directories exist
-        assert (self.log_dir / "chat").exists()
-        assert (self.log_dir / "moderation").exists()
-        assert (self.log_dir / "system").exists()
+        # Verify main directory exists
+        assert self.log_dir.exists()
 
     def test_ensure_log_directories_handles_existing_dirs(self):
         """Test that _ensure_log_directories handles existing directories gracefully."""
@@ -614,10 +606,8 @@ class TestChatLogger:
         self.chat_logger._ensure_log_directories()
         self.chat_logger._ensure_log_directories()
 
-        # Verify directories still exist
-        assert (self.log_dir / "chat").exists()
-        assert (self.log_dir / "moderation").exists()
-        assert (self.log_dir / "system").exists()
+        # Verify main directory still exists
+        assert self.log_dir.exists()
 
 
 class TestChatLoggerGlobalInstance:
@@ -632,6 +622,3 @@ class TestChatLoggerGlobalInstance:
 
         # Verify it has the expected attributes
         assert hasattr(chat_logger, "log_dir")
-        assert hasattr(chat_logger, "chat_dir")
-        assert hasattr(chat_logger, "moderation_dir")
-        assert hasattr(chat_logger, "system_dir")

@@ -109,14 +109,13 @@ class TestGlobalChannelLogging:
         log_file = chat_logger._get_global_channel_log_file()
 
         # Check the path structure
-        assert log_file.parent.name == "global"
-        assert log_file.parent.parent.name == "chat"
-        assert log_file.name.startswith("global_")
+        assert log_file.parent == chat_logger.log_dir
+        assert log_file.name.startswith("chat_global_")
         assert log_file.name.endswith(".log")
 
         # Check the date format
         today = datetime.now(UTC).strftime("%Y-%m-%d")
-        expected_name = f"global_{today}.log"
+        expected_name = f"chat_global_{today}.log"
         assert log_file.name == expected_name
 
     def test_get_global_channel_log_files_empty(self, chat_logger):
@@ -126,26 +125,25 @@ class TestGlobalChannelLogging:
 
     def test_get_global_channel_log_files_with_files(self, chat_logger):
         """Test getting global channel log files when files exist."""
-        # Create some test log files
-        global_dir = chat_logger.log_dir / "chat" / "global"
-        global_dir.mkdir(parents=True, exist_ok=True)
-
+        # Create test log files in the main directory
         # Create test files
         test_files = [
-            "global_2025-01-15.log",
-            "global_2025-01-16.log",
-            "global_2025-01-17.log",
+            "chat_global_2025-01-15.log",
+            "chat_global_2025-01-16.log",
+            "chat_global_2025-01-17.log",
             "other_file.txt",  # Should be ignored
         ]
 
         for filename in test_files:
-            (global_dir / filename).touch()
+            # Ensure directory exists before creating files
+            chat_logger.log_dir.mkdir(parents=True, exist_ok=True)
+            (chat_logger.log_dir / filename).touch()
 
         log_files = chat_logger.get_global_channel_log_files()
 
         # Should only return global log files
         assert len(log_files) == 3
-        assert all("global_2025-01-" in f for f in log_files)
+        assert all("chat_global_2025-01-" in f for f in log_files)
         assert all(f.endswith(".log") for f in log_files)
 
     def test_get_global_channel_log_stats_empty(self, chat_logger):
@@ -155,18 +153,16 @@ class TestGlobalChannelLogging:
 
     def test_get_global_channel_log_stats_with_files(self, chat_logger):
         """Test getting global channel log stats when files exist."""
-        # Create test log files
-        global_dir = chat_logger.log_dir / "chat" / "global"
-        global_dir.mkdir(parents=True, exist_ok=True)
-
-        # Create test files with content
+        # Create test files with content in the main directory
         test_files = [
-            ("global_2025-01-15.log", "Test content 1"),
-            ("global_2025-01-16.log", "Test content 2"),
+            ("chat_global_2025-01-15.log", "Test content 1"),
+            ("chat_global_2025-01-16.log", "Test content 2"),
         ]
 
         for filename, content in test_files:
-            file_path = global_dir / filename
+            # Ensure directory exists before creating files
+            chat_logger.log_dir.mkdir(parents=True, exist_ok=True)
+            file_path = chat_logger.log_dir / filename
             file_path.write_text(content, encoding="utf-8")
 
         stats = chat_logger.get_global_channel_log_stats()
@@ -189,20 +185,18 @@ class TestGlobalChannelLogging:
 
     def test_cleanup_old_global_channel_logs(self, chat_logger):
         """Test cleanup of old global channel log files."""
-        # Create test log files
-        global_dir = chat_logger.log_dir / "chat" / "global"
-        global_dir.mkdir(parents=True, exist_ok=True)
-
-        # Create files with different dates
+        # Create test files with different dates in the main directory
         test_files = [
-            ("global_2025-01-01.log", "Old content 1"),
-            ("global_2025-01-02.log", "Old content 2"),
-            ("global_2025-01-03.log", "Recent content 1"),
-            ("global_2025-01-04.log", "Recent content 2"),
+            ("chat_global_2025-01-01.log", "Old content 1"),
+            ("chat_global_2025-01-02.log", "Old content 2"),
+            ("chat_global_2025-01-03.log", "Recent content 1"),
+            ("chat_global_2025-01-04.log", "Recent content 2"),
         ]
 
         for filename, content in test_files:
-            file_path = global_dir / filename
+            # Ensure directory exists before creating files
+            chat_logger.log_dir.mkdir(parents=True, exist_ok=True)
+            file_path = chat_logger.log_dir / filename
             file_path.write_text(content, encoding="utf-8")
 
         # Mock datetime to simulate current time
@@ -214,9 +208,9 @@ class TestGlobalChannelLogging:
 
             # Set file modification times
             for filename, _ in test_files:
-                file_path = global_dir / filename
+                file_path = chat_logger.log_dir / filename
                 # Extract date from filename and set modification time
-                date_str = filename[7:-4]  # Remove "global_" prefix and ".log" suffix
+                date_str = filename[12:-4]  # Remove "chat_global_" prefix and ".log" suffix
                 file_date = datetime.strptime(date_str, "%Y-%m-%d")
                 os.utime(file_path, (file_date.timestamp(), file_date.timestamp()))
 
@@ -229,7 +223,7 @@ class TestGlobalChannelLogging:
         assert any("2025-01-02" in f for f in deleted_files)
 
         # Check remaining files
-        remaining_files = list(global_dir.glob("global_*.log"))
+        remaining_files = list(chat_logger.log_dir.glob("chat_global_*.log"))
         assert len(remaining_files) == 2
         assert any("2025-01-03" in f.name for f in remaining_files)
         assert any("2025-01-04" in f.name for f in remaining_files)

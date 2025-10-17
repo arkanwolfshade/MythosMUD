@@ -32,15 +32,15 @@ class AdminActionsLogger:
         """
         if log_directory is None:
             # Use environment-based configuration like the rest of the system
-            from ..config import get_config
-            from ..logging_config import _resolve_log_base
+            from server.config import get_config
+            from server.logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base
             environment = config.logging.environment
 
             resolved_log_base = _resolve_log_base(log_base)
-            self.log_directory = resolved_log_base / environment / "admin_actions"
+            self.log_directory = resolved_log_base / environment
         else:
             self.log_directory = Path(log_directory)
 
