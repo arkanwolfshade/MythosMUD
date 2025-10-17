@@ -294,6 +294,11 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 - `scripts/format.py` - Format code with ruff
 - `scripts/semgrep.py` - Run security analysis with Semgrep
 
+**Test Setup Scripts:**
+
+- `scripts/setup_test_environment.ps1` - Setup test environment files (required before running tests)
+- See [Test Setup Guide](server/tests/SETUP.md) for detailed instructions
+
 **Make Commands:**
 
 - `make test` - Run all tests from project root
@@ -325,6 +330,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - E2E Automated: 114 automated Playwright CLI tests (10 scenarios)
   - E2E Manual: 11 multiplayer MCP scenarios requiring AI Agent coordination
   - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
+  - **IMPORTANT**: Run `make setup-test-env` before running server tests
+  - See [Test Setup Guide](server/tests/SETUP.md) for detailed setup instructions
 - **Security:**
   - Semgrep static analysis for security vulnerabilities
   - COPPA compliance verification

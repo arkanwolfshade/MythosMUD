@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow
+.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -12,14 +12,27 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
 	@echo "  test      - Run all tests (server + client)"
-	@echo "  test-server - Run server tests only"
+	@echo "  test-server - Run server tests only (unit + integration)"
 	@echo "  test-client - Run client unit tests only (Vitest)"
 	@echo "  test-client-e2e - Run automated client E2E tests (Playwright e2e)"
 	@echo "  test-server-e2e - Run server E2E tests (requires running server)"
+	@echo "  test-unit - Run unit tests only"
+	@echo "  test-integration - Run integration tests only"
+	@echo "  test-e2e - Run E2E tests only"
+	@echo "  test-security - Run security tests only"
+	@echo "  test-performance - Run performance tests only"
+	@echo "  test-coverage - Generate coverage report only"
+	@echo "  test-regression - Run regression tests only"
+	@echo "  test-monitoring - Run monitoring tests only"
+	@echo "  test-verification - Run verification tests only"
+	@echo "  test-all - Run all tests (unit + integration, excluding E2E)"
+	@echo "  test-fast - Run unit tests with fail-fast mode"
+	@echo "  test-slow - Run slow tests only"
 	@echo "  coverage  - Run coverage for both server and client"
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
 	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
+	@echo "  setup-test-env - Setup test environment files (required before running tests)"
 	@echo ""
 	@echo "E2E Testing:"
 	@echo "  make test-client-e2e  - Automated single-player E2E tests (fast)"
@@ -27,6 +40,10 @@ help:
 
 clean:
 	cd $(PROJECT_ROOT) && python scripts/clean.py
+
+setup-test-env:
+	@echo "Setting up test environment files..."
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_test_environment.ps1
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py
@@ -38,60 +55,60 @@ lint-sqlalchemy:
 format:
 	cd $(PROJECT_ROOT) && python scripts/format.py
 
-test:
-	cd $(PROJECT_ROOT) && python scripts/test.py
+test: setup-test-env
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
 
-test-server:
-	cd $(PROJECT_ROOT) && python scripts/test.py --server-only
+test-server: setup-test-env
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
 
 test-client:
-	cd $(PROJECT_ROOT) && python scripts/test.py --client-only
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path client/tests
 
 test-client-e2e:
-	cd $(PROJECT_ROOT) && python scripts/test.py --client-e2e-only
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e --path client/tests
 
 test-server-e2e:
-	cd $(PROJECT_ROOT) && python scripts/test.py --server-e2e-only
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e
 
 # New hierarchical test targets
 test-unit:
-	cd $(PROJECT_ROOT) && pytest server/tests/unit -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --unit
 
 test-integration:
-	cd $(PROJECT_ROOT) && pytest server/tests/integration -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --integration
 
 test-e2e:
-	cd $(PROJECT_ROOT) && pytest server/tests/e2e -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e
 
 test-security:
-	cd $(PROJECT_ROOT) && pytest server/tests/security -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/security
 
 test-performance:
-	cd $(PROJECT_ROOT) && pytest server/tests/performance -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/performance
 
 test-coverage:
-	cd $(PROJECT_ROOT) && pytest server/tests/coverage -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --coverage
 
 test-regression:
-	cd $(PROJECT_ROOT) && pytest server/tests/regression -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/regression
 
 test-monitoring:
-	cd $(PROJECT_ROOT) && pytest server/tests/monitoring -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/monitoring
 
 test-verification:
-	cd $(PROJECT_ROOT) && pytest server/tests/verification -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/verification
 
 test-all:
-	cd $(PROJECT_ROOT) && pytest server/tests -v
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
 
 test-fast:
-	cd $(PROJECT_ROOT) && pytest server/tests/unit -v -x
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --unit --pytest-args -x
 
 test-slow:
-	cd $(PROJECT_ROOT) && pytest server/tests -v -m slow
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --markers "slow"
 
 coverage:
-	cd $(PROJECT_ROOT) && python scripts/coverage.py
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --coverage
 
 build:
 	cd $(PROJECT_ROOT) && python scripts/build.py

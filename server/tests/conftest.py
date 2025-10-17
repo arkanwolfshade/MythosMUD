@@ -45,17 +45,81 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
+# Import Windows-specific logging fixes
+try:
+    from .windows_logging_fix import configure_windows_logging, disable_problematic_log_handlers
+
+    configure_windows_logging()
+    disable_problematic_log_handlers()
+except ImportError:
+    # If the fix module doesn't exist, continue without it
+    pass
+
+# Import Windows-specific event loop fixes
+try:
+    from .windows_event_loop_fix import configure_windows_event_loops
+
+    configure_windows_event_loops()
+except ImportError:
+    # If the fix module doesn't exist, continue without it
+    pass
+
 # CRITICAL: Load .env.unit_test file FIRST, before any other environment variable setup
 # This ensures that test-specific database URLs are loaded before any modules
 # that depend on them are imported
 project_root = Path(__file__).parent.parent.parent
 TEST_ENV_PATH = project_root / "server" / "tests" / ".env.unit_test"
-if TEST_ENV_PATH.exists():
+EXAMPLE_ENV_PATH = project_root / "env.unit_test.example"
+
+
+def validate_test_environment():
+    """Validate that required test environment files exist."""
+    if not TEST_ENV_PATH.exists():
+        print(f"[ERROR] Test environment file not found at {TEST_ENV_PATH}")
+        if EXAMPLE_ENV_PATH.exists():
+            print(f"[INFO] Example file exists at {EXAMPLE_ENV_PATH}")
+            print("[SOLUTION] Copy the example file to create the required test environment:")
+            print(f'  Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
+        else:
+            print("[ERROR] No example file found to copy from")
+        raise FileNotFoundError(
+            f"Required test environment file missing: {TEST_ENV_PATH}\n"
+            f"Please copy env.unit_test.example to server/tests/.env.unit_test"
+        )
+
+    # Validate that the file has required content
+    try:
+        with open(TEST_ENV_PATH) as f:
+            content = f.read()
+            required_vars = ["SERVER_PORT=", "DATABASE_URL=", "DATABASE_NPC_URL=", "MYTHOSMUD_ADMIN_PASSWORD="]
+            missing_vars = []
+            for var in required_vars:
+                if var not in content:
+                    missing_vars.append(var)
+
+            if missing_vars:
+                print(f"[ERROR] Test environment file is missing required variables: {missing_vars}")
+                print(f"[SOLUTION] Please ensure {TEST_ENV_PATH} contains all required configuration variables")
+                raise ValueError(f"Test environment file missing required variables: {missing_vars}")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to validate test environment file: {e}")
+        raise
+
+
+# Validate test environment before proceeding
+try:
+    validate_test_environment()
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
     print(f"[OK] Loaded test environment secrets from {TEST_ENV_PATH}")
-else:
-    print(f"[WARNING] Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables from conftest.py")
+except (FileNotFoundError, ValueError) as e:
+    print(f"[CRITICAL ERROR] Test environment validation failed: {e}")
+    print("\n[SETUP INSTRUCTIONS]")
+    print("1. Copy the example environment file:")
+    print(f'   Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
+    print("2. Verify the file contains all required variables")
+    print("3. Run tests again")
+    raise SystemExit(1) from e
 
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
@@ -72,6 +136,10 @@ os.environ.setdefault("MYTHOSMUD_ADMIN_PASSWORD", "test-admin-password-for-devel
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
 os.environ.setdefault("GAME_ROOM_DATA_PATH", "data/rooms")
 os.environ.setdefault("GAME_ALIASES_DIR", str(project_root / "data" / "unit_test" / "players" / "aliases"))
+
+# CRITICAL: Disable process termination during tests to prevent test suite crashes
+# This prevents the ProcessTerminator from killing the test process when shutdown tests run
+os.environ.setdefault("MYTHOSMUD_DISABLE_PROCESS_EXIT", "1")
 
 # CRITICAL: Set database URLs IMMEDIATELY to prevent import-time failures
 # This must happen before any database modules are imported
@@ -198,6 +266,9 @@ def pytest_configure(config):
     # CRITICAL: Pydantic ServerConfig requires SERVER_PORT
     os.environ.setdefault("SERVER_PORT", "54731")
     os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+
+    # CRITICAL: Disable process termination during tests to prevent test suite crashes
+    os.environ.setdefault("MYTHOSMUD_DISABLE_PROCESS_EXIT", "1")
 
     # Get the project root (two levels up from this file)
     project_root = Path(__file__).parent.parent.parent
@@ -470,6 +541,95 @@ def event_bus():
     return event_bus
 
 
+# Global asyncio task cleanup fixture to prevent resource leaks
+@pytest.fixture(autouse=True)
+def cleanup_all_asyncio_tasks():
+    """Automatically clean up all asyncio tasks to prevent resource leaks."""
+    import asyncio
+    import weakref
+
+    from ..events.event_bus import EventBus
+
+    # Track all EventBus instances created during tests
+    eventbus_instances = weakref.WeakSet()
+
+    # Store original EventBus.__init__ to track instances
+    original_init = EventBus.__init__
+
+    def tracking_init(self, *args, **kwargs):
+        original_init(self, *args, **kwargs)
+        eventbus_instances.add(self)
+
+    # Replace EventBus.__init__ with tracking version
+    EventBus.__init__ = tracking_init
+
+    # Track tasks created during this test
+    try:
+        initial_tasks = set(asyncio.all_tasks())
+    except RuntimeError:
+        # No event loop running yet, start with empty set
+        initial_tasks = set()
+
+    yield
+
+    # Cleanup all EventBus instances after test
+    for eventbus in list(eventbus_instances):
+        try:
+            if hasattr(eventbus, "_running") and eventbus._running:
+                # Force shutdown without waiting for async operations
+                eventbus._running = False
+                eventbus._shutdown_event.set()
+
+                # Cancel all active tasks
+                if hasattr(eventbus, "_active_tasks") and eventbus._active_tasks:
+                    for task in list(eventbus._active_tasks):
+                        if not task.done():
+                            task.cancel()
+                    eventbus._active_tasks.clear()
+        except Exception:
+            # Ignore cleanup errors during teardown
+            pass
+
+    # Clean up any orphaned asyncio tasks created during this test
+    try:
+        # Only try to get tasks if there's a running event loop
+        try:
+            current_tasks = set(asyncio.all_tasks())
+            test_created_tasks = current_tasks - initial_tasks
+
+            # Cancel any tasks that were created during this test and are still running
+            for task in test_created_tasks:
+                if not task.done():
+                    task.cancel()
+
+            # Wait briefly for tasks to complete cancellation (synchronous approach)
+            if test_created_tasks:
+                try:
+                    loop = asyncio.get_running_loop()
+                    # Use run_until_complete for synchronous cleanup
+                    loop.run_until_complete(
+                        asyncio.wait_for(
+                            asyncio.gather(*test_created_tasks, return_exceptions=True),
+                            timeout=0.5,  # Shorter timeout for cleanup
+                        )
+                    )
+                except RuntimeError:
+                    # No running loop, just cancel tasks without waiting
+                    pass
+                except Exception:
+                    # Ignore timeout or other errors during cleanup
+                    pass
+        except RuntimeError:
+            # No event loop running, skip task cleanup
+            pass
+    except Exception:
+        # Ignore any errors during task cleanup
+        pass
+
+    # Restore original EventBus.__init__
+    EventBus.__init__ = original_init
+
+
 @pytest.fixture
 def connection_manager():
     """Provide a properly initialized ConnectionManager for sync tests."""
@@ -662,16 +822,22 @@ class TestSessionBoundaryEnforcement:
             # Ensure loop is properly closed
             if not loop.is_closed():
                 try:
-                    # Cancel any remaining tasks
-                    pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
-                    for task in pending_tasks:
-                        task.cancel()
+                    # Only try to get tasks if the loop is still running
+                    if loop.is_running():
+                        try:
+                            # Cancel any remaining tasks
+                            pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                            for task in pending_tasks:
+                                task.cancel()
 
-                    # Wait for tasks to complete with timeout
-                    if pending_tasks:
-                        loop.run_until_complete(
-                            asyncio.wait(pending_tasks, timeout=1.0, return_when=asyncio.ALL_COMPLETED)
-                        )
+                            # Wait for tasks to complete with timeout
+                            if pending_tasks:
+                                loop.run_until_complete(
+                                    asyncio.wait(pending_tasks, timeout=1.0, return_when=asyncio.ALL_COMPLETED)
+                                )
+                        except RuntimeError:
+                            # Loop might have stopped running, just close it
+                            pass
 
                     loop.close()
                 except Exception as e:
@@ -837,6 +1003,14 @@ def pytest_sessionfinish(session, exitstatus):
     """Called after whole test run finished, right before returning the exit status to the system."""
     # Clean up any remaining test loops
     TestSessionBoundaryEnforcement.enforce_session_boundaries()
+
+    # Windows-specific cleanup
+    try:
+        from .windows_event_loop_fix import cleanup_windows_event_loops
+
+        cleanup_windows_event_loops()
+    except ImportError:
+        pass
 
 
 def pytest_runtest_setup(item):

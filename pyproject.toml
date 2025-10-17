@@ -9,32 +9,32 @@ description = "MythosMUD - A Cthulhu Mythos-themed MUD"
 requires-python = ">=3.12"
 
 dependencies = [
-    "fastapi==0.116.1",
-    "uvicorn[standard]==0.35.0",
-    "pydantic==2.11.7",
+    "fastapi>=0.119.0",
+    "uvicorn[standard]>=0.37.0",
+    "pydantic>=2.12.2",
     "pydantic-settings>=2.0.0",
-    "requests==2.32.4",
-    "httpx==0.28.1",
-    "argon2-cffi>=23.1.0",
-    "python-jose==3.5.0",
-    "faker>=37.5.3",
-    "python-dotenv==1.0.0",
-    "sqlalchemy>=2.0.42",
+    "requests>=2.32.5",
+    "httpx>=0.28.1",
+    "argon2-cffi>=23.1.0,<24",
+    "python-jose>=3.5.0",
+    "faker>=37.11.0",
+    "python-dotenv>=1.1.1",
+    "sqlalchemy>=2.0.44",
     "structlog>=25.4.0",
     "fastapi-users[sqlalchemy]>=14.0.0",
     "setuptools<81",
     "pre-commit>=4.2.0",
-    "pytest>=8.4.1",
-    "pytest-cov>=6.2.1",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
     "aiosqlite>=0.21.0",
-    "pytest-asyncio>=0.24.0",
-    "jsonschema>=4.21.0",
+    "pytest-asyncio>=1.2.0",
+    "jsonschema>=4.20.0",
     "bleach>=6.1.0",
     "tqdm>=4.67.1",
-    "click>=8.1.0", # Command line interface for command parsing and validation
-    "pwdlib[bcrypt]==0.2.1", # Required by fastapi-users (we override the hashing)
+    "click>=8.1.8", # Command line interface for command parsing and validation
+    "pwdlib[bcrypt]>=0.2.1", # Required by fastapi-users (we override the hashing)
     "nats-py>=2.6.0", # NATS Python client for messaging
-    "psutil>=6.0.0", # System and process utilities for memory monitoring
+    "psutil>=7.1.0", # System and process utilities for memory monitoring
     "ftfy>=6.1.3", # Fixes "bad" Unicode input safely
     "strip-ansi>=0.1.1", # Removes ANSI escape codes
     "playwright>=1.55.0",
@@ -45,18 +45,18 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest==8.4.1",
-    "pytest-cov==6.2.1",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
     "networkx>=3.5",
     "matplotlib>=3.10.5",
     "numpy>=2.3.2",
-    "pytest-asyncio==0.24.0",
-    "debugpy==1.8.15",
-    "ruff==0.12.5",
+    "pytest-asyncio>=1.2.0",
+    "debugpy>=1.8.15",
+    "ruff>=0.14.1",
     "aiosqlite>=0.21.0",
     "pre-commit>=4.2.0",
-    "semgrep>=1.132.0",  # Static analysis for security and best practices
-    "websocket-client>=1.8.0",  # WebSocket client for testing connection termination
+    "semgrep>=1.139.0",  # Static analysis for security and best practices
+    "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
 ]
 
 [tool.setuptools.packages.find]
@@ -141,7 +141,7 @@ asyncio_default_fixture_loop_scope = "function"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.12.5",
-    "semgrep>=1.132.0",  # Static analysis for security and best practices
-    "websocket-client>=1.8.0",  # WebSocket client for testing connection termination
+    "ruff>=0.14.1",
+    "semgrep>=1.139.0",  # Static analysis for security and best practices
+    "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
 ]
