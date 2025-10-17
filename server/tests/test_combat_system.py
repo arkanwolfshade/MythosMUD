@@ -527,6 +527,7 @@ class TestCombatEvents:
         """Test creating a player attacked event."""
         event = PlayerAttackedEvent(
             combat_id=uuid4(),
+            room_id="test_room_001",
             attacker_id=uuid4(),
             attacker_name="Player",
             target_id=uuid4(),

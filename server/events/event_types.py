@@ -161,6 +161,9 @@ class NPCAttacked(BaseEvent):
     room_id: str
     damage: int
     attack_type: str = "physical"
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    target_name: str | None = None  # Target name for combat messages
 
     def __post_init__(self):
         """Initialize the event with proper type."""
@@ -182,6 +185,10 @@ class NPCTookDamage(BaseEvent):
     damage: int
     damage_type: str = "physical"
     source_id: str | None = None  # ID of the entity that caused the damage
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    current_hp: int | None = None  # Current HP after damage
+    max_hp: int | None = None  # Maximum HP
 
     def __post_init__(self):
         """Initialize the event with proper type."""
@@ -202,6 +209,9 @@ class NPCDied(BaseEvent):
     room_id: str
     cause: str = "unknown"  # How the NPC died
     killer_id: str | None = None  # ID of the entity that killed the NPC
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    xp_reward: int | None = None  # XP reward for killing the NPC
 
     def __post_init__(self):
         """Initialize the event with proper type."""

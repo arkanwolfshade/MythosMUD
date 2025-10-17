@@ -39,6 +39,7 @@ class PlayerAttackedEvent(BaseEvent):
     """Event fired when a player attacks."""
 
     combat_id: UUID
+    room_id: str
     attacker_id: UUID
     attacker_name: str
     target_id: UUID
@@ -52,6 +53,7 @@ class NPCAttackedEvent(BaseEvent):
     """Event fired when an NPC is attacked."""
 
     combat_id: UUID
+    room_id: str
     attacker_id: UUID
     attacker_name: str
     npc_id: UUID
@@ -65,6 +67,7 @@ class NPCTookDamageEvent(BaseEvent):
     """Event fired when an NPC takes damage."""
 
     combat_id: UUID
+    room_id: str
     npc_id: UUID
     npc_name: str
     damage: int
@@ -77,6 +80,7 @@ class NPCDiedEvent(BaseEvent):
     """Event fired when an NPC dies."""
 
     combat_id: UUID
+    room_id: str
     npc_id: UUID
     npc_name: str
     xp_reward: int
