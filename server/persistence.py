@@ -52,6 +52,18 @@ def reset_persistence():
     """Reset the persistence singleton instance."""
     global _persistence_instance
     with _persistence_lock:
+        if _persistence_instance is not None:
+            # Force immediate shutdown of EventBus to prevent async task interference
+            if _persistence_instance._event_bus is not None:
+                try:
+                    # Force shutdown without waiting for async cleanup
+                    _persistence_instance._event_bus._running = False
+                    _persistence_instance._event_bus._shutdown_event.set()
+                    # Clear active tasks immediately
+                    _persistence_instance._event_bus._active_tasks.clear()
+                except Exception:
+                    # Any error during cleanup - just proceed with reset
+                    pass
         _persistence_instance = None
 
 

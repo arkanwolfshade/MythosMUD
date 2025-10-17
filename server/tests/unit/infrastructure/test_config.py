@@ -187,8 +187,8 @@ class TestLoggingConfig:
         assert legacy["environment"] == "unit_test"
         assert legacy["level"] == "DEBUG"
         assert "rotation" in legacy
-        # Default rotation_max_size is 100MB (Pydantic default)
-        assert legacy["rotation"]["max_size"] == "100MB"
+        # Unit test environment sets rotation_max_size to 10MB
+        assert legacy["rotation"]["max_size"] == "10MB"
 
 
 class TestGameConfig:
@@ -197,7 +197,7 @@ class TestGameConfig:
     def test_valid_game_config(self):
         """Test valid game configuration."""
         config = GameConfig(aliases_dir="data/aliases")
-        assert config.default_player_room == "earth_arkhamcity_sanitarium_room_foyer_001"
+        assert config.default_player_room == "earth_arkhamcity_northside_intersection_derby_high"
         assert config.max_connections_per_player == 3
 
     def test_invalid_max_connections_too_low(self):

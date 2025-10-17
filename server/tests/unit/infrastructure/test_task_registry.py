@@ -23,7 +23,8 @@ class TestTaskRegistryCore:
         assert len(task_registry._lifecycle_tasks) == 0
         assert not task_registry._shutdown_in_progress
 
-    def test_task_metadata_construction(self):
+    @pytest.mark.asyncio
+    async def test_task_metadata_construction(self):
         """Test TaskMetadata object creation and initialization."""
         mock_task = Mock()
         metadata = TaskMetadata(mock_task, "test_task_name", "test_type")

@@ -86,11 +86,31 @@ class EventBus:
             # Cancel all active tasks and wait for graceful shutdown
             if self._active_tasks:
                 for task in list(self._active_tasks):
-                    task.cancel()
+                    if not task.done():
+                        task.cancel()
+
+                # Wait for tasks to complete with timeout - use a more robust approach
                 try:
-                    await asyncio.wait_for(asyncio.gather(*self._active_tasks, return_exceptions=True), timeout=5.0)
-                except TimeoutError:
-                    self._logger.warning("EventBus shutdown timeout - forcing close")
+                    # Use asyncio.wait instead of gather to avoid hanging on unresponsive tasks
+                    done, pending = await asyncio.wait(
+                        self._active_tasks, timeout=1.0, return_when=asyncio.ALL_COMPLETED
+                    )
+
+                    # Force cancel any remaining pending tasks
+                    if pending:
+                        for task in pending:
+                            if not task.done():
+                                task.cancel()
+
+                        # Give them a brief moment to cancel, then abandon
+                        try:
+                            await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
+                        except (TimeoutError, Exception):
+                            pass  # Abandon remaining tasks
+
+                except Exception:
+                    # Any error in shutdown - just clear the tasks
+                    pass
 
             self._logger.info("EventBus pure async processing stopped")
 
@@ -115,7 +135,11 @@ class EventBus:
                     # Timeout is expected when no events are available
                     continue
                 except Exception as e:
-                    self._logger.error(f"Error processing event: {e}", exc_info=True)
+                    # Use basic print to avoid Unicode encoding issues during cleanup
+                    try:
+                        self._logger.error(f"Error processing event: {e}", exc_info=True)
+                    except Exception:
+                        print(f"Error processing event: {e}")
                     continue
 
                 # Check for shutdown signal
@@ -123,7 +147,11 @@ class EventBus:
                     break
 
         except Exception as e:
-            self._logger.error(f"Fatal error in async event processing: {e}", exc_info=True)
+            # Use basic print to avoid Unicode encoding issues during cleanup
+            try:
+                self._logger.error(f"Fatal error in async event processing: {e}", exc_info=True)
+            except Exception:
+                print(f"Fatal error in async event processing: {e}")
         finally:
             self._logger.info("EventBus pure async processing stopped")
 
@@ -274,21 +302,31 @@ class EventBus:
     def __del__(self):
         """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""
         if self._running:
-            self._logger.warning("EventBus destroyed without graceful shutdown")
+            # Use basic print instead of logger to avoid encoding issues during cleanup
+            try:
+                print("EventBus destroyed without graceful shutdown")
+            except Exception:
+                pass
+
             # Force immediate shutdown to prevent "no running event loop" errors
             self._running = False
-            self._shutdown_event.set()
+            try:
+                self._shutdown_event.set()
+            except Exception:
+                pass
 
             # Cancel all active tasks immediately, but only if event loop is still running
             if self._active_tasks:
                 try:
                     loop = asyncio.get_running_loop()
                     if loop and not loop.is_closed():
+                        # Cancel all tasks immediately
                         for task in list(self._active_tasks):
                             if not task.done():
                                 task.cancel()
-                except RuntimeError:
-                    # Event loop is closed or not running - skip task cancellation
+                except (RuntimeError, Exception):
+                    # Event loop is closed or not running - just clear tasks
                     pass
                 finally:
+                    # Always clear the task set to prevent memory leaks
                     self._active_tasks.clear()

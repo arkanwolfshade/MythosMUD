@@ -26,6 +26,7 @@ INCORRECT USAGE (WILL CAUSE FAILURES):
 import logging
 import os
 import sys
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -78,6 +79,9 @@ def _rotate_log_files(env_log_dir: Path) -> None:
     with timestamps before new log files are created, ensuring clean separation
     between server sessions.
 
+    Enhanced with Windows-specific file locking handling to prevent
+    PermissionError: [WinError 32] exceptions during concurrent access.
+
     Args:
         env_log_dir: Path to the environment-specific log directory
     """
@@ -100,22 +104,58 @@ def _rotate_log_files(env_log_dir: Path) -> None:
             rotated_name = f"{log_file.stem}.log.{timestamp}"
             rotated_path = log_file.parent / rotated_name
 
-            try:
-                log_file.rename(rotated_path)
-                # Log the rotation (this will go to the new log file)
-                logger = get_logger("server.logging")
-                logger.info(
-                    "Rotated log file",
-                    old_name=log_file.name,
-                    new_name=rotated_name,
-                )
-            except OSError as e:
-                logger = get_logger("server.logging")
-                logger.warning(
-                    "Could not rotate log file",
-                    name=log_file.name,
-                    error=str(e),
-                )
+            # Windows-specific retry logic for file locking issues
+            max_retries = 3
+            retry_delay = 0.1  # 100ms delay between retries
+
+            for attempt in range(max_retries):
+                try:
+                    # Check if the file is currently in use by attempting to open it exclusively
+                    # This helps detect file locking issues before attempting to rename
+                    if sys.platform == "win32":
+                        try:
+                            with open(log_file, "a") as _f:
+                                pass  # Just test if we can open the file
+                        except (PermissionError, OSError):
+                            if attempt < max_retries - 1:
+                                time.sleep(retry_delay)
+                                continue
+                            else:
+                                # Skip rotation for this file if it's locked
+                                logger = get_logger("server.logging")
+                                logger.warning(
+                                    "Skipping rotation for locked log file",
+                                    name=log_file.name,
+                                    attempt=attempt + 1,
+                                )
+                                break
+
+                    # Attempt the rename operation
+                    log_file.rename(rotated_path)
+
+                    # Log the rotation (this will go to the new log file)
+                    logger = get_logger("server.logging")
+                    logger.info(
+                        "Rotated log file",
+                        old_name=log_file.name,
+                        new_name=rotated_name,
+                    )
+                    break  # Success, exit retry loop
+
+                except (OSError, PermissionError) as e:
+                    if attempt < max_retries - 1:
+                        # Wait before retrying
+                        time.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                    else:
+                        # Final attempt failed, log the error
+                        logger = get_logger("server.logging")
+                        logger.warning(
+                            "Could not rotate log file after retries",
+                            name=log_file.name,
+                            error=str(e),
+                            attempts=max_retries,
+                        )
 
 
 def detect_environment() -> str:
