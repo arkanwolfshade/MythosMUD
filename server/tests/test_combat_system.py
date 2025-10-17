@@ -499,6 +499,7 @@ class TestCombatEvents:
             room_id="test_room",
             participants={"player": "Player", "npc": "Rat"},
             turn_order=["player", "npc"],
+            event_type="combat_started",
             timestamp=datetime.utcnow(),
         )
 
@@ -514,6 +515,7 @@ class TestCombatEvents:
             reason="Target defeated",
             duration_seconds=30,
             participants={"player": "Player", "npc": "Rat"},
+            event_type="combat_ended",
             timestamp=datetime.utcnow(),
         )
 
@@ -531,6 +533,7 @@ class TestCombatEvents:
             target_name="Rat",
             damage=5,
             action_type="punch",
+            event_type="player_attacked",
             timestamp=datetime.utcnow(),
         )
 

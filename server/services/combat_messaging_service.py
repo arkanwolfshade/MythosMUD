@@ -29,7 +29,7 @@ class CombatMessagingService:
             "attack_attacker": "You {action_type} {target_name} for {damage} damage.",
             "attack_defender": "{attacker_name} {action_type}s you for {damage} damage.",
             "attack_other": "{attacker_name} {action_type}s {target_name} for {damage} damage.",
-            "death_message": "{npc_name} dies."
+            "death_message": "{npc_name} dies.",
         }
 
     async def get_attack_message(
@@ -97,7 +97,7 @@ class CombatMessagingService:
         logger.debug(f"Generated death message: {message}")
         return message
 
-    async def get_combat_start_message(
+    async def get_combat_start_messages(
         self, attacker_name: str, target_name: str, room_occupants: list[str]
     ) -> dict[str, str]:
         """
@@ -124,7 +124,7 @@ class CombatMessagingService:
         logger.debug(f"Generated combat start messages for {len(room_occupants)} occupants")
         return messages
 
-    async def get_combat_end_message(
+    async def get_combat_end_messages(
         self, winner_name: str, loser_name: str, room_occupants: list[str]
     ) -> dict[str, str]:
         """

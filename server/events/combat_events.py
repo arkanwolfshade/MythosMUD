@@ -21,7 +21,6 @@ class CombatStartedEvent(BaseEvent):
     room_id: str
     participants: dict[str, Any]  # participant info
     turn_order: list[str]
-    timestamp: datetime
 
 
 @dataclass
@@ -33,7 +32,6 @@ class CombatEndedEvent(BaseEvent):
     reason: str
     duration_seconds: int
     participants: dict[str, Any]  # final participant states
-    timestamp: datetime
 
 
 @dataclass
@@ -47,7 +45,6 @@ class PlayerAttackedEvent(BaseEvent):
     target_name: str
     damage: int
     action_type: str
-    timestamp: datetime
 
 
 @dataclass
@@ -61,7 +58,6 @@ class NPCAttackedEvent(BaseEvent):
     npc_name: str
     damage: int
     action_type: str
-    timestamp: datetime
 
 
 @dataclass
@@ -74,7 +70,6 @@ class NPCTookDamageEvent(BaseEvent):
     damage: int
     current_hp: int
     max_hp: int
-    timestamp: datetime
 
 
 @dataclass
@@ -85,7 +80,6 @@ class NPCDiedEvent(BaseEvent):
     npc_id: UUID
     npc_name: str
     xp_reward: int
-    timestamp: datetime
 
 
 @dataclass
@@ -97,7 +91,6 @@ class CombatTurnAdvancedEvent(BaseEvent):
     current_turn: int
     combat_round: int
     next_participant: str
-    timestamp: datetime
 
 
 @dataclass
@@ -108,4 +101,3 @@ class CombatTimeoutEvent(BaseEvent):
     room_id: str
     timeout_minutes: int
     last_activity: datetime
-    timestamp: datetime

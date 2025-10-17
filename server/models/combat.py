@@ -74,9 +74,7 @@ class CombatInstance:
 
     def is_combat_over(self) -> bool:
         """Check if combat should end."""
-        alive_participants = [
-            p for p in self.participants.values() if p.is_alive()
-        ]
+        alive_participants = [p for p in self.participants.values() if p.is_alive()]
         return len(alive_participants) <= 1
 
     def get_alive_participants(self) -> list[CombatParticipant]:

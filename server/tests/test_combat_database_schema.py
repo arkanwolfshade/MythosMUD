@@ -42,7 +42,7 @@ class TestCombatDatabaseSchema:
             npc = NPCDefinition(
                 name="Test Rat",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_1",
                 base_stats='{"hp": 10, "max_hp": 10, "xp_value": 5, "dexterity": 12}',
                 behavior_config="{}",
             )
@@ -75,7 +75,7 @@ class TestCombatDatabaseSchema:
             npc = NPCDefinition(
                 name="Test Goblin",
                 npc_type="aggressive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_2",
                 base_stats='{"hp": 15, "max_hp": 15, "xp_value": 10}',
                 behavior_config=json.dumps({"combat_messages": combat_messages}),
             )
@@ -103,7 +103,7 @@ class TestCombatDatabaseSchema:
             npc = NPCDefinition(
                 name="Valid Combat NPC",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_3",
                 base_stats=json.dumps(valid_stats),
                 behavior_config="{}",
             )
@@ -130,7 +130,7 @@ class TestCombatDatabaseSchema:
             npc = NPCDefinition(
                 name="Invalid JSON NPC",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_4",
                 base_stats='{"invalid": json}',  # Invalid JSON
                 behavior_config="{}",
             )
@@ -161,7 +161,7 @@ class TestCombatDatabaseSchema:
             npc = NPCDefinition(
                 name="Template Test NPC",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_5",
                 base_stats='{"hp": 10, "max_hp": 10, "xp_value": 5}',
                 behavior_config=json.dumps({"combat_messages": combat_messages}),
             )
@@ -195,7 +195,7 @@ class TestCombatDataMigration:
             npc = NPCDefinition(
                 name="Pre-Migration NPC",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_6",
                 base_stats='{"hp": 10}',
                 behavior_config="{}",
             )
@@ -254,7 +254,7 @@ class TestCombatDataMigration:
             npc = NPCDefinition(
                 name="Existing Data NPC",
                 npc_type="aggressive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_7",
                 base_stats=json.dumps(existing_stats),
                 behavior_config=json.dumps(existing_config),
             )
@@ -303,7 +303,7 @@ class TestCombatDataMigration:
             npc = NPCDefinition(
                 name="Minimal NPC",
                 npc_type="passive_mob",
-                sub_zone_id="test_zone",
+                sub_zone_id="test_zone_8",
                 base_stats="{}",
                 behavior_config="{}",
             )

@@ -1,39 +1,48 @@
 # Spec Tasks
 
+## Progress Summary
+
+- **Completed**: Tasks 1-2 (Database Schema & Migration, Core Combat State Management)
+- **In Progress**: Task 3 (Combat Command System) - 60% complete
+- **Remaining**: Tasks 4-10 (Event Integration, Messaging, NPC Integration, Player Integration, Security, Testing, Deployment)
+
 ## Tasks
 
-- [ ] 1. Database Schema & Migration
-  - [ ] 1.1 Write tests for database schema validation and migration scripts
-  - [ ] 1.2 Extend NPC definitions JSON schema for combat data (base_stats, behavior_config)
-  - [ ] 1.3 Create data migration script to add default combat data to existing NPCs
-  - [ ] 1.4 Implement JSON schema validation for combat data fields
-  - [ ] 1.5 Verify all database tests pass and migration works correctly
+- [x] 1. Database Schema & Migration
+  - [x] 1.1 Write tests for database schema validation and migration scripts
+  - [x] 1.2 Extend NPC definitions JSON schema for combat data (base_stats, behavior_config)
+  - [x] 1.3 Create data migration script to add default combat data to existing NPCs
+  - [x] 1.4 Implement JSON schema validation for combat data fields
+  - [x] 1.5 Verify all database tests pass and migration works correctly
 
-- [ ] 2. Core Combat State Management
-  - [ ] 2.1 Write tests for combat state management and turn order system
-  - [ ] 2.2 Implement CombatStateManager class with in-memory state tracking
-  - [ ] 2.3 Implement dexterity-based turn order calculation
-  - [ ] 2.4 Implement combat timeout and automatic cleanup mechanisms
-  - [ ] 2.5 Verify all combat state tests pass
+- [x] 2. Core Combat State Management
+  - [x] 2.1 Write tests for combat state management and turn order system
+  - [x] 2.2 Implement CombatService class with in-memory state tracking
+  - [x] 2.3 Implement dexterity-based turn order calculation
+  - [x] 2.4 Implement combat timeout and automatic cleanup mechanisms
+  - [x] 2.5 Verify all combat state tests pass
+  - [x] 2.6 Implement CombatMessagingService with thematic messages
+  - [x] 2.7 Create combat event system (CombatStarted, CombatEnded, PlayerAttacked)
+  - [x] 2.8 Implement basic combat command handler with attack aliases
 
 - [ ] 3. Combat Command System
-  - [ ] 3.1 Write tests for combat command validation and processing
-  - [ ] 3.2 Implement attack command handler with target validation
-  - [ ] 3.3 Implement command aliases (punch, kick, strike) for attack command
+  - [x] 3.1 Write tests for combat command validation and processing
+  - [x] 3.2 Implement attack command handler with target validation
+  - [x] 3.3 Implement command aliases (punch, kick, strike) for attack command
   - [ ] 3.4 Integrate with existing command validation and rate limiting
   - [ ] 3.5 Verify all combat command tests pass
 
 - [ ] 4. Event System Integration
-  - [ ] 4.1 Write tests for combat event publishing and handling
-  - [ ] 4.2 Create new combat events (CombatStarted, CombatEnded, PlayerAttacked)
+  - [x] 4.1 Write tests for combat event publishing and handling
+  - [x] 4.2 Create new combat events (CombatStarted, CombatEnded, PlayerAttacked)
   - [ ] 4.3 Extend existing events (NPCAttacked, NPCTookDamage, NPCDied) with combat data
   - [ ] 4.4 Implement NATS event publishing for combat events
   - [ ] 4.5 Verify all event system tests pass
 
 - [ ] 5. Combat Messaging System
-  - [ ] 5.1 Write tests for combat message generation and formatting
-  - [ ] 5.2 Implement CombatMessageService with perspective-based message templates
-  - [ ] 5.3 Implement variable substitution for combat messages (attacker, defender, other)
+  - [x] 5.1 Write tests for combat message generation and formatting
+  - [x] 5.2 Implement CombatMessageService with perspective-based message templates
+  - [x] 5.3 Implement variable substitution for combat messages (attacker, defender, other)
   - [ ] 5.4 Integrate with existing real-time messaging system for room broadcasting
   - [ ] 5.5 Verify all messaging tests pass
 
