@@ -23,6 +23,10 @@ class TestLoggingIntegration:
         # Create mock player service
         self.mock_player_service = Mock()
 
+        # Create mock persistence layer (the fix uses this instead of async)
+        self.mock_persistence = Mock()
+        self.mock_player_service.persistence = self.mock_persistence
+
         # Create temporary directory for test logs
         self.temp_dir = tempfile.mkdtemp()
         self.log_dir = Path(self.temp_dir)
@@ -58,7 +62,7 @@ class TestLoggingIntegration:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create custom formatter
         custom_formatter = PlayerGuidFormatter(
@@ -123,7 +127,7 @@ class TestLoggingIntegration:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -144,14 +148,14 @@ class TestLoggingIntegration:
         logger.info(f"Player {test_guid} connected")
 
         # Verify player service was called
-        self.mock_player_service.get_player_by_id.assert_called_with(test_guid)
+        self.mock_persistence.get_player.assert_called_with(test_guid)
 
     def test_formatter_with_multiple_log_categories(self):
         """Test PlayerGuidFormatter across multiple log categories simultaneously."""
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -178,12 +182,12 @@ class TestLoggingIntegration:
             logger.removeHandler(handler)
 
         # Verify player service was called for each category
-        assert self.mock_player_service.get_player_by_id.call_count == len(categories)
+        assert self.mock_persistence.get_player.call_count == len(categories)
 
     def test_formatter_error_handling_integration(self):
         """Test that formatter error handling works with logging system."""
-        # Mock player service to raise exception
-        self.mock_player_service.get_player_by_id.side_effect = Exception("Database error")
+        # Mock persistence layer to raise exception
+        self.mock_persistence.get_player.side_effect = Exception("Database error")
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -206,14 +210,14 @@ class TestLoggingIntegration:
         logger.info(f"Player {test_guid} connected")
 
         # Verify player service was called despite error
-        self.mock_player_service.get_player_by_id.assert_called_with(test_guid)
+        self.mock_persistence.get_player.assert_called_with(test_guid)
 
     def test_formatter_with_structlog_integration(self):
         """Test PlayerGuidFormatter integration with structlog."""
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -237,14 +241,14 @@ class TestLoggingIntegration:
         logger.info(f"Structlog message: Player {test_guid} connected")
 
         # Verify player service was called
-        self.mock_player_service.get_player_by_id.assert_called_with(test_guid)
+        self.mock_persistence.get_player.assert_called_with(test_guid)
 
     def test_formatter_performance_with_logging(self):
         """Test formatter performance in realistic logging scenario."""
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -278,7 +282,7 @@ class TestLoggingIntegration:
         assert duration < 1.0
 
         # Verify all messages were processed
-        assert self.mock_player_service.get_player_by_id.call_count == num_messages
+        assert self.mock_persistence.get_player.call_count == num_messages
 
         # Clean up
         logger.removeHandler(handler)
@@ -288,7 +292,7 @@ class TestLoggingIntegration:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -312,8 +316,8 @@ class TestLoggingIntegration:
         logger.warning(f"WARNING: Player {test_guid} warning action")
         logger.error(f"ERROR: Player {test_guid} error action")
 
-        # Verify player service was called for each level
-        assert self.mock_player_service.get_player_by_id.call_count == 4
+        # Verify persistence layer was called for each level
+        assert self.mock_persistence.get_player.call_count == 4
 
         # Clean up
         logger.removeHandler(handler)
@@ -323,7 +327,7 @@ class TestLoggingIntegration:
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
-        self.mock_player_service.get_player_by_id.return_value = mock_player
+        self.mock_persistence.get_player.return_value = mock_player
 
         # Create formatter
         formatter = PlayerGuidFormatter(
@@ -354,9 +358,10 @@ class TestLoggingIntegration:
             logger.info(message)
 
         # Verify player service was called for each GUID in each message
-        # Message 1: 1 GUID, Message 2: 2 GUIDs, Message 3: 1 GUID, Message 4: 1 GUID = 5 total calls
+        # Message 1: 1 GUID, Message 2: 2 GUIDs, Message 3: 1 GUID,
+        # Message 4: 1 GUID = 5 total calls
         expected_calls = 5  # 1 + 2 + 1 + 1 = 5 GUIDs total
-        assert self.mock_player_service.get_player_by_id.call_count == expected_calls
+        assert self.mock_persistence.get_player.call_count == expected_calls
 
         # Clean up
         logger.removeHandler(handler)

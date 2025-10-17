@@ -184,23 +184,17 @@ class PlayerGuidFormatter(logging.Formatter):
             Player name if found, None otherwise
         """
         try:
-            # Access existing player data structures
-            # Try PlayerService first, then fallback to PersistenceLayer
-            if hasattr(self.player_service, "get_player_by_id"):
-                player = self.player_service.get_player_by_id(guid)
-            elif hasattr(self.player_service, "get_player"):
-                player = self.player_service.get_player(guid)
-            else:
-                # If neither method exists, return None
+            # Use the persistence layer directly to avoid async/sync mismatch
+            # This is the primary method for player lookup in the formatter
+            if hasattr(self.player_service, "persistence") and hasattr(self.player_service.persistence, "get_player"):
+                player = self.player_service.persistence.get_player(guid)
+                if player and hasattr(player, "name"):
+                    return player.name
+                # If persistence layer returns None, return None (no fallback)
                 return None
 
-            # Extract player name safely
-            if player:
-                if hasattr(player, "name"):
-                    return player.name
-                elif isinstance(player, dict) and "name" in player:
-                    return player["name"]
-
+            # If persistence layer is not available, return None
+            # This ensures we don't fall back to async methods that cause issues
             return None
 
         except Exception:
