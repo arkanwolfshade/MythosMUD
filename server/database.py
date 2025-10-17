@@ -214,6 +214,7 @@ async def init_db():
         from sqlalchemy.orm import configure_mappers
 
         from server.models.invite import Invite  # noqa: F401
+        from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.user import User  # noqa: F401
 
