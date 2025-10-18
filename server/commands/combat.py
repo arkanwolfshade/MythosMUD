@@ -9,6 +9,8 @@ from typing import Any
 
 from server.alias_storage import AliasStorage
 from server.logging_config import get_logger
+from server.persistence import get_persistence
+from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
 logger = get_logger(__name__)
 
@@ -24,6 +26,8 @@ class CombatCommandHandler:
     def __init__(self):
         """Initialize the combat command handler."""
         self.attack_aliases = {"attack", "punch", "kick", "strike", "hit", "smack", "thump"}
+        self.npc_combat_service = NPCCombatIntegrationService()
+        self.persistence = get_persistence()
 
     async def handle_attack_command(
         self,
@@ -60,13 +64,74 @@ class CombatCommandHandler:
         if not target_name:
             return {"result": f"{command} who?"}
 
-        # For now, return a placeholder response
-        # This will be integrated with the room service and NPC service
-        return {
-            "result": f"You attempt to {command} {target_name}, but the "
-            f"combat system is not yet fully integrated with the room and "
-            f"NPC systems."
-        }
+        # Get player information
+        player_id = current_user.get("player_id")
+        if not player_id:
+            return {"result": "You must be logged in to attack."}
+
+        # Get player's current room
+        player = self.persistence.get_player(player_id)
+        if not player:
+            return {"result": "Player not found."}
+
+        room_id = player.current_room
+        if not room_id:
+            return {"result": "You are not in a room."}
+
+        # Get room to check for NPCs
+        room = self.persistence.get_room(room_id)
+        if not room:
+            return {"result": "You are in an invalid room."}
+
+        # Look for NPCs in the room
+        npc_found = None
+        for npc_id in room.npcs:
+            # Try to get NPC instance
+            npc_instance = self._get_npc_instance(npc_id)
+            if npc_instance and npc_instance.name.lower() == target_name.lower():
+                npc_found = npc_instance
+                break
+
+        if not npc_found:
+            return {"result": f"You don't see {target_name} here."}
+
+        # Check if NPC is alive
+        if not npc_found.is_alive:
+            return {"result": f"{target_name} is already dead."}
+
+        # Execute the attack
+        try:
+            success = self.npc_combat_service.handle_player_attack_on_npc(
+                player_id=player_id,
+                npc_id=npc_id,
+                room_id=room_id,
+                action_type=command,
+                damage=1,  # MVP: all attacks do 1 damage
+            )
+
+            if success:
+                return {"result": f"You {command} {target_name}!"}
+            else:
+                return {"result": f"Your attack on {target_name} failed."}
+
+        except Exception as e:
+            logger.error(f"Error in combat: {str(e)}")
+            return {"result": "An error occurred during combat."}
+
+    def _get_npc_instance(self, npc_id: str) -> Any | None:
+        """Get NPC instance from the spawning service."""
+        try:
+            # Try to get from spawning service if available
+            if hasattr(self.persistence, "get_npc_spawning_service"):
+                spawning_service = self.persistence.get_npc_spawning_service()
+                if spawning_service and npc_id in spawning_service.active_npc_instances:
+                    return spawning_service.active_npc_instances[npc_id]
+
+            return None
+
+        except Exception as e:
+            logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
+            return None
 
 
 # Global combat command handler instance
