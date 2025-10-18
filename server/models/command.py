@@ -14,6 +14,7 @@ from ..logging_config import get_logger
 from ..validators.security_validator import (
     validate_action_content,
     validate_alias_name,
+    validate_combat_target,
     validate_command_content,
     validate_filter_name,
     validate_help_topic,
@@ -72,6 +73,11 @@ class CommandType(str, Enum):
     REPLY = "reply"
     # Admin server management commands
     SHUTDOWN = "shutdown"
+    # Combat commands
+    ATTACK = "attack"
+    PUNCH = "punch"
+    KICK = "kick"
+    STRIKE = "strike"
 
 
 class BaseCommand(BaseModel):
@@ -466,6 +472,58 @@ class ReplyCommand(BaseCommand):
         return validate_message_content(v)
 
 
+class AttackCommand(BaseCommand):
+    """Command for attacking a target."""
+
+    command_type: Literal[CommandType.ATTACK] = CommandType.ATTACK
+    target: str = Field(..., min_length=1, max_length=50, description="Target to attack")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls, v):
+        """Validate combat target name format using centralized validation."""
+        return validate_combat_target(v)
+
+
+class PunchCommand(BaseCommand):
+    """Command for punching a target."""
+
+    command_type: Literal[CommandType.PUNCH] = CommandType.PUNCH
+    target: str = Field(..., min_length=1, max_length=50, description="Target to punch")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls, v):
+        """Validate combat target name format using centralized validation."""
+        return validate_combat_target(v)
+
+
+class KickCommand(BaseCommand):
+    """Command for kicking a target."""
+
+    command_type: Literal[CommandType.KICK] = CommandType.KICK
+    target: str = Field(..., min_length=1, max_length=50, description="Target to kick")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls, v):
+        """Validate combat target name format using centralized validation."""
+        return validate_combat_target(v)
+
+
+class StrikeCommand(BaseCommand):
+    """Command for striking a target."""
+
+    command_type: Literal[CommandType.STRIKE] = CommandType.STRIKE
+    target: str = Field(..., min_length=1, max_length=50, description="Target to strike")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls, v):
+        """Validate combat target name format using centralized validation."""
+        return validate_combat_target(v)
+
+
 # Union type for all commands
 Command = (
     LookCommand
@@ -496,4 +554,8 @@ Command = (
     | ShutdownCommand
     | WhisperCommand
     | ReplyCommand
+    | AttackCommand
+    | PunchCommand
+    | KickCommand
+    | StrikeCommand
 )

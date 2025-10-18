@@ -140,6 +140,9 @@ class CommandProcessor:
 
         if hasattr(validated_command, "target"):
             command_data["target"] = validated_command.target
+            # For combat commands, also set target_player for compatibility
+            if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
+                command_data["target_player"] = validated_command.target
 
         if hasattr(validated_command, "action"):
             command_data["action"] = validated_command.action

@@ -2,8 +2,8 @@
 
 ## Progress Summary
 
-- **Completed**: Tasks 1-5 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System)
-- **In Progress**: Task 6 (NPC Combat Integration)
+- **Completed**: Tasks 1-6 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration)
+- **In Progress**: None
 - **Remaining**: Tasks 7-10 (Player Integration, Security, Testing, Deployment)
 
 ## Tasks
@@ -46,12 +46,12 @@
   - [x] 5.4 Integrate with existing real-time messaging system for room broadcasting
   - [x] 5.5 Verify all messaging tests pass
 
-- [ ] 6. NPC Combat Integration
-  - [ ] 6.1 Write tests for NPC combat behaviors and lifecycle integration
-  - [ ] 6.2 Extend NPC behaviors to handle combat state and reactions
-  - [ ] 6.3 Implement NPC death handling with thematic messages and despawn
-  - [ ] 6.4 Integrate NPC combat data with existing NPC service
-  - [ ] 6.5 Verify all NPC combat integration tests pass
+- [x] 6. NPC Combat Integration
+  - [x] 6.1 Write tests for NPC combat behaviors and lifecycle integration
+  - [x] 6.2 Extend NPC behaviors to handle combat state and reactions
+  - [x] 6.3 Implement NPC death handling with thematic messages and despawn
+  - [x] 6.4 Integrate NPC combat data with existing NPC service
+  - [x] 6.5 Verify all NPC combat integration tests pass
 
 - [ ] 7. Player Combat Integration
   - [ ] 7.1 Write tests for player combat state and XP reward system

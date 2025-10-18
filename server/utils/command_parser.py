@@ -15,6 +15,7 @@ from ..models.command import (
     AddAdminCommand,
     AliasCommand,
     AliasesCommand,
+    AttackCommand,
     Command,
     CommandType,
     EmoteCommand,
@@ -22,6 +23,7 @@ from ..models.command import (
     GotoCommand,
     HelpCommand,
     InventoryCommand,
+    KickCommand,
     LocalCommand,
     LogoutCommand,
     LookCommand,
@@ -30,11 +32,13 @@ from ..models.command import (
     MuteGlobalCommand,
     MutesCommand,
     PoseCommand,
+    PunchCommand,
     QuitCommand,
     ReplyCommand,
     SayCommand,
     ShutdownCommand,
     StatusCommand,
+    StrikeCommand,
     SystemCommand,
     TeleportCommand,
     UnaliasCommand,
@@ -93,6 +97,11 @@ class CommandParser:
             CommandType.REPLY.value: self._create_reply_command,
             # Admin server management commands
             CommandType.SHUTDOWN.value: self._create_shutdown_command,
+            # Combat commands
+            CommandType.ATTACK.value: self._create_attack_command,
+            CommandType.PUNCH.value: self._create_punch_command,
+            CommandType.KICK.value: self._create_kick_command,
+            CommandType.STRIKE.value: self._create_strike_command,
         }
 
     def parse_command(self, command_string: str) -> Command:
@@ -630,6 +639,50 @@ class CommandParser:
             log_and_raise(MythosValidationError, "Usage: reply <message>", context=context, logger_name=__name__)
 
         return ReplyCommand(message=message)
+
+    def _create_attack_command(self, args: list[str]) -> AttackCommand:
+        """Create AttackCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Attack command requires a target", context=context, logger_name=__name__
+            )
+        target = args[0]
+        return AttackCommand(target=target)
+
+    def _create_punch_command(self, args: list[str]) -> PunchCommand:
+        """Create PunchCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Punch command requires a target", context=context, logger_name=__name__
+            )
+        target = args[0]
+        return PunchCommand(target=target)
+
+    def _create_kick_command(self, args: list[str]) -> KickCommand:
+        """Create KickCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Kick command requires a target", context=context, logger_name=__name__
+            )
+        target = args[0]
+        return KickCommand(target=target)
+
+    def _create_strike_command(self, args: list[str]) -> StrikeCommand:
+        """Create StrikeCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise(
+                MythosValidationError, "Strike command requires a target", context=context, logger_name=__name__
+            )
+        target = args[0]
+        return StrikeCommand(target=target)
 
     # Confirmation command creators removed - teleport commands now execute immediately
     # TODO: Add confirmation command creators as future feature for enhanced safety
