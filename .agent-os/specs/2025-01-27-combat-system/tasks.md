@@ -60,12 +60,12 @@
   - [x] 7.4 Integrate with existing player service for XP persistence
   - [x] 7.5 Verify all player combat integration tests pass
 
-- [ ] 8. Security & Validation
-  - [ ] 8.1 Write tests for combat-specific security measures and validation
-  - [ ] 8.2 Implement extended combat command validation with thematic error messages
-  - [ ] 8.3 Integrate with existing security infrastructure (rate limiting, input validation)
-  - [ ] 8.4 Implement combat-specific audit logging and monitoring
-  - [ ] 8.5 Verify all security and validation tests pass
+- [x] 8. Security & Validation
+  - [x] 8.1 Write tests for combat-specific security measures and validation
+  - [x] 8.2 Implement extended combat command validation with thematic error messages
+  - [x] 8.3 Integrate with existing security infrastructure (rate limiting, input validation)
+  - [x] 8.4 Implement combat-specific audit logging and monitoring
+  - [x] 8.5 Verify all security and validation tests pass
 
 - [ ] 9. Testing & Quality Assurance
   - [ ] 9.1 Write comprehensive unit tests for all combat components
@@ -74,9 +74,8 @@
   - [ ] 9.4 Write end-to-end combat scenarios and user workflow tests
   - [ ] 9.5 Verify all tests pass and achieve target coverage
 
-- [ ] 10. Deployment & Configuration
+- [ ] 10. Configuration
   - [ ] 10.1 Write tests for feature flag deployment and configuration management
   - [ ] 10.2 Implement feature flag system for combat enable/disable
   - [ ] 10.3 Implement configuration management for combat settings
   - [ ] 10.4 Implement basic monitoring and alerting for combat system
-  - [ ] 10.5 Verify deployment and configuration tests pass

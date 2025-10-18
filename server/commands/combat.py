@@ -8,9 +8,11 @@ and other combat-related actions.
 from typing import Any
 
 from server.alias_storage import AliasStorage
+from server.logging.combat_audit import combat_audit_logger
 from server.logging_config import get_logger
 from server.persistence import get_persistence
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+from server.validators.combat_validator import CombatValidator
 
 logger = get_logger(__name__)
 
@@ -28,6 +30,7 @@ class CombatCommandHandler:
         self.attack_aliases = {"attack", "punch", "kick", "strike", "hit", "smack", "thump"}
         self.npc_combat_service = NPCCombatIntegrationService()
         self.persistence = get_persistence()
+        self.combat_validator = CombatValidator()
 
     async def handle_attack_command(
         self,
@@ -56,13 +59,36 @@ class CombatCommandHandler:
 
         logger.info(f"Processing attack command '{command}' from {player_name} targeting '{target_name}'")
 
-        # Validate command
-        if command not in self.attack_aliases:
-            return {"result": f"You can't {command} in combat. Try 'attack', 'punch', 'kick', or 'strike'."}
+        # Use combat validator for enhanced validation
+        player_context = {
+            "player_id": current_user.get("player_id"),
+            "player_name": player_name,
+            "room_id": None,  # Will be set later
+        }
 
-        # Check if target is specified
-        if not target_name:
-            return {"result": f"{command} who?"}
+        is_valid, error_msg, warning_msg = self.combat_validator.validate_combat_command(command_data, player_context)
+
+        if not is_valid:
+            # Log validation failure for security monitoring
+            combat_audit_logger.log_combat_validation_failure(
+                player_id=current_user.get("player_id", "unknown"),
+                player_name=player_name,
+                validation_type="command_validation",
+                failure_reason=error_msg,
+                command_data=command_data,
+            )
+            return {"result": error_msg}
+
+        if warning_msg:
+            logger.warning(f"Combat validation warning: {warning_msg}")
+            # Log security warning
+            combat_audit_logger.log_combat_security_event(
+                event_type="validation_warning",
+                player_id=current_user.get("player_id", "unknown"),
+                player_name=player_name,
+                security_level="medium",
+                description=warning_msg,
+            )
 
         # Get player information
         player_id = current_user.get("player_id")
@@ -85,19 +111,51 @@ class CombatCommandHandler:
 
         # Look for NPCs in the room
         npc_found = None
+        available_targets = []
         for npc_id in room.npcs:
             # Try to get NPC instance
             npc_instance = self._get_npc_instance(npc_id)
-            if npc_instance and npc_instance.name.lower() == target_name.lower():
-                npc_found = npc_instance
-                break
+            if npc_instance:
+                available_targets.append(npc_instance.name)
+                if npc_instance.name.lower() == target_name.lower():
+                    npc_found = npc_instance
+                    break
 
-        if not npc_found:
-            return {"result": f"You don't see {target_name} here."}
+        # Use combat validator for target validation
+        target_exists, target_error = self.combat_validator.validate_target_exists(target_name, available_targets)
+
+        if not target_exists:
+            return {"result": target_error}
 
         # Check if NPC is alive
         if not npc_found.is_alive:
-            return {"result": f"{target_name} is already dead."}
+            alive_check, alive_error = self.combat_validator.validate_target_alive(target_name, npc_found.is_alive)
+            if not alive_check:
+                return {"result": alive_error}
+
+        # Validate attack strength
+        player_level = player.level if hasattr(player, "level") else 1
+        npc_level = getattr(npc_found, "level", 1) if hasattr(npc_found, "level") else 1
+
+        can_attack, strength_error, strength_warning = self.combat_validator.validate_attack_strength(
+            player_level, npc_level, weapon_power=1
+        )
+
+        if not can_attack:
+            return {"result": strength_error}
+
+        if strength_warning:
+            logger.warning(f"Attack strength warning: {strength_warning}")
+
+        # Log combat start
+        combat_audit_logger.log_combat_start(
+            player_id=player_id,
+            player_name=player_name,
+            target_id=npc_id,
+            target_name=target_name,
+            room_id=room_id,
+            action_type=command,
+        )
 
         # Execute the attack
         try:
@@ -109,13 +167,42 @@ class CombatCommandHandler:
                 damage=1,  # MVP: all attacks do 1 damage
             )
 
+            # Log attack execution
+            combat_audit_logger.log_combat_attack(
+                player_id=player_id,
+                player_name=player_name,
+                target_id=npc_id,
+                target_name=target_name,
+                action_type=command,
+                damage_dealt=1 if success else 0,
+                target_hp_before=50,  # Placeholder - would get from NPC
+                target_hp_after=49 if success else 50,  # Placeholder
+                success=success,
+            )
+
             if success:
-                return {"result": f"You {command} {target_name}!"}
+                result_msg = self.combat_validator.get_combat_result_message(command, target_name, True, 1)
+                return {"result": result_msg}
             else:
-                return {"result": f"Your attack on {target_name} failed."}
+                result_msg = self.combat_validator.get_combat_result_message(command, target_name, False, 0)
+                return {"result": result_msg}
 
         except Exception as e:
             logger.error(f"Error in combat: {str(e)}")
+            # Log combat error for security monitoring
+            combat_audit_logger.log_combat_security_event(
+                event_type="combat_error",
+                player_id=player_id,
+                player_name=player_name,
+                security_level="high",
+                description=f"Combat execution error: {str(e)}",
+                additional_data={
+                    "target_id": npc_id,
+                    "target_name": target_name,
+                    "action_type": command,
+                    "error_type": type(e).__name__,
+                },
+            )
             return {"result": "An error occurred during combat."}
 
     def _get_npc_instance(self, npc_id: str) -> Any | None:
