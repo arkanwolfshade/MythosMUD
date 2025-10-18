@@ -9,7 +9,14 @@ from datetime import datetime, timedelta
 from uuid import UUID
 
 from server.logging_config import get_logger
-from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult, CombatStatus
+from server.models.combat import (
+    CombatInstance,
+    CombatParticipant,
+    CombatParticipantType,
+    CombatResult,
+    CombatStatus,
+)
+from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -22,12 +29,13 @@ class CombatService:
     for initiating combat, processing actions, and managing turn order.
     """
 
-    def __init__(self):
+    def __init__(self, player_combat_service: PlayerCombatService = None):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id
         self._npc_combats: dict[UUID, UUID] = {}  # npc_id -> combat_id
         self._combat_timeout_minutes = 30  # Configurable timeout
+        self._player_combat_service = player_combat_service
 
     async def start_combat(
         self,
@@ -107,6 +115,12 @@ class CombatService:
         self._player_combats[attacker_id] = combat.combat_id
         self._npc_combats[target_id] = combat.combat_id
 
+        # Track player combat state if player combat service is available
+        if self._player_combat_service:
+            await self._player_combat_service.track_player_combat_state(
+                player_id=attacker_id, player_name=attacker_name, combat_id=combat.combat_id, room_id=room_id
+            )
+
         logger.info(f"Combat {combat.combat_id} started with turn order: {combat.turn_order}")
 
         return combat
@@ -183,9 +197,18 @@ class CombatService:
             combat_id=combat.combat_id,
         )
 
-        # Award XP if target died
+        # Award XP if target died and attacker is a player
         if target_died:
             result.xp_awarded = await self._calculate_xp_reward(target_id)
+            # Award XP to player if they defeated an NPC
+            if (
+                current_participant.participant_type == CombatParticipantType.PLAYER
+                and target.participant_type == CombatParticipantType.NPC
+                and self._player_combat_service
+            ):
+                await self._player_combat_service.award_xp_on_npc_death(
+                    player_id=current_participant.participant_id, npc_id=target_id, xp_amount=result.xp_awarded
+                )
 
         # End combat if necessary
         if combat_ended:
@@ -222,6 +245,10 @@ class CombatService:
 
         # Remove from active combats
         self._active_combats.pop(combat_id, None)
+
+        # Clear player combat states if player combat service is available
+        if self._player_combat_service:
+            await self._player_combat_service.handle_combat_end(combat_id)
 
         logger.info(f"Combat {combat_id} ended successfully")
 
@@ -268,9 +295,11 @@ class CombatService:
         Returns:
             XP reward amount
         """
-        # For now, return a default XP value
-        # In the future, this will query the NPC database for XP value
-        return 5  # Default XP reward
+        if self._player_combat_service:
+            return await self._player_combat_service.calculate_xp_reward(npc_id)
+        else:
+            # Fallback to default XP value if no player combat service
+            return 5  # Default XP reward
 
 
 # Global combat service instance

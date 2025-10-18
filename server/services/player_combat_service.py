@@ -1,0 +1,293 @@
+"""
+Player combat service for managing player combat state and XP rewards.
+
+This service handles player combat state tracking, XP reward calculation,
+and integration with the existing player service for XP persistence.
+"""
+
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from uuid import UUID
+
+from server.logging_config import get_logger
+
+logger = get_logger(__name__)
+
+
+@dataclass
+class PlayerCombatState:
+    """Represents a player's combat state."""
+
+    player_id: UUID
+    player_name: str
+    combat_id: UUID
+    room_id: str
+    is_in_combat: bool = True
+    last_activity: datetime = None
+
+    def __post_init__(self):
+        """Initialize last_activity if not provided."""
+        if self.last_activity is None:
+            self.last_activity = datetime.utcnow()
+
+
+@dataclass
+class PlayerXPAwardEvent:
+    """Event published when a player receives XP."""
+
+    event_type: str = "player_xp_awarded"
+    player_id: UUID = None
+    xp_amount: int = 0
+    new_level: int = 0
+    timestamp: datetime = None
+
+    def __post_init__(self):
+        """Initialize timestamp if not provided."""
+        if self.timestamp is None:
+            self.timestamp = datetime.utcnow()
+
+
+class PlayerCombatService:
+    """
+    Service for managing player combat state and XP rewards.
+
+    This service tracks player combat states, calculates XP rewards,
+    and integrates with the persistence layer for XP persistence.
+    """
+
+    def __init__(self, persistence, event_bus):
+        """
+        Initialize the player combat service.
+
+        Args:
+            persistence: Persistence layer for player data
+            event_bus: Event bus for publishing events
+        """
+        self._persistence = persistence
+        self._event_bus = event_bus
+        self._player_combat_states: dict[UUID, PlayerCombatState] = {}
+        self._combat_timeout_minutes = 30  # Configurable timeout
+
+    async def track_player_combat_state(
+        self,
+        player_id: UUID,
+        player_name: str,
+        combat_id: UUID,
+        room_id: str,
+    ) -> None:
+        """
+        Track a player's combat state.
+
+        Args:
+            player_id: ID of the player
+            player_name: Name of the player
+            combat_id: ID of the combat instance
+            room_id: ID of the room where combat is taking place
+        """
+        logger.info(f"Tracking combat state for player {player_name} in combat {combat_id}")
+
+        state = PlayerCombatState(
+            player_id=player_id,
+            player_name=player_name,
+            combat_id=combat_id,
+            room_id=room_id,
+        )
+
+        self._player_combat_states[player_id] = state
+
+    async def get_player_combat_state(self, player_id: UUID) -> PlayerCombatState | None:
+        """
+        Get a player's combat state.
+
+        Args:
+            player_id: ID of the player
+
+        Returns:
+            PlayerCombatState if found, None otherwise
+        """
+        return self._player_combat_states.get(player_id)
+
+    async def clear_player_combat_state(self, player_id: UUID) -> None:
+        """
+        Clear a player's combat state.
+
+        Args:
+            player_id: ID of the player
+        """
+        if player_id in self._player_combat_states:
+            logger.info(f"Clearing combat state for player {player_id}")
+            del self._player_combat_states[player_id]
+
+    async def is_player_in_combat(self, player_id: UUID) -> bool:
+        """
+        Check if a player is currently in combat.
+
+        Args:
+            player_id: ID of the player
+
+        Returns:
+            True if player is in combat, False otherwise
+        """
+        return player_id in self._player_combat_states
+
+    async def get_players_in_combat(self) -> list[UUID]:
+        """
+        Get all players currently in combat.
+
+        Returns:
+            List of player IDs currently in combat
+        """
+        return list(self._player_combat_states.keys())
+
+    async def handle_combat_start(
+        self,
+        player_id: UUID,
+        player_name: str,
+        combat_id: UUID,
+        room_id: str,
+    ) -> None:
+        """
+        Handle combat start for a player.
+
+        Args:
+            player_id: ID of the player
+            player_name: Name of the player
+            combat_id: ID of the combat instance
+            room_id: ID of the room where combat is taking place
+        """
+        await self.track_player_combat_state(
+            player_id=player_id,
+            player_name=player_name,
+            combat_id=combat_id,
+            room_id=room_id,
+        )
+
+    async def handle_combat_end(self, combat_id: UUID) -> None:
+        """
+        Handle combat end by clearing all players in the combat.
+
+        Args:
+            combat_id: ID of the combat that ended
+        """
+        logger.info(f"Handling combat end for combat {combat_id}")
+
+        # Find all players in this combat and clear their states
+        players_to_clear = []
+        for player_id, state in self._player_combat_states.items():
+            if state.combat_id == combat_id:
+                players_to_clear.append(player_id)
+
+        for player_id in players_to_clear:
+            await self.clear_player_combat_state(player_id)
+
+    async def handle_npc_death(
+        self,
+        player_id: UUID,
+        npc_id: UUID,
+        xp_amount: int,
+    ) -> None:
+        """
+        Handle NPC death and award XP to the player.
+
+        Args:
+            player_id: ID of the player who defeated the NPC
+            npc_id: ID of the defeated NPC (for logging purposes)
+            xp_amount: Amount of XP to award
+        """
+        logger.info(f"Awarding {xp_amount} XP to player {player_id} for defeating NPC {npc_id}")
+
+        await self.award_xp_on_npc_death(
+            player_id=player_id,
+            npc_id=npc_id,
+            xp_amount=xp_amount,
+        )
+
+    async def award_xp_on_npc_death(
+        self,
+        player_id: UUID,
+        npc_id: UUID,
+        xp_amount: int,
+    ) -> None:
+        """
+        Award XP to a player for defeating an NPC.
+
+        Args:
+            player_id: ID of the player
+            npc_id: ID of the defeated NPC
+            xp_amount: Amount of XP to award
+        """
+        try:
+            # Get player from persistence
+            player = await self._persistence.async_get_player(str(player_id))
+            if not player:
+                logger.warning(f"Player {player_id} not found for XP award")
+                return
+
+            # Award XP
+            player.add_experience(xp_amount)
+
+            # Save player
+            await self._persistence.async_save_player(player)
+
+            # Publish XP award event
+            event = PlayerXPAwardEvent(
+                player_id=player_id,
+                xp_amount=xp_amount,
+                new_level=player.level,
+            )
+            await self._event_bus.publish_event(event)
+
+            logger.info(f"Awarded {xp_amount} XP to player {player.name}. New level: {player.level}")
+
+        except Exception as e:
+            logger.error(f"Error awarding XP to player {player_id}: {e}")
+
+    async def calculate_xp_reward(self, npc_id: UUID) -> int:
+        """
+        Calculate XP reward for defeating an NPC.
+
+        Args:
+            npc_id: ID of the NPC
+
+        Returns:
+            XP reward amount
+        """
+        # For now, use a simple default XP reward system
+        # In the future, this could be enhanced to query NPC data
+        # or use more sophisticated XP calculation based on NPC level/type
+        default_xp = 5
+
+        logger.debug(f"Calculated XP reward for NPC {npc_id}: {default_xp}")
+        return default_xp
+
+    async def cleanup_stale_combat_states(self) -> int:
+        """
+        Clean up stale combat states.
+
+        Returns:
+            Number of stale states cleaned up
+        """
+        cutoff_time = datetime.utcnow() - timedelta(minutes=self._combat_timeout_minutes)
+        stale_players = []
+
+        for player_id, state in self._player_combat_states.items():
+            if state.last_activity < cutoff_time:
+                stale_players.append(player_id)
+
+        for player_id in stale_players:
+            await self.clear_player_combat_state(player_id)
+            logger.info(f"Cleaned up stale combat state for player {player_id}")
+
+        return len(stale_players)
+
+    async def get_combat_stats(self) -> dict[str, int]:
+        """
+        Get statistics about player combat states.
+
+        Returns:
+            Dictionary with combat statistics
+        """
+        return {
+            "players_in_combat": len(self._player_combat_states),
+            "active_combats": len({state.combat_id for state in self._player_combat_states.values()}),
+        }

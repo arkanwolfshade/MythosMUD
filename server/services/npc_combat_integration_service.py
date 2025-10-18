@@ -24,6 +24,7 @@ from ..persistence import get_persistence
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
+from .player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -48,7 +49,8 @@ class NPCCombatIntegrationService:
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
-        self._combat_service = CombatService()
+        self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus)
+        self._combat_service = CombatService(self._player_combat_service)
         self._messaging_integration = CombatMessagingIntegration()
         self._event_publisher = CombatEventPublisher(event_bus)
 
