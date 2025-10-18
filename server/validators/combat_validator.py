@@ -297,7 +297,7 @@ class CombatValidator:
     def _contains_suspicious_patterns(self, target_name: str) -> bool:
         """Check for suspicious patterns in target name."""
         suspicious_patterns = [
-            r'[<>"\']',  # HTML/script injection
+            r'[<>"]',  # HTML/script injection (removed single quote since it's allowed in valid names)
             r"[;|&]",  # Command injection
             r"\.\./",  # Path traversal
             r"javascript:",  # XSS

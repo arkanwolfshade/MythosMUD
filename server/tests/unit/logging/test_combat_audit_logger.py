@@ -236,8 +236,10 @@ class TestCombatAuditLoggerUnit:
         assert call_args[1]["player_name"] == player_name
         assert call_args[1]["security_level"] == security_level
         assert call_args[1]["description"] == description
-        assert call_args[1]["additional_data"] == additional_data
         assert call_args[1]["compliance_required"] is True
+        # Additional data should be merged into the log data
+        assert call_args[1]["attempts"] == 10
+        assert call_args[1]["time_window"] == 60
 
     def test_log_combat_security_event_without_additional_data(self, combat_audit_logger, mock_logger):
         """Test logging combat security event without additional data."""
@@ -358,8 +360,10 @@ class TestCombatAuditLoggerUnit:
         assert call_args[1]["description"] == description
         assert call_args[1]["player_id"] == player_id
         assert call_args[1]["player_name"] == player_name
-        assert call_args[1]["additional_data"] == additional_data
         assert call_args[1]["compliance_required"] is True
+        # Additional data should be merged into the log data
+        assert call_args[1]["pattern"] == "rapid_fire"
+        assert call_args[1]["count"] == 50
 
     def test_log_combat_monitoring_alert_low_severity(self, combat_audit_logger, mock_logger):
         """Test logging combat monitoring alert with low severity."""

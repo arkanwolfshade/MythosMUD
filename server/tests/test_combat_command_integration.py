@@ -45,7 +45,14 @@ class TestCombatCommandIntegration:
             player_name="TestPlayer",
         )
 
-        assert result["result"] == "attack who?"
+        # Check that we get a no_target error message (could be any of several thematic messages)
+        error_messages = [
+            "You must focus your wrath upon a specific target, lest your fury be wasted.",
+            "The void stares back at you, demanding a name to direct your hatred.",
+            "Your anger needs direction - who shall bear the brunt of your assault?",
+            "The cosmic forces require a target for your destructive intent.",
+        ]
+        assert result["result"] in error_messages
 
     @pytest.mark.asyncio
     async def test_attack_command_with_target(self):
@@ -166,8 +173,14 @@ class TestCombatCommandIntegration:
             player_name="TestPlayer",
         )
 
-        assert "You can't invalid_command in combat" in result["result"]
-        assert "Try 'attack', 'punch', 'kick', or 'strike'" in result["result"]
+        # Check that we get an invalid_command error message (could be any of several thematic messages)
+        error_messages = [
+            "The ancient ones whisper that such an action is beyond mortal comprehension.",
+            "Your mind recoils at the thought of such an impossible action.",
+            "The cosmic forces reject your feeble attempt at violence.",
+            "Such actions are forbidden by the laws that govern reality itself.",
+        ]
+        assert result["result"] in error_messages
 
     def test_attack_aliases_defined(self):
         """Test that attack aliases are properly defined."""

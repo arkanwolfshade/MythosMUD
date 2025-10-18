@@ -428,8 +428,8 @@ class TestCombatServiceUnit:
         # Initially no combats
         stats = await combat_service.get_combat_stats()
         assert stats["active_combats"] == 0
-        assert stats["players_in_combat"] == 0
-        assert stats["npcs_in_combat"] == 0
+        assert stats["player_combats"] == 0
+        assert stats["npc_combats"] == 0
 
         # Start a combat
         player_id = uuid4()
@@ -452,8 +452,8 @@ class TestCombatServiceUnit:
         # Check stats after starting combat
         stats = await combat_service.get_combat_stats()
         assert stats["active_combats"] == 1
-        assert stats["players_in_combat"] == 1
-        assert stats["npcs_in_combat"] == 1
+        assert stats["player_combats"] == 1
+        assert stats["npc_combats"] == 1
 
     @pytest.mark.asyncio
     async def test_calculate_xp_reward_default(self, combat_service):
