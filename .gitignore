@@ -214,23 +214,24 @@ __marimo__/
 # Local development files
 TASKS.local.md
 
-# Environment files (CRITICAL: Never commit actual .env files)
-.env.local
-.env.production
+# # Environment files (CRITICAL: Never commit actual .env files)
+# .env.local
+# .env.production
+# Environment files (CRITICAL: Never commit actual environment files with secrets)
+.env
+.env.*
 .env.prod
 .env.development
 .env.dev
+.env.local
+.env.e2e_test
+.env.test
+.env.unit_test
+
 # Allow example environment files ONLY (never actual secrets)
 !.env.example
 !*.env.example
-!test.env.example
 !env.*.example
-
-# Ensure test environment secrets are ignored
-.env.e2e_test
-.env.test
-!env.example
-!env.production.example
 
 # Logging files (CRITICAL: Never commit log files)
 logs/

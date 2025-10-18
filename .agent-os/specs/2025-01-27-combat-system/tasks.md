@@ -74,8 +74,8 @@
   - [x] 9.4 Write end-to-end combat scenarios and user workflow tests
   - [x] 9.5 Verify all tests pass and achieve target coverage
 
-- [ ] 10. Configuration
-  - [ ] 10.1 Write tests for feature flag deployment and configuration management
-  - [ ] 10.2 Implement feature flag system for combat enable/disable
-  - [ ] 10.3 Implement configuration management for combat settings
-  - [ ] 10.4 Implement basic monitoring and alerting for combat system
+- [x] 10. Configuration
+  - [x] 10.1 Write tests for feature flag deployment and configuration management
+  - [x] 10.2 Implement feature flag system for combat enable/disable
+  - [x] 10.3 Implement configuration management for combat settings
+  - [x] 10.4 Implement basic monitoring and alerting for combat system

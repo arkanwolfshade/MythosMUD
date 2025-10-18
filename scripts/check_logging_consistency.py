@@ -70,10 +70,10 @@ def main():
                     all_issues.extend([f"  {issue}" for issue in issues])
 
     if all_issues:
-        print("🚨 LOGGING CONSISTENCY ISSUES FOUND:")
+        print("LOGGING CONSISTENCY ISSUES FOUND:")
         for issue in all_issues:
             print(issue)
-        print("\n💡 SOLUTION:")
+        print("\nSOLUTION:")
         print("Replace 'logging.getLogger(__name__)' with 'get_logger(__name__)'")
         print("Add import: 'from ..logging_config import get_logger'")
         print("Remove import: 'import logging'")
