@@ -11,9 +11,9 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.database import get_async_session
 from server.logging_config import get_logger
 from server.models.npc import NPCDefinition
+from server.npc_database import get_npc_session
 from server.schemas.combat_schema import (
     add_default_combat_data_to_config,
     add_default_combat_data_to_stats,
@@ -40,7 +40,13 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    migration_results = {"total_npcs": len(npcs), "updated_npcs": 0, "skipped_npcs": 0, "error_npcs": 0, "errors": []}
+    migration_results = {
+        "total_npcs": len(npcs),
+        "updated_npcs": 0,
+        "skipped_npcs": 0,
+        "error_npcs": 0,
+        "errors": [],
+    }
 
     for npc in npcs:
         try:
@@ -50,13 +56,23 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
 
             # Check if combat data already exists
             has_combat_stats = any(
-                key in current_stats for key in ["xp_value", "dexterity", "strength", "constitution"]
+                key in current_stats
+                for key in [
+                    "xp_value",
+                    "dexterity",
+                    "strength",
+                    "constitution",
+                ]
             )
             has_combat_messages = "combat_messages" in current_config
             has_combat_behavior = "combat_behavior" in current_config
 
             if has_combat_stats and has_combat_messages and has_combat_behavior:
-                logger.debug("NPC already has combat data, skipping", npc_name=npc.name, npc_id=npc.id)
+                logger.debug(
+                    "NPC already has combat data, skipping",
+                    npc_name=npc.name,
+                    npc_id=npc.id,
+                )
                 migration_results["skipped_npcs"] += 1
                 continue
 
@@ -86,7 +102,12 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
 
         except Exception as e:
             error_msg = f"Failed to migrate NPC {npc.name} (ID: {npc.id}): {str(e)}"
-            logger.error("NPC migration error", npc_name=npc.name, npc_id=npc.id, error=str(e))
+            logger.error(
+                "NPC migration error",
+                npc_name=npc.name,
+                npc_id=npc.id,
+                error=str(e),
+            )
             migration_results["errors"].append(error_msg)
             migration_results["error_npcs"] += 1
 
@@ -110,7 +131,12 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    validation_results = {"total_npcs": len(npcs), "valid_npcs": 0, "invalid_npcs": 0, "validation_errors": []}
+    validation_results = {
+        "total_npcs": len(npcs),
+        "valid_npcs": 0,
+        "invalid_npcs": 0,
+        "validation_errors": [],
+    }
 
     for npc in npcs:
         try:
@@ -126,18 +152,31 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
 
             if has_required_stats and has_required_messages:
                 validation_results["valid_npcs"] += 1
-                logger.debug("NPC combat data validation passed", npc_name=npc.name, npc_id=npc.id)
+                logger.debug(
+                    "NPC combat data validation passed",
+                    npc_name=npc.name,
+                    npc_id=npc.id,
+                )
             else:
                 error_msg = f"NPC {npc.name} missing required combat data"
                 validation_results["validation_errors"].append(error_msg)
                 validation_results["invalid_npcs"] += 1
-                logger.warning("NPC missing required combat data", npc_name=npc.name, npc_id=npc.id)
+                logger.warning(
+                    "NPC missing required combat data",
+                    npc_name=npc.name,
+                    npc_id=npc.id,
+                )
 
         except Exception as e:
             error_msg = f"NPC {npc.name} validation failed: {str(e)}"
             validation_results["validation_errors"].append(error_msg)
             validation_results["invalid_npcs"] += 1
-            logger.error("NPC validation error", npc_name=npc.name, npc_id=npc.id, error=str(e))
+            logger.error(
+                "NPC validation error",
+                npc_name=npc.name,
+                npc_id=npc.id,
+                error=str(e),
+            )
 
     logger.info("Combat data migration validation completed", **validation_results)
     return validation_results
@@ -159,7 +198,12 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    rollback_results = {"total_npcs": len(npcs), "rolled_back_npcs": 0, "skipped_npcs": 0, "rollback_errors": []}
+    rollback_results = {
+        "total_npcs": len(npcs),
+        "rolled_back_npcs": 0,
+        "skipped_npcs": 0,
+        "rollback_errors": [],
+    }
 
     combat_stats_keys = ["xp_value", "dexterity", "strength", "constitution"]
     combat_config_keys = ["combat_messages", "combat_behavior"]
@@ -175,7 +219,11 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
             has_combat_config = any(key in current_config for key in combat_config_keys)
 
             if not has_combat_stats and not has_combat_config:
-                logger.debug("NPC has no combat data to rollback", npc_name=npc.name, npc_id=npc.id)
+                logger.debug(
+                    "NPC has no combat data to rollback",
+                    npc_name=npc.name,
+                    npc_id=npc.id,
+                )
                 rollback_results["skipped_npcs"] += 1
                 continue
 
@@ -201,7 +249,12 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
 
         except Exception as e:
             error_msg = f"Failed to rollback NPC {npc.name} (ID: {npc.id}): {str(e)}"
-            logger.error("NPC rollback error", npc_name=npc.name, npc_id=npc.id, error=str(e))
+            logger.error(
+                "NPC rollback error",
+                npc_name=npc.name,
+                npc_id=npc.id,
+                error=str(e),
+            )
             rollback_results["rollback_errors"].append(error_msg)
 
     logger.info("Combat data migration rollback completed", **rollback_results)
@@ -213,12 +266,16 @@ async def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Combat data migration script")
-    parser.add_argument("--dry-run", action="store_true", help="Perform a dry run without making changes")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Perform a dry run without making changes",
+    )
     parser.add_argument("--validate", action="store_true", help="Validate migration results")
     parser.add_argument("--rollback", action="store_true", help="Rollback migration")
     args = parser.parse_args()
 
-    async with get_async_session() as session:
+    async for session in get_npc_session():
         if args.rollback:
             results = await rollback_migration(session)
             print(f"Rollback completed: {results}")
@@ -233,6 +290,7 @@ async def main():
                 # Validate after migration
                 validation_results = await validate_migration_results(session)
                 print(f"Validation results: {validation_results}")
+        break  # Only process one session
 
 
 if __name__ == "__main__":

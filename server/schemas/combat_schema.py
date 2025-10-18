@@ -14,16 +14,26 @@ from jsonschema import ValidationError as JSONSchemaValidationError
 class CombatSchemaValidationError(Exception):
     """Raised when combat data fails schema validation."""
 
-    pass
-
 
 # JSON Schema for base_stats combat data
 BASE_STATS_COMBAT_SCHEMA = {
     "type": "object",
     "properties": {
-        "hp": {"type": "integer", "minimum": 0, "description": "Current hit points"},
-        "max_hp": {"type": "integer", "minimum": 1, "description": "Maximum hit points"},
-        "xp_value": {"type": "integer", "minimum": 0, "description": "Experience points awarded when NPC is defeated"},
+        "hp": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current hit points",
+        },
+        "max_hp": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum hit points",
+        },
+        "xp_value": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Experience points awarded when NPC is defeated",
+        },
         "dexterity": {
             "type": "integer",
             "minimum": 1,
@@ -66,9 +76,18 @@ COMBAT_MESSAGES_SCHEMA = {
             "minLength": 1,
             "description": "Message template for other players perspective",
         },
-        "death_message": {"type": "string", "minLength": 1, "description": "Message template for NPC death"},
+        "death_message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Message template for NPC death",
+        },
     },
-    "required": ["attack_attacker", "attack_defender", "attack_other", "death_message"],
+    "required": [
+        "attack_attacker",
+        "attack_defender",
+        "attack_other",
+        "death_message",
+    ],
     "additionalProperties": False,
 }
 
@@ -87,7 +106,11 @@ COMBAT_BEHAVIOR_SCHEMA = {
             "maximum": 1,
             "description": "HP percentage threshold for retreat",
         },
-        "combat_timeout": {"type": "integer", "minimum": 60, "description": "Combat timeout in seconds"},
+        "combat_timeout": {
+            "type": "integer",
+            "minimum": 60,
+            "description": "Combat timeout in seconds",
+        },
     },
     "additionalProperties": False,
 }
@@ -95,21 +118,35 @@ COMBAT_BEHAVIOR_SCHEMA = {
 # JSON Schema for behavior_config with combat data
 BEHAVIOR_CONFIG_COMBAT_SCHEMA = {
     "type": "object",
-    "properties": {"combat_messages": COMBAT_MESSAGES_SCHEMA, "combat_behavior": COMBAT_BEHAVIOR_SCHEMA},
+    "properties": {
+        "combat_messages": COMBAT_MESSAGES_SCHEMA,
+        "combat_behavior": COMBAT_BEHAVIOR_SCHEMA,
+    },
     "additionalProperties": True,
 }
 
 # Default combat data templates
-DEFAULT_COMBAT_STATS = {"xp_value": 1, "dexterity": 10, "strength": 10, "constitution": 8}
+DEFAULT_COMBAT_STATS = {
+    "hp": 50,
+    "max_hp": 50,
+    "xp_value": 1,
+    "dexterity": 10,
+    "strength": 10,
+    "constitution": 8,
+}
 
 DEFAULT_COMBAT_MESSAGES = {
-    "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
-    "attack_defender": "{attacker_name} swings their fist at you and hits you for {damage} damage",
-    "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
+    "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
+    "attack_defender": ("{attacker_name} swings their fist at you and hits you for {damage} damage"),
+    "attack_other": ("{attacker_name} swings their fist at {target_name} and hits for {damage} damage"),
     "death_message": "The {npc_name} collapses, dead",
 }
 
-DEFAULT_COMBAT_BEHAVIOR = {"aggression_level": "passive", "retreat_threshold": 0.2, "combat_timeout": 300}
+DEFAULT_COMBAT_BEHAVIOR = {
+    "aggression_level": "passive",
+    "retreat_threshold": 0.2,
+    "combat_timeout": 300,
+}
 
 
 def validate_base_stats_combat_data(data: dict[str, Any]) -> None:
@@ -176,7 +213,11 @@ def validate_message_template_variables(messages: dict[str, str]) -> None:
     required_variables = {
         "attack_attacker": ["{target_name}", "{damage}"],
         "attack_defender": ["{attacker_name}", "{damage}"],
-        "attack_other": ["{attacker_name}", "{target_name}", "{damage}"],
+        "attack_other": [
+            "{attacker_name}",
+            "{target_name}",
+            "{damage}",
+        ],
         "death_message": ["{npc_name}"],
     }
 

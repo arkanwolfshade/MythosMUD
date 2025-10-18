@@ -1,0 +1,176 @@
+---
+description: Comprehensive best practices for configuring and using pre-commit hooks to ensure code quality, consistency, and security in development workflows. Covers hook configuration, custom hooks, performance optimization, and common pitfalls.
+globs: .pre-commit-config.yaml,*.yaml,*.yml,*.json,*.toml
+---
+# Pre-commit Hooks Best Practices
+
+This document outlines best practices and coding standards for configuring and using pre-commit hooks to ensure code quality, consistency, and security in development workflows.
+
+## 1. Code Organization and Structure
+
+### 1.1. Configuration Structure
+
+Organize your pre-commit configuration with clear separation of concerns:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        language_version: python3
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+
+  - repo: local
+    hooks:
+      - id: custom-hook
+        name: Custom Hook
+        entry: ./scripts/custom-hook.sh
+        language: script
+        files: \.py$
+```
+
+### 1.2. File Naming Conventions
+
+- Use `.pre-commit-config.yaml` for main configuration
+- Use descriptive names for custom hooks
+- Follow consistent naming patterns for hook scripts
+
+### 1.3. Module Organization
+
+- **Core Hooks:** Use official pre-commit hooks when possible
+- **Language-Specific Hooks:** Group hooks by programming language
+- **Custom Hooks:** Organize custom hooks in dedicated directories
+- **Configuration:** Separate configuration by environment
+
+## 2. Common Patterns and Anti-patterns
+
+### 2.1. Design Patterns
+
+- **Layered Hooks:** Organize hooks by function (formatting, linting, security)
+- **Language-Specific Groups:** Group hooks by programming language
+- **Environment-Specific Configs:** Use different configs for different environments
+- **Incremental Hooks:** Use hooks that work incrementally for performance
+
+### 2.2. Recommended Approaches
+
+- Use official pre-commit hooks when available
+- Implement custom hooks for project-specific requirements
+- Use language-specific hooks for better integration
+- Implement proper error handling and reporting
+
+### 2.3. Anti-patterns
+
+- Don't run expensive operations in pre-commit hooks
+- Avoid hooks that modify files without user consent
+- Don't ignore hook failures
+- Avoid hooks that are too slow for interactive use
+
+## 3. Performance Considerations
+
+### 3.1. Optimization Techniques
+
+- Use incremental hooks when possible
+- Cache hook results for better performance
+- Use parallel execution for independent hooks
+- Optimize hook execution order
+
+### 3.2. Memory Management
+
+- Monitor memory usage of hooks
+- Use efficient data structures in custom hooks
+- Implement proper cleanup in long-running hooks
+- Avoid memory leaks in custom hooks
+
+## 4. Security Best Practices
+
+### 4.1. Common Vulnerabilities
+
+- **Script Injection:** Validate all inputs in custom hooks
+- **File System Access:** Limit file system access in hooks
+- **Network Access:** Restrict network access in hooks
+- **Privilege Escalation:** Run hooks with minimal privileges
+
+### 4.2. Security Implementation
+
+- Use trusted hook repositories
+- Validate hook signatures
+- Implement proper input validation
+- Use secure coding practices in custom hooks
+
+## 5. Testing Approaches
+
+### 5.1. Unit Testing
+
+- Test custom hooks in isolation
+- Mock external dependencies
+- Test error conditions and edge cases
+- Use test fixtures for consistent testing
+
+### 5.2. Integration Testing
+
+- Test complete pre-commit workflows
+- Test hook interactions
+- Test configuration validation
+- Test performance under load
+
+## 6. Common Pitfalls and Gotchas
+
+### 6.1. Frequent Mistakes
+
+- Not handling hook failures properly
+- Ignoring hook performance
+- Not updating hook versions regularly
+- Using hooks that are too restrictive
+
+### 6.2. Debugging Strategies
+
+- Use verbose logging for hook debugging
+- Implement proper error reporting
+- Use hook testing tools
+- Monitor hook performance
+
+## 7. Tooling and Environment
+
+### 7.1. Recommended Development Tools
+
+- **Pre-commit:** Official pre-commit framework
+- **Testing:** pytest for testing custom hooks
+- **Monitoring:** Hook performance monitoring
+- **Logging:** Structured logging for hook execution
+
+### 7.2. Build Configuration
+
+- Use version control for hook configurations
+- Implement automated hook updates
+- Use environment-specific configurations
+- Document hook purposes and requirements
+
+### 7.3. Deployment Best Practices
+
+- Install pre-commit hooks in development environments
+- Use CI/CD integration for hook validation
+- Implement proper hook version management
+- Monitor hook execution in production
+
+### 7.4. CI/CD Integration
+
+- Run pre-commit hooks in CI/CD pipelines
+- Automate hook updates
+- Implement hook failure notifications
+- Monitor hook performance and reliability
+
+By following these best practices, you can implement effective pre-commit hooks that ensure code quality, consistency, and security in your development workflow.

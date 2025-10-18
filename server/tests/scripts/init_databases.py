@@ -100,10 +100,10 @@ async def init_database(db_path: str, db_name: str):
 
     # Create backup if database exists
     if os.path.exists(db_path):
-        print(f"⚠️  {db_name} database already exists. Backing up...")
+        print(f"[WARN] {db_name} database already exists. Backing up...")
         backup_path = f"{db_path}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         shutil.copy2(db_path, backup_path)
-        print(f"✓ Backup created: {backup_path}")
+        print(f"[OK] Backup created: {backup_path}")
 
     # Create database directory if it doesn't exist
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -123,7 +123,7 @@ async def init_database(db_path: str, db_name: str):
 
         await db.commit()
 
-    print(f"✓ {db_name} database initialized successfully")
+    print(f"[OK] {db_name} database initialized successfully")
 
 
 async def verify_database(db_path: str, db_name: str):
@@ -165,13 +165,13 @@ async def main():
         await verify_database(str(prod_db), "Production")
         await verify_database(str(test_db), "Test")
 
-        print("\n🎉 Database initialization completed successfully!")
+        print("\n[SUCCESS] Database initialization completed successfully!")
         print("Both databases now contain: users, players, invites tables")
-        print("✓ FastAPI Users v14 compatible schema with UUID primary keys")
-        print("✓ Bogus email generation system ready for privacy protection")
+        print("[OK] FastAPI Users v14 compatible schema with UUID primary keys")
+        print("[OK] Bogus email generation system ready for privacy protection")
 
-    except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
+    except (OSError, aiosqlite.Error) as e:
+        print(f"[ERROR] Database initialization failed: {e}")
         return 1
 
     return 0

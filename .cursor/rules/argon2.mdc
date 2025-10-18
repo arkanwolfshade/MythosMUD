@@ -1,0 +1,165 @@
+---
+description: Comprehensive best practices for implementing secure password hashing with Argon2 to protect user credentials and sensitive data. Covers configuration, performance optimization, security considerations, and integration strategies.
+globs: *.py,*.js,*.ts,*.go,*.java,*.c,*.cpp,*.rb,*.php,*.rs,*.kt,*.scala
+---
+# Argon2 Password Hashing Best Practices
+
+This document outlines best practices and coding standards for implementing secure password hashing with Argon2 to protect user credentials and sensitive data.
+
+## 1. Code Organization and Structure
+
+### 1.1. Directory Structure
+
+Organize your Argon2 implementation with clear separation of concerns:
+
+```
+project_name/
+├── src/
+│   ├── auth/
+│   │   ├── __init__.py
+│   │   ├── password.py      # Password hashing implementation
+│   │   ├── validation.py    # Password validation
+│   │   └── config.py        # Argon2 configuration
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   └── crypto_utils.py  # Cryptographic utilities
+│   └── main.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_password.py
+│   └── test_validation.py
+├── requirements.txt
+└── README.md
+```
+
+### 1.2. File Naming Conventions
+
+- Use descriptive names for authentication modules
+- Follow language-specific naming conventions
+- Use clear, consistent naming for cryptographic functions
+
+### 1.3. Module Organization
+
+- **Password Hashing:** Centralize password hashing logic
+- **Validation:** Organize password validation rules
+- **Configuration:** Separate Argon2 configuration
+- **Utilities:** Organize cryptographic utilities
+
+## 2. Common Patterns and Anti-patterns
+
+### 2.1. Design Patterns
+
+- **Password Hashing:** Use Argon2 for secure password hashing
+- **Salt Generation:** Generate unique salts for each password
+- **Parameter Configuration:** Use appropriate Argon2 parameters
+- **Verification:** Implement secure password verification
+
+### 2.2. Recommended Approaches
+
+- Use Argon2id variant for best security
+- Generate cryptographically secure random salts
+- Use appropriate time and memory parameters
+- Implement proper error handling
+
+### 2.3. Anti-patterns
+
+- Don't use weak hashing algorithms (MD5, SHA-1)
+- Avoid using the same salt for multiple passwords
+- Don't ignore Argon2 parameter recommendations
+- Avoid storing passwords in plain text
+
+## 3. Performance Considerations
+
+### 3.1. Optimization Techniques
+
+- Use appropriate Argon2 parameters for your environment
+- Implement password hashing in background threads
+- Use efficient salt generation
+- Optimize memory usage for Argon2 operations
+
+### 3.2. Memory Management
+
+- Monitor memory usage of Argon2 operations
+- Use appropriate memory parameters
+- Implement proper cleanup of sensitive data
+- Avoid memory leaks in long-running processes
+
+## 4. Security Best Practices
+
+### 4.1. Common Vulnerabilities
+
+- **Weak Parameters:** Use appropriate Argon2 parameters
+- **Salt Reuse:** Generate unique salts for each password
+- **Timing Attacks:** Implement constant-time comparison
+- **Information Disclosure:** Avoid leaking password information
+
+### 4.2. Security Implementation
+
+- Use Argon2id variant for best security
+- Generate cryptographically secure random salts
+- Implement constant-time password comparison
+- Use appropriate Argon2 parameters
+
+## 5. Testing Approaches
+
+### 5.1. Unit Testing
+
+- Test password hashing in isolation
+- Mock external dependencies
+- Test error conditions and edge cases
+- Use test fixtures for consistent testing
+
+### 5.2. Integration Testing
+
+- Test complete authentication workflows
+- Test password verification
+- Test performance under load
+- Test error recovery scenarios
+
+## 6. Common Pitfalls and Gotchas
+
+### 6.1. Frequent Mistakes
+
+- Not handling hashing failures properly
+- Ignoring Argon2 parameter recommendations
+- Not updating hashing configurations regularly
+- Using weak or inappropriate parameters
+
+### 6.2. Debugging Strategies
+
+- Use structured logging for debugging
+- Implement proper error reporting
+- Use performance monitoring tools
+- Monitor hashing performance
+
+## 7. Tooling and Environment
+
+### 7.1. Recommended Development Tools
+
+- **Argon2 Libraries:** Official Argon2 libraries for your language
+- **Testing:** Cryptographic testing frameworks
+- **Monitoring:** Performance monitoring tools
+- **Security:** Security scanning tools
+
+### 7.2. Build Configuration
+
+- Use version control for cryptographic configurations
+- Implement automated security updates
+- Use environment-specific configurations
+- Document security purposes and requirements
+
+### 7.3. Deployment Best Practices
+
+- Install cryptographic libraries in development environments
+- Use CI/CD integration for security validation
+- Implement proper security version management
+- Monitor security performance in production
+
+### 7.4. CI/CD Integration
+
+- Run security validation in CI/CD pipelines
+- Automate security updates
+- Implement security failure notifications
+- Monitor security performance and reliability
+
+By following these best practices, you can implement secure password hashing with Argon2 that protects user credentials and sensitive data effectively.

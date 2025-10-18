@@ -1,0 +1,165 @@
+---
+description: Comprehensive best practices for implementing structured logging with structlog to improve debugging, monitoring, and observability. Covers configuration, formatting, performance optimization, and integration strategies.
+globs: *.py,*.js,*.ts,*.go,*.java,*.c,*.cpp,*.rb,*.php,*.rs,*.kt,*.scala
+---
+# Structured Logging with Structlog Best Practices
+
+This document outlines best practices and coding standards for implementing structured logging with structlog to improve debugging, monitoring, and observability.
+
+## 1. Code Organization and Structure
+
+### 1.1. Directory Structure
+
+Organize your structured logging implementation with clear separation of concerns:
+
+```
+project_name/
+├── src/
+│   ├── logging/
+│   │   ├── __init__.py
+│   │   ├── config.py        # Logging configuration
+│   │   ├── formatters.py    # Custom formatters
+│   │   ├── processors.py    # Custom processors
+│   │   └── handlers.py      # Custom handlers
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   └── logging_utils.py # Logging utilities
+│   └── main.py
+├── tests/
+│   ├── __init__.py
+│   └── test_logging.py
+├── requirements.txt
+└── README.md
+```
+
+### 1.2. File Naming Conventions
+
+- Use descriptive names for logging modules
+- Follow language-specific naming conventions
+- Use clear, consistent naming for formatters and processors
+
+### 1.3. Module Organization
+
+- **Configuration:** Centralize logging configuration
+- **Formatters:** Organize custom formatters by output format
+- **Processors:** Separate processors by functionality
+- **Handlers:** Organize handlers by destination
+
+## 2. Common Patterns and Anti-patterns
+
+### 2.1. Design Patterns
+
+- **Structured Logging:** Use structured data for all log entries
+- **Context Propagation:** Propagate context across service boundaries
+- **Correlation IDs:** Use correlation IDs for request tracing
+- **Log Aggregation:** Aggregate logs for analysis and monitoring
+
+### 2.2. Recommended Approaches
+
+- Use structured data formats (JSON, key-value pairs)
+- Implement proper log levels and filtering
+- Use correlation IDs for request tracing
+- Implement proper error handling and logging
+
+### 2.3. Anti-patterns
+
+- Don't log sensitive information (passwords, tokens)
+- Avoid unstructured log messages
+- Don't ignore log performance implications
+- Avoid logging too much or too little information
+
+## 3. Performance Considerations
+
+### 3.1. Optimization Techniques
+
+- Use asynchronous logging for high-throughput applications
+- Implement log batching for better performance
+- Use efficient serialization formats
+- Optimize log message formatting
+
+### 3.2. Memory Management
+
+- Monitor memory usage of logging operations
+- Use efficient data structures for log entries
+- Implement proper cleanup of log resources
+- Avoid memory leaks in long-running processes
+
+## 4. Security Best Practices
+
+### 4.1. Common Vulnerabilities
+
+- **Information Disclosure:** Avoid logging sensitive information
+- **Log Injection:** Sanitize log messages to prevent injection
+- **Access Control:** Implement proper access control for logs
+- **Data Retention:** Implement proper log retention policies
+
+### 4.2. Security Implementation
+
+- Sanitize all log messages
+- Implement proper access control for logs
+- Use secure log storage and transmission
+- Implement proper log retention policies
+
+## 5. Testing Approaches
+
+### 5.1. Unit Testing
+
+- Test logging configuration in isolation
+- Mock external logging dependencies
+- Test error conditions and edge cases
+- Use test fixtures for consistent testing
+
+### 5.2. Integration Testing
+
+- Test complete logging workflows
+- Test log aggregation and analysis
+- Test performance under load
+- Test error recovery scenarios
+
+## 6. Common Pitfalls and Gotchas
+
+### 6.1. Frequent Mistakes
+
+- Not handling logging failures properly
+- Ignoring log performance implications
+- Not updating logging configurations regularly
+- Using logging that is too verbose or too sparse
+
+### 6.2. Debugging Strategies
+
+- Use structured logging for better debugging
+- Implement proper error reporting
+- Use log analysis tools
+- Monitor logging performance
+
+## 7. Tooling and Environment
+
+### 7.1. Recommended Development Tools
+
+- **Structlog:** Official structlog library for your language
+- **Testing:** Logging testing frameworks
+- **Monitoring:** Log aggregation and analysis tools
+- **Logging:** Structured logging with correlation IDs
+
+### 7.2. Build Configuration
+
+- Use version control for logging configurations
+- Implement automated logging updates
+- Use environment-specific configurations
+- Document logging purposes and requirements
+
+### 7.3. Deployment Best Practices
+
+- Install logging tools in development environments
+- Use CI/CD integration for logging validation
+- Implement proper logging version management
+- Monitor logging performance in production
+
+### 7.4. CI/CD Integration
+
+- Run logging validation in CI/CD pipelines
+- Automate logging updates
+- Implement logging failure notifications
+- Monitor logging performance and reliability
+
+By following these best practices, you can implement effective structured logging with structlog that improves debugging, monitoring, and observability.
