@@ -164,10 +164,11 @@ class NPCCombatIntegrationService:
 
         except Exception as e:
             logger.error(
-                "Error handling player attack on NPC",
+                f"Error handling player attack on NPC: {e}",
                 player_id=player_id,
                 npc_id=npc_id,
                 error=str(e),
+                exc_info=True,
             )
             return False
 
@@ -324,10 +325,13 @@ class NPCCombatIntegrationService:
     def _get_npc_instance(self, npc_id: str) -> Any | None:
         """Get NPC instance from the spawning service."""
         try:
-            # Try to get from spawning service if available
-            if hasattr(self._persistence, "get_npc_spawning_service"):
-                spawning_service = self._persistence.get_npc_spawning_service()
-                if spawning_service and npc_id in spawning_service.active_npc_instances:
+            # Use the same approach as the combat handler
+            from .npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if hasattr(npc_instance_service, "spawning_service"):
+                spawning_service = npc_instance_service.spawning_service
+                if npc_id in spawning_service.active_npc_instances:
                     return spawning_service.active_npc_instances[npc_id]
 
             return None

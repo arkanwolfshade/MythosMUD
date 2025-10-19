@@ -275,12 +275,48 @@ class CommandParser:
             )
 
     def _create_look_command(self, args: list[str]) -> LookCommand:
-        """Create LookCommand from arguments."""
-        direction = args[0] if args else None
+        """
+        Create LookCommand from arguments.
+
+        Handles three types of look commands:
+        1. 'look' - no arguments, general room look
+        2. 'look north' - direction argument, look in specific direction
+        3. 'look guard' - NPC argument, look at specific NPC
+
+        NPCs take priority over directions when both could match.
+        All matching is case-insensitive.
+
+        Args:
+            args: List of command arguments
+
+        Returns:
+            LookCommand: Configured command object
+        """
+        # Join all arguments to handle multi-word targets like "Dr. Francis Morgan"
+        target = " ".join(args) if args else None
         # Convert to lowercase for case-insensitive matching
-        if direction:
-            direction = direction.lower()
-        return LookCommand(direction=direction)
+        if target:
+            target_lower = target.lower()
+            # Check if it's a valid direction
+            if target_lower in [
+                "north",
+                "south",
+                "east",
+                "west",
+                "up",
+                "down",
+                "northeast",
+                "northwest",
+                "southeast",
+                "southwest",
+            ]:
+                # Direction target - set both direction and target fields
+                return LookCommand(direction=target_lower, target=target)
+            else:
+                # NPC target - set only target field (preserve original case for display)
+                return LookCommand(target=target)
+        # No arguments - general room look
+        return LookCommand()
 
     def _create_go_command(self, args: list[str]) -> GoCommand:
         """Create GoCommand from arguments."""

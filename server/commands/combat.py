@@ -8,7 +8,7 @@ and other combat-related actions.
 from typing import Any
 
 from server.alias_storage import AliasStorage
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.persistence import get_persistence
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 from server.validators.combat_validator import CombatValidator
@@ -60,17 +60,24 @@ class CombatCommandHandler:
             command = str(command_type)
         target_name = command_data.get("target_player")
 
-        logger.info(f"Processing attack command '{command}' from {player_name} targeting '{target_name}'")
+        logger.debug(
+            f"🚨 COMBAT DEBUG: Processing attack command '{command}' from {player_name} targeting '{target_name}'"
+        )
         logger.debug(f"DEBUG: command_data keys: {list(command_data.keys())}")
-        logger.debug(f"DEBUG: current_user keys: {list(current_user.keys()) if current_user else 'None'}")
+        logger.debug(f"DEBUG: current_user type: {type(current_user)}")
+        logger.debug(f"DEBUG: current_user value: {current_user}")
+        logger.debug(
+            f"DEBUG: current_user keys: {list(current_user.keys()) if hasattr(current_user, 'keys') else 'No keys method'}"
+        )
         logger.debug(f"DEBUG: request type: {type(request)}")
         logger.debug(f"DEBUG: alias_storage type: {type(alias_storage)}")
 
         # Add more debug logging to trace execution
         try:
-            logger.debug("DEBUG: Starting target validation", player_name=player_name)
+            logger.debug(f"DEBUG: Starting target validation for {player_name}")
+            logger.debug(f"DEBUG: About to check target_name: '{target_name}'")
             if not target_name:
-                logger.debug("DEBUG: No target name provided", player_name=player_name)
+                logger.debug(f"DEBUG: No target name provided for {player_name}")
                 # Return a thematic error message for no target
                 error_messages = [
                     "You must focus your wrath upon a specific target, lest your fury be wasted.",
@@ -84,26 +91,45 @@ class CombatCommandHandler:
 
             logger.debug(f"DEBUG: Target name: '{target_name}'")
 
+            # Get persistence layer and player data (following the same pattern as look command)
+            logger.debug(f"DEBUG: Getting persistence layer for {player_name}")
+            app = request.app if request else None
+            persistence = app.state.persistence if app else None
+
+            if not persistence:
+                logger.debug(f"DEBUG: No persistence layer found for {player_name}")
+                return {"result": "The cosmic forces are unreachable."}
+
+            logger.debug(f"DEBUG: Getting player data for {player_name}")
+            from ..utils.command_parser import get_username_from_user
+
+            player = persistence.get_player_by_name(get_username_from_user(current_user))
+            if not player:
+                logger.debug(f"DEBUG: Player not found for {player_name}")
+                return {"result": "You are not recognized by the cosmic forces."}
+
+            logger.debug(f"DEBUG: Player found: {player}")
+
             # Get player's current room
-            logger.debug("DEBUG: Getting player's current room", player_name=player_name)
-            room_id = current_user.get("room_id")
+            logger.debug(f"DEBUG: Getting player's current room for {player_name}")
+            room_id = player.current_room_id
             if not room_id:
-                logger.debug("DEBUG: No room_id found in current_user", player_name=player_name)
+                logger.debug(f"DEBUG: No room_id found in player data for {player_name}")
                 return {"result": "You are not in a room."}
 
             logger.debug(f"DEBUG: Player room_id: {room_id}")
 
             # Get room data
-            logger.debug("DEBUG: Getting room data", player_name=player_name)
-            room = self._get_room_data(room_id)
+            logger.debug(f"DEBUG: Getting room data for {player_name}")
+            room = persistence.get_room(room_id)
             if not room:
-                logger.debug("DEBUG: Room data not found", player_name=player_name)
+                logger.debug(f"DEBUG: Room data not found for {player_name}")
                 return {"result": "You are in an unknown room."}
 
             logger.debug(f"DEBUG: Room data found: {room}")
 
             # Look for NPCs in the room
-            logger.debug("DEBUG: Looking for NPCs in room", player_name=player_name)
+            logger.debug(f"DEBUG: Looking for NPCs in room for {player_name}")
             npc_found = None
             npc_id = None
             available_targets = []
@@ -127,30 +153,30 @@ class CombatCommandHandler:
             )
 
             if not npc_found:
-                logger.debug("DEBUG: No matching NPC found", player_name=player_name)
+                logger.debug(f"DEBUG: No matching NPC found for {player_name}")
                 available_list = ", ".join(available_targets) if available_targets else "none"
                 return {"result": f"No target named '{target_name}' found. Available targets: {available_list}"}
 
             logger.debug(f"DEBUG: Found target NPC: {npc_found.name} (ID: {npc_id})")
 
             # Validate combat action
-            logger.debug("DEBUG: Validating combat action", player_name=player_name)
+            logger.debug(f"DEBUG: Validating combat action for {player_name}")
             validation_result = await self._validate_combat_action(player_name, npc_id, command)
             if not validation_result.get("valid", False):
                 logger.debug(f"DEBUG: Combat validation failed: {validation_result}")
                 return {"result": validation_result.get("message", "Invalid combat action.")}
 
-            logger.debug("DEBUG: Combat validation passed", player_name=player_name)
+            logger.debug(f"DEBUG: Combat validation passed for {player_name}")
 
             # Execute combat action
-            logger.debug("DEBUG: Executing combat action", player_name=player_name)
-            combat_result = await self._execute_combat_action(player_name, npc_id, command)
+            logger.debug(f"DEBUG: Executing combat action for {player_name}")
+            combat_result = await self._execute_combat_action(player_name, npc_id, command, room_id)
             logger.debug(f"DEBUG: Combat action executed: {combat_result}")
 
             return combat_result
 
         except Exception as e:
-            logger.error(f"DEBUG: Exception in combat handler: {e}", exc_info=True)
+            logger.error(f"ERROR: Exception in combat handler: {e}", exc_info=True)
             return {"result": f"An error occurred during combat: {str(e)}"}
 
     def _get_room_data(self, room_id: str) -> Any | None:
@@ -164,16 +190,19 @@ class CombatCommandHandler:
     def _get_npc_instance(self, npc_id: str) -> Any | None:
         """Get NPC instance from the spawning service."""
         try:
-            # Try to get from spawning service if available
-            if hasattr(self.persistence, "get_npc_spawning_service"):
-                spawning_service = self.persistence.get_npc_spawning_service()
-                if spawning_service and npc_id in spawning_service.active_npc_instances:
+            # Use the same approach as websocket handler
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if hasattr(npc_instance_service, "spawning_service"):
+                spawning_service = npc_instance_service.spawning_service
+                if npc_id in spawning_service.active_npc_instances:
                     return spawning_service.active_npc_instances[npc_id]
 
             return None
 
         except Exception as e:
-            logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
+            logger.error(f"Error getting NPC instance for {npc_id}: {e}")
             return None
 
     async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict:
@@ -183,11 +212,34 @@ class CombatCommandHandler:
             return {"valid": False, "message": "Invalid combat parameters"}
         return {"valid": True}
 
-    async def _execute_combat_action(self, player_name: str, npc_id: str, command: str) -> dict[str, str]:
-        """Execute combat action."""
+    async def _execute_combat_action(self, player_name: str, npc_id: str, command: str, room_id: str) -> dict[str, str]:
+        """Execute combat action using the proper combat service."""
         try:
-            # Simple combat execution for now
-            return {"result": f"You {command} the target!"}
+            # Get player ID from the persistence layer
+            # We need to get the player object to get the player ID
+            player = self.persistence.get_player_by_name(player_name)
+            if not player:
+                logger.error(f"Player not found for combat action: {player_name}")
+                return {"result": "You are not recognized by the cosmic forces."}
+
+            player_id = str(player.player_id)
+
+            # Calculate basic damage (for now, just use 1 damage)
+            # TODO: Implement proper damage calculation based on player stats, weapon, etc.
+            damage = 1
+
+            logger.info(f"Executing combat action: {player_name} ({player_id}) {command}s {npc_id} for {damage} damage")
+
+            # Use the proper combat service to handle the attack
+            success = self.npc_combat_service.handle_player_attack_on_npc(
+                player_id=player_id, npc_id=npc_id, room_id=room_id, action_type=command, damage=damage
+            )
+
+            if success:
+                return {"result": f"You {command} for {damage} damage!"}
+            else:
+                return {"result": f"Your {command} fails to connect!"}
+
         except Exception as e:
             logger.error(f"Error executing combat action: {e}")
             return {"result": f"Error executing {command} command"}

@@ -35,6 +35,12 @@ class Direction(str, Enum):
     SOUTH = "south"
     EAST = "east"
     WEST = "west"
+    UP = "up"
+    DOWN = "down"
+    NORTHEAST = "northeast"
+    NORTHWEST = "northwest"
+    SOUTHEAST = "southeast"
+    SOUTHWEST = "southwest"
 
 
 class CommandType(str, Enum):
@@ -100,10 +106,11 @@ class BaseCommand(BaseModel):
 
 
 class LookCommand(BaseCommand):
-    """Command for looking around or in a specific direction."""
+    """Command for looking around, in a specific direction, or at an NPC."""
 
     command_type: Literal[CommandType.LOOK] = CommandType.LOOK
     direction: Direction | None = Field(None, description="Direction to look")
+    target: str | None = Field(None, description="Target to look at (NPC name or direction)")
 
     @field_validator("direction")
     @classmethod

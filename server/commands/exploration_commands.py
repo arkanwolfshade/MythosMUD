@@ -49,8 +49,41 @@ async def handle_look_command(
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return {"result": "You see nothing special."}
 
-    # Extract direction from command_data
+    # Extract direction and target from command_data
     direction = command_data.get("direction")
+    target = command_data.get("target")
+
+    # Handle target lookups (NPCs take priority over directions)
+    if target:
+        target_lower = target.lower()
+        logger.debug("Looking at target", player=player_name, target=target, room_id=room_id)
+
+        # Check if target is a direction
+        if target_lower in ["north", "south", "east", "west", "up", "down", "n", "s", "e", "w", "u", "d"]:
+            direction = target_lower
+        else:
+            # Look for NPC in current room
+            npcs_in_room = persistence.get_npcs_in_room(room_id)
+            if npcs_in_room:
+                # Find matching NPCs (case-insensitive partial match)
+                matching_npcs = [npc for npc in npcs_in_room if target_lower in npc.name.lower()]
+
+                if len(matching_npcs) == 1:
+                    npc = matching_npcs[0]
+                    logger.debug("Found NPC to look at", player=player_name, npc_name=npc.name, npc_id=npc.id)
+                    return {"result": f"You look at {npc.name}.\n{npc.description}"}
+                elif len(matching_npcs) > 1:
+                    npc_names = [npc.name for npc in matching_npcs]
+                    logger.debug("Multiple NPCs match target", player=player_name, target=target, matches=npc_names)
+                    return {"result": f"You see multiple NPCs matching '{target}': {', '.join(npc_names)}"}
+                else:
+                    logger.debug("No NPCs match target", player=player_name, target=target, room_id=room_id)
+                    return {"result": f"You don't see anyone named '{target}' here."}
+            else:
+                logger.debug("No NPCs in room", player=player_name, target=target, room_id=room_id)
+                return {"result": f"You don't see anyone named '{target}' here."}
+
+    # Handle direction lookups
     if direction:
         direction = direction.lower()
         logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)

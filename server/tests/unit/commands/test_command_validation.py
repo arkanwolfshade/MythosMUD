@@ -51,6 +51,26 @@ class TestCommandModels:
         with pytest.raises(PydanticValidationError):
             LookCommand(direction="invalid")
 
+    def test_look_command_with_target(self):
+        """Test LookCommand with target field."""
+        # Look with target only
+        cmd = LookCommand(target="guard")
+        assert cmd.command_type == CommandType.LOOK
+        assert cmd.direction is None
+        assert cmd.target == "guard"
+
+        # Look with both direction and target (direction takes precedence)
+        cmd = LookCommand(direction=Direction.NORTH, target="guard")
+        assert cmd.command_type == CommandType.LOOK
+        assert cmd.direction == Direction.NORTH
+        assert cmd.target == "guard"
+
+        # Look with target only (no direction)
+        cmd = LookCommand(target="Dr. Francis Morgan")
+        assert cmd.command_type == CommandType.LOOK
+        assert cmd.direction is None
+        assert cmd.target == "Dr. Francis Morgan"
+
     def test_go_command_valid(self):
         """Test valid GoCommand creation."""
         cmd = GoCommand(direction=Direction.SOUTH)
@@ -249,16 +269,45 @@ class TestCommandParser:
         cmd = self.parser.parse_command("look")
         assert isinstance(cmd, LookCommand)
         assert cmd.direction is None
+        assert cmd.target is None
 
         # Look with direction
         cmd = self.parser.parse_command("look north")
         assert isinstance(cmd, LookCommand)
         assert cmd.direction == Direction.NORTH
+        assert cmd.target == "north"
 
         # Look with slash prefix
         cmd = self.parser.parse_command("/look south")
         assert isinstance(cmd, LookCommand)
         assert cmd.direction == Direction.SOUTH
+        assert cmd.target == "south"
+
+    def test_parse_look_command_with_target(self):
+        """Test parsing look command with NPC targets."""
+        # Look at NPC
+        cmd = self.parser.parse_command("look guard")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "guard"
+
+        # Look at NPC with slash prefix
+        cmd = self.parser.parse_command("/look Dr. Francis Morgan")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "Dr. Francis Morgan"
+
+        # Look at NPC with multi-word name
+        cmd = self.parser.parse_command("look town guard")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "town guard"
+
+        # Direction should still work as target
+        cmd = self.parser.parse_command("look northeast")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction == Direction.NORTHEAST
+        assert cmd.target == "northeast"
 
     def test_parse_go_command(self):
         """Test parsing go command."""
