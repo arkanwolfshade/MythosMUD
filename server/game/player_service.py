@@ -93,7 +93,7 @@ class PlayerService:
 
         # Save player to persistence
         await self.persistence.async_save_player(player)
-        logger.info("Player created successfully", player_id=player.id)
+        logger.info("Player created successfully", player_id=player.player_id)
 
         # Convert to schema format
         return await self._convert_player_to_schema(player)
@@ -179,7 +179,7 @@ class PlayerService:
 
         # Save player to persistence
         await self.persistence.async_save_player(player)
-        logger.info("Player created successfully with stats", player_id=player.id)
+        logger.info("Player created successfully with stats", player_id=player.player_id)
 
         # Convert to schema format
         return await self._convert_player_to_schema(player)

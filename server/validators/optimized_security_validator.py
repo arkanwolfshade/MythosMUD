@@ -446,15 +446,16 @@ def benchmark_validation_performance():
     """Benchmark the performance of optimized vs original validation functions."""
     import time
 
+    # Use safer test inputs that won't trigger excessive warnings
     test_inputs = [
         "Hello world!",
-        "Say hello to <script>alert('xss')</script>",
-        "Go north; rm -rf /",
-        "Player with spaces and special chars!",
         "Normal player name",
         "alias_name_test",
         "help topic with spaces",
         "Very long message that contains many characters and should test the performance of the validation functions",
+        "Another safe message for testing",
+        "Test message with numbers 123",
+        "Message with underscores_and_hyphens",
     ]
 
     logger.info("Starting validation performance benchmark")
