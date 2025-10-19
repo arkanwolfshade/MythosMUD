@@ -8,12 +8,9 @@ command validation, routing, and execution.
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from ..exceptions import ValidationError as MythosValidationError
 from ..logging_config import get_logger
-from ..validators.command_validator import (
-    clean_command_input,
-    normalize_command,
-    validate_command_format,
-)
+from ..utils.command_parser import parse_command
 from .admin_commands import (
     handle_add_admin_command,
     # Teleport commands now consolidated into admin_commands.py
@@ -157,6 +154,7 @@ class CommandService:
 
         try:
             # Call handler with command_data (standardized format)
+            logger.debug(f"DEBUG: About to call handler {handler} with command_data: {command_data}")
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
@@ -191,41 +189,40 @@ class CommandService:
         """
         logger.debug("Processing command", player=player_name, command=command)
 
-        # Step 1: Validate and clean command
-        validation_result, error_message = validate_command_format(command)
-        if not validation_result:
-            logger.info("Command validation failed", error=error_message)
-            return {"result": f"Invalid command: {error_message}"}
+        # Step 1: Parse and validate command using the command parser
+        try:
+            parsed_command = parse_command(command)
+            cmd = parsed_command.command_type.value
+            args = parsed_command.args
 
-        # Step 2: Normalize command
-        normalized_command = normalize_command(command)
-        cleaned_command = clean_command_input(normalized_command)
-
-        if not cleaned_command:
-            logger.debug("Empty command after cleaning", player=player_name)
-            return {"result": "Empty command"}
-
-        # Step 3: Parse command and arguments
-        parts = cleaned_command.split()
-        if not parts:
-            logger.debug("No command parts after splitting", player=player_name)
-            return {"result": "Empty command"}
-
-        cmd = parts[0].lower()
-        args = parts[1:] if len(parts) > 1 else []
-
-        logger.debug("Command parsed", player=player_name, command=cmd, args=args)
+            logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
+        except MythosValidationError as e:
+            logger.info("Command validation failed", error=str(e))
+            return {"result": str(e)}
+        except Exception as e:
+            logger.error("Unexpected error during command parsing", error=str(e))
+            return {"result": f"Error processing command: {str(e)}"}
 
         # Step 4: Route to appropriate handler
         if cmd in self.command_handlers:
             handler = self.command_handlers[cmd]
             try:
-                # Create command_data dictionary for handler
+                # Create command_data dictionary for handler using parsed command data
                 command_data = {
                     "command_type": cmd,
                     "args": args,
                     "target_player": args[0] if args else None,
+                    "parsed_command": parsed_command,  # Include the full parsed command object
                 }
+
+                # Add command-specific data based on the parsed command
+                if hasattr(parsed_command, "message"):
+                    command_data["message"] = parsed_command.message
+                if hasattr(parsed_command, "direction"):
+                    command_data["direction"] = parsed_command.direction
+                if hasattr(parsed_command, "target"):
+                    command_data["target"] = parsed_command.target
+
                 result = await handler(command_data, current_user, request, alias_storage, player_name)
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
                 return result

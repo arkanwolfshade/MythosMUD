@@ -11,6 +11,10 @@ the seepage of secrets into unintended dimensions."
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
+from ..logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 class ServerConfig(BaseSettings):
     """Server network configuration."""
@@ -22,8 +26,11 @@ class ServerConfig(BaseSettings):
     @classmethod
     def validate_port(cls, v: int) -> int:
         """Validate port is in valid range."""
+        logger.debug("Validating server port", port=v)
         if not 1024 <= v <= 65535:
+            logger.error("Invalid server port", port=v, valid_range="1024-65535")
             raise ValueError("Port must be between 1024 and 65535")
+        logger.debug("Server port validation successful", port=v)
         return v
 
     model_config = {"env_prefix": "SERVER_", "case_sensitive": False, "extra": "ignore"}
@@ -39,11 +46,19 @@ class DatabaseConfig(BaseSettings):
     @classmethod
     def validate_database_url(cls, v: str) -> str:
         """Validate database URL format."""
+        logger.debug("Validating database URL", url_length=len(v) if v else 0)
         if not v:
+            logger.error("Database URL validation failed - empty URL")
             raise ValueError("Database URL cannot be empty")
         # Accept both sqlite:/// and sqlite+aiosqlite:/// formats
         if not (v.startswith("sqlite") or v.startswith("postgresql")):
+            logger.error(
+                "Database URL validation failed - invalid protocol",
+                url_preview=v[:50] if len(v) > 50 else v,
+                expected_protocols=["sqlite", "postgresql"],
+            )
             raise ValueError("Database URL must start with 'sqlite' or 'postgresql'")
+        logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
 
     model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
@@ -90,11 +105,14 @@ class SecurityConfig(BaseSettings):
     @classmethod
     def validate_admin_password(cls, v: str) -> str:
         """Validate admin password strength (production only)."""
+        logger.debug("Validating admin password strength", password_length=len(v))
         # Only enforce strict validation in production
         # This is determined by LoggingConfig.environment but we can't access it here
         # So we check if it looks like a real password vs test password
         if len(v) < 8:
+            logger.error("Admin password validation failed - too short", password_length=len(v), minimum_length=8)
             raise ValueError("Admin password must be at least 8 characters")
+        logger.debug("Admin password validation successful", password_length=len(v))
         return v
 
     model_config = {"env_prefix": "MYTHOSMUD_", "case_sensitive": False, "extra": "ignore"}
@@ -116,9 +134,12 @@ class LoggingConfig(BaseSettings):
     @classmethod
     def validate_environment(cls, v: str) -> str:
         """Validate logging environment."""
+        logger.debug("Validating logging environment", environment=v)
         valid_environments = ["local", "unit_test", "e2e_test", "production"]
         if v not in valid_environments:
+            logger.error("Invalid logging environment", environment=v, valid_environments=valid_environments)
             raise ValueError(f"Environment must be one of {valid_environments}, got '{v}'")
+        logger.debug("Logging environment validation successful", environment=v)
         return v
 
     @field_validator("level")

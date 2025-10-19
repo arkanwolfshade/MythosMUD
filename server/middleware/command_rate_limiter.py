@@ -10,7 +10,7 @@ AI: Uses sliding window algorithm for accurate rate limiting without fixed time 
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -75,6 +75,7 @@ class CommandRateLimiter:
                 player=player_name,
                 current_count=current_count,
                 max_commands=self.max_commands,
+                window_seconds=self.window.total_seconds(),
             )
             return False
 

@@ -45,6 +45,10 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Import Windows-specific logging fixes
 try:
     from .windows_logging_fix import configure_windows_logging, disable_problematic_log_handlers
@@ -75,13 +79,15 @@ EXAMPLE_ENV_PATH = project_root / "env.unit_test.example"
 def validate_test_environment():
     """Validate that required test environment files exist."""
     if not TEST_ENV_PATH.exists():
-        print(f"[ERROR] Test environment file not found at {TEST_ENV_PATH}")
+        logger.error("Test environment file not found", test_env_path=str(TEST_ENV_PATH))
         if EXAMPLE_ENV_PATH.exists():
-            print(f"[INFO] Example file exists at {EXAMPLE_ENV_PATH}")
-            print("[SOLUTION] Copy the example file to create the required test environment:")
-            print(f'  Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
+            logger.info("Example file exists", example_path=str(EXAMPLE_ENV_PATH))
+            logger.info(
+                "Copy example file to create required test environment",
+                copy_command=f'Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"',
+            )
         else:
-            print("[ERROR] No example file found to copy from")
+            logger.error("No example file found to copy from")
         raise FileNotFoundError(
             f"Required test environment file missing: {TEST_ENV_PATH}\n"
             f"Please copy env.unit_test.example to server/tests/.env.unit_test"
@@ -98,12 +104,15 @@ def validate_test_environment():
                     missing_vars.append(var)
 
             if missing_vars:
-                print(f"[ERROR] Test environment file is missing required variables: {missing_vars}")
-                print(f"[SOLUTION] Please ensure {TEST_ENV_PATH} contains all required configuration variables")
+                logger.error(
+                    "Test environment file missing required variables",
+                    missing_variables=missing_vars,
+                    test_env_path=str(TEST_ENV_PATH),
+                )
                 raise ValueError(f"Test environment file missing required variables: {missing_vars}")
 
     except Exception as e:
-        print(f"[ERROR] Failed to validate test environment file: {e}")
+        logger.error("Failed to validate test environment file", error=str(e))
         raise
 
 
@@ -111,14 +120,14 @@ def validate_test_environment():
 try:
     validate_test_environment()
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"[OK] Loaded test environment secrets from {TEST_ENV_PATH}")
+    logger.info("Loaded test environment secrets", test_env_path=str(TEST_ENV_PATH))
 except (FileNotFoundError, ValueError) as e:
-    print(f"[CRITICAL ERROR] Test environment validation failed: {e}")
-    print("\n[SETUP INSTRUCTIONS]")
-    print("1. Copy the example environment file:")
-    print(f'   Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
-    print("2. Verify the file contains all required variables")
-    print("3. Run tests again")
+    logger.critical("Test environment validation failed", error=str(e))
+    logger.critical(
+        "Setup instructions: Copy example environment file",
+        copy_command=f'Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"',
+    )
+    logger.critical("Additional setup steps: Verify file contains all required variables and run tests again")
     raise SystemExit(1) from e
 
 # Set environment variables BEFORE any imports to prevent module-level

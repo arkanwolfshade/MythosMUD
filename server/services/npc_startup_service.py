@@ -11,7 +11,7 @@ entities is essential for maintaining the integrity of the world's fabric.
 import random
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..npc_database import get_npc_session
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service
@@ -96,14 +96,12 @@ class NPCStartupService:
 
             logger.info(
                 "NPC startup spawning completed",
-                context={
-                    "total_attempted": startup_results["total_attempted"],
-                    "total_spawned": startup_results["total_spawned"],
-                    "required_spawned": startup_results["required_spawned"],
-                    "optional_spawned": startup_results["optional_spawned"],
-                    "failed_spawns": startup_results["failed_spawns"],
-                    "errors": len(startup_results["errors"]),
-                },
+                total_attempted=startup_results["total_attempted"],
+                total_spawned=startup_results["total_spawned"],
+                required_spawned=startup_results["required_spawned"],
+                optional_spawned=startup_results["optional_spawned"],
+                failed_spawns=startup_results["failed_spawns"],
+                errors=len(startup_results["errors"]),
             )
 
             return startup_results

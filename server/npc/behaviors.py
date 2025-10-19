@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
 
 logger = get_logger(__name__)
@@ -35,8 +35,7 @@ class BehaviorEngine:
         self.action_handlers: dict[str, Callable] = {}
         self.state: dict[str, Any] = {}
 
-        # Temporarily disable logging to avoid potential recursion issues
-        # logger.debug("Behavior engine initialized")
+        logger.debug("Behavior engine initialized", engine_id=id(self))
 
     def add_rule(self, rule: dict[str, Any]) -> bool:
         """
@@ -59,8 +58,12 @@ class BehaviorEngine:
 
             # Add new rule
             self.rules.append(rule)
-            # Temporarily disable logging to avoid potential recursion issues
-            # logger.debug("Added behavior rule", rule_name=rule["name"])
+            logger.debug(
+                "Added behavior rule",
+                rule_name=rule["name"],
+                priority=rule.get("priority", 0),
+                total_rules=len(self.rules),
+            )
             return True
 
         except Exception as e:
@@ -108,6 +111,7 @@ class BehaviorEngine:
             bool: True if condition is met
         """
         try:
+            logger.debug("Evaluating behavior condition", condition=condition, context_keys=list(context.keys()))
             # Simple condition evaluation (can be enhanced with more complex logic)
             if "==" in condition:
                 parts = condition.split("==")
@@ -165,7 +169,9 @@ class BehaviorEngine:
                 return bool(context.get(condition, False))
 
         except Exception as e:
-            logger.error("Error evaluating condition", condition=condition, error=str(e))
+            logger.error(
+                "Error evaluating condition", condition=condition, context_keys=list(context.keys()), error=str(e)
+            )
             return False
 
     def get_applicable_rules(self, context: dict[str, Any]) -> list[dict[str, Any]]:
@@ -247,14 +253,33 @@ class BehaviorEngine:
             applicable_rules = self.get_applicable_rules(context)
 
             if not applicable_rules:
+                logger.debug(
+                    "No applicable rules found for context",
+                    context_keys=list(context.keys()),
+                    total_rules=len(self.rules),
+                )
                 return True  # No rules to execute is considered success
 
             # Execute highest priority rule only (deterministic behavior)
             highest_priority_rule = applicable_rules[0]
-            return self.execute_action(highest_priority_rule["action"], context)
+            logger.debug(
+                "Executing highest priority rule",
+                rule_name=highest_priority_rule["name"],
+                priority=highest_priority_rule["priority"],
+                action=highest_priority_rule["action"],
+            )
+
+            result = self.execute_action(highest_priority_rule["action"], context)
+            logger.debug("Rule execution completed", rule_name=highest_priority_rule["name"], success=result)
+            return result
 
         except Exception as e:
-            logger.error("Error executing applicable rules", error=str(e))
+            logger.error(
+                "Error executing applicable rules",
+                context_keys=list(context.keys()),
+                total_rules=len(self.rules),
+                error=str(e),
+            )
             return False
 
 

@@ -476,12 +476,14 @@ class AttackCommand(BaseCommand):
     """Command for attacking a target."""
 
     command_type: Literal[CommandType.ATTACK] = CommandType.ATTACK
-    target: str = Field(..., min_length=1, max_length=50, description="Target to attack")
+    target: str | None = Field(None, min_length=1, max_length=50, description="Target to attack")
 
     @field_validator("target")
     @classmethod
     def validate_target(cls, v):
         """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
         return validate_combat_target(v)
 
 
@@ -489,12 +491,14 @@ class PunchCommand(BaseCommand):
     """Command for punching a target."""
 
     command_type: Literal[CommandType.PUNCH] = CommandType.PUNCH
-    target: str = Field(..., min_length=1, max_length=50, description="Target to punch")
+    target: str | None = Field(None, min_length=1, max_length=50, description="Target to punch")
 
     @field_validator("target")
     @classmethod
     def validate_target(cls, v):
         """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
         return validate_combat_target(v)
 
 
@@ -502,12 +506,14 @@ class KickCommand(BaseCommand):
     """Command for kicking a target."""
 
     command_type: Literal[CommandType.KICK] = CommandType.KICK
-    target: str = Field(..., min_length=1, max_length=50, description="Target to kick")
+    target: str | None = Field(None, min_length=1, max_length=50, description="Target to kick")
 
     @field_validator("target")
     @classmethod
     def validate_target(cls, v):
         """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
         return validate_combat_target(v)
 
 
@@ -515,12 +521,14 @@ class StrikeCommand(BaseCommand):
     """Command for striking a target."""
 
     command_type: Literal[CommandType.STRIKE] = CommandType.STRIKE
-    target: str = Field(..., min_length=1, max_length=50, description="Target to strike")
+    target: str | None = Field(None, min_length=1, max_length=50, description="Target to strike")
 
     @field_validator("target")
     @classmethod
     def validate_target(cls, v):
         """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
         return validate_combat_target(v)
 
 

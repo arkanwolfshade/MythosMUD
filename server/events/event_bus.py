@@ -20,7 +20,7 @@ import asyncio
 from collections import defaultdict
 from collections.abc import Callable
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
 
 
@@ -139,7 +139,7 @@ class EventBus:
                     try:
                         self._logger.error(f"Error processing event: {e}", exc_info=True)
                     except Exception:
-                        print(f"Error processing event: {e}")
+                        self._logger.error("Error processing event", error=str(e), exc_info=True)
                     continue
 
                 # Check for shutdown signal
@@ -151,7 +151,7 @@ class EventBus:
             try:
                 self._logger.error(f"Fatal error in async event processing: {e}", exc_info=True)
             except Exception:
-                print(f"Fatal error in async event processing: {e}")
+                self._logger.critical("Fatal error in async event processing", error=str(e), exc_info=True)
         finally:
             self._logger.info("EventBus pure async processing stopped")
 
@@ -304,7 +304,7 @@ class EventBus:
         if self._running:
             # Use basic print instead of logger to avoid encoding issues during cleanup
             try:
-                print("EventBus destroyed without graceful shutdown")
+                self._logger.warning("EventBus destroyed without graceful shutdown")
             except Exception:
                 pass
 

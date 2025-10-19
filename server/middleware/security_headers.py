@@ -16,7 +16,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -48,12 +48,41 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next) -> Response:
         """Add security headers to the response."""
-        response = await call_next(request)
+        try:
+            logger.debug(
+                "Processing request through security headers middleware",
+                method=request.method,
+                url=str(request.url),
+                user_agent=request.headers.get("user-agent", "unknown"),
+            )
 
-        # Add comprehensive security headers
-        self._add_security_headers(response)
+            response = await call_next(request)
 
-        return response
+            # Add comprehensive security headers
+            self._add_security_headers(response)
+
+            logger.debug(
+                "Security headers added to response",
+                status_code=response.status_code,
+                headers_added=len(
+                    [
+                        h
+                        for h in response.headers
+                        if h.lower().startswith(("x-", "content-security", "strict-transport", "referrer"))
+                    ]
+                ),
+            )
+
+            return response
+        except Exception as e:
+            logger.error(
+                "Error in security headers middleware",
+                method=request.method,
+                url=str(request.url),
+                error=str(e),
+                exc_info=True,
+            )
+            raise
 
     def _add_security_headers(self, response: Response) -> None:
         """Add all security headers to the response."""

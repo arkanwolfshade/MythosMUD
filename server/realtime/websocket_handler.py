@@ -10,7 +10,7 @@ import json
 from fastapi import WebSocket, WebSocketDisconnect
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .connection_manager import connection_manager
 from .envelope import build_event
 
@@ -330,7 +330,9 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
     try:
         logger.info(
             "🚨 SERVER DEBUG: handle_game_command called",
-            context={"command": command, "args": args, "player_id": player_id},
+            command=command,
+            args=args,
+            player_id=player_id,
         )
         # Parse command and arguments if args not provided
         if args is None:
@@ -360,7 +362,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
-            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", context={"player": player_id})
+            logger.debug(f"Broadcasting {result.get('broadcast_type')} message to room", player=player_id)
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id

@@ -13,14 +13,14 @@ parameter that our structlog-based system requires. Using logging.getLogger()
 will cause server startup failures when services attempt to log with context.
 
 CORRECT USAGE:
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     logger = get_logger(__name__)
-    logger.info("Message", context={"key": "value"})
+    logger.info("Message")
 
 INCORRECT USAGE (WILL CAUSE FAILURES):
     import logging
     logger = logging.getLogger(__name__)
-    logger.info("Message", context={"key": "value"})  # TypeError!
+    logger.info("Message")  # TypeError!
 """
 
 import logging

@@ -34,7 +34,7 @@ logger = get_logger(__name__)
 # Create NPC admin router
 npc_router = APIRouter(prefix="/admin/npc", tags=["admin", "npc"])
 
-logger.info("NPC Admin API router initialized", context={"prefix": "/admin/npc"})
+logger.info("NPC Admin API router initialized")
 
 
 # --- Pydantic Models for API ---
@@ -165,7 +165,7 @@ async def get_npc_definitions(
         validate_admin_permission(current_user, AdminAction.LIST_NPC_DEFINITIONS, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC definitions requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC definitions requested", user=auth_service.get_username(current_user))
 
         # Get NPC definitions from database using NPC database session
         async for npc_session in get_npc_session():
@@ -371,7 +371,7 @@ async def get_npc_instances(
         validate_admin_permission(current_user, AdminAction.LIST_NPC_INSTANCES, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC instances requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC instances requested", user=auth_service.get_username(current_user))
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -379,7 +379,7 @@ async def get_npc_instances(
         # Retrieve all active NPC instances
         instances = await instance_service.get_npc_instances()
 
-        logger.info("Retrieved NPC instances", context={"count": len(instances), "user": current_user.get("username")})
+        logger.info("Retrieved NPC instances", user=auth_service.get_username(current_user))
         return instances
 
     except HTTPException:
@@ -453,9 +453,7 @@ async def despawn_npc_instance(
         validate_admin_permission(current_user, AdminAction.DESPAWN_NPC, request)
 
         auth_service = get_admin_auth_service()
-        logger.info(
-            "NPC despawn requested", context={"user": auth_service.get_username(current_user), "npc_id": npc_id}
-        )
+        logger.info("NPC despawn requested", user=auth_service.get_username(current_user), npc_id=npc_id)
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -547,7 +545,7 @@ async def get_npc_stats(
         validate_admin_permission(current_user, AdminAction.GET_NPC_STATS, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC stats requested", context={"user": auth_service.get_username(current_user), "npc_id": npc_id})
+        logger.info("NPC stats requested", user=auth_service.get_username(current_user))
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -589,7 +587,7 @@ async def get_npc_population_stats(
         validate_admin_permission(current_user, AdminAction.GET_POPULATION_STATS, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC population stats requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC population stats requested", user=auth_service.get_username(current_user))
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -627,7 +625,7 @@ async def get_npc_zone_stats(
         validate_admin_permission(current_user, AdminAction.GET_ZONE_STATS, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC zone stats requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC zone stats requested", user=auth_service.get_username(current_user))
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -664,7 +662,7 @@ async def get_npc_system_status(
         validate_admin_permission(current_user, AdminAction.GET_SYSTEM_STATUS, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC system status requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC system status requested", user=auth_service.get_username(current_user))
 
         # Get NPC instance service
         instance_service = get_npc_instance_service()
@@ -707,7 +705,7 @@ async def get_npc_spawn_rules(
         validate_admin_permission(current_user, AdminAction.LIST_SPAWN_RULES, request)
 
         auth_service = get_admin_auth_service()
-        logger.info("NPC spawn rules requested", context={"user": auth_service.get_username(current_user)})
+        logger.info("NPC spawn rules requested", user=auth_service.get_username(current_user))
 
         # Get NPC spawn rules from database
         spawn_rules = await npc_service.get_spawn_rules(session)

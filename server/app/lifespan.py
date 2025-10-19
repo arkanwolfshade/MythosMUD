@@ -12,7 +12,8 @@ from fastapi import FastAPI
 
 from ..config import get_config
 from ..database import init_db
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
+from ..logging_config import update_logging_with_player_service
 from ..npc_database import init_npc_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
@@ -147,13 +148,11 @@ async def lifespan(app: FastAPI):
 
         logger.info(
             "NPC startup spawning completed",
-            context={
-                "total_spawned": startup_results["total_spawned"],
-                "required_spawned": startup_results["required_spawned"],
-                "optional_spawned": startup_results["optional_spawned"],
-                "failed_spawns": startup_results["failed_spawns"],
-                "errors": len(startup_results["errors"]),
-            },
+            total_spawned=startup_results["total_spawned"],
+            required_spawned=startup_results["required_spawned"],
+            optional_spawned=startup_results["optional_spawned"],
+            failed_spawns=startup_results["failed_spawns"],
+            errors=len(startup_results["errors"]),
         )
 
         # Log any errors that occurred during startup
@@ -170,7 +169,6 @@ async def lifespan(app: FastAPI):
     logger.info("NPC startup spawning completed - NPCs should now be present in the world")
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
-    from ..logging_config import update_logging_with_player_service
 
     update_logging_with_player_service(app.state.player_service)
     logger.info("Logging system enhanced with PlayerGuidFormatter")

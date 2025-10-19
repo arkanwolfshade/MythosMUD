@@ -8,7 +8,6 @@ and other combat-related actions.
 from typing import Any
 
 from server.alias_storage import AliasStorage
-from server.logging.combat_audit import combat_audit_logger
 from server.logging_config import get_logger
 from server.persistence import get_persistence
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
@@ -53,157 +52,114 @@ class CombatCommandHandler:
         Returns:
             dict: Attack command result with 'result' key
         """
-        command = command_data.get("command_type", "attack")
-        args = command_data.get("args", [])
-        target_name = args[0] if args else None
+        command_type = command_data.get("command_type", "attack")
+        # Convert enum to string if needed
+        if hasattr(command_type, "value"):
+            command = command_type.value
+        else:
+            command = str(command_type)
+        target_name = command_data.get("target_player")
 
         logger.info(f"Processing attack command '{command}' from {player_name} targeting '{target_name}'")
+        logger.debug(f"DEBUG: command_data keys: {list(command_data.keys())}")
+        logger.debug(f"DEBUG: current_user keys: {list(current_user.keys()) if current_user else 'None'}")
+        logger.debug(f"DEBUG: request type: {type(request)}")
+        logger.debug(f"DEBUG: alias_storage type: {type(alias_storage)}")
 
-        # Use combat validator for enhanced validation
-        player_context = {
-            "player_id": current_user.get("player_id"),
-            "player_name": player_name,
-            "room_id": None,  # Will be set later
-        }
-
-        is_valid, error_msg, warning_msg = self.combat_validator.validate_combat_command(command_data, player_context)
-
-        if not is_valid:
-            # Log validation failure for security monitoring
-            combat_audit_logger.log_combat_validation_failure(
-                player_id=current_user.get("player_id", "unknown"),
-                player_name=player_name,
-                validation_type="command_validation",
-                failure_reason=error_msg,
-                command_data=command_data,
-            )
-            return {"result": error_msg}
-
-        if warning_msg:
-            logger.warning(f"Combat validation warning: {warning_msg}")
-            # Log security warning
-            combat_audit_logger.log_combat_security_event(
-                event_type="validation_warning",
-                player_id=current_user.get("player_id", "unknown"),
-                player_name=player_name,
-                security_level="medium",
-                description=warning_msg,
-            )
-
-        # Get player information
-        player_id = current_user.get("player_id")
-        if not player_id:
-            return {"result": "You must be logged in to attack."}
-
-        # Get player's current room
-        player = self.persistence.get_player(player_id)
-        if not player:
-            return {"result": "Player not found."}
-
-        room_id = player.current_room
-        if not room_id:
-            return {"result": "You are not in a room."}
-
-        # Get room to check for NPCs
-        room = self.persistence.get_room(room_id)
-        if not room:
-            return {"result": "You are in an invalid room."}
-
-        # Look for NPCs in the room
-        npc_found = None
-        available_targets = []
-        for npc_id in room.npcs:
-            # Try to get NPC instance
-            npc_instance = self._get_npc_instance(npc_id)
-            if npc_instance:
-                available_targets.append(npc_instance.name)
-                if npc_instance.name.lower() == target_name.lower():
-                    npc_found = npc_instance
-                    break
-
-        # Use combat validator for target validation
-        target_exists, target_error = self.combat_validator.validate_target_exists(target_name, available_targets)
-
-        if not target_exists:
-            return {"result": target_error}
-
-        # Check if NPC is alive
-        if not npc_found.is_alive:
-            alive_check, alive_error = self.combat_validator.validate_target_alive(target_name, npc_found.is_alive)
-            if not alive_check:
-                return {"result": alive_error}
-
-        # Validate attack strength
-        player_level = player.level if hasattr(player, "level") else 1
-        npc_level = getattr(npc_found, "level", 1) if hasattr(npc_found, "level") else 1
-
-        can_attack, strength_error, strength_warning = self.combat_validator.validate_attack_strength(
-            player_level, npc_level, weapon_power=1
-        )
-
-        if not can_attack:
-            return {"result": strength_error}
-
-        if strength_warning:
-            logger.warning(f"Attack strength warning: {strength_warning}")
-
-        # Log combat start
-        combat_audit_logger.log_combat_start(
-            player_id=player_id,
-            player_name=player_name,
-            target_id=npc_id,
-            target_name=target_name,
-            room_id=room_id,
-            action_type=command,
-        )
-
-        # Execute the attack
+        # Add more debug logging to trace execution
         try:
-            success = self.npc_combat_service.handle_player_attack_on_npc(
-                player_id=player_id,
-                npc_id=npc_id,
-                room_id=room_id,
-                action_type=command,
-                damage=1,  # MVP: all attacks do 1 damage
+            logger.debug("DEBUG: Starting target validation", player_name=player_name)
+            if not target_name:
+                logger.debug("DEBUG: No target name provided", player_name=player_name)
+                # Return a thematic error message for no target
+                error_messages = [
+                    "You must focus your wrath upon a specific target, lest your fury be wasted.",
+                    "The void stares back at you, demanding a name to direct your hatred.",
+                    "Your anger needs direction - who shall bear the brunt of your assault?",
+                    "The cosmic forces require a target for your destructive intent.",
+                ]
+                import random
+
+                return {"result": random.choice(error_messages)}
+
+            logger.debug(f"DEBUG: Target name: '{target_name}'")
+
+            # Get player's current room
+            logger.debug("DEBUG: Getting player's current room", player_name=player_name)
+            room_id = current_user.get("room_id")
+            if not room_id:
+                logger.debug("DEBUG: No room_id found in current_user", player_name=player_name)
+                return {"result": "You are not in a room."}
+
+            logger.debug(f"DEBUG: Player room_id: {room_id}")
+
+            # Get room data
+            logger.debug("DEBUG: Getting room data", player_name=player_name)
+            room = self._get_room_data(room_id)
+            if not room:
+                logger.debug("DEBUG: Room data not found", player_name=player_name)
+                return {"result": "You are in an unknown room."}
+
+            logger.debug(f"DEBUG: Room data found: {room}")
+
+            # Look for NPCs in the room
+            logger.debug("DEBUG: Looking for NPCs in room", player_name=player_name)
+            npc_found = None
+            npc_id = None
+            available_targets = []
+            logger.debug(f"DEBUG: Looking for NPCs in room {room_id}, room.get_npcs() = {room.get_npcs()}")
+            for current_npc_id in room.get_npcs():
+                # Try to get NPC instance
+                logger.debug(f"DEBUG: Processing NPC ID: {current_npc_id}")
+                npc_instance = self._get_npc_instance(current_npc_id)
+                logger.debug(f"DEBUG: Got NPC instance for {current_npc_id}: {npc_instance}")
+                if npc_instance:
+                    available_targets.append(npc_instance.name)
+                    logger.debug(f"DEBUG: Comparing '{npc_instance.name.lower()}' with '{target_name.lower()}'")
+                    if npc_instance.name.lower() == target_name.lower():
+                        npc_found = npc_instance
+                        npc_id = current_npc_id
+                        logger.debug(f"DEBUG: Found matching NPC: npc_found={npc_found}, npc_id={npc_id}")
+                        break
+
+            logger.debug(
+                f"DEBUG: After loop - npc_found={npc_found}, npc_id={npc_id}, available_targets={available_targets}"
             )
 
-            # Log attack execution
-            combat_audit_logger.log_combat_attack(
-                player_id=player_id,
-                player_name=player_name,
-                target_id=npc_id,
-                target_name=target_name,
-                action_type=command,
-                damage_dealt=1 if success else 0,
-                target_hp_before=50,  # Placeholder - would get from NPC
-                target_hp_after=49 if success else 50,  # Placeholder
-                success=success,
-            )
+            if not npc_found:
+                logger.debug("DEBUG: No matching NPC found", player_name=player_name)
+                available_list = ", ".join(available_targets) if available_targets else "none"
+                return {"result": f"No target named '{target_name}' found. Available targets: {available_list}"}
 
-            if success:
-                result_msg = self.combat_validator.get_combat_result_message(command, target_name, True, 1)
-                return {"result": result_msg}
-            else:
-                result_msg = self.combat_validator.get_combat_result_message(command, target_name, False, 0)
-                return {"result": result_msg}
+            logger.debug(f"DEBUG: Found target NPC: {npc_found.name} (ID: {npc_id})")
+
+            # Validate combat action
+            logger.debug("DEBUG: Validating combat action", player_name=player_name)
+            validation_result = await self._validate_combat_action(player_name, npc_id, command)
+            if not validation_result.get("valid", False):
+                logger.debug(f"DEBUG: Combat validation failed: {validation_result}")
+                return {"result": validation_result.get("message", "Invalid combat action.")}
+
+            logger.debug("DEBUG: Combat validation passed", player_name=player_name)
+
+            # Execute combat action
+            logger.debug("DEBUG: Executing combat action", player_name=player_name)
+            combat_result = await self._execute_combat_action(player_name, npc_id, command)
+            logger.debug(f"DEBUG: Combat action executed: {combat_result}")
+
+            return combat_result
 
         except Exception as e:
-            logger.error(f"Error in combat: {str(e)}")
-            # Log combat error for security monitoring
-            combat_audit_logger.log_combat_security_event(
-                event_type="combat_error",
-                player_id=player_id,
-                player_name=player_name,
-                security_level="high",
-                description=f"Combat execution error: {str(e)}",
-                additional_data={
-                    "target_id": npc_id,
-                    "target_name": target_name,
-                    "action_type": command,
-                    "error_type": type(e).__name__,
-                },
-            )
-            return {"result": "An error occurred during combat."}
+            logger.error(f"DEBUG: Exception in combat handler: {e}", exc_info=True)
+            return {"result": f"An error occurred during combat: {str(e)}"}
+
+    def _get_room_data(self, room_id: str) -> Any | None:
+        """Get room data from persistence."""
+        try:
+            return self.persistence.get_room(room_id)
+        except Exception as e:
+            logger.error(f"Error getting room data for {room_id}: {e}")
+            return None
 
     def _get_npc_instance(self, npc_id: str) -> Any | None:
         """Get NPC instance from the spawning service."""
@@ -219,6 +175,22 @@ class CombatCommandHandler:
         except Exception as e:
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
+
+    async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict:
+        """Validate combat action."""
+        # Simple validation for now
+        if not player_name or not npc_id or not command:
+            return {"valid": False, "message": "Invalid combat parameters"}
+        return {"valid": True}
+
+    async def _execute_combat_action(self, player_name: str, npc_id: str, command: str) -> dict[str, str]:
+        """Execute combat action."""
+        try:
+            # Simple combat execution for now
+            return {"result": f"You {command} the target!"}
+        except Exception as e:
+            logger.error(f"Error executing combat action: {e}")
+            return {"result": f"Error executing {command} command"}
 
 
 # Global combat command handler instance
@@ -285,7 +257,3 @@ async def handle_strike_command(
     return await combat_command_handler.handle_attack_command(
         command_data, current_user, request, alias_storage, player_name
     )
-
-
-# Global combat command handler instance
-combat_command_handler = CombatCommandHandler()

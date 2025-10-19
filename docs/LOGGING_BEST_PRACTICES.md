@@ -1,10 +1,10 @@
-# Logging Best Practices for MythosMUD
+# Enhanced Logging Best Practices for MythosMUD
 
 *As documented in the restricted archives of Miskatonic University, proper logging is the foundation upon which all system observability and debugging capabilities rest. Without comprehensive logging, we are blind to the inner workings of our digital realm.*
 
 ## Overview
 
-This document outlines the best practices for logging throughout the MythosMUD codebase. Our structured logging system provides comprehensive observability while maintaining security and performance.
+This document outlines the best practices for the enhanced logging system implemented in MythosMUD. Our advanced structured logging system provides comprehensive observability with MDC (Mapped Diagnostic Context), correlation IDs, security sanitization, and performance monitoring while maintaining security and performance.
 
 ## Core Logging Principles
 
@@ -29,11 +29,11 @@ Log entries should provide information that can be acted upon by developers or o
 Use for detailed diagnostic information that is typically only of interest when diagnosing problems.
 
 ```python
-import structlog
+from server.logging.enhanced_logging_config import get_logger
 
-logger = structlog.get_logger(__name__)
+logger = get_logger(__name__)
 
-# Good: Detailed debugging information
+# Good: Detailed debugging information with enhanced logging
 logger.debug(
     "Processing player movement",
     player_id=player.id,
@@ -233,28 +233,28 @@ with log_performance("player_movement", player_id=player.id, direction="north"):
 ### Request Context
 
 ```python
-from server.utils.error_logging import create_context_from_request
+from server.logging.enhanced_logging_config import bind_request_context, clear_request_context
+from server.middleware.correlation_middleware import CorrelationMiddleware
 
 @app.middleware("http")
 async def add_request_context(request: Request, call_next):
-    """Add request context to all log entries."""
-    # Create request context
-    context = create_context_from_request(request)
-
-    # Add to structlog context
-    structlog.contextvars.clear_contextvars()
-    structlog.contextvars.bind_contextvars(
-        request_id=context.request_id,
-        user_id=context.user_id,
-        ip_address=context.ip_address,
-        user_agent=context.user_agent
+    """Add request context to all log entries using enhanced logging."""
+    # Bind request context using enhanced logging
+    bind_request_context(
+        correlation_id=str(uuid.uuid4()),
+        user_id=getattr(request.state, 'user_id', None),
+        session_id=getattr(request.state, 'session_id', None),
+        request_id=str(request.url),
+        method=request.method,
+        path=request.url.path,
+        client_host=getattr(request.client, 'host', 'unknown')
     )
 
     try:
         response = await call_next(request)
         return response
     finally:
-        structlog.contextvars.clear_contextvars()
+        clear_request_context()
 ```
 
 ### User Context
@@ -291,6 +291,70 @@ def log_system_event(event: str, **kwargs):
 # Usage
 log_system_event("database_connected", component="database", connection_count=5)
 log_system_event("cache_cleared", component="cache", entries_cleared=1000)
+```
+
+## Enhanced Logging Features
+
+### MDC (Mapped Diagnostic Context)
+The enhanced logging system automatically includes context variables in all log entries:
+
+```python
+from server.logging.enhanced_logging_config import bind_request_context, get_logger
+
+logger = get_logger(__name__)
+
+# Bind context for the current request
+bind_request_context(
+    correlation_id="req-123",
+    user_id="user-456",
+    session_id="session-789"
+)
+
+# All subsequent logs automatically include this context
+logger.info("User action completed", action="login", success=True)
+# Logs: {"correlation_id": "req-123", "user_id": "user-456", "session_id": "session-789", "action": "login", "success": true}
+```
+
+### Correlation IDs
+All requests automatically receive correlation IDs for tracing:
+
+```python
+from server.middleware.correlation_middleware import CorrelationMiddleware
+
+app.add_middleware(CorrelationMiddleware)
+# All requests now have correlation IDs in headers and logs
+```
+
+### Security Sanitization
+Sensitive data is automatically redacted:
+
+```python
+logger.info("User login", username="john", password="secret123")
+# Logs: {"username": "john", "password": "[REDACTED]"}
+```
+
+### Performance Monitoring
+Built-in performance tracking:
+
+```python
+from server.monitoring.performance_monitor import measure_performance
+
+with measure_performance("database_query"):
+    result = database.query("SELECT * FROM players")
+# Automatically logs performance metrics
+```
+
+### Exception Tracking
+100% exception coverage with context:
+
+```python
+from server.monitoring.exception_tracker import track_exception
+
+try:
+    risky_operation()
+except Exception as e:
+    track_exception(e, user_id=current_user.id, severity="error")
+# Automatically logs exception with full context
 ```
 
 ## Security Considerations

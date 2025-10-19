@@ -8,7 +8,7 @@ and game_tick events to NATS subjects for real-time game event distribution.
 from datetime import datetime
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger("realtime.event_publisher")
 
@@ -33,7 +33,7 @@ class EventPublisher:
         self.nats_service = nats_service
         self.sequence_number = initial_sequence
 
-        logger.info("EventPublisher initialized", context={"initial_sequence": initial_sequence})
+        logger.info("EventPublisher initialized")
 
     async def publish_player_entered_event(
         self,
@@ -215,12 +215,12 @@ class EventPublisher:
                     tick_number=event_data["tick_number"],
                 )
             else:
-                logger.error("Failed to publish game tick event", context={"subject": subject})
+                logger.error("Failed to publish game tick event")
 
             return success
 
-        except Exception as e:
-            logger.error("Error publishing game tick event", context={"error": str(e), "error_type": type(e).__name__})
+        except Exception:
+            logger.error("Error publishing game tick event")
             return False
 
     def _create_event_message(

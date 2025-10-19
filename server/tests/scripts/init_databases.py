@@ -14,6 +14,10 @@ from pathlib import Path
 
 import aiosqlite
 
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Schema SQL for FastAPI Users v14 compatibility
 SCHEMA_SQL = """
 -- MythosMUD Database Schema
@@ -96,14 +100,14 @@ CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_i
 
 async def init_database(db_path: str, db_name: str):
     """Initialize a database with the schema."""
-    print(f"Initializing {db_name} database: {db_path}")
+    logger.info("Initializing database", db_name=db_name, db_path=db_path)
 
     # Create backup if database exists
     if os.path.exists(db_path):
-        print(f"[WARN] {db_name} database already exists. Backing up...")
+        logger.warning("Database already exists, creating backup", db_name=db_name)
         backup_path = f"{db_path}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         shutil.copy2(db_path, backup_path)
-        print(f"[OK] Backup created: {backup_path}")
+        logger.info("Database backup created", backup_path=backup_path)
 
     # Create database directory if it doesn't exist
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -123,28 +127,30 @@ async def init_database(db_path: str, db_name: str):
 
         await db.commit()
 
-    print(f"[OK] {db_name} database initialized successfully")
+    logger.info("Database initialized successfully", db_name=db_name)
 
 
 async def verify_database(db_path: str, db_name: str):
     """Verify database schema."""
-    print(f"\n{db_name} database verification:")
+    logger.info("Verifying database schema", db_name=db_name)
 
     async with aiosqlite.connect(db_path) as db:
         # Check tables
         cursor = await db.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = await cursor.fetchall()
-        print(f"Tables: {[table[0] for table in tables]}")
+        table_names = [table[0] for table in tables]
+        logger.info("Database tables verified", db_name=db_name, tables=table_names)
 
         # Check users table schema
         cursor = await db.execute("PRAGMA table_info(users)")
         columns = await cursor.fetchall()
-        print(f"Users table columns: {[col[1] for col in columns]}")
+        column_names = [col[1] for col in columns]
+        logger.info("Users table structure verified", db_name=db_name, columns=column_names)
 
 
 async def main():
     """Main initialization function."""
-    print("Initializing MythosMUD databases...")
+    logger.info("Initializing MythosMUD databases")
 
     # Define database paths
     script_dir = Path(__file__).parent
@@ -161,17 +167,17 @@ async def main():
         await init_database(str(test_db), "Test")
 
         # Verify both databases
-        print("\nVerifying database schemas...")
+        logger.info("Verifying database schemas")
         await verify_database(str(prod_db), "Production")
         await verify_database(str(test_db), "Test")
 
-        print("\n[SUCCESS] Database initialization completed successfully!")
-        print("Both databases now contain: users, players, invites tables")
-        print("[OK] FastAPI Users v14 compatible schema with UUID primary keys")
-        print("[OK] Bogus email generation system ready for privacy protection")
+        logger.info("Database initialization completed successfully")
+        logger.info("Both databases now contain required tables", tables=["users", "players", "invites"])
+        logger.info("FastAPI Users v14 compatible schema with UUID primary keys")
+        logger.info("Bogus email generation system ready for privacy protection")
 
     except (OSError, aiosqlite.Error) as e:
-        print(f"[ERROR] Database initialization failed: {e}")
+        logger.error("Database initialization failed", error=str(e))
         return 1
 
     return 0

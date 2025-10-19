@@ -40,7 +40,7 @@ from ..exceptions import (
 from ..exceptions import (
     ValidationError as MythosValidationError,
 )
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .pydantic_error_handler import PydanticErrorHandler
 
 logger = get_logger(__name__)

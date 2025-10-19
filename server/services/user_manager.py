@@ -10,7 +10,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .chat_logger import chat_logger
 
 logger = get_logger("communications.user_manager")
@@ -66,19 +66,17 @@ class UserManager:
             if player:
                 player.set_admin_status(True)
                 persistence.save_player(player)
-                logger.info(
-                    "Player added as admin in database", context={"player_id": player_id, "player_name": player_name}
-                )
+                logger.info("Player added as admin in database", player_id=player_id, player_name=player_name)
             else:
-                logger.error("Player not found in database", context={"player_id": player_id})
+                logger.error("Player not found in database")
                 return False
 
             # Update in-memory cache
             self._admin_players.add(player_id)
 
             return True
-        except Exception as e:
-            logger.error("Error adding admin status", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error adding admin status")
             return False
 
     def remove_admin(self, player_id: str, player_name: str = None):
@@ -102,10 +100,11 @@ class UserManager:
                 persistence.save_player(player)
                 logger.info(
                     "Player admin status removed from database",
-                    context={"player_id": player_id, "player_name": player_name},
+                    player_id=player_id,
+                    player_name=player_name,
                 )
             else:
-                logger.error("Player not found in database", context={"player_id": player_id})
+                logger.error("Player not found in database")
                 return False
 
             # Update in-memory cache
@@ -113,8 +112,8 @@ class UserManager:
                 self._admin_players.remove(player_id)
 
             return True
-        except Exception as e:
-            logger.error("Error removing admin status", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error removing admin status")
             return False
 
     def is_admin(self, player_id: str) -> bool:
@@ -142,8 +141,8 @@ class UserManager:
                 # Add to cache
                 self._admin_players.add(player_id)
                 return True
-        except Exception as e:
-            logger.error("Error checking admin status in database", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error checking admin status in database")
 
         return False
 
@@ -173,7 +172,7 @@ class UserManager:
         try:
             # Check if target is admin (immune to mutes)
             if self.is_admin(target_id):
-                logger.warning("Attempted to mute admin player", context={"muter_id": muter_id, "target_id": target_id})
+                logger.warning("Attempted to mute admin player")
                 return False
 
             # Initialize player mutes if needed
@@ -225,8 +224,8 @@ class UserManager:
 
             return True
 
-        except Exception as e:
-            logger.error("Error muting player", context={"error": str(e), "muter_id": muter_id, "target_id": target_id})
+        except Exception:
+            logger.error("Error muting player")
             return False
 
     def unmute_player(self, unmuter_id: str, unmuter_name: str, target_id: str, target_name: str) -> bool:
@@ -284,15 +283,11 @@ class UserManager:
 
                 return True
             else:
-                logger.warning(
-                    "Attempted to unmute non-muted player", context={"unmuter_id": unmuter_id, "target_id": target_id}
-                )
+                logger.warning("Attempted to unmute non-muted player", unmuter_id=unmuter_id, target_id=target_id)
                 return False
 
         except Exception as e:
-            logger.error(
-                "Error unmuting player", context={"error": str(e), "unmuter_id": unmuter_id, "target_id": target_id}
-            )
+            logger.error("Error unmuting player", error=str(e), unmuter_id=unmuter_id, target_id=target_id)
             return False
 
     def mute_channel(
@@ -356,8 +351,8 @@ class UserManager:
 
             return True
 
-        except Exception as e:
-            logger.error("Error muting channel", context={"error": str(e), "player_id": player_id, "channel": channel})
+        except Exception:
+            logger.error("Error muting channel")
             return False
 
     def unmute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
@@ -398,9 +393,7 @@ class UserManager:
                 return False
 
         except Exception as e:
-            logger.error(
-                "Error unmuting channel", context={"error": str(e), "player_id": player_id, "channel": channel}
-            )
+            logger.error("Error unmuting channel", error=str(e), player_id=player_id, channel=channel)
             return False
 
     def mute_global(
@@ -429,9 +422,7 @@ class UserManager:
         try:
             # Check if target is admin (immune to mutes)
             if self.is_admin(target_id):
-                logger.warning(
-                    "Attempted to globally mute admin player", context={"muter_id": muter_id, "target_id": target_id}
-                )
+                logger.warning("Attempted to globally mute admin player", muter_id=muter_id, target_id=target_id)
                 return False
 
             # Calculate mute expiry
@@ -480,9 +471,7 @@ class UserManager:
             return True
 
         except Exception as e:
-            logger.error(
-                "Error applying global mute", context={"error": str(e), "muter_id": muter_id, "target_id": target_id}
-            )
+            logger.error("Error applying global mute", error=str(e), muter_id=muter_id, target_id=target_id)
             return False
 
     def unmute_global(self, unmuter_id: str, unmuter_name: str, target_id: str, target_name: str) -> bool:
@@ -534,7 +523,9 @@ class UserManager:
         except Exception as e:
             logger.error(
                 "Error removing global mute",
-                context={"error": str(e), "unmuter_id": unmuter_id, "target_id": target_id},
+                error=str(e),
+                unmuter_id=unmuter_id,
+                target_id=target_id,
             )
             return False
 
@@ -570,9 +561,7 @@ class UserManager:
             return False
 
         except Exception as e:
-            logger.error(
-                "Error checking player mute", context={"error": str(e), "player_id": player_id, "target_id": target_id}
-            )
+            logger.error("Error checking player mute", error=str(e), player_id=player_id, target_id=target_id)
             return False
 
     def is_channel_muted(self, player_id: str, channel: str) -> bool:
@@ -604,9 +593,7 @@ class UserManager:
             return False
 
         except Exception as e:
-            logger.error(
-                "Error checking channel mute", context={"error": str(e), "player_id": player_id, "channel": channel}
-            )
+            logger.error("Error checking channel mute", error=str(e), player_id=player_id, channel=channel)
             return False
 
     def is_globally_muted(self, player_id: str) -> bool:
@@ -634,8 +621,8 @@ class UserManager:
 
             return False
 
-        except Exception as e:
-            logger.error("Error checking global mute", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error checking global mute")
             return False
 
     def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
@@ -709,8 +696,8 @@ class UserManager:
 
             return mutes
 
-        except Exception as e:
-            logger.error("Error getting player mutes", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error getting player mutes")
             return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
     def is_player_muted_by_others(self, player_id: str) -> bool:
@@ -836,7 +823,7 @@ class UserManager:
             mute_file = self._get_player_mute_file(player_id)
 
             if not mute_file.exists():
-                logger.debug("No mute file found for player", context={"player_id": player_id})
+                logger.debug("No mute file found for player")
                 return False
 
             with open(mute_file, encoding="utf-8") as f:
@@ -878,11 +865,11 @@ class UserManager:
             if "is_admin" in data and data["is_admin"]:
                 self._admin_players.add(player_id)
 
-            logger.info("Player mute data loaded", context={"player_id": player_id})
+            logger.info("Player mute data loaded")
             return True
 
-        except Exception as e:
-            logger.error("Error loading player mute data", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error loading player mute data")
             return False
 
     def save_player_mutes(self, player_id: str) -> bool:
@@ -950,8 +937,8 @@ class UserManager:
             # Validate data is serializable before writing
             try:
                 json.dumps(data, indent=2, ensure_ascii=False)
-            except Exception as e:
-                logger.error("Data is not JSON serializable", context={"error": str(e), "player_id": player_id})
+            except Exception:
+                logger.error("Data is not JSON serializable")
                 return False
 
             # Write to file atomically to prevent corruption
@@ -970,7 +957,7 @@ class UserManager:
                     temp_file.unlink()
                 raise e
 
-            logger.debug("Player mute data saved", context={"player_id": player_id})
+            logger.debug("Player mute data saved")
             return True
 
         except Exception as e:
@@ -1012,11 +999,11 @@ class UserManager:
             if mute_file.exists():
                 mute_file.unlink()
 
-            logger.info("Player mute data cleaned up", context={"player_id": player_id})
+            logger.info("Player mute data cleaned up")
             return True
 
-        except Exception as e:
-            logger.error("Error cleaning up player mute data", context={"error": str(e), "player_id": player_id})
+        except Exception:
+            logger.error("Error cleaning up player mute data")
             return False
 
 

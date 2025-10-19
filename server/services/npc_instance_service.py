@@ -17,7 +17,7 @@ from server.npc.spawning_service import NPCSpawningService
 from server.npc_database import get_npc_session
 from server.services.npc_service import npc_service
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -83,13 +83,11 @@ class NPCInstanceService:
 
             logger.info(
                 "Spawned NPC instance",
-                context={
-                    "npc_id": npc_id,
-                    "definition_id": definition_id,
-                    "definition_name": definition.name,
-                    "room_id": room_id,
-                    "reason": reason,
-                },
+                npc_id=npc_id,
+                definition_id=definition_id,
+                definition_name=definition.name,
+                room_id=room_id,
+                reason=reason,
             )
 
             return {
@@ -104,11 +102,9 @@ class NPCInstanceService:
         except Exception as e:
             logger.error(
                 "Error spawning NPC instance",
-                context={
-                    "error": str(e),
-                    "definition_id": definition_id,
-                    "room_id": room_id,
-                },
+                error=str(e),
+                definition_id=definition_id,
+                room_id=room_id,
             )
             raise
 
@@ -149,12 +145,10 @@ class NPCInstanceService:
 
             logger.info(
                 "Despawned NPC instance",
-                context={
-                    "npc_id": npc_id,
-                    "npc_name": npc_name,
-                    "room_id": room_id,
-                    "reason": reason,
-                },
+                npc_id=npc_id,
+                npc_name=npc_name,
+                room_id=room_id,
+                reason=reason,
             )
 
             return {
@@ -168,10 +162,8 @@ class NPCInstanceService:
         except Exception as e:
             logger.error(
                 "Error despawning NPC instance",
-                context={
-                    "error": str(e),
-                    "npc_id": npc_id,
-                },
+                error=str(e),
+                npc_id=npc_id,
             )
             raise
 
@@ -217,13 +209,11 @@ class NPCInstanceService:
 
             logger.info(
                 "Moved NPC instance",
-                context={
-                    "npc_id": npc_id,
-                    "npc_name": npc_name,
-                    "old_room_id": old_room_id,
-                    "new_room_id": new_room_id,
-                    "reason": reason,
-                },
+                npc_id=npc_id,
+                npc_name=npc_name,
+                old_room_id=old_room_id,
+                new_room_id=new_room_id,
+                reason=reason,
             )
 
             return {
@@ -238,11 +228,9 @@ class NPCInstanceService:
         except Exception as e:
             logger.error(
                 "Error moving NPC instance",
-                context={
-                    "error": str(e),
-                    "npc_id": npc_id,
-                    "new_room_id": new_room_id,
-                },
+                error=str(e),
+                npc_id=npc_id,
+                new_room_id=new_room_id,
             )
             raise
 
@@ -280,11 +268,11 @@ class NPCInstanceService:
 
                 instances.append(instance_info)
 
-            logger.info("Retrieved NPC instances", context={"count": len(instances)})
+            logger.info("Retrieved NPC instances")
             return instances
 
         except Exception as e:
-            logger.error("Error retrieving NPC instances", context={"error": str(e)})
+            logger.error("Error retrieving NPC instances", error=str(e))
             raise
 
     async def get_npc_stats(self, npc_id: str) -> dict[str, Any]:
@@ -330,11 +318,11 @@ class NPCInstanceService:
                     }
                 )
 
-            logger.info("Retrieved NPC stats", context={"npc_id": npc_id, "name": stats.get("name")})
+            logger.info("Retrieved NPC stats")
             return stats
 
         except Exception as e:
-            logger.error("Error retrieving NPC stats", context={"error": str(e), "npc_id": npc_id})
+            logger.error("Error retrieving NPC stats", error=str(e))
             raise
 
     async def get_population_stats(self) -> dict[str, Any]:
@@ -377,11 +365,11 @@ class NPCInstanceService:
                 "spawn_queue_size": spawn_queue_size,
             }
 
-            logger.info("Retrieved NPC population stats", context={"total_npcs": total_npcs})
+            logger.info("Retrieved NPC population stats")
             return stats
 
         except Exception as e:
-            logger.error("Error retrieving NPC population stats", context={"error": str(e)})
+            logger.error("Error retrieving NPC population stats", error=str(e))
             raise
 
     async def get_zone_stats(self) -> dict[str, Any]:
@@ -424,11 +412,11 @@ class NPCInstanceService:
                 "total_npcs": total_npcs,
             }
 
-            logger.info("Retrieved NPC zone stats", context={"total_zones": len(zones), "total_npcs": total_npcs})
+            logger.info("Retrieved NPC zone stats")
             return stats
 
         except Exception as e:
-            logger.error("Error retrieving NPC zone stats", context={"error": str(e)})
+            logger.error("Error retrieving NPC zone stats", error=str(e))
             raise
 
     async def get_system_stats(self) -> dict[str, Any]:
@@ -462,13 +450,11 @@ class NPCInstanceService:
                 "last_update": "2025-01-01T12:00:00Z",  # Could be made dynamic
             }
 
-            logger.info(
-                "Retrieved NPC system stats", context={"active_npcs": active_npcs, "system_status": system_status}
-            )
+            logger.info("Retrieved NPC system stats", active_npcs=active_npcs, system_status=system_status)
             return stats
 
         except Exception as e:
-            logger.error("Error retrieving NPC system stats", context={"error": str(e)})
+            logger.error("Error retrieving NPC system stats", error=str(e))
             raise
 
     def _extract_zone_from_room_id(self, room_id: str) -> str:
@@ -526,4 +512,4 @@ def initialize_npc_instance_service(
         population_controller=population_controller,
         event_bus=event_bus,
     )
-    logger.info("NPC instance service initialized", context={})
+    logger.info("NPC instance service initialized")
