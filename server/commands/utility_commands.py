@@ -227,7 +227,14 @@ async def handle_who_command(
             logger.debug("No players found in database", player=player_name)
             return {"result": "No players found."}
     except Exception as e:
-        logger.error("Who command error", player=player_name, error=str(e))
+        logger.error(
+            "Who command error",
+            player=player_name,
+            command_data=command_data,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error retrieving player list: {str(e)}"}
 
 
@@ -492,7 +499,14 @@ async def handle_inventory_command(
             logger.debug("Empty inventory", player=player_name)
             return {"result": "You are not carrying anything."}
     except Exception as e:
-        logger.error("Inventory command error", player=player_name, error=str(e))
+        logger.error(
+            "Inventory command error",
+            player=player_name,
+            args=args,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error retrieving inventory: {str(e)}"}
 
 

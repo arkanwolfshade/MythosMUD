@@ -162,9 +162,16 @@ class CommandService:
             return result
         except Exception as e:
             logger.error(
-                "Error in command handler", player=player_name, command_type=command_type, error=str(e), exc_info=True
+                "Error in command handler",
+                player=player_name,
+                command_type=command_type,
+                command_data=command_data,
+                handler_function=str(handler),
+                error_type=type(e).__name__,
+                error_message=str(e),
+                exc_info=True,
             )
-            return {"result": f"Error processing {command_type} command"}
+            return {"result": f"Error processing {command_type} command: {str(e)}"}
 
     async def process_command(
         self,
@@ -227,7 +234,17 @@ class CommandService:
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
                 return result
             except Exception as e:
-                logger.error("Command processing error", player=player_name, command=cmd, error=str(e))
+                logger.error(
+                    "Command processing error",
+                    player=player_name,
+                    command=cmd,
+                    command_data=command_data,
+                    parsed_command=str(parsed_command),
+                    handler_function=str(handler),
+                    error_type=type(e).__name__,
+                    error_message=str(e),
+                    exc_info=True,
+                )
                 return {"result": f"Error processing command: {str(e)}"}
         else:
             logger.info("Unknown command", command=cmd)

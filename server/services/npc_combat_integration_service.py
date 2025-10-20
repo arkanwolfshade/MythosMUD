@@ -108,15 +108,30 @@ class NPCCombatIntegrationService:
             combat_id = str(uuid4())
 
             # Publish combat events
+            # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
+            try:
+                attacker_uuid = (
+                    UUID(player_id) if self._is_valid_uuid(player_id) else None
+                )
+                target_uuid = (
+                    UUID(npc_id) if self._is_valid_uuid(npc_id) else None
+                )
+                combat_uuid = UUID(combat_id)
+            except ValueError:
+                # If combat_id is not a valid UUID, generate a new one
+                combat_uuid = uuid4()
+                attacker_uuid = None
+                target_uuid = None
+
             self._event_publisher.publish_player_attacked(
                 PlayerAttackedEvent(
                     event_type="player_attacked",
                     timestamp=time.time(),
-                    combat_id=UUID(combat_id),
+                    combat_id=combat_uuid,
                     room_id=room_id,
-                    attacker_id=UUID(player_id),
+                    attacker_id=attacker_uuid,
                     attacker_name=self._get_player_name(player_id),
-                    target_id=UUID(npc_id),
+                    target_id=target_uuid,
                     target_name=npc_instance.name,
                     damage=damage,
                     action_type=action_type,
@@ -127,9 +142,9 @@ class NPCCombatIntegrationService:
                 NPCTookDamageEvent(
                     event_type="npc_took_damage",
                     timestamp=time.time(),
-                    combat_id=UUID(combat_id),
+                    combat_id=combat_uuid,
                     room_id=room_id,
-                    npc_id=UUID(npc_id),
+                    npc_id=target_uuid,
                     npc_name=npc_instance.name,
                     damage=damage,
                     current_hp=getattr(npc_instance, "_stats", {}).get("hp", 0),
@@ -253,13 +268,27 @@ class NPCCombatIntegrationService:
                         )
 
             # Publish death event
+            # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
+            try:
+                npc_uuid = (
+                    UUID(npc_id) if self._is_valid_uuid(npc_id) else None
+                )
+                combat_uuid = (
+                    UUID(combat_id)
+                    if combat_id and self._is_valid_uuid(combat_id)
+                    else uuid4()
+                )
+            except ValueError:
+                combat_uuid = uuid4()
+                npc_uuid = None
+
             self._event_publisher.publish_npc_died(
                 NPCDiedEvent(
                     event_type="npc_died",
                     timestamp=time.time(),
-                    combat_id=UUID(combat_id) if combat_id else UUID(uuid4()),
+                    combat_id=combat_uuid,
                     room_id=room_id,
-                    npc_id=UUID(npc_id),
+                    npc_id=npc_uuid,
                     npc_name=npc_instance.name,
                     xp_reward=xp_reward,
                 )
@@ -381,3 +410,11 @@ class NPCCombatIntegrationService:
 
         except Exception as e:
             logger.error("Error despawning NPC", npc_id=npc_id, error=str(e))
+
+    def _is_valid_uuid(self, uuid_string: str) -> bool:
+        """Check if a string is a valid UUID."""
+        try:
+            UUID(uuid_string)
+            return True
+        except ValueError:
+            return False

@@ -86,7 +86,14 @@ async def handle_say_command(
             return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Say command error for {player_name}: {str(e)}")
+        logger.error(
+            "Say command error",
+            player=player_name,
+            command_data=command_data,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error sending message: {str(e)}"}
 
 
@@ -247,7 +254,14 @@ async def handle_local_command(
             return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Local command error for {player_name}: {str(e)}")
+        logger.error(
+            "Local command error",
+            player=player_name,
+            command_data=command_data,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error sending message: {str(e)}"}
 
 

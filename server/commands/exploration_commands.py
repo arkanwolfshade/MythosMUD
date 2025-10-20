@@ -187,5 +187,14 @@ async def handle_go_command(
             return {"result": "You can't go that way."}
 
     except Exception as e:
-        logger.error(f"Go command error for {player_name}: {str(e)}")
+        logger.error(
+            "Go command error",
+            player=player_name,
+            command_data=command_data,
+            room_id=room_id,
+            target_room_id=target_room_id,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error during movement: {str(e)}"}

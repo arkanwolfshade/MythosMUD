@@ -410,7 +410,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     Returns:
         dict: Command result
     """
-    logger.info(f"🚨 SERVER DEBUG: process_websocket_command called - cmd='{cmd}', args={args}, player_id={player_id}")
+    logger.info(f"SERVER DEBUG: process_websocket_command called - cmd='{cmd}', args={args}, player_id={player_id}")
     logger.debug(f"Processing command: {cmd} with args: {args} for player: {player_id}")
 
     # Get player from connection manager
@@ -432,32 +432,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         logger.warning("Persistence layer not available")
         return {"result": "Game system unavailable"}
 
-    # Handle basic commands
+    # Handle basic commands - use unified command handler for look to support targets
     if cmd == "look":
-        # Prefer the connection manager's tracked room (real-time canonical)
-        room_id = getattr(player, "current_room_id", None)
-        room = persistence.get_room(room_id)
-        if not room:
-            return {"result": "You see nothing special."}
-
-        if args:
-            direction = args[0].lower()
-            exits = room.exits if hasattr(room, "exits") else {}
-            target_room_id = exits.get(direction)
-            if target_room_id:
-                target_room = persistence.get_room(target_room_id)
-                if target_room:
-                    name = getattr(target_room, "name", "")
-                    desc = getattr(target_room, "description", "You see nothing special.")
-                    return {"result": f"{name}\n{desc}"}
-            return {"result": "You see nothing special that way."}
-
-        name = getattr(room, "name", "")
-        desc = getattr(room, "description", "You see nothing special.")
-        exits = room.exits if hasattr(room, "exits") else {}
-        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
-        exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
+        # Use the unified command handler for look commands to support targets
+        pass  # Fall through to unified command handler
 
     elif cmd == "go":
         logger.debug(f"Processing go command with args: {args}")
@@ -571,7 +549,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
     # Process the command using the unified command handler
     command_line = f"{cmd} {' '.join(args)}".strip()
-    logger.info(f"🚨 SERVER DEBUG: Reconstructed command_line='{command_line}' from cmd='{cmd}' and args={args}")
+    logger.info(f"SERVER DEBUG: Reconstructed command_line='{command_line}' from cmd='{cmd}' and args={args}")
     result = await process_command_unified(
         command_line=command_line,
         current_user=player,

@@ -218,6 +218,9 @@ class CombatService:
             combat.advance_turn()
             logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
 
+            # Automatically process next participant's turn if it's an NPC
+            await self._process_automatic_combat_progression(combat)
+
         return result
 
     async def end_combat(self, combat_id: UUID, reason: str = "Combat ended") -> None:
@@ -284,6 +287,94 @@ class CombatService:
             "player_combats": len(self._player_combats),
             "npc_combats": len(self._npc_combats),
         }
+
+    async def _process_automatic_combat_progression(self, combat: CombatInstance) -> None:
+        """
+        Process automatic combat progression for NPCs.
+
+        This method automatically handles NPC turns in combat, continuing
+        the combat loop until it's a player's turn or combat ends.
+
+        Args:
+            combat: The combat instance to process
+        """
+        try:
+            # Continue processing turns until it's a player's turn or combat ends
+            while combat.status == CombatStatus.ACTIVE:
+                current_participant = combat.get_current_turn_participant()
+                if not current_participant:
+                    logger.warning(f"No current participant in combat {combat.combat_id}")
+                    break
+
+                # If it's a player's turn, stop automatic progression
+                if current_participant.participant_type == CombatParticipantType.PLAYER:
+                    logger.debug(f"Combat {combat.combat_id} - waiting for player {current_participant.name} to act")
+                    break
+
+                # If it's an NPC's turn, process their attack automatically
+                if current_participant.participant_type == CombatParticipantType.NPC:
+                    await self._process_npc_turn(combat, current_participant)
+
+                    # Check if combat ended after NPC turn
+                    if combat.is_combat_over():
+                        await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
+                        break
+
+                    # Advance to next turn
+                    combat.advance_turn()
+                    logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
+
+        except Exception as e:
+            logger.error(f"Error in automatic combat progression for combat {combat.combat_id}: {e}")
+            # End combat on error to prevent infinite loops
+            await self.end_combat(combat.combat_id, f"Combat ended due to error: {str(e)}")
+
+    async def _process_npc_turn(self, combat: CombatInstance, npc_participant: CombatParticipant) -> None:
+        """
+        Process an NPC's turn in combat.
+
+        Args:
+            combat: The combat instance
+            npc_participant: The NPC participant whose turn it is
+        """
+        try:
+            # Find a valid target for the NPC (preferably a player)
+            target = None
+            for participant in combat.participants.values():
+                if (
+                    participant.participant_type == CombatParticipantType.PLAYER
+                    and participant.is_alive()
+                    and participant.participant_id != npc_participant.participant_id
+                ):
+                    target = participant
+                    break
+
+            if not target:
+                logger.warning(f"No valid target found for NPC {npc_participant.name} in combat {combat.combat_id}")
+                return
+
+            # NPC attacks with basic damage (1 for now)
+            damage = 1
+            logger.info(f"NPC {npc_participant.name} attacks {target.name} for {damage} damage")
+
+            # Apply damage
+            target.current_hp = max(0, target.current_hp - damage)
+            target_died = target.current_hp <= 0
+
+            # Update combat activity
+            combat.update_activity()
+
+            # Log the attack result
+            if target_died:
+                logger.info(f"NPC {npc_participant.name} killed {target.name} in combat {combat.combat_id}")
+            else:
+                logger.debug(
+                    f"NPC {npc_participant.name} damaged {target.name} "
+                    f"for {damage} damage (HP: {target.current_hp}/{target.max_hp})"
+                )
+
+        except Exception as e:
+            logger.error(f"Error processing NPC turn for {npc_participant.name}: {e}")
 
     async def _calculate_xp_reward(self, npc_id: UUID) -> int:
         """
