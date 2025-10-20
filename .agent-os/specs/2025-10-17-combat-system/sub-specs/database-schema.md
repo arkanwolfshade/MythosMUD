@@ -6,7 +6,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ### No New Tables Required
 
-The combat system will use existing database tables without requiring new schema changes. All combat-related data will be stored in existing JSON fields within the NPC definitions.
+The combat system will use existing database tables without requiring new schema changes. All combat-related data will be stored in existing JSON fields within the NPC definitions. **Important**: NPC health changes are tracked only in memory during combat and reset on combat end/server restart. Player health changes are persisted to the database.
 
 ### Existing Table Modifications
 
@@ -27,7 +27,10 @@ The combat system will use existing database tables without requiring new schema
 }
 ```
 
+**Note**: The `hp` field represents the NPC's base health value. During combat, actual health is tracked in memory and resets to this base value when combat ends.
+
 **New Fields:**
+
 - `xp_value` (integer): Experience points awarded when NPC is defeated
 - `dexterity` (integer): NPC dexterity for turn order calculation
 - `strength` (integer): NPC strength (for future expansion)
@@ -38,22 +41,35 @@ The combat system will use existing database tables without requiring new schema
 ```json
 {
   "combat_messages": {
-    "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage",
+    "attack_attacker": "You swing your fist at {target_name} and hit for {damage} damage ({target_hp}/{target_max_hp} HP remaining)",
     "attack_defender": "{attacker_name} swings their fist at you and hits you for {damage} damage",
-    "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
-    "death_message": "The {npc_name} collapses, dead"
+    "attack_other": "{attacker_name} swings their fist at {target_name} and hits for {damage} damage ({target_hp}/{target_max_hp} HP remaining)",
+    "death_message": "The {npc_name} collapses, dead",
+    "non_combat_actions": [
+      "The {npc_name} darts around nervously, trying to avoid your blows",
+      "The {npc_name} cowers in fear, its eyes darting about frantically",
+      "The {npc_name} makes a desperate attempt to flee, but finds no escape"
+    ]
   },
   "combat_behavior": {
     "aggression_level": "passive",
     "retreat_threshold": 0.2,
-    "combat_timeout": 300
+    "combat_timeout": 300,
+    "auto_progression": true,
+    "turn_interval": 6,
+    "non_combat_action_chance": 0.8
   }
 }
 ```
 
 **New Fields:**
-- `combat_messages` (object): Message templates for different combat perspectives
-- `combat_behavior` (object): Combat behavior configuration
+
+- `combat_messages` (object): Message templates for different combat perspectives with health tracking
+- `combat_behavior` (object): Combat behavior configuration including auto-progression settings
+- `non_combat_actions` (array): List of thematic non-combat action messages for NPC turns
+- `auto_progression` (boolean): Enable automatic turn progression
+- `turn_interval` (integer): Time interval between turns in seconds
+- `non_combat_action_chance` (float): Probability of NPC performing non-combat action (0.0-1.0)
 
 ### Data Migration Strategy
 
@@ -76,10 +92,15 @@ def migrate_npc_combat_data():
         # Add default combat messages if not present
         if 'combat_messages' not in npc.behavior_config:
             npc.behavior_config['combat_messages'] = {
-                'attack_attacker': "You swing your fist at {target_name} and hit for {damage} damage",
+                'attack_attacker': "You swing your fist at {target_name} and hit for {damage} damage ({target_hp}/{target_max_hp} HP remaining)",
                 'attack_defender': "{attacker_name} swings their fist at you and hits you for {damage} damage",
-                'attack_other': "{attacker_name} swings their fist at {target_name} and hits for {damage} damage",
-                'death_message': "The {npc_name} collapses, dead"
+                'attack_other': "{attacker_name} swings their fist at {target_name} and hits for {damage} damage ({target_hp}/{target_max_hp} HP remaining)",
+                'death_message': "The {npc_name} collapses, dead",
+                'non_combat_actions': [
+                    "The {npc_name} darts around nervously, trying to avoid your blows",
+                    "The {npc_name} cowers in fear, its eyes darting about frantically",
+                    "The {npc_name} makes a desperate attempt to flee, but finds no escape"
+                ]
             }
 
         # Add default combat behavior if not present
@@ -87,7 +108,10 @@ def migrate_npc_combat_data():
             npc.behavior_config['combat_behavior'] = {
                 'aggression_level': 'passive',
                 'retreat_threshold': 0.2,
-                'combat_timeout': 300
+                'combat_timeout': 300,
+                'auto_progression': True,
+                'turn_interval': 6,
+                'non_combat_action_chance': 0.8
             }
 
         save_npc_definition(npc)
@@ -144,6 +168,13 @@ The existing JSON schema validation will be extended to include combat data vali
 #### Indexing Strategy
 
 No additional indexes required. Existing indexes on `npc_definitions` table will handle combat queries efficiently.
+
+#### Health Persistence Strategy
+
+- **NPC Health**: Tracked only in memory during combat, resets to base values on combat end
+- **Player Health**: Persisted to database through existing player service
+- **Combat State**: In-memory combat state includes current health values for all participants
+- **Server Restart**: All in-memory health values reset to database base values
 
 #### Query Optimization
 

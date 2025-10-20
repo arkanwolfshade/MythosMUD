@@ -110,12 +110,8 @@ class NPCCombatIntegrationService:
             # Publish combat events
             # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
             try:
-                attacker_uuid = (
-                    UUID(player_id) if self._is_valid_uuid(player_id) else None
-                )
-                target_uuid = (
-                    UUID(npc_id) if self._is_valid_uuid(npc_id) else None
-                )
+                attacker_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
+                target_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else None
                 combat_uuid = UUID(combat_id)
             except ValueError:
                 # If combat_id is not a valid UUID, generate a new one
@@ -270,14 +266,8 @@ class NPCCombatIntegrationService:
             # Publish death event
             # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
             try:
-                npc_uuid = (
-                    UUID(npc_id) if self._is_valid_uuid(npc_id) else None
-                )
-                combat_uuid = (
-                    UUID(combat_id)
-                    if combat_id and self._is_valid_uuid(combat_id)
-                    else uuid4()
-                )
+                npc_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else None
+                combat_uuid = UUID(combat_id) if combat_id and self._is_valid_uuid(combat_id) else uuid4()
             except ValueError:
                 combat_uuid = uuid4()
                 npc_uuid = None

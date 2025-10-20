@@ -12,12 +12,15 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Response:**
 ```json
 {
-  "result": "You swing your fist at the rat and hit for 1 damage",
+  "result": "You swing your fist at the rat and hit for 1 damage (9/10 HP remaining)",
   "success": true,
   "combat_state": {
     "active": true,
     "target": "rat_001",
-    "turn_order": ["player_123", "rat_001"]
+    "turn_order": ["player_123", "rat_001"],
+    "current_turn": "player_123",
+    "next_turn_time": "2025-01-27T10:30:06Z",
+    "auto_progression": true
   }
 }
 ```
@@ -44,8 +47,10 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
     "attacker": "Ithaqua",
     "target": "rat",
     "damage": 1,
-    "message": "Ithaqua swings their fist at the rat and hits for 1 damage",
-    "perspective": "other"
+    "message": "Ithaqua swings their fist at the rat and hits for 1 damage (9/10 HP remaining)",
+    "perspective": "other",
+    "target_hp": 9,
+    "target_max_hp": 10
   }
 }
 ```
@@ -62,7 +67,28 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
   "data": {
     "participants": ["player_123", "npc_rat_001"],
     "turn_order": ["player_123", "npc_rat_001"],
-    "initiator": "player_123"
+    "initiator": "player_123",
+    "auto_progression": true,
+    "turn_interval": 6,
+    "next_turn_time": "2025-01-27T10:30:06Z"
+  }
+}
+```
+
+**Event Type:** `npc_non_combat_action`
+**Purpose:** Notify when NPC performs non-combat action during their turn
+**Data Structure:**
+```json
+{
+  "event_type": "npc_non_combat_action",
+  "timestamp": "2025-01-27T10:30:06Z",
+  "npc_id": "npc_rat_001",
+  "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+  "data": {
+    "action_type": "defensive_maneuver",
+    "message": "The rat darts around nervously, trying to avoid your blows",
+    "combat_state": "active",
+    "turn_number": 2
   }
 }
 ```

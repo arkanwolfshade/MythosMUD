@@ -23,11 +23,14 @@ server/events/
 
 ### Core Combat Mechanics
 
-- **Turn-Based System**: Combat rounds based on 6-second game ticks
+- **Turn-Based System**: Combat rounds based on 6-second game ticks with automatic progression
+- **Auto-Progression**: Combat automatically continues through rounds every 6 seconds until completion
 - **Turn Order**: Dexterity-based turn order (descending dexterity values)
 - **Damage System**: Fixed 1 damage per attack for MVP
-- **Combat State**: In-memory state management with automatic cleanup
+- **Health Tracking**: Real-time health display during combat with on-demand status checking
+- **Combat State**: In-memory state management with automatic cleanup and turn progression
 - **Target Validation**: Room occupant targeting with existing look command logic
+- **NPC Passive Behavior**: NPCs perform non-combat actions during their turns (defensive maneuvers, taunts, thematic behaviors)
 
 ### Command System Integration
 
@@ -70,23 +73,26 @@ server/events/
 ### State Management
 
 - **In-Memory Storage**: Combat state stored in memory using dictionaries/lists
+- **Turn Progression**: Automatic turn advancement every 6 seconds with combat state updates
 - **State Cleanup**: Automatic cleanup of stale combat states (timeout-based)
 - **Player Disconnection**: Combat continues with timeout-based cleanup
 - **Server Restart**: All combat states cleared on server restart
+- **Health Tracking**: Real-time health updates stored in combat state (NPC health in-memory only, player health persisted to database)
 
 ### Messaging System
 
-- **Message Templates**: NPC-specific templates with variable substitution
-- **Perspective-Based**: Different messages for attacker/defender/other players
-- **Thematic Content**: Cthulhu Mythos-themed messages
-- **Broadcasting**: Real-time messages to all room occupants
-- **Message Storage**: Combat messages in Game Info panel
+- **Message Templates**: NPC-specific templates with variable substitution and health information
+- **Perspective-Based**: Different messages for attacker/defender/other players with health updates
+- **Thematic Content**: Cthulhu Mythos-themed messages including NPC non-combat actions
+- **Broadcasting**: Real-time messages to all room occupants with automatic turn progression
+- **Message Storage**: Combat messages in Game Info panel with health tracking
+- **Health Display**: Real-time health updates in combat messages (e.g., "9/10 HP remaining")
 
 ### Integration Points
 
 - **Room Service**: Use existing room occupant tracking for targeting
-- **Player Service**: Integrate with existing player XP and stats system
-- **NPC Service**: Extend existing NPC behaviors and lifecycle management
+- **Player Service**: Integrate with existing player XP and stats system, persist player health changes to database
+- **NPC Service**: Extend existing NPC behaviors and lifecycle management, track NPC health in memory only
 - **Event System**: Full integration with existing event bus architecture
 - **Command System**: Extend existing command validation and processing
 - **Security System**: Leverage existing rate limiting and input validation

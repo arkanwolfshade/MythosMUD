@@ -4,7 +4,7 @@
 
 - **Completed**: Tasks 1-9 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration, Player Combat Integration, Security & Validation, Testing & Quality Assurance)
 - **In Progress**: None
-- **Remaining**: Task 10 (Configuration)
+- **Remaining**: Task 10 (Configuration), Tasks 11-14 (Auto-Progression Features)
 
 ## Tasks
 
@@ -79,3 +79,32 @@
   - [x] 10.2 Implement feature flag system for combat enable/disable
   - [x] 10.3 Implement configuration management for combat settings
   - [x] 10.4 Implement basic monitoring and alerting for combat system
+
+- [ ] 11. Auto-Progression Combat System
+  - [ ] 11.1 Write tests for automatic combat round progression and turn timing
+  - [ ] 11.2 Implement automatic turn progression system with 6-second intervals
+  - [ ] 11.3 Implement combat round management with automatic advancement
+  - [ ] 11.4 Implement turn timing and scheduling system
+  - [ ] 11.5 Verify all auto-progression tests pass
+
+- [ ] 12. NPC Passive Behavior System
+  - [ ] 12.1 Write tests for NPC non-combat actions during their turns
+  - [ ] 12.2 Implement NPC non-combat action selection and execution
+  - [ ] 12.3 Implement thematic NPC behavior messages (defensive maneuvers, taunts, thematic behaviors)
+  - [ ] 12.4 Implement NPC turn execution with non-combat actions
+  - [ ] 12.5 Verify all NPC passive behavior tests pass
+
+- [ ] 13. Health Tracking System
+  - [ ] 13.1 Write tests for real-time health tracking and display
+  - [ ] 13.2 Implement in-memory NPC health tracking (resets on combat end)
+  - [ ] 13.3 Implement persistent player health tracking (saved to database)
+  - [ ] 13.4 Implement real-time health display in combat messages
+  - [ ] 13.5 Implement on-demand health status checking commands
+  - [ ] 13.6 Verify all health tracking tests pass
+
+- [ ] 14. Auto-Progression Integration & Testing
+  - [ ] 14.1 Write integration tests for complete auto-progression combat flow
+  - [ ] 14.2 Implement auto-progression event system integration
+  - [ ] 14.3 Implement auto-progression messaging system integration
+  - [ ] 14.4 Write end-to-end tests for auto-progression combat scenarios
+  - [ ] 14.5 Verify all auto-progression integration tests pass
