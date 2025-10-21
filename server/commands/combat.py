@@ -10,7 +10,9 @@ from typing import Any
 from server.alias_storage import AliasStorage
 from server.logging.enhanced_logging_config import get_logger
 from server.persistence import get_persistence
+from server.schemas.target_resolution import TargetType
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+from server.services.target_resolution_service import TargetResolutionService
 from server.validators.combat_validator import CombatValidator
 
 logger = get_logger(__name__)
@@ -30,6 +32,10 @@ class CombatCommandHandler:
         self.npc_combat_service = NPCCombatIntegrationService()
         self.persistence = get_persistence()
         self.combat_validator = CombatValidator()
+        # Initialize target resolution service
+        from server.game.player_service import PlayerService
+
+        self.target_resolution_service = TargetResolutionService(self.persistence, PlayerService(self.persistence))
 
     async def handle_attack_command(
         self,
@@ -128,39 +134,36 @@ class CombatCommandHandler:
 
             logger.debug(f"DEBUG: Room data found: {room}")
 
-            # Look for NPCs in the room
-            logger.debug(f"DEBUG: Looking for NPCs in room for {player_name}")
-            npc_found = None
-            npc_id = None
-            available_targets = []
-            logger.debug(f"DEBUG: Looking for NPCs in room {room_id}, room.get_npcs() = {room.get_npcs()}")
-            for current_npc_id in room.get_npcs():
-                # Try to get NPC instance
-                logger.debug(f"DEBUG: Processing NPC ID: {current_npc_id}")
-                npc_instance = self._get_npc_instance(current_npc_id)
-                logger.debug(f"DEBUG: Got NPC instance for {current_npc_id}: {npc_instance}")
-                if npc_instance:
-                    available_targets.append(npc_instance.name)
-                    logger.debug(f"DEBUG: Comparing '{npc_instance.name.lower()}' with '{target_name.lower()}'")
-                    if npc_instance.name.lower() == target_name.lower():
-                        npc_found = npc_instance
-                        npc_id = current_npc_id
-                        logger.debug(f"DEBUG: Found matching NPC: npc_found={npc_found}, npc_id={npc_id}")
-                        break
+            # Use target resolution service to find targets
+            logger.debug(f"DEBUG: Using target resolution service for {player_name}")
+            target_result = await self.target_resolution_service.resolve_target(str(player.player_id), target_name)
 
-            logger.debug(
-                f"DEBUG: After loop - npc_found={npc_found}, npc_id={npc_id}, available_targets={available_targets}"
-            )
+            if not target_result.success:
+                logger.debug(f"DEBUG: Target resolution failed: {target_result.error_message}")
+                return {"result": target_result.error_message}
 
-            if not npc_found:
-                logger.debug(f"DEBUG: No matching NPC found for {player_name}")
-                available_list = ", ".join(available_targets) if available_targets else "none"
-                return {"result": f"No target named '{target_name}' found. Available targets: {available_list}"}
+            # Get the single match
+            target_match = target_result.get_single_match()
+            if not target_match:
+                logger.debug(f"DEBUG: No single match found for {player_name}")
+                return {"result": target_result.error_message}
 
-            logger.debug(f"DEBUG: Found target NPC: {npc_found.name} (ID: {npc_id})")
+            # Check if target is an NPC (combat only works on NPCs for now)
+            if target_match.target_type != TargetType.NPC:
+                logger.debug(f"DEBUG: Target is not an NPC: {target_match.target_type}")
+                return {"result": f"You can only attack NPCs, not {target_match.target_type}s."}
+
+            # Get NPC instance for combat
+            npc_instance = self._get_npc_instance(target_match.target_id)
+            if not npc_instance:
+                logger.debug(f"DEBUG: Could not get NPC instance for {target_match.target_id}")
+                return {"result": "Target not found."}
+
+            logger.debug(f"DEBUG: Found target NPC: {npc_instance.name} (ID: {target_match.target_id})")
 
             # Validate combat action
             logger.debug(f"DEBUG: Validating combat action for {player_name}")
+            npc_id = target_match.target_id
             validation_result = await self._validate_combat_action(player_name, npc_id, command)
             if not validation_result.get("valid", False):
                 logger.debug(f"DEBUG: Combat validation failed: {validation_result}")
@@ -230,8 +233,8 @@ class CombatCommandHandler:
 
             logger.info(f"Executing combat action: {player_name} ({player_id}) {command}s {npc_id} for {damage} damage")
 
-            # Use the proper combat service to handle the attack
-            success = self.npc_combat_service.handle_player_attack_on_npc(
+            # Use the proper combat service to handle the attack with auto-progression
+            success = await self.npc_combat_service.handle_player_attack_on_npc(
                 player_id=player_id, npc_id=npc_id, room_id=room_id, action_type=command, damage=damage
             )
 

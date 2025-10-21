@@ -63,14 +63,26 @@ async def handle_look_command(
             direction = target_lower
         else:
             # Look for NPC in current room
-            npcs_in_room = persistence.get_npcs_in_room(room_id)
-            if npcs_in_room:
+            npc_ids = room.get_npcs()
+            if npc_ids:
                 # Find matching NPCs (case-insensitive partial match)
-                matching_npcs = [npc for npc in npcs_in_room if target_lower in npc.name.lower()]
+                matching_npcs = []
+                for npc_id in npc_ids:
+                    # Get NPC instance to check name
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    # Use the same approach as combat system
+                    if hasattr(npc_instance_service, "spawning_service"):
+                        spawning_service = npc_instance_service.spawning_service
+                        if npc_id in spawning_service.active_npc_instances:
+                            npc_instance = spawning_service.active_npc_instances[npc_id]
+                            if npc_instance and target_lower in npc_instance.name.lower():
+                                matching_npcs.append(npc_instance)
 
                 if len(matching_npcs) == 1:
                     npc = matching_npcs[0]
-                    logger.debug("Found NPC to look at", player=player_name, npc_name=npc.name, npc_id=npc.id)
+                    logger.debug("Found NPC to look at", player=player_name, npc_name=npc.name, npc_id=npc.npc_id)
                     return {"result": f"You look at {npc.name}.\n{npc.description}"}
                 elif len(matching_npcs) > 1:
                     npc_names = [npc.name for npc in matching_npcs]

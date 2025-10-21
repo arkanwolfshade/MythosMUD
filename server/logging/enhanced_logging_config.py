@@ -114,6 +114,10 @@ def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) ->
     if "logger_name" not in event_dict:
         event_dict["logger_name"] = _name
 
+    # Add request ID if not present
+    if "request_id" not in event_dict:
+        event_dict["request_id"] = str(uuid.uuid4())
+
     return event_dict
 
 
@@ -461,3 +465,23 @@ def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) ->
     # Log at the specified level
     log_method = getattr(logger, level.lower(), logger.info)
     log_method(message, **log_data)
+
+
+def get_enhanced_logger(name: str) -> BoundLogger:
+    """
+    Get an enhanced logger instance with structured logging capabilities.
+
+    This function provides a logger instance configured with enhanced
+    structured logging processors and context management.
+
+    Args:
+        name: Logger name (typically module name)
+
+    Returns:
+        Enhanced bound logger instance
+    """
+    # Get the base logger and wrap it with enhanced capabilities
+    base_logger = get_logger(name)
+
+    # Return a bound logger with enhanced processors
+    return structlog.wrap_logger(base_logger)

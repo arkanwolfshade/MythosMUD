@@ -331,18 +331,61 @@ class TestCombatAuditLogging:
         """Test that security events are properly logged."""
         with patch("server.commands.combat.logger") as mock_logger:
             # Test with potentially malicious input
-            command_data = {"command": "attack rat; rm -rf /", "target": "rat", "action": "attack"}
+            command_data = {"command_type": "attack", "target_player": "rat; rm -rf /", "args": ["rat"]}
 
             mock_request = Mock()
+            mock_request.app = Mock()
+            mock_request.app.state = Mock()
+            mock_request.app.state.persistence = Mock()
             mock_alias_storage = Mock()
 
-            await combat_handler.handle_attack_command(
-                command_data=command_data,
-                current_user={"user_id": str(uuid4())},
-                request=mock_request,
-                alias_storage=mock_alias_storage,
-                player_name="TestPlayer",
-            )
+            # Mock the persistence to return a player
+            mock_player = Mock()
+            mock_player.player_id = str(uuid4())
+            mock_player.current_room_id = "test_room_001"
+            mock_player.name = "TestPlayer"
+            mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+
+            # Mock the room
+            mock_room = Mock()
+            mock_room.room_id = "test_room_001"
+            mock_request.app.state.persistence.get_room.return_value = mock_room
+
+            # Mock the target resolution service
+            with patch.object(combat_handler, "target_resolution_service") as mock_target_resolution:
+                from server.schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
+
+                npc_id = str(uuid4())
+                mock_target_match = TargetMatch(
+                    target_id=npc_id, target_name="rat", target_type=TargetType.NPC, room_id="test_room_001"
+                )
+                mock_target_result = TargetResolutionResult(
+                    success=True, matches=[mock_target_match], search_term="rat", room_id="test_room_001"
+                )
+                mock_target_resolution.resolve_target.return_value = mock_target_result
+
+                # Mock NPC instance
+                with patch.object(combat_handler, "_get_npc_instance") as mock_get_npc:
+                    mock_npc = Mock()
+                    mock_npc.name = "rat"
+                    mock_npc.is_alive = True
+                    mock_get_npc.return_value = mock_npc
+
+                    # Mock combat validation
+                    with patch.object(combat_handler, "_validate_combat_action") as mock_validate:
+                        mock_validate.return_value = {"valid": True}
+
+                        # Mock combat execution
+                        with patch.object(combat_handler, "_execute_combat_action") as mock_execute:
+                            mock_execute.return_value = {"result": "You attack the rat!"}
+
+                            await combat_handler.handle_attack_command(
+                                command_data=command_data,
+                                current_user={"username": "TestPlayer"},
+                                request=mock_request,
+                                alias_storage=mock_alias_storage,
+                                player_name="TestPlayer",
+                            )
 
             # Verify that security-related logging occurred
             assert mock_logger.warning.called or mock_logger.error.called or mock_logger.info.called

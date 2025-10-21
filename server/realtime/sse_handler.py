@@ -39,6 +39,7 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
         yield sse_line(build_event("connected", {"player_id": player_id_str}, player_id=player_id_str))
 
         # Send immediate heartbeat to confirm connection is working
+        logger.debug(f"DEBUG: SSE session established for player {player_id_str}")
         yield sse_line(build_event("heartbeat", {"message": "Connection established"}, player_id=player_id_str))
 
         # Clear any pending messages to ensure fresh game state
@@ -57,6 +58,7 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
                 await asyncio.sleep(30)
 
                 # Mark presence and send heartbeat with timeout protection
+                logger.debug(f"DEBUG: SSE heartbeat for player {player_id_str}")
                 connection_manager.mark_player_seen(player_id_str)
                 connection_manager.prune_stale_players()
 

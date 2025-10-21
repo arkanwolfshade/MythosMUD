@@ -15,8 +15,8 @@ logger = get_logger(__name__)
 
 # Set up environment variables
 os.environ["ENVIRONMENT"] = "unit_test"
-os.environ["DATABASE_PATH"] = "data/unit_test/players.db"
-os.environ["NPC_DATABASE_PATH"] = "data/unit_test/npcs.db"
+os.environ["DATABASE_PATH"] = "data/unit_test/players/unit_test_players.db"
+os.environ["NPC_DATABASE_PATH"] = "data/unit_test/npcs/unit_test_npcs.db"
 os.environ["DEFAULT_PLAYER_ROOM"] = "earth_arkhamcity_northside_intersection_derby_high"
 os.environ["ALIASES_DIRECTORY"] = "data/unit_test/aliases"
 os.environ["LOG_LEVEL"] = "DEBUG"

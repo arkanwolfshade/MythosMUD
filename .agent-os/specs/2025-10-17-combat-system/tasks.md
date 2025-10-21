@@ -2,9 +2,9 @@
 
 ## Progress Summary
 
-- **Completed**: Tasks 1-9 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration, Player Combat Integration, Security & Validation, Testing & Quality Assurance)
-- **In Progress**: None
-- **Remaining**: Task 10 (Configuration), Tasks 11-14 (Auto-Progression Features)
+- **Completed**: Tasks 1-10 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration, Player Combat Integration, Security & Validation, Testing & Quality Assurance, Configuration)
+- **In Progress**: Tasks 11-14 (Auto-Progression Combat System, NPC Passive Behavior System, Health Tracking System, Auto-Progression Integration & Testing) - **IMPLEMENTED BUT NOT INTEGRATED INTO LIVE SERVER**
+- **Remaining**: Task 15 - Live Server Integration & Verification
 
 ## Tasks
 
@@ -80,31 +80,39 @@
   - [x] 10.3 Implement configuration management for combat settings
   - [x] 10.4 Implement basic monitoring and alerting for combat system
 
-- [ ] 11. Auto-Progression Combat System
-  - [ ] 11.1 Write tests for automatic combat round progression and turn timing
-  - [ ] 11.2 Implement automatic turn progression system with 6-second intervals
-  - [ ] 11.3 Implement combat round management with automatic advancement
-  - [ ] 11.4 Implement turn timing and scheduling system
-  - [ ] 11.5 Verify all auto-progression tests pass
+- [x] 11. Auto-Progression Combat System
+  - [x] 11.1 Write tests for automatic combat round progression and turn timing
+  - [x] 11.2 Implement automatic turn progression system with 6-second intervals
+  - [x] 11.3 Implement combat round management with automatic advancement
+  - [x] 11.4 Implement turn timing and scheduling system
+  - [x] 11.5 Verify all auto-progression tests pass
 
-- [ ] 12. NPC Passive Behavior System
-  - [ ] 12.1 Write tests for NPC non-combat actions during their turns
-  - [ ] 12.2 Implement NPC non-combat action selection and execution
-  - [ ] 12.3 Implement thematic NPC behavior messages (defensive maneuvers, taunts, thematic behaviors)
-  - [ ] 12.4 Implement NPC turn execution with non-combat actions
-  - [ ] 12.5 Verify all NPC passive behavior tests pass
+- [x] 12. NPC Passive Behavior System
+  - [x] 12.1 Write tests for NPC non-combat actions during their turns
+  - [x] 12.2 Implement NPC non-combat action selection and execution
+  - [x] 12.3 Implement thematic NPC behavior messages (defensive maneuvers, taunts, thematic behaviors)
+  - [x] 12.4 Implement NPC turn execution with non-combat actions
+  - [x] 12.5 Verify all NPC passive behavior tests pass
 
-- [ ] 13. Health Tracking System
-  - [ ] 13.1 Write tests for real-time health tracking and display
-  - [ ] 13.2 Implement in-memory NPC health tracking (resets on combat end)
-  - [ ] 13.3 Implement persistent player health tracking (saved to database)
-  - [ ] 13.4 Implement real-time health display in combat messages
-  - [ ] 13.5 Implement on-demand health status checking commands
-  - [ ] 13.6 Verify all health tracking tests pass
+- [x] 13. Health Tracking System
+  - [x] 13.1 Write tests for real-time health tracking and display
+  - [x] 13.2 Implement in-memory NPC health tracking (resets on combat end)
+  - [x] 13.3 Implement persistent player health tracking (saved to database)
+  - [x] 13.4 Implement real-time health display in combat messages
+  - [x] 13.5 Implement on-demand health status checking commands
+  - [x] 13.6 Verify all health tracking tests pass
 
-- [ ] 14. Auto-Progression Integration & Testing
-  - [ ] 14.1 Write integration tests for complete auto-progression combat flow
-  - [ ] 14.2 Implement auto-progression event system integration
-  - [ ] 14.3 Implement auto-progression messaging system integration
-  - [ ] 14.4 Write end-to-end tests for auto-progression combat scenarios
-  - [ ] 14.5 Verify all auto-progression integration tests pass
+- [x] 14. Auto-Progression Integration & Testing
+  - [x] 14.1 Write integration tests for complete auto-progression combat flow
+  - [x] 14.2 Implement auto-progression event system integration
+  - [x] 14.3 Implement auto-progression messaging system integration
+  - [x] 14.4 Write end-to-end tests for auto-progression combat scenarios
+  - [x] 14.5 Verify all auto-progression integration tests pass
+
+- [ ] 15. Live Server Integration & Verification
+  - [ ] 15.1 Integrate auto-progression CombatService into NPCCombatIntegrationService
+  - [ ] 15.2 Fix combat command processing to use auto-progression system
+  - [ ] 15.3 Verify auto-progression works in live server environment
+  - [ ] 15.4 Test NPC passive behavior responses in live server
+  - [ ] 15.5 Test health tracking and combat state management in live server
+  - [ ] 15.6 Verify all auto-progression features work end-to-end in live server

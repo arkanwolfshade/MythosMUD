@@ -5,7 +5,7 @@ This module tests the integration of combat commands with the existing
 command validation and routing system.
 """
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 import pytest
 
@@ -15,6 +15,36 @@ from server.commands.command_service import CommandService
 
 class TestCombatCommandIntegration:
     """Test combat command integration with command system."""
+
+    @pytest.fixture
+    def mock_persistence(self):
+        """Create a mock persistence layer."""
+        mock_persistence = Mock()
+        # Mock a player object
+        mock_player = Mock()
+        mock_player.player_id = "test_player_123"
+        mock_player.current_room_id = None  # Set to None to test "not in a room" case
+        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_name.return_value = mock_player
+        return mock_persistence
+
+    @pytest.fixture
+    def mock_target_resolution_service(self):
+        """Create a mock target resolution service."""
+        from server.schemas.target_resolution import TargetResolutionResult
+
+        mock_service = Mock()
+
+        async def mock_resolve_target(player_id, target_name):
+            return TargetResolutionResult(
+                success=False,
+                error_message=f"No target named '{target_name}' found",
+                search_term=target_name,
+                room_id="test_room",
+            )
+
+        mock_service.resolve_target.side_effect = mock_resolve_target
+        return mock_service
 
     def test_combat_commands_registered(self):
         """Test that combat commands are registered in command service."""
@@ -27,9 +57,10 @@ class TestCombatCommandIntegration:
         assert "strike" in command_service.command_handlers
 
     @pytest.mark.asyncio
-    async def test_attack_command_no_target(self):
+    async def test_attack_command_no_target(self, mock_persistence):
         """Test attack command with no target specified."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
 
         command_data = {
             "command_type": "attack",
@@ -39,7 +70,7 @@ class TestCombatCommandIntegration:
 
         result = await handler.handle_attack_command(
             command_data=command_data,
-            current_user={},
+            current_user={"username": "TestPlayer"},
             request=MagicMock(),
             alias_storage=MagicMock(),
             player_name="TestPlayer",
@@ -55,9 +86,11 @@ class TestCombatCommandIntegration:
         assert result["result"] in error_messages
 
     @pytest.mark.asyncio
-    async def test_attack_command_with_target(self):
+    async def test_attack_command_with_target(self, mock_persistence, mock_target_resolution_service):
         """Test attack command with target specified."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
+        handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
             "command_type": "attack",
@@ -69,6 +102,7 @@ class TestCombatCommandIntegration:
         current_user = {
             "player_id": "test_player_123",
             "room_id": "earth_arkhamcity_campus_intersection_boundary_crane",
+            "username": "TestPlayer",
         }
 
         result = await handler.handle_attack_command(
@@ -83,9 +117,11 @@ class TestCombatCommandIntegration:
         assert "No target named 'goblin' found" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_punch_command_alias(self):
+    async def test_punch_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test punch command alias."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
+        handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
             "command_type": "punch",
@@ -97,6 +133,7 @@ class TestCombatCommandIntegration:
         current_user = {
             "player_id": "test_player_123",
             "room_id": "earth_arkhamcity_campus_intersection_boundary_crane",
+            "username": "TestPlayer",
         }
 
         result = await handler.handle_attack_command(
@@ -111,9 +148,11 @@ class TestCombatCommandIntegration:
         assert "No target named 'rat' found" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_kick_command_alias(self):
+    async def test_kick_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test kick command alias."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
+        handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
             "command_type": "kick",
@@ -125,6 +164,7 @@ class TestCombatCommandIntegration:
         current_user = {
             "player_id": "test_player_123",
             "room_id": "earth_arkhamcity_campus_intersection_boundary_crane",
+            "username": "TestPlayer",
         }
 
         result = await handler.handle_attack_command(
@@ -139,9 +179,11 @@ class TestCombatCommandIntegration:
         assert "No target named 'skeleton' found" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_strike_command_alias(self):
+    async def test_strike_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test strike command alias."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
+        handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
             "command_type": "strike",
@@ -153,6 +195,7 @@ class TestCombatCommandIntegration:
         current_user = {
             "player_id": "test_player_123",
             "room_id": "earth_arkhamcity_campus_intersection_boundary_crane",
+            "username": "TestPlayer",
         }
 
         result = await handler.handle_attack_command(
@@ -167,9 +210,16 @@ class TestCombatCommandIntegration:
         assert "No target named 'orc' found" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_invalid_combat_command(self):
+    async def test_invalid_combat_command(self, mock_persistence):
         """Test invalid combat command."""
         handler = CombatCommandHandler()
+        handler.persistence = mock_persistence
+
+        # Set up mock request with app.state.persistence
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_app.state.persistence = mock_persistence
+        mock_request.app = mock_app
 
         command_data = {
             "command_type": "invalid_command",
@@ -179,8 +229,8 @@ class TestCombatCommandIntegration:
 
         result = await handler.handle_attack_command(
             command_data=command_data,
-            current_user={},
-            request=MagicMock(),
+            current_user={"username": "TestPlayer"},
+            request=mock_request,
             alias_storage=MagicMock(),
             player_name="TestPlayer",
         )

@@ -36,6 +36,29 @@ class CombatService:
         self._npc_combats: dict[UUID, UUID] = {}  # npc_id -> combat_id
         self._combat_timeout_minutes = 30  # Configurable timeout
         self._player_combat_service = player_combat_service
+        # Auto-progression configuration
+        self._auto_progression_enabled = True
+        self._turn_interval_seconds = 6
+
+    @property
+    def auto_progression_enabled(self) -> bool:
+        """Get auto-progression enabled status."""
+        return self._auto_progression_enabled
+
+    @auto_progression_enabled.setter
+    def auto_progression_enabled(self, value: bool) -> None:
+        """Set auto-progression enabled status."""
+        self._auto_progression_enabled = value
+
+    @property
+    def turn_interval_seconds(self) -> int:
+        """Get turn interval in seconds."""
+        return self._turn_interval_seconds
+
+    @turn_interval_seconds.setter
+    def turn_interval_seconds(self, value: int) -> None:
+        """Set turn interval in seconds."""
+        self._turn_interval_seconds = value
 
     async def start_combat(
         self,
@@ -50,6 +73,8 @@ class CombatService:
         target_hp: int,
         target_max_hp: int,
         target_dex: int,
+        attacker_type: CombatParticipantType = CombatParticipantType.PLAYER,
+        target_type: CombatParticipantType = CombatParticipantType.NPC,
     ) -> CombatInstance:
         """
         Start a new combat instance between two participants.
@@ -79,13 +104,18 @@ class CombatService:
         if attacker_id in self._player_combats or target_id in self._npc_combats:
             raise ValueError("One or both participants are already in combat")
 
-        # Create combat instance
-        combat = CombatInstance(room_id=room_id)
+        # Create combat instance with auto-progression configuration
+        combat = CombatInstance(
+            room_id=room_id,
+            auto_progression_enabled=self._auto_progression_enabled,
+            turn_interval_seconds=self._turn_interval_seconds,
+            next_turn_time=datetime.utcnow() + timedelta(seconds=self._turn_interval_seconds),
+        )
 
         # Create participants
         attacker = CombatParticipant(
             participant_id=attacker_id,
-            participant_type=CombatParticipantType.PLAYER,
+            participant_type=attacker_type,
             name=attacker_name,
             current_hp=attacker_hp,
             max_hp=attacker_max_hp,
@@ -94,7 +124,7 @@ class CombatService:
 
         target = CombatParticipant(
             participant_id=target_id,
-            participant_type=CombatParticipantType.NPC,
+            participant_type=target_type,
             name=target_name,
             current_hp=target_hp,
             max_hp=target_max_hp,
@@ -105,10 +135,12 @@ class CombatService:
         combat.participants[attacker_id] = attacker
         combat.participants[target_id] = target
 
-        # Calculate turn order based on dexterity (higher dexterity goes first)
-        participants_with_dex = [(attacker_id, attacker_dex), (target_id, target_dex)]
-        participants_with_dex.sort(key=lambda x: x[1], reverse=True)
-        combat.turn_order = [pid for pid, _ in participants_with_dex]
+        # Calculate turn order: all participants sorted by dexterity (highest first)
+        all_participants = [(attacker_id, attacker_dex), (target_id, target_dex)]
+        all_participants.sort(key=lambda x: x[1], reverse=True)
+
+        # Build turn order: highest dexterity first
+        combat.turn_order = [pid for pid, _ in all_participants]
 
         # Store combat instance
         self._active_combats[combat.combat_id] = combat
@@ -288,6 +320,16 @@ class CombatService:
             "npc_combats": len(self._npc_combats),
         }
 
+    async def _advance_turn_automatically(self, combat: CombatInstance) -> None:
+        """
+        Advance turn automatically for auto-progression system.
+
+        Args:
+            combat: The combat instance to advance
+        """
+        combat.advance_turn()
+        logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
+
     async def _process_automatic_combat_progression(self, combat: CombatInstance) -> None:
         """
         Process automatic combat progression for NPCs.
@@ -299,11 +341,17 @@ class CombatService:
             combat: The combat instance to process
         """
         try:
+            # Only process if auto-progression is enabled
+            if not combat.auto_progression_enabled:
+                return
+
             # Continue processing turns until it's a player's turn or combat ends
             while combat.status == CombatStatus.ACTIVE:
                 current_participant = combat.get_current_turn_participant()
                 if not current_participant:
                     logger.warning(f"No current participant in combat {combat.combat_id}")
+                    # End combat if no valid participant found
+                    await self.end_combat(combat.combat_id, "Combat ended - no valid participant")
                     break
 
                 # If it's a player's turn, stop automatic progression
@@ -331,7 +379,7 @@ class CombatService:
 
     async def _process_npc_turn(self, combat: CombatInstance, npc_participant: CombatParticipant) -> None:
         """
-        Process an NPC's turn in combat.
+        Process an NPC's turn in combat with passive behavior (non-combat actions).
 
         Args:
             combat: The combat instance
@@ -353,28 +401,45 @@ class CombatService:
                 logger.warning(f"No valid target found for NPC {npc_participant.name} in combat {combat.combat_id}")
                 return
 
-            # NPC attacks with basic damage (1 for now)
-            damage = 1
-            logger.info(f"NPC {npc_participant.name} attacks {target.name} for {damage} damage")
-
-            # Apply damage
-            target.current_hp = max(0, target.current_hp - damage)
-            target_died = target.current_hp <= 0
+            # NPC performs non-combat action (passive behavior for MVP)
+            action_message = await self._select_npc_non_combat_action(npc_participant, target)
+            logger.info(f"NPC {npc_participant.name} performs non-combat action: {action_message}")
 
             # Update combat activity
             combat.update_activity()
 
-            # Log the attack result
-            if target_died:
-                logger.info(f"NPC {npc_participant.name} killed {target.name} in combat {combat.combat_id}")
-            else:
-                logger.debug(
-                    f"NPC {npc_participant.name} damaged {target.name} "
-                    f"for {damage} damage (HP: {target.current_hp}/{target.max_hp})"
-                )
-
         except Exception as e:
             logger.error(f"Error processing NPC turn for {npc_participant.name}: {e}")
+
+    async def _select_npc_non_combat_action(self, npc_participant: CombatParticipant, target: CombatParticipant) -> str:
+        """
+        Select a non-combat action for the NPC to perform.
+
+        Args:
+            npc_participant: The NPC performing the action
+            target: The target participant
+
+        Returns:
+            Action message describing what the NPC did
+        """
+        import random
+
+        # Non-combat actions for debugging and thematic behavior
+        actions = [
+            f"{npc_participant.name} takes a defensive stance, watching {target.name} carefully.",
+            f"{npc_participant.name} mutters something in an unknown language, "
+            f"eyes gleaming with otherworldly intelligence.",
+            f"{npc_participant.name} shifts position, creating an eerie silhouette against the shadows.",
+            f"{npc_participant.name} seems to be studying {target.name} with unnerving intensity.",
+            f"{npc_participant.name} makes a gesture that sends chills down your spine.",
+            f"{npc_participant.name} appears to be gathering some form of energy around them.",
+            f"{npc_participant.name} whispers words that seem to echo from beyond the veil of reality.",
+            f"{npc_participant.name} moves with an unnatural grace, their form seeming to shift at the edges.",
+            f"{npc_participant.name} fixes {target.name} with a gaze that speaks of ancient knowledge.",
+            f"{npc_participant.name} gestures menacingly, though no immediate threat manifests.",
+        ]
+
+        return random.choice(actions)
 
     async def _calculate_xp_reward(self, npc_id: UUID) -> int:
         """

@@ -323,6 +323,7 @@ class TestWebSocketCommandProcessing:
 
         mock_player = Mock()
         mock_player.current_room_id = "room_1"
+        mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
         mock_room = Mock()
@@ -330,6 +331,13 @@ class TestWebSocketCommandProcessing:
         mock_room.description = "A test room"
         mock_room.exits = {"north": "room_2"}
         mock_connection_manager.persistence.get_room.return_value = mock_room
+
+        # Mock app state for the unified command handler
+        mock_app = Mock()
+        mock_app.state.persistence = mock_connection_manager.persistence
+        mock_app.state.player_service = Mock()
+        mock_app.state.user_manager = Mock()
+        mock_connection_manager.app = mock_app
 
         # Execute
         result = await process_websocket_command(cmd, args, player_id)
@@ -350,6 +358,7 @@ class TestWebSocketCommandProcessing:
 
         mock_player = Mock()
         mock_player.current_room_id = "room_1"
+        mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
         mock_room = Mock()
@@ -360,6 +369,13 @@ class TestWebSocketCommandProcessing:
         mock_target_room.name = "North Room"
         mock_target_room.description = "A room to the north"
         mock_connection_manager.persistence.get_room.side_effect = [mock_room, mock_target_room]
+
+        # Mock app state for the unified command handler
+        mock_app = Mock()
+        mock_app.state.persistence = mock_connection_manager.persistence
+        mock_app.state.player_service = Mock()
+        mock_app.state.user_manager = Mock()
+        mock_connection_manager.app = mock_app
 
         # Execute
         result = await process_websocket_command(cmd, args, player_id)

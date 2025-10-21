@@ -5,8 +5,10 @@ This module tests the integration between NPCs and the combat system,
 including combat memory, damage handling, and event publishing.
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
+
+import pytest
 
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
@@ -18,7 +20,15 @@ class TestNPCCombatIntegrationService:
         """Set up test environment."""
         self.event_bus = Mock()
         self.persistence = Mock()
-        self.combat_service = Mock()
+        self.combat_service = AsyncMock()
+        # Mock the combat result object
+        mock_combat_result = Mock()
+        mock_combat_result.success = True
+        mock_combat_result.combat_id = "test_combat_123"
+        mock_combat_result.combat_ended = False
+        self.combat_service.process_attack.return_value = mock_combat_result
+        # Mock the player combats dictionary
+        self.combat_service._player_combats = {}
         self.messaging_integration = Mock()
         self.event_publisher = Mock()
 
@@ -35,7 +45,8 @@ class TestNPCCombatIntegrationService:
 
             self.service = NPCCombatIntegrationService(self.event_bus)
 
-    def test_handle_player_attack_on_npc_success(self):
+    @pytest.mark.asyncio
+    async def test_handle_player_attack_on_npc_success(self):
         """Test successful player attack on NPC."""
         # Setup
         player_id = str(uuid4())
@@ -55,7 +66,7 @@ class TestNPCCombatIntegrationService:
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         # Execute
-        result = self.service.handle_player_attack_on_npc(
+        result = await self.service.handle_player_attack_on_npc(
             player_id=player_id,
             npc_id=npc_id,
             room_id=room_id,
@@ -68,12 +79,12 @@ class TestNPCCombatIntegrationService:
         assert npc_id in self.service._npc_combat_memory
         assert self.service._npc_combat_memory[npc_id] == player_id
 
-        npc_instance.take_damage.assert_called_once_with(damage, "physical", player_id)
-        self.event_publisher.publish_player_attacked.assert_called_once()
-        self.event_publisher.publish_npc_took_damage.assert_called_once()
+        # Verify combat service was called
+        self.combat_service.process_attack.assert_called_once()
         self.messaging_integration.broadcast_combat_attack.assert_called_once()
 
-    def test_handle_player_attack_on_dead_npc(self):
+    @pytest.mark.asyncio
+    async def test_handle_player_attack_on_dead_npc(self):
         """Test player attack on dead NPC."""
         # Setup
         player_id = str(uuid4())
@@ -87,7 +98,7 @@ class TestNPCCombatIntegrationService:
         self.service._get_npc_instance = Mock(return_value=npc_instance)
 
         # Execute
-        result = self.service.handle_player_attack_on_npc(
+        result = await self.service.handle_player_attack_on_npc(
             player_id=player_id,
             npc_id=npc_id,
             room_id=room_id,
@@ -97,7 +108,8 @@ class TestNPCCombatIntegrationService:
         assert result is False
         self.event_publisher.publish_player_attacked.assert_not_called()
 
-    def test_handle_player_attack_on_nonexistent_npc(self):
+    @pytest.mark.asyncio
+    async def test_handle_player_attack_on_nonexistent_npc(self):
         """Test player attack on non-existent NPC."""
         # Setup
         player_id = str(uuid4())
@@ -107,7 +119,7 @@ class TestNPCCombatIntegrationService:
         self.service._get_npc_instance = Mock(return_value=None)
 
         # Execute
-        result = self.service.handle_player_attack_on_npc(
+        result = await self.service.handle_player_attack_on_npc(
             player_id=player_id,
             npc_id=npc_id,
             room_id=room_id,
@@ -223,22 +235,24 @@ class TestNPCCombatIntegrationService:
         # Verify memory is cleared
         assert npc_id not in self.service._npc_combat_memory
 
-    def test_handle_player_attack_error_handling(self):
+    @pytest.mark.asyncio
+    async def test_handle_player_attack_error_handling(self):
         """Test error handling in player attack."""
         # Setup
         player_id = str(uuid4())
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        # Mock NPC instance that raises exception
+        # Mock NPC instance that raises exception when get_stats is called
         npc_instance = Mock()
         npc_instance.is_alive = True
-        npc_instance.take_damage = Mock(side_effect=Exception("Test error"))
+        npc_instance.name = "Test NPC"
+        npc_instance.get_stats = Mock(side_effect=Exception("Test error"))
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
 
         # Execute
-        result = self.service.handle_player_attack_on_npc(
+        result = await self.service.handle_player_attack_on_npc(
             player_id=player_id,
             npc_id=npc_id,
             room_id=room_id,

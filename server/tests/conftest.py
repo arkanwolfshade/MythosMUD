@@ -373,22 +373,43 @@ def test_npc_database():
 
     npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
-    # Remove existing database file to ensure clean state
-    # Handle Windows file locking with retry logic
+    # Check if database exists and has proper schema before deciding to recreate
+    should_recreate = True
     if npc_test_db_path.exists():
-        for attempt in range(3):
-            try:
-                os.unlink(npc_test_db_path)
-                break
-            except PermissionError:
-                if attempt < 2:
-                    time.sleep(0.1)  # Brief delay before retry
-                else:
-                    # If we can't delete it, let init_npc_test_database recreate it
-                    pass
+        try:
+            # Check if the database has the expected schema by querying sqlite_master
+            import sqlite3
 
-    # Initialize the NPC test database with schema
-    init_npc_test_database()
+            conn = sqlite3.connect(str(npc_test_db_path))
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='npc_definitions'")
+            result = cursor.fetchone()
+            conn.close()
+
+            if result:
+                # Database exists and has the expected schema, don't recreate
+                should_recreate = False
+        except Exception:
+            # If we can't check the schema, assume we need to recreate
+            should_recreate = True
+
+    if should_recreate:
+        # Remove existing database file to ensure clean state
+        # Handle Windows file locking with retry logic
+        if npc_test_db_path.exists():
+            for attempt in range(3):
+                try:
+                    os.unlink(npc_test_db_path)
+                    break
+                except PermissionError:
+                    if attempt < 2:
+                        time.sleep(0.1)  # Brief delay before retry
+                    else:
+                        # If we can't delete it, let init_npc_test_database recreate it
+                        pass
+
+        # Initialize the NPC test database with schema
+        init_npc_test_database()
 
     # The SQLAlchemy metadata initialization will happen when the NPC database
     # module is imported and the engine is created. We don't need to call

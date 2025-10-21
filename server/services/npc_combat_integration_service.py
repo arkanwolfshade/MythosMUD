@@ -15,11 +15,10 @@ from uuid import UUID, uuid4
 
 from ..events.combat_events import (
     NPCDiedEvent,
-    NPCTookDamageEvent,
-    PlayerAttackedEvent,
 )
 from ..events.event_bus import EventBus
 from ..logging_config import get_logger
+from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
@@ -51,15 +50,20 @@ class NPCCombatIntegrationService:
         self._persistence = get_persistence(event_bus)
         self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus)
         self._combat_service = CombatService(self._player_combat_service)
+
+        # Enable auto-progression features
+        self._combat_service.auto_progression_enabled = True
+        self._combat_service.turn_interval_seconds = 6
+
         self._messaging_integration = CombatMessagingIntegration()
         self._event_publisher = CombatEventPublisher(event_bus)
 
         # NPC combat memory - tracks last attacker for each NPC instance
         self._npc_combat_memory: dict[str, str] = {}
 
-        logger.info("NPC Combat Integration Service initialized")
+        logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
 
-    def handle_player_attack_on_npc(
+    async def handle_player_attack_on_npc(
         self,
         player_id: str,
         npc_id: str,
@@ -68,7 +72,7 @@ class NPCCombatIntegrationService:
         damage: int = 1,
     ) -> bool:
         """
-        Handle a player attacking an NPC.
+        Handle a player attacking an NPC using auto-progression combat system.
 
         Args:
             player_id: ID of the attacking player
@@ -94,84 +98,91 @@ class NPCCombatIntegrationService:
             # Store combat memory - NPC remembers who attacked it
             self._npc_combat_memory[npc_id] = player_id
 
-            # Apply damage to NPC
-            damage_applied = npc_instance.take_damage(damage, "physical", player_id)
-            if not damage_applied:
-                logger.error(
-                    "Failed to apply damage to NPC",
-                    npc_id=npc_id,
-                    damage=damage,
-                )
-                return False
-
-            # Create a simple combat ID for tracking
-            combat_id = str(uuid4())
-
-            # Publish combat events
-            # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
+            # Convert string IDs to UUIDs for combat service
             try:
-                attacker_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
-                target_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else None
-                combat_uuid = UUID(combat_id)
+                attacker_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else uuid4()
+                target_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else uuid4()
             except ValueError:
-                # If combat_id is not a valid UUID, generate a new one
-                combat_uuid = uuid4()
-                attacker_uuid = None
-                target_uuid = None
+                attacker_uuid = uuid4()
+                target_uuid = uuid4()
 
-            self._event_publisher.publish_player_attacked(
-                PlayerAttackedEvent(
-                    event_type="player_attacked",
-                    timestamp=time.time(),
-                    combat_id=combat_uuid,
+            # Check if combat already exists, if not start new combat
+            existing_combat_id = self._combat_service._player_combats.get(attacker_uuid)
+            if existing_combat_id:
+                # Use existing combat
+                combat_result = await self._combat_service.process_attack(
+                    attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
+                )
+            else:
+                # Start new combat first
+                player_name = self._get_player_name(player_id)
+
+                # Use default player stats for now (TODO: get from player service)
+                attacker_hp = 100
+                attacker_max_hp = 100
+                attacker_dex = 10
+
+                # Get NPC stats properly from the NPC instance
+                npc_stats = npc_instance.get_stats()
+                npc_current_hp = npc_stats.get("hp", 100)
+                npc_max_hp = npc_stats.get("max_hp", 100)
+                npc_dexterity = npc_stats.get("dexterity", 10)
+
+                # Start combat with auto-progression - fix parameter order
+                await self._combat_service.start_combat(
                     room_id=room_id,
                     attacker_id=attacker_uuid,
-                    attacker_name=self._get_player_name(player_id),
                     target_id=target_uuid,
+                    attacker_name=player_name,
+                    target_name=npc_instance.name,
+                    attacker_hp=attacker_hp,
+                    attacker_max_hp=attacker_max_hp,
+                    attacker_dex=attacker_dex,
+                    target_hp=npc_current_hp,
+                    target_max_hp=npc_max_hp,
+                    target_dex=npc_dexterity,
+                    attacker_type=CombatParticipantType.PLAYER,
+                    target_type=CombatParticipantType.NPC,
+                )
+
+                # Now process the attack
+                combat_result = await self._combat_service.process_attack(
+                    attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
+                )
+
+            if combat_result.success:
+                # Broadcast attack message with health info
+                self._messaging_integration.broadcast_combat_attack(
+                    room_id=room_id,
+                    attacker_name=self._get_player_name(player_id),
                     target_name=npc_instance.name,
                     damage=damage,
                     action_type=action_type,
+                    combat_id=str(combat_result.combat_id) if combat_result.combat_id else str(uuid4()),
+                    attacker_id=player_id,
                 )
-            )
 
-            self._event_publisher.publish_npc_took_damage(
-                NPCTookDamageEvent(
-                    event_type="npc_took_damage",
-                    timestamp=time.time(),
-                    combat_id=combat_uuid,
-                    room_id=room_id,
-                    npc_id=target_uuid,
-                    npc_name=npc_instance.name,
+                # If combat ended, handle NPC death
+                if combat_result.combat_ended:
+                    self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
+
+                logger.info(
+                    "Player attack on NPC handled with auto-progression",
+                    player_id=player_id,
+                    npc_id=npc_id,
                     damage=damage,
-                    current_hp=getattr(npc_instance, "_stats", {}).get("hp", 0),
-                    max_hp=getattr(npc_instance, "_stats", {}).get("max_hp", 100),
+                    combat_ended=combat_result.combat_ended,
                 )
-            )
 
-            # Broadcast attack message
-            self._messaging_integration.broadcast_combat_attack(
-                room_id=room_id,
-                attacker_name=self._get_player_name(player_id),
-                target_name=npc_instance.name,
-                damage=damage,
-                action_type=action_type,
-                combat_id=combat_id,
-                attacker_id=player_id,
-            )
-
-            # Check if NPC died
-            if not npc_instance.is_alive:
-                self.handle_npc_death(npc_id, room_id, player_id, combat_id)
-
-            logger.info(
-                "Player attack on NPC handled",
-                player_id=player_id,
-                npc_id=npc_id,
-                damage=damage,
-                npc_alive=npc_instance.is_alive,
-            )
-
-            return True
+                return True
+            else:
+                logger.warning(
+                    "Combat attack failed",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    message=combat_result.message,
+                )
+                return False
 
         except Exception as e:
             logger.error(

@@ -16,12 +16,10 @@ def test_no_database_files_outside_approved_locations():
     Approved locations:
     - /data/players/ (production player databases)
     - /data/npcs/ (production NPC databases)
-    - /data/local/players/ (local environment player databases)
-    - /data/local/npcs/ (local environment NPC databases)
-    - /data/unit_test/players/ (test player databases)
-    - /data/unit_test/npcs/ (test NPC databases)
-    - /data/e2e_test/players/ (e2e test player databases)
-    - /data/e2e_test/npcs/ (e2e test NPC databases)
+    - /server/tests/data/players/ (test player databases)
+    - /server/tests/data/npcs/ (test NPC databases)
+    - /data/unit_test/players/ (unit test player databases)
+    - /data/unit_test/npcs/ (unit test NPC databases)
 
     Note: node_modules directories are excluded as they contain external dependencies.
     """
@@ -31,12 +29,12 @@ def test_no_database_files_outside_approved_locations():
     # Define approved database locations (relative to project root)
     # CRITICAL: These are the ONLY approved locations per CRITICAL DATABASE PLACEMENT RULES
     approved_db_locations = [
-        project_root / "data" / "local" / "players",
-        project_root / "data" / "local" / "npcs",
+        project_root / "data" / "players",
+        project_root / "data" / "npcs",
+        project_root / "server" / "tests" / "data" / "players",
+        project_root / "server" / "tests" / "data" / "npcs",
         project_root / "data" / "unit_test" / "players",
         project_root / "data" / "unit_test" / "npcs",
-        project_root / "data" / "e2e_test" / "players",
-        project_root / "data" / "e2e_test" / "npcs",
     ]
 
     # Find all .db files in the project, excluding node_modules

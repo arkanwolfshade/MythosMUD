@@ -47,5 +47,7 @@ async def handle_ping_message(websocket: WebSocket, player_id: str, data: dict[s
     """Handle ping message type."""
     from .envelope import build_event
 
+    logger.debug(f"🔍 DEBUG: Received ping from player {player_id}")
     pong_event = build_event("pong", {}, player_id=player_id)
     await websocket.send_json(pong_event)
+    logger.debug(f"🔍 DEBUG: Sent pong to player {player_id}")

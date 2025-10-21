@@ -106,16 +106,9 @@ class TestCombatPerformance:
             target_dex=10,
         )
 
-        # Process multiple attacks in turn-based fashion
-        for i in range(num_attacks):
-            # Only attack on player turns (every other turn)
-            if i % 2 == 0:
-                await combat_service.process_attack(player_id, npc_id, damage=1)
-            else:
-                # Simulate NPC turn by advancing combat
-                combat = await combat_service.get_combat_by_participant(player_id)
-                if combat:
-                    combat.advance_turn()
+        # Process multiple attacks (system handles turn progression automatically)
+        for _i in range(num_attacks):
+            await combat_service.process_attack(player_id, npc_id, damage=1)
 
         end_time = time.time()
         duration = end_time - start_time
@@ -441,16 +434,9 @@ class TestCombatPerformance:
                 target_dex=10,
             )
 
-            # Process multiple attacks in turn-based fashion
-            for attack_num in range(num_attacks_per_combat):
-                if attack_num % 2 == 0:
-                    # Player turn
-                    await combat_service.process_attack(player_id, npc_id, damage=1)
-                else:
-                    # Simulate NPC turn by advancing combat
-                    combat_instance = await combat_service.get_combat_by_participant(player_id)
-                    if combat_instance:
-                        combat_instance.advance_turn()
+            # Process multiple attacks (system handles turn progression automatically)
+            for _attack_num in range(num_attacks_per_combat):
+                await combat_service.process_attack(player_id, npc_id, damage=1)
 
             return combat
 

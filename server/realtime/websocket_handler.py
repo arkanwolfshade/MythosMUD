@@ -65,6 +65,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
         if hasattr(websocket, "app") and is_shutdown_pending(websocket.app):
             error_message = get_shutdown_blocking_message("motd_progression")
             await websocket.send_json({"type": "error", "message": error_message})
+            logger.info(f"🔍 DEBUG: Closing WebSocket for {player_id} due to server shutdown")
             await websocket.close(code=1001, reason="Server shutting down")
             logger.info(f"Rejected WebSocket connection for {player_id} - server shutting down")
             return
