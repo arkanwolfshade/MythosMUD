@@ -24,7 +24,7 @@ def get_player_service(request: Request) -> PlayerService:
     Get a PlayerService instance with dependency injection.
 
     This function provides a PlayerService instance with the persistence
-    layer injected from the application state.
+    layer and combat service injected from the application state.
 
     Args:
         request: The FastAPI request object containing app state
@@ -34,7 +34,8 @@ def get_player_service(request: Request) -> PlayerService:
     """
     logger.debug("Creating PlayerService with dependency injection")
     persistence = request.app.state.persistence
-    return PlayerService(persistence)
+    combat_service = getattr(request.app.state, "combat_service", None)
+    return PlayerService(persistence, combat_service)
 
 
 def get_player_service_for_testing() -> PlayerService:

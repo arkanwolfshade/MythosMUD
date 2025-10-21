@@ -69,6 +69,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
             tasks.append(task)
 
@@ -104,6 +105,7 @@ class TestCombatPerformance:
             target_hp=1000,  # High HP to survive many attacks
             target_max_hp=1000,
             target_dex=10,
+            current_tick=0,
         )
 
         # Process multiple attacks (system handles turn progression automatically)
@@ -144,6 +146,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
 
         final_memory = process.memory_info().rss
@@ -177,6 +180,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
             combat_ids.append(combat.combat_id)
 
@@ -216,6 +220,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
 
         # Start all combats concurrently
@@ -287,6 +292,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
 
         start_time = time.time()
@@ -323,6 +329,7 @@ class TestCombatPerformance:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
 
         start_time = time.time()
@@ -432,6 +439,7 @@ class TestCombatPerformance:
                 target_hp=100,  # High HP to survive attacks
                 target_max_hp=100,
                 target_dex=10,
+                current_tick=0,
             )
 
             # Process multiple attacks (system handles turn progression automatically)

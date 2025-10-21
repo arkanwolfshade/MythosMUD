@@ -55,6 +55,7 @@ interface Player {
   level?: number;
   experience?: number;
   current_room_id?: string;
+  in_combat?: boolean;
 }
 
 interface Room {
@@ -691,6 +692,62 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 totalMessages: updates.messages.length,
               });
             }
+            break;
+          }
+          case 'game_tick': {
+            const tickNumber = event.data.tick_number as number;
+            const showTickVerbosity = localStorage.getItem('showTickVerbosity') === 'true';
+
+            // Debug logging for game tick events
+            logger.debug('GameTerminalWithPanels', 'Received game_tick event', {
+              tickNumber,
+              showTickVerbosity,
+              isEvery10th: tickNumber % 10 === 0,
+            });
+
+            // Display every 10th tick if verbosity is enabled
+            if (showTickVerbosity && tickNumber % 10 === 0) {
+              const message = {
+                text: `[Game Tick ${tickNumber}]`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+              };
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+              updates.messages.push(message);
+
+              logger.info('GameTerminalWithPanels', 'Game tick displayed', {
+                tickNumber,
+                showTickVerbosity,
+              });
+            }
+            break;
+          }
+          case 'npc_action': {
+            const npcName = event.data.npc_name as string;
+            const action = event.data.action as string;
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC action received', {
+              npcName,
+              action,
+              message,
+            });
             break;
           }
           default: {

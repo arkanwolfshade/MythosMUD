@@ -8,6 +8,7 @@ turn order calculation, and combat resolution.
 from datetime import datetime, timedelta
 from uuid import UUID
 
+from server.app.lifespan import get_current_tick
 from server.logging_config import get_logger
 from server.models.combat import (
     CombatInstance,
@@ -73,6 +74,7 @@ class CombatService:
         target_hp: int,
         target_max_hp: int,
         target_dex: int,
+        current_tick: int,
         attacker_type: CombatParticipantType = CombatParticipantType.PLAYER,
         target_type: CombatParticipantType = CombatParticipantType.NPC,
     ) -> CombatInstance:
@@ -108,8 +110,10 @@ class CombatService:
         combat = CombatInstance(
             room_id=room_id,
             auto_progression_enabled=self._auto_progression_enabled,
-            turn_interval_seconds=self._turn_interval_seconds,
-            next_turn_time=datetime.utcnow() + timedelta(seconds=self._turn_interval_seconds),
+            turn_interval_ticks=self._turn_interval_seconds,  # Convert seconds to ticks (1:1 for now)
+            start_tick=current_tick,
+            last_activity_tick=current_tick,
+            next_turn_tick=current_tick + self._turn_interval_seconds,
         )
 
         # Create participants
@@ -157,6 +161,271 @@ class CombatService:
 
         return combat
 
+    async def process_game_tick(self, current_tick: int) -> None:
+        """
+        Process game tick for combat auto-progression.
+
+        Args:
+            current_tick: Current game tick number
+        """
+        logger.info(
+            f"[COMBAT TICK] process_game_tick called for tick {current_tick}, "
+            f"_auto_progression_enabled={self._auto_progression_enabled}, "
+            f"active_combats={len(self._active_combats)}"
+        )
+        if not self._auto_progression_enabled:
+            logger.info("[COMBAT TICK] Auto-progression is disabled, returning early")
+            return
+
+        # Check all active combats for auto-progression
+        for combat_id, combat in list(self._active_combats.items()):
+            if combat.status != CombatStatus.ACTIVE:
+                continue
+
+            if not combat.auto_progression_enabled:
+                continue
+
+            logger.debug(
+                f"Combat {combat_id}: current_tick={current_tick}, next_turn_tick={combat.next_turn_tick}, auto_progression={combat.auto_progression_enabled}"
+            )
+
+            # Check if it's time for the next turn
+            if current_tick >= combat.next_turn_tick:
+                logger.debug(f"Auto-progression triggered for combat {combat_id} at tick {current_tick}")
+                await self._advance_turn_automatically(combat, current_tick)
+
+    async def _advance_turn_automatically(self, combat: CombatInstance, current_tick: int) -> None:
+        """
+        Automatically advance combat turn and process NPC actions.
+
+        Args:
+            combat: Combat instance to advance
+            current_tick: Current game tick
+        """
+        # Update activity
+        combat.update_activity(current_tick)
+
+        # Advance turn
+        combat.advance_turn(current_tick)
+
+        # Get current participant
+        current_participant = combat.get_current_turn_participant()
+        if not current_participant:
+            logger.warning(f"No current participant for combat {combat.combat_id}")
+            logger.debug(
+                f"Combat state: turn_order={combat.turn_order}, current_turn={combat.current_turn}, participants={list(combat.participants.keys())}"
+            )
+            # Check if the participant ID exists in turn_order but not in participants
+            if combat.turn_order and combat.current_turn < len(combat.turn_order):
+                expected_participant_id = combat.turn_order[combat.current_turn]
+                logger.debug(
+                    f"Expected participant ID: {expected_participant_id}, exists in participants: {expected_participant_id in combat.participants}"
+                )
+
+                # If participant is missing, try to fix the combat state
+                if expected_participant_id not in combat.participants:
+                    logger.error(
+                        f"Participant {expected_participant_id} not found in participants dictionary. Combat state is corrupted."
+                    )
+                    # Remove the corrupted combat
+                    self._active_combats.pop(combat.combat_id, None)
+                    return
+
+                # Try to find the participant by matching UUID values
+                found_participant = None
+                for participant_id, participant in combat.participants.items():
+                    if str(participant_id) == str(expected_participant_id):
+                        found_participant = participant
+                        logger.debug(f"Found participant by UUID string match: {participant}")
+                        break
+
+                if found_participant:
+                    current_participant = found_participant
+                else:
+                    logger.error(f"Could not find participant {expected_participant_id} even by UUID string match")
+                    return
+            else:
+                return
+
+        # Debug logging to understand participant type
+        participant_id = getattr(current_participant, "participant_id", "NO_PARTICIPANT_ID")
+        logger.debug(f"Current participant type: {type(current_participant)}, participant_id: {participant_id}")
+
+        # Additional debugging for the combat state
+        logger.debug(
+            f"Combat state: turn_order={combat.turn_order}, current_turn={combat.current_turn}, participants={list(combat.participants.keys())}"
+        )
+
+        # Debug the specific participant lookup
+        if combat.turn_order and combat.current_turn < len(combat.turn_order):
+            current_participant_id = combat.turn_order[combat.current_turn]
+            logger.debug(
+                f"Looking for participant_id: {current_participant_id} in participants: {list(combat.participants.keys())}"
+            )
+            found_participant = combat.participants.get(current_participant_id)
+            logger.debug(f"Participant found: {found_participant}")
+            logger.debug(f"current_participant (from get_current_turn_participant): {current_participant}")
+            logger.debug(f"Are they the same? {found_participant == current_participant}")
+
+        # If it's an NPC's turn, process their action
+        if current_participant.participant_type == CombatParticipantType.NPC:
+            await self._process_npc_turn(combat, current_participant, current_tick)
+        else:
+            # Player's turn - perform automatic basic attack
+            # Validate that current_participant is a CombatParticipant
+            if not isinstance(current_participant, CombatParticipant):
+                logger.error(f"Expected CombatParticipant, got {type(current_participant)}: {current_participant}")
+                return
+            await self._process_player_turn(combat, current_participant, current_tick)
+
+    async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
+        """
+        Process NPC turn with passive behavior.
+
+        Args:
+            combat: Combat instance
+            npc: NPC participant
+            current_tick: Current game tick
+        """
+        # Select NPC passive action
+        action = await self._select_npc_non_combat_action(npc)
+
+        # Format NPC health information
+        npc_health = f"{npc.current_health}/{npc.max_health} HP"
+
+        # Broadcast the action to the room with health information
+        if action:
+            await self._broadcast_npc_action(combat.room_id, npc.name, action, npc_health)
+
+        # Update NPC's last action tick
+        npc.last_action_tick = current_tick
+
+        logger.debug(f"NPC {npc.name} performed passive action: {action} ({npc_health})")
+
+    async def _select_npc_non_combat_action(self, npc: CombatParticipant) -> str | None:
+        """
+        Select a non-combat action for an NPC.
+
+        Args:
+            npc: NPC participant
+
+        Returns:
+            Action description or None
+        """
+        # Simple passive actions for now
+        actions = [
+            f"{npc.name} shifts uncomfortably.",
+            f"{npc.name} glances around nervously.",
+            f"{npc.name} mutters something under their breath.",
+            f"{npc.name} adjusts their stance.",
+            f"{npc.name} looks at you with concern.",
+        ]
+
+        import random
+
+        return random.choice(actions)
+
+    async def _broadcast_npc_action(self, room_id: str, npc_name: str, action: str, npc_health: str = "") -> None:
+        """
+        Broadcast NPC action to room.
+
+        Args:
+            room_id: Room ID
+            npc_name: NPC name
+            action: Action description
+            npc_health: Optional NPC health information (e.g., "49/50 HP")
+        """
+        try:
+            # Create a simple message event for NPC actions
+            from server.realtime.connection_manager import connection_manager
+            from server.realtime.envelope import build_event
+
+            # Add health information to the message if provided
+            message = f"{npc_name} {action}"
+            if npc_health:
+                message = f"{npc_name} {action} ({npc_health})"
+
+            # Create NPC action event
+            npc_action_event = build_event(
+                "npc_action",
+                {
+                    "npc_name": npc_name,
+                    "action": action,
+                    "message": message,
+                    "npc_health": npc_health,
+                },
+                room_id=room_id,
+            )
+
+            # Broadcast to all players in the room
+            await connection_manager.broadcast_to_room(room_id, npc_action_event)
+
+            logger.info(
+                f"NPC {npc_name} in room {room_id}: {action} ({npc_health if npc_health else 'no health info'})"
+            )
+        except Exception as e:
+            logger.error(f"Failed to broadcast NPC action: {e}")
+            # Fallback to just logging
+            logger.info(f"NPC {npc_name} in room {room_id}: {action}")
+
+    async def _process_player_turn(self, combat: CombatInstance, player: CombatParticipant, current_tick: int) -> None:
+        """
+        Process player turn with automatic basic attack.
+
+        Args:
+            combat: Combat instance
+            player: Player participant
+            current_tick: Current game tick
+        """
+        try:
+            # Validate that we received a proper CombatParticipant object
+            if not isinstance(player, CombatParticipant):
+                logger.error(f"Expected CombatParticipant, got {type(player)}: {player}")
+                return
+
+            # Debug logging to understand what we're receiving
+            logger.debug(f"_process_player_turn called with player type: {type(player)}, player: {player}")
+            if hasattr(player, "participant_id"):
+                logger.debug(f"Player participant_id: {player.participant_id} (type: {type(player.participant_id)})")
+            else:
+                logger.error(f"Player object missing participant_id attribute: {player}")
+                return
+            # Find the target (other participant in combat)
+            target = None
+            for participant in combat.participants.values():
+                if participant.participant_id != player.participant_id:
+                    target = participant
+                    break
+
+            if not target:
+                logger.warning(f"No target found for player {player.name} in combat {combat.combat_id}")
+                return
+
+            # Perform automatic basic attack
+            logger.debug(f"Player {player.name} performing automatic attack on {target.name}")
+
+            # Use default damage for automatic attacks
+            damage = 1
+
+            # Process the attack
+            combat_result = await self.process_attack(
+                attacker_id=player.participant_id, target_id=target.participant_id, damage=damage
+            )
+
+            if combat_result.success:
+                logger.info(f"Player {player.name} automatically attacked {target.name} for {damage} damage")
+            else:
+                logger.warning(f"Player {player.name} automatic attack failed: {combat_result.message}")
+
+            # Update player's last action tick
+            player.last_action_tick = current_tick
+
+        except Exception as e:
+            # Handle case where player might not be a CombatParticipant
+            player_type = type(player)
+            player_name = getattr(player, "name", f"Unknown Player (type: {player_type})")
+            logger.error(f"Error processing player turn for {player_name}: {e}")
+
     async def get_combat_by_participant(self, participant_id: UUID) -> CombatInstance | None:
         """
         Get combat instance for a specific participant.
@@ -194,10 +463,11 @@ class CombatService:
         if combat.status != CombatStatus.ACTIVE:
             raise ValueError("Combat is not active")
 
-        # Check if it's the attacker's turn
-        current_participant = combat.get_current_turn_participant()
-        if not current_participant or current_participant.participant_id != attacker_id:
-            raise ValueError("It is not the attacker's turn")
+        # Check if it's the attacker's turn (allow first attack to bypass turn order)
+        if not combat.is_first_attack:
+            current_participant = combat.get_current_turn_participant()
+            if not current_participant or current_participant.participant_id != attacker_id:
+                raise ValueError("It is not the attacker's turn")
 
         # Validate target
         target = combat.participants.get(target_id)
@@ -207,6 +477,11 @@ class CombatService:
         if not target.is_alive():
             raise ValueError("Target is already dead")
 
+        # Get current participant for logging
+        current_participant = combat.participants.get(attacker_id)
+        if not current_participant:
+            raise ValueError("Attacker not found in combat")
+
         logger.info(f"Processing attack: {current_participant.name} attacks {target.name} for {damage} damage")
 
         # Apply damage
@@ -214,18 +489,19 @@ class CombatService:
         target_died = target.current_hp <= 0
 
         # Update combat activity
-        combat.update_activity()
+        combat.update_activity(0)  # Will be updated with actual tick in game loop
 
         # Check if combat should end
         combat_ended = combat.is_combat_over()
 
-        # Create result
+        # Create result with health information
+        health_info = f" ({target.current_hp}/{target.max_hp} HP)"
         result = CombatResult(
             success=True,
             damage=damage,
             target_died=target_died,
             combat_ended=combat_ended,
-            message=f"{current_participant.name} attacks {target.name} for {damage} damage",
+            message=f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}",
             combat_id=combat.combat_id,
         )
 
@@ -246,12 +522,16 @@ class CombatService:
         if combat_ended:
             await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
         else:
-            # Advance turn
-            combat.advance_turn()
-            logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
-
-            # Automatically process next participant's turn if it's an NPC
-            await self._process_automatic_combat_progression(combat)
+            # Mark first attack as completed and set up proper turn order
+            if combat.is_first_attack:
+                combat.is_first_attack = False
+                # Set up next turn tick for auto-progression
+                combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
+                logger.debug(f"Combat {combat.combat_id} first attack completed, auto-progression enabled")
+            else:
+                # Don't advance turn here during auto-progression - it's already advanced
+                # in _advance_turn_automatically. Only advance if this is a manual attack.
+                logger.debug(f"Combat {combat.combat_id} turn already advanced in auto-progression")
 
         return result
 
@@ -320,16 +600,6 @@ class CombatService:
             "npc_combats": len(self._npc_combats),
         }
 
-    async def _advance_turn_automatically(self, combat: CombatInstance) -> None:
-        """
-        Advance turn automatically for auto-progression system.
-
-        Args:
-            combat: The combat instance to advance
-        """
-        combat.advance_turn()
-        logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
-
     async def _process_automatic_combat_progression(self, combat: CombatInstance) -> None:
         """
         Process automatic combat progression for NPCs.
@@ -361,7 +631,7 @@ class CombatService:
 
                 # If it's an NPC's turn, process their attack automatically
                 if current_participant.participant_type == CombatParticipantType.NPC:
-                    await self._process_npc_turn(combat, current_participant)
+                    await self._process_npc_turn(combat, current_participant, 0)  # Will be updated with actual tick
 
                     # Check if combat ended after NPC turn
                     if combat.is_combat_over():
@@ -369,77 +639,13 @@ class CombatService:
                         break
 
                     # Advance to next turn
-                    combat.advance_turn()
+                    combat.advance_turn(get_current_tick())
                     logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
 
         except Exception as e:
             logger.error(f"Error in automatic combat progression for combat {combat.combat_id}: {e}")
             # End combat on error to prevent infinite loops
             await self.end_combat(combat.combat_id, f"Combat ended due to error: {str(e)}")
-
-    async def _process_npc_turn(self, combat: CombatInstance, npc_participant: CombatParticipant) -> None:
-        """
-        Process an NPC's turn in combat with passive behavior (non-combat actions).
-
-        Args:
-            combat: The combat instance
-            npc_participant: The NPC participant whose turn it is
-        """
-        try:
-            # Find a valid target for the NPC (preferably a player)
-            target = None
-            for participant in combat.participants.values():
-                if (
-                    participant.participant_type == CombatParticipantType.PLAYER
-                    and participant.is_alive()
-                    and participant.participant_id != npc_participant.participant_id
-                ):
-                    target = participant
-                    break
-
-            if not target:
-                logger.warning(f"No valid target found for NPC {npc_participant.name} in combat {combat.combat_id}")
-                return
-
-            # NPC performs non-combat action (passive behavior for MVP)
-            action_message = await self._select_npc_non_combat_action(npc_participant, target)
-            logger.info(f"NPC {npc_participant.name} performs non-combat action: {action_message}")
-
-            # Update combat activity
-            combat.update_activity()
-
-        except Exception as e:
-            logger.error(f"Error processing NPC turn for {npc_participant.name}: {e}")
-
-    async def _select_npc_non_combat_action(self, npc_participant: CombatParticipant, target: CombatParticipant) -> str:
-        """
-        Select a non-combat action for the NPC to perform.
-
-        Args:
-            npc_participant: The NPC performing the action
-            target: The target participant
-
-        Returns:
-            Action message describing what the NPC did
-        """
-        import random
-
-        # Non-combat actions for debugging and thematic behavior
-        actions = [
-            f"{npc_participant.name} takes a defensive stance, watching {target.name} carefully.",
-            f"{npc_participant.name} mutters something in an unknown language, "
-            f"eyes gleaming with otherworldly intelligence.",
-            f"{npc_participant.name} shifts position, creating an eerie silhouette against the shadows.",
-            f"{npc_participant.name} seems to be studying {target.name} with unnerving intensity.",
-            f"{npc_participant.name} makes a gesture that sends chills down your spine.",
-            f"{npc_participant.name} appears to be gathering some form of energy around them.",
-            f"{npc_participant.name} whispers words that seem to echo from beyond the veil of reality.",
-            f"{npc_participant.name} moves with an unnatural grace, their form seeming to shift at the edges.",
-            f"{npc_participant.name} fixes {target.name} with a gaze that speaks of ancient knowledge.",
-            f"{npc_participant.name} gestures menacingly, though no immediate threat manifests.",
-        ]
-
-        return random.choice(actions)
 
     async def _calculate_xp_reward(self, npc_id: UUID) -> int:
         """

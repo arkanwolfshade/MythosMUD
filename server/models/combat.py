@@ -6,7 +6,6 @@ in memory during active combat sessions.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -37,7 +36,7 @@ class CombatParticipant:
     max_hp: int
     dexterity: int
     is_active: bool = True
-    last_action_time: datetime | None = None
+    last_action_tick: int | None = None
 
     def is_alive(self) -> bool:
         """Check if participant is alive."""
@@ -54,31 +53,46 @@ class CombatInstance:
     turn_order: list[UUID] = field(default_factory=list)
     current_turn: int = 0
     status: CombatStatus = CombatStatus.ACTIVE
-    start_time: datetime = field(default_factory=datetime.utcnow)
-    last_activity: datetime = field(default_factory=datetime.utcnow)
+    start_tick: int = 0
+    last_activity_tick: int = 0
     combat_round: int = 0
     # Auto-progression features
     auto_progression_enabled: bool = True
-    turn_interval_seconds: int = 6
-    next_turn_time: datetime = field(default_factory=lambda: datetime.utcnow() + timedelta(seconds=6))
+    turn_interval_ticks: int = 6
+    next_turn_tick: int = 0
+    # Track if this is the first attack (bypasses turn order)
+    is_first_attack: bool = True
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""
         if not self.turn_order or self.current_turn >= len(self.turn_order):
             return None
         participant_id = self.turn_order[self.current_turn]
-        return self.participants.get(participant_id)
 
-    def advance_turn(self) -> None:
+        # Try direct lookup first
+        participant = self.participants.get(participant_id)
+        if participant:
+            return participant
+
+        # Fallback: try matching by UUID string value if direct lookup fails
+        # This handles cases where UUID objects might be different instances
+        target_uuid_str = str(participant_id)
+        for pid, p in self.participants.items():
+            if str(pid) == target_uuid_str:
+                return p
+
+        return None
+
+    def advance_turn(self, current_tick: int) -> None:
         """Advance to the next turn."""
         self.current_turn += 1
         if self.current_turn >= len(self.turn_order):
             self.current_turn = 0
             self.combat_round += 1
 
-        # Update next turn time for auto-progression
+        # Update next turn tick for auto-progression
         if self.auto_progression_enabled:
-            self.next_turn_time = datetime.utcnow() + timedelta(seconds=self.turn_interval_seconds)
+            self.next_turn_tick = current_tick + self.turn_interval_ticks
 
     def is_combat_over(self) -> bool:
         """Check if combat should end."""
@@ -89,9 +103,9 @@ class CombatInstance:
         """Get all alive participants."""
         return [p for p in self.participants.values() if p.is_alive()]
 
-    def update_activity(self) -> None:
-        """Update the last activity timestamp."""
-        self.last_activity = datetime.utcnow()
+    def update_activity(self, current_tick: int) -> None:
+        """Update the last activity tick."""
+        self.last_activity_tick = current_tick
 
 
 @dataclass
@@ -104,7 +118,7 @@ class CombatAction:
     target_id: UUID = field(default_factory=uuid4)
     action_type: str = "attack"
     damage: int = 1
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    tick: int = 0
     success: bool = True
     message: str = ""
 

@@ -29,6 +29,7 @@ interface Player {
     cult_affiliation?: number;
   };
   level?: number;
+  in_combat?: boolean;
 }
 
 interface Room {
@@ -324,6 +325,10 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">Sanity:</span>
                     <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-base text-mythos-terminal-text-secondary">In Combat:</span>
+                    <span className="text-base text-mythos-terminal-text">{player.in_combat ? 'Yes' : 'No'}</span>
                   </div>
                   {/* Core Attributes */}
                   <div className="border-t border-mythos-terminal-border pt-2">

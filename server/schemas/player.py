@@ -60,6 +60,7 @@ class PlayerRead(PlayerBase):
     created_at: datetime = Field(..., description="Player creation timestamp")
     last_active: datetime = Field(..., description="Player last active timestamp")
     is_admin: bool = Field(default=False, description="Whether player has admin privileges")
+    in_combat: bool = Field(default=False, description="Whether player is currently in combat")
 
     model_config = ConfigDict(
         from_attributes=True,

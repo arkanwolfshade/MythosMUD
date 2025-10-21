@@ -95,6 +95,7 @@ class TestCombatSystemIntegration:
             target_hp=5,  # Low HP to trigger death
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Process attack that kills target
@@ -289,6 +290,7 @@ class TestCombatSystemIntegration:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Verify combat is associated with correct room
@@ -313,6 +315,7 @@ class TestCombatSystemIntegration:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         combat_id = combat.combat_id
@@ -368,6 +371,7 @@ class TestCombatSystemIntegration:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         combat2 = await combat_service.start_combat(
@@ -382,6 +386,7 @@ class TestCombatSystemIntegration:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Verify both combats exist independently
@@ -413,6 +418,7 @@ class TestCombatSystemIntegration:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Get stats after combat

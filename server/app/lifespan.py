@@ -26,6 +26,15 @@ from .task_registry import TaskRegistry
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
 
+# Global tick counter for combat system
+_current_tick = 0
+
+
+def get_current_tick() -> int:
+    """Get the current game tick."""
+    return _current_tick
+
+
 # Log directory creation is now handled by logging_config.py
 
 
@@ -136,6 +145,18 @@ async def lifespan(app: FastAPI):
         break
 
     logger.info("NPC services initialized and added to app.state")
+
+    # Initialize combat service
+    from ..services.combat_service import CombatService
+    from ..services.player_combat_service import PlayerCombatService
+
+    app.state.player_combat_service = PlayerCombatService(app.state.persistence, app.state.event_bus)
+    app.state.combat_service = CombatService(app.state.player_combat_service)
+
+    # Update PlayerService with combat service for dynamic combat state checking
+    app.state.player_service.combat_service = app.state.combat_service
+
+    logger.info("Combat service initialized and added to app.state")
 
     # Initialize NPC startup spawning
     # Re-enabled to ensure NPCs spawn during server startup
@@ -334,6 +355,7 @@ async def game_tick_loop(app: FastAPI):
 
     This function runs continuously and handles periodic game updates,
     including broadcasting tick information to connected players."""
+    global _current_tick
     tick_count = 0
     logger.info("Game tick loop started")
 
@@ -341,6 +363,16 @@ async def game_tick_loop(app: FastAPI):
         try:
             # TODO: Implement status/effect ticks using persistence layer
             logger.debug(f"Game tick {tick_count}")
+
+            # Update global tick counter
+            _current_tick = tick_count
+
+            # Process combat auto-progression
+            if hasattr(app.state, "combat_service"):
+                try:
+                    await app.state.combat_service.process_game_tick(tick_count)
+                except Exception as e:
+                    logger.error(f"Error processing combat tick {tick_count}: {e}")
 
             # Broadcast game tick to all connected players
             tick_data = {

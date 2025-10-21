@@ -1,19 +1,24 @@
 """
 Combat command handlers for the MUD.
 
-This module implements the combat commands including attack, punch, kick, strike,
-and other combat-related actions.
+This module implements the combat commands including attack, punch, kick,
+strike, and other combat-related actions.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
 from server.logging.enhanced_logging_config import get_logger
 from server.persistence import get_persistence
 from server.schemas.target_resolution import TargetType
-from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+from server.services.npc_combat_integration_service import (
+    NPCCombatIntegrationService,
+)
 from server.services.target_resolution_service import TargetResolutionService
 from server.validators.combat_validator import CombatValidator
+
+if TYPE_CHECKING:
+    from server.services.combat_service import CombatService
 
 logger = get_logger(__name__)
 
@@ -26,10 +31,24 @@ class CombatCommandHandler:
     command system and combat service.
     """
 
-    def __init__(self):
-        """Initialize the combat command handler."""
-        self.attack_aliases = {"attack", "punch", "kick", "strike", "hit", "smack", "thump"}
-        self.npc_combat_service = NPCCombatIntegrationService()
+    def __init__(self, combat_service: "CombatService | None" = None):
+        """
+        Initialize the combat command handler.
+
+        Args:
+            combat_service: Optional CombatService instance to use.
+                If None, NPCCombatIntegrationService will create its own.
+        """
+        self.attack_aliases = {
+            "attack",
+            "punch",
+            "kick",
+            "strike",
+            "hit",
+            "smack",
+            "thump",
+        }
+        self.npc_combat_service = NPCCombatIntegrationService(combat_service=combat_service)
         self.persistence = get_persistence()
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
@@ -234,22 +253,37 @@ class CombatCommandHandler:
             logger.info(f"Executing combat action: {player_name} ({player_id}) {command}s {npc_id} for {damage} damage")
 
             # Use the proper combat service to handle the attack with auto-progression
-            success = await self.npc_combat_service.handle_player_attack_on_npc(
+            await self.npc_combat_service.handle_player_attack_on_npc(
                 player_id=player_id, npc_id=npc_id, room_id=room_id, action_type=command, damage=damage
             )
 
-            if success:
-                return {"result": f"You {command} for {damage} damage!"}
-            else:
-                return {"result": f"Your {command} fails to connect!"}
+            # Return simple acknowledgment since detailed message is sent via broadcast system
+            return {"result": f"You {command} at the target."}
 
         except Exception as e:
             logger.error(f"Error executing combat action: {e}")
             return {"result": f"Error executing {command} command"}
 
 
-# Global combat command handler instance
-combat_command_handler = CombatCommandHandler()
+# Global combat command handler instance (initialized lazily)
+_combat_command_handler: CombatCommandHandler | None = None
+
+
+def get_combat_command_handler() -> CombatCommandHandler:
+    """
+    Get the global combat command handler instance, creating it if needed.
+
+    This uses lazy initialization to ensure that the combat_service from
+    app.state is properly initialized before we create the handler.
+    """
+    global _combat_command_handler
+    if _combat_command_handler is None:
+        # Import here to avoid circular dependency
+        from server.main import app
+
+        combat_service = getattr(app.state, "combat_service", None)
+        _combat_command_handler = CombatCommandHandler(combat_service=combat_service)
+    return _combat_command_handler
 
 
 # Individual command handler functions for the command service
@@ -261,9 +295,8 @@ async def handle_attack_command(
     player_name: str,
 ) -> dict[str, str]:
     """Handle attack command."""
-    return await combat_command_handler.handle_attack_command(
-        command_data, current_user, request, alias_storage, player_name
-    )
+    handler = get_combat_command_handler()
+    return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
 async def handle_punch_command(
@@ -277,9 +310,8 @@ async def handle_punch_command(
     # Set command type to punch for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "punch"
-    return await combat_command_handler.handle_attack_command(
-        command_data, current_user, request, alias_storage, player_name
-    )
+    handler = get_combat_command_handler()
+    return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
 async def handle_kick_command(
@@ -293,9 +325,8 @@ async def handle_kick_command(
     # Set command type to kick for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "kick"
-    return await combat_command_handler.handle_attack_command(
-        command_data, current_user, request, alias_storage, player_name
-    )
+    handler = get_combat_command_handler()
+    return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
 async def handle_strike_command(
@@ -309,6 +340,5 @@ async def handle_strike_command(
     # Set command type to strike for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "strike"
-    return await combat_command_handler.handle_attack_command(
-        command_data, current_user, request, alias_storage, player_name
-    )
+    handler = get_combat_command_handler()
+    return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)

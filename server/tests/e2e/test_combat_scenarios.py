@@ -75,6 +75,7 @@ class TestCombatScenarios:
             target_hp=5,  # Low HP to ensure death
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Verify combat started
@@ -119,6 +120,7 @@ class TestCombatScenarios:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Round 1: Player attacks (system will auto-advance to NPC turn)
@@ -322,6 +324,7 @@ class TestCombatScenarios:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         combat_id = combat.combat_id
@@ -370,6 +373,7 @@ class TestCombatScenarios:
                 target_hp=50,
                 target_max_hp=50,
                 target_dex=10,
+                current_tick=0,
             )
             combats.append(combat)
 
@@ -409,6 +413,7 @@ class TestCombatScenarios:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Get stats after combat
@@ -511,6 +516,7 @@ class TestCombatScenarios:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Verify combat is being monitored
@@ -543,6 +549,7 @@ class TestCombatScenarios:
             target_hp=5,  # Low HP to ensure death
             target_max_hp=50,
             target_dex=10,
+            current_tick=0,
         )
 
         # Step 3: Combat progresses

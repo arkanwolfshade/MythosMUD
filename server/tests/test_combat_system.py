@@ -99,11 +99,11 @@ class TestCombatModels:
         assert combat.get_current_turn_participant() == player
         assert combat.current_turn == 0
 
-        combat.advance_turn()
+        combat.advance_turn(current_tick=1)
         assert combat.get_current_turn_participant() == npc
         assert combat.current_turn == 1
 
-        combat.advance_turn()
+        combat.advance_turn(current_tick=1)
         assert combat.get_current_turn_participant() == player
         assert combat.current_turn == 0
         assert combat.combat_round == 1
@@ -175,6 +175,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         assert combat.room_id == "test_room"
@@ -203,6 +204,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Test getting combat by participant
@@ -236,6 +238,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process attack
@@ -340,6 +343,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         combat_id = combat.combat_id
@@ -372,6 +376,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Manually set last activity to be stale

@@ -52,6 +52,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         assert isinstance(combat, CombatInstance)
@@ -103,6 +104,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Check that participants are tracked
@@ -130,6 +132,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify player combat service was called
@@ -153,6 +156,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Test finding combat by participant
@@ -188,6 +192,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process attack
@@ -217,6 +222,7 @@ class TestCombatServiceUnit:
             target_hp=5,  # Low HP
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process attack that kills target
@@ -249,6 +255,7 @@ class TestCombatServiceUnit:
             target_hp=5,  # Low HP
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process attack that kills target
@@ -289,6 +296,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=15,  # Higher dex - goes first
+            current_tick=1,
         )
 
         # Try to attack when it's not player's turn
@@ -314,6 +322,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         combat_id = combat.combat_id
@@ -377,6 +386,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Manually set last activity to be stale
@@ -447,6 +457,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Check stats after starting combat

@@ -38,18 +38,29 @@ class NPCCombatIntegrationService:
     - Event publishing and messaging
     """
 
-    def __init__(self, event_bus: EventBus | None = None):
+    def __init__(
+        self,
+        event_bus: EventBus | None = None,
+        combat_service: "CombatService | None" = None,
+    ):
         """
         Initialize the NPC combat integration service.
 
         Args:
             event_bus: Optional EventBus instance. If None, will get the
                 global instance.
+            combat_service: Optional CombatService instance. If None, will
+                create a new one (for testing).
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
         self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus)
-        self._combat_service = CombatService(self._player_combat_service)
+        if combat_service is not None:
+            self._combat_service = combat_service
+        else:
+            # Only create a new CombatService if one was not provided
+            # (this is primarily for testing)
+            self._combat_service = CombatService(self._player_combat_service)
 
         # Enable auto-progression features
         self._combat_service.auto_progression_enabled = True
@@ -106,6 +117,11 @@ class NPCCombatIntegrationService:
                 attacker_uuid = uuid4()
                 target_uuid = uuid4()
 
+            # Get current game tick
+            from ..app.lifespan import get_current_tick
+
+            current_tick = get_current_tick()
+
             # Check if combat already exists, if not start new combat
             existing_combat_id = self._combat_service._player_combats.get(attacker_uuid)
             if existing_combat_id:
@@ -141,6 +157,7 @@ class NPCCombatIntegrationService:
                     target_hp=npc_current_hp,
                     target_max_hp=npc_max_hp,
                     target_dex=npc_dexterity,
+                    current_tick=current_tick,
                     attacker_type=CombatParticipantType.PLAYER,
                     target_type=CombatParticipantType.NPC,
                 )
@@ -174,7 +191,7 @@ class NPCCombatIntegrationService:
                     combat_ended=combat_result.combat_ended,
                 )
 
-                return True
+                return combat_result.message
             else:
                 logger.warning(
                     "Combat attack failed",
@@ -182,7 +199,7 @@ class NPCCombatIntegrationService:
                     npc_id=npc_id,
                     message=combat_result.message,
                 )
-                return False
+                return combat_result.message
 
         except Exception as e:
             logger.error(
@@ -389,7 +406,7 @@ class NPCCombatIntegrationService:
         """Get player name for messaging."""
         try:
             player = self._persistence.get_player(player_id)
-            return player.username if player else "Unknown Player"
+            return player.name if player else "Unknown Player"
         except Exception:
             return "Unknown Player"
 
