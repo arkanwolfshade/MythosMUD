@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

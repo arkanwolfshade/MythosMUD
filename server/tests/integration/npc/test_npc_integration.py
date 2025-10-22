@@ -17,7 +17,7 @@ import pytest
 
 from server.events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.game.movement_service import MovementService
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.models.npc import NPCDefinitionType
 from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
 

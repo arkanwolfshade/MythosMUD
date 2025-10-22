@@ -19,7 +19,7 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 
 class Room:

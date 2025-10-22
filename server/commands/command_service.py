@@ -9,7 +9,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from .admin_commands import (
     handle_add_admin_command,

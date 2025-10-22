@@ -49,7 +49,7 @@ async def sse_events_token(request: Request):
     Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
     token = request.query_params.get("token")
@@ -87,7 +87,7 @@ async def websocket_endpoint(websocket: WebSocket):
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -136,7 +136,7 @@ async def get_player_connections(player_id: str, request: Request):
     Get connection information for a player.
     Returns detailed connection metadata including session information.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -175,7 +175,7 @@ async def handle_new_game_session(player_id: str, request: Request):
     """
     import json
 
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -215,7 +215,7 @@ async def get_connection_statistics(request: Request):
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -243,7 +243,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     prefers JWT token identity when provided.
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 

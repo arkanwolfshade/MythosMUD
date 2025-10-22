@@ -11,8 +11,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+from server.logging.enhanced_logging_config import _setup_enhanced_file_logging, configure_enhanced_structlog
 from server.logging.player_guid_formatter import PlayerGuidFormatter
-from server.logging_config import _setup_file_logging, configure_structlog
 
 
 class TestLoggingIntegration:
@@ -72,13 +72,13 @@ class TestLoggingIntegration:
         )
 
         # Mock the formatter creation in _setup_file_logging
-        with patch("server.logging_config.logging.Formatter") as mock_formatter_class:
+        with patch("server.logging.enhanced_logging_config.logging.Formatter") as mock_formatter_class:
             mock_formatter_class.return_value = custom_formatter
 
             # Set up logging with test configuration
             log_config = {"log_base": str(self.log_dir), "rotation": {"max_size": "1MB", "backup_count": 2}}
 
-            _setup_file_logging("test", log_config, "INFO")
+            _setup_enhanced_file_logging("test", log_config, "INFO")
 
             # Verify formatter was created
             mock_formatter_class.assert_called()
@@ -227,7 +227,7 @@ class TestLoggingIntegration:
         )
 
         # Configure structlog (minimal setup for testing)
-        configure_structlog("test", "INFO", {"disable_logging": True})
+        configure_enhanced_structlog("test", "INFO", {"disable_logging": True})
 
         # Create logger that would be used by structlog
         logger = logging.getLogger("structlog.test")

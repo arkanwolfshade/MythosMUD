@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "server"))
 
 from server.config import get_config
-from server.logging_config import get_logger, setup_logging
+from server.logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 
 def test_logging():
@@ -23,7 +23,7 @@ def test_logging():
 
     # Setup logging
     print("Setting up logging...")
-    setup_logging(config.to_legacy_dict())
+    setup_enhanced_logging(config.to_legacy_dict())
     print("Logging setup completed")
 
     # Test logger

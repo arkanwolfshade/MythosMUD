@@ -7,7 +7,7 @@ import asyncio
 from datetime import UTC, datetime
 
 from ..app.tracked_task_manager import get_global_tracked_manager
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger("services.game_tick_service")
 

@@ -10,7 +10,7 @@ must reach all who bear witness to the cosmic horror unfolding.
 
 from typing import Any
 
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.realtime.connection_manager import connection_manager
 from server.realtime.envelope import build_event
 from server.services.combat_messaging_service import CombatMessagingService

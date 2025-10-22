@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -33,7 +33,7 @@ class AdminActionsLogger:
         if log_directory is None:
             # Use environment-based configuration like the rest of the system
             from server.config import get_config
-            from server.logging_config import _resolve_log_base
+            from server.logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base

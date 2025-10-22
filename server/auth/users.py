@@ -21,7 +21,7 @@ from fastapi_users.exceptions import InvalidID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from .argon2_utils import hash_password, verify_password
 from .email_utils import is_bogus_email

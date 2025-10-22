@@ -21,7 +21,7 @@ from ..api.rooms import room_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware

@@ -21,7 +21,7 @@ from .auth.users import get_current_user
 from .commands.command_service import CommandService
 from .config import get_config
 from .exceptions import ValidationError
-from .logging_config import get_logger
+from .logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
 from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger

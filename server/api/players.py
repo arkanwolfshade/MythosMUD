@@ -14,7 +14,7 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.user import User
 from ..schemas.player import PlayerRead

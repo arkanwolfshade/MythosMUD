@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from .logging_config import get_logger
+from .logging.enhanced_logging_config import get_logger
 from .models import Alias
 
 logger = get_logger(__name__)

@@ -108,7 +108,7 @@ class PersistenceLayer:
 
     def _setup_logger(self):
         # Use centralized logging configuration
-        from .logging_config import get_logger
+        from .logging.enhanced_logging_config import get_logger
 
         return get_logger("PersistenceLayer")
 

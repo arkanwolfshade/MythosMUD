@@ -15,7 +15,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import Player
 from .memory_monitor import MemoryMonitor
 from .message_queue import MessageQueue
@@ -2008,7 +2008,7 @@ class ConnectionManager:
 
             # Write to error log file using proper logging configuration
             from ..config import get_config
-            from ..logging_config import _resolve_log_base
+            from ..logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base
@@ -2372,7 +2372,7 @@ class ConnectionManager:
         """
         # Get the proper error log path using logging configuration
         from ..config import get_config
-        from ..logging_config import _resolve_log_base
+        from ..logging.enhanced_logging_config import _resolve_log_base
 
         config = get_config()
         log_base = config.logging.log_base

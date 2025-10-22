@@ -8,7 +8,7 @@ sanity, fear, corruption, healing, and damage mechanics.
 from pathlib import Path  # noqa: F401
 
 from ..exceptions import ValidationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)

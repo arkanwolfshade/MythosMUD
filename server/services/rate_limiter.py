@@ -10,7 +10,7 @@ from collections import defaultdict, deque
 from typing import Any
 
 from ..config import get_config
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .chat_logger import chat_logger
 
 logger = get_logger("communications.rate_limiter")

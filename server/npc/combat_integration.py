@@ -16,7 +16,7 @@ from typing import Any
 from ..events import EventBus
 from ..events.event_types import NPCAttacked, NPCDied
 from ..game.mechanics import GameMechanicsService
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
 
 logger = get_logger(__name__)

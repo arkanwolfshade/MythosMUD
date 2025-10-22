@@ -10,7 +10,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.user import User
 
 logger = get_logger(__name__)

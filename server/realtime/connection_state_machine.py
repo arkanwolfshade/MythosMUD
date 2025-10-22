@@ -13,7 +13,7 @@ from typing import Any
 
 from statemachine import State, StateMachine
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

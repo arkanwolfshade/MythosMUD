@@ -22,7 +22,7 @@ from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

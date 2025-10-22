@@ -12,7 +12,7 @@ proper periodic investigation prevents computational entropy accumulating beyond
 import asyncio
 from datetime import UTC, datetime
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .memory_cleanup_service import create_memory_cleanup_monitor
 from .tracked_task_manager import get_global_tracked_manager
 

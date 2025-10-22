@@ -18,7 +18,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..logging.admin_actions_logger import AdminActionsLogger
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

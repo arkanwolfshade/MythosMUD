@@ -12,8 +12,7 @@ from fastapi import FastAPI
 
 from ..config import get_config
 from ..database import init_db
-from ..logging.enhanced_logging_config import get_logger
-from ..logging_config import update_logging_with_player_service
+from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..npc_database import init_npc_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager

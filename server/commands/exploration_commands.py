@@ -7,7 +7,7 @@ This module contains handlers for exploration-related commands like look and go.
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

@@ -7,7 +7,7 @@ which players are subscribed to which rooms and managing room occupants.
 
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

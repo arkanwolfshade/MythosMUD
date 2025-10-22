@@ -12,7 +12,7 @@ to shape reality itself through the manipulation of cosmic forces."
 from typing import Any
 
 from server.config import get_config
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
-from .logging_config import get_logger
+from .logging.enhanced_logging_config import get_logger
 from .npc_metadata import npc_metadata
 from .utils.error_logging import create_error_context, log_and_raise
 

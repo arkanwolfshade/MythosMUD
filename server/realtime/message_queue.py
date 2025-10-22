@@ -8,7 +8,7 @@ of messages to players who may be temporarily disconnected.
 import time
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

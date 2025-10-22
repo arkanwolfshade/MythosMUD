@@ -10,7 +10,7 @@ import time
 from collections.abc import AsyncGenerator
 
 from ..error_types import ErrorMessages, ErrorType, create_sse_error_response
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .connection_manager import connection_manager
 from .envelope import build_event, sse_line
 

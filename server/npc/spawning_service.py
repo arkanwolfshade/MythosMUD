@@ -22,7 +22,7 @@ from server.models.npc import NPCDefinition, NPCSpawnRule
 from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
 from server.npc.population_control import NPCPopulationController, ZoneConfiguration
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

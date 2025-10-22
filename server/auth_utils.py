@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from server.auth.argon2_utils import hash_password as argon2_hash_password
 from server.auth.argon2_utils import verify_password as argon2_verify_password
 from server.exceptions import AuthenticationError
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)

@@ -9,7 +9,7 @@ ranges while ensuring they meet class prerequisites.
 import random
 import time
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
 
 logger = get_logger(__name__)

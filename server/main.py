@@ -19,7 +19,7 @@ from fastapi.security import HTTPBearer
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
-from .logging_config import get_logger, setup_logging
+from .logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 # Suppress passlib deprecation warning about pkg_resources
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
@@ -37,7 +37,7 @@ def main():
     """Main entry point for the MythosMUD server."""
     # Set up logging based on configuration
     config = get_config()
-    setup_logging(config.to_legacy_dict())
+    setup_enhanced_logging(config.to_legacy_dict())
 
     logger.info("Starting MythosMUD server...")
     app = create_app()
@@ -51,7 +51,7 @@ def main():
 # Set up logging when module is imported
 config = get_config()
 logger.info("Setting up logging with config", config=config.to_legacy_dict())
-setup_logging(config.to_legacy_dict())
+setup_enhanced_logging(config.to_legacy_dict())
 logger.info("Logging setup completed")
 
 # Create the FastAPI application

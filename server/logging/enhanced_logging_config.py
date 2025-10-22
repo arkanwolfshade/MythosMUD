@@ -1,14 +1,17 @@
 """
 Enhanced structlog-based logging configuration for MythosMUD server.
 
-This module provides an enhanced logging system with MDC (Mapped Diagnostic Context),
-correlation IDs, security sanitization, and performance optimizations.
+This module provides an enhanced logging system with MDC (Mapped Diagnostic
+Context), correlation IDs, security sanitization, and performance optimizations.
 """
 
 import logging
+import os
 import sys
+import time
 import uuid
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 import structlog
@@ -19,8 +22,186 @@ from structlog.contextvars import (
 )
 from structlog.stdlib import BoundLogger, LoggerFactory
 
-# Import existing configuration
-from server.logging_config import _resolve_log_base, detect_environment, get_logger
+
+def _resolve_log_base(log_base: str) -> Path:
+    """
+    Resolve log_base path to absolute path relative to project root.
+
+    Args:
+        log_base: Relative or absolute path to log directory
+
+    Returns:
+        Absolute path to log directory
+    """
+    log_path = Path(log_base)
+
+    # If already absolute, return as is
+    if log_path.is_absolute():
+        return log_path
+
+    # Find the project root (where pyproject.toml is located)
+    current_dir = Path.cwd()
+    project_root = None
+
+    # Look for pyproject.toml in current directory or parents
+    for parent in [current_dir] + list(current_dir.parents):
+        if (parent / "pyproject.toml").exists():
+            project_root = parent
+            break
+
+    if project_root:
+        return project_root / log_path
+    else:
+        # Fallback to current directory if project root not found
+        return current_dir / log_path
+
+
+def _rotate_log_files(env_log_dir: Path) -> None:
+    """
+    Rotate existing log files by renaming them with timestamps.
+
+    This function implements the startup-time log rotation as described in the
+    restricted archives. When the server starts, existing log files are renamed
+    with timestamps before new log files are created, ensuring clean separation
+    between server sessions.
+
+    Enhanced with Windows-specific file locking handling to prevent
+    PermissionError: [WinError 32] exceptions during concurrent access.
+    Now recursively processes subdirectories to ensure all log files are
+    rotated.
+
+    Args:
+        env_log_dir: Path to the environment-specific log directory
+    """
+    if not env_log_dir.exists():
+        return
+
+    # Generate timestamp for rotation
+    timestamp = datetime.now(UTC).strftime("%Y_%m_%d_%H%M%S")
+
+    # Get all log files in the directory and subdirectories
+    # Include .log, .jsonl, and other common log file extensions
+    log_files = []
+    log_files.extend(env_log_dir.glob("*.log"))
+    log_files.extend(env_log_dir.glob("*.jsonl"))
+    log_files.extend(env_log_dir.rglob("*.log"))  # Recursive search
+    log_files.extend(env_log_dir.rglob("*.jsonl"))  # Recursive search
+
+    # Remove duplicates and filter out already rotated files
+    log_files = list(set(log_files))
+    log_files = [f for f in log_files if not f.name.endswith(f".{timestamp}")]
+
+    if not log_files:
+        return
+
+    # Rotate each log file by renaming with timestamp
+    for log_file in log_files:
+        # Only rotate non-empty files
+        if log_file.exists() and log_file.stat().st_size > 0:
+            rotated_name = f"{log_file.stem}.log.{timestamp}"
+            rotated_path = log_file.parent / rotated_name
+
+            # Windows-specific retry logic for file locking issues
+            max_retries = 3
+            retry_delay = 0.1  # 100ms delay between retries
+
+            for attempt in range(max_retries):
+                try:
+                    # Check if the file is currently in use by attempting to open it exclusively
+                    # This helps detect file locking issues before attempting to rename
+                    if sys.platform == "win32":
+                        try:
+                            with open(log_file, "a", encoding="utf-8"):
+                                pass  # Just test if we can open the file
+                        except (PermissionError, OSError):
+                            if attempt < max_retries - 1:
+                                time.sleep(retry_delay)
+                                continue
+                            else:
+                                # Skip rotation for this file if it's locked
+                                logger = get_enhanced_logger("server.logging")
+                                logger.warning(
+                                    "Skipping rotation for locked log file",
+                                    name=log_file.name,
+                                    attempt=attempt + 1,
+                                )
+                                break
+
+                    # Attempt the rename operation
+                    log_file.rename(rotated_path)
+
+                    # Log the rotation (this will go to the new log file)
+                    logger = get_enhanced_logger("server.logging")
+                    logger.info(
+                        "Rotated log file",
+                        old_name=log_file.name,
+                        new_name=rotated_name,
+                    )
+                    break  # Success, exit retry loop
+
+                except (OSError, PermissionError) as e:
+                    if attempt < max_retries - 1:
+                        # Wait before retrying
+                        time.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                    else:
+                        # Final attempt failed, log the error
+                        logger = get_enhanced_logger("server.logging")
+                        logger.warning(
+                            "Could not rotate log file after retries",
+                            name=log_file.name,
+                            error=str(e),
+                            attempts=max_retries,
+                        )
+
+
+def detect_environment() -> str:
+    """
+    Detect the current environment based on various indicators.
+
+    Returns:
+        Environment name: "e2e_test", "unit_test", "local", or "production"
+
+    Note: Valid environments are defined in .env files via LOGGING_ENVIRONMENT:
+        - e2e_test: End-to-end testing with Playwright
+        - unit_test: Unit and integration testing with pytest
+        - local: Local development
+        - production: Production deployment
+    """
+    # Define valid environments to prevent invalid directory creation
+    VALID_ENVIRONMENTS = ["e2e_test", "unit_test", "production", "local"]
+
+    # Check if running under pytest (unit tests)
+    if "pytest" in sys.modules or "pytest" in sys.argv[0]:
+        return "unit_test"
+
+    # Check explicit environment variable (with validation)
+    env = os.getenv("MYTHOSMUD_ENV")
+    if env and env in VALID_ENVIRONMENTS:
+        return env
+
+    # Check if test configuration is being used
+    if os.getenv("MYTHOSMUD_TEST_MODE"):
+        return "unit_test"
+
+    # Try to determine from LOGGING_ENVIRONMENT (Pydantic config)
+    logging_env = os.getenv("LOGGING_ENVIRONMENT", "")
+    if logging_env in VALID_ENVIRONMENTS:
+        return logging_env
+
+    # Fallback: check legacy config path for backward compatibility
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+    if "e2e_test" in config_path:
+        return "e2e_test"
+    elif "unit_test" in config_path:
+        return "unit_test"
+    elif "production" in config_path:
+        return "production"
+    elif "local" in config_path:
+        return "local"
+
+    # Default to local (not "development" - that's not a valid environment)
+    return "local"
 
 
 def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
@@ -192,7 +373,7 @@ def _setup_enhanced_file_logging(
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
-    enable_async: bool = True,
+    enable_async: bool = True,  # noqa: ARG001
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
     from logging.handlers import RotatingFileHandler
@@ -200,6 +381,9 @@ def _setup_enhanced_file_logging(
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
     env_log_dir.mkdir(parents=True, exist_ok=True)
+
+    # Rotate existing log files before setting up new handlers
+    _rotate_log_files(env_log_dir)
 
     # Configure root logger
     root_logger = logging.getLogger()
@@ -455,7 +639,7 @@ def get_current_context() -> dict[str, Any]:
     try:
         # Use get_contextvars() to get the current context-local context
         return structlog.contextvars.get_contextvars()
-    except Exception:
+    except (AttributeError, KeyError):
         # If there's no bound context, return empty dict
         return {}
 
@@ -497,3 +681,69 @@ def get_enhanced_logger(name: str) -> BoundLogger:
 
     # Return a bound logger with enhanced processors
     return structlog.wrap_logger(base_logger)
+
+
+def get_logger(name: str) -> BoundLogger:
+    """
+    Get a Structlog logger with the specified name.
+
+    This ensures all loggers are properly configured and write to the
+    appropriate log files based on their category. As noted in the
+    Pnakotic Manuscripts, proper categorization of knowledge is essential
+    for its preservation.
+
+    Args:
+        name: Logger name (typically __name__)
+
+    Returns:
+        Configured Structlog logger instance
+    """
+    return structlog.get_logger(name)
+
+
+def update_logging_with_player_service(player_service: Any) -> None:
+    """
+    Update existing logging handlers to use PlayerGuidFormatter.
+
+    This function should be called after the player service becomes available
+    to enhance existing log handlers with GUID-to-name conversion.
+
+    Args:
+        player_service: The player service for GUID-to-name conversion
+    """
+    from server.logging.player_guid_formatter import PlayerGuidFormatter
+
+    # Create the enhanced formatter
+    enhanced_formatter = PlayerGuidFormatter(
+        player_service=player_service,
+        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    # Update all existing handlers with the enhanced formatter
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers:
+        if hasattr(handler, "setFormatter"):
+            handler.setFormatter(enhanced_formatter)
+
+    # Update handlers for specific log categories
+    log_categories = [
+        "server",
+        "persistence",
+        "authentication",
+        "world",
+        "communications",
+        "commands",
+        "errors",
+        "access",
+    ]
+
+    for category in log_categories:
+        logger = logging.getLogger(category)
+        for handler in logger.handlers:
+            if hasattr(handler, "setFormatter"):
+                handler.setFormatter(enhanced_formatter)
+
+    # Log that the enhancement has been applied
+    logger = get_logger("server.logging")
+    logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)

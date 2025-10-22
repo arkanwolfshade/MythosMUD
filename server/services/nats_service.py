@@ -14,7 +14,7 @@ from typing import Any
 import nats
 
 from ..config.models import NATSConfig
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
 
 logger = get_logger("nats")

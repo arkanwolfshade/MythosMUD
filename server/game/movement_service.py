@@ -15,7 +15,7 @@ import time
 
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.room import Room
 from ..persistence import get_persistence
 from ..utils.error_logging import create_error_context, log_and_raise

@@ -14,7 +14,7 @@ from fastapi import Depends, Request
 
 from .game.player_service import PlayerService
 from .game.room_service import RoomService
-from .logging_config import get_logger
+from .logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

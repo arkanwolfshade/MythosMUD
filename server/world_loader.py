@@ -430,7 +430,7 @@ def load_rooms(strict_validation: bool = False, enable_schema_validation: bool =
 
 
 if __name__ == "__main__":
-    from .logging_config import get_logger
+    from .logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
     world_data = load_hierarchical_world()

@@ -38,7 +38,7 @@ IMPORT_FIXES = [
     (r"from \.\.commands\.", "from server.commands."),
     (r"from \.\.main import", "from server.main import"),
     (r"from \.\.middleware\.", "from server.middleware."),
-    (r"from \.\.logging_config import", "from server.logging_config import"),
+    (r"from \.\.logging_config import", "from server.logging.enhanced_logging_config import"),
     (r"from \.\.schemas\.", "from server.schemas."),
     (r"from \.\.validators\.", "from server.validators."),
     (r"from \.\.message_handler import", "from server.message_handler import"),

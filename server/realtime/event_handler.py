@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events import EventBus
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.room_sync_service import get_room_sync_service
 from .connection_manager import connection_manager

@@ -10,7 +10,7 @@ from fastapi import APIRouter, Request
 from ..dependencies import RoomServiceDep
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)

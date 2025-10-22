@@ -13,7 +13,7 @@ from typing import Any
 from fastapi import WebSocket
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

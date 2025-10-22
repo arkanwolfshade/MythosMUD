@@ -293,8 +293,8 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = Mock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
-        # No game mechanics service available
-        self.persistence.get_game_mechanics_service = Mock(return_value=None)
+        # No game mechanics service available - persistence doesn't have the method
+        # This will trigger the fallback XP award logic
 
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
 

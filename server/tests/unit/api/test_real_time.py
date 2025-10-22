@@ -65,7 +65,7 @@ class TestSSEEventsToken:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.game_event_stream") as mock_stream,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}
@@ -172,7 +172,7 @@ class TestWebSocketEndpoint:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}
@@ -205,7 +205,7 @@ class TestWebSocketEndpoint:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = None  # Invalid token
@@ -281,7 +281,7 @@ class TestWebSocketEndpoint:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}
@@ -322,7 +322,7 @@ class TestWebSocketEndpointRoute:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}
@@ -354,7 +354,7 @@ class TestWebSocketEndpointRoute:
         with (
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = None  # No token
@@ -381,7 +381,7 @@ class TestWebSocketEndpointRoute:
         with (
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"other_field": "value"}  # No 'sub' field
@@ -409,7 +409,7 @@ class TestWebSocketEndpointRoute:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}
@@ -440,7 +440,7 @@ class TestWebSocketEndpointRoute:
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging_config.get_logger") as mock_get_logger,
+            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
         ):
             # Setup mocks
             mock_decode.return_value = {"sub": "test_user_id"}

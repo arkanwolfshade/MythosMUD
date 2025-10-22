@@ -13,7 +13,7 @@ from typing import Any
 from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .command_parser import CommandParser, parse_command
 from .error_logging import create_error_context
 

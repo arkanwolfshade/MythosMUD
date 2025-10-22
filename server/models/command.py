@@ -10,7 +10,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..validators.security_validator import (
     validate_action_content,
     validate_alias_name,

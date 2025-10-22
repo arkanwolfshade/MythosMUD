@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 
 import psutil
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.health import (
     ConnectionsComponent,
     DatabaseComponent,

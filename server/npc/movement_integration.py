@@ -10,7 +10,7 @@ for maintaining the integrity of our eldritch dimensional architecture.
 
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..game.movement_service import MovementService
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
 
 logger = get_logger(__name__)

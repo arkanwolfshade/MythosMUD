@@ -10,7 +10,7 @@ import asyncio
 from collections.abc import Awaitable
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger("server.task_registry")
 
