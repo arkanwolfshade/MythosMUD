@@ -140,6 +140,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   // Track the last room update timestamp to prevent stale data overwrites
   const lastRoomUpdateTime = useRef<number>(0);
 
+  // Ref to store sendCommand function for use in event handlers
+  const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
+
   // Room data validation function to prevent stale data overwrites
   const validateRoomDataForOccupants = useCallback((currentRoom: Room, event: GameEvent) => {
     // Check if the event timestamp is recent enough to be valid
@@ -876,9 +879,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
             // Request updated player data to reflect combat state
             // The server will send a game_state event with the updated player data
-            sendCommand('status', []).catch(error => {
-              logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat start', { error });
-            });
+            if (sendCommandRef.current) {
+              sendCommandRef.current('status', []).catch(error => {
+                logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat start', { error });
+              });
+            }
 
             logger.info('GameTerminalWithPanels', 'Combat started event received', {
               participants,
@@ -904,9 +909,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
             // Request updated player data to reflect combat state
             // The server will send a game_state event with the updated player data
-            sendCommand('status', []).catch(error => {
-              logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat end', { error });
-            });
+            if (sendCommandRef.current) {
+              sendCommandRef.current('status', []).catch(error => {
+                logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat end', { error });
+              });
+            }
 
             logger.info('GameTerminalWithPanels', 'Combat ended event received', {
               reason,
@@ -1041,6 +1048,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     onDisconnect: handleDisconnect,
     onError: handleError,
   });
+
+  // Store sendCommand in ref for use in event handlers
+  useEffect(() => {
+    sendCommandRef.current = sendCommand;
+  }, [sendCommand]);
 
   // Note: Connection loss handling is now done through the handleDisconnect callback
   // which is passed to the useGameConnection hook

@@ -17,7 +17,7 @@ from ..events.combat_events import (
     NPCDiedEvent,
 )
 from ..events.event_bus import EventBus
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
 from .combat_event_publisher import CombatEventPublisher

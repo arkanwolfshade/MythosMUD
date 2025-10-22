@@ -231,6 +231,14 @@ def _setup_enhanced_file_logging(
         "world": ["world"],
         "communications": ["realtime", "communications"],
         "commands": ["commands"],
+        "combat": [
+            "services.combat_service",
+            "services.combat_event_publisher",
+            "services.npc_combat_integration_service",
+            "services.player_combat_service",
+            "validators.combat_validator",
+            "logging.combat_audit",
+        ],
         "errors": ["errors"],
         "access": ["access", "server.app.factory"],
         "security": ["security", "audit"],
@@ -270,7 +278,11 @@ def _setup_enhanced_file_logging(
         for prefix in prefixes:
             logger = logging.getLogger(prefix)
             logger.addHandler(handler)
-            logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+            # Set DEBUG level for combat modules in local/debug environments
+            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
+                logger.setLevel(logging.DEBUG)
+            else:
+                logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
             logger.propagate = True
 
     # Enhanced console handler with structured output

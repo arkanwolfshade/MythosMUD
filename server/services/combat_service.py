@@ -18,7 +18,7 @@ from server.events.combat_events import (
     NPCTookDamageEvent,
     PlayerAttackedEvent,
 )
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
@@ -59,7 +59,12 @@ class CombatService:
             print(f"*** CRITICAL ERROR: Failed to create CombatEventPublisher: {e} ***")
             print(f"*** ERROR TYPE: {type(e).__name__} ***")
             print(f"*** ERROR DETAILS: {str(e)} ***")
-            logger.error("CRITICAL ERROR: Failed to create CombatEventPublisher", error=str(e), error_type=type(e).__name__, exc_info=True)
+            logger.error(
+                "CRITICAL ERROR: Failed to create CombatEventPublisher",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
             raise
         # Auto-progression configuration
         self._auto_progression_enabled = True
@@ -192,7 +197,7 @@ class CombatService:
                 combat_id=combat.combat_id,
                 room_id=room_id,
                 participants={
-                    p.participant_id: {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
+                    str(p.participant_id): {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
                     for p in combat.participants.values()
                 },
                 turn_order=[str(pid) for pid in combat.turn_order],
@@ -682,7 +687,7 @@ class CombatService:
                 if hasattr(combat, "start_time")
                 else 0,
                 participants={
-                    p.participant_id: {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
+                    str(p.participant_id): {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
                     for p in combat.participants.values()
                 },
             )
