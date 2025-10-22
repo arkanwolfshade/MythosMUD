@@ -54,10 +54,11 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,  # Lower dexterity, goes second
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
 
         # Verify it's now the NPC's turn
         current_participant = combat.get_current_turn_participant()
@@ -65,7 +66,7 @@ class TestNPCPassiveBehaviorSystem:
         assert current_participant.participant_id == npc_id
 
         # Process NPC turn - should perform non-combat action
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify NPC performed non-combat action (no damage dealt to player)
         player_participant = combat.participants[player_id]
@@ -91,20 +92,21 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Process multiple NPC turns to test action selection variety
         for _ in range(5):
-            await combat_service._process_npc_turn(combat, current_participant)
+            await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
             # Note: In a real implementation, we would track the specific actions
             # For now, we just verify no damage is dealt
             player_participant = combat.participants[player_id]
             assert player_participant.current_hp == 10  # No damage taken
-            combat.advance_turn()
+            combat.advance_turn(current_tick=2)
             current_participant = combat.get_current_turn_participant()
 
     @pytest.mark.asyncio
@@ -127,14 +129,15 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Process NPC turn - should generate defensive maneuver message
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
@@ -160,14 +163,15 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Process NPC turn - should generate taunt message
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
@@ -193,14 +197,15 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Process NPC turn - should generate thematic behavior message
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
@@ -226,14 +231,15 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Process NPC turn
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify turn was processed without damage
         player_participant = combat.participants[player_id]
@@ -262,6 +268,7 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Process automatic combat progression - should handle NPC turn with non-combat action
@@ -296,6 +303,7 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Process multiple rounds
@@ -313,7 +321,7 @@ class TestNPCPassiveBehaviorSystem:
             assert player_participant.current_hp == 10  # No damage taken
 
             # Advance to next round
-            combat.advance_turn()
+            combat.advance_turn(current_tick=2)
 
     @pytest.mark.asyncio
     async def test_npc_passive_behavior_error_handling(self, combat_service):
@@ -335,17 +343,18 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Simulate error by corrupting NPC participant
         current_participant.participant_type = None  # This should cause an error
 
         # Process NPC turn - should handle error gracefully
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify combat continues despite error
         assert combat.status == CombatStatus.ACTIVE
@@ -370,17 +379,18 @@ class TestNPCPassiveBehaviorSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
 
         # Measure time for multiple NPC turns
         start_time = datetime.utcnow()
 
         for _ in range(10):  # 10 NPC turns
-            await combat_service._process_npc_turn(combat, current_participant)
+            await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         end_time = datetime.utcnow()
         duration = (end_time - start_time).total_seconds()

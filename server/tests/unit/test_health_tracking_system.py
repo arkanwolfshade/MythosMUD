@@ -55,6 +55,7 @@ class TestHealthTrackingSystem:
             target_hp=8,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify initial health values
@@ -94,6 +95,7 @@ class TestHealthTrackingSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC multiple times
@@ -131,12 +133,13 @@ class TestHealthTrackingSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+            current_tick=1,
         )
 
         # Advance to NPC's turn (NPC performs non-combat action, no damage)
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
-        await combat_service._process_npc_turn(combat, current_participant)
+        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify player health is unchanged (NPC doesn't attack in passive mode)
         player_participant = combat.participants[player_id]
@@ -168,6 +171,7 @@ class TestHealthTrackingSystem:
             target_hp=8,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC
@@ -198,6 +202,7 @@ class TestHealthTrackingSystem:
             target_hp=8,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC to change health
@@ -233,6 +238,7 @@ class TestHealthTrackingSystem:
             target_hp=8,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC
@@ -270,6 +276,7 @@ class TestHealthTrackingSystem:
             target_hp=3,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC to defeat it
@@ -304,6 +311,7 @@ class TestHealthTrackingSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Simulate error by corrupting participant health
@@ -335,6 +343,7 @@ class TestHealthTrackingSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Measure time for multiple health tracking operations

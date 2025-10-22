@@ -47,6 +47,7 @@ class TestCombatAutoProgression:
             target_hp=5,
             target_max_hp=5,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify combat started
@@ -88,6 +89,7 @@ class TestCombatAutoProgression:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC (1 damage)
@@ -137,6 +139,7 @@ class TestCombatAutoProgression:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC (1 damage)
@@ -181,6 +184,7 @@ class TestCombatAutoProgression:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC (1 damage)
@@ -218,6 +222,7 @@ class TestCombatAutoProgression:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC (1 damage)

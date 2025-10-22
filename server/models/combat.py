@@ -6,6 +6,7 @@ in memory during active combat sessions.
 """
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -55,13 +56,12 @@ class CombatInstance:
     status: CombatStatus = CombatStatus.ACTIVE
     start_tick: int = 0
     last_activity_tick: int = 0
+    last_activity: datetime = field(default_factory=datetime.utcnow)
     combat_round: int = 0
     # Auto-progression features
     auto_progression_enabled: bool = True
     turn_interval_ticks: int = 6
     next_turn_tick: int = 0
-    # Track if this is the first attack (bypasses turn order)
-    is_first_attack: bool = True
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""

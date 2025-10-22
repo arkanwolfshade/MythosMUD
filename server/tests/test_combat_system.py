@@ -272,6 +272,7 @@ class TestCombatService:
             target_hp=5,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process attack that kills target
@@ -318,6 +319,7 @@ class TestCombatService:
             target_hp=50,
             target_max_hp=50,
             target_dex=15,  # Higher dex - goes first
+            current_tick=1,
         )
 
         # Try to attack when it's not player's turn

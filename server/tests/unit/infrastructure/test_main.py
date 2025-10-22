@@ -113,6 +113,7 @@ class TestEndpoints:
             mock_player.created_at = "2024-01-01T00:00:00Z"
             mock_player.last_active = "2024-01-01T00:00:00Z"
             mock_player.is_admin = False
+            mock_player.in_combat = False
             # Add profession fields that are now required by PlayerRead schema
             mock_player.profession_id = 0
             mock_player.profession_name = "Scholar"
@@ -171,6 +172,7 @@ class TestEndpoints:
                 "experience_points": 0,
                 "level": 1,
                 "is_admin": False,
+                "in_combat": False,
                 # Add profession fields that are now required by PlayerRead schema
                 "profession_id": 0,
                 "profession_name": "Scholar",
@@ -190,6 +192,7 @@ class TestEndpoints:
                 "experience_points": 0,
                 "level": 1,
                 "is_admin": False,
+                "in_combat": False,
                 # Add profession fields that are now required by PlayerRead schema
                 "profession_id": 0,
                 "profession_name": "Scholar",
@@ -231,6 +234,7 @@ class TestEndpoints:
             "experience_points": 0,
             "level": 1,
             "is_admin": False,
+            "in_combat": False,
             # Add profession fields that are now required by PlayerRead schema
             "profession_id": 0,
             "profession_name": "Scholar",
@@ -276,6 +280,7 @@ class TestEndpoints:
             "experience_points": 0,
             "level": 1,
             "is_admin": False,
+            "in_combat": False,
         }
         with patch.object(
             client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock

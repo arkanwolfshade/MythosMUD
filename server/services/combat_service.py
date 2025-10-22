@@ -291,7 +291,7 @@ class CombatService:
         action = await self._select_npc_non_combat_action(npc)
 
         # Format NPC health information
-        npc_health = f"{npc.current_health}/{npc.max_health} HP"
+        npc_health = f"{npc.current_hp}/{npc.max_hp} HP"
 
         # Broadcast the action to the room with health information
         if action:
@@ -463,11 +463,10 @@ class CombatService:
         if combat.status != CombatStatus.ACTIVE:
             raise ValueError("Combat is not active")
 
-        # Check if it's the attacker's turn (allow first attack to bypass turn order)
-        if not combat.is_first_attack:
-            current_participant = combat.get_current_turn_participant()
-            if not current_participant or current_participant.participant_id != attacker_id:
-                raise ValueError("It is not the attacker's turn")
+        # Check if it's the attacker's turn
+        current_participant = combat.get_current_turn_participant()
+        if not current_participant or current_participant.participant_id != attacker_id:
+            raise ValueError("It is not the attacker's turn")
 
         # Validate target
         target = combat.participants.get(target_id)
@@ -522,16 +521,9 @@ class CombatService:
         if combat_ended:
             await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
         else:
-            # Mark first attack as completed and set up proper turn order
-            if combat.is_first_attack:
-                combat.is_first_attack = False
-                # Set up next turn tick for auto-progression
-                combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
-                logger.debug(f"Combat {combat.combat_id} first attack completed, auto-progression enabled")
-            else:
-                # Don't advance turn here during auto-progression - it's already advanced
-                # in _advance_turn_automatically. Only advance if this is a manual attack.
-                logger.debug(f"Combat {combat.combat_id} turn already advanced in auto-progression")
+            # Set up next turn tick for auto-progression
+            combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
+            logger.debug(f"Combat {combat.combat_id} attack processed, auto-progression enabled")
 
         return result
 

@@ -54,15 +54,16 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify combat started with auto-progression enabled
         assert combat.status == CombatStatus.ACTIVE
         assert hasattr(combat, "auto_progression_enabled")
         assert combat.auto_progression_enabled is True
-        assert hasattr(combat, "turn_interval_seconds")
-        assert combat.turn_interval_seconds == 6
-        assert hasattr(combat, "next_turn_time")
+        assert hasattr(combat, "turn_interval_ticks")
+        assert combat.turn_interval_ticks == 6
+        assert hasattr(combat, "next_turn_tick")
 
     @pytest.mark.asyncio
     async def test_automatic_turn_progression_with_timing(self, combat_service):
@@ -84,6 +85,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify initial state
@@ -93,7 +95,7 @@ class TestCombatAutoProgressionSystem:
         assert current_participant.participant_id == player_id
 
         # Simulate automatic turn progression after 6 seconds
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
 
         # Verify turn advanced
         assert combat.current_turn == 1
@@ -121,6 +123,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify initial state
@@ -128,11 +131,11 @@ class TestCombatAutoProgressionSystem:
         assert combat.combat_round == 0
 
         # Advance through all turns (2 participants = 2 turns per round)
-        await combat_service._advance_turn_automatically(combat)  # Turn 1 (NPC)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)  # Turn 1 (NPC)
         assert combat.current_turn == 1
         assert combat.combat_round == 0
 
-        await combat_service._advance_turn_automatically(combat)  # Turn 0 (Player) - next round
+        await combat_service._advance_turn_automatically(combat, current_tick=2)  # Turn 0 (Player) - next round
         assert combat.current_turn == 0
         assert combat.combat_round == 1
 
@@ -156,16 +159,16 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify initial timing
-        assert hasattr(combat, "next_turn_time")
-        assert combat.next_turn_time is not None
+        assert hasattr(combat, "next_turn_tick")
+        assert combat.next_turn_tick is not None
 
-        # Verify next turn time is set to 6 seconds from now
-        expected_time = datetime.utcnow() + timedelta(seconds=6)
-        time_diff = abs((combat.next_turn_time - expected_time).total_seconds())
-        assert time_diff < 1  # Allow 1 second tolerance
+        # Verify next turn tick is set to 6 ticks from now
+        expected_tick = 1 + 6  # current_tick (1) + turn_interval_ticks (6)
+        assert combat.next_turn_tick == expected_tick
 
     @pytest.mark.asyncio
     async def test_automatic_combat_progression_stops_at_player_turn(self, combat_service):
@@ -187,6 +190,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player's turn - automatic progression should stop
@@ -221,10 +225,11 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Advance to NPC's turn
-        await combat_service._advance_turn_automatically(combat)
+        await combat_service._advance_turn_automatically(combat, current_tick=2)
 
         # Verify it's now the NPC's turn
         current_participant = combat.get_current_turn_participant()
@@ -259,6 +264,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Simulate timeout by setting last activity to past
@@ -292,6 +298,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks
@@ -327,6 +334,7 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Simulate error by corrupting combat state
@@ -373,13 +381,14 @@ class TestCombatAutoProgressionSystem:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Measure time for multiple turn progressions
         start_time = datetime.utcnow()
 
         for _ in range(10):  # 10 turn progressions
-            await combat_service._advance_turn_automatically(combat)
+            await combat_service._advance_turn_automatically(combat, current_tick=2)
 
         end_time = datetime.utcnow()
         duration = (end_time - start_time).total_seconds()

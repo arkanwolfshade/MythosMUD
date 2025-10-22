@@ -26,6 +26,7 @@ class TestNPCCombatIntegrationService:
         mock_combat_result.success = True
         mock_combat_result.combat_id = "test_combat_123"
         mock_combat_result.combat_ended = False
+        mock_combat_result.message = True  # Set message to True for successful attack
         self.combat_service.process_attack.return_value = mock_combat_result
         # Mock the player combats dictionary
         self.combat_service._player_combats = {}

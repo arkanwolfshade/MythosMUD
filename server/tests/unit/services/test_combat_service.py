@@ -80,6 +80,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,  # Lower dex
+            current_tick=1,
         )
 
         # Player should go first due to higher dexterity
@@ -357,6 +358,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         combat_id = combat.combat_id
@@ -420,6 +422,7 @@ class TestCombatServiceUnit:
             target_hp=50,
             target_max_hp=50,
             target_dex=10,
+            current_tick=1,
         )
 
         # Manually set last activity to be stale

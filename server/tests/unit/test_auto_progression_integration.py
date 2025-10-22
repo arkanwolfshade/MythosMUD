@@ -54,12 +54,13 @@ class TestAutoProgressionIntegration:
             target_hp=8,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify combat started with auto-progression enabled
         assert combat.status == CombatStatus.ACTIVE
         assert combat.auto_progression_enabled is True
-        assert combat.turn_interval_seconds == 6
+        assert combat.turn_interval_ticks == 6
 
         # Player attacks NPC
         result = await combat_service.process_attack(player_id, npc_id, damage=2)
@@ -98,6 +99,7 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC
@@ -131,6 +133,7 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Player attacks NPC
@@ -163,6 +166,7 @@ class TestAutoProgressionIntegration:
             target_hp=5,
             target_max_hp=8,
             target_dex=10,
+            current_tick=1,
         )
 
         # Multiple rounds of combat with auto-progression
@@ -205,6 +209,7 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Process multiple rounds
@@ -247,18 +252,19 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify timing is set correctly
-        assert combat.turn_interval_seconds == 6
-        assert combat.next_turn_time is not None
+        assert combat.turn_interval_ticks == 6
+        assert combat.next_turn_tick is not None
 
         # Player attacks NPC
         result = await combat_service.process_attack(player_id, npc_id, damage=1)
 
         # Verify timing is maintained through auto-progression
         assert result.success is True
-        assert combat.next_turn_time is not None
+        assert combat.next_turn_tick is not None
 
     @pytest.mark.asyncio
     async def test_auto_progression_error_handling_integration(self, combat_service):
@@ -280,9 +286,14 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
-        # Simulate error by corrupting combat state
+        # First attack should succeed (bypasses turn order)
+        result = await combat_service.process_attack(player_id, npc_id, damage=1)
+        assert result.success is True
+
+        # Now corrupt the turn order and try another attack
         combat.turn_order = []
 
         # Attempt to process attack - should handle error gracefully
@@ -314,6 +325,7 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Measure time for complete auto-progression flow
@@ -363,8 +375,9 @@ class TestAutoProgressionIntegration:
             target_hp=10,
             target_max_hp=10,
             target_dex=10,
+            current_tick=1,
         )
 
         # Verify configuration is applied
         assert combat.auto_progression_enabled is False
-        assert combat.turn_interval_seconds == 10
+        assert combat.turn_interval_ticks == 10
