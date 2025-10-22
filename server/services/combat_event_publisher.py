@@ -15,9 +15,9 @@ from ..events.combat_events import (
     NPCTookDamageEvent,
     PlayerAttackedEvent,
 )
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
-logger = get_logger("combat.event_publisher")
+logger = get_logger("services.combat_event_publisher")
 
 
 class CombatEventPublisher:
@@ -35,11 +35,16 @@ class CombatEventPublisher:
         Args:
             nats_service: NATS service instance (optional, defaults to global)
         """
+        print("COMBAT EVENT PUBLISHER __init__ CALLED!")
+        logger.debug("CombatEventPublisher __init__ method entered")
         # Import here to avoid circular dependencies
         from ..services.nats_service import nats_service as global_nats_service
 
+        print("COMBAT EVENT PUBLISHER: After global_nats_service import")
+
         self.nats_service = nats_service or global_nats_service
-        logger.info("CombatEventPublisher initialized")
+        print(f"DEBUG: CombatEventPublisher initialized with NATS service: {bool(self.nats_service)}")
+        logger.info("CombatEventPublisher initialized", nats_service_available=bool(self.nats_service))
 
     async def publish_combat_started(self, event: CombatStartedEvent) -> bool:
         """
@@ -52,8 +57,18 @@ class CombatEventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            if not self.nats_service or not self.nats_service.is_connected():
+            print(f"COMBAT EVENT PUBLISHER: Starting combat event publishing for combat {event.combat_id}")
+            logger.debug("Starting combat event publishing", combat_id=str(event.combat_id), room_id=event.room_id)
+
+            if not self.nats_service:
                 logger.error("NATS service not available for combat event publishing")
+                return False
+
+            if not self.nats_service.is_connected():
+                logger.error(
+                    "NATS service not connected for combat event publishing",
+                    nats_connected=self.nats_service.is_connected(),
+                )
                 return False
 
             # Create message data for NATS
@@ -68,6 +83,7 @@ class CombatEventPublisher:
 
             # Publish to NATS using room-specific subject
             subject = f"combat.started.{event.room_id}"
+            logger.debug("Publishing combat started event to NATS", subject=subject, message_data=message_data)
             success = await self.nats_service.publish(subject, message_data)
 
             if success:

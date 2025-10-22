@@ -80,7 +80,7 @@ class NPCCombatIntegrationService:
         npc_id: str,
         room_id: str,
         action_type: str = "punch",
-        damage: int = 1,
+        damage: int = 10,
     ) -> bool:
         """
         Handle a player attacking an NPC using auto-progression combat system.
@@ -417,6 +417,8 @@ class NPCCombatIntegrationService:
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
                 lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
                 if lifecycle_manager:
+                    # Record the death for 30-second respawn suppression
+                    lifecycle_manager.record_npc_death(npc_id)
                     lifecycle_manager.despawn_npc(npc_id, "combat_death")
                     return
 

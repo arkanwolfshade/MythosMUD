@@ -412,12 +412,25 @@ async def handle_status_command(
             except Exception as e:
                 logger.warning(f"Failed to fetch profession {profession_id}: {e}")
 
+        # Check if player is in combat
+        combat_service = app.state.combat_service if app else None
+        in_combat = False
+        if combat_service:
+            logger.debug(f"Checking combat status for player {player.player_id}")
+            combat = await combat_service.get_combat_by_participant(player.player_id)
+            logger.debug(f"Combat result for player {player.player_id}: {combat}")
+            in_combat = combat is not None
+            logger.debug(f"Player {player.player_id} in combat: {in_combat}")
+        else:
+            logger.debug("No combat service available")
+
         # Build status information
         status_lines = [
             f"Name: {player.name}",
             f"Location: {room_name}",
             f"Health: {stats.get('current_health', 100)}/{stats.get('max_health', 100)}",
             f"Sanity: {stats.get('sanity', 100)}/{stats.get('max_sanity', 100)}",
+            f"In Combat: {'Yes' if in_combat else 'No'}",
         ]
 
         # Add profession information if available

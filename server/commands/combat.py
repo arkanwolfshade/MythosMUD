@@ -8,6 +8,7 @@ strike, and other combat-related actions.
 from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
+from server.config import get_config
 from server.logging.enhanced_logging_config import get_logger
 from server.persistence import get_persistence
 from server.schemas.target_resolution import TargetType
@@ -246,9 +247,10 @@ class CombatCommandHandler:
 
             player_id = str(player.player_id)
 
-            # Calculate basic damage (for now, just use 1 damage)
+            # Calculate basic damage using configured value
             # TODO: Implement proper damage calculation based on player stats, weapon, etc.
-            damage = 1
+            config = get_config()
+            damage = config.game.basic_unarmed_damage
 
             logger.info(f"Executing combat action: {player_name} ({player_id}) {command}s {npc_id} for {damage} damage")
 

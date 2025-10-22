@@ -10,6 +10,18 @@ from datetime import datetime
 from enum import Enum
 from uuid import UUID, uuid4
 
+from server.config import get_config
+
+
+def _get_default_damage() -> int:
+    """Get the default damage value from configuration."""
+    try:
+        config = get_config()
+        return config.game.basic_unarmed_damage
+    except Exception:
+        # Fallback to hardcoded value if config is not available
+        return 10
+
 
 class CombatStatus(Enum):
     """Status of a combat instance."""
@@ -117,7 +129,7 @@ class CombatAction:
     attacker_id: UUID = field(default_factory=uuid4)
     target_id: UUID = field(default_factory=uuid4)
     action_type: str = "attack"
-    damage: int = 1
+    damage: int = field(default_factory=_get_default_damage)
     tick: int = 0
     success: bool = True
     message: str = ""

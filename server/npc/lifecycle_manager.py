@@ -182,9 +182,11 @@ class NPCLifecycleManager:
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
         self.active_npcs: dict[str, NPCBase] = {}
         self.respawn_queue: dict[str, dict[str, Any]] = {}  # npc_id -> respawn_data
+        self.death_suppression: dict[str, float] = {}  # npc_id -> death_timestamp
 
         # Configuration
         self.default_respawn_delay = 300.0  # 5 minutes
+        self.death_suppression_duration = 30.0  # 30 seconds suppression after death
         self.max_respawn_attempts = 3
         self.cleanup_interval = 3600.0  # 1 hour
         self.last_cleanup = time.time()
@@ -193,6 +195,43 @@ class NPCLifecycleManager:
         self._subscribe_to_events()
 
         logger.info("NPC Lifecycle Manager initialized")
+
+    def record_npc_death(self, npc_id: str) -> None:
+        """
+        Record the death of an NPC to suppress respawning for 30 seconds.
+
+        Args:
+            npc_id: ID of the NPC that died
+        """
+        current_time = time.time()
+        self.death_suppression[npc_id] = current_time
+        logger.info(
+            f"Recorded death of NPC {npc_id}, suppressing respawn for {self.death_suppression_duration} seconds"
+        )
+
+    def is_npc_death_suppressed(self, npc_id: str) -> bool:
+        """
+        Check if an NPC is currently under death suppression.
+
+        Args:
+            npc_id: ID of the NPC to check
+
+        Returns:
+            True if NPC is under death suppression, False otherwise
+        """
+        if npc_id not in self.death_suppression:
+            return False
+
+        death_time = self.death_suppression[npc_id]
+        current_time = time.time()
+        suppression_elapsed = current_time - death_time
+
+        if suppression_elapsed >= self.death_suppression_duration:
+            # Suppression period has expired, clean up
+            del self.death_suppression[npc_id]
+            return False
+
+        return True
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
@@ -334,6 +373,11 @@ class NPCLifecycleManager:
         """
         if npc_id not in self.lifecycle_records:
             logger.warning(f"Attempted to respawn non-existent NPC: {npc_id}")
+            return False
+
+        # Check if NPC is under death suppression
+        if self.is_npc_death_suppressed(npc_id):
+            logger.info(f"NPC {npc_id} is under death suppression, respawn blocked")
             return False
 
         try:

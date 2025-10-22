@@ -874,6 +874,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
+            // Request updated player data to reflect combat state
+            // The server will send a game_state event with the updated player data
+            sendCommand('status', []).catch(error => {
+              logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat start', { error });
+            });
+
             logger.info('GameTerminalWithPanels', 'Combat started event received', {
               participants,
             });
@@ -895,6 +901,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               updates.messages = [...currentMessagesRef.current];
             }
             updates.messages.push(messageObj);
+
+            // Request updated player data to reflect combat state
+            // The server will send a game_state event with the updated player data
+            sendCommand('status', []).catch(error => {
+              logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat end', { error });
+            });
 
             logger.info('GameTerminalWithPanels', 'Combat ended event received', {
               reason,

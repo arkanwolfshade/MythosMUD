@@ -408,14 +408,6 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                   </div>
                 </>
               )}
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Messages:</span>
-                <span className="text-base text-mythos-terminal-text">{messages.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Commands:</span>
-                <span className="text-base text-mythos-terminal-text">{commandHistory.length}</span>
-              </div>
             </div>
           </DraggablePanel>
         </div>

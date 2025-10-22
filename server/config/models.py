@@ -217,6 +217,9 @@ class GameConfig(BaseSettings):
     combat_performance_threshold: int = Field(default=1000, description="Performance threshold in milliseconds")
     combat_error_threshold: int = Field(default=3, description="Error threshold for combat failures")
 
+    # Combat damage configuration
+    basic_unarmed_damage: int = Field(default=10, description="Base damage for unarmed melee attacks")
+
     @field_validator("max_connections_per_player")
     @classmethod
     def validate_max_connections(cls, v: int) -> int:

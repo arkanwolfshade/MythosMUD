@@ -71,6 +71,10 @@ async def lifespan(app: FastAPI):
     # Give connection manager access to app for WebSocket command processing
     connection_manager.app = app
 
+    # Clear any stale pending messages from previous server sessions
+    connection_manager.message_queue.pending_messages.clear()
+    logger.info("Cleared stale pending messages from previous server sessions")
+
     # Initialize critical services and add to app.state
     from ..game.player_service import PlayerService
     from ..services.user_manager import UserManager
@@ -146,17 +150,11 @@ async def lifespan(app: FastAPI):
 
     logger.info("NPC services initialized and added to app.state")
 
-    # Initialize combat service
-    from ..services.combat_service import CombatService
+    # Initialize player combat service (NATS service not needed yet)
     from ..services.player_combat_service import PlayerCombatService
 
     app.state.player_combat_service = PlayerCombatService(app.state.persistence, app.state.event_bus)
-    app.state.combat_service = CombatService(app.state.player_combat_service)
-
-    # Update PlayerService with combat service for dynamic combat state checking
-    app.state.player_service.combat_service = app.state.combat_service
-
-    logger.info("Combat service initialized and added to app.state")
+    logger.info("Player combat service initialized and added to app.state")
 
     # Initialize NPC startup spawning
     # Re-enabled to ensure NPCs spawn during server startup
@@ -218,6 +216,16 @@ async def lifespan(app: FastAPI):
             if connected:
                 logger.info("NATS service connected successfully")
                 app.state.nats_service = nats_service
+
+                # Initialize combat service now that NATS service is available
+                from ..services.combat_service import CombatService
+
+                app.state.combat_service = CombatService(app.state.player_combat_service, app.state.nats_service)
+
+                # Update PlayerService with combat service and player combat service for dynamic combat state checking
+                app.state.player_service.combat_service = app.state.combat_service
+                app.state.player_service.player_combat_service = app.state.player_combat_service
+                logger.info("Combat service initialized and added to app.state")
 
                 # Initialize NATS message handler
                 try:
@@ -345,6 +353,16 @@ async def lifespan(app: FastAPI):
         logger.error("Critical shutdown failure:", exc_info=True)
         logger.error(f"Lifespan shutdown failed with error: {e}")
     finally:
+        # Phase 4: Database cleanup
+        logger.info("Closing database connections")
+        try:
+            from ..database import close_db
+
+            await close_db()
+            logger.info("Database connections closed successfully")
+        except Exception as e:
+            logger.error("Error closing database connections", error=str(e))
+
         logger.info("MythosMUD server shutdown execution phase completed")
 
     logger.info("MythosMUD server shutdown complete")

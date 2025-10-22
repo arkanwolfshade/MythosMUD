@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
+from server.config import get_config
 from server.events.combat_events import (
     CombatEndedEvent,
     CombatStartedEvent,
@@ -25,7 +26,7 @@ from server.models.combat import (
     CombatResult,
     CombatStatus,
 )
-from server.services.combat_event_publisher import combat_event_publisher
+from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
@@ -39,13 +40,27 @@ class CombatService:
     for initiating combat, processing actions, and managing turn order.
     """
 
-    def __init__(self, player_combat_service: PlayerCombatService = None):
+    def __init__(self, player_combat_service: PlayerCombatService = None, nats_service=None):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id
         self._npc_combats: dict[UUID, UUID] = {}  # npc_id -> combat_id
         self._combat_timeout_minutes = 30  # Configurable timeout
         self._player_combat_service = player_combat_service
+        self._nats_service = nats_service
+        # Create combat event publisher with proper NATS service
+        logger.debug("Creating CombatEventPublisher with NATS service", nats_service_available=bool(nats_service))
+        try:
+            print("*** COMBAT SERVICE: About to create CombatEventPublisher ***")
+            self._combat_event_publisher = CombatEventPublisher(nats_service)
+            print("*** COMBAT SERVICE: CombatEventPublisher created successfully ***")
+            logger.debug("CombatEventPublisher created successfully")
+        except Exception as e:
+            print(f"*** CRITICAL ERROR: Failed to create CombatEventPublisher: {e} ***")
+            print(f"*** ERROR TYPE: {type(e).__name__} ***")
+            print(f"*** ERROR DETAILS: {str(e)} ***")
+            logger.error("CRITICAL ERROR: Failed to create CombatEventPublisher", error=str(e), error_type=type(e).__name__, exc_info=True)
+            raise
         # Auto-progression configuration
         self._auto_progression_enabled = True
         self._turn_interval_seconds = 6
@@ -170,6 +185,7 @@ class CombatService:
 
         # Publish combat started event
         try:
+            logger.debug(f"Creating CombatStartedEvent for combat {combat.combat_id}")
             started_event = CombatStartedEvent(
                 event_type="combat_started",
                 timestamp=datetime.now(),
@@ -181,7 +197,9 @@ class CombatService:
                 },
                 turn_order=[str(pid) for pid in combat.turn_order],
             )
-            await combat_event_publisher.publish_combat_started(started_event)
+            logger.debug(f"Calling publish_combat_started for combat {combat.combat_id}")
+            await self._combat_event_publisher.publish_combat_started(started_event)
+            logger.debug(f"publish_combat_started completed for combat {combat.combat_id}")
         except Exception as e:
             logger.error(f"Error publishing combat started event: {e}", exc_info=True)
 
@@ -430,8 +448,9 @@ class CombatService:
             # Perform automatic basic attack
             logger.debug(f"Player {player.name} performing automatic attack on {target.name}")
 
-            # Use default damage for automatic attacks
-            damage = 1
+            # Use configured damage for automatic attacks
+            config = get_config()
+            damage = config.game.basic_unarmed_damage
 
             # Process the attack
             combat_result = await self.process_attack(
@@ -467,7 +486,7 @@ class CombatService:
             return self._active_combats.get(combat_id)
         return None
 
-    async def process_attack(self, attacker_id: UUID, target_id: UUID, damage: int = 1) -> CombatResult:
+    async def process_attack(self, attacker_id: UUID, target_id: UUID, damage: int = 10) -> CombatResult:
         """
         Process an attack action in combat.
 
@@ -532,8 +551,11 @@ class CombatService:
 
         # Publish combat events
         try:
+            logger.debug(f"Publishing combat events for attack: {current_participant.name} -> {target.name}")
+            logger.info(f"About to publish combat events - attacker type: {current_participant.participant_type}")
             # Publish attack event based on attacker type
             if current_participant.participant_type == CombatParticipantType.PLAYER:
+                logger.info("Creating PlayerAttackedEvent")
                 attack_event = PlayerAttackedEvent(
                     event_type="player_attacked",
                     timestamp=datetime.now(),
@@ -546,7 +568,9 @@ class CombatService:
                     damage=damage,
                     action_type="auto_attack",
                 )
-                await combat_event_publisher.publish_player_attacked(attack_event)
+                logger.info(f"Calling publish_player_attacked with event: {attack_event}")
+                await self._combat_event_publisher.publish_player_attacked(attack_event)
+                logger.info("publish_player_attacked completed")
             else:
                 attack_event = NPCAttackedEvent(
                     event_type="npc_attacked",
@@ -560,7 +584,7 @@ class CombatService:
                     damage=damage,
                     action_type="auto_attack",
                 )
-                await combat_event_publisher.publish_npc_attacked(attack_event)
+                await self._combat_event_publisher.publish_npc_attacked(attack_event)
 
             # Publish damage event if target is NPC
             if target.participant_type == CombatParticipantType.NPC:
@@ -575,7 +599,7 @@ class CombatService:
                     current_hp=target.current_hp,
                     max_hp=target.max_hp,
                 )
-                await combat_event_publisher.publish_npc_took_damage(damage_event)
+                await self._combat_event_publisher.publish_npc_took_damage(damage_event)
 
             # Publish death event if target died
             if target_died and target.participant_type == CombatParticipantType.NPC:
@@ -588,7 +612,7 @@ class CombatService:
                     npc_name=target.name,
                     xp_reward=result.xp_awarded or 0,
                 )
-                await combat_event_publisher.publish_npc_died(death_event)
+                await self._combat_event_publisher.publish_npc_died(death_event)
 
         except Exception as e:
             logger.error(f"Error publishing combat events: {e}", exc_info=True)
@@ -662,7 +686,7 @@ class CombatService:
                     for p in combat.participants.values()
                 },
             )
-            await combat_event_publisher.publish_combat_ended(ended_event)
+            await self._combat_event_publisher.publish_combat_ended(ended_event)
         except Exception as e:
             logger.error(f"Error publishing combat ended event: {e}", exc_info=True)
 

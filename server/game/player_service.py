@@ -23,10 +23,11 @@ logger = get_logger(__name__)
 class PlayerService:
     """Service class for player-related business operations."""
 
-    def __init__(self, persistence, combat_service=None):
+    def __init__(self, persistence, combat_service=None, player_combat_service=None):
         """Initialize the player service with a persistence layer and optional combat service."""
         self.persistence = persistence
         self.combat_service = combat_service
+        self.player_combat_service = player_combat_service
         logger.info("PlayerService initialized")
 
     async def create_player(
@@ -738,23 +739,22 @@ class PlayerService:
         Returns:
             PlayerRead: The player data in schema format
         """
-        # Check if player is in combat using combat service
+        # Check if player is in combat using player combat service
         # In test environments, always default to False to avoid Mock object issues
         in_combat = False
 
         # Only check combat state in non-test environments
         if (
-            hasattr(self, "combat_service")
-            and self.combat_service
-            and not hasattr(self.combat_service, "__class__")
-            or "Mock" not in str(self.combat_service.__class__)
+            hasattr(self, "player_combat_service")
+            and self.player_combat_service
+            and not hasattr(self.player_combat_service, "__class__")
+            or "Mock" not in str(self.player_combat_service.__class__)
         ):
             if hasattr(player, "player_id"):
                 try:
-                    # Check if player is currently in combat
-                    if hasattr(self.combat_service, "get_combat_by_participant"):
-                        combat_instance = self.combat_service.get_combat_by_participant(player.player_id)
-                        in_combat = combat_instance is not None
+                    # Check if player is currently in combat using PlayerCombatService
+                    if hasattr(self.player_combat_service, "is_player_in_combat"):
+                        in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
                 except Exception as e:
                     logger.warning(f"Failed to check combat state for player {player.player_id}: {e}")
                     in_combat = False

@@ -115,6 +115,13 @@ class NATSMessageHandler:
             "chat.whisper.*",  # Whisper messages per player
             "chat.system",  # System messages
             "chat.admin",  # Admin messages
+            # Combat event subjects
+            "combat.started.*",  # Combat started events per room
+            "combat.ended.*",  # Combat ended events per room
+            "combat.player_attacked.*",  # Player attack events per room
+            "combat.npc_attacked.*",  # NPC attack events per room
+            "combat.npc_took_damage.*",  # NPC damage events per room
+            "combat.npc_died.*",  # NPC death events per room
         ]
 
         logger.debug("=== NATS MESSAGE HANDLER DEBUG: Subscribing to subjects ===")
@@ -1237,6 +1244,18 @@ class NATSMessageHandler:
                 await self._handle_player_left_event(data)
             elif event_type == "game_tick":
                 await self._handle_game_tick_event(data)
+            elif event_type == "combat_started":
+                await self._handle_combat_started_event(data)
+            elif event_type == "combat_ended":
+                await self._handle_combat_ended_event(data)
+            elif event_type == "player_attacked":
+                await self._handle_player_attacked_event(data)
+            elif event_type == "npc_attacked":
+                await self._handle_npc_attacked_event(data)
+            elif event_type == "npc_took_damage":
+                await self._handle_npc_took_damage_event(data)
+            elif event_type == "npc_died":
+                await self._handle_npc_died_event(data)
             else:
                 logger.debug("Unknown event type received", event_type=event_type)
 
@@ -1352,6 +1371,114 @@ class NATSMessageHandler:
             True if subscription is active, False otherwise
         """
         return subject in self.subscriptions
+
+    async def _handle_combat_started_event(self, data: dict[str, Any]):
+        """Handle combat_started event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Combat started event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("combat_started", room_id, data)
+            logger.debug("Combat started event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling combat started event", error=str(e), data=data)
+
+    async def _handle_combat_ended_event(self, data: dict[str, Any]):
+        """Handle combat_ended event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Combat ended event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("combat_ended", room_id, data)
+            logger.debug("Combat ended event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling combat ended event", error=str(e), data=data)
+
+    async def _handle_player_attacked_event(self, data: dict[str, Any]):
+        """Handle player_attacked event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Player attacked event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("player_attacked", room_id, data)
+            logger.debug("Player attacked event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling player attacked event", error=str(e), data=data)
+
+    async def _handle_npc_attacked_event(self, data: dict[str, Any]):
+        """Handle npc_attacked event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("NPC attacked event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_attacked", room_id, data)
+            logger.debug("NPC attacked event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC attacked event", error=str(e), data=data)
+
+    async def _handle_npc_took_damage_event(self, data: dict[str, Any]):
+        """Handle npc_took_damage event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("NPC took damage event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_took_damage", room_id, data)
+            logger.debug("NPC took damage event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC took damage event", error=str(e), data=data)
+
+    async def _handle_npc_died_event(self, data: dict[str, Any]):
+        """Handle npc_died event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("NPC died event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_died", room_id, data)
+            logger.debug("NPC died event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC died event", error=str(e), data=data)
 
 
 # Global NATS message handler instance
