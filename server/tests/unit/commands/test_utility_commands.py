@@ -491,12 +491,22 @@ class TestStatusCommand:
         room.name = "Miskatonic University Library"
         return room
 
+    @pytest.fixture
+    def mock_combat_service(self):
+        """Create a mock combat service."""
+        from unittest.mock import AsyncMock
+
+        combat_service = MagicMock()
+        combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+        return combat_service
+
     @pytest.mark.asyncio
     async def test_status_command_success(
-        self, mock_request, mock_alias_storage, mock_persistence, mock_player, mock_room
+        self, mock_request, mock_alias_storage, mock_persistence, mock_player, mock_room, mock_combat_service
     ):
         """Test status command with complete player information."""
         mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.combat_service = mock_combat_service
         mock_persistence.get_player_by_name.return_value = mock_player
         mock_persistence.get_room.return_value = mock_room
 
@@ -549,9 +559,12 @@ class TestStatusCommand:
         assert result["result"] == "Player information not found."
 
     @pytest.mark.asyncio
-    async def test_status_command_room_not_found(self, mock_request, mock_alias_storage, mock_persistence, mock_player):
+    async def test_status_command_room_not_found(
+        self, mock_request, mock_alias_storage, mock_persistence, mock_player, mock_combat_service
+    ):
         """Test status command when room is not found."""
         mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.combat_service = mock_combat_service
         mock_persistence.get_player_by_name.return_value = mock_player
         mock_persistence.get_room.return_value = None
 
@@ -567,10 +580,11 @@ class TestStatusCommand:
 
     @pytest.mark.asyncio
     async def test_status_command_no_current_room(
-        self, mock_request, mock_alias_storage, mock_persistence, mock_player
+        self, mock_request, mock_alias_storage, mock_persistence, mock_player, mock_combat_service
     ):
         """Test status command when player has no current room."""
         mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.combat_service = mock_combat_service
         mock_player.current_room_id = None
         mock_persistence.get_player_by_name.return_value = mock_player
 
@@ -585,9 +599,12 @@ class TestStatusCommand:
         assert "Location: Unknown location" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_status_command_minimal_stats(self, mock_request, mock_alias_storage, mock_persistence, mock_room):
+    async def test_status_command_minimal_stats(
+        self, mock_request, mock_alias_storage, mock_persistence, mock_room, mock_combat_service
+    ):
         """Test status command with minimal stats (no fear, corruption, occult knowledge)."""
         mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.combat_service = mock_combat_service
 
         # Create player with minimal stats
         player = MagicMock()

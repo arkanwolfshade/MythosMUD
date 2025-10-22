@@ -228,8 +228,8 @@ class TestNPCPassiveBehaviorSystem:
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
-            target_hp=10,
-            target_max_hp=10,
+            target_hp=50,  # Higher HP so NPC doesn't die
+            target_max_hp=50,
             target_dex=15,
             current_tick=1,
         )
@@ -340,8 +340,8 @@ class TestNPCPassiveBehaviorSystem:
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
-            target_hp=10,
-            target_max_hp=10,
+            target_hp=50,  # Higher HP so NPC doesn't die
+            target_max_hp=50,
             target_dex=15,
             current_tick=1,
         )

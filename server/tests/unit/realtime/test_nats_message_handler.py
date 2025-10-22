@@ -71,6 +71,15 @@ class TestNATSMessageHandler:
             "events.game_tick",
         ]
 
+        expected_combat_subjects = [
+            "combat.started.*",
+            "combat.ended.*",
+            "combat.player_attacked.*",
+            "combat.npc_attacked.*",
+            "combat.npc_took_damage.*",
+            "combat.npc_died.*",
+        ]
+
         # Verify chat subscriptions
         for subject in expected_chat_subjects:
             assert subject in self.handler.subscriptions
@@ -79,11 +88,17 @@ class TestNATSMessageHandler:
         for subject in expected_event_subjects:
             assert subject in self.handler.subscriptions
 
+        # Verify combat subscriptions
+        for subject in expected_combat_subjects:
+            assert subject in self.handler.subscriptions
+
         # Verify total count
-        assert len(self.handler.subscriptions) == len(expected_chat_subjects) + len(expected_event_subjects)
+        assert len(self.handler.subscriptions) == len(expected_chat_subjects) + len(expected_event_subjects) + len(
+            expected_combat_subjects
+        )
 
         # Verify all subscriptions are active
-        for subject in expected_chat_subjects + expected_event_subjects:
+        for subject in expected_chat_subjects + expected_event_subjects + expected_combat_subjects:
             assert self.handler.subscriptions[subject] is True
 
     @pytest.mark.asyncio

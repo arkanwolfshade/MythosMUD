@@ -36,9 +36,17 @@ class TestCombatPerformance:
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture
-    def combat_service(self, player_combat_service):
+    def mock_nats_service(self):
+        """Create a mock NATS service."""
+        nats_service = Mock()
+        nats_service.is_connected.return_value = True
+        nats_service.publish = AsyncMock(return_value=True)
+        return nats_service
+
+    @pytest.fixture
+    def combat_service(self, player_combat_service, mock_nats_service):
         """Create a combat service."""
-        return CombatService(player_combat_service=player_combat_service)
+        return CombatService(player_combat_service=player_combat_service, nats_service=mock_nats_service)
 
     @pytest.fixture
     def combat_command_handler(self):

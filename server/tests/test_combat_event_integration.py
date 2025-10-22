@@ -70,10 +70,12 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.started.{self.test_room_id}"
         assert message_data["event_type"] == "combat_started"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["room_id"] == self.test_room_id
-        assert message_data["participants"] == {"player1": {"id": str(self.test_player_id), "name": "TestPlayer"}}
-        assert message_data["turn_order"] == ["player1"]
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["room_id"] == self.test_room_id
+        assert message_data["data"]["participants"] == {
+            "player1": {"id": str(self.test_player_id), "name": "TestPlayer"}
+        }
+        assert message_data["data"]["turn_order"] == ["player1"]
 
     @pytest.mark.asyncio
     async def test_publish_combat_ended_success(self):
@@ -103,10 +105,10 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.ended.{self.test_room_id}"
         assert message_data["event_type"] == "combat_ended"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["room_id"] == self.test_room_id
-        assert message_data["reason"] == "npc_died"
-        assert message_data["duration_seconds"] == 30
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["room_id"] == self.test_room_id
+        assert message_data["data"]["reason"] == "npc_died"
+        assert message_data["data"]["duration_seconds"] == 30
 
     @pytest.mark.asyncio
     async def test_publish_player_attacked_success(self):
@@ -139,13 +141,13 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.attack.{event.room_id}"
         assert message_data["event_type"] == "player_attacked"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["attacker_id"] == str(self.test_player_id)
-        assert message_data["attacker_name"] == "TestPlayer"
-        assert message_data["target_id"] == str(self.test_npc_id)
-        assert message_data["target_name"] == "TestNPC"
-        assert message_data["damage"] == 5
-        assert message_data["action_type"] == "punch"
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["attacker_id"] == str(self.test_player_id)
+        assert message_data["data"]["attacker_name"] == "TestPlayer"
+        assert message_data["data"]["target_id"] == str(self.test_npc_id)
+        assert message_data["data"]["target_name"] == "TestNPC"
+        assert message_data["data"]["damage"] == 5
+        assert message_data["data"]["action_type"] == "punch"
 
     @pytest.mark.asyncio
     async def test_publish_npc_attacked_success(self):
@@ -178,13 +180,13 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.attack.{event.room_id}"
         assert message_data["event_type"] == "npc_attacked"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["attacker_id"] == str(self.test_player_id)
-        assert message_data["attacker_name"] == "TestPlayer"
-        assert message_data["npc_id"] == str(self.test_npc_id)
-        assert message_data["npc_name"] == "TestNPC"
-        assert message_data["damage"] == 3
-        assert message_data["action_type"] == "kick"
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["attacker_id"] == str(self.test_player_id)
+        assert message_data["data"]["attacker_name"] == "TestPlayer"
+        assert message_data["data"]["npc_id"] == str(self.test_npc_id)
+        assert message_data["data"]["npc_name"] == "TestNPC"
+        assert message_data["data"]["damage"] == 3
+        assert message_data["data"]["action_type"] == "kick"
 
     @pytest.mark.asyncio
     async def test_publish_npc_took_damage_success(self):
@@ -216,12 +218,12 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.damage.{event.room_id}"
         assert message_data["event_type"] == "npc_took_damage"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["npc_id"] == str(self.test_npc_id)
-        assert message_data["npc_name"] == "TestNPC"
-        assert message_data["damage"] == 5
-        assert message_data["current_hp"] == 10
-        assert message_data["max_hp"] == 15
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["npc_id"] == str(self.test_npc_id)
+        assert message_data["data"]["npc_name"] == "TestNPC"
+        assert message_data["data"]["damage"] == 5
+        assert message_data["data"]["current_hp"] == 10
+        assert message_data["data"]["max_hp"] == 15
 
     @pytest.mark.asyncio
     async def test_publish_npc_died_success(self):
@@ -251,10 +253,10 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.death.{event.room_id}"
         assert message_data["event_type"] == "npc_died"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["npc_id"] == str(self.test_npc_id)
-        assert message_data["npc_name"] == "TestNPC"
-        assert message_data["xp_reward"] == 10
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["npc_id"] == str(self.test_npc_id)
+        assert message_data["data"]["npc_name"] == "TestNPC"
+        assert message_data["data"]["xp_reward"] == 10
 
     @pytest.mark.asyncio
     async def test_publish_combat_turn_advanced_success(self):
@@ -284,11 +286,11 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.turn.{self.test_room_id}"
         assert message_data["event_type"] == "combat_turn_advanced"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["room_id"] == self.test_room_id
-        assert message_data["current_turn"] == 2
-        assert message_data["combat_round"] == 1
-        assert message_data["next_participant"] == "player1"
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["room_id"] == self.test_room_id
+        assert message_data["data"]["current_turn"] == 2
+        assert message_data["data"]["combat_round"] == 1
+        assert message_data["data"]["next_participant"] == "player1"
 
     @pytest.mark.asyncio
     async def test_publish_combat_timeout_success(self):
@@ -317,9 +319,9 @@ class TestCombatEventPublisher:
 
         assert subject == f"combat.timeout.{self.test_room_id}"
         assert message_data["event_type"] == "combat_timeout"
-        assert message_data["combat_id"] == str(self.test_combat_id)
-        assert message_data["room_id"] == self.test_room_id
-        assert message_data["timeout_minutes"] == 5
+        assert message_data["data"]["combat_id"] == str(self.test_combat_id)
+        assert message_data["data"]["room_id"] == self.test_room_id
+        assert message_data["data"]["timeout_minutes"] == 5
 
     @pytest.mark.asyncio
     async def test_publish_nats_not_connected(self):
