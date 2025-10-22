@@ -750,6 +750,158 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             });
             break;
           }
+          case 'player_attacked': {
+            const attackerName = event.data.attacker_name as string;
+            const targetName = event.data.target_name as string;
+            const damage = event.data.damage as number;
+            const actionType = event.data.action_type as string;
+
+            const message = `${attackerName} attacks ${targetName} for ${damage} damage!`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player attacked event received', {
+              attackerName,
+              targetName,
+              damage,
+              actionType,
+            });
+            break;
+          }
+          case 'npc_attacked': {
+            const attackerName = event.data.attacker_name as string;
+            const npcName = event.data.npc_name as string;
+            const damage = event.data.damage as number;
+            const actionType = event.data.action_type as string;
+
+            const message = `${attackerName} attacks ${npcName} for ${damage} damage!`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC attacked event received', {
+              attackerName,
+              npcName,
+              damage,
+              actionType,
+            });
+            break;
+          }
+          case 'npc_took_damage': {
+            const npcName = event.data.npc_name as string;
+            const damage = event.data.damage as number;
+            const currentHp = event.data.current_hp as number;
+            const maxHp = event.data.max_hp as number;
+
+            const message = `${npcName} takes ${damage} damage! (${currentHp}/${maxHp} HP)`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC took damage event received', {
+              npcName,
+              damage,
+              currentHp,
+              maxHp,
+            });
+            break;
+          }
+          case 'npc_died': {
+            const npcName = event.data.npc_name as string;
+            const xpReward = event.data.xp_reward as number;
+
+            const message = `${npcName} has been defeated!${xpReward > 0 ? ` (+${xpReward} XP)` : ''}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC died event received', {
+              npcName,
+              xpReward,
+            });
+            break;
+          }
+          case 'combat_started': {
+            const participants = event.data.participants as string[];
+            const message = `Combat has begun! Participants: ${participants.join(', ')}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Combat started event received', {
+              participants,
+            });
+            break;
+          }
+          case 'combat_ended': {
+            const reason = event.data.reason as string;
+            const durationSeconds = event.data.duration_seconds as number;
+            const message = `Combat has ended. ${reason}${durationSeconds > 0 ? ` (Duration: ${durationSeconds}s)` : ''}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Combat ended event received', {
+              reason,
+              durationSeconds,
+            });
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,

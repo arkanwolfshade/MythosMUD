@@ -327,6 +327,10 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                     <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
                   </div>
                   <div className="flex items-center justify-between">
+                    <span className="text-base text-mythos-terminal-text-secondary">XP:</span>
+                    <span className="text-base text-mythos-terminal-text">{player.experience || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">In Combat:</span>
                     <span className="text-base text-mythos-terminal-text">{player.in_combat ? 'Yes' : 'No'}</span>
                   </div>

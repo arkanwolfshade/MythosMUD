@@ -9,6 +9,14 @@ from datetime import datetime, timedelta
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
+from server.events.combat_events import (
+    CombatEndedEvent,
+    CombatStartedEvent,
+    NPCAttackedEvent,
+    NPCDiedEvent,
+    NPCTookDamageEvent,
+    PlayerAttackedEvent,
+)
 from server.logging_config import get_logger
 from server.models.combat import (
     CombatInstance,
@@ -17,6 +25,7 @@ from server.models.combat import (
     CombatResult,
     CombatStatus,
 )
+from server.services.combat_event_publisher import combat_event_publisher
 from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
@@ -158,6 +167,23 @@ class CombatService:
             )
 
         logger.info(f"Combat {combat.combat_id} started with turn order: {combat.turn_order}")
+
+        # Publish combat started event
+        try:
+            started_event = CombatStartedEvent(
+                event_type="combat_started",
+                timestamp=datetime.now(),
+                combat_id=combat.combat_id,
+                room_id=room_id,
+                participants={
+                    p.participant_id: {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
+                    for p in combat.participants.values()
+                },
+                turn_order=[str(pid) for pid in combat.turn_order],
+            )
+            await combat_event_publisher.publish_combat_started(started_event)
+        except Exception as e:
+            logger.error(f"Error publishing combat started event: {e}", exc_info=True)
 
         return combat
 
@@ -504,6 +530,69 @@ class CombatService:
             combat_id=combat.combat_id,
         )
 
+        # Publish combat events
+        try:
+            # Publish attack event based on attacker type
+            if current_participant.participant_type == CombatParticipantType.PLAYER:
+                attack_event = PlayerAttackedEvent(
+                    event_type="player_attacked",
+                    timestamp=datetime.now(),
+                    combat_id=combat.combat_id,
+                    room_id=combat.room_id,
+                    attacker_id=current_participant.participant_id,
+                    attacker_name=current_participant.name,
+                    target_id=target.participant_id,
+                    target_name=target.name,
+                    damage=damage,
+                    action_type="auto_attack",
+                )
+                await combat_event_publisher.publish_player_attacked(attack_event)
+            else:
+                attack_event = NPCAttackedEvent(
+                    event_type="npc_attacked",
+                    timestamp=datetime.now(),
+                    combat_id=combat.combat_id,
+                    room_id=combat.room_id,
+                    attacker_id=current_participant.participant_id,
+                    attacker_name=current_participant.name,
+                    npc_id=target.participant_id,
+                    npc_name=target.name,
+                    damage=damage,
+                    action_type="auto_attack",
+                )
+                await combat_event_publisher.publish_npc_attacked(attack_event)
+
+            # Publish damage event if target is NPC
+            if target.participant_type == CombatParticipantType.NPC:
+                damage_event = NPCTookDamageEvent(
+                    event_type="npc_took_damage",
+                    timestamp=datetime.now(),
+                    combat_id=combat.combat_id,
+                    room_id=combat.room_id,
+                    npc_id=target.participant_id,
+                    npc_name=target.name,
+                    damage=damage,
+                    current_hp=target.current_hp,
+                    max_hp=target.max_hp,
+                )
+                await combat_event_publisher.publish_npc_took_damage(damage_event)
+
+            # Publish death event if target died
+            if target_died and target.participant_type == CombatParticipantType.NPC:
+                death_event = NPCDiedEvent(
+                    event_type="npc_died",
+                    timestamp=datetime.now(),
+                    combat_id=combat.combat_id,
+                    room_id=combat.room_id,
+                    npc_id=target.participant_id,
+                    npc_name=target.name,
+                    xp_reward=result.xp_awarded or 0,
+                )
+                await combat_event_publisher.publish_npc_died(death_event)
+
+        except Exception as e:
+            logger.error(f"Error publishing combat events: {e}", exc_info=True)
+
         # Award XP if target died and attacker is a player
         if target_died:
             result.xp_awarded = await self._calculate_xp_reward(target_id)
@@ -556,6 +645,26 @@ class CombatService:
         # Clear player combat states if player combat service is available
         if self._player_combat_service:
             await self._player_combat_service.handle_combat_end(combat_id)
+
+        # Publish combat ended event
+        try:
+            ended_event = CombatEndedEvent(
+                event_type="combat_ended",
+                timestamp=datetime.now(),
+                combat_id=combat_id,
+                room_id=combat.room_id,
+                reason=reason,
+                duration_seconds=int((datetime.now() - combat.start_time).total_seconds())
+                if hasattr(combat, "start_time")
+                else 0,
+                participants={
+                    p.participant_id: {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
+                    for p in combat.participants.values()
+                },
+            )
+            await combat_event_publisher.publish_combat_ended(ended_event)
+        except Exception as e:
+            logger.error(f"Error publishing combat ended event: {e}", exc_info=True)
 
         logger.info(f"Combat {combat_id} ended successfully")
 
