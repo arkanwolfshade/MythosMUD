@@ -194,7 +194,13 @@ class TargetResolutionService:
                 if not npc_instance:
                     continue
 
-                if target_name in npc_instance.name.lower():
+                # Normalize both names by removing punctuation for better matching
+                normalized_target = target_name.replace(".", "").replace(",", "").replace("!", "").replace("?", "")
+                normalized_npc_name = (
+                    npc_instance.name.lower().replace(".", "").replace(",", "").replace("!", "").replace("?", "")
+                )
+
+                if normalized_target in normalized_npc_name:
                     matches.append(
                         TargetMatch(
                             target_id=npc_id,

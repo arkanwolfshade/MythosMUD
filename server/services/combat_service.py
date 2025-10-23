@@ -329,93 +329,60 @@ class CombatService:
 
     async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
         """
-        Process NPC turn with passive behavior.
+        Process NPC turn with actual combat attack.
 
         Args:
             combat: Combat instance
             npc: NPC participant
             current_tick: Current game tick
         """
-        # Select NPC passive action
-        action = await self._select_npc_non_combat_action(npc)
-
-        # Format NPC health information
-        npc_health = f"{npc.current_hp}/{npc.max_hp} HP"
-
-        # Broadcast the action to the room with health information
-        if action:
-            await self._broadcast_npc_action(combat.room_id, npc.name, action, npc_health)
-
-        # Update NPC's last action tick
-        npc.last_action_tick = current_tick
-
-        logger.debug(f"NPC {npc.name} performed passive action: {action} ({npc_health})")
-
-    async def _select_npc_non_combat_action(self, npc: CombatParticipant) -> str | None:
-        """
-        Select a non-combat action for an NPC.
-
-        Args:
-            npc: NPC participant
-
-        Returns:
-            Action description or None
-        """
-        # Simple passive actions for now
-        actions = [
-            f"{npc.name} shifts uncomfortably.",
-            f"{npc.name} glances around nervously.",
-            f"{npc.name} mutters something under their breath.",
-            f"{npc.name} adjusts their stance.",
-            f"{npc.name} looks at you with concern.",
-        ]
-
-        import random
-
-        return random.choice(actions)
-
-    async def _broadcast_npc_action(self, room_id: str, npc_name: str, action: str, npc_health: str = "") -> None:
-        """
-        Broadcast NPC action to room.
-
-        Args:
-            room_id: Room ID
-            npc_name: NPC name
-            action: Action description
-            npc_health: Optional NPC health information (e.g., "49/50 HP")
-        """
         try:
-            # Create a simple message event for NPC actions
-            from server.realtime.connection_manager import connection_manager
-            from server.realtime.envelope import build_event
+            # Validate that we received a proper CombatParticipant object
+            if not isinstance(npc, CombatParticipant):
+                logger.error(f"Expected CombatParticipant, got {type(npc)}: {npc}")
+                return
 
-            # Add health information to the message if provided
-            message = f"{npc_name} {action}"
-            if npc_health:
-                message = f"{npc_name} {action} ({npc_health})"
+            # Debug logging to understand what we're receiving
+            logger.debug(f"_process_npc_turn called with npc type: {type(npc)}, npc: {npc}")
+            if hasattr(npc, "participant_id"):
+                logger.debug(f"NPC participant_id: {npc.participant_id} (type: {type(npc.participant_id)})")
+            else:
+                logger.error(f"NPC object missing participant_id attribute: {npc}")
+                return
 
-            # Create NPC action event
-            npc_action_event = build_event(
-                "npc_action",
-                {
-                    "npc_name": npc_name,
-                    "action": action,
-                    "message": message,
-                    "npc_health": npc_health,
-                },
-                room_id=room_id,
+            # Find the target (other participant in combat)
+            target = None
+            for participant in combat.participants.values():
+                if participant.participant_id != npc.participant_id:
+                    target = participant
+                    break
+
+            if not target:
+                logger.warning(f"No target found for NPC {npc.name} in combat {combat.combat_id}")
+                return
+
+            # Perform automatic basic attack
+            logger.debug(f"NPC {npc.name} performing automatic attack on {target.name}")
+
+            # Use configured damage for automatic attacks
+            config = get_config()
+            damage = config.game.basic_unarmed_damage
+
+            # Process the attack
+            combat_result = await self.process_attack(
+                attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
             )
 
-            # Broadcast to all players in the room
-            await connection_manager.broadcast_to_room(room_id, npc_action_event)
+            if combat_result.success:
+                logger.info(f"NPC {npc.name} automatically attacked {target.name} for {damage} damage")
+            else:
+                logger.warning(f"NPC {npc.name} automatic attack failed: {combat_result.message}")
 
-            logger.info(
-                f"NPC {npc_name} in room {room_id}: {action} ({npc_health if npc_health else 'no health info'})"
-            )
+            # Update NPC's last action tick
+            npc.last_action_tick = current_tick
+
         except Exception as e:
-            logger.error(f"Failed to broadcast NPC action: {e}")
-            # Fallback to just logging
-            logger.info(f"NPC {npc_name} in room {room_id}: {action}")
+            logger.error(f"Error processing NPC turn for {npc.name}: {e}", exc_info=True)
 
     async def _process_player_turn(self, combat: CombatInstance, player: CombatParticipant, current_tick: int) -> None:
         """
@@ -491,7 +458,9 @@ class CombatService:
             return self._active_combats.get(combat_id)
         return None
 
-    async def process_attack(self, attacker_id: UUID, target_id: UUID, damage: int = 10) -> CombatResult:
+    async def process_attack(
+        self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False
+    ) -> CombatResult:
         """
         Process an attack action in combat.
 
@@ -513,10 +482,11 @@ class CombatService:
         if combat.status != CombatStatus.ACTIVE:
             raise ValueError("Combat is not active")
 
-        # Check if it's the attacker's turn
-        current_participant = combat.get_current_turn_participant()
-        if not current_participant or current_participant.participant_id != attacker_id:
-            raise ValueError("It is not the attacker's turn")
+        # Check if it's the attacker's turn (skip for initial attack)
+        if not is_initial_attack:
+            current_participant = combat.get_current_turn_participant()
+            if not current_participant or current_participant.participant_id != attacker_id:
+                raise ValueError("It is not the attacker's turn")
 
         # Validate target
         target = combat.participants.get(target_id)
@@ -572,11 +542,14 @@ class CombatService:
                     target_name=target.name,
                     damage=damage,
                     action_type="auto_attack",
+                    target_current_hp=target.current_hp,
+                    target_max_hp=target.max_hp,
                 )
                 logger.info(f"Calling publish_player_attacked with event: {attack_event}")
                 await self._combat_event_publisher.publish_player_attacked(attack_event)
                 logger.info("publish_player_attacked completed")
             else:
+                logger.info("Creating NPCAttackedEvent")
                 attack_event = NPCAttackedEvent(
                     event_type="npc_attacked",
                     timestamp=datetime.now(),
@@ -588,8 +561,12 @@ class CombatService:
                     npc_name=target.name,
                     damage=damage,
                     action_type="auto_attack",
+                    target_current_hp=target.current_hp,
+                    target_max_hp=target.max_hp,
                 )
+                logger.info(f"Calling publish_npc_attacked with event: {attack_event}")
                 await self._combat_event_publisher.publish_npc_attacked(attack_event)
+                logger.info("publish_npc_attacked completed")
 
             # Publish damage event if target is NPC
             if target.participant_type == CombatParticipantType.NPC:
@@ -608,6 +585,7 @@ class CombatService:
 
             # Publish death event if target died
             if target_died and target.participant_type == CombatParticipantType.NPC:
+                logger.info(f"Creating NPCDiedEvent for {target.name}")
                 death_event = NPCDiedEvent(
                     event_type="npc_died",
                     timestamp=datetime.now(),
@@ -617,7 +595,9 @@ class CombatService:
                     npc_name=target.name,
                     xp_reward=result.xp_awarded or 0,
                 )
+                logger.info(f"Publishing NPCDiedEvent: {death_event}")
                 await self._combat_event_publisher.publish_npc_died(death_event)
+                logger.info("NPCDiedEvent published successfully")
 
         except Exception as e:
             logger.error(f"Error publishing combat events: {e}", exc_info=True)

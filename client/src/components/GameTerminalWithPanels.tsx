@@ -127,6 +127,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const processingTimeout = useRef<number | null>(null);
   const currentMessagesRef = useRef<ChatMessage[]>([]);
   const currentRoomRef = useRef<Room | null>(null);
+  const currentPlayerRef = useRef<Player | null>(null);
 
   // Keep the refs in sync with the state
   useEffect(() => {
@@ -136,6 +137,10 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   useEffect(() => {
     currentRoomRef.current = gameState.room;
   }, [gameState.room]);
+
+  useEffect(() => {
+    currentPlayerRef.current = gameState.player;
+  }, [gameState.player]);
 
   // Track the last room update timestamp to prevent stale data overwrites
   const lastRoomUpdateTime = useRef<number>(0);
@@ -260,6 +265,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           occupants: event.data?.occupants,
         });
 
+        console.log('🔍 DEBUG: Processing event type:', eventType, event);
         switch (eventType) {
           case 'game_state': {
             const playerData = event.data.player as Player;
@@ -701,6 +707,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const tickNumber = event.data.tick_number as number;
             const showTickVerbosity = localStorage.getItem('showTickVerbosity') === 'true';
 
+            console.log('🔍 DEBUG: game_tick event received!', {
+              tickNumber,
+              showTickVerbosity,
+              isEvery10th: tickNumber % 10 === 0,
+            });
+
             // Debug logging for game tick events
             logger.debug('GameTerminalWithPanels', 'Received game_tick event', {
               tickNumber,
@@ -708,8 +720,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               isEvery10th: tickNumber % 10 === 0,
             });
 
-            // Display every 10th tick if verbosity is enabled
-            if (showTickVerbosity && tickNumber % 10 === 0) {
+            // Display every 10th tick by default (or if verbosity is enabled)
+            if ((showTickVerbosity || localStorage.getItem('showTickVerbosity') === null) && tickNumber % 10 === 0) {
               const message = {
                 text: `[Game Tick ${tickNumber}]`,
                 timestamp: event.timestamp,
@@ -754,12 +766,26 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             break;
           }
           case 'player_attacked': {
+            console.log('🔍 DEBUG: player_attacked event received!', event);
             const attackerName = event.data.attacker_name as string;
             const targetName = event.data.target_name as string;
             const damage = event.data.damage as number;
             const actionType = event.data.action_type as string;
+            const targetCurrentHp = event.data.target_current_hp as number;
+            const targetMaxHp = event.data.target_max_hp as number;
 
-            const message = `${attackerName} attacks ${targetName} for ${damage} damage!`;
+            // Check if this is the current player's attack
+            const isCurrentPlayer = currentPlayerRef.current && currentPlayerRef.current.name === attackerName;
+
+            let message: string;
+            if (isCurrentPlayer) {
+              // Format message for current player's attack with target health
+              message = `You hit ${targetName} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+            } else {
+              // Format message for other players' attacks with target health
+              message = `${attackerName} attacks ${targetName} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+            }
+
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
@@ -778,16 +804,30 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               targetName,
               damage,
               actionType,
+              isCurrentPlayer,
             });
             break;
           }
           case 'npc_attacked': {
+            console.log('🔍 DEBUG: npc_attacked event received!', event);
             const attackerName = event.data.attacker_name as string;
             const npcName = event.data.npc_name as string;
             const damage = event.data.damage as number;
             const actionType = event.data.action_type as string;
+            const targetCurrentHp = event.data.target_current_hp as number;
+            const targetMaxHp = event.data.target_max_hp as number;
 
-            const message = `${attackerName} attacks ${npcName} for ${damage} damage!`;
+            console.log('🔍 DEBUG: npc_attacked data:', {
+              attackerName,
+              npcName,
+              damage,
+              targetCurrentHp,
+              targetMaxHp,
+            });
+
+            // For npc_attacked events, attacker_name is the NPC and npc_name is the player
+            // We want to show "Dr. Francis Morgan attacks you for 10 damage! (90/100 HP)"
+            const message = `${attackerName} attacks you for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
@@ -800,6 +840,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               updates.messages = [...currentMessagesRef.current];
             }
             updates.messages.push(messageObj);
+
+            console.log('🔍 DEBUG: npc_attacked message added to updates:', messageObj);
 
             logger.info('GameTerminalWithPanels', 'NPC attacked event received', {
               attackerName,
@@ -855,6 +897,22 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
+            // Update player XP if reward was given
+            if (currentPlayerRef.current && xpReward > 0) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                xp: (currentPlayerRef.current.xp || 0) + xpReward,
+              };
+            }
+
+            // Remove NPC from room occupants
+            if (currentRoomRef.current && currentRoomRef.current.occupants) {
+              updates.room = {
+                ...currentRoomRef.current,
+                occupants: currentRoomRef.current.occupants.filter(occupant => occupant.name !== npcName),
+              };
+            }
+
             logger.info('GameTerminalWithPanels', 'NPC died event received', {
               npcName,
               xpReward,
@@ -862,8 +920,31 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             break;
           }
           case 'combat_started': {
-            const participants = event.data.participants as string[];
-            const message = `Combat has begun! Participants: ${participants.join(', ')}`;
+            console.log('🔍 DEBUG: combat_started event received!', event);
+            const combatId = event.data.combat_id as string;
+            const turnOrder = event.data.turn_order as string[];
+
+            // Check if we've already processed this combat_started event
+            // Look for any message that contains "Combat has begun!" and the same turn order
+            // Check both current messages and pending updates
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(
+              msg => msg.text.includes('Combat has begun!') && msg.text.includes(turnOrder.join(', '))
+            );
+
+            console.log('🔍 DEBUG: Checking for duplicate combat_started', {
+              combatId,
+              turnOrder,
+              existingMessage: existingMessage ? existingMessage.text : null,
+              currentMessagesCount: currentMessagesRef.current.length,
+            });
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', { combatId, turnOrder });
+              break;
+            }
+
+            const message = `Combat has begun! Turn order: ${turnOrder.join(', ')}`;
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
@@ -877,16 +958,17 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
-            // Request updated player data to reflect combat state
-            // The server will send a game_state event with the updated player data
-            if (sendCommandRef.current) {
-              sendCommandRef.current('status', []).catch(error => {
-                logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat start', { error });
-              });
+            // Update player combat status immediately
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: true,
+              };
             }
 
             logger.info('GameTerminalWithPanels', 'Combat started event received', {
-              participants,
+              combatId,
+              turnOrder,
             });
             break;
           }
@@ -894,6 +976,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const reason = event.data.reason as string;
             const durationSeconds = event.data.duration_seconds as number;
             const message = `Combat has ended. ${reason}${durationSeconds > 0 ? ` (Duration: ${durationSeconds}s)` : ''}`;
+
+            // Check for duplicate combat_ended events
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(
+              msg => msg.text.includes('Combat has ended.') && msg.text.includes(reason)
+            );
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate combat_ended event detected, skipping', { reason, durationSeconds });
+              break;
+            }
+
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
@@ -907,12 +1001,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
-            // Request updated player data to reflect combat state
-            // The server will send a game_state event with the updated player data
-            if (sendCommandRef.current) {
-              sendCommandRef.current('status', []).catch(error => {
-                logger.error('GameTerminalWithPanels', 'Failed to refresh player data after combat end', { error });
-              });
+            // Update player combat status immediately
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
+              };
             }
 
             logger.info('GameTerminalWithPanels', 'Combat ended event received', {
@@ -1041,7 +1135,6 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
   // Use the game connection hook for real server communication
   const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
-    playerName,
     authToken,
     onEvent: handleGameEvent,
     onConnect: handleConnect,

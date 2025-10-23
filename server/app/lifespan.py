@@ -397,7 +397,9 @@ async def game_tick_loop(app: FastAPI):
                 "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
+            logger.debug(f"Broadcasting game tick {tick_count} to {len(connection_manager.player_websockets)} players")
             await broadcast_game_event("game_tick", tick_data)
+            logger.debug(f"Game tick {tick_count} broadcast completed")
             tick_count += 1
             await asyncio.sleep(TICK_INTERVAL)
         except asyncio.CancelledError:

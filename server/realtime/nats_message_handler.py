@@ -1157,6 +1157,10 @@ class NATSMessageHandler:
                 "events.player_entered.*",  # Player entered events per room
                 "events.player_left.*",  # Player left events per room
                 "events.game_tick",  # Global game tick events
+                "combat.attack.*",  # Combat attack events per room
+                "combat.npc_action.*",  # NPC action events per room
+                "combat.started.*",  # Combat started events per room
+                "combat.ended.*",  # Combat ended events per room
             ]
 
             logger.debug("Subscribing to event subjects", subjects=event_subjects)
@@ -1192,6 +1196,10 @@ class NATSMessageHandler:
                 "events.player_entered.*",
                 "events.player_left.*",
                 "events.game_tick",
+                "combat.attack.*",
+                "combat.npc_action.*",
+                "combat.started.*",
+                "combat.ended.*",
             ]
 
             logger.debug("Unsubscribing from event subjects", subjects=event_subjects)

@@ -271,12 +271,15 @@ class CombatEventPublisher:
                 "event_type": "player_attacked",
                 "data": {
                     "combat_id": str(event.combat_id),
+                    "room_id": event.room_id,
                     "attacker_id": str(event.attacker_id),
                     "attacker_name": event.attacker_name,
                     "target_id": str(event.target_id),
                     "target_name": event.target_name,
                     "damage": event.damage,
                     "action_type": event.action_type,
+                    "target_current_hp": event.target_current_hp,
+                    "target_max_hp": event.target_max_hp,
                     "timestamp": event.timestamp.isoformat(),
                 },
             }
@@ -364,12 +367,14 @@ class CombatEventPublisher:
                     "npc_name": event.npc_name,
                     "damage": event.damage,
                     "action_type": event.action_type,
+                    "target_current_hp": event.target_current_hp,
+                    "target_max_hp": event.target_max_hp,
                     "timestamp": event.timestamp.isoformat(),
                 },
             }
 
             # Publish to NATS using room-specific subject
-            subject = f"combat.attack.{event.room_id}"
+            subject = f"combat.npc_attacked.{event.room_id}"
             success = await self.nats_service.publish(subject, message_data)
 
             if success:

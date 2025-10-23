@@ -247,6 +247,10 @@ class CombatCommandHandler:
 
             player_id = str(player.player_id)
 
+            # Get NPC instance to get the NPC name for the message
+            npc_instance = self._get_npc_instance(npc_id)
+            npc_name = npc_instance.name if npc_instance else "unknown target"
+
             # Calculate basic damage using configured value
             # TODO: Implement proper damage calculation based on player stats, weapon, etc.
             config = get_config()
@@ -260,7 +264,7 @@ class CombatCommandHandler:
             )
 
             # Return simple acknowledgment since detailed message is sent via broadcast system
-            return {"result": f"You {command} at the target."}
+            return {"result": f"You {command} {npc_name}!"}
 
         except Exception as e:
             logger.error(f"Error executing combat action: {e}")

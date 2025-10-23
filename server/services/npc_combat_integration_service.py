@@ -162,9 +162,9 @@ class NPCCombatIntegrationService:
                     target_type=CombatParticipantType.NPC,
                 )
 
-                # Now process the attack
+                # Now process the attack (initial attack, so skip turn order check)
                 combat_result = await self._combat_service.process_attack(
-                    attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
+                    attacker_id=attacker_uuid, target_id=target_uuid, damage=damage, is_initial_attack=True
                 )
 
             if combat_result.success:
