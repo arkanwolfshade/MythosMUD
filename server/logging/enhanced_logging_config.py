@@ -302,6 +302,60 @@ def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) ->
     return event_dict
 
 
+# Global player service registry for logging enhancement
+_global_player_service = None
+
+
+def set_global_player_service(player_service: Any) -> None:
+    """
+    Set the global player service for logging enhancement.
+
+    This allows the logging system to access player information for
+    enhancing log entries with player names.
+
+    Args:
+        player_service: The player service instance
+    """
+    global _global_player_service
+    _global_player_service = player_service
+
+
+def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """
+    Enhance player_id fields with player names for better log readability.
+
+    This processor automatically converts player_id fields to include both
+    player name and ID in the format "<name>: <ID>" for better debugging.
+
+    Args:
+        _logger: Logger instance (unused)
+        _name: Logger name (unused)
+        event_dict: Event dictionary to enhance
+
+    Returns:
+        Enhanced event dictionary with player names
+    """
+    global _global_player_service
+
+    if _global_player_service and hasattr(_global_player_service, "persistence"):
+        # Process any player_id fields in the event dictionary
+        for key, value in event_dict.items():
+            if key == "player_id" and isinstance(value, str):
+                # Check if this looks like a UUID
+                if len(value) == 36 and value.count("-") == 4:
+                    try:
+                        # Try to get the player name
+                        player = _global_player_service.persistence.get_player(value)
+                        if player and hasattr(player, "name"):
+                            # Enhance the player_id field with the player name
+                            event_dict[key] = f"<{player.name}>: {value}"
+                    except Exception:
+                        # If lookup fails, leave the original value
+                        pass
+
+    return event_dict
+
+
 def configure_enhanced_structlog(
     environment: str | None = None,
     log_level: str = "INFO",
@@ -329,6 +383,8 @@ def configure_enhanced_structlog(
         # Add correlation and context information
         add_correlation_id,
         add_request_context,
+        # Enhance player IDs with names for better debugging
+        enhance_player_ids,
         # Merge context variables (MDC)
         merge_contextvars,
         # Standard structlog processors
@@ -712,6 +768,9 @@ def update_logging_with_player_service(player_service: Any) -> None:
         player_service: The player service for GUID-to-name conversion
     """
     from server.logging.player_guid_formatter import PlayerGuidFormatter
+
+    # Set the global player service for structlog processor enhancement
+    set_global_player_service(player_service)
 
     # Create the enhanced formatter
     enhanced_formatter = PlayerGuidFormatter(

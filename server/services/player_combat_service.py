@@ -240,7 +240,11 @@ class PlayerCombatService:
             logger.info(f"Awarded {xp_amount} XP to player {player.name}. New level: {player.level}")
 
         except Exception as e:
-            logger.error(f"Error awarding XP to player {player_id}: {e}")
+            logger.error(
+                f"Error awarding XP to player {player_id}: {e}",
+                player_id=str(player_id),
+                error=str(e),
+            )
 
     async def calculate_xp_reward(self, npc_id: UUID) -> int:
         """
