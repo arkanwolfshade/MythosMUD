@@ -295,6 +295,9 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.persistence.get_player.return_value = player
         # No game mechanics service available - persistence doesn't have the method
         # This will trigger the fallback XP award logic
+        # Make sure the persistence doesn't have the get_game_mechanics_service method
+        if hasattr(self.persistence, "get_game_mechanics_service"):
+            delattr(self.persistence, "get_game_mechanics_service")
 
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
 
