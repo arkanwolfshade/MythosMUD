@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
-import { MotdContent } from './MotdContent';
 import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
@@ -103,7 +102,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onClearMessages,
   onClearHistory,
 }) => {
-  const [showMotd, setShowMotd] = useState(true);
+  // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
 
   // Responsive panel sizing based on viewport
@@ -155,22 +154,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         </div>
       </div>
 
-      {/* MOTD Overlay (preserved styles) */}
-      {showMotd && (
-        <div
-          className="motd-display"
-          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100000 }}
-        >
-          <div className="motd-content">
-            <MotdContent />
-          </div>
-          <div className="motd-actions">
-            <button className="continue-button" onClick={() => setShowMotd(false)} data-testid="continue-button">
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
+      {/* MOTD is now handled by the interstitial screen in App.tsx */}
 
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">

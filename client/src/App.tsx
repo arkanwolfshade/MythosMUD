@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { EldritchEffectsDemo } from './components/EldritchEffectsDemo';
 import { GameTerminalWithPanels } from './components/GameTerminalWithPanels';
+import { MotdInterstitialScreen } from './components/MotdInterstitialScreen';
 import { Profession, ProfessionSelectionScreen } from './components/ProfessionSelectionScreen';
 import { StatsRollingScreen } from './components/StatsRollingScreen';
 import { logoutHandler } from './utils/logoutHandler';
@@ -27,6 +28,7 @@ function App() {
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
+  const [showMotd, setShowMotd] = useState(false); // Track MOTD display state
 
   // Character creation flow state
   const [selectedProfession, setSelectedProfession] = useState<Profession | null>(null);
@@ -93,6 +95,9 @@ function App() {
       // For new users without characters, show profession selection
       if (!data?.has_character) {
         setShowProfessionSelection(true);
+      } else {
+        // For existing users with characters, show MOTD screen
+        setShowMotd(true);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -153,6 +158,9 @@ function App() {
       // For new users without characters, show profession selection
       if (!data?.has_character) {
         setShowProfessionSelection(true);
+      } else {
+        // For existing users with characters, show MOTD screen
+        setShowMotd(true);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -189,6 +197,8 @@ function App() {
     // Reset character creation state
     setSelectedProfession(null);
     setShowProfessionSelection(false);
+    // Show MOTD screen after character creation
+    setShowMotd(true);
   };
 
   const handleStatsError = (error: string) => {
@@ -204,6 +214,24 @@ function App() {
 
   const handleStatsRollingBack = () => {
     setShowProfessionSelection(true);
+  };
+
+  const handleMotdContinue = () => {
+    setShowMotd(false);
+  };
+
+  const handleMotdReturnToLogin = () => {
+    // Clear all state and return to login
+    setIsAuthenticated(false);
+    setHasCharacter(false);
+    setCharacterName('');
+    setPlayerName('');
+    setPassword('');
+    setInviteCode('');
+    setAuthToken('');
+    setShowMotd(false);
+    secureTokenStorage.clearAllTokens();
+    focusUsernameInput();
   };
 
   // Reference to store the disconnect callback from GameTerminalWithPanels
@@ -435,7 +463,15 @@ function App() {
     );
   }
 
-  // If authenticated and has character, show game terminal
+  // If authenticated and has character, show MOTD screen or game terminal
+  if (showMotd) {
+    return (
+      <div className="App">
+        <MotdInterstitialScreen onContinue={handleMotdContinue} onReturnToLogin={handleMotdReturnToLogin} />
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <GameTerminalWithPanels
