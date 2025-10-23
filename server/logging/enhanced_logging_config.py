@@ -322,8 +322,8 @@ def configure_enhanced_structlog(
     if environment is None:
         environment = detect_environment()
 
-    # Enhanced processors with MDC support
-    processors = [
+    # Base processors with MDC support (no renderer)
+    base_processors = [
         # Security first - sanitize sensitive data
         sanitize_sensitive_data,
         # Add correlation and context information
@@ -342,25 +342,25 @@ def configure_enhanced_structlog(
         structlog.processors.UnicodeDecoder(),
     ]
 
-    # Add renderer based on environment
-    if sys.stderr.isatty():
-        # Development: Pretty console output
-        processors.append(structlog.dev.ConsoleRenderer())
-    else:
-        # Production: Structured JSON output
-        processors.extend(
-            [
-                structlog.processors.dict_tracebacks,
-                structlog.processors.JSONRenderer(),
-            ]
-        )
-
-    # Configure standard library logging for file output
+    # Configure standard library logging for file output FIRST
+    # This ensures file handlers are set up before structlog configuration
     if log_config and not log_config.get("disable_logging", False):
         _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
+    # Configure structlog with a custom renderer that strips ANSI codes
+    def strip_ansi_renderer(logger, name, event_dict):
+        """Custom renderer that strips ANSI escape sequences."""
+        import re
+
+        # Use KeyValueRenderer to get the formatted message
+        formatted = structlog.processors.KeyValueRenderer()(logger, name, event_dict)
+
+        # Strip ANSI escape sequences
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", formatted)
+
     structlog.configure(
-        processors=processors,
+        processors=base_processors + [strip_ansi_renderer],
         context_class=dict,
         logger_factory=LoggerFactory(),
         wrapper_class=BoundLogger,
