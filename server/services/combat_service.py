@@ -565,7 +565,7 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info("Calling publish_player_attacked", event=attack_event)
+                logger.info("Calling publish_player_attacked", attack_event=attack_event)
                 await self._combat_event_publisher.publish_player_attacked(attack_event)
                 logger.info("publish_player_attacked completed")
             else:
@@ -584,7 +584,7 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info("Calling publish_npc_attacked", event=attack_event)
+                logger.info("Calling publish_npc_attacked", attack_event=attack_event)
                 await self._combat_event_publisher.publish_npc_attacked(attack_event)
                 logger.info("publish_npc_attacked completed")
 
@@ -615,7 +615,7 @@ class CombatService:
                     npc_name=target.name,
                     xp_reward=result.xp_awarded or 0,
                 )
-                logger.info("Publishing NPCDiedEvent", event=death_event)
+                logger.info("Publishing NPCDiedEvent", death_event=death_event)
                 await self._combat_event_publisher.publish_npc_died(death_event)
                 logger.info("NPCDiedEvent published successfully")
 
@@ -769,7 +769,9 @@ class CombatService:
 
                     # Check if combat ended after NPC turn
                     if combat.is_combat_over():
-                        await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
+                        # Only end combat if it hasn't been ended already
+                        if combat.combat_id in self._active_combats:
+                            await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
                         break
 
                     # Advance to next turn

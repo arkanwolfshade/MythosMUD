@@ -125,6 +125,8 @@ class TestCombatEventPublisher:
             target_name="TestNPC",
             damage=5,
             action_type="punch",
+            target_current_hp=45,
+            target_max_hp=50,
         )
 
         # Execute
@@ -164,6 +166,8 @@ class TestCombatEventPublisher:
             npc_name="TestNPC",
             damage=3,
             action_type="kick",
+            target_current_hp=47,
+            target_max_hp=50,
         )
 
         # Execute
@@ -178,7 +182,7 @@ class TestCombatEventPublisher:
         subject = call_args[0][0]
         message_data = call_args[0][1]
 
-        assert subject == f"combat.attack.{event.room_id}"
+        assert subject == f"combat.npc_attacked.{event.room_id}"
         assert message_data["event_type"] == "npc_attacked"
         assert message_data["data"]["combat_id"] == str(self.test_combat_id)
         assert message_data["data"]["attacker_id"] == str(self.test_player_id)

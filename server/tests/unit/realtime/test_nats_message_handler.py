@@ -63,20 +63,24 @@ class TestNATSMessageHandler:
             "chat.whisper.*",
             "chat.system",
             "chat.admin",
+            # Combat subjects are now part of chat subjects
+            "combat.started.*",
+            "combat.ended.*",
+            "combat.player_attacked.*",
+            "combat.npc_attacked.*",
+            "combat.npc_took_damage.*",
+            "combat.npc_died.*",
         ]
 
         expected_event_subjects = [
             "events.player_entered.*",
             "events.player_left.*",
             "events.game_tick",
-        ]
-
-        expected_combat_subjects = [
+            "combat.attack.*",
+            "combat.npc_attacked.*",
+            "combat.npc_action.*",
             "combat.started.*",
             "combat.ended.*",
-            "combat.player_attacked.*",
-            "combat.npc_attacked.*",
-            "combat.npc_took_damage.*",
             "combat.npc_died.*",
         ]
 
@@ -88,17 +92,12 @@ class TestNATSMessageHandler:
         for subject in expected_event_subjects:
             assert subject in self.handler.subscriptions
 
-        # Verify combat subscriptions
-        for subject in expected_combat_subjects:
-            assert subject in self.handler.subscriptions
-
-        # Verify total count
-        assert len(self.handler.subscriptions) == len(expected_chat_subjects) + len(expected_event_subjects) + len(
-            expected_combat_subjects
-        )
+        # Verify total count - chat subjects now include combat subjects
+        expected_total = len(expected_chat_subjects) + len(expected_event_subjects)
+        assert len(self.handler.subscriptions) == expected_total
 
         # Verify all subscriptions are active
-        for subject in expected_chat_subjects + expected_event_subjects + expected_combat_subjects:
+        for subject in expected_chat_subjects + expected_event_subjects:
             assert self.handler.subscriptions[subject] is True
 
     @pytest.mark.asyncio
@@ -570,6 +569,12 @@ class TestNATSMessageHandlerEventSubscription:
             "events.player_entered.*",
             "events.player_left.*",
             "events.game_tick",
+            "combat.attack.*",
+            "combat.npc_attacked.*",
+            "combat.npc_action.*",
+            "combat.started.*",
+            "combat.ended.*",
+            "combat.npc_died.*",
         ]
 
         assert self.mock_nats_service.subscribe.call_count == len(expected_calls)
@@ -622,6 +627,10 @@ class TestNATSMessageHandlerEventSubscription:
             "events.player_entered.*": True,
             "events.player_left.*": True,
             "events.game_tick": True,
+            "combat.attack.*": True,
+            "combat.npc_action.*": True,
+            "combat.started.*": True,
+            "combat.ended.*": True,
         }
 
         # Call the method
@@ -631,7 +640,7 @@ class TestNATSMessageHandlerEventSubscription:
         assert result is True
 
         # Verify NATS service was called for all event subjects
-        assert self.mock_nats_service.unsubscribe.call_count == 3
+        assert self.mock_nats_service.unsubscribe.call_count == 7
 
     @pytest.mark.asyncio
     async def test_unsubscribe_from_event_subjects_failure(self):

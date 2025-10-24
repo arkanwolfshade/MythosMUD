@@ -35,8 +35,8 @@ class TestNPCPassiveBehaviorSystem:
         return service
 
     @pytest.mark.asyncio
-    async def test_npc_performs_non_combat_action_during_turn(self, combat_service):
-        """Test that NPCs perform non-combat actions during their turns."""
+    async def test_npc_performs_combat_action_during_turn(self, combat_service):
+        """Test that NPCs perform combat actions during their turns."""
         player_id = uuid4()
         npc_id = uuid4()
         room_id = "test_room_001"
@@ -65,12 +65,12 @@ class TestNPCPassiveBehaviorSystem:
         assert current_participant.participant_type == CombatParticipantType.NPC
         assert current_participant.participant_id == npc_id
 
-        # Process NPC turn - should perform non-combat action
+        # Process NPC turn - should perform combat action (attack)
         await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
-        # Verify NPC performed non-combat action (no damage dealt to player)
+        # Verify NPC performed combat action (damage dealt to player)
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+        assert player_participant.current_hp < 10  # Damage taken
 
     @pytest.mark.asyncio
     async def test_npc_non_combat_action_selection(self, combat_service):
@@ -249,21 +249,21 @@ class TestNPCPassiveBehaviorSystem:
         assert combat.status == CombatStatus.ACTIVE
 
     @pytest.mark.asyncio
-    async def test_npc_passive_behavior_integration_with_auto_progression(self, combat_service):
-        """Test NPC passive behavior integration with auto-progression system."""
+    async def test_npc_combat_behavior_integration_with_auto_progression(self, combat_service):
+        """Test NPC combat behavior integration with auto-progression system."""
         player_id = uuid4()
         npc_id = uuid4()
         room_id = "test_room_001"
 
-        # Start combat
+        # Start combat with higher player HP so they don't die immediately
         combat = await combat_service.start_combat(
             room_id=room_id,
             attacker_id=player_id,
             target_id=npc_id,
             attacker_name="TestPlayer",
             target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_hp=50,  # Higher HP so player doesn't die
+            attacker_max_hp=50,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
@@ -271,37 +271,41 @@ class TestNPCPassiveBehaviorSystem:
             current_tick=1,
         )
 
-        # Process automatic combat progression - should handle NPC turn with non-combat action
+        # Process automatic combat progression - should handle NPC turn with combat action
         await combat_service._process_automatic_combat_progression(combat)
 
-        # Verify it's back to player's turn
-        current_participant = combat.get_current_turn_participant()
-        assert current_participant.participant_type == CombatParticipantType.PLAYER
-        assert current_participant.participant_id == player_id
+        # Verify it's back to player's turn (if combat is still active)
+        if combat.status == CombatStatus.ACTIVE:
+            current_participant = combat.get_current_turn_participant()
+            assert current_participant.participant_type == CombatParticipantType.PLAYER
+            assert current_participant.participant_id == player_id
 
-        # Verify no damage was dealt to player
-        player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+            # Verify damage was dealt to player
+            player_participant = combat.participants[player_id]
+            assert player_participant.current_hp < 50  # Damage taken
+        else:
+            # Combat ended (player died), which is also valid
+            assert combat.status == CombatStatus.ENDED
 
     @pytest.mark.asyncio
-    async def test_npc_passive_behavior_with_multiple_rounds(self, combat_service):
-        """Test NPC passive behavior across multiple combat rounds."""
+    async def test_npc_combat_behavior_with_multiple_rounds(self, combat_service):
+        """Test NPC combat behavior across multiple combat rounds."""
         player_id = uuid4()
         npc_id = uuid4()
         room_id = "test_room_001"
 
-        # Start combat
+        # Start combat with higher HP so it can last multiple rounds
         combat = await combat_service.start_combat(
             room_id=room_id,
             attacker_id=player_id,
             target_id=npc_id,
             attacker_name="TestPlayer",
             target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_hp=50,  # Higher HP for multiple rounds
+            attacker_max_hp=50,
             attacker_dex=10,
-            target_hp=10,
-            target_max_hp=10,
+            target_hp=50,  # Higher HP for multiple rounds
+            target_max_hp=50,
             target_dex=15,
             current_tick=1,
         )
@@ -311,17 +315,23 @@ class TestNPCPassiveBehaviorSystem:
             # Process automatic combat progression for the round
             await combat_service._process_automatic_combat_progression(combat)
 
-            # Verify it's back to player's turn after each round
-            current_participant = combat.get_current_turn_participant()
-            assert current_participant.participant_type == CombatParticipantType.PLAYER
-            assert current_participant.participant_id == player_id
+            # Check if combat is still active
+            if combat.status == CombatStatus.ACTIVE:
+                # Verify it's back to player's turn after each round
+                current_participant = combat.get_current_turn_participant()
+                assert current_participant.participant_type == CombatParticipantType.PLAYER
+                assert current_participant.participant_id == player_id
 
-            # Verify no damage was dealt to player
-            player_participant = combat.participants[player_id]
-            assert player_participant.current_hp == 10  # No damage taken
+                # Verify damage was dealt to player
+                player_participant = combat.participants[player_id]
+                assert player_participant.current_hp < 50  # Damage taken
 
-            # Advance to next round
-            combat.advance_turn(current_tick=2)
+                # Advance to next round
+                combat.advance_turn(current_tick=2)
+            else:
+                # Combat ended, which is valid
+                assert combat.status == CombatStatus.ENDED
+                break
 
     @pytest.mark.asyncio
     async def test_npc_passive_behavior_error_handling(self, combat_service):

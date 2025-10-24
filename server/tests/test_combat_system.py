@@ -541,6 +541,8 @@ class TestCombatEvents:
             target_name="Rat",
             damage=5,
             action_type="punch",
+            target_current_hp=45,
+            target_max_hp=50,
             event_type="player_attacked",
             timestamp=datetime.utcnow(),
         )
