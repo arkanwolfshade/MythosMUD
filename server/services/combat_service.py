@@ -129,7 +129,7 @@ class CombatService:
         Raises:
             ValueError: If combat cannot be started (invalid participants, etc.)
         """
-        logger.info(f"Starting combat between {attacker_name} and {target_name} in room {room_id}")
+        logger.info("Starting combat", attacker=attacker_name, target=target_name, room_id=room_id)
 
         # Check if either participant is already in combat
         if attacker_id in self._player_combats or target_id in self._npc_combats:
@@ -186,11 +186,11 @@ class CombatService:
                 player_id=attacker_id, player_name=attacker_name, combat_id=combat.combat_id, room_id=room_id
             )
 
-        logger.info(f"Combat {combat.combat_id} started with turn order: {combat.turn_order}")
+        logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
 
         # Publish combat started event
         try:
-            logger.debug(f"Creating CombatStartedEvent for combat {combat.combat_id}")
+            logger.debug("Creating CombatStartedEvent", combat_id=combat.combat_id)
             started_event = CombatStartedEvent(
                 event_type="combat_started",
                 timestamp=datetime.now(),
@@ -202,11 +202,11 @@ class CombatService:
                 },
                 turn_order=[str(pid) for pid in combat.turn_order],
             )
-            logger.debug(f"Calling publish_combat_started for combat {combat.combat_id}")
+            logger.debug("Calling publish_combat_started", combat_id=combat.combat_id)
             await self._combat_event_publisher.publish_combat_started(started_event)
-            logger.debug(f"publish_combat_started completed for combat {combat.combat_id}")
+            logger.debug("publish_combat_started completed", combat_id=combat.combat_id)
         except Exception as e:
-            logger.error(f"Error publishing combat started event: {e}", exc_info=True)
+            logger.error("Error publishing combat started event", error=str(e), exc_info=True)
 
         return combat
 
@@ -240,7 +240,7 @@ class CombatService:
 
             # Check if it's time for the next turn
             if current_tick >= combat.next_turn_tick:
-                logger.debug(f"Auto-progression triggered for combat {combat_id} at tick {current_tick}")
+                logger.debug("Auto-progression triggered", combat_id=combat_id, tick=current_tick)
                 await self._advance_turn_automatically(combat, current_tick)
 
     async def _advance_turn_automatically(self, combat: CombatInstance, current_tick: int) -> None:
@@ -260,7 +260,7 @@ class CombatService:
         # Get current participant
         current_participant = combat.get_current_turn_participant()
         if not current_participant:
-            logger.warning(f"No current participant for combat {combat.combat_id}")
+            logger.warning("No current participant for combat", combat_id=combat.combat_id)
             logger.debug(
                 f"Combat state: turn_order={combat.turn_order}, current_turn={combat.current_turn}, participants={list(combat.participants.keys())}"
             )
@@ -285,20 +285,26 @@ class CombatService:
                 for participant_id, participant in combat.participants.items():
                     if str(participant_id) == str(expected_participant_id):
                         found_participant = participant
-                        logger.debug(f"Found participant by UUID string match: {participant}")
+                        logger.debug("Found participant by UUID string match", participant=participant)
                         break
 
                 if found_participant:
                     current_participant = found_participant
                 else:
-                    logger.error(f"Could not find participant {expected_participant_id} even by UUID string match")
+                    logger.error(
+                        "Could not find participant even by UUID string match", participant_id=expected_participant_id
+                    )
                     return
             else:
                 return
 
         # Debug logging to understand participant type
         participant_id = getattr(current_participant, "participant_id", "NO_PARTICIPANT_ID")
-        logger.debug(f"Current participant type: {type(current_participant)}, participant_id: {participant_id}")
+        logger.debug(
+            "Current participant type",
+            participant_type=type(current_participant).__name__,
+            participant_id=participant_id,
+        )
 
         # Additional debugging for the combat state
         logger.debug(
@@ -312,9 +318,9 @@ class CombatService:
                 f"Looking for participant_id: {current_participant_id} in participants: {list(combat.participants.keys())}"
             )
             found_participant = combat.participants.get(current_participant_id)
-            logger.debug(f"Participant found: {found_participant}")
-            logger.debug(f"current_participant (from get_current_turn_participant): {current_participant}")
-            logger.debug(f"Are they the same? {found_participant == current_participant}")
+            logger.debug("Participant found", participant=found_participant)
+            logger.debug("current_participant (from get_current_turn_participant)", participant=current_participant)
+            logger.debug("Are they the same?", same=found_participant == current_participant)
 
         # If it's an NPC's turn, process their action
         if current_participant.participant_type == CombatParticipantType.NPC:
@@ -323,7 +329,11 @@ class CombatService:
             # Player's turn - perform automatic basic attack
             # Validate that current_participant is a CombatParticipant
             if not isinstance(current_participant, CombatParticipant):
-                logger.error(f"Expected CombatParticipant, got {type(current_participant)}: {current_participant}")
+                logger.error(
+                    "Expected CombatParticipant",
+                    got_type=type(current_participant).__name__,
+                    participant=current_participant,
+                )
                 return
             await self._process_player_turn(combat, current_participant, current_tick)
 
@@ -339,15 +349,17 @@ class CombatService:
         try:
             # Validate that we received a proper CombatParticipant object
             if not isinstance(npc, CombatParticipant):
-                logger.error(f"Expected CombatParticipant, got {type(npc)}: {npc}")
+                logger.error("Expected CombatParticipant", got_type=type(npc).__name__, npc=npc)
                 return
 
             # Debug logging to understand what we're receiving
-            logger.debug(f"_process_npc_turn called with npc type: {type(npc)}, npc: {npc}")
+            logger.debug("_process_npc_turn called", npc_type=type(npc).__name__, npc=npc)
             if hasattr(npc, "participant_id"):
-                logger.debug(f"NPC participant_id: {npc.participant_id} (type: {type(npc.participant_id)})")
+                logger.debug(
+                    "NPC participant_id", participant_id=npc.participant_id, id_type=type(npc.participant_id).__name__
+                )
             else:
-                logger.error(f"NPC object missing participant_id attribute: {npc}")
+                logger.error("NPC object missing participant_id attribute", npc=npc)
                 return
 
             # Find the target (other participant in combat)
@@ -358,11 +370,11 @@ class CombatService:
                     break
 
             if not target:
-                logger.warning(f"No target found for NPC {npc.name} in combat {combat.combat_id}")
+                logger.warning("No target found for NPC", npc_name=npc.name, combat_id=combat.combat_id)
                 return
 
             # Perform automatic basic attack
-            logger.debug(f"NPC {npc.name} performing automatic attack on {target.name}")
+            logger.debug("NPC performing automatic attack", npc_name=npc.name, target_name=target.name)
 
             # Use configured damage for automatic attacks
             config = get_config()
@@ -374,15 +386,15 @@ class CombatService:
             )
 
             if combat_result.success:
-                logger.info(f"NPC {npc.name} automatically attacked {target.name} for {damage} damage")
+                logger.info("NPC automatically attacked", npc_name=npc.name, target_name=target.name, damage=damage)
             else:
-                logger.warning(f"NPC {npc.name} automatic attack failed: {combat_result.message}")
+                logger.warning("NPC automatic attack failed", npc_name=npc.name, message=combat_result.message)
 
             # Update NPC's last action tick
             npc.last_action_tick = current_tick
 
         except Exception as e:
-            logger.error(f"Error processing NPC turn for {npc.name}: {e}", exc_info=True)
+            logger.error("Error processing NPC turn", npc_name=npc.name, error=str(e), exc_info=True)
 
     async def _process_player_turn(self, combat: CombatInstance, player: CombatParticipant, current_tick: int) -> None:
         """
@@ -396,15 +408,19 @@ class CombatService:
         try:
             # Validate that we received a proper CombatParticipant object
             if not isinstance(player, CombatParticipant):
-                logger.error(f"Expected CombatParticipant, got {type(player)}: {player}")
+                logger.error("Expected CombatParticipant", got_type=type(player), player=player)
                 return
 
             # Debug logging to understand what we're receiving
-            logger.debug(f"_process_player_turn called with player type: {type(player)}, player: {player}")
+            logger.debug("_process_player_turn called", player_type=type(player), player=player)
             if hasattr(player, "participant_id"):
-                logger.debug(f"Player participant_id: {player.participant_id} (type: {type(player.participant_id)})")
+                logger.debug(
+                    "Player participant_id",
+                    participant_id=player.participant_id,
+                    participant_id_type=type(player.participant_id),
+                )
             else:
-                logger.error(f"Player object missing participant_id attribute: {player}")
+                logger.error("Player object missing participant_id attribute", player=player)
                 return
             # Find the target (other participant in combat)
             target = None
@@ -414,11 +430,11 @@ class CombatService:
                     break
 
             if not target:
-                logger.warning(f"No target found for player {player.name} in combat {combat.combat_id}")
+                logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
                 return
 
             # Perform automatic basic attack
-            logger.debug(f"Player {player.name} performing automatic attack on {target.name}")
+            logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
 
             # Use configured damage for automatic attacks
             config = get_config()
@@ -430,9 +446,11 @@ class CombatService:
             )
 
             if combat_result.success:
-                logger.info(f"Player {player.name} automatically attacked {target.name} for {damage} damage")
+                logger.info(
+                    "Player automatically attacked", player_name=player.name, target_name=target.name, damage=damage
+                )
             else:
-                logger.warning(f"Player {player.name} automatic attack failed: {combat_result.message}")
+                logger.warning("Player automatic attack failed", player_name=player.name, message=combat_result.message)
 
             # Update player's last action tick
             player.last_action_tick = current_tick
@@ -441,7 +459,7 @@ class CombatService:
             # Handle case where player might not be a CombatParticipant
             player_type = type(player)
             player_name = getattr(player, "name", f"Unknown Player (type: {player_type})")
-            logger.error(f"Error processing player turn for {player_name}: {e}")
+            logger.error("Error processing player turn", player_name=player_name, error=str(e))
 
     async def get_combat_by_participant(self, participant_id: UUID) -> CombatInstance | None:
         """
@@ -501,7 +519,7 @@ class CombatService:
         if not current_participant:
             raise ValueError("Attacker not found in combat")
 
-        logger.info(f"Processing attack: {current_participant.name} attacks {target.name} for {damage} damage")
+        logger.info("Processing attack", attacker_name=current_participant.name, target_name=target.name, damage=damage)
 
         # Apply damage
         target.current_hp = max(0, target.current_hp - damage)
@@ -526,8 +544,10 @@ class CombatService:
 
         # Publish combat events
         try:
-            logger.debug(f"Publishing combat events for attack: {current_participant.name} -> {target.name}")
-            logger.info(f"About to publish combat events - attacker type: {current_participant.participant_type}")
+            logger.debug(
+                "Publishing combat events for attack", attacker_name=current_participant.name, target_name=target.name
+            )
+            logger.info("About to publish combat events", attacker_type=current_participant.participant_type)
             # Publish attack event based on attacker type
             if current_participant.participant_type == CombatParticipantType.PLAYER:
                 logger.info("Creating PlayerAttackedEvent")
@@ -545,7 +565,7 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info(f"Calling publish_player_attacked with event: {attack_event}")
+                logger.info("Calling publish_player_attacked", event=attack_event)
                 await self._combat_event_publisher.publish_player_attacked(attack_event)
                 logger.info("publish_player_attacked completed")
             else:
@@ -564,7 +584,7 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info(f"Calling publish_npc_attacked with event: {attack_event}")
+                logger.info("Calling publish_npc_attacked", event=attack_event)
                 await self._combat_event_publisher.publish_npc_attacked(attack_event)
                 logger.info("publish_npc_attacked completed")
 
@@ -585,7 +605,7 @@ class CombatService:
 
             # Publish death event if target died
             if target_died and target.participant_type == CombatParticipantType.NPC:
-                logger.info(f"Creating NPCDiedEvent for {target.name}")
+                logger.info("Creating NPCDiedEvent", target_name=target.name)
                 death_event = NPCDiedEvent(
                     event_type="npc_died",
                     timestamp=datetime.now(),
@@ -595,12 +615,12 @@ class CombatService:
                     npc_name=target.name,
                     xp_reward=result.xp_awarded or 0,
                 )
-                logger.info(f"Publishing NPCDiedEvent: {death_event}")
+                logger.info("Publishing NPCDiedEvent", event=death_event)
                 await self._combat_event_publisher.publish_npc_died(death_event)
                 logger.info("NPCDiedEvent published successfully")
 
         except Exception as e:
-            logger.error(f"Error publishing combat events: {e}", exc_info=True)
+            logger.error("Error publishing combat events", error=str(e), exc_info=True)
 
         # Award XP if target died and attacker is a player
         if target_died:
@@ -621,7 +641,7 @@ class CombatService:
         else:
             # Set up next turn tick for auto-progression
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
-            logger.debug(f"Combat {combat.combat_id} attack processed, auto-progression enabled")
+            logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
 
         return result
 
@@ -635,10 +655,10 @@ class CombatService:
         """
         combat = self._active_combats.get(combat_id)
         if not combat:
-            logger.warning(f"Attempted to end non-existent combat {combat_id}")
+            logger.warning("Attempted to end non-existent combat", combat_id=combat_id)
             return
 
-        logger.info(f"Ending combat {combat_id}: {reason}")
+        logger.info("Ending combat", combat_id=combat_id, reason=reason)
 
         # Update combat status
         combat.status = CombatStatus.ENDED
@@ -673,9 +693,9 @@ class CombatService:
             )
             await self._combat_event_publisher.publish_combat_ended(ended_event)
         except Exception as e:
-            logger.error(f"Error publishing combat ended event: {e}", exc_info=True)
+            logger.error("Error publishing combat ended event", error=str(e), exc_info=True)
 
-        logger.info(f"Combat {combat_id} ended successfully")
+        logger.info("Combat ended successfully", combat_id=combat_id)
 
     async def cleanup_stale_combats(self) -> int:
         """
@@ -693,7 +713,7 @@ class CombatService:
 
         for combat_id in stale_combats:
             await self.end_combat(combat_id, "Combat timeout - no activity")
-            logger.info(f"Cleaned up stale combat {combat_id}")
+            logger.info("Cleaned up stale combat", combat_id=combat_id)
 
         return len(stale_combats)
 
@@ -729,14 +749,18 @@ class CombatService:
             while combat.status == CombatStatus.ACTIVE:
                 current_participant = combat.get_current_turn_participant()
                 if not current_participant:
-                    logger.warning(f"No current participant in combat {combat.combat_id}")
+                    logger.warning("No current participant in combat", combat_id=combat.combat_id)
                     # End combat if no valid participant found
                     await self.end_combat(combat.combat_id, "Combat ended - no valid participant")
                     break
 
                 # If it's a player's turn, stop automatic progression
                 if current_participant.participant_type == CombatParticipantType.PLAYER:
-                    logger.debug(f"Combat {combat.combat_id} - waiting for player {current_participant.name} to act")
+                    logger.debug(
+                        "Combat waiting for player to act",
+                        combat_id=combat.combat_id,
+                        player_name=current_participant.name,
+                    )
                     break
 
                 # If it's an NPC's turn, process their attack automatically
@@ -750,10 +774,10 @@ class CombatService:
 
                     # Advance to next turn
                     combat.advance_turn(get_current_tick())
-                    logger.debug(f"Combat {combat.combat_id} turn advanced to round {combat.combat_round}")
+                    logger.debug("Combat turn advanced", combat_id=combat.combat_id, round=combat.combat_round)
 
         except Exception as e:
-            logger.error(f"Error in automatic combat progression for combat {combat.combat_id}: {e}")
+            logger.error("Error in automatic combat progression", combat_id=combat.combat_id, error=str(e))
             # End combat on error to prevent infinite loops
             await self.end_combat(combat.combat_id, f"Combat ended due to error: {str(e)}")
 

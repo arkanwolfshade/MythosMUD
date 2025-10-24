@@ -84,7 +84,7 @@ class PlayerCombatService:
             combat_id: ID of the combat instance
             room_id: ID of the room where combat is taking place
         """
-        logger.info(f"Tracking combat state for player {player_name} in combat {combat_id}")
+        logger.info("Tracking combat state for player", player_name=player_name, combat_id=combat_id)
 
         state = PlayerCombatState(
             player_id=player_id,
@@ -115,7 +115,7 @@ class PlayerCombatService:
             player_id: ID of the player
         """
         if player_id in self._player_combat_states:
-            logger.info(f"Clearing combat state for player {player_id}")
+            logger.info("Clearing combat state for player", player_id=player_id)
             del self._player_combat_states[player_id]
 
     async def is_player_in_combat(self, player_id: UUID) -> bool:
@@ -169,7 +169,7 @@ class PlayerCombatService:
         Args:
             combat_id: ID of the combat that ended
         """
-        logger.info(f"Handling combat end for combat {combat_id}")
+        logger.info("Handling combat end", combat_id=combat_id)
 
         # Find all players in this combat and clear their states
         players_to_clear = []
@@ -194,7 +194,7 @@ class PlayerCombatService:
             npc_id: ID of the defeated NPC (for logging purposes)
             xp_amount: Amount of XP to award
         """
-        logger.info(f"Awarding {xp_amount} XP to player {player_id} for defeating NPC {npc_id}")
+        logger.info("Awarding XP to player for defeating NPC", xp_amount=xp_amount, player_id=player_id, npc_id=npc_id)
 
         await self.award_xp_on_npc_death(
             player_id=player_id,
@@ -220,7 +220,7 @@ class PlayerCombatService:
             # Get player from persistence
             player = await self._persistence.async_get_player(str(player_id))
             if not player:
-                logger.warning(f"Player {player_id} not found for XP award")
+                logger.warning("Player not found for XP award", player_id=player_id)
                 return
 
             # Award XP
@@ -237,7 +237,7 @@ class PlayerCombatService:
             )
             await self._event_bus.publish_event(event)
 
-            logger.info(f"Awarded {xp_amount} XP to player {player.name}. New level: {player.level}")
+            logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
         except Exception as e:
             logger.error(
@@ -261,7 +261,7 @@ class PlayerCombatService:
         # or use more sophisticated XP calculation based on NPC level/type
         default_xp = 5
 
-        logger.debug(f"Calculated XP reward for NPC {npc_id}: {default_xp}")
+        logger.debug("Calculated XP reward for NPC", npc_id=npc_id, xp_amount=default_xp)
         return default_xp
 
     async def cleanup_stale_combat_states(self) -> int:
@@ -280,7 +280,7 @@ class PlayerCombatService:
 
         for player_id in stale_players:
             await self.clear_player_combat_state(player_id)
-            logger.info(f"Cleaned up stale combat state for player {player_id}")
+            logger.info("Cleaned up stale combat state for player", player_id=player_id)
 
         return len(stale_players)
 

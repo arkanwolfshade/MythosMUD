@@ -788,7 +788,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               message = `You hit ${targetName} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
             } else {
               // Format message for other players' attacks with target health
-              message = `${attackerName} attacks ${targetName} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+              message =
+                `${attackerName} attacks ${targetName} for ${damage} damage! ` +
+                `(${targetCurrentHp}/${targetMaxHp} HP)`;
             }
 
             const messageObj = {
@@ -913,11 +915,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             // Remove NPC from room occupants
             if (currentRoomRef.current && currentRoomRef.current.occupants) {
               const originalOccupants = currentRoomRef.current.occupants;
-              const filteredOccupants = originalOccupants.filter(occupant => occupant.name !== npcName);
+              const filteredOccupants = originalOccupants.filter(occupant => occupant !== npcName);
               console.log('🔍 DEBUG: Removing NPC from room occupants', {
                 npcName,
-                originalOccupants: originalOccupants.map(o => o.name),
-                filteredOccupants: filteredOccupants.map(o => o.name),
+                originalOccupants: originalOccupants,
+                filteredOccupants: filteredOccupants,
               });
               updates.room = {
                 ...currentRoomRef.current,

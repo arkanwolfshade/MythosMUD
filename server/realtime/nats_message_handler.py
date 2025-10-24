@@ -286,9 +286,12 @@ class NATSMessageHandler:
         AI: This is the core processing logic - exceptions trigger retries.
         """
         logger.debug("=== NATS MESSAGE HANDLER DEBUG: Processing message ===")
-        logger.debug(f"Message data: {message_data}")
-        logger.debug(f"Message type: {type(message_data)}")
-        logger.debug(f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}")
+        logger.debug(
+            "NATS message received",
+            message_data=message_data,
+            message_type=type(message_data).__name__,
+            message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None,
+        )
 
         # Check if this is an event message
         if message_data.get("event_type"):
@@ -1489,18 +1492,18 @@ class NATSMessageHandler:
             room_id = data.get("room_id")
             npc_id = data.get("npc_id")
             npc_name = data.get("npc_name")
-            
+
             if not room_id:
                 logger.warning("NPC died event missing room_id", data=data)
                 return
-                
+
             if not npc_id:
                 logger.warning("NPC died event missing npc_id", data=data)
                 return
 
             # Import here to avoid circular imports
-            from .connection_manager import connection_manager
             from ..persistence import get_persistence
+            from .connection_manager import connection_manager
 
             # Remove NPC from room occupants on server side
             try:

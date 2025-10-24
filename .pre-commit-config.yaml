@@ -29,13 +29,13 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
-      - id: logging-pattern-lint
-        name: Enhanced Logging Pattern Linter
-        entry: python scripts/lint_logging_patterns.py
+      - id: fstring-logging-lint
+        name: F-String Logging Anti-Pattern Detector
+        entry: python scripts/check_logging_patterns.py
         language: system
         types: [python]
-        pass_filenames: false
-        always_run: true
+        pass_filenames: true
+        always_run: false
         stages: [pre-commit]
       - id: npm-lint
         name: npm lint (client)

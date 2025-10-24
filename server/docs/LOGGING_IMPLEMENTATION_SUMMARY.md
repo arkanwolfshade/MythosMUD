@@ -223,6 +223,11 @@ logger.info("message", context={"key": "value"})
 
 # ❌ FORBIDDEN - String formatting breaks structured logging
 logger.info(f"User {user_id} performed {action}")
+
+# ❌ FORBIDDEN - F-string logging destroys structured logging benefits
+logger.info(f"Starting combat between {attacker} and {target}")
+logger.error(f"Failed to process: {error}")
+logger.debug(f"Message data: {message_data}")
 ```
 
 ### **Code Review Checklist**
@@ -231,10 +236,33 @@ When reviewing code, ensure:
 - [ ] Uses `from server.logging.enhanced_logging_config import get_logger`
 - [ ] No `import logging` or `logging.getLogger()` statements
 - [ ] No `context={"key": "value"}` parameters
-- [ ] No string formatting in log messages
+- [ ] **NO F-STRING LOGGING** - This is the #1 anti-pattern that destroys structured logging
 - [ ] All log entries use structured key-value pairs
 - [ ] Appropriate log levels are used
 - [ ] Error logs include sufficient context for debugging
+
+### **🔴 CRITICAL: F-String Logging Anti-Pattern**
+
+**The most common and destructive anti-pattern is f-string logging. This MUST be eliminated:**
+
+```python
+# ❌ WRONG - Destroys structured logging benefits
+logger.info(f"Starting combat between {attacker} and {target}")
+logger.error(f"Failed to process: {error}")
+logger.debug(f"Message data: {message_data}")
+
+# ✅ CORRECT - Structured logging enables aggregation and analysis
+logger.info("Starting combat", attacker=attacker, target=target, room_id=room_id)
+logger.error("Failed to process", error=str(error), operation="combat_start")
+logger.debug("NATS message received", message_data=message_data, message_type=type(message_data))
+```
+
+**Why f-strings are forbidden:**
+- **Breaks log aggregation**: Cannot search by specific fields
+- **Prevents alerting**: Cannot create alerts based on structured data
+- **Reduces performance**: String formatting is slower than structured data
+- **Loses context**: Cannot correlate events across different log entries
+- **Makes debugging harder**: Cannot filter or analyze logs effectively
 
 ### **Documentation References**
 - **Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](../../docs/LOGGING_BEST_PRACTICES.md)
