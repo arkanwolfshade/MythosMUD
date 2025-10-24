@@ -104,12 +104,12 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         logger.info("Adding player to room", player_id=player_id_str, room_id=player.current_room_id)
                         room.player_entered(player_id_str)
                         logger.info(
-                            f"🔍 DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
+                            f"DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
                         )
                         logger.info("DEBUG: Room object ID after player_entered", room_id=id(room))
                     else:
                         logger.info(
-                            f"🔍 DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
+                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
                         )
                         logger.info("DEBUG: Room object ID (already in room)", room_id=id(room))
 
@@ -641,8 +641,8 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.warning("Room not found for update", room_id=room_id)
             return
 
-        logger.debug("🔍 DEBUG: broadcast_room_update - Room object ID", room_id=id(room))
-        logger.debug("🔍 DEBUG: broadcast_room_update - Room players before any processing", players=room.get_players())
+        logger.debug("DEBUG: broadcast_room_update - Room object ID", room_id=id(room))
+        logger.debug("DEBUG: broadcast_room_update - Room players before any processing", players=room.get_players())
 
         # Get room occupants (players and NPCs)
         occupant_names = []
@@ -678,7 +678,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
 
         # Debug: Log the room's actual occupants
-        logger.debug("🔍 DEBUG: Room occupants breakdown", room_id=room_id)
+        logger.debug("DEBUG: Room occupants breakdown", room_id=room_id)
         logger.debug("  - Room object ID", room_id=id(room))
         logger.debug("  - Players", players=room.get_players())
         logger.debug("  - Objects", objects=room.get_objects())
@@ -710,7 +710,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
             room_id=room_id,
         )
 
-        logger.debug("Room update event created", event=update_event)
+        logger.debug("Room update event created", update_event=update_event)
 
         # Update player's room subscription
         player = connection_manager._get_player(player_id)

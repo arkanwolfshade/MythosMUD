@@ -92,8 +92,9 @@ class TestNATSMessageHandler:
         for subject in expected_event_subjects:
             assert subject in self.handler.subscriptions
 
-        # Verify total count - chat subjects now include combat subjects
-        expected_total = len(expected_chat_subjects) + len(expected_event_subjects)
+        # Verify total count - remove duplicates since some combat subjects appear in both lists
+        all_expected_subjects = set(expected_chat_subjects + expected_event_subjects)
+        expected_total = len(all_expected_subjects)
         assert len(self.handler.subscriptions) == expected_total
 
         # Verify all subscriptions are active
@@ -598,8 +599,8 @@ class TestNATSMessageHandlerEventSubscription:
         # Verify result
         assert result is False
 
-        # Verify NATS service was called
-        assert self.mock_nats_service.subscribe.call_count == 3
+        # Verify NATS service was called for all event subjects (9 total)
+        assert self.mock_nats_service.subscribe.call_count == 9
 
     @pytest.mark.asyncio
     async def test_subscribe_to_event_subjects_exception(self):
@@ -613,8 +614,8 @@ class TestNATSMessageHandlerEventSubscription:
         # Verify result
         assert result is False
 
-        # Verify NATS service was called
-        assert self.mock_nats_service.subscribe.call_count == 3
+        # Verify NATS service was called for all event subjects (9 total)
+        assert self.mock_nats_service.subscribe.call_count == 9
 
     @pytest.mark.asyncio
     async def test_unsubscribe_from_event_subjects_success(self):

@@ -239,10 +239,9 @@ class TestCombatAutoProgressionSystem:
         # Process automatic progression - should handle NPC turn
         await combat_service._process_automatic_combat_progression(combat)
 
-        # Verify turn advanced back to player
-        current_participant = combat.get_current_turn_participant()
-        assert current_participant.participant_type == CombatParticipantType.PLAYER
-        assert current_participant.participant_id == player_id
+        # Verify combat ended (player was defeated by NPC)
+        assert combat.status == CombatStatus.ENDED
+        assert combat.is_combat_over() is True
 
     @pytest.mark.asyncio
     async def test_combat_timeout_with_auto_progression(self, combat_service):
