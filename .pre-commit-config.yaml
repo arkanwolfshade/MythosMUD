@@ -29,6 +29,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: logging-pattern-lint
+        name: Enhanced Logging Pattern Linter
+        entry: python scripts/lint_logging_patterns.py
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: npm-lint
         name: npm lint (client)
         entry: powershell -Command "cd client; npm run lint"

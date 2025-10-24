@@ -361,6 +361,7 @@ class CombatEventPublisher:
                 "event_type": "npc_attacked",
                 "data": {
                     "combat_id": str(event.combat_id),
+                    "room_id": event.room_id,
                     "attacker_id": str(event.attacker_id),
                     "attacker_name": event.attacker_name,
                     "npc_id": str(event.npc_id),
@@ -528,6 +529,7 @@ class CombatEventPublisher:
                 "event_type": "npc_died",
                 "data": {
                     "combat_id": str(event.combat_id),
+                    "room_id": event.room_id,
                     "npc_id": str(event.npc_id),
                     "npc_name": event.npc_name,
                     "xp_reward": event.xp_reward,
@@ -536,7 +538,7 @@ class CombatEventPublisher:
             }
 
             # Publish to NATS using room-specific subject
-            subject = f"combat.death.{event.room_id}"
+            subject = f"combat.npc_died.{event.room_id}"
             success = await self.nats_service.publish(subject, message_data)
 
             if success:

@@ -1048,6 +1048,79 @@ async def test_command_async_operations():
 
 ---
 
+## Enhanced Logging in Command Tests
+
+### **CRITICAL: Enhanced Logging Requirements**
+All command tests MUST use the enhanced logging system for proper observability and debugging.
+
+#### **Required Import Pattern**
+```python
+# ✅ CORRECT - Enhanced logging import (MANDATORY)
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+```
+
+#### **Forbidden Patterns**
+```python
+# ❌ FORBIDDEN - Will cause import failures and system crashes
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+logger.info("Test started", context={"test_name": "example"})
+
+# ❌ FORBIDDEN - String formatting breaks structured logging
+logger.info(f"Test {test_name} started")
+```
+
+#### **Correct Logging Patterns in Tests**
+```python
+# ✅ CORRECT - Test setup logging
+logger.info("Command test started", test_name="test_whisper_command", command="whisper", test_file="test_communication_commands.py")
+
+# ✅ CORRECT - Test step logging
+logger.debug("Test step executed", step="setup_mock_data", command="whisper", target_user="testuser")
+
+# ✅ CORRECT - Error logging in tests
+logger.error("Test assertion failed", assertion="command_success", expected=True, actual=False, test_step="verify_command_execution")
+
+# ✅ CORRECT - Performance logging
+logger.info("Test performance metrics", test_duration_ms=250, command="whisper", assertions_passed=5)
+```
+
+#### **Test Logging Best Practices**
+- **Structured Logging**: Always use key-value pairs for log data
+- **Test Context**: Include test name, command, and step information
+- **Error Context**: Log sufficient context for debugging test failures
+- **Performance Tracking**: Log test execution times and metrics
+- **Security**: Never log sensitive test data (passwords, tokens)
+
+#### **Logging Validation in Tests**
+```python
+# ✅ CORRECT - Validate logging behavior in tests
+def test_command_logging():
+    """Test that commands log correctly."""
+    with patch.object(enhanced_logging, 'get_logger') as mock_logger:
+        # Setup mock logger
+        mock_logger.return_value.info = MagicMock()
+        
+        # Execute command
+        result = await handle_whisper_command(command_data, current_user, request, alias_storage, "testuser")
+        
+        # Verify logging occurred
+        mock_logger.return_value.info.assert_called_with(
+            "Command executed",
+            command="whisper",
+            user_id=current_user["id"],
+            success=True
+        )
+```
+
+#### **Documentation References**
+- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+- **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
+
 ## Conclusion
 
 Comprehensive testing is essential for maintaining the reliability and security of MythosMUD commands. By following these patterns and best practices, you can ensure that:

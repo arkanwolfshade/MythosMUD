@@ -94,7 +94,7 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 - **Secure Authentication** - JWT tokens with Argon2 password hashing
 - **COPPA Compliant** - Privacy-first design for minor users
 - **Comprehensive Testing** - 75%+ test coverage with automated CI/CD
-- **Structured Logging** - AI-optimized logging for monitoring and debugging
+- **Enhanced Structured Logging** - Enterprise-grade logging with MDC, correlation IDs, security sanitization, and performance monitoring
 
 ### Security & Privacy
 
@@ -354,6 +354,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 - [Multiplayer Test Rules](e2e-tests/MULTIPLAYER_TEST_RULES.md) — E2E testing framework and scenarios
 - [Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Technical architecture documentation
 - [Advanced Chat Channels Spec](docs/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
+- [Enhanced Logging Guide](docs/LOGGING_BEST_PRACTICES.md) — Structured logging best practices and patterns
+- [Logging Quick Reference](docs/LOGGING_QUICK_REFERENCE.md) — One-page logging cheat sheet
 
 ---
 

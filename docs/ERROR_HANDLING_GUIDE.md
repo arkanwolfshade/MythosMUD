@@ -8,9 +8,25 @@ This guide provides comprehensive instructions for implementing proper error han
 
 ## Core Principles
 
-### 1. **Structured Logging First**
+### 1. **Enhanced Structured Logging First**
 
-All errors must be logged with structured context before being raised or returned. This ensures complete traceability and analysis capabilities.
+All errors must be logged with the enhanced structured logging system before being raised or returned. This ensures complete traceability and analysis capabilities.
+
+**Required Import:**
+```python
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+```
+
+**Forbidden Patterns:**
+```python
+# ❌ WRONG - Will cause failures
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ WRONG - Deprecated context parameter
+logger.error("Error occurred", context={"key": "value"})
+```
 
 ### 2. **Context is King**
 
@@ -38,16 +54,30 @@ The foundation of our error hierarchy. All custom errors should inherit from thi
 
 ```python
 from server.exceptions import MythosMUDError, ErrorContext
+from server.logging.enhanced_logging_config import get_logger
 
-# Basic usage
-error = MythosMUDError(
-    message="Database connection failed",
-    context=ErrorContext(
+logger = get_logger(__name__)
+
+# Basic usage with enhanced logging
+try:
+    result = database.save_player(player_data)
+except Exception as e:
+    logger.error(
+        "Database connection failed",
         operation="player_save",
         user_id="player123",
-        metadata={"room_id": "arkham_001"}
-    ),
-    details={"error_code": "DB_CONN_TIMEOUT"},
+        room_id="arkham_001",
+        error_code="DB_CONN_TIMEOUT",
+        error=str(e)
+    )
+    raise MythosMUDError(
+        message="Database connection failed",
+        context=ErrorContext(
+            operation="player_save",
+            user_id="player123",
+            metadata={"room_id": "arkham_001"}
+        ),
+        details={"error_code": "DB_CONN_TIMEOUT"},
     user_friendly="Unable to save your progress. Please try again."
 )
 ```
@@ -620,6 +650,95 @@ def process_multiple_operations(operations):
 2. Check error categories to understand failure types
 3. Look at error timelines to identify trends
 4. Use the monitoring tools for real-time error tracking
+
+## Enhanced Logging Best Practices for Error Handling
+
+### **CRITICAL: Enhanced Logging Requirements for Error Handling**
+All error handling MUST use the enhanced logging system for proper observability and debugging.
+
+#### **Required Import Pattern**
+```python
+# ✅ CORRECT - Enhanced logging import (MANDATORY)
+from server.logging.enhanced_logging_config import get_logger, bind_request_context
+logger = get_logger(__name__)
+```
+
+#### **Forbidden Patterns**
+```python
+# ❌ FORBIDDEN - Will cause import failures and system crashes
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+logger.error("Error occurred", context={"key": "value"})
+
+# ❌ FORBIDDEN - String formatting breaks structured logging
+logger.error(f"Error in {operation} for user {user_id}")
+```
+
+#### **Correct Error Logging Patterns**
+```python
+# ✅ CORRECT - Error logging with enhanced context
+logger.error("Database operation failed", 
+             operation="player_save", 
+             user_id=user.id, 
+             room_id=room.id, 
+             error_code="DB_CONN_TIMEOUT", 
+             error=str(e),
+             retry_count=3)
+
+# ✅ CORRECT - Request context binding for error tracking
+bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
+logger.error("Authentication failed", 
+             user_id=user.id, 
+             auth_method="password", 
+             error_code="AUTH_INVALID_CREDENTIALS")
+
+# ✅ CORRECT - Performance logging with error context
+with measure_performance("database_query", user_id=user.id):
+    try:
+        result = database.query("SELECT * FROM players")
+    except Exception as e:
+        logger.error("Database query failed", 
+                     query="SELECT * FROM players", 
+                     user_id=user.id, 
+                     error=str(e))
+        raise
+```
+
+#### **Error Logging Best Practices**
+- **Structured Logging**: Always use key-value pairs for log data
+- **Error Context**: Include operation, user_id, and error details
+- **Correlation IDs**: Use request context binding for error tracking
+- **Performance Tracking**: Log performance metrics with error context
+- **Security**: Never log sensitive data (automatic sanitization helps)
+
+#### **Error Logging Validation**
+```python
+# ✅ CORRECT - Validate error logging behavior
+def test_error_logging():
+    """Test that errors are logged correctly."""
+    with patch.object(enhanced_logging, 'get_logger') as mock_logger:
+        # Setup mock logger
+        mock_logger.return_value.error = MagicMock()
+        
+        # Trigger error
+        with pytest.raises(ValidationError):
+            validate_player_name("")
+        
+        # Verify error logging occurred
+        mock_logger.return_value.error.assert_called_with(
+            "Validation failed",
+            operation="validate_player_name",
+            user_id=user.id,
+            error_code="VALIDATION_ERROR"
+        )
+```
+
+#### **Documentation References**
+- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+- **Error Handling Examples**: [docs/examples/logging/](examples/logging/)
 
 ## Conclusion
 

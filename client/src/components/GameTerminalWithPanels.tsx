@@ -135,6 +135,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   }, [gameState.messages]);
 
   useEffect(() => {
+    console.log('🔍 DEBUG: Room state updated', {
+      oldRoom: currentRoomRef.current,
+      newRoom: gameState.room,
+      occupantsChanged: currentRoomRef.current?.occupants?.length !== gameState.room?.occupants?.length,
+    });
     currentRoomRef.current = gameState.room;
   }, [gameState.room]);
 
@@ -907,9 +912,16 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
             // Remove NPC from room occupants
             if (currentRoomRef.current && currentRoomRef.current.occupants) {
+              const originalOccupants = currentRoomRef.current.occupants;
+              const filteredOccupants = originalOccupants.filter(occupant => occupant.name !== npcName);
+              console.log('🔍 DEBUG: Removing NPC from room occupants', {
+                npcName,
+                originalOccupants: originalOccupants.map(o => o.name),
+                filteredOccupants: filteredOccupants.map(o => o.name),
+              });
               updates.room = {
                 ...currentRoomRef.current,
-                occupants: currentRoomRef.current.occupants.filter(occupant => occupant.name !== npcName),
+                occupants: filteredOccupants,
               };
             }
 

@@ -36,6 +36,7 @@ class NATSMessageHandler:
 
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         """
+        logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
         self.subscriptions = {}
 
@@ -69,9 +70,12 @@ class NATSMessageHandler:
         Returns:
             True if started successfully, False otherwise
         """
+        logger.info("NATS message handler start() called - ENHANCED LOGGING TEST")
         try:
+            logger.info("About to call _subscribe_to_chat_subjects()", debug=True)
             # Subscribe to chat message subjects
             await self._subscribe_to_chat_subjects()
+            logger.info("Finished _subscribe_to_chat_subjects()", debug=True)
 
             # Subscribe to event subjects if enabled
             if enable_event_subscriptions:
@@ -124,24 +128,26 @@ class NATSMessageHandler:
             "combat.npc_died.*",  # NPC death events per room
         ]
 
-        logger.debug("=== NATS MESSAGE HANDLER DEBUG: Subscribing to subjects ===")
+        logger.info("Starting _subscribe_to_chat_subjects - subscribing to chat and combat subjects", debug=True)
         for subject in subjects:
-            logger.debug(f"Attempting to subscribe to: {subject}")
+            logger.info("About to subscribe to subject", subject=subject, debug=True)
             await self._subscribe_to_subject(subject)
+        logger.info("Finished _subscribe_to_chat_subjects", debug=True)
 
     async def _subscribe_to_subject(self, subject: str):
         """Subscribe to a specific NATS subject."""
         try:
+            logger.info("Attempting to subscribe to NATS subject", subject=subject, debug=True)
             success = await self.nats_service.subscribe(subject, self._handle_nats_message)
             if success:
                 self.subscriptions[subject] = True
-                logger.info("Subscribed to NATS subject")
+                logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
                 return True
             else:
-                logger.error("Failed to subscribe to NATS subject")
+                logger.error("Failed to subscribe to NATS subject", subject=subject, debug=True)
                 return False
         except Exception as e:
-            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e))
+            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
             return False
 
     async def _unsubscribe_from_subject(self, subject: str):
@@ -172,6 +178,7 @@ class NATSMessageHandler:
 
         AI: Entry point with full error boundary protection.
         """
+        logger.info("_handle_nats_message called", message_data=message_data, debug=True)
         channel = message_data.get("channel", "unknown")
         message_id = message_data.get("message_id", "unknown")
 
@@ -1158,9 +1165,11 @@ class NATSMessageHandler:
                 "events.player_left.*",  # Player left events per room
                 "events.game_tick",  # Global game tick events
                 "combat.attack.*",  # Combat attack events per room
+                "combat.npc_attacked.*",  # NPC attack events per room
                 "combat.npc_action.*",  # NPC action events per room
                 "combat.started.*",  # Combat started events per room
                 "combat.ended.*",  # Combat ended events per room
+                "combat.npc_died.*",  # NPC death events per room
             ]
 
             logger.debug("Subscribing to event subjects", subjects=event_subjects)
@@ -1234,11 +1243,14 @@ class NATSMessageHandler:
             message_data: Event message data from NATS
         """
         try:
-            logger.debug("Handling event message", message_data=message_data)
+            logger.info("Handling event message", message_data=message_data)
 
             # Extract event details
             event_type = message_data.get("event_type")
             data = message_data.get("data", {})
+
+            # Debug logging for all messages
+            logger.debug("NATS message received", event_type=event_type, data=data)
 
             # Validate required fields
             if not event_type or not data:
@@ -1259,6 +1271,7 @@ class NATSMessageHandler:
             elif event_type == "player_attacked":
                 await self._handle_player_attacked_event(data)
             elif event_type == "npc_attacked":
+                logger.debug("NPC attacked event received in NATS handler", data=data)
                 await self._handle_npc_attacked_event(data)
             elif event_type == "npc_took_damage":
                 await self._handle_npc_took_damage_event(data)
@@ -1474,12 +1487,32 @@ class NATSMessageHandler:
         """Handle npc_died event."""
         try:
             room_id = data.get("room_id")
+            npc_id = data.get("npc_id")
+            npc_name = data.get("npc_name")
+            
             if not room_id:
                 logger.warning("NPC died event missing room_id", data=data)
+                return
+                
+            if not npc_id:
+                logger.warning("NPC died event missing npc_id", data=data)
                 return
 
             # Import here to avoid circular imports
             from .connection_manager import connection_manager
+            from ..persistence import get_persistence
+
+            # Remove NPC from room occupants on server side
+            try:
+                persistence = get_persistence()
+                room = persistence.get_room(room_id)
+                if room:
+                    room.npc_left(npc_id)
+                    logger.info("NPC removed from room occupants", npc_id=npc_id, npc_name=npc_name, room_id=room_id)
+                else:
+                    logger.warning("Room not found for NPC death", room_id=room_id, npc_id=npc_id)
+            except Exception as e:
+                logger.error("Error removing NPC from room", error=str(e), npc_id=npc_id, room_id=room_id)
 
             # Broadcast to room
             await connection_manager.broadcast_room_event("npc_died", room_id, data)
@@ -1504,6 +1537,14 @@ def get_nats_message_handler(nats_service=None):
         NATSMessageHandler instance
     """
     global nats_message_handler
+    logger.info(
+        "get_nats_message_handler called",
+        nats_service_provided=nats_service is not None,
+        global_handler_exists=nats_message_handler is not None,
+    )
     if nats_message_handler is None and nats_service is not None:
+        logger.info("Creating new NATSMessageHandler instance")
         nats_message_handler = NATSMessageHandler(nats_service)
+    else:
+        logger.info("Using existing global NATSMessageHandler instance")
     return nats_message_handler

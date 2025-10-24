@@ -121,6 +121,50 @@ The enhanced logging system is now fully implemented and properly documented. Al
 
 As noted in the Pnakotic Manuscripts, proper documentation and understanding of our systems is essential for maintaining their stability. The enhanced logging system provides the foundation for comprehensive system monitoring and debugging, ensuring the continued stability and observability of the MythosMUD server.
 
+## 🔮 **Future Development Guidelines**
+
+### **For All Future Development**
+
+All future code MUST use the enhanced logging system. Default Python logging is strictly forbidden.
+
+#### **Mandatory Patterns**
+```python
+# ✅ REQUIRED - Enhanced logging import
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+
+# ✅ REQUIRED - Structured logging
+logger.info("User action completed", user_id=user.id, action="login", success=True)
+```
+
+#### **Forbidden Patterns**
+```python
+# ❌ FORBIDDEN - Will cause failures
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ FORBIDDEN - Deprecated context parameter
+logger.info("message", context={"key": "value"})
+```
+
+### **Documentation References**
+- **Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md)
+- **Quick Reference**: [docs/LOGGING_QUICK_REFERENCE.md](docs/LOGGING_QUICK_REFERENCE.md)
+- **Development Guide**: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md)
+
+### **Code Review Checklist**
+When reviewing code, ensure:
+- [ ] Uses enhanced logging import
+- [ ] No deprecated logging patterns
+- [ ] Structured logging with key-value pairs
+- [ ] Appropriate log levels
+- [ ] Rich context in error logs
+- [ ] No sensitive data logging
+
+### **AI Agent Requirements**
+AI agents MUST follow the enhanced logging patterns documented in [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) section "Enhanced Logging Requirements for AI Agents".
+
 ---
 
 **Migration Status**: ✅ **COMPLETE**

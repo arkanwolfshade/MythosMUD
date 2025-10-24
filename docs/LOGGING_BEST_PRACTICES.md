@@ -2,6 +2,60 @@
 
 *As documented in the restricted archives of Miskatonic University, proper logging is the foundation upon which all system observability and debugging capabilities rest. Without comprehensive logging, we are blind to the inner workings of our digital realm.*
 
+## 🚨 CRITICAL ANTI-PATTERNS - DO NOT USE
+
+**WARNING**: These patterns will cause system failures, security vulnerabilities, and debugging difficulties. They are strictly forbidden in the MythosMUD codebase.
+
+### ❌ FORBIDDEN IMPORT PATTERNS
+```python
+# ❌ WRONG - Will cause import failures and system crashes
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ WRONG - Standard library logging bypasses enhanced features
+from logging import getLogger
+logger = getLogger(__name__)
+```
+
+### ❌ FORBIDDEN LOGGING PATTERNS
+```python
+# ❌ WRONG - Deprecated context parameter (causes TypeError)
+logger.info("message", context={"key": "value"})
+
+# ❌ WRONG - String formatting breaks structured logging
+logger.info(f"User {user_id} performed {action}")
+
+# ❌ WRONG - Unstructured messages provide no debugging value
+logger.info("Error occurred")
+
+# ❌ WRONG - Logging sensitive data (security violation)
+logger.info("Login attempt", username=user, password=password)
+
+# ❌ WRONG - Wrong log levels
+logger.error("User logged in successfully")  # Should be INFO
+logger.info("Critical system failure")      # Should be CRITICAL
+```
+
+### ✅ MANDATORY CORRECT PATTERNS
+```python
+# ✅ CORRECT - Enhanced logging import (REQUIRED)
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+
+# ✅ CORRECT - Structured logging with key-value pairs
+logger.info("User action completed", user_id=user.id, action="login", success=True)
+
+# ✅ CORRECT - Error logging with rich context
+logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
+
+# ✅ CORRECT - Performance logging
+with measure_performance("database_query", user_id=user.id):
+    result = database.query("SELECT * FROM players")
+
+# ✅ CORRECT - Request context binding
+bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
+```
+
 ## Overview
 
 This document outlines the best practices for the enhanced logging system implemented in MythosMUD. Our advanced structured logging system provides comprehensive observability with MDC (Mapped Diagnostic Context), correlation IDs, security sanitization, and performance monitoring while maintaining security and performance.
@@ -529,6 +583,127 @@ def analyze_log_file(log_file: Path) -> dict:
 
     return stats
 ```
+
+## Migration Guide: From Default Logging to Enhanced Logging
+
+### Step-by-Step Migration Process
+
+#### 1. Update Import Statements
+```python
+# ❌ OLD - Default Python logging
+import logging
+logger = logging.getLogger(__name__)
+
+# ✅ NEW - Enhanced logging
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+```
+
+#### 2. Migrate Context Parameters
+```python
+# ❌ OLD - Deprecated context parameter
+logger.info("User action", context={"user_id": user_id, "action": action})
+
+# ✅ NEW - Direct key-value pairs
+logger.info("User action", user_id=user_id, action=action)
+```
+
+#### 3. Convert String Formatting to Structured Logging
+```python
+# ❌ OLD - String formatting
+logger.info(f"User {user_id} performed action {action} in room {room_id}")
+
+# ✅ NEW - Structured logging
+logger.info("User action performed", user_id=user_id, action=action, room_id=room_id)
+```
+
+#### 4. Add Rich Context to Error Messages
+```python
+# ❌ OLD - Minimal context
+logger.error("Database connection failed")
+
+# ✅ NEW - Rich context
+logger.error("Database connection failed", database_url=db_url, retry_count=retry_count, error=str(e))
+```
+
+### Common Mistakes and How to Fix Them
+
+#### Mistake 1: Forgetting to Update Imports
+```python
+# ❌ MISTAKE: Using old import
+import logging
+logger = logging.getLogger(__name__)
+
+# ✅ FIX: Use enhanced logging
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+```
+
+#### Mistake 2: Using Deprecated Context Parameter
+```python
+# ❌ MISTAKE: Deprecated context parameter
+logger.info("Operation completed", context={"result": result})
+
+# ✅ FIX: Direct key-value pairs
+logger.info("Operation completed", result=result)
+```
+
+#### Mistake 3: String Formatting in Log Messages
+```python
+# ❌ MISTAKE: String formatting
+logger.info(f"Processing request {request_id} for user {user_id}")
+
+# ✅ FIX: Structured logging
+logger.info("Processing request", request_id=request_id, user_id=user_id)
+```
+
+#### Mistake 4: Missing Context in Error Logs
+```python
+# ❌ MISTAKE: No context
+logger.error("Operation failed")
+
+# ✅ FIX: Rich context
+logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=retry_count)
+```
+
+#### Mistake 5: Wrong Log Levels
+```python
+# ❌ MISTAKE: Wrong log level
+logger.error("User logged in successfully")  # Should be info
+
+# ✅ FIX: Correct log level
+logger.info("User logged in successfully", user_id=user.id, login_method="password")
+```
+
+### Validation Checklist for Code Reviews
+
+When reviewing code, ensure:
+- [ ] Uses `from server.logging.enhanced_logging_config import get_logger`
+- [ ] No `import logging` or `logging.getLogger()` statements
+- [ ] No `context={"key": "value"}` parameters
+- [ ] No string formatting in log messages
+- [ ] All log entries use structured key-value pairs
+- [ ] Sensitive data is not logged (automatic sanitization helps)
+- [ ] Appropriate log levels are used (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- [ ] Error logs include sufficient context for debugging
+
+### Troubleshooting Common Issues
+
+#### Issue 1: ImportError when using enhanced logging
+**Problem**: `ImportError: cannot import name 'get_logger' from 'server.logging.enhanced_logging_config'`
+**Solution**: Ensure you're using the correct import path and that the enhanced logging system is properly initialized.
+
+#### Issue 2: TypeError with context parameter
+**Problem**: `TypeError: get_logger() got an unexpected keyword argument 'context'`
+**Solution**: Remove the `context=` parameter and use direct key-value pairs instead.
+
+#### Issue 3: Logs not appearing in files
+**Problem**: Log messages not showing up in log files
+**Solution**: Check that the logging system is properly configured and that log levels are appropriate.
+
+#### Issue 4: Sensitive data appearing in logs
+**Problem**: Passwords or tokens visible in log files
+**Solution**: The enhanced logging system automatically sanitizes sensitive data, but ensure you're not using string formatting that bypasses this protection.
 
 ## Common Anti-Patterns
 

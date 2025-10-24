@@ -199,6 +199,57 @@ except Exception as e:
 - **API Documentation**: Complete API reference
 - **Troubleshooting Guide**: Common issues and solutions
 
+## 🔮 **Future Development Guidelines**
+
+### **Mandatory Logging Patterns for All Future Development**
+
+All future code MUST use the enhanced logging system. Default Python logging is strictly forbidden.
+
+#### **Required Import Pattern**
+```python
+# ✅ REQUIRED - Enhanced logging import
+from server.logging.enhanced_logging_config import get_logger
+logger = get_logger(__name__)
+```
+
+#### **Forbidden Patterns**
+```python
+# ❌ FORBIDDEN - Will cause import failures and system crashes
+import logging
+logger = logging.getLogger(__name__)
+
+# ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+logger.info("message", context={"key": "value"})
+
+# ❌ FORBIDDEN - String formatting breaks structured logging
+logger.info(f"User {user_id} performed {action}")
+```
+
+### **Code Review Checklist**
+
+When reviewing code, ensure:
+- [ ] Uses `from server.logging.enhanced_logging_config import get_logger`
+- [ ] No `import logging` or `logging.getLogger()` statements
+- [ ] No `context={"key": "value"}` parameters
+- [ ] No string formatting in log messages
+- [ ] All log entries use structured key-value pairs
+- [ ] Appropriate log levels are used
+- [ ] Error logs include sufficient context for debugging
+
+### **Documentation References**
+- **Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](../../docs/LOGGING_BEST_PRACTICES.md)
+- **Quick Reference**: [docs/LOGGING_QUICK_REFERENCE.md](../../docs/LOGGING_QUICK_REFERENCE.md)
+- **Development Guide**: [docs/DEVELOPMENT.md](../../docs/DEVELOPMENT.md)
+- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](../../docs/DEVELOPMENT_AI.md)
+
+### **Pre-commit Hook Recommendations**
+
+Consider adding pre-commit hooks to validate logging patterns:
+- Detect `import logging` statements
+- Validate against deprecated `context=` usage
+- Check for string formatting in logger calls
+- Alert on unstructured log messages
+
 ## 🔮 **Future Enhancements**
 
 The enhanced logging system provides a solid foundation for future enhancements:
