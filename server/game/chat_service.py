@@ -1417,6 +1417,10 @@ class ChatService:
             if not sender_id:
                 return False
 
+            # Allow None room_id for system messages (broadcast to all players)
+            if room_id is None:
+                return True
+
             # Check room access permissions
             # This would integrate with your room access system
             # For now, basic validation
