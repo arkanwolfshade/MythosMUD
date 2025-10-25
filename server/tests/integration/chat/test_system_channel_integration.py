@@ -72,11 +72,11 @@ class TestSystemChannelIntegration:
             persistence=self.mock_persistence,
             room_service=self.mock_room_service,
             player_service=self.mock_player_service,
+            nats_service=mock_nats_service,
             user_manager_instance=mock_user_manager,
         )
 
         # Replace services with mocks
-        chat_service.nats_service = mock_nats_service
         chat_service.rate_limiter = mock_rate_limiter
 
         return chat_service
