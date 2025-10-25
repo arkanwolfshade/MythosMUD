@@ -958,7 +958,7 @@ class TestNPCSystemIntegration:
         # Should execute all NPCs quickly
         assert execution_time < 1.0
 
-        logger.info(f"NPC system execution time: {execution_time:.3f}s for {len(test_npcs)} NPCs")
+        logger.info("NPC system execution time", execution_time=execution_time, npc_count=len(test_npcs))
 
     @pytest.mark.asyncio
     async def test_npc_system_error_handling(self, test_npcs):

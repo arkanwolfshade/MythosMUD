@@ -134,12 +134,22 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# # Environment files (CRITICAL: Never commit actual .env files)
+# .env.local
+# .env.production
+# Environment files (CRITICAL: Never commit actual environment files with secrets)
 .env
+.env.*
+.env.prod
+.env.development
+.env.dev
+.env.local
+.env.e2e_test
+.env.test
+.env.unit_test
 .env.local
 .env.production
 .env.prod
-.env.development
 .env.dev
 .venv
 env/
@@ -147,6 +157,11 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Allow example environment files ONLY (never actual secrets)
+!.env.example
+!*.env.example
+!env.*.example
 
 # Spyder project settings
 .spyderproject
@@ -177,7 +192,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
 
 # Abstra
 # Abstra is an AI-powered process automation framework.
@@ -214,25 +229,6 @@ __marimo__/
 # Local development files
 TASKS.local.md
 
-# # Environment files (CRITICAL: Never commit actual .env files)
-# .env.local
-# .env.production
-# Environment files (CRITICAL: Never commit actual environment files with secrets)
-.env
-.env.*
-.env.prod
-.env.development
-.env.dev
-.env.local
-.env.e2e_test
-.env.test
-.env.unit_test
-
-# Allow example environment files ONLY (never actual secrets)
-!.env.example
-!*.env.example
-!env.*.example
-
 # Logging files (CRITICAL: Never commit log files)
 logs/
 server/tests/logs/
@@ -249,3 +245,8 @@ client/*.lcov
 client/test-results/
 client/playwright-report/
 client/playwright/.cache/
+
+# Playwright test output and coverage reports
+playwright-report/
+test-results/
+.cache/

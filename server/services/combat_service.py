@@ -800,5 +800,20 @@ class CombatService:
             return 5  # Default XP reward
 
 
-# Global combat service instance
-combat_service = CombatService()
+# Global combat service instance - will be properly initialized by lifespan
+_global_combat_service = None
+
+
+def get_combat_service():
+    """Get the global combat service instance."""
+    return _global_combat_service
+
+
+def set_combat_service(service):
+    """Set the global combat service instance."""
+    global _global_combat_service
+    _global_combat_service = service
+
+
+# For backward compatibility
+combat_service = None

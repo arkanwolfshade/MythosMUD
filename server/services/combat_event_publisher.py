@@ -538,7 +538,7 @@ class CombatEventPublisher:
             }
 
             # Publish to NATS using room-specific subject
-            subject = f"combat.death.{event.room_id}"
+            subject = f"combat.npc_died.{event.room_id}"
             success = await self.nats_service.publish(subject, message_data)
 
             if success:

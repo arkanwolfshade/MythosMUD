@@ -54,7 +54,12 @@ class CommandProcessor:
             # Extract command type for routing
             command_type = validated_command.command_type.value
 
-            logger.debug(f"Command successfully validated for {player_name}: type={command_type}, cmd='{command_line}'")
+            logger.debug(
+                "Command successfully validated",
+                player_name=player_name,
+                command_type=command_type,
+                command_line=command_line,
+            )
 
             return validated_command, None, command_type
 
@@ -73,14 +78,14 @@ class CommandProcessor:
                 "command_line": command_line,
                 "validation_errors": error_details,
             }
-            logger.warning(f"Command validation failed: {error_message}")
+            logger.warning("Command validation failed", error_message=error_message)
 
             return None, f"Invalid command: {error_message}", None
 
         except MythosValidationError as e:
             # Handle validation errors with user-friendly messages
             error_message = str(e)
-            logger.warning(f"Command validation failed: {error_message}")
+            logger.warning("Command validation failed", error_message=error_message)
 
             return None, error_message, None
 
@@ -94,7 +99,7 @@ class CommandProcessor:
                 "error_type": "ValueError",
                 "error_message": error_message,
             }
-            logger.warning(f"Command parsing failed: {error_message}")
+            logger.warning("Command parsing failed", error_message=error_message)
 
             return None, error_message, None
 
@@ -108,7 +113,7 @@ class CommandProcessor:
                 "error_type": type(e).__name__,
                 "error_message": str(e),
             }
-            logger.error(f"Unexpected error in command processing: {error_message}")
+            logger.error("Unexpected error in command processing", error_message=error_message)
 
             return None, error_message, None
 
@@ -172,7 +177,9 @@ class CommandProcessor:
         if hasattr(validated_command, "args"):
             command_data["args"] = validated_command.args
 
-        logger.debug(f"Extracted command data: type={command_data['command_type']}, keys={list(command_data.keys())}")
+        logger.debug(
+            "Extracted command data", command_type=command_data["command_type"], keys=list(command_data.keys())
+        )
 
         return command_data
 
@@ -212,7 +219,7 @@ class CommandProcessor:
         except Exception as e:
             context = create_error_context()
             context.metadata = {"command_name": command_name, "error_type": type(e).__name__, "error_message": str(e)}
-            logger.error(f"Error getting command help: {str(e)}")
+            logger.error("Error getting command help", error=str(e))
             return "Help system temporarily unavailable."
 
 

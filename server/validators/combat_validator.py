@@ -169,7 +169,7 @@ class CombatValidator:
             return True, None, None
 
         except Exception as e:
-            logger.error(f"Error in combat command validation: {e}")
+            logger.error("Error in combat command validation", error=str(e))
             return False, "The cosmic forces have rejected your command.", None
 
     def validate_target_exists(self, target_name: str, available_targets: list[str]) -> tuple[bool, str | None]:

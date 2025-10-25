@@ -92,7 +92,7 @@ class MessageHandlerFactory:
             handler: The handler instance
         """
         self._handlers[message_type] = handler
-        logger.debug(f"Registered handler for message type: {message_type}")
+        logger.debug("Registered handler for message type", message_type=message_type)
 
     def get_handler(self, message_type: str) -> MessageHandler | None:
         """
@@ -128,11 +128,11 @@ class MessageHandlerFactory:
 
         handler = self.get_handler(message_type)
         if handler:
-            logger.info(f"🚨 SERVER DEBUG: Found handler for message type '{message_type}'")
+            logger.info("🚨 SERVER DEBUG: Found handler for message type", message_type=message_type)
             await handler.handle(websocket, player_id, data)
         else:
             # Unknown message type - send error response
-            logger.warning(f"Unknown message type '{message_type}' from player {player_id}")
+            logger.warning("Unknown message type", message_type=message_type, player_id=player_id)
             error_response = create_websocket_error_response(
                 ErrorType.INVALID_COMMAND,
                 f"Unknown message type: {message_type}",

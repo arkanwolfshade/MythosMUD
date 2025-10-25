@@ -835,6 +835,17 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             // For npc_attacked events, attacker_name is the NPC and npc_name is the player
             // We want to show "Dr. Francis Morgan attacks you for 10 damage! (90/100 HP)"
             const message = `${attackerName} attacks you for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+
+            // Check for duplicate npc_attacked events
+            // Look for any message that contains the same attack message
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(msg => msg.text === message);
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate npc_attacked event detected, skipping', { message });
+              break;
+            }
+
             const messageObj = {
               text: message,
               timestamp: event.timestamp,

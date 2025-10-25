@@ -137,7 +137,7 @@ class EventBus:
                 except Exception as e:
                     # Use basic print to avoid Unicode encoding issues during cleanup
                     try:
-                        self._logger.error(f"Error processing event: {e}", exc_info=True)
+                        self._logger.error("Error processing event", error=str(e), exc_info=True)
                     except Exception:
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
                     continue
@@ -149,7 +149,7 @@ class EventBus:
         except Exception as e:
             # Use basic print to avoid Unicode encoding issues during cleanup
             try:
-                self._logger.error(f"Fatal error in async event processing: {e}", exc_info=True)
+                self._logger.error("Fatal error in async event processing", error=str(e), exc_info=True)
             except Exception:
                 self._logger.critical("Fatal error in async event processing", error=str(e), exc_info=True)
         finally:
@@ -161,10 +161,12 @@ class EventBus:
         subscribers = self._subscribers.get(event_type, [])
 
         if not subscribers:
-            self._logger.debug(f"No subscribers for event type: {event_type.__name__}")
+            self._logger.debug("No subscribers for event type", event_type=event_type.__name__)
             return
 
-        self._logger.debug(f"Processing {event_type.__name__} event for {len(subscribers)} subscribers")
+        self._logger.debug(
+            "Processing event for subscribers", event_type=event_type.__name__, subscriber_count=len(subscribers)
+        )
 
         import inspect
 
@@ -185,12 +187,12 @@ class EventBus:
                     # Handle task completion with proper exception handling
                     task.add_done_callback(lambda t, name=subscriber.__name__: self._handle_task_result_async(t, name))
 
-                    self._logger.debug(f"Created tracked task for async subscriber {subscriber.__name__}")
+                    self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber.__name__)
                 else:
                     # Call sync subscriber directly without threading hybrid antipattern
                     subscriber(event)
             except Exception as e:
-                self._logger.error(f"Error in event subscriber {subscriber.__name__}: {e}")
+                self._logger.error("Error in event subscriber", subscriber_name=subscriber.__name__, error=str(e))
 
     def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str):
         """Handle async task completion with proper exception extraction."""
@@ -198,7 +200,7 @@ class EventBus:
             # Get the result to handle exceptions without threading/runtime scheduler crossing
             task.result()
         except Exception as e:
-            self._logger.error(f"Error in async subscriber {subscriber_name}: {e}")
+            self._logger.error("Error in async subscriber", subscriber_name=subscriber_name, error=str(e))
 
     def publish(self, event: BaseEvent) -> None:
         """
@@ -219,10 +221,10 @@ class EventBus:
         # Use put_nowait for non-blocking publish (pure asyncio.Queue) - Task 1.2
         try:
             self._event_queue.put_nowait(event)
-            self._logger.debug(f"Published {type(event).__name__} event")
+            self._logger.debug("Published event", event_type=type(event).__name__)
         except asyncio.QueueFull as exc:
             # Rare case where queue is at capacity - indicates very high load
-            self._logger.warning(f"Event queue at capacity - dropping {type(event).__name__} event")
+            self._logger.warning("Event queue at capacity - dropping event", event_type=type(event).__name__)
             raise RuntimeError("Event bus overloaded") from exc
 
     def subscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> None:
@@ -245,7 +247,7 @@ class EventBus:
         # Remove threading dependency - Python dict operations are atomic at GIL
         # level for simple operations like this, sufficient for single-threaded async
         self._subscribers[event_type].append(handler)
-        self._logger.debug(f"Added subscriber for {event_type.__name__}")
+        self._logger.debug("Added subscriber for event type", event_type=event_type.__name__)
 
     def unsubscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> bool:
         """
@@ -265,10 +267,10 @@ class EventBus:
         subscribers = self._subscribers.get(event_type, [])
         try:
             subscribers.remove(handler)
-            self._logger.debug(f"Removed subscriber for {event_type.__name__}")
+            self._logger.debug("Removed subscriber for event type", event_type=event_type.__name__)
             return True
         except ValueError:
-            self._logger.debug(f"Handler not found for {event_type.__name__}")
+            self._logger.debug("Handler not found for event type", event_type=event_type.__name__)
             return False
 
     def get_subscriber_count(self, event_type: type[BaseEvent]) -> int:

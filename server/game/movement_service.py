@@ -109,7 +109,7 @@ class MovementService:
             )
 
         if from_room_id == to_room_id:
-            self._logger.warning(f"Player {player_id} attempted to move to same room {from_room_id}")
+            self._logger.warning("Player attempted to move to same room", player_id=player_id, room_id=from_room_id)
             return False
 
         start_time = time.time()
@@ -118,17 +118,19 @@ class MovementService:
         with self._lock:
             try:
                 # Step 1: Resolve the player (prefer by ID, fallback to name)
-                self._logger.debug(f"MovementService using persistence instance ID: {id(self._persistence)}")
+                self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
                 player = self._persistence.get_player(player_id)
                 if not player:
                     # Fallback to name lookup only if player_id doesn't look like a UUID
                     if len(player_id) != 36 or player_id.count("-") != 4:
                         player = self._persistence.get_player_by_name(player_id)
                         if player:
-                            self._logger.info(f"Resolved player by name: {player_id} -> {player.player_id}")
+                            self._logger.info(
+                                "Resolved player by name", player_name=player_id, player_id=player.player_id
+                            )
 
                 if not player:
-                    self._logger.error(f"Player not found: {player_id}")
+                    self._logger.error("Player not found", player_id=player_id)
                     context = create_error_context()
                     context.metadata["player_id"] = player_id
                     context.metadata["from_room_id"] = from_room_id
@@ -149,7 +151,7 @@ class MovementService:
 
                 # Log the resolution for debugging
                 if resolved_player_id != player_id:
-                    self._logger.info(f"Player ID resolved: {player_id} -> {resolved_player_id}")
+                    self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
 
                 # Step 2: Validate the move
                 if not self._validate_movement(resolved_player_id, from_room_id, to_room_id):
@@ -162,7 +164,7 @@ class MovementService:
                 to_room = self._persistence.get_room(to_room_id)
 
                 if not from_room:
-                    self._logger.error(f"From room {from_room_id} not found")
+                    self._logger.error("From room not found", room_id=from_room_id)
                     context = create_error_context()
                     context.metadata["player_id"] = resolved_player_id
                     context.metadata["from_room_id"] = from_room_id
@@ -183,7 +185,7 @@ class MovementService:
                     )
 
                 if not to_room:
-                    self._logger.error(f"To room {to_room_id} not found")
+                    self._logger.error("To room not found", room_id=to_room_id)
                     context = create_error_context()
                     context.metadata["player_id"] = resolved_player_id
                     context.metadata["from_room_id"] = from_room_id
@@ -205,24 +207,26 @@ class MovementService:
 
                     # Step 4: Verify player is in the from_room (auto-add logic is now in _validate_movement)
                 if not from_room.has_player(resolved_player_id):
-                    self._logger.error(f"Player {resolved_player_id} not in room {from_room_id}")
+                    self._logger.error("Player not in room", player_id=resolved_player_id, room_id=from_room_id)
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
                 # Step 5: Perform the atomic move
-                self._logger.info(f"Moving player {resolved_player_id} from {from_room_id} to {to_room_id}")
+                self._logger.info(
+                    "Moving player", player_id=resolved_player_id, from_room=from_room_id, to_room=to_room_id
+                )
 
                 # Remove from old room
-                self._logger.debug(f"Removing player {resolved_player_id} from room {from_room_id}")
+                self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room_id)
                 from_room.player_left(resolved_player_id)
 
                 # Add to new room
-                self._logger.debug(f"Adding player {resolved_player_id} to room {to_room_id}")
+                self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
                 to_room.player_entered(resolved_player_id)
 
                 # Update player's room in persistence
-                self._logger.debug(f"Updating player {resolved_player_id} room to {to_room_id} in database")
+                self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
                 player.current_room_id = to_room_id
                 self._persistence.save_player(player)
 
@@ -230,11 +234,11 @@ class MovementService:
                 duration_ms = (time.time() - start_time) * 1000
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
 
-                self._logger.info(f"Successfully moved player {resolved_player_id} to {to_room_id}")
+                self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True
 
             except Exception as e:
-                self._logger.error(f"Error moving player {player_id}: {e}")
+                self._logger.error("Error moving player", player_id=player_id, error=str(e))
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
                 context.metadata["from_room_id"] = from_room_id
@@ -272,11 +276,11 @@ class MovementService:
         to_room = self._persistence.get_room(to_room_id)
 
         if not from_room:
-            self._logger.error(f"From room {from_room_id} does not exist")
+            self._logger.error("From room does not exist", room_id=from_room_id)
             return False
 
         if not to_room:
-            self._logger.error(f"To room {to_room_id} does not exist")
+            self._logger.error("To room does not exist", room_id=to_room_id)
             return False
 
         # Check if player is in the from_room
@@ -287,7 +291,9 @@ class MovementService:
             if player and player.current_room_id == from_room_id:
                 # Player should be in this room, add them to the in-memory state
                 # Use direct state update to avoid triggering events during validation
-                self._logger.info(f"Adding player {player_id} to room {from_room_id} in-memory state (direct update)")
+                self._logger.info(
+                    "Adding player to room in-memory state (direct update)", player_id=player_id, room_id=from_room_id
+                )
                 from_room._players.add(player_id)
             else:
                 self._logger.error(
@@ -297,12 +303,12 @@ class MovementService:
 
         # Check if player is already in the to_room (shouldn't happen, but safety check)
         if to_room.has_player(player_id):
-            self._logger.error(f"Player {player_id} is already in room {to_room_id}")
+            self._logger.error("Player is already in room", player_id=player_id, room_id=to_room_id)
             return False
 
         # Check if there's a valid exit from from_room to to_room
         if not self._validate_exit(from_room, to_room_id):
-            self._logger.error(f"No valid exit from {from_room_id} to {to_room_id}")
+            self._logger.error("No valid exit", from_room=from_room_id, to_room=to_room_id)
             return False
 
         return True
@@ -321,16 +327,16 @@ class MovementService:
         # Check if any exit in the room leads to the target room
         exits = from_room.exits
         if not exits:
-            self._logger.debug(f"No exits found in room {from_room.id}")
+            self._logger.debug("No exits found in room", room_id=from_room.id)
             return False
 
         # Check each exit direction
         for direction, target_id in exits.items():
             if target_id == to_room_id:
-                self._logger.debug(f"Valid exit found: {direction} -> {to_room_id}")
+                self._logger.debug("Valid exit found", direction=direction, room_id=to_room_id)
                 return True
 
-        self._logger.debug(f"No valid exit from {from_room.id} to {to_room_id}. Available exits: {exits}")
+        self._logger.debug("No valid exit", from_room=from_room.id, to_room=to_room_id, available_exits=exits)
         return False
 
     def add_player_to_room(self, player_id: str, room_id: str) -> bool:
@@ -371,12 +377,12 @@ class MovementService:
             try:
                 room = self._persistence.get_room(room_id)
                 if not room:
-                    self._logger.error(f"Room {room_id} not found")
+                    self._logger.error("Room not found", room_id=room_id)
                     return False
 
                 # Check if player is already in the room
                 if room.has_player(player_id):
-                    self._logger.warning(f"Player {player_id} already in room {room_id}")
+                    self._logger.warning("Player already in room", player_id=player_id, room_id=room_id)
                     return True  # Consider this a success
 
                 # Add player to room (direct addition to avoid triggering movement events during initial setup)
@@ -388,11 +394,11 @@ class MovementService:
                     player.current_room_id = room_id
                     self._persistence.save_player(player)
 
-                self._logger.info(f"Added player {player_id} to room {room_id}")
+                self._logger.info("Added player to room", player_id=player_id, room_id=room_id)
                 return True
 
             except Exception as e:
-                self._logger.error(f"Error adding player {player_id} to room {room_id}: {e}")
+                self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
                 context.metadata["room_id"] = room_id
@@ -443,22 +449,24 @@ class MovementService:
             try:
                 room = self._persistence.get_room(room_id)
                 if not room:
-                    self._logger.error(f"Room {room_id} not found")
+                    self._logger.error("Room not found", room_id=room_id)
                     return False
 
                 # Check if player is in the room
                 if not room.has_player(player_id):
-                    self._logger.warning(f"Player {player_id} not in room {room_id}")
+                    self._logger.warning("Player not in room", player_id=player_id, room_id=room_id)
                     return True  # Consider this a success
 
                 # Remove player from room
                 room.player_left(player_id)
 
-                self._logger.info(f"Removed player {player_id} from room {room_id}")
+                self._logger.info("Removed player from room", player_id=player_id, room_id=room_id)
                 return True
 
             except Exception as e:
-                self._logger.error(f"Error removing player {player_id} from room {room_id}: {e}")
+                self._logger.error(
+                    "Error removing player from room", player_id=player_id, room_id=room_id, error=str(e)
+                )
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
                 context.metadata["room_id"] = room_id

@@ -50,11 +50,11 @@ class RoomSubscriptionManager:
                 self.room_subscriptions[canonical_id] = set()
 
             self.room_subscriptions[canonical_id].add(player_id)
-            logger.debug(f"Player {player_id} subscribed to room {canonical_id}")
+            logger.debug("Player subscribed to room", player_id=player_id, room_id=canonical_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error subscribing player {player_id} to room {room_id}: {e}")
+            logger.error("Error subscribing player to room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
     def unsubscribe_from_room(self, player_id: str, room_id: str) -> bool:
@@ -75,11 +75,11 @@ class RoomSubscriptionManager:
                 if not self.room_subscriptions[canonical_id]:
                     del self.room_subscriptions[canonical_id]
 
-            logger.debug(f"Player {player_id} unsubscribed from room {canonical_id}")
+            logger.debug("Player unsubscribed from room", player_id=player_id, room_id=canonical_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error unsubscribing player {player_id} from room {room_id}: {e}")
+            logger.error("Error unsubscribing player from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
     def get_room_subscribers(self, room_id: str) -> set[str]:
@@ -96,7 +96,7 @@ class RoomSubscriptionManager:
             canonical_id = self._canonical_room_id(room_id) or room_id
             return self.room_subscriptions.get(canonical_id, set()).copy()
         except Exception as e:
-            logger.error(f"Error getting subscribers for room {room_id}: {e}")
+            logger.error("Error getting subscribers for room", room_id=room_id, error=str(e))
             return set()
 
     def add_room_occupant(self, player_id: str, room_id: str) -> bool:
@@ -116,11 +116,11 @@ class RoomSubscriptionManager:
                 self.room_occupants[canonical_id] = set()
 
             self.room_occupants[canonical_id].add(player_id)
-            logger.debug(f"Player {player_id} added as occupant of room {canonical_id}")
+            logger.debug("Player added as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error adding occupant {player_id} to room {room_id}: {e}")
+            logger.error("Error adding occupant to room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
     def remove_room_occupant(self, player_id: str, room_id: str) -> bool:
@@ -141,11 +141,11 @@ class RoomSubscriptionManager:
                 if not self.room_occupants[canonical_id]:
                     del self.room_occupants[canonical_id]
 
-            logger.debug(f"Player {player_id} removed as occupant of room {canonical_id}")
+            logger.debug("Player removed as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error removing occupant {player_id} from room {room_id}: {e}")
+            logger.error("Error removing occupant from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
     def get_room_occupants(self, room_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
@@ -175,7 +175,7 @@ class RoomSubscriptionManager:
             return occupants
 
         except Exception as e:
-            logger.error(f"Error getting occupants for room {room_id}: {e}")
+            logger.error("Error getting occupants for room", room_id=room_id, error=str(e))
             return []
 
     def remove_player_from_all_rooms(self, player_id: str) -> bool:
@@ -203,11 +203,11 @@ class RoomSubscriptionManager:
                     if not self.room_occupants[room_id]:
                         del self.room_occupants[room_id]
 
-            logger.debug(f"Player {player_id} removed from all rooms")
+            logger.debug("Player removed from all rooms", player_id=player_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error removing player {player_id} from all rooms: {e}")
+            logger.error("Error removing player from all rooms", player_id=player_id, error=str(e))
             return False
 
     def reconcile_room_presence(self, room_id: str, online_players: dict[str, Any]) -> bool:
@@ -227,11 +227,16 @@ class RoomSubscriptionManager:
                 current = self.room_occupants[canonical_id]
                 pruned = {pid for pid in current if pid in online_players}
                 self.room_occupants[canonical_id] = pruned
-                logger.debug(f"Reconciled room presence for {canonical_id}: {len(current)} -> {len(pruned)} occupants")
+                logger.debug(
+                    "Reconciled room presence",
+                    room_id=canonical_id,
+                    current_count=len(current),
+                    pruned_count=len(pruned),
+                )
             return True
 
         except Exception as e:
-            logger.error(f"Error reconciling room presence for {room_id}: {e}")
+            logger.error("Error reconciling room presence", room_id=room_id, error=str(e))
             return False
 
     def _canonical_room_id(self, room_id: str | None) -> str | None:
@@ -252,7 +257,7 @@ class RoomSubscriptionManager:
                 if room is not None and getattr(room, "id", None):
                     return room.id
         except Exception as e:
-            logger.error(f"Error resolving canonical room id for {room_id}: {e}")
+            logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id
 
     def get_stats(self) -> dict[str, Any]:
@@ -277,5 +282,5 @@ class RoomSubscriptionManager:
                 "average_occupants_per_room": total_occupants / len(self.room_occupants) if self.room_occupants else 0,
             }
         except Exception as e:
-            logger.error(f"Error getting room subscription stats: {e}")
+            logger.error("Error getting room subscription stats", error=str(e))
             return {}

@@ -49,7 +49,7 @@ class MemoryMonitor:
 
         # Memory-based cleanup
         if memory_usage > self.memory_threshold:
-            logger.warning(f"Memory usage high ({memory_usage:.2%}), triggering cleanup")
+            logger.warning("Memory usage high, triggering cleanup", memory_usage=memory_usage)
             return True
 
         return False
@@ -66,7 +66,7 @@ class MemoryMonitor:
             memory_percent = process.memory_percent()
             return memory_percent / 100.0
         except Exception as e:
-            logger.error(f"Error getting memory usage: {e}")
+            logger.error("Error getting memory usage", error=str(e))
             return 0.0
 
     def get_memory_stats(self) -> dict[str, Any]:
@@ -87,7 +87,7 @@ class MemoryMonitor:
                 "total_mb": psutil.virtual_memory().total / 1024 / 1024,
             }
         except Exception as e:
-            logger.error(f"Error getting memory stats: {e}")
+            logger.error("Error getting memory stats", error=str(e))
             return {}
 
     def get_memory_alerts(self, connection_stats: dict[str, Any]) -> list[str]:
@@ -129,7 +129,7 @@ class MemoryMonitor:
                 alerts.append(f"WARNING: {stale_count} stale connections detected")
 
         except Exception as e:
-            logger.error(f"Error getting memory alerts: {e}", exc_info=True)
+            logger.error("Error getting memory alerts", error=str(e), exc_info=True)
             alerts.append(f"ERROR: Failed to get memory alerts: {e}")
 
         return alerts
@@ -144,4 +144,4 @@ class MemoryMonitor:
             gc.collect()
             logger.debug("Forced garbage collection completed")
         except Exception as e:
-            logger.error(f"Error during forced garbage collection: {e}")
+            logger.error("Error during forced garbage collection", error=str(e))

@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     await init_npc_db()
     # Initialize real-time event handler first to obtain its EventBus with task tracking
-    app.state.event_handler = get_real_time_event_handler(task_registry=task_registry)
+    app.state.event_handler = get_real_time_event_handler(event_bus=None, task_registry=task_registry)
     # Ensure the event handler has access to the connection manager
     app.state.event_handler.connection_manager = connection_manager
 
@@ -98,8 +98,8 @@ async def lifespan(app: FastAPI):
     app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
-    logger.info(f"app.state.player_service: {app.state.player_service}")
-    logger.info(f"app.state.user_manager: {app.state.user_manager}")
+    logger.info("Player service initialized", player_service=app.state.player_service)
+    logger.info("User manager initialized", user_manager=app.state.user_manager)
 
     # Initialize NPC services
     from ..npc.lifecycle_manager import NPCLifecycleManager
@@ -136,15 +136,15 @@ async def lifespan(app: FastAPI):
             # Load NPC definitions
             definitions = await npc_service.get_npc_definitions(npc_session)
             app.state.npc_population_controller.load_npc_definitions(definitions)
-            logger.info(f"Loaded {len(definitions)} NPC definitions")
+            logger.info("NPC definitions loaded", count=len(definitions))
 
             # Load spawn rules
             spawn_rules = await npc_service.get_spawn_rules(npc_session)
             app.state.npc_population_controller.load_spawn_rules(spawn_rules)
-            logger.info(f"Loaded {len(spawn_rules)} NPC spawn rules")
+            logger.info("NPC spawn rules loaded", count=len(spawn_rules))
 
         except Exception as e:
-            logger.error(f"Error loading NPC definitions and spawn rules: {e}")
+            logger.error("Error loading NPC definitions and spawn rules", error=str(e))
         break
 
     logger.info("NPC services initialized and added to app.state")
@@ -175,12 +175,12 @@ async def lifespan(app: FastAPI):
 
         # Log any errors that occurred during startup
         if startup_results["errors"]:
-            logger.warning(f"NPC startup spawning had {len(startup_results['errors'])} errors")
+            logger.warning("NPC startup spawning had errors", error_count=len(startup_results["errors"]))
             for error in startup_results["errors"]:
-                logger.warning(f"Startup spawning error: {error}")
+                logger.warning("Startup spawning error", error=str(error))
 
     except Exception as e:
-        logger.error(f"Critical error during NPC startup spawning: {str(e)}")
+        logger.error("Critical error during NPC startup spawning", error=str(e))
         # Don't fail server startup due to NPC spawning issues
         logger.warning("Continuing server startup despite NPC spawning errors")
 
@@ -221,6 +221,11 @@ async def lifespan(app: FastAPI):
 
                 app.state.combat_service = CombatService(app.state.player_combat_service, app.state.nats_service)
 
+                # Update global combat service instance for tests and other modules
+                from ..services.combat_service import set_combat_service
+
+                set_combat_service(app.state.combat_service)
+
                 # Update PlayerService with combat service and player combat service for dynamic combat state checking
                 app.state.player_service.combat_service = app.state.combat_service
                 app.state.player_service.player_combat_service = app.state.player_combat_service
@@ -247,7 +252,9 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             if is_testing:
                 # In test environment, NATS errors are not fatal
-                logger.warning(f"NATS initialization failed in test environment: {str(e)} - continuing without NATS")
+                logger.warning(
+                    "NATS initialization failed in test environment", error=str(e), message="continuing without NATS"
+                )
                 app.state.nats_service = None
                 app.state.nats_message_handler = None
             else:
@@ -284,7 +291,7 @@ async def lifespan(app: FastAPI):
         raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
     logger.info("Chat service added to app.state")
-    logger.info(f"app.state.chat_service: {app.state.chat_service}")
+    logger.info("Chat service initialized", chat_service=app.state.chat_service)
 
     # Start the game tick loop using TaskRegistry
     tick_task = app.state.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
@@ -321,7 +328,7 @@ async def lifespan(app: FastAPI):
             try:
                 await app.state.connection_manager.force_cleanup()
             except Exception as e:
-                logger.error(f"Error during connection manager cleanup: {e}")
+                logger.error("Error during connection manager cleanup", error=str(e))
 
         # Phase 3: TaskRegistry shutdown coordination with enhanced reprocation logic
         if hasattr(app.state, "task_registry") and app.state.task_registry:
@@ -335,7 +342,7 @@ async def lifespan(app: FastAPI):
                         "TaskRegistry shutdown reached timeout - forcing static termination of remaining tasks"
                     )
             except Exception as e:
-                logger.error(f"TaskRegistry shutdown coordination error: {e}")
+                logger.error("TaskRegistry shutdown coordination error", error=str(e))
                 # Proceedings continue unless critical failure
         else:
             logger.warning("No TaskRegistry found in shutdown phase - falling back to manual task cancellation")
@@ -344,13 +351,13 @@ async def lifespan(app: FastAPI):
             current_task = asyncio.current_task()
             remaining_tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
             if remaining_tasks:
-                logger.info(f"Manual cleanup of {len(remaining_tasks)} orphaned tasks")
+                logger.info("Manual cleanup of orphaned tasks", task_count=len(remaining_tasks))
                 for task in remaining_tasks:
                     task.cancel()
                 await asyncio.gather(*remaining_tasks, return_exceptions=True)
     except Exception as e:
         logger.error("Critical shutdown failure:", exc_info=True)
-        logger.error(f"Lifespan shutdown failed with error: {e}")
+        logger.error("Lifespan shutdown failed", error=str(e))
     finally:
         # Phase 4: Database cleanup
         logger.info("Closing database connections")
@@ -379,7 +386,7 @@ async def game_tick_loop(app: FastAPI):
     while True:
         try:
             # TODO: Implement status/effect ticks using persistence layer
-            logger.debug(f"Game tick {tick_count}")
+            logger.debug("Game tick", tick_count=tick_count)
 
             # Update global tick counter
             _current_tick = tick_count
@@ -389,7 +396,7 @@ async def game_tick_loop(app: FastAPI):
                 try:
                     await app.state.combat_service.process_game_tick(tick_count)
                 except Exception as e:
-                    logger.error(f"Error processing combat tick {tick_count}: {e}")
+                    logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
 
             # Broadcast game tick to all connected players
             tick_data = {
@@ -397,14 +404,16 @@ async def game_tick_loop(app: FastAPI):
                 "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
-            logger.debug(f"Broadcasting game tick {tick_count} to {len(connection_manager.player_websockets)} players")
+            logger.debug(
+                "Broadcasting game tick", tick_count=tick_count, player_count=len(connection_manager.player_websockets)
+            )
             await broadcast_game_event("game_tick", tick_data)
-            logger.debug(f"Game tick {tick_count} broadcast completed")
+            logger.debug("Game tick broadcast completed", tick_count=tick_count)
             tick_count += 1
             await asyncio.sleep(TICK_INTERVAL)
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
             break
         except Exception as e:
-            logger.error(f"Error in game tick loop: {e}")
+            logger.error("Error in game tick loop", error=str(e))
             await asyncio.sleep(TICK_INTERVAL)

@@ -715,7 +715,7 @@ class TestNPCBehaviorIntegration:
         # Performance assertion (should execute 10 NPCs in under 1 second)
         assert execution_time < 1.0
 
-        logger.info(f"NPC behavior execution time: {execution_time:.3f}s for {npc_count} NPCs")
+        logger.info("NPC behavior execution time", execution_time=execution_time, npc_count=npc_count)
 
     @pytest.mark.asyncio
     async def test_npc_behavior_error_handling(self):

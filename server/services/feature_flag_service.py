@@ -48,7 +48,7 @@ class FeatureFlagService:
         """
         if self._cached_combat_enabled is None:
             self._cached_combat_enabled = self._config.game.combat_enabled
-            logger.debug(f"Combat feature flag cached: {self._cached_combat_enabled}")
+            logger.debug("Combat feature flag cached", combat_enabled=self._cached_combat_enabled)
         return self._cached_combat_enabled
 
     def is_combat_logging_enabled(self) -> bool:
@@ -60,7 +60,9 @@ class FeatureFlagService:
         """
         if self._cached_combat_logging_enabled is None:
             self._cached_combat_logging_enabled = self._config.game.combat_logging_enabled
-            logger.debug(f"Combat logging feature flag cached: {self._cached_combat_logging_enabled}")
+            logger.debug(
+                "Combat logging feature flag cached", combat_logging_enabled=self._cached_combat_logging_enabled
+            )
         return self._cached_combat_logging_enabled
 
     def is_combat_monitoring_enabled(self) -> bool:
@@ -72,7 +74,10 @@ class FeatureFlagService:
         """
         if self._cached_combat_monitoring_enabled is None:
             self._cached_combat_monitoring_enabled = self._config.game.combat_monitoring_enabled
-            logger.debug(f"Combat monitoring feature flag cached: {self._cached_combat_monitoring_enabled}")
+            logger.debug(
+                "Combat monitoring feature flag cached",
+                combat_monitoring_enabled=self._cached_combat_monitoring_enabled,
+            )
         return self._cached_combat_monitoring_enabled
 
     def get_combat_configuration(self) -> dict[str, Any]:
@@ -98,7 +103,7 @@ class FeatureFlagService:
             "combat_error_threshold": self._config.game.combat_error_threshold,
         }
 
-        logger.debug(f"Combat configuration retrieved: {config}")
+        logger.debug("Combat configuration retrieved", config=config)
         return config
 
     def clear_cache(self) -> None:
@@ -165,7 +170,7 @@ class FeatureFlagService:
             }
         }
 
-        logger.debug(f"Feature status retrieved: {status}")
+        logger.debug("Feature status retrieved", status=status)
         return status
 
     def check_combat_availability(self, player_id: str | None = None) -> bool:
@@ -189,7 +194,7 @@ class FeatureFlagService:
         # Future: Could add player-specific checks here
         # e.g., player level requirements, subscription status, etc.
         if player_id:
-            logger.debug(f"Combat available for player {player_id}")
+            logger.debug("Combat available for player", player_id=player_id)
         else:
             logger.debug("Combat available globally")
 

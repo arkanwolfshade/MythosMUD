@@ -167,13 +167,13 @@ class NPCSpawningService:
         """Handle NPC entering a room."""
         # Update our tracking if this is one of our spawned NPCs
         if event.npc_id in self.active_npc_instances:
-            logger.debug(f"Tracked NPC {event.npc_id} entered room {event.room_id}")
+            logger.debug("Tracked NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
         # Update our tracking if this is one of our spawned NPCs
         if event.npc_id in self.active_npc_instances:
-            logger.debug(f"Tracked NPC {event.npc_id} left room {event.room_id}")
+            logger.debug("Tracked NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
     def _check_spawn_requirements_for_room(self, room_id: str) -> None:
         """
@@ -186,7 +186,7 @@ class NPCSpawningService:
         zone_config = self.population_controller.get_zone_configuration(zone_key)
 
         if not zone_config:
-            logger.warning(f"No zone configuration found for {zone_key} (room: {room_id})")
+            logger.warning("No zone configuration found", zone_key=zone_key, room_id=room_id)
             return
 
         # Check each NPC definition for spawn requirements
@@ -222,7 +222,7 @@ class NPCSpawningService:
             current_count = stats.npcs_by_type.get(definition.npc_type, 0)
             if not definition.can_spawn(current_count):
                 definition_name = getattr(definition, "name", "Unknown NPC")
-                logger.debug(f"Population limit reached for {definition_name} in {zone_key}")
+                logger.debug("Population limit reached", npc_name=definition_name, zone_key=zone_key)
                 return spawn_requests
 
         # Get current NPC count for this specific definition
@@ -335,7 +335,7 @@ class NPCSpawningService:
 
         # Avoid logging the entire request object to prevent recursion issues
         definition_name = getattr(request.definition, "name", "Unknown NPC")
-        logger.debug(f"Queued spawn request for {definition_name} in {request.room_id}")
+        logger.debug("Queued spawn request", npc_name=definition_name, room_id=request.room_id)
 
     def process_spawn_queue(self) -> list[NPCSpawnResult]:
         """
@@ -399,7 +399,7 @@ class NPCSpawningService:
 
             # Use getattr to safely access definition.name to avoid recursion issues
             definition_name = getattr(request.definition, "name", "Unknown NPC")
-            logger.info(f"Successfully spawned NPC: {npc_id} ({definition_name}) in {request.room_id}")
+            logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition_name, room_id=request.room_id)
 
             return NPCSpawnResult(
                 success=True,
@@ -409,7 +409,7 @@ class NPCSpawningService:
             )
 
         except Exception as e:
-            logger.error(f"Failed to spawn NPC from request {request}: {str(e)}")
+            logger.error("Failed to spawn NPC from request", request=request, error=str(e))
             return NPCSpawnResult(
                 success=False,
                 error_message=str(e),
@@ -482,7 +482,7 @@ class NPCSpawningService:
                     event_reaction_system=None,  # Will be set up later
                 )
             else:
-                logger.warning(f"Unknown NPC type: {simple_definition.npc_type}")
+                logger.warning("Unknown NPC type", npc_type=simple_definition.npc_type)
                 return None
 
             # Set the current room for the NPC instance
@@ -493,7 +493,7 @@ class NPCSpawningService:
         except Exception as e:
             # Use extracted name to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
-            logger.error(f"Failed to create NPC instance for {definition_name}: {str(e)}")
+            logger.error("Failed to create NPC instance", npc_name=definition_name, error=str(e))
             return None
 
     def _generate_npc_id(self, definition: NPCDefinition | SimpleNPCDefinition, room_id: str) -> str:
@@ -525,7 +525,7 @@ class NPCSpawningService:
             True if NPC was despawned successfully
         """
         if npc_id not in self.active_npc_instances:
-            logger.warning(f"Attempted to despawn non-existent NPC: {npc_id}")
+            logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
             return False
 
         try:
@@ -547,11 +547,11 @@ class NPCSpawningService:
             # Update population controller
             self.population_controller.despawn_npc(npc_id)
 
-            logger.info(f"Successfully despawned NPC: {npc_id} (reason: {reason})")
+            logger.info("Successfully despawned NPC", npc_id=npc_id, reason=reason)
             return True
 
         except Exception as e:
-            logger.error(f"Failed to despawn NPC {npc_id}: {str(e)}")
+            logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
             return False
 
     def get_spawn_statistics(self) -> dict[str, Any]:
@@ -616,7 +616,7 @@ class NPCSpawningService:
             self.despawn_npc(npc_id, reason="cleanup")
 
         if npcs_to_remove:
-            logger.info(f"Cleaned up {len(npcs_to_remove)} inactive NPCs")
+            logger.info("Cleaned up inactive NPCs", count=len(npcs_to_remove))
 
         return len(npcs_to_remove)
 

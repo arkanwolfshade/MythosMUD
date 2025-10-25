@@ -203,7 +203,7 @@ def add_error_handling_middleware(app: FastAPI, include_details: bool = False):
         ```
     """
     app.add_middleware(ErrorHandlingMiddleware, include_details=include_details)
-    logger.info(f"Error handling middleware added (include_details={include_details})")
+    logger.info("Error handling middleware added", include_details=include_details)
 
 
 # Additional error handlers for FastAPI exception handlers

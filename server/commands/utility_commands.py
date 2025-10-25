@@ -44,7 +44,9 @@ def format_player_location(room_id: str) -> str:
     try:
         # Ensure room_id is a string
         if not isinstance(room_id, str):
-            logger.warning(f"format_player_location received non-string room_id: {type(room_id)} - {room_id}")
+            logger.warning(
+                "format_player_location received non-string room_id", room_id_type=type(room_id), room_id=room_id
+            )
             return str(room_id)
 
         # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
@@ -84,7 +86,7 @@ def format_player_entry(player) -> str:
         location = format_player_location(player.current_room_id)
         base_entry = f"{player.name} [{player.level}] - {location}"
     except Exception as e:
-        logger.error(f"Error formatting player entry for {player.name}: {e}")
+        logger.error("Error formatting player entry", player_name=player.name, error=str(e))
         # Fallback formatting
         location = "Unknown location"
         base_entry = f"{player.name} [{player.level}] - {location}"
@@ -134,7 +136,7 @@ async def handle_who_command(
             online_threshold = now - timedelta(minutes=5)  # Consider players online if active in last 5 minutes
 
             online_players = []
-            logger.debug(f"Who command - checking {len(players)} players, threshold: {online_threshold}")
+            logger.debug("Who command - checking players", player_count=len(players), threshold=online_threshold)
 
             # Pre-compile regex for better performance (if needed for string parsing)
 
@@ -158,7 +160,7 @@ async def handle_who_command(
                                 # Assume UTC if no timezone info
                                 last_active = datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
                         except (ValueError, AttributeError) as e:
-                            logger.warning(f"Failed to parse last_active string for {player.name}: {e}")
+                            logger.warning("Failed to parse last_active string", player_name=player.name, error=str(e))
                             # Skip players with invalid last_active data
                             continue
                     else:
@@ -171,9 +173,11 @@ async def handle_who_command(
                     if last_active and last_active > online_threshold:
                         online_players.append(player)
                 else:
-                    logger.debug(f"Player {player.name} has no last_active timestamp")
+                    logger.debug("Player has no last_active timestamp", player_name=player.name)
 
-            logger.debug(f"Who command - found {len(online_players)} online players out of {len(players)} total")
+            logger.debug(
+                "Who command - found online players", online_count=len(online_players), total_count=len(players)
+            )
 
             if online_players:
                 # Apply name filtering if provided
@@ -410,17 +414,17 @@ async def handle_status_command(
                     profession_description = profession.description
                     profession_flavor_text = profession.flavor_text
             except Exception as e:
-                logger.warning(f"Failed to fetch profession {profession_id}: {e}")
+                logger.warning("Failed to fetch profession", profession_id=profession_id, error=str(e))
 
         # Check if player is in combat
         combat_service = app.state.combat_service if app else None
         in_combat = False
         if combat_service:
-            logger.debug(f"Checking combat status for player {player.player_id}")
+            logger.debug("Checking combat status for player", player_id=player.player_id)
             combat = await combat_service.get_combat_by_participant(player.player_id)
-            logger.debug(f"Combat result for player {player.player_id}: {combat}")
+            logger.debug("Combat result for player", player_id=player.player_id, combat=combat)
             in_combat = combat is not None
-            logger.debug(f"Player {player.player_id} in combat: {in_combat}")
+            logger.debug("Player combat status", player_id=player.player_id, in_combat=in_combat)
         else:
             logger.debug("No combat service available")
 

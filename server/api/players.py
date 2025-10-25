@@ -309,7 +309,7 @@ async def roll_character_stats(
             status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
         )
     # Check if user is authenticated
-    logger.debug(f"Authentication check - current_user: {current_user}")
+    logger.debug("Authentication check", current_user=current_user)
     if not current_user:
         logger.warning("Authentication failed: No user returned from get_current_user")
         # Note: We don't have request context here, so we'll create a minimal context
@@ -318,7 +318,7 @@ async def roll_character_stats(
         context = create_error_context()
         raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
-    logger.info(f"Authentication successful for user: {current_user.username} (ID: {current_user.id})")
+    logger.info("Authentication successful for user", username=current_user.username, user_id=current_user.id)
 
     # Apply rate limiting
     try:
@@ -494,7 +494,7 @@ async def create_character_with_stats(
 
         # Note: For now, we'll skip marking the invite as used to avoid complexity
         # TODO: Implement a proper way to track and mark invites as used
-        logger.info(f"Character {request_data.name} created successfully for user {current_user.id}")
+        logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
         return {
             "message": f"Character {request_data.name} created successfully",

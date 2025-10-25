@@ -70,7 +70,7 @@ def get_all_professions(
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "get_all_professions"
-        logger.error(f"Error retrieving professions: {e}", extra={"context": context})
+        logger.error("Error retrieving professions", error=str(e), extra={"context": context})
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
@@ -133,5 +133,7 @@ def get_profession_by_id(
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "get_profession_by_id"
         context.metadata["profession_id"] = profession_id
-        logger.error(f"Error retrieving profession {profession_id}: {e}", extra={"context": context})
+        logger.error(
+            "Error retrieving profession", profession_id=profession_id, error=str(e), extra={"context": context}
+        )
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e

@@ -61,7 +61,7 @@ class PeriodicOrphanAuditor:
         if self.audit_running:
             raise RuntimeError("Periodic audit already running: refrain from advancing dual parallelization")
 
-        logger.info(f"Periodic auditing lifecycle coordination initiated (interval={self.check_interval}s)")
+        logger.info("Periodic auditing lifecycle coordination initiated", interval=self.check_interval)
 
         def audit_wrapper():
             return self._background_audit_cycle()
@@ -79,7 +79,7 @@ class PeriodicOrphanAuditor:
             self.auditor_start_time = datetime.now(UTC)
             self.audit_running = True
         except Exception as initation_error:
-            logger.error(f"Audit coordinator initiation failure: {initation_error}")
+            logger.error("Audit coordinator initiation failure", error=str(initation_error))
             raise RuntimeError(f"Chronic memory auditing not initialized: {initation_error}") from initation_error
 
     async def _background_audit_cycle(self) -> None:
@@ -103,7 +103,7 @@ class PeriodicOrphanAuditor:
                     return
 
         except Exception as massive_audit_failure:
-            logger.error(f"Continuous monitoring failure in lifecycle hygiene: {massive_audit_failure}")
+            logger.error("Continuous monitoring failure in lifecycle hygiene", error=str(massive_audit_failure))
             return
 
     async def _do_full_cleanup_audit(self) -> None:
@@ -148,7 +148,9 @@ class PeriodicOrphanAuditor:
             )
 
         except Exception as audit_run_under_error:
-            logger.error(f"Audit cycle specifically endeavoured full persistence errors: {audit_run_under_error}")
+            logger.error(
+                "Audit cycle specifically endeavoured full persistence errors", error=str(audit_run_under_error)
+            )
 
     async def force_single_audit_cycle(self) -> dict:
         """
@@ -202,7 +204,7 @@ class PeriodicOrphanAuditor:
             logger.warning("Orphan coordinate periodic posteriors scheduler halted")
 
         except Exception as shutdown_obstructing_error:
-            logger.error(f"Coordinator shutdown encountered an impediment: {shutdown_obstructing_error}")
+            logger.error("Coordinator shutdown encountered an impediment", error=str(shutdown_obstructing_error))
 
         finally:
             # Always set audit_running to False, even if cancellation fails

@@ -45,7 +45,7 @@ async def generate_unique_bogus_email(username: str, session: AsyncSession) -> s
     existing_user = result.scalar_one_or_none()
 
     if not existing_user:
-        logger.debug(f"Generated unique bogus email: {base_email}")
+        logger.debug("Generated unique bogus email", base_email=base_email)
         return base_email
 
     # If base email exists, add a unique suffix
@@ -61,7 +61,7 @@ async def generate_unique_bogus_email(username: str, session: AsyncSession) -> s
         # Extremely unlikely, but if it happens, use full UUID
         unique_email = f"{clean_username}.{uuid.uuid4()}@wolfshade.org"
 
-    logger.debug(f"Generated unique bogus email with suffix: {unique_email}")
+    logger.debug("Generated unique bogus email with suffix", unique_email=unique_email)
     return unique_email
 
 

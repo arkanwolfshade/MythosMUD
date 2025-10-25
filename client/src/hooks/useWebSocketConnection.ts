@@ -88,15 +88,42 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     }
 
     try {
+      // Enhanced input validation
+      if (!message || typeof message !== 'string') {
+        logger.warn('WebSocketConnection', 'Invalid message type');
+        return;
+      }
+
+      if (message.length > 1000) {
+        // Message length limit
+        logger.warn('WebSocketConnection', 'Message too long');
+        return;
+      }
+
       // Sanitize the message first
       const sanitizedMessage = inputSanitizer.sanitizeCommand(message);
+
+      // Validate sanitization didn't remove too much
+      if (sanitizedMessage.length < message.length * 0.5) {
+        logger.warn('WebSocketConnection', 'Message heavily sanitized, rejecting');
+        return;
+      }
 
       // Generate CSRF token and include it in the message
       const csrfToken = csrfProtection.generateToken();
 
-      // Send the sanitized message (CSRF token could be included in JSON messages if needed)
-      websocketRef.current.send(sanitizedMessage);
-      logger.debug('WebSocketConnection', 'Message sent', { message: sanitizedMessage, csrfToken });
+      // Send the sanitized message with CSRF protection
+      const messageWithCSRF = JSON.stringify({
+        message: sanitizedMessage,
+        csrfToken: csrfToken,
+        timestamp: Date.now(),
+      });
+
+      websocketRef.current.send(messageWithCSRF);
+      logger.debug('WebSocketConnection', 'Message sent', {
+        messageLength: sanitizedMessage.length,
+        csrfToken: csrfToken.substring(0, 8) + '...', // Log partial token
+      });
     } catch (error) {
       logger.error('WebSocketConnection', 'Error sending message', { error });
     }
@@ -130,10 +157,26 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         isConnectedRef.current = true;
         lastErrorRef.current = null;
 
-        // Start ping interval (30s)
-        pingIntervalRef.current = window.setInterval(() => {
+        // Enhanced ping with NATS health check
+        pingIntervalRef.current = window.setInterval(async () => {
           if (ws.readyState === WebSocket.OPEN) {
+            // Send ping to WebSocket
             ws.send(JSON.stringify({ type: 'ping' }));
+
+            // Also check NATS health via server
+            try {
+              const healthResponse = await fetch('/api/health/nats', {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${authToken}` },
+              });
+
+              if (!healthResponse.ok) {
+                logger.warn('WebSocketConnection', 'NATS health check failed');
+                // Trigger reconnection or degradation
+              }
+            } catch (error) {
+              logger.warn('WebSocketConnection', 'NATS health check error', { error });
+            }
           }
         }, 30000);
 

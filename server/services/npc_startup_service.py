@@ -62,13 +62,17 @@ class NPCStartupService:
                 try:
                     # Get all NPC definitions
                     definitions = await npc_service.get_npc_definitions(npc_session)
-                    logger.info(f"Found {len(definitions)} NPC definitions for startup spawning")
+                    logger.info("Found NPC definitions for startup spawning", count=len(definitions))
 
                     # Separate required and optional NPCs
                     required_npcs = [d for d in definitions if d.required_npc]
                     optional_npcs = [d for d in definitions if not d.required_npc]
 
-                    logger.info(f"Required NPCs: {len(required_npcs)}, Optional NPCs: {len(optional_npcs)}")
+                    logger.info(
+                        "NPCs categorized for spawning",
+                        required_count=len(required_npcs),
+                        optional_count=len(optional_npcs),
+                    )
 
                     # Spawn required NPCs first
                     required_results = await self._spawn_required_npcs(required_npcs, npc_instance_service)
@@ -125,7 +129,7 @@ class NPCStartupService:
         """
         results = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
 
-        logger.info(f"Spawning {len(required_npcs)} required NPCs")
+        logger.info("Spawning required NPCs", count=len(required_npcs))
 
         for npc_def in required_npcs:
             results["attempted"] += 1
@@ -155,7 +159,7 @@ class NPCStartupService:
                             "definition_id": npc_def.id,
                         }
                     )
-                    logger.info(f"Spawned required NPC: {npc_def.name} in {spawn_room}")
+                    logger.info("Spawned required NPC", npc_name=npc_def.name, spawn_room=spawn_room)
                 else:
                     error_msg = (
                         f"Failed to spawn required NPC {npc_def.name}: {spawn_result.get('message', 'Unknown error')}"
@@ -170,7 +174,7 @@ class NPCStartupService:
                 results["errors"].append(error_msg)
                 results["failed"] += 1
 
-        logger.info(f"Required NPC spawning completed: {results['spawned']}/{results['attempted']} successful")
+        logger.info("Required NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
 
     async def _spawn_optional_npcs(self, optional_npcs: list, npc_instance_service) -> dict[str, Any]:
@@ -186,13 +190,13 @@ class NPCStartupService:
         """
         results = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
 
-        logger.info(f"Evaluating {len(optional_npcs)} optional NPCs for spawning")
+        logger.info("Evaluating optional NPCs for spawning", count=len(optional_npcs))
 
         for npc_def in optional_npcs:
             # Check spawn probability
             spawn_probability = getattr(npc_def, "spawn_probability", 1.0)
             if random.random() > spawn_probability:
-                logger.debug(f"Skipping optional NPC {npc_def.name} (probability: {spawn_probability})")
+                logger.debug("Skipping optional NPC", npc_name=npc_def.name, probability=spawn_probability)
                 continue
 
             results["attempted"] += 1
@@ -201,7 +205,7 @@ class NPCStartupService:
                 # Determine spawn room
                 spawn_room = self._determine_spawn_room(npc_def)
                 if not spawn_room:
-                    logger.debug(f"No valid spawn room found for optional NPC {npc_def.name}, skipping")
+                    logger.debug("No valid spawn room found for optional NPC", npc_name=npc_def.name)
                     continue
 
                 # Check population limits (this would need to be implemented in the population controller)
@@ -222,7 +226,7 @@ class NPCStartupService:
                             "definition_id": npc_def.id,
                         }
                     )
-                    logger.info(f"Spawned optional NPC: {npc_def.name} in {spawn_room}")
+                    logger.info("Spawned optional NPC", npc_name=npc_def.name, spawn_room=spawn_room)
                 else:
                     logger.warning(
                         f"Failed to spawn optional NPC {npc_def.name}: {spawn_result.get('message', 'Unknown error')}"
@@ -235,7 +239,7 @@ class NPCStartupService:
                 results["errors"].append(error_msg)
                 results["failed"] += 1
 
-        logger.info(f"Optional NPC spawning completed: {results['spawned']}/{results['attempted']} successful")
+        logger.info("Optional NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
 
     def _determine_spawn_room(self, npc_def) -> str | None:
@@ -251,7 +255,7 @@ class NPCStartupService:
         try:
             # If NPC has a specific room_id, use it
             if hasattr(npc_def, "room_id") and npc_def.room_id:
-                logger.debug(f"Using specific room for {npc_def.name}: {npc_def.room_id}")
+                logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=npc_def.room_id)
                 return npc_def.room_id
 
             # If NPC has a sub_zone_id, we could implement zone-based spawning logic here
@@ -265,11 +269,11 @@ class NPCStartupService:
                     return default_room
 
             # Fallback to a default starting room
-            logger.debug(f"Using fallback room for {npc_def.name}")
+            logger.debug("Using fallback room for NPC", npc_name=npc_def.name)
             return "earth_arkhamcity_northside_intersection_derby_high"
 
         except Exception as e:
-            logger.error(f"Error determining spawn room for {npc_def.name}: {str(e)}")
+            logger.error("Error determining spawn room for NPC", npc_name=npc_def.name, error=str(e))
             return None
 
     def _get_default_room_for_sub_zone(self, sub_zone_id: str) -> str | None:

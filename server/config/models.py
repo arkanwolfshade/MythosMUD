@@ -76,6 +76,15 @@ class NATSConfig(BaseSettings):
     ping_interval: int = Field(default=30, description="Ping interval in seconds")
     max_outstanding_pings: int = Field(default=5, description="Maximum outstanding pings")
 
+    # Connection pooling configuration
+    connection_pool_size: int = Field(default=5, description="Number of connections in pool")
+    enable_connection_pooling: bool = Field(default=True, description="Enable connection pooling")
+
+    # Message batching configuration
+    batch_size: int = Field(default=100, description="Maximum messages per batch")
+    batch_timeout: float = Field(default=0.1, description="Batch timeout in seconds")
+    enable_message_batching: bool = Field(default=True, description="Enable message batching")
+
     @field_validator("max_payload")
     @classmethod
     def validate_max_payload(cls, v: int) -> int:

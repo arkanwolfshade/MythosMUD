@@ -483,7 +483,7 @@ class PlayerService:
             # Get the raw SQLAlchemy player object for modification
             player = await self.persistence.async_get_player_by_name(player_name)
             if not player:
-                logger.warning(f"Cannot update location - player not found: {player_name}")
+                logger.warning("Cannot update location - player not found", player_name=player_name)
                 context = create_error_context()
                 context.metadata["player_name"] = player_name
                 context.metadata["new_room_id"] = new_room_id
@@ -503,11 +503,11 @@ class PlayerService:
             # Save to database
             await self.persistence.async_save_player(player)
 
-            logger.info(f"Player location updated: {player_name} moved from {old_room} to {new_room_id}")
+            logger.info("Player location updated", player_name=player_name, from_room=old_room, to_room=new_room_id)
             return True
 
         except Exception as e:
-            logger.error(f"Failed to update player location: {player_name} -> {new_room_id}: {str(e)}")
+            logger.error("Failed to update player location", player_name=player_name, room_id=new_room_id, error=str(e))
             context = create_error_context()
             context.metadata["player_name"] = player_name
             context.metadata["new_room_id"] = new_room_id
@@ -756,7 +756,7 @@ class PlayerService:
                     if hasattr(self.player_combat_service, "is_player_in_combat"):
                         in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
                 except Exception as e:
-                    logger.warning(f"Failed to check combat state for player {player.player_id}: {e}")
+                    logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
                     in_combat = False
 
         # Final safety check - ensure it's actually a boolean
@@ -782,7 +782,7 @@ class PlayerService:
                     profession_description = profession.description
                     profession_flavor_text = profession.flavor_text
             except Exception as e:
-                logger.warning(f"Failed to fetch profession {player_profession_id}: {e}")
+                logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
 
         if hasattr(player, "player_id"):  # Player object
             # Handle both sync and async method calls

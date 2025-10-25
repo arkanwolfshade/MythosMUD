@@ -127,7 +127,7 @@ class Environment:
             await init_npc_db()
             self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
         except Exception as e:
-            self.logger.error(f"Database setup failed: {e}")
+            self.logger.error("Database setup failed", error=str(e))
             # For tests, we can continue without a real database
             # The tests will use mocked persistence
             self.logger.info("Continuing with mocked persistence for tests")
@@ -179,7 +179,7 @@ class Environment:
             await engine.dispose()  # Properly dispose of main database engine connections
             self.logger.info("Disposed main database engine")
         except Exception as e:
-            self.logger.warning(f"Error disposing main database engine: {e}")
+            self.logger.warning("Error disposing main database engine", error=str(e))
 
         try:
             from server.npc_database import get_npc_engine
@@ -188,12 +188,12 @@ class Environment:
             await npc_engine.dispose()  # Properly dispose of NPC database engine connections
             self.logger.info("Disposed NPC database engine")
         except Exception as e:
-            self.logger.warning(f"Error disposing NPC database engine: {e}")
+            self.logger.warning("Error disposing NPC database engine", error=str(e))
 
         try:
             await close_db()
         except Exception as e:
-            self.logger.warning(f"Error closing database connections: {e}")
+            self.logger.warning("Error closing database connections", error=str(e))
 
         # Reset global state after cleanup to prevent pollution
         try:
@@ -210,7 +210,7 @@ class Environment:
 
             self.logger.info("Reset database global state")
         except Exception as e:
-            self.logger.warning(f"Error resetting database global state: {e}")
+            self.logger.warning("Error resetting database global state", error=str(e))
 
     def _merge_config(self, base_config: dict[str, Any], override_config: dict[str, Any]):
         """Merge configuration dictionaries"""

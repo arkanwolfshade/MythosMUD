@@ -67,6 +67,29 @@ The system automatically routes logs to category-specific files:
 - **access.log**: Access control and permissions
 - **security.log**: Security events and audit trails
 
+## F-String Logging Anti-Pattern
+
+**CRITICAL**: The most common and destructive anti-pattern is f-string logging. This MUST be eliminated:
+
+```python
+# ❌ WRONG - Destroys structured logging benefits
+logger.info(f"Starting combat between {attacker} and {target}")
+logger.error(f"Failed to process: {error}")
+logger.debug(f"Message data: {message_data}")
+
+# ✅ CORRECT - Structured logging enables aggregation and analysis
+logger.info("Starting combat", attacker=attacker, target=target, room_id=room_id)
+logger.error("Failed to process", error=str(error), operation="combat_start")
+logger.debug("NATS message received", message_data=message_data, message_type=type(message_data))
+```
+
+**Why f-strings are forbidden:**
+- **Breaks log aggregation**: Cannot search by specific fields
+- **Prevents alerting**: Cannot create alerts based on structured data
+- **Reduces performance**: String formatting is slower than structured data
+- **Loses context**: Cannot correlate events across different log entries
+- **Makes debugging harder**: Cannot filter or analyze logs effectively
+
 ## Best Practices
 
 ### ✅ CORRECT Usage Patterns
@@ -92,12 +115,18 @@ bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.
 # ❌ WRONG - F-string logging destroys structured logging
 logger.info(f"User {user_id} performed {action}")
 logger.error(f"Failed to process: {error}")
+logger.debug(f"Message data: {message_data}")
 
 # ❌ WRONG - Deprecated context parameter
 logger.info("message", context={"key": "value"})
 
 # ❌ WRONG - Unstructured messages
 logger.info("Error occurred")
+
+# ❌ WRONG - String formatting breaks structured logging
+logger.info(f"Starting combat between {attacker} and {target}")
+logger.error(f"Failed to process: {error}")
+logger.debug(f"Message data: {message_data}")
 
 # ❌ WRONG - Logging sensitive data
 logger.info("Login attempt", username=user, password=password)

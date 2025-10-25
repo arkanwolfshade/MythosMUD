@@ -71,7 +71,7 @@ class CombatMessagingService:
             attacker_name=attacker_name, target_name=target_name, damage=damage, action_type=action_type
         )
 
-        logger.debug(f"Generated {perspective} attack message: {message}")
+        logger.debug("Generated attack message", perspective=perspective, message=message)
         return message
 
     async def get_death_message(self, npc_name: str, npc_messages: dict[str, Any] | None = None) -> str:
@@ -94,7 +94,7 @@ class CombatMessagingService:
         # Substitute variables in the template
         message = template.format(npc_name=npc_name)
 
-        logger.debug(f"Generated death message: {message}")
+        logger.debug("Generated death message", message=message)
         return message
 
     async def get_combat_start_messages(
@@ -121,7 +121,7 @@ class CombatMessagingService:
             else:
                 messages[occupant] = f"{attacker_name} attacks {target_name}!"
 
-        logger.debug(f"Generated combat start messages for {len(room_occupants)} occupants")
+        logger.debug("Generated combat start messages", occupant_count=len(room_occupants))
         return messages
 
     async def get_combat_end_messages(
@@ -148,7 +148,7 @@ class CombatMessagingService:
             else:
                 messages[occupant] = f"{winner_name} defeats {loser_name}!"
 
-        logger.debug(f"Generated combat end messages for {len(room_occupants)} occupants")
+        logger.debug("Generated combat end messages", occupant_count=len(room_occupants))
         return messages
 
     async def get_error_message(self, error_type: str, player_name: str, target_name: str | None = None) -> str:
@@ -175,7 +175,7 @@ class CombatMessagingService:
         }
 
         message = error_messages.get(error_type, f"{player_name}, something goes wrong with your attack.")
-        logger.debug(f"Generated error message for {error_type}: {message}")
+        logger.debug("Generated error message", error_type=error_type, message=message)
         return message
 
     async def validate_npc_messages(self, messages_data: dict[str, Any]) -> dict[str, Any]:

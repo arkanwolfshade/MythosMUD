@@ -90,7 +90,7 @@ class RealTimeEventHandler:
             # Get player information
             player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for entered event: {processed_event.player_id}")
+                self._logger.warning("Player not found for entered event", player_id=processed_event.player_id)
                 return
 
             player_name = getattr(player, "name", processed_event.player_id)
@@ -111,7 +111,7 @@ class RealTimeEventHandler:
                     room_name=room_name,
                 )
             except Exception as e:
-                self._logger.error(f"Error logging player joined room: {e}")
+                self._logger.error("Error logging player joined room", error=str(e))
 
             # Create real-time message with processed event
             message = self._create_player_entered_message(processed_event, player_name)
@@ -156,14 +156,16 @@ class RealTimeEventHandler:
                 }
                 await self.connection_manager.send_personal_message(exclude_player_id, personal)
             except Exception as e:
-                self._logger.error(f"Error sending personal occupants update: {e}")
+                self._logger.error("Error sending personal occupants update", error=str(e))
 
             self._logger.info(
-                f"Player {player_name} entered room {processed_event.room_id} with enhanced synchronization"
+                "Player entered room with enhanced synchronization",
+                player_name=player_name,
+                room_id=processed_event.room_id,
             )
 
         except Exception as e:
-            self._logger.error(f"Error handling player entered event: {e}", exc_info=True)
+            self._logger.error("Error handling player entered event", error=str(e), exc_info=True)
 
     async def _handle_player_left(self, event: PlayerLeftRoom):
         """
@@ -183,7 +185,7 @@ class RealTimeEventHandler:
             # Get player information
             player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for left event: {processed_event.player_id}")
+                self._logger.warning("Player not found for left event", player_id=processed_event.player_id)
                 return
 
             player_name = getattr(player, "name", processed_event.player_id)
@@ -204,7 +206,7 @@ class RealTimeEventHandler:
                     room_name=room_name,
                 )
             except Exception as e:
-                self._logger.error(f"Error logging player left room: {e}")
+                self._logger.error("Error logging player left room", error=str(e))
 
             # Create real-time message with processed event
             message = self._create_player_left_message(processed_event, player_name)
@@ -226,10 +228,14 @@ class RealTimeEventHandler:
             # Send room occupants update to remaining players
             await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
-            self._logger.info(f"Player {player_name} left room {processed_event.room_id} with enhanced synchronization")
+            self._logger.info(
+                "Player left room with enhanced synchronization",
+                player_name=player_name,
+                room_id=processed_event.room_id,
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling player left event: {e}", exc_info=True)
+            self._logger.error("Error handling player left event", error=str(e), exc_info=True)
 
     def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict:
         """
@@ -323,7 +329,7 @@ class RealTimeEventHandler:
             await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except Exception as e:
-            self._logger.error(f"Error sending room occupants update: {e}", exc_info=True)
+            self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
     def _get_room_occupants(self, room_id: str) -> list[dict]:
         """
@@ -377,7 +383,7 @@ class RealTimeEventHandler:
                 occupants.append(occupant_info)
 
         except Exception as e:
-            self._logger.error(f"Error getting room occupants: {e}", exc_info=True)
+            self._logger.error("Error getting room occupants", error=str(e), exc_info=True)
 
         return occupants
 
@@ -392,7 +398,7 @@ class RealTimeEventHandler:
             event: NPCEnteredRoom event containing NPC and room information
         """
         try:
-            self._logger.info(f"NPC {event.npc_id} entered room {event.room_id}")
+            self._logger.info("NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
             # Get the room from persistence
             persistence = self.connection_manager.persistence
@@ -402,7 +408,7 @@ class RealTimeEventHandler:
 
             room = persistence.get_room(event.room_id)
             if not room:
-                self._logger.warning(f"Room not found for NPC entry: {event.room_id}")
+                self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
 
             # Add NPC to room's occupant list
@@ -436,10 +442,12 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(f"NPC {event.npc_id} successfully added to room {event.room_id} occupant list")
+            self._logger.debug(
+                "NPC successfully added to room occupant list", npc_id=event.npc_id, room_id=event.room_id
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling NPC entered room event: {e}", exc_info=True)
+            self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
 
     def _handle_npc_left(self, event: NPCLeftRoom):
         """
@@ -452,7 +460,7 @@ class RealTimeEventHandler:
             event: NPCLeftRoom event containing NPC and room information
         """
         try:
-            self._logger.info(f"NPC {event.npc_id} left room {event.room_id}")
+            self._logger.info("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
             # Get the room from persistence
             persistence = self.connection_manager.persistence
@@ -462,7 +470,7 @@ class RealTimeEventHandler:
 
             room = persistence.get_room(event.room_id)
             if not room:
-                self._logger.warning(f"Room not found for NPC exit: {event.room_id}")
+                self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
 
             # Remove NPC from room's occupant list
@@ -496,10 +504,12 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(f"NPC {event.npc_id} successfully removed from room {event.room_id} occupant list")
+            self._logger.debug(
+                "NPC successfully removed from room occupant list", npc_id=event.npc_id, room_id=event.room_id
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling NPC left room event: {e}", exc_info=True)
+            self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)
 
     def shutdown(self):
         """Shutdown the event handler."""
@@ -511,11 +521,12 @@ class RealTimeEventHandler:
 real_time_event_handler: RealTimeEventHandler | None = None
 
 
-def get_real_time_event_handler(task_registry=None) -> RealTimeEventHandler:
+def get_real_time_event_handler(event_bus=None, task_registry=None) -> RealTimeEventHandler:
     """
     Get the global RealTimeEventHandler instance.
 
     Args:
+        event_bus: Optional EventBus instance. If None, will get the global instance.
         task_registry: Optional TaskRegistry instance for task lifecycle tracking
 
     Returns:
@@ -523,7 +534,7 @@ def get_real_time_event_handler(task_registry=None) -> RealTimeEventHandler:
     """
     global real_time_event_handler
     if real_time_event_handler is None:
-        real_time_event_handler = RealTimeEventHandler(task_registry=task_registry)
+        real_time_event_handler = RealTimeEventHandler(event_bus=event_bus, task_registry=task_registry)
     # If we've passed a task_registry after init, update the instance
     elif task_registry and not real_time_event_handler.task_registry:
         real_time_event_handler.task_registry = task_registry

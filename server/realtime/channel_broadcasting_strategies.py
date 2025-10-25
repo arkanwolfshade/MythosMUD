@@ -132,7 +132,7 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         from ..realtime.connection_manager import connection_manager
 
         await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
-        logger.debug(f"Broadcasted {self.channel_type} message", sender_id=sender_id)
+        logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 
 
 class UnknownChannelStrategy(ChannelBroadcastingStrategy):
@@ -198,7 +198,7 @@ class ChannelBroadcastingStrategyFactory:
             strategy: Strategy to register
         """
         self._strategies[channel_type] = strategy
-        logger.info(f"Registered strategy for channel type: {channel_type}")
+        logger.info("Registered strategy for channel type", channel_type=channel_type)
 
 
 # Global strategy factory instance

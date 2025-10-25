@@ -62,7 +62,7 @@ class Room:
         self._event_bus = event_bus
         self._logger = get_logger(f"Room({self.id})")
 
-        self._logger.debug(f"Initialized room: {self.name} ({self.id})")
+        self._logger.debug("Initialized room", room_name=self.name, room_id=self.id)
 
     def player_entered(self, player_id: str) -> None:
         """
@@ -75,11 +75,11 @@ class Room:
             raise ValueError("Player ID cannot be empty")
 
         if player_id in self._players:
-            self._logger.warning(f"Player {player_id} already in room {self.id}")
+            self._logger.warning("Player already in room", player_id=player_id, room_id=self.id)
             return
 
         self._players.add(player_id)
-        self._logger.debug(f"Player {player_id} entered room {self.id}")
+        self._logger.debug("Player entered room", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
@@ -97,11 +97,11 @@ class Room:
             raise ValueError("Player ID cannot be empty")
 
         if player_id not in self._players:
-            self._logger.warning(f"Player {player_id} not in room {self.id}")
+            self._logger.warning("Player not in room", player_id=player_id, room_id=self.id)
             return
 
         self._players.remove(player_id)
-        self._logger.debug(f"Player {player_id} left room {self.id}")
+        self._logger.debug("Player left room", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
@@ -120,11 +120,11 @@ class Room:
             raise ValueError("Object ID cannot be empty")
 
         if object_id in self._objects:
-            self._logger.warning(f"Object {object_id} already in room {self.id}")
+            self._logger.warning("Object already in room", object_id=object_id, room_id=self.id)
             return
 
         self._objects.add(object_id)
-        self._logger.debug(f"Object {object_id} added to room {self.id}")
+        self._logger.debug("Object added to room", object_id=object_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
@@ -145,11 +145,11 @@ class Room:
             raise ValueError("Object ID cannot be empty")
 
         if object_id not in self._objects:
-            self._logger.warning(f"Object {object_id} not in room {self.id}")
+            self._logger.warning("Object not in room", object_id=object_id, room_id=self.id)
             return
 
         self._objects.remove(object_id)
-        self._logger.debug(f"Object {object_id} removed from room {self.id}")
+        self._logger.debug("Object removed from room", object_id=object_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
@@ -169,11 +169,11 @@ class Room:
             raise ValueError("NPC ID cannot be empty")
 
         if npc_id in self._npcs:
-            self._logger.warning(f"NPC {npc_id} already in room {self.id}")
+            self._logger.warning("NPC already in room", npc_id=npc_id, room_id=self.id)
             return
 
         self._npcs.add(npc_id)
-        self._logger.debug(f"NPC {npc_id} entered room {self.id}")
+        self._logger.debug("NPC entered room", npc_id=npc_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
@@ -191,11 +191,11 @@ class Room:
             raise ValueError("NPC ID cannot be empty")
 
         if npc_id not in self._npcs:
-            self._logger.warning(f"NPC {npc_id} not in room {self.id}")
+            self._logger.warning("NPC not in room", npc_id=npc_id, room_id=self.id)
             return
 
         self._npcs.remove(npc_id)
-        self._logger.debug(f"NPC {npc_id} left room {self.id}")
+        self._logger.debug("NPC left room", npc_id=npc_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:

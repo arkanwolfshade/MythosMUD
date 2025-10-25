@@ -52,10 +52,10 @@ class GameTickService:
                 self._tick_loop(), task_name="gametick_service/tick_loop", task_type="system_lifecycle"
             )
             self.is_running = True
-            logger.info(f"GameTickService started with {self.tick_interval}s interval")
+            logger.info("GameTickService started", tick_interval=self.tick_interval)
             return True
         except Exception as e:
-            logger.error(f"Failed to start GameTickService: {e}")
+            logger.error("Failed to start GameTickService", error=str(e))
             return False
 
     async def stop(self) -> bool:
@@ -83,7 +83,7 @@ class GameTickService:
             logger.info("GameTickService stopped")
             return True
         except Exception as e:
-            logger.error(f"Failed to stop GameTickService: {e}")
+            logger.error("Failed to stop GameTickService", error=str(e))
             return False
 
     async def _tick_loop(self):
@@ -113,9 +113,9 @@ class GameTickService:
                 )
 
                 if success:
-                    logger.debug(f"Published game tick event #{self.tick_count}")
+                    logger.debug("Published game tick event", tick_count=self.tick_count)
                 else:
-                    logger.warning(f"Failed to publish game tick event #{self.tick_count}")
+                    logger.warning("Failed to publish game tick event", tick_count=self.tick_count)
 
                 # Wait for the next tick
                 await asyncio.sleep(self.tick_interval)
@@ -124,7 +124,7 @@ class GameTickService:
                 logger.info("Game tick loop cancelled")
                 break
             except Exception as e:
-                logger.error(f"Error in game tick loop: {e}")
+                logger.error("Error in game tick loop", error=str(e))
                 # Continue the loop even if there's an error
                 await asyncio.sleep(self.tick_interval)
 
@@ -166,7 +166,7 @@ class GameTickService:
             raise ValueError("Tick interval must be positive")
 
         self.tick_interval = interval
-        logger.info(f"Game tick interval set to {interval}s")
+        logger.info("Game tick interval set", interval=interval)
 
     def is_service_running(self) -> bool:
         """

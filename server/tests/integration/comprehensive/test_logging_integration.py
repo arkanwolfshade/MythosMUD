@@ -145,7 +145,7 @@ class TestLoggingIntegration:
 
         # Test logging with player GUID
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        logger.info(f"Player {test_guid} connected")
+        logger.info("Player connected", test_guid=test_guid)
 
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
@@ -176,7 +176,7 @@ class TestLoggingIntegration:
             logger.setLevel(logging.INFO)
 
             # Log message with GUID
-            logger.info(f"Category {category}: Player {test_guid} action")
+            logger.info("Category action", category=category, test_guid=test_guid)
 
             # Clean up
             logger.removeHandler(handler)
@@ -207,7 +207,7 @@ class TestLoggingIntegration:
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
 
         # This should not raise an exception
-        logger.info(f"Player {test_guid} connected")
+        logger.info("Player connected", test_guid=test_guid)
 
         # Verify player service was called despite error
         self.mock_persistence.get_player.assert_called_with(test_guid)
@@ -238,7 +238,7 @@ class TestLoggingIntegration:
 
         # Test logging with GUID
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        logger.info(f"Structlog message: Player {test_guid} connected")
+        logger.info("Structlog message: Player connected", test_guid=test_guid)
 
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
@@ -273,7 +273,7 @@ class TestLoggingIntegration:
         start_time = time.time()
 
         for i in range(num_messages):
-            logger.info(f"Message {i}: Player {test_guid} action {i}")
+            logger.info("Message", message_number=i, test_guid=test_guid, action=i)
 
         end_time = time.time()
         duration = end_time - start_time
@@ -311,10 +311,10 @@ class TestLoggingIntegration:
         # Test different log levels
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
 
-        logger.debug(f"DEBUG: Player {test_guid} debug action")
-        logger.info(f"INFO: Player {test_guid} info action")
-        logger.warning(f"WARNING: Player {test_guid} warning action")
-        logger.error(f"ERROR: Player {test_guid} error action")
+        logger.debug("DEBUG: Player debug action", test_guid=test_guid)
+        logger.info("INFO: Player info action", test_guid=test_guid)
+        logger.warning("WARNING: Player warning action", test_guid=test_guid)
+        logger.error("ERROR: Player error action", test_guid=test_guid)
 
         # Verify persistence layer was called for each level
         assert self.mock_persistence.get_player.call_count == 4

@@ -213,7 +213,7 @@ class StandardizedErrorResponse:
 
         except Exception as e:
             # Fallback error handling
-            logger.error(f"Error in StandardizedErrorResponse: {e}", exc_info=True)
+            logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
             return self._create_fallback_response(exc, response_type)
 
     def _handle_mythos_error(self, error: MythosMUDError, include_details: bool, response_type: str) -> JSONResponse:
@@ -331,7 +331,7 @@ class StandardizedErrorResponse:
             details["exception_message"] = str(exc)
 
         # Log the error
-        logger.error(f"Unhandled exception: {exc}", exc_info=True, context=self.context.to_dict())
+        logger.error("Unhandled exception", error=str(exc), exc_info=True, context=self.context.to_dict())
 
         # Create appropriate response
         response_data = create_standard_error_response(

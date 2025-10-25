@@ -71,7 +71,7 @@ class MemoryThresholdMonitor:
             memory_bytes = process.memory_info().rss
             return float(memory_bytes)
         except (OSError, AttributeError, ImportError) as memory_query_failure:
-            logger.warning(f"Unable to retrieve memory usage statistics: {memory_query_failure}")
+            logger.warning("Unable to retrieve memory usage statistics", error=str(memory_query_failure))
             return 0.0
 
     def _get_active_task_count(self) -> int:
@@ -81,7 +81,7 @@ class MemoryThresholdMonitor:
             active_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
             return len(active_tasks)
         except RuntimeError as loop_access_failure:
-            logger.error(f"Failed to access active task count: {loop_access_failure}")
+            logger.error("Failed to access active task count", error=str(loop_access_failure))
             return 0
 
     def _flush_memory_indexes_cache(self):
@@ -91,9 +91,9 @@ class MemoryThresholdMonitor:
 
             pre_collection_count = len(gc.get_objects())
             gc.collect()
-            logger.debug(f"Garbage collector flush completed - previously {pre_collection_count} objects allocated")
+            logger.debug("Garbage collector flush completed", pre_collection_count=pre_collection_count)
         except Exception as gc_operation_failure:
-            logger.error(f"Garbage collection optimization failed: {gc_operation_failure}")
+            logger.error("Garbage collection optimization failed", error=str(gc_operation_failure))
 
     async def get_memory_status_report(self) -> dict:
         """
@@ -181,10 +181,10 @@ class MemoryThresholdMonitor:
             return total_orphans_processed
 
         except TimeoutError:
-            logger.error(f"Cleanup operation timed out after {timeout_seconds} seconds")
+            logger.error("Cleanup operation timed out", timeout_seconds=timeout_seconds)
             return -1  # Negative return signals timeout
         except Exception as cleanup_execution_exception:
-            logger.error(f"Managed cleanup runtime execution failed: {cleanup_execution_exception}")
+            logger.error("Managed cleanup runtime execution failed", error=str(cleanup_execution_exception))
             return -2  # Negative return signals failure
 
 

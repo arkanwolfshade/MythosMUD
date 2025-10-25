@@ -124,7 +124,7 @@ class PydanticErrorHandler:
 
         except Exception as e:
             # Fallback error handling
-            logger.error(f"Error in PydanticErrorHandler: {e}", exc_info=True)
+            logger.error("Error in PydanticErrorHandler", error=str(e), exc_info=True)
             return self._create_fallback_error_response(error, response_type)
 
     def _extract_error_info(self, error: ValidationError, model_class: type | None = None) -> dict[str, Any]:

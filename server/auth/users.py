@@ -51,20 +51,20 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
-        logger.info(f"User {user.username} has registered.")
+        logger.info("User has registered", username=user.username)
 
         # Auto-verify bogus emails for privacy protection
         if is_bogus_email(user.email):
             user.is_verified = True
-            logger.info(f"Auto-verified bogus email for user {user.username}: {user.email}")
+            logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
-        logger.info(f"User {user.username} has forgot their password. Reset token: {token}")
+        logger.info("User has forgot their password", username=user.username, reset_token=token)
 
     async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
         """Handle username verification logic."""
-        logger.info(f"Verification requested for user {user.username}. Verification token: {token}")
+        logger.info("Verification requested for user", username=user.username, verification_token=token)
 
     def parse_id(self, value: Any) -> uuid.UUID:
         """Parse a value into a UUID instance."""
@@ -167,20 +167,20 @@ def get_current_user_with_logging():
             auth_preview = (
                 auth_header[:50] + "..." if auth_header != "Not provided" and len(auth_header) > 50 else auth_header
             )
-            logger.debug(f"Authentication attempt - Auth header: {auth_preview}")
+            logger.debug("Authentication attempt - Auth header", auth_preview=auth_preview)
 
             # Get the raw dependency result
             user = await get_current_user(request)
 
             if user:
-                logger.info(f"Authentication successful for user: {user.username} (ID: {user.id})")
+                logger.info("Authentication successful for user", username=user.username, user_id=user.id)
             else:
                 logger.warning("Authentication failed: No user returned from get_current_user")
 
             return user
         except Exception as e:
-            logger.error(f"Authentication error: {type(e).__name__}: {str(e)}")
-            logger.debug(f"Authentication error details: {type(e).__name__}: {str(e)}")
+            logger.error("Authentication error", error_type=type(e).__name__, error=str(e))
+            logger.debug("Authentication error details", error_type=type(e).__name__, error=str(e))
             return None
 
     return Depends(_get_current_user_with_logging)

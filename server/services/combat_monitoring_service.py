@@ -168,7 +168,7 @@ class CombatMonitoringService:
         self._metrics.total_combats += 1
         self._metrics.active_combats += 1
 
-        logger.debug(f"Started monitoring combat {combat_id}")
+        logger.debug("Started monitoring combat", combat_id=combat_id)
 
     def end_combat_monitoring(self, combat_id: str, success: bool = True) -> None:
         """
@@ -182,7 +182,7 @@ class CombatMonitoringService:
             return
 
         if combat_id not in self._combat_start_times:
-            logger.warning(f"Combat {combat_id} not found in monitoring")
+            logger.warning("Combat not found in monitoring", combat_id=combat_id)
             return
 
         # Calculate combat duration
@@ -204,7 +204,7 @@ class CombatMonitoringService:
         if combat_id in self._turn_start_times:
             del self._turn_start_times[combat_id]
 
-        logger.debug(f"Ended monitoring combat {combat_id}, duration: {duration:.2f}s")
+        logger.debug("Ended monitoring combat", combat_id=combat_id, duration=duration)
 
     def start_turn_monitoring(self, combat_id: str) -> None:
         """
@@ -217,7 +217,7 @@ class CombatMonitoringService:
             return
 
         self._turn_start_times[combat_id] = time.time()
-        logger.debug(f"Started monitoring turn for combat {combat_id}")
+        logger.debug("Started monitoring turn for combat", combat_id=combat_id)
 
     def end_turn_monitoring(self, combat_id: str) -> None:
         """
@@ -230,7 +230,7 @@ class CombatMonitoringService:
             return
 
         if combat_id not in self._turn_start_times:
-            logger.warning(f"Turn for combat {combat_id} not found in monitoring")
+            logger.warning("Turn for combat not found in monitoring", combat_id=combat_id)
             return
 
         # Calculate turn duration
@@ -243,7 +243,7 @@ class CombatMonitoringService:
         # Clean up
         del self._turn_start_times[combat_id]
 
-        logger.debug(f"Ended monitoring turn for combat {combat_id}, duration: {duration:.2f}s")
+        logger.debug("Ended monitoring turn for combat", combat_id=combat_id, duration=duration)
 
     def record_combat_error(
         self, error_type: str, combat_id: str | None = None, error_details: dict[str, Any] | None = None
@@ -272,7 +272,7 @@ class CombatMonitoringService:
         # Check error threshold
         self._check_error_threshold()
 
-        logger.debug(f"Recorded combat error: {error_type}, combat: {combat_id}")
+        logger.debug("Recorded combat error", error_type=error_type, combat_id=combat_id)
 
     def update_resource_metrics(self, memory_mb: float, cpu_percent: float) -> None:
         """
@@ -369,7 +369,7 @@ class CombatMonitoringService:
         alert.resolved = True
         alert.resolved_timestamp = time.time()
 
-        logger.info(f"Resolved alert {alert_id}: {alert.title}")
+        logger.info("Resolved alert", alert_id=alert_id, title=alert.title)
         return True
 
     def clear_resolved_alerts(self) -> int:
@@ -384,7 +384,7 @@ class CombatMonitoringService:
         for alert_id in resolved_alert_ids:
             del self._alerts[alert_id]
 
-        logger.info(f"Cleared {len(resolved_alert_ids)} resolved alerts")
+        logger.info("Cleared resolved alerts", count=len(resolved_alert_ids))
         return len(resolved_alert_ids)
 
     def get_monitoring_summary(self) -> dict[str, Any]:
@@ -506,9 +506,9 @@ class CombatMonitoringService:
             try:
                 callback(alert)
             except Exception as e:
-                logger.error(f"Error in alert callback: {e}")
+                logger.error("Error in alert callback", error=str(e))
 
-        logger.warning(f"Generated alert {alert_id}: {title}")
+        logger.warning("Generated alert", alert_id=alert_id, title=title)
         return alert
 
     def _save_metrics_snapshot(self) -> None:

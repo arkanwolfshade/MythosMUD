@@ -51,7 +51,7 @@ class RateLimiter:
 
         # Check if limit exceeded
         if len(self.connection_attempts[player_id]) >= self.max_connection_attempts:
-            logger.warning(f"Rate limit exceeded for player {player_id}")
+            logger.warning("Rate limit exceeded", player_id=player_id)
             return False
 
         # Add current attempt
@@ -109,10 +109,10 @@ class RateLimiter:
                 del self.connection_attempts[player_id]
 
             if orphaned_players:
-                logger.debug(f"Cleaned up rate limit data for {len(orphaned_players)} players")
+                logger.debug("Cleaned up rate limit data", player_count=len(orphaned_players))
 
         except Exception as e:
-            logger.error(f"Error cleaning up rate limit attempts: {e}")
+            logger.error("Error cleaning up rate limit attempts", error=str(e))
 
     def cleanup_large_structures(self, max_entries: int = 1000):
         """
@@ -131,7 +131,7 @@ class RateLimiter:
                     )
 
         except Exception as e:
-            logger.error(f"Error cleaning up large rate limit structures: {e}")
+            logger.error("Error cleaning up large rate limit structures", error=str(e))
 
     def remove_player_data(self, player_id: str):
         """
@@ -143,9 +143,9 @@ class RateLimiter:
         try:
             if player_id in self.connection_attempts:
                 del self.connection_attempts[player_id]
-                logger.debug(f"Removed rate limit data for player {player_id}")
+                logger.debug("Removed rate limit data", player_id=player_id)
         except Exception as e:
-            logger.error(f"Error removing rate limit data for player {player_id}: {e}")
+            logger.error("Error removing rate limit data", player_id=player_id, error=str(e))
 
     def get_stats(self) -> dict[str, Any]:
         """
@@ -175,5 +175,5 @@ class RateLimiter:
                 "window_seconds": self.connection_window,
             }
         except Exception as e:
-            logger.error(f"Error getting rate limiter stats: {e}")
+            logger.error("Error getting rate limiter stats", error=str(e))
             return {}

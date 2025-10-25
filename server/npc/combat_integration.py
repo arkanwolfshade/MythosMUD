@@ -213,15 +213,22 @@ class NPCCombatIntegration:
             bool: True if death was handled successfully
         """
         try:
-            # Apply effects to killer if it's a player
+            # Calculate XP reward for the killer
+            xp_reward = 0
+            npc_name = None
+
             if killer_id:
+                # For now, use a default XP reward since NPC retrieval is complex
+                # TODO: Implement proper NPC retrieval from NPC database
+                xp_reward = 10  # Default XP reward for aggressive mobs
+                npc_name = "Unknown NPC"  # Default name
+
+                # Apply effects to killer if it's a player
                 player = self._persistence.get_player(killer_id)
                 if player:
-                    # Gain occult knowledge for killing certain NPCs
-                    npc = self._persistence.get_npc(npc_id)
-                    if npc and npc.npc_type.value == "aggressive_mob":
-                        occult_gain = 5  # Small amount of occult knowledge
-                        self._game_mechanics.gain_occult_knowledge(killer_id, occult_gain, f"killed_{npc_id}")
+                    # Gain occult knowledge for killing NPCs
+                    occult_gain = 5  # Small amount of occult knowledge
+                    self._game_mechanics.gain_occult_knowledge(killer_id, occult_gain, f"killed_{npc_id}")
 
                     # Apply sanity loss for killing (even aggressive NPCs)
                     sanity_loss = 2  # Small sanity loss for taking a life
@@ -237,10 +244,18 @@ class NPCCombatIntegration:
                         room_id=room_id,
                         cause=cause,
                         killer_id=killer_id,
+                        npc_name=npc_name,
+                        xp_reward=xp_reward,
                     )
                 )
 
-            logger.info("NPC death handled", npc_id=npc_id, cause=cause, killer_id=killer_id)
+            logger.info(
+                "NPC death handled",
+                npc_id=npc_id,
+                cause=cause,
+                killer_id=killer_id,
+                xp_reward=xp_reward,
+            )
             return True
 
         except Exception as e:

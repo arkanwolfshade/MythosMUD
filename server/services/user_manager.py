@@ -246,12 +246,16 @@ class UserManager:
             self.load_player_mutes(unmuter_id)
 
             # Debug logging
-            logger.debug(f"Unmute debug - unmuter_id: {unmuter_id} (type: {type(unmuter_id)})")
-            logger.debug(f"Unmute debug - target_id: {target_id} (type: {type(target_id)})")
-            logger.debug(f"Unmute debug - player_mutes_keys: {list(self._player_mutes.keys())}")
-            logger.debug(f"Unmute debug - unmuter_mutes keys: {list(self._player_mutes.get(unmuter_id, {}).keys())}")
+            logger.debug("Unmute debug - unmuter_id", unmuter_id=unmuter_id, unmuter_id_type=type(unmuter_id))
+            logger.debug("Unmute debug - target_id", target_id=target_id, target_id_type=type(target_id))
+            logger.debug("Unmute debug - player_mutes_keys", player_mutes_keys=list(self._player_mutes.keys()))
             logger.debug(
-                f"Unmute debug - target_id in unmuter_mutes: {target_id in self._player_mutes.get(unmuter_id, {})}"
+                "Unmute debug - unmuter_mutes keys",
+                unmuter_mutes_keys=list(self._player_mutes.get(unmuter_id, {}).keys()),
+            )
+            logger.debug(
+                "Unmute debug - target_id in unmuter_mutes",
+                target_id_in_unmuter_mutes=target_id in self._player_mutes.get(unmuter_id, {}),
             )
 
             # Check if mute exists (convert target_id to string for comparison)

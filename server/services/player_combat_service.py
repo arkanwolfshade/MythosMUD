@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from uuid import UUID
 
+from server.events.event_types import BaseEvent
 from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -31,20 +32,14 @@ class PlayerCombatState:
             self.last_activity = datetime.utcnow()
 
 
-@dataclass
-class PlayerXPAwardEvent:
+class PlayerXPAwardEvent(BaseEvent):
     """Event published when a player receives XP."""
 
-    event_type: str = "player_xp_awarded"
-    player_id: UUID = None
-    xp_amount: int = 0
-    new_level: int = 0
-    timestamp: datetime = None
-
-    def __post_init__(self):
-        """Initialize timestamp if not provided."""
-        if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+    def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime = None):
+        super().__init__(event_type="player_xp_awarded", timestamp=timestamp or datetime.utcnow())
+        self.player_id = player_id
+        self.xp_amount = xp_amount
+        self.new_level = new_level
 
 
 class PlayerCombatService:
@@ -235,7 +230,7 @@ class PlayerCombatService:
                 xp_amount=xp_amount,
                 new_level=player.level,
             )
-            await self._event_bus.publish_event(event)
+            await self._event_bus.publish(event)
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 

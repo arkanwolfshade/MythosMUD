@@ -140,7 +140,7 @@ class CombatConfigurationService:
                 combat_performance_threshold=self._config.game.combat_performance_threshold,
                 combat_error_threshold=self._config.game.combat_error_threshold,
             )
-            logger.debug(f"Combat configuration cached: {self._cached_config.to_dict()}")
+            logger.debug("Combat configuration cached", config=self._cached_config.to_dict())
         return self._cached_config
 
     def get_combat_configuration_for_scope(
@@ -224,7 +224,7 @@ class CombatConfigurationService:
             override_key = f"temp:{scope_id}"
             self._overrides[override_key] = updated_config
 
-        logger.info(f"Combat configuration updated for {scope.value}:{scope_id}: {updates}")
+        logger.info("Combat configuration updated", scope=scope.value, scope_id=scope_id, updates=updates)
         return updated_config
 
     def clear_scope_override(self, scope: CombatConfigurationScope, scope_id: str) -> None:
@@ -246,7 +246,7 @@ class CombatConfigurationService:
 
         if override_key in self._overrides:
             del self._overrides[override_key]
-            logger.info(f"Configuration override cleared for {scope.value}:{scope_id}")
+            logger.info("Configuration override cleared", scope=scope.value, scope_id=scope_id)
 
     def clear_all_overrides(self) -> None:
         """Clear all configuration overrides."""
@@ -307,7 +307,7 @@ class CombatConfigurationService:
         # Validate configuration
         errors = self.validate_configuration(config)
         if errors:
-            logger.warning(f"Combat not available due to configuration errors: {errors}")
+            logger.warning("Combat not available due to configuration errors", errors=errors)
             return False
 
         return True

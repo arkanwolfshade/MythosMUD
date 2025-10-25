@@ -192,10 +192,10 @@ async def handle_go_command(
         success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
 
         if success:
-            logger.info(f"Player moved successfully for {player_name}: from {room_id} to {target_room_id}")
+            logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You move to the new location."}
         else:
-            logger.warning(f"Movement service failed for {player_name}: from {room_id} to {target_room_id}")
+            logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way."}
 
     except Exception as e:

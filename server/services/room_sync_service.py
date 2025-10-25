@@ -76,7 +76,7 @@ class RoomSyncService:
             return event
 
         except Exception as e:
-            logger.error(f"Error processing event with ordering: {e}", exc_info=True)
+            logger.error("Error processing event with ordering", error=str(e), exc_info=True)
             raise
 
     def _merge_room_data(self, old_data: dict[str, Any], new_data: dict[str, Any]) -> dict[str, Any]:
@@ -113,7 +113,7 @@ class RoomSyncService:
             return merged_data
 
         except Exception as e:
-            logger.error(f"Error merging room data: {e}", exc_info=True)
+            logger.error("Error merging room data", error=str(e), exc_info=True)
             return new_data  # Return new data as fallback
 
     def _is_newer_data(self, old_data: dict[str, Any], new_data: dict[str, Any], key: str) -> bool:
@@ -141,7 +141,7 @@ class RoomSyncService:
             return True
 
         except Exception as e:
-            logger.warning(f"Error comparing data freshness for key {key}: {e}")
+            logger.warning("Error comparing data freshness", key=key, error=str(e))
             return True  # Default to accepting new data
 
     def _is_room_data_fresh(
@@ -185,7 +185,7 @@ class RoomSyncService:
             return is_fresh
 
         except Exception as e:
-            logger.error(f"Error checking room data freshness: {e}", exc_info=True)
+            logger.error("Error checking room data freshness", error=str(e), exc_info=True)
             return False  # Default to stale on error
 
     def _process_room_update_with_validation(self, room_data: dict[str, Any]) -> dict[str, Any]:
@@ -229,7 +229,7 @@ class RoomSyncService:
             return room_data
 
         except Exception as e:
-            logger.error(f"Error processing room update: {e}", exc_info=True)
+            logger.error("Error processing room update", error=str(e), exc_info=True)
             return room_data  # Return original data on error
 
     def _validate_room_data(self, room_data: dict[str, Any]) -> dict[str, Any]:
@@ -288,7 +288,7 @@ class RoomSyncService:
             return {"is_valid": is_valid, "errors": errors, "room_id": room_data.get("id")}
 
         except Exception as e:
-            logger.error(f"Error validating room data: {e}", exc_info=True)
+            logger.error("Error validating room data", error=str(e), exc_info=True)
             return {"is_valid": False, "errors": [f"Validation error: {str(e)}"], "room_id": room_data.get("id")}
 
     def _is_valid_room_id(self, room_id: str) -> bool:
@@ -354,7 +354,7 @@ class RoomSyncService:
             return fixed_data
 
         except Exception as e:
-            logger.error(f"Error applying room data fixes: {e}", exc_info=True)
+            logger.error("Error applying room data fixes", error=str(e), exc_info=True)
             return room_data
 
     def _handle_stale_room_data(self, room_data: dict[str, Any]) -> dict[str, Any]:
@@ -392,7 +392,7 @@ class RoomSyncService:
             return result
 
         except Exception as e:
-            logger.error(f"Error handling stale room data: {e}", exc_info=True)
+            logger.error("Error handling stale room data", error=str(e), exc_info=True)
             return {"action_taken": "error", "reason": str(e)}
 
     async def _process_room_transition(self, transition_data: dict[str, Any]) -> dict[str, Any]:
@@ -434,7 +434,7 @@ class RoomSyncService:
                 return result
 
         except Exception as e:
-            logger.error(f"Error processing room transition: {e}", exc_info=True)
+            logger.error("Error processing room transition", error=str(e), exc_info=True)
             return {"success": False, "errors": [str(e)], "player_id": transition_data.get("player_id")}
 
     def _validate_room_consistency(self, room_data: dict[str, Any]) -> dict[str, Any]:
@@ -480,7 +480,7 @@ class RoomSyncService:
             return {"is_consistent": is_consistent, "inconsistencies": inconsistencies, "room_id": room_data.get("id")}
 
         except Exception as e:
-            logger.error(f"Error validating room consistency: {e}", exc_info=True)
+            logger.error("Error validating room consistency", error=str(e), exc_info=True)
             return {
                 "is_consistent": False,
                 "inconsistencies": [f"Consistency check error: {str(e)}"],
@@ -520,7 +520,7 @@ class RoomSyncService:
             }
 
         except Exception as e:
-            logger.error(f"Error getting cache stats: {e}", exc_info=True)
+            logger.error("Error getting cache stats", error=str(e), exc_info=True)
             return {"error": str(e)}
 
     def clear_cache(self, room_id: str | None = None):
@@ -534,13 +534,13 @@ class RoomSyncService:
             if room_id:
                 if room_id in self._room_data_cache:
                     del self._room_data_cache[room_id]
-                logger.info(f"Cleared cache for room {room_id}")
+                logger.info("Cleared cache for room", room_id=room_id)
             else:
                 self._room_data_cache.clear()
                 logger.info("Cleared all room data cache")
 
         except Exception as e:
-            logger.error(f"Error clearing cache: {e}", exc_info=True)
+            logger.error("Error clearing cache", error=str(e), exc_info=True)
 
 
 # Global room sync service instance

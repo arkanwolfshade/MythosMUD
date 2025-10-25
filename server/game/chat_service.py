@@ -243,12 +243,12 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
-        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service object: {self.nats_service} ===")
-        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service type: {type(self.nats_service)} ===")
-        if self.nats_service:
-            logger.debug(f"=== CHAT SERVICE DEBUG: NATS service is_connected(): {self.nats_service.is_connected()} ===")
-        else:
-            logger.error("=== CHAT SERVICE DEBUG: NATS service is None ===")
+        logger.debug(
+            "Chat service NATS service status",
+            nats_service_object=self.nats_service,
+            nats_service_type=type(self.nats_service).__name__,
+            nats_connected=self.nats_service.is_connected() if self.nats_service else False,
+        )
 
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
@@ -1154,14 +1154,22 @@ class ChatService:
             True if published successfully, False otherwise
         """
         try:
+            # Pre-transmission validation
+            if not self._validate_chat_message(chat_message):
+                logger.warning("Chat message validation failed", message_id=chat_message.id)
+                return False
+
+            if not self._validate_room_access(chat_message.sender_id, room_id):
+                logger.warning("Room access validation failed", sender_id=chat_message.sender_id, room_id=room_id)
+                return False
+
             # Check if NATS service is available and connected
-            logger.debug("=== CHAT SERVICE DEBUG: Checking NATS service ===")
-            logger.debug(f"NATS service object: {self.nats_service}")
-            logger.debug(f"NATS service type: {type(self.nats_service)}")
-            if self.nats_service:
-                logger.debug(f"NATS service is_connected(): {self.nats_service.is_connected()}")
-            else:
-                logger.debug("NATS service is None")
+            logger.debug(
+                "Checking NATS service availability",
+                nats_service_available=self.nats_service is not None,
+                nats_service_type=type(self.nats_service).__name__ if self.nats_service else None,
+                nats_connected=self.nats_service.is_connected() if self.nats_service else False,
+            )
 
             if not self.nats_service or not self.nats_service.is_connected():
                 logger.error("NATS service not available or not connected - NATS is mandatory for chat functionality")
@@ -1193,15 +1201,15 @@ class ChatService:
                 if not subzone:
                     subzone = "unknown"
                 subject = f"chat.local.subzone.{subzone}"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Local channel subject: {subject} ===")
+                logger.debug("Local channel subject determined", subject=subject, subzone=subzone)
             elif chat_message.channel == "global":
                 # For global channel, use global subject
                 subject = "chat.global"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Global channel subject: {subject} ===")
+                logger.debug("Global channel subject determined", subject=subject)
             elif chat_message.channel == "system":
                 # For system channel, use system subject
                 subject = "chat.system"
-                logger.debug(f"=== CHAT SERVICE DEBUG: System channel subject: {subject} ===")
+                logger.debug("System channel subject determined", subject=subject)
             elif chat_message.channel == "whisper":
                 # For whisper channel, use whisper subject with target player
                 target_id = getattr(chat_message, "target_id", None)
@@ -1209,11 +1217,13 @@ class ChatService:
                     subject = f"chat.whisper.{target_id}"
                 else:
                     subject = "chat.whisper"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Whisper channel subject: {subject} ===")
+                logger.debug("Whisper channel subject determined", subject=subject, target_id=target_id)
             else:
                 # For other channels, use room level subject
                 subject = f"chat.{chat_message.channel}.{room_id}"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Other channel subject: {subject} ===")
+                logger.debug(
+                    "Other channel subject determined", subject=subject, channel=chat_message.channel, room_id=room_id
+                )
 
             # Publish to NATS
             success = await self.nats_service.publish(subject, message_data)
@@ -1368,6 +1378,80 @@ class ChatService:
     def is_admin(self, player_id: str) -> bool:
         """Check if a player is an admin."""
         return self.user_manager.is_admin(player_id)
+
+    def _validate_chat_message(self, chat_message: ChatMessage) -> bool:
+        """Validate chat message before transmission."""
+        try:
+            # Check message content
+            if not chat_message.content or len(chat_message.content.strip()) == 0:
+                logger.warning("Empty message content", message_id=chat_message.id)
+                return False
+
+            # Check message length
+            if len(chat_message.content) > 1000:  # Max length
+                logger.warning("Message too long", message_id=chat_message.id, length=len(chat_message.content))
+                return False
+
+            # Check sender information
+            if not chat_message.sender_id or not chat_message.sender_name:
+                logger.warning("Missing sender information", message_id=chat_message.id)
+                return False
+
+            # Check for malicious content patterns
+            if self._contains_malicious_content(chat_message.content):
+                logger.warning(
+                    "Malicious content detected", message_id=chat_message.id, sender_id=chat_message.sender_id
+                )
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error("Error validating chat message", error=str(e), message_id=chat_message.id)
+            return False
+
+    def _validate_room_access(self, sender_id: str, room_id: str) -> bool:
+        """Validate sender has access to the room."""
+        try:
+            # Check if sender exists and is active
+            if not sender_id:
+                return False
+
+            # Check room access permissions
+            # This would integrate with your room access system
+            # For now, basic validation
+            if not room_id:
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error("Error validating room access", error=str(e), sender_id=sender_id, room_id=room_id)
+            return False
+
+    def _contains_malicious_content(self, content: str) -> bool:
+        """Check for malicious content patterns."""
+        try:
+            # Basic malicious pattern detection
+            malicious_patterns = [
+                r"<script[^>]*>.*?</script>",  # Script tags
+                r"javascript:",  # JavaScript URLs
+                r"data:text/html",  # Data URLs
+                r"vbscript:",  # VBScript URLs
+                r"on\w+\s*=",  # Event handlers
+            ]
+
+            import re
+
+            for pattern in malicious_patterns:
+                if re.search(pattern, content, re.IGNORECASE):
+                    return True
+
+            return False
+
+        except Exception as e:
+            logger.error("Error checking malicious content", error=str(e))
+            return True  # Fail safe - reject if check fails
 
     def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
         """Check if a player can send a message."""

@@ -39,7 +39,7 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
         yield sse_line(build_event("connected", {"player_id": player_id_str}, player_id=player_id_str))
 
         # Send immediate heartbeat to confirm connection is working
-        logger.debug(f"DEBUG: SSE session established for player {player_id_str}")
+        logger.debug("DEBUG: SSE session established", player_id=player_id_str)
         yield sse_line(build_event("heartbeat", {"message": "Connection established"}, player_id=player_id_str))
 
         # Clear any pending messages to ensure fresh game state
@@ -58,7 +58,7 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
                 await asyncio.sleep(30)
 
                 # Mark presence and send heartbeat with timeout protection
-                logger.debug(f"DEBUG: SSE heartbeat for player {player_id_str}")
+                logger.debug("DEBUG: SSE heartbeat", player_id=player_id_str)
                 connection_manager.mark_player_seen(player_id_str)
                 connection_manager.prune_stale_players()
 
@@ -70,21 +70,21 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
                             timeout=5.0,  # 5-second timeout for cleanup operations
                         )
                     except TimeoutError:
-                        logger.warning(f"Cleanup operation timed out for player {player_id_str}")
+                        logger.warning("Cleanup operation timed out", player_id=player_id_str)
                     except asyncio.CancelledError:
-                        logger.info(f"Cleanup cancelled for player {player_id_str}")
+                        logger.info("Cleanup cancelled", player_id=player_id_str)
                         raise  # Re-raise cancelled error to properly handle in outer try/except
                     except Exception as cleanup_error:
-                        logger.error(f"Cleanup error for player {player_id_str}: {cleanup_error}")
+                        logger.error("Cleanup error", player_id=player_id_str, error=str(cleanup_error))
 
                 yield sse_line(build_event("heartbeat", {}, player_id=player_id_str))
 
             except asyncio.CancelledError:
-                logger.info(f"SSE stream cancelled for player {player_id_str}")
+                logger.info("SSE stream cancelled", player_id=player_id_str)
                 break
 
             except Exception as e:
-                logger.error(f"Error in SSE stream for player {player_id_str}: {e}")
+                logger.error("Error in SSE stream", player_id=player_id_str, error=str(e))
                 error_response = create_sse_error_response(
                     ErrorType.SSE_ERROR,
                     f"Stream error occurred: {str(e)}",
@@ -99,13 +99,13 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
         try:
             connection_manager.disconnect_sse(player_id_str)
         except Exception as cleanup_error:
-            logger.error(f"SSE disconnect error for player {player_id_str}: {cleanup_error}")
+            logger.error("SSE disconnect error", player_id=player_id_str, error=str(cleanup_error))
             # Attempt final cleanup notwithstanding disconnect errors
             try:
                 # Force disconnect without throwing exceptions to prevent finally block failure
                 connection_manager.disconnect_sse(player_id_str)
             except Exception as final_error:
-                logger.error(f"Final SSE cleanup failed for player {player_id_str}: {final_error}")
+                logger.error("Final SSE cleanup failed", player_id=player_id_str, error=str(final_error))
 
 
 def format_sse_event(event_type: str, data: dict) -> str:  # Backward compat shim
@@ -130,7 +130,7 @@ async def send_game_event(player_id: str, event_type: str, data: dict):
         )
 
     except Exception as e:
-        logger.error(f"Error sending game event to {player_id}: {e}")
+        logger.error("Error sending game event", player_id=player_id, error=str(e))
 
 
 async def broadcast_game_event(event_type: str, data: dict, exclude_player: str = None):
@@ -146,7 +146,7 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except Exception as e:
-        logger.error(f"Error broadcasting game event: {e}")
+        logger.error("Error broadcasting game event", error=str(e))
 
 
 async def send_room_event(room_id: str, event_type: str, data: dict, exclude_player: str = None):
@@ -165,7 +165,7 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         )
 
     except Exception as e:
-        logger.error(f"Error sending room event to room {room_id}: {e}")
+        logger.error("Error sending room event", room_id=room_id, error=str(e))
 
 
 async def send_system_notification(player_id: str, message: str, notification_type: str = "info"):
@@ -186,7 +186,7 @@ async def send_system_notification(player_id: str, message: str, notification_ty
         await send_game_event(player_id, "system_notification", notification_data)
 
     except Exception as e:
-        logger.error(f"Error sending system notification to {player_id}: {e}")
+        logger.error("Error sending system notification", player_id=player_id, error=str(e))
 
 
 async def send_player_status_update(player_id: str, status_data: dict):
@@ -201,7 +201,7 @@ async def send_player_status_update(player_id: str, status_data: dict):
         await send_game_event(player_id, "player_status", status_data)
 
     except Exception as e:
-        logger.error(f"Error sending status update to {player_id}: {e}")
+        logger.error("Error sending status update", player_id=player_id, error=str(e))
 
 
 async def send_room_description(player_id: str, room_data: dict):
@@ -216,4 +216,4 @@ async def send_room_description(player_id: str, room_data: dict):
         await send_game_event(player_id, "room_description", room_data)
 
     except Exception as e:
-        logger.error(f"Error sending room description to {player_id}: {e}")
+        logger.error("Error sending room description", player_id=player_id, error=str(e))

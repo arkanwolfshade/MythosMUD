@@ -100,7 +100,7 @@ def _is_predefined_emote(command: str) -> bool:
         emote_service = EmoteService()
         return emote_service.is_emote_alias(command)
     except Exception as e:
-        logger.warning(f"Error checking predefined emote: {e}")
+        logger.warning("Error checking predefined emote", error=str(e))
         return False
 
 

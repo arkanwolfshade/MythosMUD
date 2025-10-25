@@ -154,7 +154,7 @@ class CommandService:
 
         try:
             # Call handler with command_data (standardized format)
-            logger.debug(f"DEBUG: About to call handler {handler} with command_data: {command_data}")
+            logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type

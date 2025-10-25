@@ -61,7 +61,7 @@ class EmoteService:
         """Load emote definitions from the JSON file."""
         try:
             if not self.emote_file_path.exists():
-                logger.warning(f"Emote file not found: {self.emote_file_path}")
+                logger.warning("Emote file not found", file_path=self.emote_file_path)
                 return
 
             with open(self.emote_file_path, encoding="utf-8") as f:
@@ -79,14 +79,14 @@ class EmoteService:
                 aliases = emote_data.get("aliases", [])
                 for alias in aliases:
                     if alias in self.alias_to_emote:
-                        logger.warning(f"Duplicate emote alias: {alias} (already maps to {self.alias_to_emote[alias]})")
+                        logger.warning("Duplicate emote alias", alias=alias, existing_emote=self.alias_to_emote[alias])
                     else:
                         self.alias_to_emote[alias] = emote_name
 
-            logger.info(f"Loaded {len(self.emotes)} emotes with {len(self.alias_to_emote)} total aliases")
+            logger.info("Loaded emotes", emote_count=len(self.emotes), alias_count=len(self.alias_to_emote))
 
         except Exception as e:
-            logger.error(f"Failed to load emotes from {self.emote_file_path}: {e}")
+            logger.error("Failed to load emotes", file_path=self.emote_file_path, error=str(e))
             context = create_error_context()
             context.metadata["emote_file_path"] = str(self.emote_file_path)
             context.metadata["operation"] = "load_emotes"
