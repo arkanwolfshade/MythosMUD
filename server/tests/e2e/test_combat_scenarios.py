@@ -30,7 +30,7 @@ class TestCombatScenarios:
     def mock_event_bus(self):
         """Create a mock event bus."""
         mock_bus = AsyncMock(spec=EventBus)
-        mock_bus.publish_event = AsyncMock()
+        mock_bus.publish = AsyncMock()
         return mock_bus
 
     @pytest.fixture
@@ -291,7 +291,7 @@ class TestCombatScenarios:
         # Verify XP was awarded
         mock_persistence.async_get_player.assert_called_once_with(str(player_id))
         mock_persistence.async_save_player.assert_called_once_with(mock_player)
-        mock_event_bus.publish_event.assert_called_once()
+        mock_event_bus.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_combat_messaging_workflow(self, npc_combat_integration_service):
