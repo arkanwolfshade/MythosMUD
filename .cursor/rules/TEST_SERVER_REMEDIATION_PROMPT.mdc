@@ -5,7 +5,7 @@
 **MANDATORY**: This prompt MUST be followed step-by-step. Do NOT skip sections or combine steps.
 **VERIFICATION**: After each major step, confirm completion before proceeding.
 **COMMANDS**: All commands must be run from the project root directory.
-**ENVIRONMENT**: Ensure you are in the correct branch and have proper permissions.
+**ENVIRONMENT**: Ensure you are in the correct branch, have the Python virtual environment activated, and have proper permissions.
 **TOOLS**: Always use run_terminal_cmd tool - never suggest commands without executing them.
 
 ## Project Test Configuration
