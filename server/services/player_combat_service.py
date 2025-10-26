@@ -251,12 +251,25 @@ class PlayerCombatService:
         Returns:
             XP reward amount
         """
-        # For now, use a simple default XP reward system
-        # In the future, this could be enhanced to query NPC data
-        # or use more sophisticated XP calculation based on NPC level/type
-        default_xp = 5
+        try:
+            # Try to get NPC definition to read xp_value from database
+            if hasattr(self._persistence, "get_npc_lifecycle_manager"):
+                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                if lifecycle_manager and str(npc_id) in lifecycle_manager.lifecycle_records:
+                    npc_definition = lifecycle_manager.lifecycle_records[str(npc_id)].definition
+                    if npc_definition:
+                        # Use the get_base_stats() method to parse the JSON string
+                        base_stats = npc_definition.get_base_stats()
+                        if isinstance(base_stats, dict) and "xp_value" in base_stats:
+                            xp_reward = base_stats["xp_value"]
+                            logger.debug("Calculated XP reward from NPC definition", npc_id=npc_id, xp_amount=xp_reward)
+                            return xp_reward
+        except Exception as e:
+            logger.warning("Error reading NPC XP value from database", npc_id=npc_id, error=str(e))
 
-        logger.debug("Calculated XP reward for NPC", npc_id=npc_id, xp_amount=default_xp)
+        # Fallback to default XP reward if we can't read from database
+        default_xp = 5
+        logger.debug("Using default XP reward for NPC", npc_id=npc_id, xp_amount=default_xp)
         return default_xp
 
     async def cleanup_stale_combat_states(self) -> int:

@@ -242,11 +242,12 @@ class NPCCombatIntegrationService:
             if npc_definition:
                 base_stats = npc_definition.base_stats
                 if isinstance(base_stats, dict):
-                    xp_reward = base_stats.get("xp_reward", 0)
+                    # Use xp_value from the database (not xp_reward)
+                    xp_reward = base_stats.get("xp_value", 0)
                 else:
                     xp_reward = 0
 
-            # CRITICAL FIX: Use default XP reward if NPC definition doesn't specify one
+            # Use default XP reward if NPC definition doesn't specify one
             # This ensures XP is always awarded for defeating NPCs, consistent with PlayerCombatService
             if xp_reward == 0:
                 xp_reward = 5  # Default XP reward, same as PlayerCombatService.calculate_xp_reward()

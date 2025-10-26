@@ -24,9 +24,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base
 
-from ..metadata import metadata
+from ..npc_metadata import npc_metadata
 
-Base = declarative_base(metadata=metadata)
+Base = declarative_base(metadata=npc_metadata)
 
 
 class NPCDefinitionType(str, Enum):

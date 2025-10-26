@@ -210,11 +210,15 @@ async def init_db():
 
     try:
         # Import all models to ensure they're registered with metadata
+        # NOTE: NPC models are NOT imported here - they belong to the NPC database
         # Configure all mappers before setting up relationships
         from sqlalchemy.orm import configure_mappers
 
         from server.models.invite import Invite  # noqa: F401
-        from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
+
+        # CRITICAL: Do NOT import NPC models here - they use npc_metadata, not metadata
+        # NPC models belong to NPC database, not player database
+        # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.user import User  # noqa: F401
 
