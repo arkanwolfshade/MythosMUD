@@ -166,7 +166,7 @@ class TestCombatSystemIntegration:
         )
 
         # Verify event was published
-        mock_event_bus.publish_event.assert_called_once()
+        mock_event_bus.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_combat_security_integration(self, combat_command_handler):

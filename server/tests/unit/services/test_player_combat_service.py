@@ -224,9 +224,9 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify event was published
-        mock_event_bus.publish_event.assert_called_once()
+        mock_event_bus.publish.assert_called_once()
         # Note: PlayerXPAwardedEvent doesn't exist yet, so we just verify the event was published
-        published_event = mock_event_bus.publish_event.call_args[0][0]
+        published_event = mock_event_bus.publish.call_args[0][0]
         assert published_event is not None
 
     @pytest.mark.asyncio

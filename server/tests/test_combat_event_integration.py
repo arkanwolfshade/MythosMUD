@@ -255,7 +255,7 @@ class TestCombatEventPublisher:
         subject = call_args[0][0]
         message_data = call_args[0][1]
 
-        assert subject == f"combat.death.{event.room_id}"
+        assert subject == f"combat.npc_died.{event.room_id}"
         assert message_data["event_type"] == "npc_died"
         assert message_data["data"]["combat_id"] == str(self.test_combat_id)
         assert message_data["data"]["npc_id"] == str(self.test_npc_id)

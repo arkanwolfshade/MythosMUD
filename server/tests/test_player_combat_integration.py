@@ -287,8 +287,8 @@ class TestPlayerXPIntegration:
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
 
         # Verify event was published
-        player_combat_service._event_bus.publish_event.assert_called_once()
-        call_args = player_combat_service._event_bus.publish_event.call_args[0][0]
+        player_combat_service._event_bus.publish.assert_called_once()
+        call_args = player_combat_service._event_bus.publish.call_args[0][0]
         assert call_args.event_type == "player_xp_awarded"
         assert call_args.player_id == player_id
         assert call_args.xp_amount == xp_reward
@@ -391,7 +391,7 @@ class TestPlayerCombatIntegration:
         player_combat_service._persistence.async_save_player.assert_called_once_with(sample_player)
 
         # Verify event was published
-        player_combat_service._event_bus.publish_event.assert_called_once()
+        player_combat_service._event_bus.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_multiple_players_combat_tracking(self, player_combat_service):
