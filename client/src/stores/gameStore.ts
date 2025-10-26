@@ -19,6 +19,7 @@ export interface Player {
     cult_affiliation?: number;
   };
   level?: number;
+  experience?: number;
   inventory?: Array<{
     id: string;
     name: string;

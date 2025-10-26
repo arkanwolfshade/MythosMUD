@@ -193,6 +193,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                                 if hasattr(complete_player_data, "model_dump")
                                 else complete_player_data.dict()
                             )
+                            # Map experience_points to experience for client compatibility
+                            if "experience_points" in player_data_for_client:
+                                player_data_for_client["experience"] = player_data_for_client["experience_points"]
                         else:
                             # Fallback to basic player data if PlayerService not available
                             logger.warning(
@@ -202,6 +205,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                             player_data_for_client = {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
+                                "experience": getattr(player, "experience_points", 0),
                                 "stats": stats_data,
                             }
                     except Exception as e:
@@ -210,6 +214,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         player_data_for_client = {
                             "name": player.name,
                             "level": getattr(player, "level", 1),
+                            "experience": getattr(player, "experience_points", 0),
                             "stats": stats_data,
                         }
 
