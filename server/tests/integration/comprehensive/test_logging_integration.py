@@ -11,7 +11,10 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from server.logging.enhanced_logging_config import _setup_enhanced_file_logging, configure_enhanced_structlog
+from server.logging.enhanced_logging_config import (
+    _setup_enhanced_file_logging,
+    configure_enhanced_structlog,
+)
 from server.logging.player_guid_formatter import PlayerGuidFormatter
 
 
@@ -38,7 +41,7 @@ class TestLoggingIntegration:
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_player_guid_formatter_integration(self):
-        """Test that PlayerGuidFormatter can be integrated with logging system."""
+        """Test PlayerGuidFormatter integration with logging."""
         # Create formatter instance
         formatter = PlayerGuidFormatter(
             player_service=self.mock_player_service,
@@ -76,7 +79,10 @@ class TestLoggingIntegration:
             mock_formatter_class.return_value = custom_formatter
 
             # Set up logging with test configuration
-            log_config = {"log_base": str(self.log_dir), "rotation": {"max_size": "1MB", "backup_count": 2}}
+            log_config = {
+                "log_base": str(self.log_dir),
+                "rotation": {"max_size": "1MB", "backup_count": 2},
+            }
 
             _setup_enhanced_file_logging("test", log_config, "INFO")
 
@@ -143,15 +149,15 @@ class TestLoggingIntegration:
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
 
-        # Test logging with player GUID
+        # Test logging with player GUID in message text (formatter extracts from text)
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        logger.info("Player connected", test_guid=test_guid)
+        logger.info("Player 123e4567-e89b-12d3-a456-426614174000 connected")
 
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
 
     def test_formatter_with_multiple_log_categories(self):
-        """Test PlayerGuidFormatter across multiple log categories simultaneously."""
+        """Test PlayerGuidFormatter across multiple log categories."""
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
@@ -175,8 +181,8 @@ class TestLoggingIntegration:
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
 
-            # Log message with GUID
-            logger.info("Category action", category=category, test_guid=test_guid)
+            # Log message with GUID (formatter extracts from message text)
+            logger.info("Category action", test_guid=test_guid)
 
             # Clean up
             logger.removeHandler(handler)
@@ -362,6 +368,3 @@ class TestLoggingIntegration:
         # Message 4: 1 GUID = 5 total calls
         expected_calls = 5  # 1 + 2 + 1 + 1 = 5 GUIDs total
         assert self.mock_persistence.get_player.call_count == expected_calls
-
-        # Clean up
-        logger.removeHandler(handler)

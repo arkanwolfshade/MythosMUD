@@ -92,7 +92,7 @@ class TestSSEEventsToken:
             # Verify the stream was called with correct player_id and session_id
             mock_stream.assert_called_once_with("test_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "SSE connection attempt for player test_player_id with session None"
+                "SSE connection attempt", player_id="test_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -190,7 +190,7 @@ class TestWebSocketEndpoint:
             # Verify handle_websocket_connection was called with correct parameters
             mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket connection attempt for player test_player_id with session None"
+                "WebSocket connection attempt", player_id="test_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -223,7 +223,7 @@ class TestWebSocketEndpoint:
             # Verify handle_websocket_connection was called with player_id from query params
             mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket connection attempt for player test_player_id with session None"
+                "WebSocket connection attempt", player_id="test_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -303,7 +303,7 @@ class TestWebSocketEndpoint:
 
             assert exc_info.value == test_exception
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint for player test_player_id: Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id="test_player_id", error="Test exception", exc_info=True
             )
 
 
@@ -340,7 +340,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with resolved player_id
             mock_handle.assert_called_once_with(mock_websocket, "resolved_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt for player path_player_id with session None"
+                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -367,7 +367,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with path player_id
             mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt for player path_player_id with session None"
+                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -394,7 +394,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with path player_id (fallback)
             mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt for player path_player_id with session None"
+                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -425,7 +425,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with path player_id (fallback)
             mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt for player path_player_id with session None"
+                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
 
     @pytest.mark.asyncio
@@ -462,7 +462,7 @@ class TestWebSocketEndpointRoute:
 
             assert exc_info.value == test_exception
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint for player path_player_id: Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id="path_player_id", error="Test exception", exc_info=True
             )
 
 

@@ -28,10 +28,12 @@ The logging validation is implemented in `.pre-commit-config.yaml`:
 The linter script `scripts/lint_logging_patterns.py` performs the following validations:
 
 #### ✅ **Validates Enhanced Logging Usage**
+
 - Ensures `from server.logging.enhanced_logging_config import get_logger` is used
 - Checks that `get_logger(__name__)` is used instead of `logging.getLogger()`
 
 #### ❌ **Detects Forbidden Patterns**
+
 - `import logging` statements
 - `from logging import getLogger` statements
 - `logging.getLogger()` calls
@@ -40,6 +42,7 @@ The linter script `scripts/lint_logging_patterns.py` performs the following vali
 - String formatting in log calls
 
 #### 🔍 **Scope of Validation**
+
 - Scans all Python files in the `server/` directory
 - Excludes test files, `__pycache__`, and virtual environment files
 - Provides detailed error messages with line numbers
@@ -47,6 +50,7 @@ The linter script `scripts/lint_logging_patterns.py` performs the following vali
 ## Usage
 
 ### Automatic Validation
+
 The linter runs automatically on every commit via pre-commit hooks:
 
 ```bash
@@ -56,6 +60,7 @@ git commit -m "Your commit message"
 ```
 
 ### Manual Validation
+
 You can run the linter manually:
 
 ```bash
@@ -63,6 +68,7 @@ python scripts/lint_logging_patterns.py
 ```
 
 ### Pre-commit Installation
+
 To install the pre-commit hooks:
 
 ```bash
@@ -115,16 +121,19 @@ logger.info(f"User {user_id} performed {action}")
 ## Integration with Development Workflow
 
 ### Pre-commit Integration
+
 - Runs automatically on every commit
 - Blocks commits with logging violations
 - Provides immediate feedback on violations
 
 ### CI/CD Integration
+
 - Can be integrated into CI/CD pipelines
 - Ensures consistent logging across the codebase
 - Prevents deployment of code with logging violations
 
 ### Development Tools
+
 - Works with any text editor or IDE
 - Provides real-time feedback during development
 - Integrates with existing pre-commit hook infrastructure
@@ -132,21 +141,25 @@ logger.info(f"User {user_id} performed {action}")
 ## Benefits
 
 ### 🚀 **Automated Validation**
+
 - No manual checking required
 - Consistent enforcement across all developers
 - Immediate feedback on violations
 
 ### 🛡️ **Prevents Regressions**
+
 - Blocks commits with deprecated logging patterns
 - Ensures all new code uses enhanced logging
 - Maintains code quality standards
 
 ### 📚 **Educational**
+
 - Clear error messages explain what's wrong
 - Provides examples of correct usage
 - Helps developers learn proper logging patterns
 
 ### 🔧 **Maintainable**
+
 - Centralized validation logic
 - Easy to update validation rules
 - Consistent with project standards
@@ -156,15 +169,18 @@ logger.info(f"User {user_id} performed {action}")
 ### Common Issues
 
 #### Pre-commit Hook Not Running
+
 ```bash
 # Reinstall pre-commit hooks
 pre-commit install
 ```
 
 #### False Positives
+
 If the linter reports false positives, update the validation logic in `scripts/lint_logging_patterns.py`.
 
 #### Performance Issues
+
 The linter excludes virtual environment files and test files to improve performance.
 
 ### Getting Help
