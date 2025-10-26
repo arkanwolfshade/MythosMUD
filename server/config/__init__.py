@@ -8,8 +8,8 @@ Usage:
     from server.config import get_config
 
     config = get_config()
-    print(config.server.host)  # Type-safe access
-    print(config.database.url)
+    logger.info("Configuration loaded", host=config.server.host, port=config.server.port)
+    logger.info("Database configuration", url=config.database.url)
 """
 
 from functools import lru_cache
@@ -38,7 +38,7 @@ def get_config() -> AppConfig:
 
     Example:
         config = get_config()
-        print(f"Server running on {config.server.host}:{config.server.port}")
+        logger.info("Server configuration", host=config.server.host, port=config.server.port)
     """
     global _config_instance
 

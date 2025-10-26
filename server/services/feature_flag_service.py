@@ -159,7 +159,7 @@ class FeatureFlagService:
 
         Example:
             status = feature_flags.get_feature_status()
-            print(f"Combat enabled: {status['combat']['enabled']}")
+            logger.info("Feature status check", combat_enabled=status['combat']['enabled'])
         """
         status = {
             "combat": {

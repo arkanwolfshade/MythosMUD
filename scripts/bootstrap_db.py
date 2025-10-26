@@ -2,6 +2,10 @@ import os
 import sqlite3
 import sys
 
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 def get_db_path():
     """Get database path based on environment or command line argument."""
@@ -13,15 +17,15 @@ def get_db_path():
         elif db_type == "prod":
             return "data/local/players/local_players.db"
         else:
-            print(f"Unknown database type: {db_type}")
-            print("Usage: python bootstrap_db.py [prod|test]")
+            logger.error("Unknown database type", db_type=db_type)
+            logger.info("Usage: python bootstrap_db.py [prod|test]")
             sys.exit(1)
 
     # Use environment variable as fallback
     DATABASE_URL = os.getenv("DATABASE_URL")
     if not DATABASE_URL:
-        print("No DATABASE_URL environment variable set and no database type specified.")
-        print("Usage: python bootstrap_db.py [prod|test]")
+        logger.error("No DATABASE_URL environment variable set and no database type specified")
+        logger.info("Usage: python bootstrap_db.py [prod|test]")
         sys.exit(1)
 
     # Extract the file path from the SQLite URL
@@ -52,14 +56,14 @@ def main():
     # Remove existing database if it exists
     if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
-        print(f"Removed existing database: {DB_PATH}")
+        logger.info("Removed existing database", db_path=DB_PATH)
 
     with sqlite3.connect(DB_PATH) as conn:
         conn.executescript(SCHEMA)
         conn.commit()
 
-    print(f"Database bootstrapped successfully at {DB_PATH}")
-    print("Schema includes: users, players, invites tables with proper indexes")
+    logger.info("Database bootstrapped successfully", db_path=DB_PATH)
+    logger.info("Schema includes: users, players, invites tables with proper indexes")
 
 
 if __name__ == "__main__":

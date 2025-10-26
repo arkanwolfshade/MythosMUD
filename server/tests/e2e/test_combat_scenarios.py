@@ -12,10 +12,13 @@ import pytest
 
 from server.commands.combat import CombatCommandHandler
 from server.events.event_bus import EventBus
+from server.logging.enhanced_logging_config import get_logger
 from server.persistence import PersistenceLayer
 from server.services.combat_service import CombatService
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 from server.services.player_combat_service import PlayerCombatService
+
+logger = get_logger(__name__)
 
 
 class TestCombatScenarios:
@@ -211,7 +214,7 @@ class TestCombatScenarios:
                     assert "result" in result
                     assert isinstance(result["result"], str)
                     assert "attack" in result["result"].lower()  # Should contain attack message
-                    print(f"Command result: {result}")
+                    logger.debug("Command result", result=result)
 
     @pytest.mark.asyncio
     async def test_combat_validation_workflow(self, combat_command_handler):
@@ -485,7 +488,7 @@ class TestCombatScenarios:
                     # Verify audit logging (should be handled by the combat system)
                     assert "result" in result
                     assert isinstance(result["result"], str)
-                    print(f"Audit workflow result: {result}")
+                    logger.debug("Audit workflow result", result=result)
 
     @pytest.mark.asyncio
     async def test_combat_rate_limiting_workflow(self, combat_command_handler):

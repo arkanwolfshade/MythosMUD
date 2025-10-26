@@ -50,16 +50,25 @@ class PlayerCombatService:
     and integrates with the persistence layer for XP persistence.
     """
 
-    def __init__(self, persistence, event_bus):
+    def __init__(self, persistence, event_bus, npc_combat_integration_service=None):
         """
         Initialize the player combat service.
 
         Args:
             persistence: Persistence layer for player data
             event_bus: Event bus for publishing events
+            npc_combat_integration_service: NPC combat integration service for
+                UUID mapping
         """
+        logger.debug(
+            "PlayerCombatService constructor called",
+            persistence_type=type(persistence).__name__,
+            has_event_bus=bool(event_bus),
+            has_npc_service=bool(npc_combat_integration_service),
+        )
         self._persistence = persistence
         self._event_bus = event_bus
+        self._npc_combat_integration_service = npc_combat_integration_service
         self._player_combat_states: dict[UUID, PlayerCombatState] = {}
         self._combat_timeout_minutes = 30  # Configurable timeout
 
@@ -211,6 +220,13 @@ class PlayerCombatService:
             npc_id: ID of the defeated NPC
             xp_amount: Amount of XP to award
         """
+        logger.debug(
+            "award_xp_on_npc_death called",
+            player_id=player_id,
+            npc_id=npc_id,
+            xp_amount=xp_amount,
+            persistence_type=type(self._persistence).__name__,
+        )
         try:
             # Get player from persistence
             player = await self._persistence.async_get_player(str(player_id))
@@ -236,7 +252,7 @@ class PlayerCombatService:
 
         except Exception as e:
             logger.error(
-                f"Error awarding XP to player {player_id}: {e}",
+                "Error awarding XP to player",
                 player_id=str(player_id),
                 error=str(e),
             )
@@ -246,29 +262,102 @@ class PlayerCombatService:
         Calculate XP reward for defeating an NPC.
 
         Args:
-            npc_id: ID of the NPC
+            npc_id: ID of the NPC (UUID from combat system)
 
         Returns:
             XP reward amount
         """
+        logger.debug("Starting XP reward calculation", npc_id=npc_id)
+        logger.debug(
+            "NPC combat integration service reference", has_npc_service=bool(self._npc_combat_integration_service)
+        )
+        logger.debug("Persistence object", persistence_type=type(self._persistence).__name__)
+
+        # First, try to get XP directly from the UUID-to-XP mapping
+        # This is more reliable than looking it up from the lifecycle manager,
+        # since NPCs may be removed from the lifecycle manager after death
+        if self._npc_combat_integration_service:
+            # Access the UUID-to-XP mapping directly from the NPC combat integration service
+            uuid_to_xp_mapping = getattr(self._npc_combat_integration_service, "_uuid_to_xp_mapping", {})
+            if npc_id in uuid_to_xp_mapping:
+                xp_reward = uuid_to_xp_mapping[npc_id]
+                logger.debug(
+                    "Retrieved XP reward from UUID-to-XP mapping",
+                    npc_id=npc_id,
+                    xp_amount=xp_reward,
+                )
+                return xp_reward
+            else:
+                logger.debug("UUID not found in XP mapping", npc_id=npc_id)
+
+        # Fallback to database lookup if UUID-to-XP mapping doesn't have the value
         try:
             # Try to get NPC definition to read xp_value from database
+            logger.debug(
+                "Checking if persistence has get_npc_lifecycle_manager method",
+                has_method=hasattr(self._persistence, "get_npc_lifecycle_manager"),
+            )
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
                 lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
-                if lifecycle_manager and str(npc_id) in lifecycle_manager.lifecycle_records:
-                    npc_definition = lifecycle_manager.lifecycle_records[str(npc_id)].definition
+                logger.debug("Got lifecycle manager", has_lifecycle_manager=bool(lifecycle_manager))
+
+                # First try to get the original string ID from the NPC combat integration service
+                original_string_id = None
+                if self._npc_combat_integration_service:
+                    logger.debug("Calling get_original_string_id", npc_id=npc_id)
+                    original_string_id = self._npc_combat_integration_service.get_original_string_id(npc_id)
+                    logger.debug("Got original string ID", original_string_id=original_string_id)
+                else:
+                    logger.debug("NPC combat integration service is None")
+
+                # Use the original string ID if available, otherwise fall back to UUID string
+                lookup_id = original_string_id or str(npc_id)
+                logger.debug("Using lookup ID", lookup_id=lookup_id)
+
+                if lifecycle_manager and lookup_id in lifecycle_manager.lifecycle_records:
+                    npc_definition = lifecycle_manager.lifecycle_records[lookup_id].definition
+                    logger.debug("Found NPC definition", has_definition=bool(npc_definition))
                     if npc_definition:
                         # Use the get_base_stats() method to parse the JSON string
                         base_stats = npc_definition.get_base_stats()
+                        logger.debug("Got base stats", base_stats=base_stats)
                         if isinstance(base_stats, dict) and "xp_value" in base_stats:
                             xp_reward = base_stats["xp_value"]
-                            logger.debug("Calculated XP reward from NPC definition", npc_id=npc_id, xp_amount=xp_reward)
+                            logger.debug(
+                                "Calculated XP reward from NPC definition",
+                                npc_id=npc_id,
+                                original_id=original_string_id,
+                                xp_amount=xp_reward,
+                            )
                             return xp_reward
+                        else:
+                            logger.debug("No xp_value in base_stats", base_stats=base_stats)
+                else:
+                    # Log all available lifecycle record IDs for debugging
+                    available_ids = (
+                        list(lifecycle_manager.lifecycle_records.keys())
+                        if lifecycle_manager and hasattr(lifecycle_manager, "lifecycle_records")
+                        else []
+                    )
+                    logger.debug(
+                        "NPC not found in lifecycle records",
+                        lookup_id=lookup_id,
+                        has_lifecycle_manager=bool(lifecycle_manager),
+                        available_ids=available_ids,
+                        total_records=len(available_ids),
+                    )
+            else:
+                logger.debug("Persistence does not have get_npc_lifecycle_manager method")
         except Exception as e:
-            logger.warning("Error reading NPC XP value from database", npc_id=npc_id, error=str(e))
+            logger.warning(
+                "Error reading NPC XP value from database",
+                npc_id=npc_id,
+                error=str(e),
+                exc_info=True,
+            )
 
         # Fallback to default XP reward if we can't read from database
-        default_xp = 5
+        default_xp = 0
         logger.debug("Using default XP reward for NPC", npc_id=npc_id, xp_amount=default_xp)
         return default_xp
 

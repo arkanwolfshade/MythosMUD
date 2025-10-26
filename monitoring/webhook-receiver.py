@@ -3,14 +3,13 @@
 Simple webhook receiver for testing MythosMUD alerts
 """
 
-import logging
 from datetime import datetime
 
 from flask import Flask, jsonify, request
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
 
 app = Flask(__name__)
 
@@ -26,29 +25,38 @@ def webhook():
             return jsonify({"error": "No data received"}), 400
 
         # Log the alert
-        logger.info("Received alert webhook:")
-        logger.info(f"  Status: {data.get('status', 'unknown')}")
-        logger.info(f"  Group Labels: {data.get('groupLabels', {})}")
-        logger.info(f"  Common Labels: {data.get('commonLabels', {})}")
+        logger.info("Received alert webhook", status=data.get('status', 'unknown'))
+        logger.info("Webhook group labels", group_labels=data.get('groupLabels', {}))
+        logger.info("Webhook common labels", common_labels=data.get('commonLabels', {}))
 
         # Log individual alerts
         alerts = data.get("alerts", [])
         for alert in alerts:
-            logger.info(f"  Alert: {alert.get('labels', {}).get('alertname', 'unknown')}")
-            logger.info(f"    Status: {alert.get('status', 'unknown')}")
-            logger.info(f"    Severity: {alert.get('labels', {}).get('severity', 'unknown')}")
-            logger.info(f"    Service: {alert.get('labels', {}).get('service', 'unknown')}")
-            logger.info(f"    Summary: {alert.get('annotations', {}).get('summary', 'No summary')}")
-            logger.info(f"    Description: {alert.get('annotations', {}).get('description', 'No description')}")
-            logger.info(f"    Starts At: {alert.get('startsAt', 'unknown')}")
-            if alert.get("endsAt"):
-                logger.info(f"    Ends At: {alert.get('endsAt')}")
-            logger.info("  ---")
+            alert_name = alert.get('labels', {}).get('alertname', 'unknown')
+            alert_status = alert.get('status', 'unknown')
+            alert_severity = alert.get('labels', {}).get('severity', 'unknown')
+            alert_service = alert.get('labels', {}).get('service', 'unknown')
+            alert_summary = alert.get('annotations', {}).get('summary', 'No summary')
+            alert_description = alert.get('annotations', {}).get('description', 'No description')
+            alert_starts_at = alert.get('startsAt', 'unknown')
+            alert_ends_at = alert.get('endsAt')
+
+            logger.info(
+                "Alert details",
+                alert_name=alert_name,
+                status=alert_status,
+                severity=alert_severity,
+                service=alert_service,
+                summary=alert_summary,
+                description=alert_description,
+                starts_at=alert_starts_at,
+                ends_at=alert_ends_at,
+            )
 
         return jsonify({"status": "success", "message": "Webhook received"}), 200
 
     except Exception as e:
-        logger.error(f"Error processing webhook: {e}")
+        logger.error("Error processing webhook", error=str(e), exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -67,5 +75,5 @@ def get_alerts():
 
 
 if __name__ == "__main__":
-    logger.info("Starting MythosMUD webhook receiver on port 5001")
+    logger.info("Starting MythosMUD webhook receiver", host="0.0.0.0", port=5001)
     app.run(host="0.0.0.0", port=5001, debug=False)

@@ -50,13 +50,32 @@ class NPCCombatIntegrationService:
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
-        self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus)
+        logger.debug(
+            "NPCCombatIntegrationService constructor",
+            persistence_type=type(self._persistence).__name__,
+            persistence_is_none=self._persistence is None,
+        )
+        # Pass self to PlayerCombatService for UUID mapping access
+        self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
+
+        # Combat memory - NPCs remember who attacked them
+        self._npc_combat_memory: dict[str, str] = {}
+
+        # UUID to string ID mapping for reverse lookup during XP calculation
+        self._uuid_to_string_id_mapping: dict[UUID, str] = {}
+
+        # UUID to XP value mapping for direct XP lookup
+        self._uuid_to_xp_mapping: dict[UUID, int] = {}
+
         if combat_service is not None:
             self._combat_service = combat_service
+            # CRITICAL FIX: Update the CombatService to use our PlayerCombatService with UUID mapping
+            self._combat_service._player_combat_service = self._player_combat_service
+            self._combat_service._npc_combat_integration_service = self
         else:
             # Only create a new CombatService if one was not provided
             # (this is primarily for testing)
-            self._combat_service = CombatService(self._player_combat_service)
+            self._combat_service = CombatService(self._player_combat_service, npc_combat_integration_service=self)
 
         # Enable auto-progression features
         self._combat_service.auto_progression_enabled = True
@@ -109,9 +128,61 @@ class NPCCombatIntegrationService:
             try:
                 attacker_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else uuid4()
                 target_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else uuid4()
+
+                # Always store the UUID-to-string ID mapping when we have a string ID
+                # This mapping is used later during XP calculation
+                if not self._is_valid_uuid(npc_id):
+                    # Only store mapping for string IDs
+                    self._uuid_to_string_id_mapping[target_uuid] = npc_id
+
+                    # Also store the XP value directly for this UUID
+                    # This avoids the need to look it up from the lifecycle manager
+                    # during XP calculation, since NPCs may be removed by then
+                    npc_definition = self._get_npc_definition(npc_id)
+                    logger.debug(
+                        "Retrieved NPC definition",
+                        npc_id=npc_id,
+                        has_definition=bool(npc_definition),
+                    )
+                    if npc_definition:
+                        base_stats = npc_definition.get_base_stats()
+                        logger.debug(
+                            "Retrieved base stats",
+                            npc_id=npc_id,
+                            base_stats=base_stats,
+                        )
+                        if isinstance(base_stats, dict):
+                            xp_value = base_stats.get("xp_value", 0)  # Default to 0 if not found
+                            self._uuid_to_xp_mapping[target_uuid] = xp_value
+                            logger.debug(
+                                "Stored UUID-to-XP mapping",
+                                npc_id=npc_id,
+                                target_uuid=target_uuid,
+                                xp_value=xp_value,
+                            )
+                        else:
+                            logger.debug(
+                                "Base stats is not a dict",
+                                npc_id=npc_id,
+                                base_stats_type=type(base_stats),
+                            )
+                    else:
+                        logger.debug(
+                            "NPC definition not found",
+                            npc_id=npc_id,
+                        )
+
+                    logger.debug(
+                        "Stored UUID-to-string ID mapping",
+                        npc_id=npc_id,
+                        target_uuid=target_uuid,
+                    )
+
             except ValueError:
                 attacker_uuid = uuid4()
                 target_uuid = uuid4()
+                # Don't store mapping for invalid UUIDs
+                logger.debug("Skipping UUID mapping storage - invalid NPC ID", npc_id=npc_id)
 
             # Get current game tick
             from ..app.lifespan import get_current_tick
@@ -240,20 +311,14 @@ class NPCCombatIntegrationService:
             npc_definition = self._get_npc_definition(npc_id)
             xp_reward = 0
             if npc_definition:
-                base_stats = npc_definition.base_stats
+                # Use the get_base_stats() method to parse the JSON string
+                base_stats = npc_definition.get_base_stats()
                 if isinstance(base_stats, dict):
                     # Use xp_value from the database (not xp_reward)
-                    xp_reward = base_stats.get("xp_value", 0)
-                else:
-                    xp_reward = 0
-
-            # Use default XP reward if NPC definition doesn't specify one
-            # This ensures XP is always awarded for defeating NPCs, consistent with PlayerCombatService
-            if xp_reward == 0:
-                xp_reward = 5  # Default XP reward, same as PlayerCombatService.calculate_xp_reward()
+                    xp_reward = base_stats.get("xp_value", xp_reward)
 
             # Award XP to killer if it's a player
-            if killer_id and xp_reward > 0:
+            if killer_id:
                 player = self._persistence.get_player(killer_id)
                 if player:
                     # Award XP using game mechanics service
@@ -415,3 +480,22 @@ class NPCCombatIntegrationService:
             return True
         except ValueError:
             return False
+
+    def get_original_string_id(self, uuid_id: UUID) -> str | None:
+        """
+        Get the original string ID from a UUID.
+
+        Args:
+            uuid_id: The UUID to look up
+
+        Returns:
+            The original string ID if found, None otherwise
+        """
+        result = self._uuid_to_string_id_mapping.get(uuid_id)
+        logger.debug(
+            "UUID to string ID lookup",
+            uuid_id=uuid_id,
+            result=result,
+            mapping_size=len(self._uuid_to_string_id_mapping),
+        )
+        return result

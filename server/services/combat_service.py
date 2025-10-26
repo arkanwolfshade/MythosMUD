@@ -40,7 +40,9 @@ class CombatService:
     for initiating combat, processing actions, and managing turn order.
     """
 
-    def __init__(self, player_combat_service: PlayerCombatService = None, nats_service=None):
+    def __init__(
+        self, player_combat_service: PlayerCombatService = None, nats_service=None, npc_combat_integration_service=None
+    ):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id
@@ -48,17 +50,14 @@ class CombatService:
         self._combat_timeout_minutes = 30  # Configurable timeout
         self._player_combat_service = player_combat_service
         self._nats_service = nats_service
+        self._npc_combat_integration_service = npc_combat_integration_service
         # Create combat event publisher with proper NATS service
         logger.debug("Creating CombatEventPublisher with NATS service", nats_service_available=bool(nats_service))
         try:
-            print("*** COMBAT SERVICE: About to create CombatEventPublisher ***")
+            logger.debug("Creating CombatEventPublisher")
             self._combat_event_publisher = CombatEventPublisher(nats_service)
-            print("*** COMBAT SERVICE: CombatEventPublisher created successfully ***")
             logger.debug("CombatEventPublisher created successfully")
         except Exception as e:
-            print(f"*** CRITICAL ERROR: Failed to create CombatEventPublisher: {e} ***")
-            print(f"*** ERROR TYPE: {type(e).__name__} ***")
-            print(f"*** ERROR DETAILS: {str(e)} ***")
             logger.error(
                 "CRITICAL ERROR: Failed to create CombatEventPublisher",
                 error=str(e),
@@ -218,9 +217,10 @@ class CombatService:
             current_tick: Current game tick number
         """
         logger.info(
-            f"[COMBAT TICK] process_game_tick called for tick {current_tick}, "
-            f"_auto_progression_enabled={self._auto_progression_enabled}, "
-            f"active_combats={len(self._active_combats)}"
+            "Combat tick processing",
+            tick=current_tick,
+            auto_progression_enabled=self._auto_progression_enabled,
+            active_combats_count=len(self._active_combats),
         )
         if not self._auto_progression_enabled:
             logger.info("[COMBAT TICK] Auto-progression is disabled, returning early")
@@ -235,7 +235,11 @@ class CombatService:
                 continue
 
             logger.debug(
-                f"Combat {combat_id}: current_tick={current_tick}, next_turn_tick={combat.next_turn_tick}, auto_progression={combat.auto_progression_enabled}"
+                "Combat auto-progression check",
+                combat_id=combat_id,
+                current_tick=current_tick,
+                next_turn_tick=combat.next_turn_tick,
+                auto_progression_enabled=combat.auto_progression_enabled,
             )
 
             # Check if it's time for the next turn
@@ -262,19 +266,25 @@ class CombatService:
         if not current_participant:
             logger.warning("No current participant for combat", combat_id=combat.combat_id)
             logger.debug(
-                f"Combat state: turn_order={combat.turn_order}, current_turn={combat.current_turn}, participants={list(combat.participants.keys())}"
+                "Combat state debug",
+                turn_order=combat.turn_order,
+                current_turn=combat.current_turn,
+                participants=list(combat.participants.keys()),
             )
             # Check if the participant ID exists in turn_order but not in participants
             if combat.turn_order and combat.current_turn < len(combat.turn_order):
                 expected_participant_id = combat.turn_order[combat.current_turn]
                 logger.debug(
-                    f"Expected participant ID: {expected_participant_id}, exists in participants: {expected_participant_id in combat.participants}"
+                    "Expected participant lookup",
+                    expected_participant_id=expected_participant_id,
+                    exists_in_participants=expected_participant_id in combat.participants,
                 )
 
                 # If participant is missing, try to fix the combat state
                 if expected_participant_id not in combat.participants:
                     logger.error(
-                        f"Participant {expected_participant_id} not found in participants dictionary. Combat state is corrupted."
+                        "Participant not found in participants dictionary - combat state corrupted",
+                        participant_id=expected_participant_id,
                     )
                     # Remove the corrupted combat
                     self._active_combats.pop(combat.combat_id, None)
@@ -292,7 +302,8 @@ class CombatService:
                     current_participant = found_participant
                 else:
                     logger.error(
-                        "Could not find participant even by UUID string match", participant_id=expected_participant_id
+                        "Could not find participant even by UUID string match",
+                        participant_id=expected_participant_id,
                     )
                     return
             else:
@@ -308,19 +319,24 @@ class CombatService:
 
         # Additional debugging for the combat state
         logger.debug(
-            f"Combat state: turn_order={combat.turn_order}, current_turn={combat.current_turn}, participants={list(combat.participants.keys())}"
+            "Combat state debug",
+            turn_order=combat.turn_order,
+            current_turn=combat.current_turn,
+            participants=list(combat.participants.keys()),
         )
 
         # Debug the specific participant lookup
         if combat.turn_order and combat.current_turn < len(combat.turn_order):
             current_participant_id = combat.turn_order[combat.current_turn]
             logger.debug(
-                f"Looking for participant_id: {current_participant_id} in participants: {list(combat.participants.keys())}"
+                "Participant lookup",
+                looking_for=current_participant_id,
+                available_participants=list(combat.participants.keys()),
             )
             found_participant = combat.participants.get(current_participant_id)
             logger.debug("Participant found", participant=found_participant)
             logger.debug("current_participant (from get_current_turn_participant)", participant=current_participant)
-            logger.debug("Are they the same?", same=found_participant == current_participant)
+            logger.debug("Participant comparison", same=found_participant == current_participant)
 
         # If it's an NPC's turn, process their action
         if current_participant.participant_type == CombatParticipantType.NPC:
@@ -533,12 +549,13 @@ class CombatService:
 
         # Create result with health information
         health_info = f" ({target.current_hp}/{target.max_hp} HP)"
+        attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"
         result = CombatResult(
             success=True,
             damage=damage,
             target_died=target_died,
             combat_ended=combat_ended,
-            message=f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}",
+            message=attack_message,
             combat_id=combat.combat_id,
         )
 
@@ -795,11 +812,25 @@ class CombatService:
         Returns:
             XP reward amount
         """
-        if self._player_combat_service:
+        logger.info(
+            "CombatService._calculate_xp_reward called",
+            npc_id=npc_id,
+            has_npc_service=bool(self._npc_combat_integration_service),
+            has_player_service=bool(self._player_combat_service),
+        )
+
+        # Use the PlayerCombatService from NPCCombatIntegrationService if available
+        # This ensures we have access to the UUID-to-string ID mapping
+        if self._npc_combat_integration_service and self._npc_combat_integration_service._player_combat_service:
+            logger.info("Using PlayerCombatService from NPCCombatIntegrationService", npc_id=npc_id)
+            return await self._npc_combat_integration_service._player_combat_service.calculate_xp_reward(npc_id)
+        elif self._player_combat_service:
+            logger.info("Using PlayerCombatService from CombatService", npc_id=npc_id)
             return await self._player_combat_service.calculate_xp_reward(npc_id)
         else:
             # Fallback to default XP value if no player combat service
-            return 5  # Default XP reward
+            logger.info("Using default XP reward", npc_id=npc_id)
+            return 0  # Default XP reward changed to 0 to highlight database lookup issues
 
 
 # Global combat service instance - will be properly initialized by lifespan

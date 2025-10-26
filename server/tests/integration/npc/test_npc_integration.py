@@ -1120,14 +1120,14 @@ class TestNPCEventReactionSystem:
         low_priority_reaction = NPCEventReaction(
             event_type=PlayerEnteredRoom,
             condition=lambda event, context: True,
-            action=lambda event, context: print("Low priority"),
+            action=lambda event, context: logger.debug("Low priority reaction triggered"),
             priority=1,
         )
 
         high_priority_reaction = NPCEventReaction(
             event_type=PlayerEnteredRoom,
             condition=lambda event, context: True,
-            action=lambda event, context: print("High priority"),
+            action=lambda event, context: logger.debug("High priority reaction triggered"),
             priority=10,
         )
 
