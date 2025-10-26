@@ -28,6 +28,7 @@ interface Player {
     cult_affiliation?: number;
   };
   level?: number;
+  xp?: number;
   in_combat?: boolean;
 }
 
@@ -312,7 +313,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">XP:</span>
-                    <span className="text-base text-mythos-terminal-text">{player.experience || 0}</span>
+                    <span className="text-base text-mythos-terminal-text">{player.xp || 0}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">In Combat:</span>

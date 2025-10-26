@@ -2603,6 +2603,7 @@ class ConnectionManager:
                     "player_id": str(getattr(player, "player_id", player_id)),
                     "name": getattr(player, "name", player_id),
                     "level": getattr(player, "level", 1),
+                    "xp": getattr(player, "experience_points", 0),
                     "current_room_id": room_id,
                 },
                 "room": room_data,

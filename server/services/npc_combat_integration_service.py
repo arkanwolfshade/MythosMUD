@@ -9,13 +9,9 @@ for maintaining the balance between mortal investigators and the eldritch
 entities they encounter in our world.
 """
 
-import time
 from typing import Any
 from uuid import UUID, uuid4
 
-from ..events.combat_events import (
-    NPCDiedEvent,
-)
 from ..events.event_bus import EventBus
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
@@ -250,6 +246,11 @@ class NPCCombatIntegrationService:
                 else:
                     xp_reward = 0
 
+            # CRITICAL FIX: Use default XP reward if NPC definition doesn't specify one
+            # This ensures XP is always awarded for defeating NPCs, consistent with PlayerCombatService
+            if xp_reward == 0:
+                xp_reward = 5  # Default XP reward, same as PlayerCombatService.calculate_xp_reward()
+
             # Award XP to killer if it's a player
             if killer_id and xp_reward > 0:
                 player = self._persistence.get_player(killer_id)
@@ -291,34 +292,9 @@ class NPCCombatIntegrationService:
                             error=str(e),
                         )
 
-            # Publish death event
-            # Convert IDs to UUID if they are valid UUID strings, otherwise use string IDs
-            try:
-                npc_uuid = UUID(npc_id) if self._is_valid_uuid(npc_id) else None
-                combat_uuid = UUID(combat_id) if combat_id and self._is_valid_uuid(combat_id) else uuid4()
-            except ValueError:
-                combat_uuid = uuid4()
-                npc_uuid = None
-
-            self._event_publisher.publish_npc_died(
-                NPCDiedEvent(
-                    event_type="npc_died",
-                    timestamp=time.time(),
-                    combat_id=combat_uuid,
-                    room_id=room_id,
-                    npc_id=npc_uuid,
-                    npc_name=npc_instance.name,
-                    xp_reward=xp_reward,
-                )
-            )
-
-            # Broadcast death message
-            self._messaging_integration.broadcast_combat_death(
-                room_id=room_id,
-                npc_name=npc_instance.name,
-                xp_reward=xp_reward,
-                combat_id=combat_id or "",
-            )
+            # Note: NPCDiedEvent is now published by CombatService to avoid duplication
+            # The CombatService handles the npc_died event publishing when combat ends
+            # We no longer call broadcast_combat_death() to prevent duplicate messages
 
             # Clear combat memory for this NPC
             if str(npc_id) in self._npc_combat_memory:

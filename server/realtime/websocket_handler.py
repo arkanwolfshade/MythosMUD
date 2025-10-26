@@ -193,9 +193,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                                 if hasattr(complete_player_data, "model_dump")
                                 else complete_player_data.dict()
                             )
-                            # Map experience_points to experience for client compatibility
+                            # Map experience_points to xp for client compatibility
                             if "experience_points" in player_data_for_client:
-                                player_data_for_client["experience"] = player_data_for_client["experience_points"]
+                                player_data_for_client["xp"] = player_data_for_client["experience_points"]
                         else:
                             # Fallback to basic player data if PlayerService not available
                             logger.warning(
@@ -205,7 +205,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                             player_data_for_client = {
                                 "name": player.name,
                                 "level": getattr(player, "level", 1),
-                                "experience": getattr(player, "experience_points", 0),
+                                "xp": getattr(player, "experience_points", 0),
                                 "stats": stats_data,
                             }
                     except Exception as e:
@@ -214,7 +214,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         player_data_for_client = {
                             "name": player.name,
                             "level": getattr(player, "level", 1),
-                            "experience": getattr(player, "experience_points", 0),
+                            "xp": getattr(player, "experience_points", 0),
                             "stats": stats_data,
                         }
 
@@ -255,6 +255,20 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                 # Receive message from client
                 data = await websocket.receive_text()
                 message = json.loads(data)
+
+                # CRITICAL FIX: Handle wrapped message format from useWebSocketConnection
+                # The client wraps messages in {message, csrfToken, timestamp} structure
+                if "message" in message and isinstance(message["message"], str):
+                    try:
+                        # Unwrap the inner message
+                        inner_message = json.loads(message["message"])
+                        # Verify CSRF token if present
+                        # TODO: Implement CSRF validation
+                        message = inner_message
+                    except json.JSONDecodeError:
+                        # If inner message is not JSON, use it as-is
+                        pass
+
                 # Mark presence on any inbound message
                 connection_manager.mark_player_seen(player_id_str)
 

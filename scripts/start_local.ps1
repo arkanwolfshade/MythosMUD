@@ -88,6 +88,4 @@ else {
     Write-Host "Development environment started!" -ForegroundColor Green
     Write-Host "Server: http://localhost:$ServerPort" -ForegroundColor Cyan
     Write-Host "Client: http://localhost:$ClientPort" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "Press any key to exit this script (servers will continue running)..." -ForegroundColor Gray
 }

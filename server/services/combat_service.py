@@ -603,6 +603,10 @@ class CombatService:
                 )
                 await self._combat_event_publisher.publish_npc_took_damage(damage_event)
 
+            # Award XP if target died and attacker is a player
+            if target_died:
+                result.xp_awarded = await self._calculate_xp_reward(target_id)
+
             # Publish death event if target died
             if target_died and target.participant_type == CombatParticipantType.NPC:
                 logger.info("Creating NPCDiedEvent", target_name=target.name)
@@ -622,10 +626,8 @@ class CombatService:
         except Exception as e:
             logger.error("Error publishing combat events", error=str(e), exc_info=True)
 
-        # Award XP if target died and attacker is a player
+        # Award XP to player if they defeated an NPC
         if target_died:
-            result.xp_awarded = await self._calculate_xp_reward(target_id)
-            # Award XP to player if they defeated an NPC
             if (
                 current_participant.participant_type == CombatParticipantType.PLAYER
                 and target.participant_type == CombatParticipantType.NPC

@@ -119,13 +119,7 @@ class NATSMessageHandler:
             "chat.whisper.*",  # Whisper messages per player
             "chat.system",  # System messages
             "chat.admin",  # Admin messages
-            # Combat event subjects
-            "combat.started.*",  # Combat started events per room
-            "combat.ended.*",  # Combat ended events per room
-            "combat.player_attacked.*",  # Player attack events per room
-            "combat.npc_attacked.*",  # NPC attack events per room
-            "combat.npc_took_damage.*",  # NPC damage events per room
-            "combat.npc_died.*",  # NPC death events per room
+            # Combat event subjects (moved to event subjects to avoid duplicates)
         ]
 
         logger.info("Starting _subscribe_to_chat_subjects - subscribing to chat and combat subjects", debug=True)

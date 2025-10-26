@@ -54,6 +54,7 @@ interface Player {
   };
   level?: number;
   experience?: number;
+  xp?: number;
   current_room_id?: string;
   in_combat?: boolean;
 }
@@ -897,6 +898,42 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             });
             break;
           }
+          case 'player_xp_updated': {
+            const xpAmount = event.data.xp_amount as number;
+            const newLevel = event.data.new_level as number;
+            const playerData = event.data.player as Player;
+
+            // Update player data with new XP and level
+            if (currentPlayerRef.current && playerData) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                xp: playerData.xp,
+                level: playerData.level,
+              };
+            }
+
+            // Add XP award message to game log
+            const message = `You gained ${xpAmount} experience points!${newLevel > (currentPlayerRef.current?.level || 1) ? ` (Level up to ${newLevel}!)` : ''}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player XP updated', {
+              xpAmount,
+              newLevel,
+              playerData,
+            });
+            break;
+          }
           case 'npc_died': {
             const npcName = event.data.npc_name as string;
             const xpReward = event.data.xp_reward as number;
@@ -915,11 +952,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
-            // Update player XP if reward was given
+            // Update player XP if reward was given and clear combat state
             if (currentPlayerRef.current && xpReward > 0) {
               updates.player = {
                 ...currentPlayerRef.current,
                 xp: (currentPlayerRef.current.xp || 0) + xpReward,
+                in_combat: false,
+              };
+            } else if (currentPlayerRef.current) {
+              // Clear combat state even if no XP reward
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
               };
             }
 

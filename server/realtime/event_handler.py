@@ -16,6 +16,7 @@ from ..events import EventBus
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
+from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
 from .connection_manager import connection_manager
 
@@ -64,6 +65,7 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
+        self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
 
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
@@ -515,6 +517,55 @@ class RealTimeEventHandler:
         """Shutdown the event handler."""
         self._logger.info("Shutting down RealTimeEventHandler")
         # Note: EventBus will handle its own shutdown
+
+    async def _handle_player_xp_awarded(self, event: PlayerXPAwardEvent):
+        """
+        Handle player XP award events by sending updates to the client.
+
+        Args:
+            event: The PlayerXPAwardEvent containing XP award information
+        """
+        try:
+            player_id_str = str(event.player_id)
+
+            # Get the current player data to send updated XP
+            player = self.connection_manager._get_player(player_id_str)
+            if not player:
+                self._logger.warning("Player not found for XP award event", player_id=player_id_str)
+                return
+
+            # Create player update event with new XP
+            player_update_data = {
+                "player_id": player_id_str,
+                "name": player.name,
+                "level": player.level,
+                "xp": player.experience_points,
+                "current_room_id": getattr(player, "current_room_id", None),
+            }
+
+            # Send personal message to the player
+            from .envelope import build_event
+            xp_update_event = build_event(
+                "player_xp_updated",
+                {
+                    "xp_amount": event.xp_amount,
+                    "new_level": event.new_level,
+                    "player": player_update_data,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, xp_update_event)
+
+            self._logger.info(
+                "Sent XP award update to player",
+                player_id=player_id_str,
+                xp_amount=event.xp_amount,
+                new_level=event.new_level,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player XP award event", error=str(e), exc_info=True)
 
 
 # Global instance
