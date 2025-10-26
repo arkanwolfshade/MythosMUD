@@ -29,11 +29,13 @@ class TestNATSService:
         self.mock_nats_client.add_reconnect_listener = Mock()
 
         # Create the service instance with test configuration
-        self.nats_service = NATSService({
-            "url": "nats://localhost:4222",
-            "max_reconnect_attempts": 3,
-            "connect_timeout": 5,
-        })
+        self.nats_service = NATSService(
+            {
+                "url": "nats://localhost:4222",
+                "max_reconnect_attempts": 3,
+                "connect_timeout": 5,
+            }
+        )
 
         # Test data
         self.test_subject = "chat.say.room_001"
