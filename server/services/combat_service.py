@@ -831,9 +831,11 @@ class CombatService:
                 logger.warning("Player not found for HP persistence", player_id=player_id)
                 return
 
-            # Update player HP
-            old_hp = player.stats.current_health
-            player.stats.current_health = current_hp
+            # Update player HP using proper methods
+            stats = player.get_stats()
+            old_hp = stats.get("current_health", 100)
+            stats["current_health"] = current_hp
+            player.set_stats(stats)
 
             # Save player to database
             persistence.save_player(player)
@@ -847,7 +849,7 @@ class CombatService:
             )
 
             # Publish HP update event for real-time UI updates
-            await self._publish_player_hp_update_event(player_id, old_hp, current_hp, player.stats.max_health)
+            await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))
 
         except Exception as e:
             logger.error(
@@ -880,6 +882,8 @@ class CombatService:
 
             # Create and publish the event
             hp_update_event = PlayerHPUpdated(
+                timestamp=None,  # Will be set by BaseEvent.__post_init__
+                event_type="PlayerHPUpdated",  # Will be set by BaseEvent.__post_init__
                 player_id=str(player_id),
                 old_hp=old_hp,
                 new_hp=new_hp,
@@ -890,7 +894,11 @@ class CombatService:
                 room_id=None,  # Could be enhanced to track room context
             )
 
-            await self._player_combat_service._event_bus.publish(hp_update_event)
+            # Use the NATS service directly to publish the event
+            if self._nats_service:
+                await self._nats_service.publish_event(hp_update_event)
+            else:
+                logger.warning("No NATS service available for HP update event", player_id=player_id)
 
             logger.info(
                 "Published PlayerHPUpdated event",
