@@ -129,11 +129,11 @@ class NPCInstanceService:
         """
         try:
             # Check if NPC exists
-            if npc_id not in self.spawning_service.active_npc_instances:
+            if npc_id not in self.lifecycle_manager.active_npcs:
                 raise ValueError(f"NPC instance {npc_id} not found")
 
             # Get NPC info before despawning
-            npc_instance = self.spawning_service.active_npc_instances[npc_id]
+            npc_instance = self.lifecycle_manager.active_npcs[npc_id]
             npc_name = getattr(npc_instance, "name", "Unknown")
             room_id = getattr(npc_instance, "current_room_id", "Unknown")
 
@@ -190,11 +190,11 @@ class NPCInstanceService:
         """
         try:
             # Check if NPC exists
-            if npc_id not in self.spawning_service.active_npc_instances:
+            if npc_id not in self.lifecycle_manager.active_npcs:
                 raise ValueError(f"NPC instance {npc_id} not found")
 
             # Get NPC info
-            npc_instance = self.spawning_service.active_npc_instances[npc_id]
+            npc_instance = self.lifecycle_manager.active_npcs[npc_id]
             npc_name = getattr(npc_instance, "name", "Unknown")
             old_room_id = getattr(npc_instance, "current_room_id", "Unknown")
 
@@ -244,7 +244,7 @@ class NPCInstanceService:
         try:
             instances = []
 
-            for npc_id, npc_instance in self.spawning_service.active_npc_instances.items():
+            for npc_id, npc_instance in self.lifecycle_manager.active_npcs.items():
                 # Extract information from the NPC instance
                 instance_info = {
                     "npc_id": npc_id,
@@ -290,10 +290,10 @@ class NPCInstanceService:
         """
         try:
             # Check if NPC exists
-            if npc_id not in self.spawning_service.active_npc_instances:
+            if npc_id not in self.lifecycle_manager.active_npcs:
                 raise ValueError(f"NPC instance {npc_id} not found")
 
-            npc_instance = self.spawning_service.active_npc_instances[npc_id]
+            npc_instance = self.lifecycle_manager.active_npcs[npc_id]
 
             # Get basic stats
             stats = {
@@ -334,7 +334,7 @@ class NPCInstanceService:
         """
         try:
             # Get active NPC instances
-            active_instances = self.spawning_service.active_npc_instances
+            active_instances = self.lifecycle_manager.active_npcs
 
             # Count by type
             by_type = {}
@@ -381,7 +381,7 @@ class NPCInstanceService:
         """
         try:
             # Get active NPC instances
-            active_instances = self.spawning_service.active_npc_instances
+            active_instances = self.lifecycle_manager.active_npcs
 
             # Group by zone
             zone_data = {}
@@ -428,7 +428,7 @@ class NPCInstanceService:
         """
         try:
             # Get basic system stats
-            active_npcs = len(self.spawning_service.active_npc_instances)
+            active_npcs = len(self.lifecycle_manager.active_npcs)
             spawn_queue_size = len(getattr(self.lifecycle_manager, "respawn_queue", {}))
 
             # Get lifecycle manager status

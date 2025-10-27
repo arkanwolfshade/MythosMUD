@@ -336,8 +336,8 @@ async def execute_shutdown_sequence(app):
             try:
                 npc_lifecycle_manager = getattr(app.state, "npc_lifecycle_manager", None)
                 if npc_lifecycle_manager:
-                    # Get all active NPC IDs
-                    active_npcs = list(app.state.npc_spawning_service.active_npc_instances.keys())
+                    # Get all active NPC IDs from lifecycle manager
+                    active_npcs = list(npc_lifecycle_manager.active_npcs.keys())
                     logger.info("Despawning active NPCs", count=len(active_npcs))
 
                     for npc_id in active_npcs:

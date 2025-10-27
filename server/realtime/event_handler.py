@@ -18,7 +18,7 @@ from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
-from .connection_manager import connection_manager
+from .connection_manager import _get_npc_name_from_instance, connection_manager
 
 
 class RealTimeEventHandler:
@@ -375,14 +375,24 @@ class RealTimeEventHandler:
 
             # Convert NPCs to occupant information
             for npc_id in npc_ids:
-                # Extract NPC name from the NPC ID (format: npc_name_room_id_timestamp_random)
-                npc_name = npc_id.split("_")[0].replace("_", " ").title()
-                occupant_info = {
-                    "npc_id": npc_id,
-                    "npc_name": npc_name,
-                    "type": "npc",
-                }
-                occupants.append(occupant_info)
+                # Get NPC name from the actual NPC instance, preserving original case from database
+                npc_name = _get_npc_name_from_instance(npc_id)
+                if npc_name:
+                    occupant_info = {
+                        "npc_id": npc_id,
+                        "npc_name": npc_name,
+                        "type": "npc",
+                    }
+                    occupants.append(occupant_info)
+                else:
+                    # Fallback: Extract NPC name from the NPC ID if instance not found
+                    npc_name = npc_id.split("_")[0].replace("_", " ").title()
+                    occupant_info = {
+                        "npc_id": npc_id,
+                        "npc_name": npc_name,
+                        "type": "npc",
+                    }
+                    occupants.append(occupant_info)
 
         except Exception as e:
             self._logger.error("Error getting room occupants", error=str(e), exc_info=True)

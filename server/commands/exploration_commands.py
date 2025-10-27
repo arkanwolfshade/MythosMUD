@@ -73,10 +73,10 @@ async def handle_look_command(
 
                     npc_instance_service = get_npc_instance_service()
                     # Use the same approach as combat system
-                    if hasattr(npc_instance_service, "spawning_service"):
-                        spawning_service = npc_instance_service.spawning_service
-                        if npc_id in spawning_service.active_npc_instances:
-                            npc_instance = spawning_service.active_npc_instances[npc_id]
+                    if hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                            npc_instance = lifecycle_manager.active_npcs[npc_id]
                             if npc_instance and target_lower in npc_instance.name.lower():
                                 matching_npcs.append(npc_instance)
 

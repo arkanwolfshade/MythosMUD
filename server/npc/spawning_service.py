@@ -132,7 +132,6 @@ class NPCSpawningService:
         # Spawn queue and tracking
         self.spawn_queue: list[NPCSpawnRequest] = []
         self.spawn_history: list[NPCSpawnResult] = []
-        self.active_npc_instances: dict[str, Any] = {}  # npc_id -> npc_instance
 
         # Spawn configuration
         self.max_spawn_queue_size = 100
@@ -165,15 +164,15 @@ class NPCSpawningService:
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""
-        # Update our tracking if this is one of our spawned NPCs
-        if event.npc_id in self.active_npc_instances:
-            logger.debug("Tracked NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
+        # Note: NPC instances are now managed by lifecycle manager
+        # This method is kept for compatibility but no longer tracks instances
+        logger.debug("NPC entered room event received", npc_id=event.npc_id, room_id=event.room_id)
 
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
-        # Update our tracking if this is one of our spawned NPCs
-        if event.npc_id in self.active_npc_instances:
-            logger.debug("Tracked NPC left room", npc_id=event.npc_id, room_id=event.room_id)
+        # Note: NPC instances are now managed by lifecycle manager
+        # This method is kept for compatibility but no longer tracks instances
+        logger.debug("NPC left room event received", npc_id=event.npc_id, room_id=event.room_id)
 
     def _check_spawn_requirements_for_room(self, room_id: str) -> None:
         """
@@ -382,9 +381,6 @@ class NPCSpawningService:
             # Generate unique NPC ID
             npc_id = self._generate_npc_id(request.definition, request.room_id)
 
-            # Store NPC instance
-            self.active_npc_instances[npc_id] = npc_instance
-
             # Don't call back into population controller to avoid circular dependency
             # The population controller will update its own statistics when needed
 
@@ -416,13 +412,14 @@ class NPCSpawningService:
                 spawn_request=request,
             )
 
-    def _create_npc_instance(self, definition: NPCDefinition, room_id: str) -> Any | None:
+    def _create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> Any | None:
         """
         Create an NPC instance from a definition.
 
         Args:
             definition: NPC definition
             room_id: Room where NPC will be spawned
+            npc_id: Optional pre-generated NPC ID (if None, will generate one)
 
         Returns:
             NPC instance or None if creation failed
@@ -448,8 +445,9 @@ class NPCSpawningService:
                 ai_integration_stub=definition_ai_integration_stub,
             )
 
-            # Generate a unique NPC ID first
-            npc_id = self._generate_npc_id(simple_definition, room_id)
+            # Generate a unique NPC ID if not provided
+            if npc_id is None:
+                npc_id = self._generate_npc_id(simple_definition, room_id)
 
             # Create appropriate NPC type based on definition
             if simple_definition.npc_type == "shopkeeper":
@@ -524,35 +522,10 @@ class NPCSpawningService:
         Returns:
             True if NPC was despawned successfully
         """
-        if npc_id not in self.active_npc_instances:
-            logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
-            return False
-
-        try:
-            # Get NPC instance
-            npc_instance = self.active_npc_instances[npc_id]
-
-            # Publish NPC left room event
-            event = NPCLeftRoom(
-                timestamp=None,
-                event_type="",
-                npc_id=npc_id,
-                room_id=npc_instance.room_id,
-            )
-            self.event_bus.publish(event)
-
-            # Remove from active instances
-            del self.active_npc_instances[npc_id]
-
-            # Update population controller
-            self.population_controller.despawn_npc(npc_id)
-
-            logger.info("Successfully despawned NPC", npc_id=npc_id, reason=reason)
-            return True
-
-        except Exception as e:
-            logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
-            return False
+        # Note: NPC instances are now managed by lifecycle manager
+        # This method should delegate to the lifecycle manager
+        logger.warning("Despawn request for NPC", npc_id=npc_id, message="NPC instances now managed by lifecycle manager")
+        return False
 
     def get_spawn_statistics(self) -> dict[str, Any]:
         """
@@ -584,7 +557,7 @@ class NPCSpawningService:
             "successful_spawns": successful_spawns,
             "failed_spawns": failed_spawns,
             "success_rate": successful_spawns / total_requests if total_requests > 0 else 0.0,
-            "active_npcs": len(self.active_npc_instances),
+            "active_npcs": 0,  # NPC instances now managed by lifecycle manager
             "queued_requests": len(self.spawn_queue),
             "reason_counts": reason_counts,
             "type_counts": type_counts,
@@ -600,25 +573,10 @@ class NPCSpawningService:
         Returns:
             Number of NPCs cleaned up
         """
-        current_time = time.time()
-        npcs_to_remove = []
-
-        for npc_id, npc_instance in self.active_npc_instances.items():
-            # Check if NPC has been inactive for too long
-            # This is a simplified check - in a real implementation,
-            # you might want to track last activity time
-            if hasattr(npc_instance, "spawned_at"):
-                age = current_time - npc_instance.spawned_at
-                if age > max_age_seconds:
-                    npcs_to_remove.append(npc_id)
-
-        for npc_id in npcs_to_remove:
-            self.despawn_npc(npc_id, reason="cleanup")
-
-        if npcs_to_remove:
-            logger.info("Cleaned up inactive NPCs", count=len(npcs_to_remove))
-
-        return len(npcs_to_remove)
+        # Note: NPC instances are now managed by lifecycle manager
+        # This method should delegate to the lifecycle manager
+        logger.info("Cleanup request received", max_age_seconds=max_age_seconds, message="NPC instances now managed by lifecycle manager")
+        return 0
 
     def _get_zone_key_from_room_id(self, room_id: str) -> str:
         """

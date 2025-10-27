@@ -175,17 +175,19 @@ class NPCPopulationController:
     based on zone configurations, player counts, and game state conditions.
     """
 
-    def __init__(self, event_bus: EventBus, spawning_service=None, rooms_data_path: str = "data/local/rooms"):
+    def __init__(self, event_bus: EventBus, spawning_service=None, lifecycle_manager=None, rooms_data_path: str = "data/local/rooms"):
         """
         Initialize the NPC population controller.
 
         Args:
             event_bus: Event bus for publishing and subscribing to events
             spawning_service: Optional NPC spawning service for proper NPC creation
+            lifecycle_manager: Optional NPC lifecycle manager for consistent ID generation
             rooms_data_path: Path to the rooms data directory
         """
         self.event_bus = event_bus
         self.spawning_service = spawning_service
+        self.lifecycle_manager = lifecycle_manager
         self.rooms_data_path = Path(rooms_data_path)
 
         # Population tracking
@@ -524,7 +526,7 @@ class NPCPopulationController:
 
     def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:
         """
-        Spawn an NPC instance using the spawning service.
+        Spawn an NPC instance using the lifecycle manager.
 
         Args:
             definition: NPC definition
@@ -533,27 +535,15 @@ class NPCPopulationController:
         Returns:
             Generated NPC instance ID
         """
-        if not self.spawning_service:
-            logger.error("No spawning service available - cannot spawn NPC")
+        if not self.lifecycle_manager:
+            logger.error("No lifecycle manager available - cannot spawn NPC")
             return None
 
         try:
-            # Import locally to avoid circular import
-            from server.npc.spawning_service import NPCSpawnRequest
+            # Use the lifecycle manager to spawn the NPC (this ensures consistent ID generation)
+            npc_id = self.lifecycle_manager.spawn_npc(definition, room_id, "population_control")
 
-            # Use the spawning service to create the NPC
-            spawn_request = NPCSpawnRequest(
-                definition=definition,
-                room_id=room_id,
-                spawn_rule=None,  # We don't have a specific spawn rule for population control
-                priority=0,
-                reason="population_control",
-            )
-
-            npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
-
-            if npc_instance and npc_instance.success:
-                npc_id = npc_instance.npc_id
+            if npc_id:
 
                 # Update population statistics
                 zone_key = self._get_zone_key_from_room_id(room_id)

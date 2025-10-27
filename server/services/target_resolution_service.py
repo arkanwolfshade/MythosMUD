@@ -239,10 +239,10 @@ class TargetResolutionService:
             from ..services.npc_instance_service import get_npc_instance_service
 
             npc_instance_service = get_npc_instance_service()
-            if hasattr(npc_instance_service, "spawning_service"):
-                spawning_service = npc_instance_service.spawning_service
-                if npc_id in spawning_service.active_npc_instances:
-                    return spawning_service.active_npc_instances[npc_id]
+            if hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                    return lifecycle_manager.active_npcs[npc_id]
 
             return None
 

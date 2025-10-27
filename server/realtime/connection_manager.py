@@ -38,16 +38,17 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         NPC name from the database, or None if instance not found
     """
     try:
-        # Get the NPC instance from the spawning service
+        # Get the NPC instance from the lifecycle manager (single source of truth)
         from ..services.npc_instance_service import get_npc_instance_service
 
         npc_instance_service = get_npc_instance_service()
-        if hasattr(npc_instance_service, "spawning_service"):
-            spawning_service = npc_instance_service.spawning_service
-            if npc_id in spawning_service.active_npc_instances:
-                npc_instance = spawning_service.active_npc_instances[npc_id]
+        if hasattr(npc_instance_service, "lifecycle_manager"):
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                npc_instance = lifecycle_manager.active_npcs[npc_id]
                 name = getattr(npc_instance, "name", None)
-                return name
+                if name:
+                    return name
 
         return None
     except Exception as e:

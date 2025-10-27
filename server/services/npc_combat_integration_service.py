@@ -418,10 +418,10 @@ class NPCCombatIntegrationService:
             from .npc_instance_service import get_npc_instance_service
 
             npc_instance_service = get_npc_instance_service()
-            if hasattr(npc_instance_service, "spawning_service"):
-                spawning_service = npc_instance_service.spawning_service
-                if npc_id in spawning_service.active_npc_instances:
-                    return spawning_service.active_npc_instances[npc_id]
+            if hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                    return lifecycle_manager.active_npcs[npc_id]
 
             return None
 
@@ -435,6 +435,17 @@ class NPCCombatIntegrationService:
             # Try to get from lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
                 lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                if lifecycle_manager:
+                    keys = list(lifecycle_manager.lifecycle_records.keys())
+                else:
+                    keys = []
+                logger.debug(
+                    "_get_npc_definition lookup",
+                    npc_id=npc_id,
+                    has_lifecycle_manager=bool(lifecycle_manager),
+                    lifecycle_records_count=len(keys),
+                    npc_id_in_keys=npc_id in keys if lifecycle_manager else False,
+                )
                 if lifecycle_manager and npc_id in lifecycle_manager.lifecycle_records:
                     return lifecycle_manager.lifecycle_records[npc_id].definition
 
@@ -464,11 +475,11 @@ class NPCCombatIntegrationService:
                     lifecycle_manager.despawn_npc(npc_id, "combat_death")
                     return
 
-            # Fallback: try spawning service if available
-            if hasattr(self._persistence, "get_npc_spawning_service"):
-                spawning_service = self._persistence.get_npc_spawning_service()
-                if spawning_service and npc_id in spawning_service.active_npc_instances:
-                    del spawning_service.active_npc_instances[npc_id]
+            # Fallback: try lifecycle manager if available
+            if hasattr(self._persistence, "get_npc_lifecycle_manager"):
+                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                    del lifecycle_manager.active_npcs[npc_id]
 
         except Exception as e:
             logger.error("Error despawning NPC", npc_id=npc_id, error=str(e))

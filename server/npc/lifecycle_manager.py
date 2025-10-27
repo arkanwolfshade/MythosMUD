@@ -278,8 +278,8 @@ class NPCLifecycleManager:
             record.add_event(NPCLifecycleEvent.SPAWNED, {"room_id": room_id, "reason": reason})
             self.lifecycle_records[npc_id] = record
 
-            # Create NPC instance
-            npc_instance = self.spawning_service._create_npc_instance(definition, room_id)
+            # Create NPC instance with pre-generated ID
+            npc_instance = self.spawning_service._create_npc_instance(definition, room_id, npc_id)
             if not npc_instance:
                 record.change_state(NPCLifecycleState.ERROR, "Failed to create NPC instance")
                 record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": "Failed to create NPC instance"})
@@ -289,9 +289,6 @@ class NPCLifecycleManager:
             self.active_npcs[npc_id] = npc_instance
             npc_instance.npc_id = npc_id
             npc_instance.spawned_at = time.time()
-
-            # Update population controller
-            self.population_controller._spawn_npc(definition, room_id)
 
             # Publish NPC entered room event
             event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
