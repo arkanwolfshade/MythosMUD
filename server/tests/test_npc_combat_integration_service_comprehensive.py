@@ -58,10 +58,16 @@ class TestNPCCombatIntegrationServiceComprehensive:
         # Mock existing combat
         self.combat_service._player_combats[UUID(player_id)] = "existing_combat_id"
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
@@ -82,16 +88,17 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
-
-        # Mock player
-        player = Mock()
-        player.name = "TestPlayer"
-        self.persistence.get_player.return_value = player
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
@@ -114,10 +121,16 @@ class TestNPCCombatIntegrationServiceComprehensive:
         # Mock combat result with combat ended
         self.mock_combat_result.combat_ended = True
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 0, "max_hp": 100, "dexterity": 10}
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
@@ -142,10 +155,16 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.mock_combat_result.success = False
         self.mock_combat_result.message = "Combat failed"
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
@@ -165,10 +184,16 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_id = "invalid_uuid"
         room_id = "test_room_001"
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
@@ -194,7 +219,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
 
         # Mock NPC definition with XP reward
         npc_definition = Mock()
-        npc_definition.base_stats = {"xp_reward": 10}
+        npc_definition.get_base_stats.return_value = {"xp_value": 10}
 
         # Mock player
         player = Mock()
@@ -207,8 +232,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
 
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
-        self.messaging_integration.broadcast_combat_death.assert_called_once()
+        # Note: publish_npc_died and broadcast_combat_death are handled by CombatService, not in handle_npc_death
 
     def test_handle_npc_death_with_game_mechanics_service(self):
         """Test NPC death with game mechanics service."""
@@ -222,7 +246,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
 
         # Mock NPC definition with XP reward
         npc_definition = Mock()
-        npc_definition.base_stats = {"xp_reward": 15}
+        npc_definition.get_base_stats.return_value = {"xp_value": 15}
 
         # Mock player
         player = Mock()
@@ -320,7 +344,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id)
 
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
+        # Note: publish_npc_died is handled by CombatService, not in handle_npc_death
 
     def test_handle_npc_death_with_invalid_combat_id(self):
         """Test NPC death with invalid combat ID."""
@@ -339,7 +363,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
 
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
+        # Note: publish_npc_died is handled by CombatService, not in handle_npc_death
 
     def test_handle_npc_death_clears_memory(self):
         """Test that NPC death clears combat memory."""
@@ -366,12 +390,12 @@ class TestNPCCombatIntegrationServiceComprehensive:
         """Test getting NPC instance successfully."""
         npc_id = str(uuid4())
 
-        # Mock NPC instance service
+        # Mock NPC instance service with lifecycle manager
         npc_instance_service = Mock()
-        spawning_service = Mock()
+        lifecycle_manager = Mock()
         npc_instance = Mock()
-        spawning_service.active_npc_instances = {npc_id: npc_instance}
-        npc_instance_service.spawning_service = spawning_service
+        lifecycle_manager.active_npcs = {npc_id: npc_instance}
+        npc_instance_service.lifecycle_manager = lifecycle_manager
 
         with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service:
             mock_get_service.return_value = npc_instance_service
@@ -500,15 +524,23 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        # Mock spawning service
-        spawning_service = Mock()
-        spawning_service.active_npc_instances = {npc_id: Mock()}
-        self.persistence.get_npc_lifecycle_manager = Mock(return_value=None)
-        self.persistence.get_npc_spawning_service = Mock(return_value=spawning_service)
+        # Mock lifecycle manager with active NPCs
+        lifecycle_manager = Mock()
+        lifecycle_manager.active_npcs = {npc_id: Mock()}
+
+        # Mock the despawn_npc method to actually remove the NPC
+        def mock_despawn_npc(npc_id_param, reason):
+            if npc_id_param in lifecycle_manager.active_npcs:
+                del lifecycle_manager.active_npcs[npc_id_param]
+            return True
+
+        lifecycle_manager.despawn_npc = mock_despawn_npc
+        self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
 
         self.service._despawn_npc(npc_id, room_id)
 
-        assert npc_id not in spawning_service.active_npc_instances
+        # Verify NPC was removed from lifecycle manager's active_npcs
+        assert npc_id not in lifecycle_manager.active_npcs
 
     def test_despawn_npc_exception(self):
         """Test despawning NPC with exception."""
@@ -700,7 +732,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
 
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
+        # Note: publish_npc_died is handled by CombatService, not in handle_npc_death
 
     def test_handle_npc_death_with_string_combat_id(self):
         """Test NPC death with string combat ID (not UUID)."""
@@ -719,4 +751,4 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
 
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
+        # Note: publish_npc_died is handled by CombatService, not in handle_npc_death

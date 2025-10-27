@@ -11,8 +11,8 @@ import uuid
 import pytest
 from sqlalchemy import text
 
-from server.database import get_async_session, init_db
 from server.models.npc import NPCDefinition
+from server.npc_database import get_npc_session, init_npc_db
 
 
 class TestCombatDatabaseSchema:
@@ -22,9 +22,9 @@ class TestCombatDatabaseSchema:
     async def test_npc_definition_combat_fields_exist(self):
         """Test that NPC definition table has required combat fields."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Check that base_stats and behavior_config columns exist
             result = await session.execute(text("PRAGMA table_info(npc_definitions)"))
             columns = [row[1] for row in result.fetchall()]
@@ -36,9 +36,9 @@ class TestCombatDatabaseSchema:
     async def test_base_stats_json_structure(self):
         """Test base_stats JSON field structure for combat data."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Create test NPC with combat stats using unique identifiers
             unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
@@ -64,9 +64,9 @@ class TestCombatDatabaseSchema:
     async def test_behavior_config_combat_messages(self):
         """Test behavior_config JSON field for combat messages."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             combat_messages = {
                 "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
                 "attack_defender": ("{attacker_name} swings their fist at you and hits you for {damage} damage"),
@@ -98,9 +98,9 @@ class TestCombatDatabaseSchema:
     async def test_combat_data_validation(self):
         """Test validation of combat data in JSON fields."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Test valid combat data
             valid_stats = {
                 "hp": 10,
@@ -136,9 +136,9 @@ class TestCombatDatabaseSchema:
     async def test_invalid_combat_data_handling(self):
         """Test handling of invalid combat data."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Test invalid JSON
             unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
@@ -161,9 +161,9 @@ class TestCombatDatabaseSchema:
     async def test_combat_message_template_validation(self):
         """Test validation of combat message templates."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Test message templates with required variables
             combat_messages = {
                 "attack_attacker": ("You swing your fist at {target_name} and hit for {damage} damage"),
@@ -204,9 +204,9 @@ class TestCombatDataMigration:
     async def test_migration_adds_default_combat_data(self):
         """Test that migration adds default combat data to existing NPCs."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Create NPC without combat data
             unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
@@ -261,9 +261,9 @@ class TestCombatDataMigration:
     async def test_migration_preserves_existing_data(self):
         """Test that migration preserves existing NPC data."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Create NPC with existing data
             existing_stats = {
                 "hp": 20,
@@ -318,9 +318,9 @@ class TestCombatDataMigration:
     async def test_migration_handles_missing_fields_gracefully(self):
         """Test that migration handles missing JSON fields gracefully."""
         # Initialize database first
-        await init_db()
+        await init_npc_db()
 
-        async for session in get_async_session():
+        async for session in get_npc_session():
             # Create NPC with minimal data
             unique_id = str(uuid.uuid4())[:8]
             npc = NPCDefinition(
