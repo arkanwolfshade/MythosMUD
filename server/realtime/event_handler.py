@@ -404,8 +404,9 @@ class RealTimeEventHandler:
         """
         Handle NPC entering a room.
 
-        This method updates the room state to include the NPC in the occupant list
-        and broadcasts the room update to all players in the room.
+        This method updates the room state to include the NPC in the occupant list,
+        broadcasts a spawn message to the room (if configured), and broadcasts
+        the room update to all players in the room.
 
         Args:
             event: NPCEnteredRoom event containing NPC and room information
@@ -426,6 +427,12 @@ class RealTimeEventHandler:
 
             # Add NPC to room's occupant list
             room.npc_entered(event.npc_id)
+
+            # Get the NPC's spawn message from behavior_config (if available)
+            spawn_message = self._get_npc_spawn_message(event.npc_id)
+            if spawn_message:
+                # Send the spawn message to all players in the room
+                self._send_room_message(event.room_id, spawn_message)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -578,6 +585,123 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.error("Error handling player XP award event", error=str(e), exc_info=True)
+
+    def _get_npc_spawn_message(self, npc_id: str) -> str | None:
+        """
+        Get the spawn message for an NPC from its behavior_config.
+
+        If no custom spawn message is defined, returns a default message: "<npc-name> appears."
+
+        Args:
+            npc_id: The NPC ID
+
+        Returns:
+            Spawn message (custom or default), or None if NPC not found
+        """
+        try:
+            # Get the NPC instance from the lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return None
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                return None
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+
+            # Get the NPC name for the default message
+            npc_name = getattr(npc_instance, "name", "An NPC")
+
+            # Get the behavior_config from the NPC instance
+            behavior_config = getattr(npc_instance, "behavior_config", None)
+            if behavior_config:
+                # Parse the behavior_config if it's a JSON string
+                import json
+
+                if isinstance(behavior_config, str):
+                    try:
+                        behavior_config = json.loads(behavior_config)
+                    except (json.JSONDecodeError, ValueError):
+                        # If parsing fails, use default message
+                        return f"{npc_name} appears."
+
+                # Get the spawn_message from the behavior_config
+                spawn_message = behavior_config.get("spawn_message")
+                if spawn_message:
+                    return spawn_message
+
+            # Return default message if no custom message is defined
+            return f"{npc_name} appears."
+
+        except Exception as e:
+            self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
+            return None
+
+    def _send_room_message(self, room_id: str, message: str):
+        """
+        Send a message to all players in a room.
+
+        Args:
+            room_id: The room ID
+            message: The message to send
+        """
+        try:
+            # Get all players in the room
+            from ..persistence import get_persistence
+            from .envelope import build_event
+
+            persistence = get_persistence()
+            room = persistence.get_room(room_id)
+            if not room:
+                self._logger.warning("Room not found for sending room message", room_id=room_id)
+                return
+
+            # Get all player IDs in the room
+            player_ids = list(room._players)  # Get the player IDs from the room
+
+            # Send the message to each player in the room
+            import asyncio
+
+            for player_id in player_ids:
+                # Create the message event
+                message_event = build_event(
+                    "room_message",
+                    {
+                        "message": message,
+                        "room_id": room_id,
+                        "message_type": "npc_spawn",
+                    },
+                    player_id=player_id,
+                )
+
+                # Schedule the async message send
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # Create a task to send the message
+                        if self.task_registry:
+                            self.task_registry.register_task(
+                                self.connection_manager.send_personal_message(player_id, message_event),
+                                f"event_handler/room_message_{room_id}_{player_id}",
+                                "event_handler",
+                            )
+                        else:
+                            from ..async_utils.tracked_task_manager import get_global_tracked_manager
+
+                            tracked_manager = get_global_tracked_manager()
+                            tracked_manager.create_tracked_task(
+                                self.connection_manager.send_personal_message(player_id, message_event),
+                                task_name=f"event_handler/room_message_{room_id}_{player_id}",
+                                task_type="event_handler",
+                            )
+                except RuntimeError:
+                    self._logger.debug("No event loop available for room message broadcast")
+
+        except Exception as e:
+            self._logger.error("Error sending room message", room_id=room_id, error=str(e), exc_info=True)
 
     async def _handle_player_hp_updated(self, event: PlayerHPUpdated):
         """

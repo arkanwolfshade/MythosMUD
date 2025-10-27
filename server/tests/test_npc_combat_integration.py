@@ -56,12 +56,18 @@ class TestNPCCombatIntegrationService:
         action_type = "punch"
         damage = 1
 
-        # Mock NPC instance
+        # Mock player with proper room ID
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance with proper room ID
         npc_instance = Mock()
         npc_instance.is_alive = True
         npc_instance.name = "Test Rat"
         npc_instance.take_damage = Mock(return_value=True)
         npc_instance._stats = {"hp": 5, "max_hp": 10}
+        npc_instance.current_room = room_id  # Set the room ID to match player
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
@@ -144,11 +150,16 @@ class TestNPCCombatIntegrationService:
 
         # Mock NPC definition with XP reward
         npc_definition = Mock()
-        npc_definition.base_stats = {"xp_reward": 5}
+        npc_definition.get_base_stats.return_value = {"xp_value": 5}  # Changed from xp_reward to xp_value
 
         # Mock player for XP award
         player = Mock()
         player.username = "TestPlayer"
+
+        # Mock game mechanics service
+        game_mechanics = Mock()
+        game_mechanics.gain_experience.return_value = (True, "XP awarded")
+        self.persistence.get_game_mechanics_service = Mock(return_value=game_mechanics)
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = Mock(return_value=npc_definition)
@@ -164,8 +175,7 @@ class TestNPCCombatIntegrationService:
 
         # Verify
         assert result is True
-        self.event_publisher.publish_npc_died.assert_called_once()
-        self.messaging_integration.broadcast_combat_death.assert_called_once()
+        # Note: publish_npc_died and broadcast_combat_death are handled by CombatService, not in handle_npc_death
 
     def test_get_npc_combat_memory(self):
         """Test getting NPC combat memory."""

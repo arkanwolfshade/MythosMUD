@@ -65,6 +65,17 @@ class TestCombatScenarios:
         npc_id = uuid4()
         room_id = "test_room_001"
 
+        # Mock lifecycle manager to provide XP value for the NPC
+        mock_lifecycle_manager = Mock()
+        mock_npc_definition = Mock()
+        mock_npc_definition.get_base_stats.return_value = {"xp_value": 10}
+
+        mock_lifecycle_record = Mock()
+        mock_lifecycle_record.definition = mock_npc_definition
+
+        mock_lifecycle_manager.lifecycle_records = {str(npc_id): mock_lifecycle_record}
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
+
         # Step 1: Start combat
         combat = await combat_service.start_combat(
             room_id=room_id,
@@ -96,7 +107,7 @@ class TestCombatScenarios:
         assert result.damage == 10
         assert result.target_died is True
         assert result.combat_ended is True
-        assert result.xp_awarded > 0
+        assert result.xp_awarded == 10  # Should match the mocked XP value
 
         # Step 3: Verify combat ended
         assert combat.status.value == "ended"
@@ -539,6 +550,17 @@ class TestCombatScenarios:
         npc_id = uuid4()
         room_id = "test_room_001"
 
+        # Mock lifecycle manager to provide XP value for the NPC
+        mock_lifecycle_manager = Mock()
+        mock_npc_definition = Mock()
+        mock_npc_definition.get_base_stats.return_value = {"xp_value": 15}
+
+        mock_lifecycle_record = Mock()
+        mock_lifecycle_record.definition = mock_npc_definition
+
+        mock_lifecycle_manager.lifecycle_records = {str(npc_id): mock_lifecycle_record}
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
+
         # Step 2: Player attacks NPC
         combat = await combat_service.start_combat(
             room_id=room_id,
@@ -562,7 +584,7 @@ class TestCombatScenarios:
         assert result.success is True
         assert result.target_died is True
         assert result.combat_ended is True
-        assert result.xp_awarded > 0
+        assert result.xp_awarded == 15  # Should match the mocked XP value
 
         # Step 5: Combat ends, system cleans up
         assert combat.status.value == "ended"
@@ -570,4 +592,4 @@ class TestCombatScenarios:
 
         # Step 6: Player continues with increased XP
         # (This would be handled by the player service in real implementation)
-        assert result.xp_awarded > 0
+        assert result.xp_awarded == 15  # Should match the mocked XP value

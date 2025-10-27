@@ -214,12 +214,12 @@ class TestTargetResolutionService:
         mock_npc = Mock()
         mock_npc.name = "TestNPC"
 
-        # Mock the NPC instance service
+        # Mock the NPC instance service with lifecycle manager
         with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service:
             mock_service = Mock()
-            mock_spawning_service = Mock()
-            mock_spawning_service.active_npc_instances = {npc_id: mock_npc}
-            mock_service.spawning_service = mock_spawning_service
+            mock_lifecycle_manager = Mock()
+            mock_lifecycle_manager.active_npcs = {npc_id: mock_npc}
+            mock_service.lifecycle_manager = mock_lifecycle_manager
             mock_get_service.return_value = mock_service
 
             result = target_resolution_service._get_npc_instance(npc_id)

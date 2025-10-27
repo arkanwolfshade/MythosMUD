@@ -233,11 +233,17 @@ class TestPlayerCombatServiceUnit:
     async def test_calculate_xp_reward(self, player_combat_service):
         """Test XP reward calculation."""
         npc_id = uuid4()
+
+        # Mock lifecycle manager with empty records to trigger fallback
+        mock_lifecycle_manager = AsyncMock()
+        mock_lifecycle_manager.lifecycle_records = {}
+        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
 
-        # Should return a positive integer (default implementation)
+        # Should return an integer (0 when no lifecycle record found)
         assert isinstance(xp_reward, int)
-        assert xp_reward > 0
+        assert xp_reward == 0  # Default is 0 when NPC not in lifecycle manager
 
     @pytest.mark.asyncio
     async def test_cleanup_stale_combat_states(self, player_combat_service):

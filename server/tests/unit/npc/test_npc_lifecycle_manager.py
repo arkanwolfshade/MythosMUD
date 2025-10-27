@@ -383,14 +383,14 @@ class TestNPCLifecycleManager:
         """Test NPC spawn eligibility checking."""
         # Mock population stats
         mock_stats = MagicMock()
-        mock_stats.npcs_by_type = {}
+        mock_stats.npcs_by_definition = {}  # Changed from npcs_by_type to npcs_by_definition
 
         with patch.object(lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats):
             can_spawn = lifecycle_manager._can_spawn_npc(shopkeeper_definition, "room_001")
             assert can_spawn is True
 
         # Test with population limit reached
-        mock_stats.npcs_by_type = {shopkeeper_definition.npc_type: shopkeeper_definition.max_population}
+        mock_stats.npcs_by_definition = {shopkeeper_definition.id: shopkeeper_definition.max_population}
         with patch.object(lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats):
             can_spawn = lifecycle_manager._can_spawn_npc(shopkeeper_definition, "room_001")
             assert can_spawn is False

@@ -63,13 +63,6 @@ class TestNATSMessageHandler:
             "chat.whisper.*",
             "chat.system",
             "chat.admin",
-            # Combat subjects are now part of chat subjects
-            "combat.started.*",
-            "combat.ended.*",
-            "combat.player_attacked.*",
-            "combat.npc_attacked.*",
-            "combat.npc_took_damage.*",
-            "combat.npc_died.*",
         ]
 
         expected_event_subjects = [

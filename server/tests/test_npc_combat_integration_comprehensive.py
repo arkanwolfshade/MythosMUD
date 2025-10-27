@@ -8,7 +8,7 @@ module to improve coverage from 55% to 80%+.
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
-from server.events.event_types import NPCAttacked, NPCDied
+from server.events.event_types import NPCAttacked
 from server.npc.combat_integration import NPCCombatIntegration
 
 
@@ -308,15 +308,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_called_once()
         self.game_mechanics.apply_sanity_loss.assert_called_once()
-        self.event_bus.publish.assert_called_once()
-
-        # Verify event was published
-        published_event = self.event_bus.publish.call_args[0][0]
-        assert isinstance(published_event, NPCDied)
-        assert published_event.npc_id == npc_id
-        assert published_event.room_id == room_id
-        assert published_event.cause == cause
-        assert published_event.killer_id == killer_id
+        # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_without_killer(self):
         """Test handling NPC death without killer."""
@@ -329,7 +321,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_not_called()
         self.game_mechanics.apply_sanity_loss.assert_not_called()
-        self.event_bus.publish.assert_called_once()
+        # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_with_non_player_killer(self):
         """Test handling NPC death with non-player killer."""
@@ -346,7 +338,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_not_called()
         self.game_mechanics.apply_sanity_loss.assert_not_called()
-        self.event_bus.publish.assert_called_once()
+        # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_exception_handling(self):
         """Test handling NPC death with exception."""

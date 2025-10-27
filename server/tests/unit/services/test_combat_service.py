@@ -233,7 +233,8 @@ class TestCombatServiceUnit:
         assert result.damage == 10
         assert result.target_died is True
         assert result.combat_ended is True
-        assert result.xp_awarded > 0
+        # XP is 0 when no player_combat_service is configured
+        assert result.xp_awarded == 0
 
     @pytest.mark.asyncio
     async def test_process_attack_with_player_service_xp_award(
@@ -475,9 +476,9 @@ class TestCombatServiceUnit:
         npc_id = uuid4()
         xp_reward = await combat_service._calculate_xp_reward(npc_id)
 
-        # Should return a positive integer
+        # Should return an integer (0 when no player_combat_service is configured)
         assert isinstance(xp_reward, int)
-        assert xp_reward > 0
+        assert xp_reward == 0  # Default is 0 when no player_combat_service or lifecycle manager
 
     @pytest.mark.asyncio
     async def test_calculate_xp_reward_with_player_service(

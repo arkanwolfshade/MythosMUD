@@ -26,6 +26,7 @@ def mock_lifecycle_manager():
     manager.spawn_npc = MagicMock(return_value="npc_test_001")
     manager.despawn_npc = MagicMock(return_value=True)
     manager.lifecycle_records = {}
+    manager.active_npcs = {}  # Initialize active_npcs dictionary
     return manager
 
 
@@ -41,6 +42,8 @@ def mock_spawning_service():
 def mock_population_controller():
     """Create a mock NPC population controller."""
     controller = MagicMock()
+    # Configure _spawn_npc to return a proper NPC ID
+    controller._spawn_npc = MagicMock(return_value="npc_test_001")
     return controller
 
 
@@ -164,8 +167,8 @@ class TestSpawnNPCInstance:
 
         mock_get_session.return_value = mock_session_generator()
 
-        # Mock lifecycle manager to return None (spawn failure)
-        npc_instance_service_fixture.lifecycle_manager.spawn_npc.return_value = None
+        # Mock population controller to return None (spawn failure)
+        npc_instance_service_fixture.population_controller._spawn_npc.return_value = None
 
         with pytest.raises(RuntimeError, match="Failed to spawn NPC from definition 1"):
             await npc_instance_service_fixture.spawn_npc_instance(definition_id=1, room_id="earth_arkham_001")

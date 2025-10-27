@@ -233,11 +233,16 @@ class TestPlayerXPIntegration:
         # Mock persistence to return NPC data
         player_combat_service._persistence.async_get_npc_by_id = AsyncMock(return_value=npc_data)
 
+        # Mock lifecycle manager properly (not as async)
+        mock_lifecycle_manager = AsyncMock()
+        mock_lifecycle_manager.lifecycle_records = {}  # Empty records to trigger fallback
+        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+
         # Calculate XP reward
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
 
         # Verify XP reward calculation (currently returns default value)
-        expected_xp = 5  # Default XP reward as implemented
+        expected_xp = 0  # Default XP reward changed to 0 to highlight database lookup issues
         assert xp_reward == expected_xp
 
     @pytest.mark.asyncio
@@ -248,11 +253,16 @@ class TestPlayerXPIntegration:
         # Mock persistence to return None (NPC not found)
         player_combat_service._persistence.async_get_npc_by_id = AsyncMock(return_value=None)
 
+        # Mock lifecycle manager with empty records to trigger fallback
+        mock_lifecycle_manager = AsyncMock()
+        mock_lifecycle_manager.lifecycle_records = {}
+        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+
         # Calculate XP reward
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
 
-        # Verify default XP reward
-        assert xp_reward == 5  # Default fallback value
+        # Verify default XP reward (changed to 0 to highlight database lookup issues)
+        assert xp_reward == 0  # Default fallback value
 
     @pytest.mark.asyncio
     async def test_level_up_calculation(self, player_combat_service, sample_player):

@@ -346,9 +346,9 @@ class TestNPCSpawningService:
         # Mock zone configuration
         zone_config = MagicMock(spec=ZoneConfiguration)
 
-        # Mock population stats with max population reached
+        # Mock population stats with max population reached (changed from npcs_by_type to npcs_by_definition)
         stats = MagicMock(spec=PopulationStats)
-        stats.npcs_by_type = {passive_mob_definition.npc_type: passive_mob_definition.max_population}
+        stats.npcs_by_definition = {passive_mob_definition.id: passive_mob_definition.max_population}
 
         with patch.object(spawning_service.population_controller, "get_population_stats", return_value=stats):
             requests = spawning_service._evaluate_spawn_requirements(passive_mob_definition, zone_config, "room_001")
@@ -388,7 +388,8 @@ class TestNPCSpawningService:
         assert stats["successful_spawns"] == 1
         assert stats["failed_spawns"] == 1
         assert stats["success_rate"] == 0.5
-        assert stats["active_npcs"] == 1
+        # Note: active_npcs is now always 0 since NPCs are managed by lifecycle manager
+        assert stats["active_npcs"] == 0
         assert stats["reason_counts"]["automatic"] == 1
         assert stats["reason_counts"]["required"] == 1
         assert stats["type_counts"]["shopkeeper"] == 1

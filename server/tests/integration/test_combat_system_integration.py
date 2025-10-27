@@ -82,6 +82,17 @@ class TestCombatSystemIntegration:
         player_id = uuid4()
         npc_id = uuid4()
 
+        # Mock lifecycle manager to provide XP value for the NPC
+        mock_lifecycle_manager = Mock()
+        mock_npc_definition = Mock()
+        mock_npc_definition.get_base_stats.return_value = {"xp_value": 12}
+
+        mock_lifecycle_record = Mock()
+        mock_lifecycle_record.definition = mock_npc_definition
+
+        mock_lifecycle_manager.lifecycle_records = {str(npc_id): mock_lifecycle_record}
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
+
         # Start combat
         await combat_service.start_combat(
             room_id="test_room",
@@ -105,7 +116,7 @@ class TestCombatSystemIntegration:
         assert result.success is True
         assert result.target_died is True
         assert result.combat_ended is True
-        assert result.xp_awarded > 0
+        assert result.xp_awarded == 12  # Should match the mocked XP value
 
     @pytest.mark.asyncio
     async def test_combat_messaging_integration(self, npc_combat_integration_service):
