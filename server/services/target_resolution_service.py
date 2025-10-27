@@ -89,6 +89,16 @@ class TargetResolutionService:
         npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
         matches.extend(npc_matches)
 
+        logger.debug(
+            "Target resolution completed",
+            player_id=player_id,
+            target_name=target_name,
+            room_id=room_id,
+            player_matches=len(player_matches),
+            npc_matches=len(npc_matches),
+            total_matches=len(matches),
+        )
+
         # Handle results
         if not matches:
             return TargetResolutionResult(
@@ -188,6 +198,14 @@ class TargetResolutionService:
             matches = []
             npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
 
+            logger.debug(
+                "Searching NPCs in room",
+                room_id=room_id,
+                target_name=target_name,
+                npc_ids=npc_ids,
+                npc_count=len(npc_ids),
+            )
+
             for npc_id in npc_ids:
                 # Get NPC instance
                 npc_instance = self._get_npc_instance(npc_id)
@@ -201,6 +219,14 @@ class TargetResolutionService:
                 )
 
                 if normalized_target in normalized_npc_name:
+                    logger.debug(
+                        "NPC match found",
+                        npc_id=npc_id,
+                        npc_name=npc_instance.name,
+                        target_name=target_name,
+                        room_id=room_id,
+                        npc_room_id=getattr(npc_instance, "current_room_id", "unknown"),
+                    )
                     matches.append(
                         TargetMatch(
                             target_id=npc_id,

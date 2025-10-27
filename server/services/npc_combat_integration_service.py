@@ -121,6 +121,29 @@ class NPCCombatIntegrationService:
                 )
                 return False
 
+            # Validate that player and NPC are in the same room
+            player_room_id = self._get_player_room_id(player_id)
+            npc_room_id = getattr(npc_instance, "current_room", None)
+
+            logger.debug(
+                "Room validation check",
+                player_id=player_id,
+                npc_id=npc_id,
+                player_room_id=player_room_id,
+                npc_room_id=npc_room_id,
+                combat_room_id=room_id,
+            )
+
+            if player_room_id != npc_room_id:
+                logger.warning(
+                    "Cross-room attack attempt blocked",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    player_room_id=player_room_id,
+                    npc_room_id=npc_room_id,
+                )
+                return False
+
             # Store combat memory - NPC remembers who attacked it
             self._npc_combat_memory[npc_id] = player_id
 
@@ -483,6 +506,25 @@ class NPCCombatIntegrationService:
 
         except Exception as e:
             logger.error("Error despawning NPC", npc_id=npc_id, error=str(e))
+
+    def _get_player_room_id(self, player_id: str) -> str | None:
+        """
+        Get the current room ID for a player.
+
+        Args:
+            player_id: ID of the player
+
+        Returns:
+            Room ID if found, None otherwise
+        """
+        try:
+            player = self._persistence.get_player(player_id)
+            if player:
+                return player.current_room_id
+            return None
+        except Exception as e:
+            logger.error("Error getting player room ID", player_id=player_id, error=str(e))
+            return None
 
     def _is_valid_uuid(self, uuid_string: str) -> bool:
         """Check if a string is a valid UUID."""

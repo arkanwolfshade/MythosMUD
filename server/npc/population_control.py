@@ -175,7 +175,13 @@ class NPCPopulationController:
     based on zone configurations, player counts, and game state conditions.
     """
 
-    def __init__(self, event_bus: EventBus, spawning_service=None, lifecycle_manager=None, rooms_data_path: str = "data/local/rooms"):
+    def __init__(
+        self,
+        event_bus: EventBus,
+        spawning_service=None,
+        lifecycle_manager=None,
+        rooms_data_path: str = "data/local/rooms",
+    ):
         """
         Initialize the NPC population controller.
 
@@ -544,7 +550,6 @@ class NPCPopulationController:
             npc_id = self.lifecycle_manager.spawn_npc(definition, room_id, "population_control")
 
             if npc_id:
-
                 # Update population statistics
                 zone_key = self._get_zone_key_from_room_id(room_id)
                 if zone_key not in self.population_stats:
@@ -552,7 +557,30 @@ class NPCPopulationController:
                     self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
 
                 stats = self.population_stats[zone_key]
+
+                # Log population stats before adding NPC
+                logger.debug(
+                    "Population stats before adding NPC",
+                    npc_id=npc_id,
+                    npc_name=definition.name,
+                    definition_id=definition.id,
+                    zone_key=zone_key,
+                    current_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    max_population=definition.max_population,
+                )
+
                 stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
+
+                # Log population stats after adding NPC
+                logger.debug(
+                    "Population stats after adding NPC",
+                    npc_id=npc_id,
+                    npc_name=definition.name,
+                    definition_id=definition.id,
+                    zone_key=zone_key,
+                    new_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    max_population=definition.max_population,
+                )
 
                 # Store NPC data for tracking
                 self.active_npcs[npc_id] = {

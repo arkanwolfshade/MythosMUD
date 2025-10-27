@@ -503,8 +503,16 @@ class NPCLifecycleManager:
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
-            current_count = stats.npcs_by_type.get(definition.npc_type, 0)
+            # Check by individual NPC definition ID, not by type
+            current_count = stats.npcs_by_definition.get(definition.id, 0)
             if not definition.can_spawn(current_count):
+                logger.debug(
+                    "NPC spawn blocked by population limit",
+                    npc_id=definition.id,
+                    npc_name=definition.name,
+                    current_count=current_count,
+                    max_population=definition.max_population,
+                )
                 return False
 
         # Additional checks can be added here (e.g., room capacity, special conditions)

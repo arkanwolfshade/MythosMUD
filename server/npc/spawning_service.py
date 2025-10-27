@@ -218,10 +218,17 @@ class NPCSpawningService:
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
-            current_count = stats.npcs_by_type.get(definition.npc_type, 0)
+            # Check by individual NPC definition ID, not by type
+            current_count = stats.npcs_by_definition.get(definition.id, 0)
             if not definition.can_spawn(current_count):
                 definition_name = getattr(definition, "name", "Unknown NPC")
-                logger.debug("Population limit reached", npc_name=definition_name, zone_key=zone_key)
+                logger.debug(
+                    "Population limit reached",
+                    npc_name=definition_name,
+                    zone_key=zone_key,
+                    current_count=current_count,
+                    max_population=definition.max_population,
+                )
                 return spawn_requests
 
         # Get current NPC count for this specific definition
@@ -258,8 +265,8 @@ class NPCSpawningService:
 
         # Required NPCs always spawn if conditions are met
         if definition.is_required() and not spawn_requests:
-            # Check if we already have a required NPC of this type
-            if stats and stats.npcs_by_type.get(definition.npc_type, 0) == 0:
+            # Check if we already have a required NPC of this specific definition
+            if stats and stats.npcs_by_definition.get(definition.id, 0) == 0:
                 request = NPCSpawnRequest(
                     definition=definition,
                     room_id=room_id,
@@ -524,7 +531,9 @@ class NPCSpawningService:
         """
         # Note: NPC instances are now managed by lifecycle manager
         # This method should delegate to the lifecycle manager
-        logger.warning("Despawn request for NPC", npc_id=npc_id, message="NPC instances now managed by lifecycle manager")
+        logger.warning(
+            "Despawn request for NPC", npc_id=npc_id, message="NPC instances now managed by lifecycle manager"
+        )
         return False
 
     def get_spawn_statistics(self) -> dict[str, Any]:
@@ -575,7 +584,11 @@ class NPCSpawningService:
         """
         # Note: NPC instances are now managed by lifecycle manager
         # This method should delegate to the lifecycle manager
-        logger.info("Cleanup request received", max_age_seconds=max_age_seconds, message="NPC instances now managed by lifecycle manager")
+        logger.info(
+            "Cleanup request received",
+            max_age_seconds=max_age_seconds,
+            message="NPC instances now managed by lifecycle manager",
+        )
         return 0
 
     def _get_zone_key_from_room_id(self, room_id: str) -> str:

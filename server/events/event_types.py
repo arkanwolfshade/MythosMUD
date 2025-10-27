@@ -259,3 +259,27 @@ class NPCListened(BaseEvent):
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCListened"
+
+
+@dataclass
+class PlayerHPUpdated(BaseEvent):
+    """
+    Event fired when a player's HP changes.
+
+    This event is triggered when a player takes damage, heals,
+    or otherwise has their HP modified.
+    """
+
+    player_id: str
+    old_hp: int
+    new_hp: int
+    max_hp: int
+    damage_taken: int = 0  # Amount of damage taken (negative for healing)
+    source_id: str | None = None  # ID of the entity that caused the change
+    combat_id: str | None = None  # Combat context if applicable
+    room_id: str | None = None  # Room where the change occurred
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerHPUpdated"

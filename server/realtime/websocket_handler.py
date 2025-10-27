@@ -164,10 +164,10 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     except Exception:
                         stats_data = {}
 
-                    # Normalize health field for client (current_health expected)
-                    if "current_health" not in stats_data and "health" in stats_data:
+                    # Normalize health field for client (health expected by client)
+                    if "health" not in stats_data and "current_health" in stats_data:
                         try:
-                            stats_data["current_health"] = stats_data.get("health")
+                            stats_data["health"] = stats_data.get("current_health")
                         except Exception:
                             pass
 

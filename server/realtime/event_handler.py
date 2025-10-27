@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events import EventBus
-from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
+from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerHPUpdated, PlayerLeftRoom
 from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.player_combat_service import PlayerXPAwardEvent
@@ -66,6 +66,7 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
         self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
+        self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
 
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
@@ -555,6 +556,7 @@ class RealTimeEventHandler:
 
             # Send personal message to the player
             from .envelope import build_event
+
             xp_update_event = build_event(
                 "player_xp_updated",
                 {
@@ -576,6 +578,59 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.error("Error handling player XP award event", error=str(e), exc_info=True)
+
+    async def _handle_player_hp_updated(self, event: PlayerHPUpdated):
+        """
+        Handle player HP update events by sending updates to the client.
+
+        Args:
+            event: The PlayerHPUpdated event containing HP change information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Get the current player data to send updated HP
+            player = self.connection_manager._get_player(player_id_str)
+            if not player:
+                self._logger.warning("Player not found for HP update event", player_id=player_id_str)
+                return
+
+            # Create player update event with new HP
+            player_update_data = {
+                "player_id": player_id_str,
+                "name": player.name,
+                "health": event.new_hp,
+                "max_health": event.max_hp,
+                "current_room_id": getattr(player, "current_room_id", None),
+            }
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            hp_update_event = build_event(
+                "player_hp_updated",
+                {
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "max_hp": event.max_hp,
+                    "damage_taken": event.damage_taken,
+                    "player": player_update_data,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, hp_update_event)
+
+            self._logger.info(
+                "Sent HP update to player",
+                player_id=player_id_str,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                damage_taken=event.damage_taken,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player HP update event", error=str(e), exc_info=True)
 
 
 # Global instance

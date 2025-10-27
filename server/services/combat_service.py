@@ -541,6 +541,10 @@ class CombatService:
         target.current_hp = max(0, target.current_hp - damage)
         target_died = target.current_hp <= 0
 
+        # Persist player HP to database if target is a player
+        if target.participant_type == CombatParticipantType.PLAYER:
+            await self._persist_player_hp(target.participant_id, target.current_hp)
+
         # Update combat activity
         combat.update_activity(0)  # Will be updated with actual tick in game loop
 
@@ -801,6 +805,110 @@ class CombatService:
             logger.error("Error in automatic combat progression", combat_id=combat.combat_id, error=str(e))
             # End combat on error to prevent infinite loops
             await self.end_combat(combat.combat_id, f"Combat ended due to error: {str(e)}")
+
+    async def _persist_player_hp(self, player_id: UUID, current_hp: int) -> None:
+        """
+        Persist player HP to database after taking damage.
+
+        Args:
+            player_id: ID of the player whose HP changed
+            current_hp: New current HP value
+        """
+        try:
+            if not self._player_combat_service:
+                logger.warning("No player combat service available for HP persistence", player_id=player_id)
+                return
+
+            # Get persistence layer from player combat service
+            persistence = self._player_combat_service._persistence
+            if not persistence:
+                logger.warning("No persistence layer available for HP persistence", player_id=player_id)
+                return
+
+            # Get player from database
+            player = persistence.get_player(str(player_id))
+            if not player:
+                logger.warning("Player not found for HP persistence", player_id=player_id)
+                return
+
+            # Update player HP
+            old_hp = player.stats.current_health
+            player.stats.current_health = current_hp
+
+            # Save player to database
+            persistence.save_player(player)
+
+            logger.info(
+                "Player HP persisted to database",
+                player_id=player_id,
+                player_name=player.name,
+                old_hp=old_hp,
+                new_hp=current_hp,
+            )
+
+            # Publish HP update event for real-time UI updates
+            await self._publish_player_hp_update_event(player_id, old_hp, current_hp, player.stats.max_health)
+
+        except Exception as e:
+            logger.error(
+                "Error persisting player HP to database",
+                player_id=player_id,
+                current_hp=current_hp,
+                error=str(e),
+                exc_info=True,
+            )
+
+    async def _publish_player_hp_update_event(self, player_id: UUID, old_hp: int, new_hp: int, max_hp: int) -> None:
+        """
+        Publish a PlayerHPUpdated event for real-time UI updates.
+
+        Args:
+            player_id: ID of the player whose HP changed
+            old_hp: Previous HP value
+            new_hp: New HP value
+            max_hp: Maximum HP value
+        """
+        try:
+            if not self._player_combat_service or not self._player_combat_service._event_bus:
+                logger.warning("No event bus available for HP update event", player_id=player_id)
+                return
+
+            from server.events.event_types import PlayerHPUpdated
+
+            # Calculate damage taken (negative for healing)
+            damage_taken = old_hp - new_hp
+
+            # Create and publish the event
+            hp_update_event = PlayerHPUpdated(
+                player_id=str(player_id),
+                old_hp=old_hp,
+                new_hp=new_hp,
+                max_hp=max_hp,
+                damage_taken=damage_taken,
+                source_id=None,  # Could be enhanced to track damage source
+                combat_id=None,  # Could be enhanced to track combat context
+                room_id=None,  # Could be enhanced to track room context
+            )
+
+            await self._player_combat_service._event_bus.publish(hp_update_event)
+
+            logger.info(
+                "Published PlayerHPUpdated event",
+                player_id=player_id,
+                old_hp=old_hp,
+                new_hp=new_hp,
+                damage_taken=damage_taken,
+            )
+
+        except Exception as e:
+            logger.error(
+                "Error publishing PlayerHPUpdated event",
+                player_id=player_id,
+                old_hp=old_hp,
+                new_hp=new_hp,
+                error=str(e),
+                exc_info=True,
+            )
 
     async def _calculate_xp_reward(self, npc_id: UUID) -> int:
         """

@@ -112,9 +112,7 @@ async def lifespan(app: FastAPI):
     # Create spawning service first (it doesn't depend on population controller)
     app.state.npc_spawning_service = NPCSpawningService(app.state.event_bus, None)
     # Create lifecycle manager first (it needs spawning service)
-    app.state.npc_lifecycle_manager = NPCLifecycleManager(
-        app.state.event_bus, None, app.state.npc_spawning_service
-    )
+    app.state.npc_lifecycle_manager = NPCLifecycleManager(app.state.event_bus, None, app.state.npc_spawning_service)
     # Create population controller with spawning service and lifecycle manager
     app.state.npc_population_controller = NPCPopulationController(
         app.state.event_bus, app.state.npc_spawning_service, app.state.npc_lifecycle_manager

@@ -120,7 +120,7 @@ class Player(Base):
     def is_alive(self) -> bool:
         """Check if player is alive."""
         stats = self.get_stats()
-        return stats.get("health", 0) > 0
+        return stats.get("current_health", 0) > 0
 
     def is_admin_user(self) -> bool:
         """Check if player has admin privileges."""
@@ -133,6 +133,6 @@ class Player(Base):
     def get_health_percentage(self) -> float:
         """Get player health as percentage."""
         stats = self.get_stats()
-        current_health = stats.get("health", 100)
+        current_health = stats.get("current_health", 100)
         max_health = 100  # Could be made configurable
         return (current_health / max_health) * 100
