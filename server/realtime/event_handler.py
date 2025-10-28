@@ -68,6 +68,13 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
         self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
 
+        # Subscribe to death/respawn events
+        from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
+
+        self.event_bus.subscribe(PlayerDiedEvent, self._handle_player_died)
+        self.event_bus.subscribe(PlayerHPDecayEvent, self._handle_player_hp_decay)
+        self.event_bus.subscribe(PlayerRespawnedEvent, self._handle_player_respawned)
+
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
     def _get_next_sequence(self) -> int:
@@ -755,6 +762,110 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.error("Error handling player HP update event", error=str(e), exc_info=True)
+
+    async def _handle_player_died(self, event):
+        """
+        Handle player death events by sending death notification to the client.
+
+        Args:
+            event: The PlayerDiedEvent containing death information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            death_event = build_event(
+                "player_died",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "death_location": event.room_id,
+                    "killer_id": event.killer_id,
+                    "killer_name": event.killer_name,
+                    "message": "You have died. The darkness claims you utterly.",
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, death_event)
+
+            self._logger.info(
+                "Sent death notification to player", player_id=player_id_str, room_id=event.room_id
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player died event", error=str(e), exc_info=True)
+
+    async def _handle_player_hp_decay(self, event):
+        """
+        Handle player HP decay events by sending decay notification to the client.
+
+        Args:
+            event: The PlayerHPDecayEvent containing HP decay information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            decay_event = build_event(
+                "player_hp_decay",
+                {
+                    "player_id": player_id_str,
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "decay_amount": event.decay_amount,
+                    "room_id": event.room_id,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, decay_event)
+
+            self._logger.debug("Sent HP decay notification to player", player_id=player_id_str, new_hp=event.new_hp)
+
+        except Exception as e:
+            self._logger.error("Error handling player HP decay event", error=str(e), exc_info=True)
+
+    async def _handle_player_respawned(self, event):
+        """
+        Handle player respawn events by sending respawn notification to the client.
+
+        Args:
+            event: The PlayerRespawnedEvent containing respawn information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            respawn_event = build_event(
+                "player_respawned",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "respawn_room_id": event.respawn_room_id,
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, respawn_event)
+
+            self._logger.info(
+                "Sent respawn notification to player",
+                player_id=player_id_str,
+                respawn_room=event.respawn_room_id,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
 
 
 # Global instance

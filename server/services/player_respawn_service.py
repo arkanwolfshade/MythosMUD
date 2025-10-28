@@ -6,7 +6,7 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerRespawnedEvent
 from server.logging.enhanced_logging_config import get_logger
@@ -42,7 +42,7 @@ class PlayerRespawnService:
         self._event_bus = event_bus
         logger.info("PlayerRespawnService initialized", event_bus_available=bool(event_bus))
 
-    async def move_player_to_limbo(self, player_id: str, death_location: str, session: Session) -> bool:
+    async def move_player_to_limbo(self, player_id: str, death_location: str, session: AsyncSession) -> bool:
         """
         Move a dead player to the limbo room.
 
@@ -52,14 +52,14 @@ class PlayerRespawnService:
         Args:
             player_id: ID of the player to move
             death_location: Room ID where the player died (for reference)
-            session: Database session for player data access
+            session: Async database session for player data access
 
         Returns:
             True if player was moved to limbo, False otherwise
         """
         try:
-            # Retrieve player from database
-            player = session.get(Player, player_id)
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for limbo movement", player_id=player_id)
                 return False
@@ -68,8 +68,8 @@ class PlayerRespawnService:
             old_room = player.current_room_id
             player.current_room_id = LIMBO_ROOM_ID
 
-            # Commit changes
-            session.commit()
+            # Commit changes using async API
+            await session.commit()
 
             logger.info(
                 "Player moved to limbo",
@@ -83,10 +83,10 @@ class PlayerRespawnService:
 
         except Exception as e:
             logger.error("Error moving player to limbo", player_id=player_id, error=str(e), exc_info=True)
-            session.rollback()
+            await session.rollback()
             return False
 
-    def get_respawn_room(self, player_id: str, session: Session) -> str:
+    async def get_respawn_room(self, player_id: str, session: AsyncSession) -> str:
         """
         Get the respawn room for a player.
 
@@ -95,14 +95,14 @@ class PlayerRespawnService:
 
         Args:
             player_id: ID of the player
-            session: Database session for player data access
+            session: Async database session for player data access
 
         Returns:
             Room ID for respawn location
         """
         try:
-            # Retrieve player from database
-            player = session.get(Player, player_id)
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for respawn room lookup, using default", player_id=player_id)
                 return DEFAULT_RESPAWN_ROOM
@@ -120,7 +120,7 @@ class PlayerRespawnService:
             logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
             return DEFAULT_RESPAWN_ROOM
 
-    async def respawn_player(self, player_id: str, session: Session) -> bool:
+    async def respawn_player(self, player_id: str, session: AsyncSession) -> bool:
         """
         Respawn a dead player at their respawn location with full HP.
 
@@ -137,14 +137,14 @@ class PlayerRespawnService:
             True if respawn was successful, False otherwise
         """
         try:
-            # Retrieve player from database
-            player = session.get(Player, player_id)
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for respawn", player_id=player_id)
                 return False
 
-            # Get respawn room
-            respawn_room = self.get_respawn_room(player_id, session)
+            # Get respawn room using async API
+            respawn_room = await self.get_respawn_room(player_id, session)
 
             # Get current stats and restore HP
             stats = player.get_stats()
@@ -156,8 +156,8 @@ class PlayerRespawnService:
             old_room = player.current_room_id
             player.current_room_id = respawn_room
 
-            # Commit changes
-            session.commit()
+            # Commit changes using async API
+            await session.commit()
 
             logger.info(
                 "Player respawned",
@@ -189,5 +189,5 @@ class PlayerRespawnService:
 
         except Exception as e:
             logger.error("Error respawning player", player_id=player_id, error=str(e), exc_info=True)
-            session.rollback()
+            await session.rollback()
             return False

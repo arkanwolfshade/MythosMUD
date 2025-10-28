@@ -231,6 +231,23 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     )
                     await websocket.send_json(game_state_event)
 
+                    # Check if player is in limbo (dead) and send death event to trigger UI
+                    if canonical_room_id == "limbo_death_void_limbo_room":
+                        death_event = build_event(
+                            "player_died",
+                            {
+                                "player_id": player_id_str,
+                                "player_name": player.name,
+                                "death_location": getattr(player, "death_location", "Unknown Location"),
+                                "message": "You have died. The darkness claims you utterly.",
+                            },
+                            player_id=player_id_str,
+                        )
+                        await websocket.send_json(death_event)
+                        logger.info(
+                            "Sent death notification to player on login", player_id=player_id_str, in_limbo=True
+                        )
+
                     # Proactively broadcast a room update so existing occupants see the new player
                     try:
                         await broadcast_room_update(player_id_str, canonical_room_id)

@@ -6,7 +6,8 @@ and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 """
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDiedEvent, PlayerHPDecayEvent
 from server.logging.enhanced_logging_config import get_logger
@@ -36,21 +37,22 @@ class PlayerDeathService:
         self._event_bus = event_bus
         logger.info("PlayerDeathService initialized", event_bus_available=bool(event_bus))
 
-    def get_mortally_wounded_players(self, session: Session) -> list[Player]:
+    async def get_mortally_wounded_players(self, session: AsyncSession) -> list[Player]:
         """
         Get all players currently in the mortally wounded state.
 
         A player is considered mortally wounded if their HP is between 0 and -9 (inclusive).
 
         Args:
-            session: Database session for querying players
+            session: Async database session for querying players
 
         Returns:
             List of Player objects that are mortally wounded
         """
         try:
-            # Query all players from the database
-            all_players = session.query(Player).all()
+            # Query all players from the database using async API
+            result = await session.execute(select(Player))
+            all_players = result.scalars().all()
 
             # Filter for mortally wounded players (0 >= HP > -10)
             mortally_wounded = []
@@ -72,7 +74,7 @@ class PlayerDeathService:
             logger.error("Error retrieving mortally wounded players", error=str(e), exc_info=True)
             return []
 
-    async def process_mortally_wounded_tick(self, player_id: str, session: Session) -> bool:
+    async def process_mortally_wounded_tick(self, player_id: str, session: AsyncSession) -> bool:
         """
         Process HP decay for a single mortally wounded player.
 
@@ -86,8 +88,8 @@ class PlayerDeathService:
             True if HP decay was applied, False otherwise
         """
         try:
-            # Retrieve player from database
-            player = session.get(Player, player_id)
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for HP decay", player_id=player_id)
                 return False
@@ -109,8 +111,8 @@ class PlayerDeathService:
             stats["current_health"] = new_hp
             player.set_stats(stats)
 
-            # Commit changes to database
-            session.commit()
+            # Commit changes to database using async API
+            await session.commit()
 
             logger.info(
                 "HP decay applied to player",
@@ -140,11 +142,11 @@ class PlayerDeathService:
 
         except Exception as e:
             logger.error("Error processing HP decay for player", player_id=player_id, error=str(e), exc_info=True)
-            session.rollback()
+            await session.rollback()
             return False
 
     async def handle_player_death(
-        self, player_id: str, death_location: str, killer_info: dict | None, session: Session
+        self, player_id: str, death_location: str, killer_info: dict | None, session: AsyncSession
     ) -> bool:
         """
         Handle player death when HP reaches -10.
@@ -155,14 +157,14 @@ class PlayerDeathService:
             player_id: ID of the player who died
             death_location: Room ID where the player died
             killer_info: Optional dict with killer_id and killer_name
-            session: Database session for player data access
+            session: Async database session for player data access
 
         Returns:
             True if death was handled successfully, False otherwise
         """
         try:
-            # Retrieve player from database
-            player = session.get(Player, player_id)
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for death handling", player_id=player_id)
                 return False
@@ -177,8 +179,8 @@ class PlayerDeathService:
                 killer_name=killer_info.get("killer_name") if killer_info else None,
             )
 
-            # Commit any pending changes
-            session.commit()
+            # Commit any pending changes using async API
+            await session.commit()
 
             # Publish player died event if event bus is available
             if self._event_bus:
@@ -199,5 +201,5 @@ class PlayerDeathService:
 
         except Exception as e:
             logger.error("Error handling player death", player_id=player_id, error=str(e), exc_info=True)
-            session.rollback()
+            await session.rollback()
             return False

@@ -23,36 +23,25 @@ interface RefreshTokenResponse {
  */
 export const secureTokenStorage = {
   /**
-   * Store authentication token in httpOnly cookie
+   * Store authentication token in localStorage
+   * NOTE: For production, this should be stored in httpOnly cookies set by the server
    */
   setToken(token: string): void {
-    // In a real implementation, this would be handled by the server
-    // For client-side, we'll use a secure cookie approach
-    const expires = new Date();
-    expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000); // 24 hours
-
-    document.cookie = `authToken=${token}; expires=${expires.toUTCString()}; path=/; HttpOnly; Secure; SameSite=Strict`;
+    localStorage.setItem('authToken', token);
   },
 
   /**
-   * Retrieve authentication token from cookie
+   * Retrieve authentication token from localStorage
    */
   getToken(): string | null {
-    const cookies = document.cookie.split(';');
-    const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
-
-    if (!tokenCookie) {
-      return null;
-    }
-
-    return tokenCookie.split('=')[1] || null;
+    return localStorage.getItem('authToken');
   },
 
   /**
    * Clear authentication token
    */
   clearToken(): void {
-    document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; HttpOnly; Secure; SameSite=Strict';
+    localStorage.removeItem('authToken');
   },
 
   /**
@@ -120,35 +109,24 @@ export const secureTokenStorage = {
   },
 
   /**
-   * Get refresh token (stored separately)
+   * Get refresh token from localStorage
    */
   getRefreshToken(): string | null {
-    const cookies = document.cookie.split(';');
-    const refreshCookie = cookies.find(cookie => cookie.trim().startsWith('refreshToken='));
-
-    if (!refreshCookie) {
-      return null;
-    }
-
-    return refreshCookie.split('=')[1] || null;
+    return localStorage.getItem('refreshToken');
   },
 
   /**
-   * Set refresh token
+   * Set refresh token in localStorage
    */
   setRefreshToken(token: string): void {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-
-    document.cookie =
-      `refreshToken=${token}; expires=${expires.toUTCString()}; ` + `path=/; HttpOnly; Secure; SameSite=Strict`;
+    localStorage.setItem('refreshToken', token);
   },
 
   /**
    * Clear refresh token
    */
   clearRefreshToken(): void {
-    document.cookie = 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; HttpOnly; Secure; SameSite=Strict';
+    localStorage.removeItem('refreshToken');
   },
 
   /**

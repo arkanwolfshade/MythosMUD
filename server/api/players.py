@@ -8,7 +8,7 @@ creation, retrieval, listing, and deletion of player characters.
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
-from ..auth.users import get_current_user
+from ..auth.users import get_current_active_user
 from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
@@ -42,14 +42,14 @@ class RollStatsRequest(BaseModel):
 logger = get_logger(__name__)
 
 # Create player router
-player_router = APIRouter(prefix="/players", tags=["players"])
+player_router = APIRouter(prefix="/api/players", tags=["players"])
 
 
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -67,7 +67,7 @@ async def create_player(
 
 @player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -77,7 +77,7 @@ async def list_players(
 
 @player_router.get("/available-classes")
 async def get_available_classes(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
 ):
     """
     Get information about all available character classes and their prerequisites.
@@ -97,7 +97,7 @@ async def get_available_classes(
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -116,7 +116,7 @@ async def get_player(
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
 async def get_player_by_name(
     player_name: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -135,7 +135,7 @@ async def get_player_by_name(
 @player_router.delete("/{player_id}")
 async def delete_player(
     player_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -164,7 +164,7 @@ async def apply_sanity_loss(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -184,7 +184,7 @@ async def apply_fear(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -204,7 +204,7 @@ async def apply_corruption(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -224,7 +224,7 @@ async def gain_occult_knowledge(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -243,7 +243,7 @@ async def gain_occult_knowledge(
 async def heal_player(
     player_id: str,
     amount: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -263,7 +263,7 @@ async def damage_player(
     player_id: str,
     amount: int,
     damage_type: str = "physical",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -280,8 +280,8 @@ async def damage_player(
 
 @player_router.post("/respawn")
 async def respawn_player(
-    current_user: User = Depends(get_current_user),
-    request: Request = None,
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
 ):
     """
     Respawn a dead player at their respawn location with full HP.
@@ -299,7 +299,7 @@ async def respawn_player(
         HTTPException(404): Player not found
         HTTPException(500): Respawn failed
     """
-    from ..database import get_session
+    from ..database import get_async_session
     from ..persistence import get_persistence
     from ..services.player_respawn_service import PlayerRespawnService
 
@@ -307,9 +307,13 @@ async def respawn_player(
 
     try:
         # Get player data
-        async for session in get_session():
+        async for session in get_async_session():
             try:
-                player = session.get(Player, current_user.id)
+                # Look up player by user_id (not primary key player_id)
+                from sqlalchemy import select
+
+                result = await session.execute(select(Player).where(Player.user_id == str(current_user.id)))
+                player = result.scalar_one_or_none()
                 if not player:
                     context = create_context_from_request(request)
                     context.user_id = str(current_user.id)
@@ -326,18 +330,8 @@ async def respawn_player(
                         context=context,
                     )
 
-                # Get respawn service from app state
-                from ..app.factory import app
-
-                if not hasattr(app.state, "player_respawn_service"):
-                    logger.error("Player respawn service not available")
-                    raise LoggedHTTPException(
-                        status_code=500,
-                        detail="Respawn service not available",
-                        context=create_context_from_request(request),
-                    )
-
-                respawn_service: PlayerRespawnService = app.state.player_respawn_service
+                # Get respawn service directly (already initialized in handler)
+                respawn_service = PlayerRespawnService(event_bus=request.app.state.event_bus)
 
                 # Respawn the player
                 success = await respawn_service.respawn_player(player.player_id, session)
@@ -351,11 +345,13 @@ async def respawn_player(
                 # Get respawn room data
                 persistence = get_persistence()
                 respawn_room_id = player.current_room_id  # Updated by respawn_player
-                room_data = persistence.get_room_by_id(respawn_room_id)
+                room = persistence.get_room(respawn_room_id)
 
-                if not room_data:
+                if not room:
                     logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
                     room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+                else:
+                    room_data = room.to_dict()
 
                 # Get updated player state
                 updated_stats = player.get_stats()
@@ -405,7 +401,7 @@ async def roll_character_stats(
     required_class: str | None = None,
     max_attempts: int = 10,
     profession_id: int | None = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     timeout_seconds: float = 1.0,
     request: Request = None,
 ):
@@ -431,7 +427,7 @@ async def roll_character_stats(
     # Check if user is authenticated
     logger.debug("Authentication check", current_user=current_user)
     if not current_user:
-        logger.warning("Authentication failed: No user returned from get_current_user")
+        logger.warning("Authentication failed: No user returned from get_current_active_user")
         # Note: We don't have request context here, so we'll create a minimal context
         from ..exceptions import create_error_context
 
@@ -516,7 +512,7 @@ async def roll_character_stats(
 @player_router.post("/roll-stats")
 def roll_character_stats_endpoint(
     request_data: RollStatsRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
 ):
     """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
     return roll_character_stats(
@@ -532,7 +528,7 @@ def roll_character_stats_endpoint(
 @player_router.post("/create-character")
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -642,7 +638,7 @@ async def create_character_with_stats(
 async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
 ):
     """
     Validate character stats against class prerequisites.

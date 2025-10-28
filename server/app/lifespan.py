@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from sqlalchemy import select
 
 from ..config import get_config
 from ..database import init_db
@@ -416,14 +417,16 @@ async def game_tick_loop(app: FastAPI):
             # Process HP decay for mortally wounded players
             if hasattr(app.state, "player_death_service"):
                 try:
-                    from ..database import get_session
+                    from ..database import get_async_session
                     from ..models.player import Player
 
                     # Get database session for HP decay processing
-                    async for session in get_session():
+                    async for session in get_async_session():
                         try:
                             # Get all mortally wounded players
-                            mortally_wounded = app.state.player_death_service.get_mortally_wounded_players(session)
+                            mortally_wounded = await app.state.player_death_service.get_mortally_wounded_players(
+                                session
+                            )
 
                             if mortally_wounded:
                                 logger.debug(
@@ -438,8 +441,8 @@ async def game_tick_loop(app: FastAPI):
                                         player.player_id, session
                                     )
 
-                                    # Refresh player stats to get HP AFTER decay
-                                    session.refresh(player)
+                                    # Refresh player stats to get HP AFTER decay using async API
+                                    await session.refresh(player)
                                     stats = player.get_stats()
                                     new_hp = stats.get("current_health", 0)
 
@@ -477,7 +480,8 @@ async def game_tick_loop(app: FastAPI):
 
                             # Also check for players already at death threshold who need limbo transition
                             # This handles players who died but haven't been moved to limbo yet
-                            all_players = session.query(Player).all()
+                            result = await session.execute(select(Player))
+                            all_players = result.scalars().all()
                             for player in all_players:
                                 stats = player.get_stats()
                                 current_hp = stats.get("current_health", 0)
