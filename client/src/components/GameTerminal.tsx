@@ -81,6 +81,8 @@ interface GameTerminalProps {
   onSendChatMessage: (message: string, channel: string) => void;
   onClearMessages: () => void;
   onClearHistory: () => void;
+  isMortallyWounded?: boolean;
+  isDead?: boolean;
 }
 
 export const GameTerminal: React.FC<GameTerminalProps> = ({
@@ -98,6 +100,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onLogout,
   isLoggingOut = false,
   onDownloadLogs,
+  isMortallyWounded = false,
+  isDead = false,
   onSendCommand,
   onSendChatMessage,
   onClearMessages,
@@ -223,6 +227,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               onLogout={onLogout}
               isConnected={isConnected}
               isLoggingOut={isLoggingOut}
+              disabled={isMortallyWounded || isDead}
             />
           </DraggablePanel>
 

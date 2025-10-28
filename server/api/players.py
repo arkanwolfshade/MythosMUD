@@ -15,7 +15,7 @@ from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging.enhanced_logging_config import get_logger
-from ..models import Stats
+from ..models import Player, Stats
 from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..utils.error_logging import create_context_from_request
@@ -276,6 +276,128 @@ async def damage_player(
             context.user_id = str(current_user.id)
         context.metadata["requested_player_id"] = player_id
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
+
+
+@player_router.post("/respawn")
+async def respawn_player(
+    current_user: User = Depends(get_current_user),
+    request: Request = None,
+):
+    """
+    Respawn a dead player at their respawn location with full HP.
+
+    This endpoint handles player resurrection after death, moving them from
+    limbo to their designated respawn room and restoring their HP to 100.
+
+    Rate limited to 1 request per 5 seconds per user.
+
+    Returns:
+        dict: Respawn room data and updated player state
+
+    Raises:
+        HTTPException(403): Player is not dead
+        HTTPException(404): Player not found
+        HTTPException(500): Respawn failed
+    """
+    from ..database import get_session
+    from ..persistence import get_persistence
+    from ..services.player_respawn_service import PlayerRespawnService
+
+    logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
+
+    try:
+        # Get player data
+        async for session in get_session():
+            try:
+                player = session.get(Player, current_user.id)
+                if not player:
+                    context = create_context_from_request(request)
+                    context.user_id = str(current_user.id)
+                    raise LoggedHTTPException(
+                        status_code=404, detail="Player not found", context=context
+                    )
+
+                # Verify player is dead
+                if not player.is_dead():
+                    context = create_context_from_request(request)
+                    context.user_id = str(current_user.id)
+                    context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+                    raise LoggedHTTPException(
+                        status_code=403,
+                        detail="Player must be dead to respawn (HP must be -10 or below)",
+                        context=context,
+                    )
+
+                # Get respawn service from app state
+                from ..app.factory import app
+
+                if not hasattr(app.state, "player_respawn_service"):
+                    logger.error("Player respawn service not available")
+                    raise LoggedHTTPException(
+                        status_code=500, detail="Respawn service not available", context=create_context_from_request(request)
+                    )
+
+                respawn_service: PlayerRespawnService = app.state.player_respawn_service
+
+                # Respawn the player
+                success = await respawn_service.respawn_player(player.player_id, session)
+
+                if not success:
+                    logger.error("Respawn failed", player_id=player.player_id)
+                    raise LoggedHTTPException(
+                        status_code=500, detail="Failed to respawn player", context=create_context_from_request(request)
+                    )
+
+                # Get respawn room data
+                persistence = get_persistence()
+                respawn_room_id = player.current_room_id  # Updated by respawn_player
+                room_data = persistence.get_room_by_id(respawn_room_id)
+
+                if not room_data:
+                    logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
+                    room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+
+                # Get updated player state
+                updated_stats = player.get_stats()
+
+                logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
+
+                return {
+                    "success": True,
+                    "player": {
+                        "id": player.player_id,
+                        "name": player.name,
+                        "hp": updated_stats.get("current_health", 100),
+                        "max_hp": 100,
+                        "current_room_id": respawn_room_id,
+                    },
+                    "room": room_data,
+                    "message": "You have been resurrected and returned to the waking world",
+                }
+
+            except LoggedHTTPException:
+                raise
+            except Exception as e:
+                logger.error("Error in respawn endpoint", error=str(e), exc_info=True)
+                context = create_context_from_request(request)
+                if current_user:
+                    context.user_id = str(current_user.id)
+                raise LoggedHTTPException(
+                    status_code=500, detail="Failed to process respawn request", context=context
+                ) from e
+            # Only need one session iteration - break after first session
+            break
+
+    except LoggedHTTPException:
+        raise
+    except Exception as e:
+        logger.error("Unexpected error in respawn endpoint", error=str(e), exc_info=True)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        raise LoggedHTTPException(
+            status_code=500, detail="Unexpected error during respawn", context=context
+        ) from e
 
 
 # Character Creation and Stats Generation Endpoints

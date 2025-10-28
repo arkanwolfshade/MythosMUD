@@ -537,9 +537,25 @@ class CombatService:
 
         logger.info("Processing attack", attacker_name=current_participant.name, target_name=target.name, damage=damage)
 
-        # Apply damage
-        target.current_hp = max(0, target.current_hp - damage)
-        target_died = target.current_hp <= 0
+        # Apply damage with different caps for players vs NPCs
+        # Players: cap at -10 (death threshold), NPCs: cap at 0
+        old_hp = target.current_hp
+        if target.participant_type == CombatParticipantType.PLAYER:
+            # Players can go to -10 HP before death
+            target.current_hp = max(-10, target.current_hp - damage)
+        else:
+            # NPCs die at 0 HP
+            target.current_hp = max(0, target.current_hp - damage)
+
+        # Check for death states (different for players vs NPCs)
+        if target.participant_type == CombatParticipantType.PLAYER:
+            # Players die at -10 HP
+            target_died = target.current_hp <= -10
+            target_mortally_wounded = (old_hp > 0 and target.current_hp == 0)
+        else:
+            # NPCs die at 0 HP
+            target_died = target.current_hp <= 0
+            target_mortally_wounded = False
 
         # Persist player HP to database if target is a player
         if target.participant_type == CombatParticipantType.PLAYER:
@@ -562,6 +578,41 @@ class CombatService:
             message=attack_message,
             combat_id=combat.combat_id,
         )
+
+        # Publish player mortally wounded event if applicable
+        if target_mortally_wounded and target.participant_type == CombatParticipantType.PLAYER:
+            try:
+                from ..services.combat_messaging_integration import combat_messaging_integration
+
+                attacker_name = current_participant.name if current_participant else None
+                await combat_messaging_integration.broadcast_player_mortally_wounded(
+                    player_id=str(target.participant_id),
+                    player_name=target.name,
+                    attacker_name=attacker_name,
+                    room_id=combat.room_id,
+                )
+                logger.info(
+                    "Player mortally wounded event published",
+                    player_id=target.participant_id,
+                    player_name=target.name,
+                )
+            except Exception as e:
+                logger.error("Error publishing player mortally wounded event", error=str(e), exc_info=True)
+
+        # Publish player death event if applicable
+        if target_died and target.participant_type == CombatParticipantType.PLAYER:
+            try:
+                from ..services.combat_messaging_integration import combat_messaging_integration
+
+                await combat_messaging_integration.broadcast_player_death(
+                    player_id=str(target.participant_id),
+                    player_name=target.name,
+                    room_id=combat.room_id,
+                    death_location=combat.room_id,
+                )
+                logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
+            except Exception as e:
+                logger.error("Error publishing player death event", error=str(e), exc_info=True)
 
         # Publish combat events
         try:

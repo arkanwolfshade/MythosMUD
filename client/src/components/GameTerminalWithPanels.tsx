@@ -22,6 +22,7 @@ interface GameEvent {
 }
 
 import { CommandHelpDrawer } from './CommandHelpDrawer';
+import { DeathInterstitial } from './DeathInterstitial';
 import { GameTerminal } from './GameTerminal';
 
 interface GameTerminalWithPanelsProps {
@@ -110,6 +111,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     messages: [],
     commandHistory: [],
   });
+
+  // Death/respawn states for UI theming
+  const [isMortallyWounded, setIsMortallyWounded] = useState(false);
+  const [isDead, setIsDead] = useState(false);
+  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
+  const [isRespawning, setIsRespawning] = useState(false);
 
   // Memory monitoring for this component
   const { detector } = useMemoryMonitor('GameTerminalWithPanels');
@@ -1084,6 +1091,165 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             });
             break;
           }
+          case 'player_mortally_wounded': {
+            // Player has reached 0 HP - enter mortally wounded state
+            const message = event.data.message as string;
+
+            setIsMortallyWounded(true);
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player mortally wounded', {
+              message,
+            });
+            break;
+          }
+          case 'player_mortally_wounded_room': {
+            // Other player became mortally wounded
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
+          case 'player_hp_decay': {
+            // HP decay tick for mortally wounded player
+            const message = event.data.message as string;
+            const currentHp = event.data.current_hp as number;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // Update player HP in state
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  current_health: currentHp,
+                },
+              };
+            }
+            break;
+          }
+          case 'player_died': {
+            // Player has died (reached -10 HP)
+            const message = event.data.message as string;
+            const eventDeathLocation = event.data.death_location as string;
+
+            setIsDead(true);
+            setIsMortallyWounded(false);
+            setDeathLocation(eventDeathLocation || currentRoomRef.current?.name || 'Unknown Location');
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'death' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player died', {
+              message,
+              deathLocation: eventDeathLocation,
+            });
+            break;
+          }
+          case 'player_died_room': {
+            // Other player died
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
+          case 'player_respawned': {
+            // Player has respawned
+            const message = event.data.message as string;
+
+            setIsDead(false);
+            setIsMortallyWounded(false);
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player respawned');
+            break;
+          }
+          case 'player_respawned_room': {
+            // Other player respawned
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,
@@ -1319,6 +1485,101 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     setGameState(prev => ({ ...prev, commandHistory: [] }));
   };
 
+  const handleRespawn = async () => {
+    logger.info('GameTerminalWithPanels', 'Respawn requested');
+    setIsRespawning(true);
+
+    try {
+      // Call the respawn API endpoint
+      const response = await fetch('/api/players/respawn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('GameTerminalWithPanels', 'Respawn failed', {
+          status: response.status,
+          error: errorData,
+        });
+
+        // Add error message
+        const errorMessage: ChatMessage = {
+          text: `Respawn failed: ${errorData.detail || 'Unknown error'}`,
+          timestamp: new Date().toISOString(),
+          messageType: 'error',
+          isHtml: false,
+        };
+
+        setGameState(prev => ({
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        }));
+
+        setIsRespawning(false);
+        return;
+      }
+
+      const respawnData = await response.json();
+      logger.info('GameTerminalWithPanels', 'Respawn successful', {
+        room: respawnData.room,
+        player: respawnData.player,
+      });
+
+      // Reset death states
+      setIsDead(false);
+      setIsMortallyWounded(false);
+      setIsRespawning(false);
+
+      // Update game state with new room and player data
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...respawnData.player,
+          stats: {
+            ...prev.player?.stats,
+            current_health: respawnData.player.hp,
+          },
+        } as Player,
+        room: respawnData.room as Room,
+      }));
+
+      // Add respawn message
+      const respawnMessage: ChatMessage = {
+        text: respawnData.message || 'You have been resurrected',
+        timestamp: new Date().toISOString(),
+        messageType: 'system',
+        isHtml: false,
+      };
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, respawnMessage],
+      }));
+    } catch (error) {
+      logger.error('GameTerminalWithPanels', 'Error calling respawn API', { error });
+
+      // Add error message
+      const errorMessage: ChatMessage = {
+        text: 'Failed to respawn. Please try again.',
+        timestamp: new Date().toISOString(),
+        messageType: 'error',
+        isHtml: false,
+      };
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorMessage],
+      }));
+
+      setIsRespawning(false);
+    }
+  };
+
   const handleLogout = () => {
     // Add logout confirmation message before logout (only once)
     const logoutMessage: ChatMessage = {
@@ -1347,7 +1608,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   };
 
   return (
-    <div className="game-terminal-container">
+    <div className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}>
       <GameTerminal
         playerName={playerName}
         isConnected={isConnected}
@@ -1367,10 +1628,20 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         onSendChatMessage={handleChatMessage}
         onClearMessages={handleClearMessages}
         onClearHistory={handleClearHistory}
+        isMortallyWounded={isMortallyWounded}
+        isDead={isDead}
       />
 
       {/* Command Help Drawer */}
       <CommandHelpDrawer open={false} onClose={() => {}} />
+
+      {/* Death Interstitial Screen */}
+      <DeathInterstitial
+        isVisible={isDead}
+        deathLocation={deathLocation}
+        onRespawn={handleRespawn}
+        isRespawning={isRespawning}
+      />
     </div>
   );
 };

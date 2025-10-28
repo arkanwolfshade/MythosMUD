@@ -283,3 +283,92 @@ class PlayerHPUpdated(BaseEvent):
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerHPUpdated"
+
+
+@dataclass
+class PlayerMortallyWoundedEvent(BaseEvent):
+    """
+    Event fired when a player enters mortally wounded state (HP = 0).
+
+    This event is triggered when a player's HP reaches 0 but before they die.
+    The player enters a mortally wounded state where they lose 1 HP per tick
+    until reaching -10 HP (death).
+    """
+
+    player_id: str
+    player_name: str
+    room_id: str
+    attacker_id: str | None = None  # ID of the entity that caused mortally wounded state
+    attacker_name: str | None = None  # Name of the attacker
+    combat_id: str | None = None  # Combat context if applicable
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerMortallyWoundedEvent"
+
+
+@dataclass
+class PlayerHPDecayEvent(BaseEvent):
+    """
+    Event fired when a mortally wounded player loses HP due to decay.
+
+    This event is triggered once per game tick for players in mortally wounded
+    state, decreasing their HP by 1 until they reach -10 HP (death).
+    """
+
+    player_id: str
+    old_hp: int
+    new_hp: int
+    decay_amount: int = 1  # Amount of HP lost due to decay
+    room_id: str | None = None  # Room where the decay occurred
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerHPDecayEvent"
+
+
+@dataclass
+class PlayerDiedEvent(BaseEvent):
+    """
+    Event fired when a player dies (HP <= -10).
+
+    This event is triggered when a player's HP reaches -10 or below,
+    signaling the transition to the death/respawn sequence.
+    """
+
+    player_id: str
+    player_name: str
+    room_id: str
+    killer_id: str | None = None  # ID of the entity that killed the player
+    killer_name: str | None = None  # Name of the killer
+    combat_id: str | None = None  # Combat context if applicable
+    death_location: str | None = None  # Detailed death location information
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerDiedEvent"
+
+
+@dataclass
+class PlayerRespawnedEvent(BaseEvent):
+    """
+    Event fired when a player respawns after death.
+
+    This event is triggered when a player completes the death/respawn sequence
+    and returns to the game world at their respawn location.
+    """
+
+    player_id: str
+    player_name: str
+    respawn_room_id: str
+    old_hp: int
+    new_hp: int
+    death_room_id: str | None = None  # Where the player died
+
+    def __post_init__(self):
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerRespawnedEvent"

@@ -368,6 +368,65 @@
   scrollbar-color: #00ff00 #1a1a1a;
 }
 
+/* Mortally Wounded State - Red Theme */
+.game-terminal-container.mortally-wounded {
+  border: 3px solid #8b0000;
+  box-shadow:
+    0 0 20px rgba(139, 0, 0, 0.6),
+    inset 0 0 20px rgba(139, 0, 0, 0.3);
+  animation: pulse-red-border 2s ease-in-out infinite;
+}
+
+.game-terminal-container.mortally-wounded .MuiPaper-root {
+  border-color: #8b0000 !important;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.4) !important;
+}
+
+.game-terminal-container.mortally-wounded .MuiPaper-root .MuiTypography-root {
+  color: #ff6666 !important;
+}
+
+.game-terminal-container.mortally-wounded .MuiTextField-root .MuiInputBase-root {
+  border-color: #8b0000 !important;
+  background-color: #2a1a1a !important;
+  color: #ff6666 !important;
+}
+
+.game-terminal-container.mortally-wounded .MuiButton-contained {
+  background-color: #440000 !important;
+  border-color: #8b0000 !important;
+}
+
+.game-terminal-container.mortally-wounded .MuiLinearProgress-bar {
+  background-color: #ff0000 !important;
+}
+
+/* Pulsing red border effect for mortally wounded state */
+@keyframes pulse-red-border {
+  0% {
+    box-shadow:
+      0 0 10px rgba(139, 0, 0, 0.6),
+      inset 0 0 10px rgba(139, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(139, 0, 0, 0.9),
+      inset 0 0 30px rgba(139, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(139, 0, 0, 0.6),
+      inset 0 0 10px rgba(139, 0, 0, 0.3);
+  }
+}
+
+/* Dead State - Darker theme with muted colors */
+.game-terminal-container.dead {
+  border: 3px solid #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  filter: brightness(0.4);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .game-terminal {

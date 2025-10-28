@@ -1167,6 +1167,10 @@ class NATSMessageHandler:
                 "combat.started.*",  # Combat started events per room
                 "combat.ended.*",  # Combat ended events per room
                 "combat.npc_died.*",  # NPC death events per room
+                "events.player_mortally_wounded.*",  # Player mortally wounded events per room
+                "events.player_hp_decay.*",  # Player HP decay events per room
+                "events.player_died.*",  # Player death events per room
+                "events.player_respawned.*",  # Player respawn events per room
             ]
 
             logger.debug("Subscribing to event subjects", subjects=event_subjects)

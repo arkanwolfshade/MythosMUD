@@ -158,6 +158,18 @@ async def lifespan(app: FastAPI):
     app.state.player_combat_service = PlayerCombatService(app.state.persistence, app.state.event_bus)
     logger.info("Player combat service initialized and added to app.state")
 
+    # Initialize player death service for death/respawn mechanics
+    from ..services.player_death_service import PlayerDeathService
+
+    app.state.player_death_service = PlayerDeathService(event_bus=app.state.event_bus)
+    logger.info("Player death service initialized and added to app.state")
+
+    # Initialize player respawn service for resurrection mechanics
+    from ..services.player_respawn_service import PlayerRespawnService
+
+    app.state.player_respawn_service = PlayerRespawnService(event_bus=app.state.event_bus)
+    logger.info("Player respawn service initialized and added to app.state")
+
     # Initialize NPC startup spawning
     # Re-enabled to ensure NPCs spawn during server startup
     from ..services.npc_startup_service import get_npc_startup_service
@@ -400,6 +412,46 @@ async def game_tick_loop(app: FastAPI):
                     await app.state.combat_service.process_game_tick(tick_count)
                 except Exception as e:
                     logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
+
+            # Process HP decay for mortally wounded players
+            if hasattr(app.state, "player_death_service"):
+                try:
+                    from ..database import get_session
+
+                    # Get database session for HP decay processing
+                    async for session in get_session():
+                        try:
+                            # Get all mortally wounded players
+                            mortally_wounded = app.state.player_death_service.get_mortally_wounded_players(session)
+
+                            if mortally_wounded:
+                                logger.debug(
+                                    "Processing HP decay for mortally wounded players",
+                                    tick_count=tick_count,
+                                    player_count=len(mortally_wounded),
+                                )
+
+                                # Process decay for each mortally wounded player
+                                for player in mortally_wounded:
+                                    await app.state.player_death_service.process_mortally_wounded_tick(
+                                        player.player_id, session
+                                    )
+
+                                    # Broadcast HP decay message
+                                    if hasattr(app.state, "combat_service"):
+                                        from ..services.combat_messaging_integration import combat_messaging_integration
+
+                                        stats = player.get_stats()
+                                        current_hp = stats.get("current_health", 0)
+                                        await combat_messaging_integration.send_hp_decay_message(
+                                            player.player_id, current_hp - 1
+                                        )
+                        except Exception as e:
+                            logger.error("Error in HP decay processing iteration", error=str(e))
+                        # Only need one session iteration - break after first session
+                        break
+                except Exception as e:
+                    logger.error("Error processing HP decay", tick_count=tick_count, error=str(e))
 
             # Broadcast game tick to all connected players
             tick_data = {

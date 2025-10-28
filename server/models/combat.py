@@ -52,8 +52,18 @@ class CombatParticipant:
     last_action_tick: int | None = None
 
     def is_alive(self) -> bool:
-        """Check if participant is alive."""
-        return self.current_hp > 0 and self.is_active
+        """
+        Check if participant is alive enough to be in combat.
+
+        For players: alive if HP > -10 (includes mortally wounded state)
+        For NPCs: alive if HP > 0
+        """
+        if self.participant_type == CombatParticipantType.PLAYER:
+            # Players remain "in combat" until -10 HP (mortally wounded at 0 HP is still "alive" for combat purposes)
+            return self.current_hp > -10 and self.is_active
+        else:
+            # NPCs die at 0 HP
+            return self.current_hp > 0 and self.is_active
 
 
 @dataclass
