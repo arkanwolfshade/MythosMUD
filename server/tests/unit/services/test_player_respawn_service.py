@@ -1,6 +1,6 @@
 """Tests for player respawn service."""
 
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -35,7 +35,7 @@ class TestPlayerRespawnService:
         """Test moving a player to limbo room."""
         death_location = "dangerous-room"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_respawn_service.move_player_to_limbo("test-player-id", death_location, mock_session)
@@ -48,41 +48,44 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_move_player_to_limbo_player_not_found(self, player_respawn_service):
         """Test limbo movement when player doesn't exist."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = None
 
         result = await player_respawn_service.move_player_to_limbo("nonexistent-player", "test-room", mock_session)
 
         assert result is False
 
-    def test_get_respawn_room_custom_room(self, player_respawn_service, mock_player):
+    @pytest.mark.asyncio
+    async def test_get_respawn_room_custom_room(self, player_respawn_service, mock_player):
         """Test getting custom respawn room from player."""
         mock_player.respawn_room_id = "custom-respawn-room"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
 
         assert result == "custom-respawn-room"
 
-    def test_get_respawn_room_default(self, player_respawn_service, mock_player):
+    @pytest.mark.asyncio
+    async def test_get_respawn_room_default(self, player_respawn_service, mock_player):
         """Test getting default respawn room when player has None."""
         mock_player.respawn_room_id = None
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
 
         assert result == DEFAULT_RESPAWN_ROOM
 
-    def test_get_respawn_room_player_not_found(self, player_respawn_service):
+    @pytest.mark.asyncio
+    async def test_get_respawn_room_player_not_found(self, player_respawn_service):
         """Test getting respawn room when player doesn't exist."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = None
 
-        result = player_respawn_service.get_respawn_room("nonexistent-player", mock_session)
+        result = await player_respawn_service.get_respawn_room("nonexistent-player", mock_session)
 
         assert result == DEFAULT_RESPAWN_ROOM
 
@@ -95,7 +98,7 @@ class TestPlayerRespawnService:
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
         mock_player.current_room_id = "limbo_death_void"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_respawn_service.respawn_player("test-player-id", mock_session)
@@ -117,7 +120,7 @@ class TestPlayerRespawnService:
         mock_player.respawn_room_id = "custom-respawn-room"
         mock_player.current_room_id = "limbo_death_void"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_respawn_service.respawn_player("test-player-id", mock_session)
@@ -128,7 +131,7 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_respawn_player_not_found(self, player_respawn_service):
         """Test respawn when player doesn't exist."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = None
 
         result = await player_respawn_service.respawn_player("nonexistent-player", mock_session)
@@ -144,7 +147,7 @@ class TestPlayerRespawnService:
             mock_player.get_stats.return_value = stats.copy()
             mock_player.current_room_id = "limbo_death_void"
 
-            mock_session = Mock()
+            mock_session = AsyncMock()
             mock_session.get.return_value = mock_player
 
             await player_respawn_service.respawn_player("test-player-id", mock_session)
@@ -160,7 +163,7 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_move_player_to_limbo_database_exception(self, player_respawn_service, mock_player):
         """Test limbo movement handles database exceptions gracefully."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
@@ -169,12 +172,13 @@ class TestPlayerRespawnService:
         assert result is False
         mock_session.rollback.assert_called_once()
 
-    def test_get_respawn_room_database_exception(self, player_respawn_service):
+    @pytest.mark.asyncio
+    async def test_get_respawn_room_database_exception(self, player_respawn_service):
         """Test get_respawn_room handles database exceptions gracefully."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.side_effect = Exception("Database error")
 
-        result = player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
 
         # Should return default room on error
         assert result == DEFAULT_RESPAWN_ROOM
@@ -192,7 +196,7 @@ class TestPlayerRespawnService:
         mock_player.current_room_id = "limbo_death_void"
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await service.respawn_player("test-player-id", mock_session)
@@ -210,7 +214,7 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_respawn_player_database_exception(self, player_respawn_service, mock_player):
         """Test respawn handles database exceptions gracefully."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 

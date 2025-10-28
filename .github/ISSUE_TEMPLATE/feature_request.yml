@@ -1,0 +1,57 @@
+name: ✨ Feature Request
+description: Propose new research into unexplored territories
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        *"In seeking knowledge, we must venture beyond known boundaries."*
+
+        Propose a new feature or enhancement for MythosMUD.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What Problem Does This Solve?
+      description: Describe the problem or limitation you're facing
+      placeholder: As a [user/developer], I want to [goal] because [reason]
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this to work?
+      placeholder: Describe your proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other solutions did you consider?
+      placeholder: Alternative approaches or workarounds
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Mockups, examples, or related issues
+      placeholder: Any additional information, screenshots, or references
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched existing issues and this isn't a duplicate
+          required: true
+        - label: This aligns with the project's goals (see PLANNING.md)
+          required: false

@@ -50,21 +50,21 @@ class TestAsyncRouteHandlers:
 
         synchronous_handlers = [
             # Player API handlers
-            "POST /players/ - create_player",
-            "GET /players/ - list_players",
-            "GET /players/{player_id} - get_player",
-            "GET /players/name/{player_name} - get_player_by_name",
-            "DELETE /players/{player_id} - delete_player",
-            "POST /players/{player_id}/sanity-loss - apply_sanity_loss",
-            "POST /players/{player_id}/fear - apply_fear",
-            "POST /players/{player_id}/corruption - apply_corruption",
-            "POST /players/{player_id}/occult-knowledge - gain_occult_knowledge",
-            "POST /players/{player_id}/heal - heal_player",
-            "POST /players/{player_id}/damage - damage_player",
-            "POST /players/roll-stats - roll_character_stats",
-            "POST /players/validate-stats - validate_character_stats",
-            "GET /players/available-classes - get_available_classes",
-            "GET /players/class-description/{class_name} - get_class_description",
+            "POST /api/players/ - create_player",
+            "GET /api/players/ - list_players",
+            "GET /api/players/{player_id} - get_player",
+            "GET /api/players/name/{player_name} - get_player_by_name",
+            "DELETE /api/players/{player_id} - delete_player",
+            "POST /api/players/{player_id}/sanity-loss - apply_sanity_loss",
+            "POST /api/players/{player_id}/fear - apply_fear",
+            "POST /api/players/{player_id}/corruption - apply_corruption",
+            "POST /api/players/{player_id}/occult-knowledge - gain_occult_knowledge",
+            "POST /api/players/{player_id}/heal - heal_player",
+            "POST /api/players/{player_id}/damage - damage_player",
+            "POST /api/players/roll-stats - roll_character_stats",
+            "POST /api/players/validate-stats - validate_character_stats",
+            "GET /api/players/available-classes - get_available_classes",
+            "GET /api/players/class-description/{class_name} - get_class_description",
             # Room API handlers
             "GET /rooms/{room_id} - get_room",
             # Game API handlers
@@ -98,7 +98,7 @@ class TestAsyncRouteHandlers:
         # Test multiple requests to simulate concurrent load
         responses = []
         for _ in range(10):
-            response = client.get("/players/")
+            response = client.get("/api/players/")
             responses.append(response)
 
         end_time = time.time()
@@ -165,7 +165,7 @@ class TestAsyncRouteHandlers:
         def make_request():
             """Make a request and store the result."""
             start_time = time.time()
-            response = client.get("/players/")
+            response = client.get("/api/players/")
             end_time = time.time()
 
             results.put(
@@ -347,7 +347,7 @@ class TestAsyncRouteHandlers:
         # This test verifies that async handlers are compatible with existing middleware
 
         # Test that security headers middleware works with async handlers
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should have security headers regardless of sync/async
         assert "X-Frame-Options" in response.headers
@@ -361,7 +361,7 @@ class TestAsyncRouteHandlers:
         """Test that async handlers work with existing logging middleware."""
         # This test verifies that async handlers are compatible with logging middleware
 
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should get a valid response (logging middleware should not interfere)
         assert response.status_code in [200, 401]

@@ -32,8 +32,10 @@ class TestPlayerDeathService:
         """Test getting mortally wounded players when none exist."""
         # Mock database session to return no players (using async SQLAlchemy 2.0 API)
         mock_session = AsyncMock()
-        mock_result = AsyncMock()
-        mock_result.scalars().all.return_value = []
+        mock_scalars = Mock()
+        mock_scalars.all.return_value = []
+        mock_result = Mock()
+        mock_result.scalars.return_value = mock_scalars
         mock_session.execute.return_value = mock_result
 
         result = await player_death_service.get_mortally_wounded_players(mock_session)
@@ -62,8 +64,10 @@ class TestPlayerDeathService:
 
         # Mock database session to return all players (using async SQLAlchemy 2.0 API)
         mock_session = AsyncMock()
-        mock_result = AsyncMock()
-        mock_result.scalars().all.return_value = [player1, player2, player3, player4]
+        mock_scalars = Mock()
+        mock_scalars.all.return_value = [player1, player2, player3, player4]
+        mock_result = Mock()
+        mock_result.scalars.return_value = mock_scalars
         mock_session.execute.return_value = mock_result
 
         result = await player_death_service.get_mortally_wounded_players(mock_session)
