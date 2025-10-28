@@ -48,6 +48,9 @@ class Player(Base):
 
     # Location and progression
     current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
+    respawn_room_id = Column(
+        String(length=100), nullable=True, default="earth_arkhamcity_sanitarium_room_foyer_001"
+    )  # Player's respawn location (NULL = use default)
     experience_points = Column(Integer(), default=0, nullable=False)
     level = Column(Integer(), default=1, nullable=False)
 
@@ -118,9 +121,50 @@ class Player(Base):
         self.level = (self.experience_points // 100) + 1
 
     def is_alive(self) -> bool:
-        """Check if player is alive."""
+        """Check if player is alive (HP > 0)."""
         stats = self.get_stats()
         return stats.get("current_health", 0) > 0
+
+    def is_mortally_wounded(self) -> bool:
+        """
+        Check if player is mortally wounded (0 >= HP > -10).
+
+        Returns:
+            True if player has 0 to -9 HP (mortally wounded state)
+        """
+        stats = self.get_stats()
+        current_hp = stats.get("current_health", 0)
+        return 0 >= current_hp > -10
+
+    def is_dead(self) -> bool:
+        """
+        Check if player is dead (HP <= -10).
+
+        Returns:
+            True if player has -10 HP or below
+        """
+        stats = self.get_stats()
+        current_hp = stats.get("current_health", 0)
+        return current_hp <= -10
+
+    def get_health_state(self) -> str:
+        """
+        Get player's current health state.
+
+        Returns:
+            "alive" if HP > 0
+            "mortally_wounded" if 0 >= HP > -10
+            "dead" if HP <= -10
+        """
+        stats = self.get_stats()
+        current_hp = stats.get("current_health", 0)
+
+        if current_hp > 0:
+            return "alive"
+        elif current_hp > -10:
+            return "mortally_wounded"
+        else:
+            return "dead"
 
     def is_admin_user(self) -> bool:
         """Check if player has admin privileges."""
