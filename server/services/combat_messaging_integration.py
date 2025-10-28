@@ -368,7 +368,9 @@ class CombatMessagingIntegration:
 
         # Generate messages
         if attacker_name:
-            personal_message = f"{attacker_name}'s attack causes you to collapse as darkness begins closing in on your vision"
+            personal_message = (
+                f"{attacker_name}'s attack causes you to collapse as darkness begins closing in on your vision"
+            )
             room_message = f"{player_name} collapses from {attacker_name}'s attack and is on the verge of death!"
         else:
             personal_message = "You collapse as darkness begins closing in on your vision"

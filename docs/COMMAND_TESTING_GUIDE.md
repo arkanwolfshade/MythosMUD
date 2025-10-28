@@ -1103,10 +1103,10 @@ def test_command_logging():
     with patch.object(enhanced_logging, 'get_logger') as mock_logger:
         # Setup mock logger
         mock_logger.return_value.info = MagicMock()
-        
+
         # Execute command
         result = await handle_whisper_command(command_data, current_user, request, alias_storage, "testuser")
-        
+
         # Verify logging occurred
         mock_logger.return_value.info.assert_called_with(
             "Command executed",

@@ -679,19 +679,19 @@ logger.error(f"Error in {operation} for user {user_id}")
 #### **Correct Error Logging Patterns**
 ```python
 # ✅ CORRECT - Error logging with enhanced context
-logger.error("Database operation failed", 
-             operation="player_save", 
-             user_id=user.id, 
-             room_id=room.id, 
-             error_code="DB_CONN_TIMEOUT", 
+logger.error("Database operation failed",
+             operation="player_save",
+             user_id=user.id,
+             room_id=room.id,
+             error_code="DB_CONN_TIMEOUT",
              error=str(e),
              retry_count=3)
 
 # ✅ CORRECT - Request context binding for error tracking
 bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
-logger.error("Authentication failed", 
-             user_id=user.id, 
-             auth_method="password", 
+logger.error("Authentication failed",
+             user_id=user.id,
+             auth_method="password",
              error_code="AUTH_INVALID_CREDENTIALS")
 
 # ✅ CORRECT - Performance logging with error context
@@ -699,9 +699,9 @@ with measure_performance("database_query", user_id=user.id):
     try:
         result = database.query("SELECT * FROM players")
     except Exception as e:
-        logger.error("Database query failed", 
-                     query="SELECT * FROM players", 
-                     user_id=user.id, 
+        logger.error("Database query failed",
+                     query="SELECT * FROM players",
+                     user_id=user.id,
                      error=str(e))
         raise
 ```
@@ -721,11 +721,11 @@ def test_error_logging():
     with patch.object(enhanced_logging, 'get_logger') as mock_logger:
         # Setup mock logger
         mock_logger.return_value.error = MagicMock()
-        
+
         # Trigger error
         with pytest.raises(ValidationError):
             validate_player_name("")
-        
+
         # Verify error logging occurred
         mock_logger.return_value.error.assert_called_with(
             "Validation failed",

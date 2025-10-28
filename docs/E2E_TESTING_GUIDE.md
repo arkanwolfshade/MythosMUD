@@ -535,7 +535,7 @@ test('should log user actions correctly', async () => {
 
   // Perform test action
   await page.click('[data-testid="send-message"]');
-  
+
   // Verify logging occurred
   expect(mockLogger).toHaveBeenCalledWith(
     "User action completed",

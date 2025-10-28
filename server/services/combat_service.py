@@ -551,7 +551,7 @@ class CombatService:
         if target.participant_type == CombatParticipantType.PLAYER:
             # Players die at -10 HP
             target_died = target.current_hp <= -10
-            target_mortally_wounded = (old_hp > 0 and target.current_hp == 0)
+            target_mortally_wounded = old_hp > 0 and target.current_hp == 0
         else:
             # NPCs die at 0 HP
             target_died = target.current_hp <= 0
