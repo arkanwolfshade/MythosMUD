@@ -112,6 +112,54 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.combat_service.process_attack.assert_called_once()
 
     @pytest.mark.asyncio
+    async def test_handle_player_attack_new_combat_uses_current_hp(self):
+        """Test that new combat uses player's current HP, not hardcoded 100.
+
+        BUG: Player HP was being hardcoded to 100 when starting combat,
+        causing HP to reset between combats. This test verifies the fix.
+        """
+        player_id = str(uuid4())
+        npc_id = str(uuid4())
+        room_id = "test_room_001"
+
+        # Mock player with REDUCED HP (70) after previous combat
+        mock_player = Mock()
+        mock_player.current_room_id = room_id
+        mock_player.player_id = player_id
+        mock_player.get_stats.return_value = {
+            "current_health": 70,  # Player is wounded from previous combat
+            "max_health": 100,
+            "dexterity": 15,
+            "strength": 12,
+            "constitution": 14,
+        }
+        self.persistence.get_player.return_value = mock_player
+
+        # Mock NPC instance
+        npc_instance = Mock()
+        npc_instance.is_alive = True
+        npc_instance.name = "Test NPC"
+        npc_instance.current_room = room_id
+        npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
+
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        self.service._get_player_name = Mock(return_value="TestPlayer")
+
+        result = await self.service.handle_player_attack_on_npc(
+            player_id=player_id, npc_id=npc_id, room_id=room_id, damage=10
+        )
+
+        # Verify combat was started
+        assert result == "Attack successful"
+        self.combat_service.start_combat.assert_called_once()
+
+        # CRITICAL: Verify player HP was initialized with CURRENT HP (70), not hardcoded 100
+        call_args = self.combat_service.start_combat.call_args
+        assert call_args.kwargs["attacker_hp"] == 70, "Player HP should be 70, not reset to 100"
+        assert call_args.kwargs["attacker_max_hp"] == 100
+        assert call_args.kwargs["attacker_dex"] == 15
+
+    @pytest.mark.asyncio
     async def test_handle_player_attack_combat_ended(self):
         """Test player attack when combat ends."""
         player_id = str(uuid4())

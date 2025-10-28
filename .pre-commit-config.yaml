@@ -37,6 +37,7 @@ repos:
         pass_filenames: true
         always_run: false
         stages: [pre-commit]
+        exclude: ^docs/examples/logging/
       - id: npm-lint
         name: npm lint (client)
         entry: powershell -Command "cd client; npm run lint"

@@ -176,3 +176,91 @@ class TestPlayerDeathService:
         result = await player_death_service.handle_player_death("nonexistent-player", "test-room", None, mock_session)
 
         assert result is False
+
+    def test_get_mortally_wounded_players_database_exception(self, player_death_service):
+        """Test get_mortally_wounded_players handles database exceptions gracefully."""
+        # Mock session that raises an exception
+        mock_session = Mock()
+        mock_session.query.side_effect = Exception("Database connection error")
+
+        result = player_death_service.get_mortally_wounded_players(mock_session)
+
+        # Should return empty list on error
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_process_mortally_wounded_tick_with_event_bus(self, mock_player):
+        """Test HP decay with event bus integration."""
+        # Create service with event bus
+        mock_event_bus = Mock()
+        service = PlayerDeathService(event_bus=mock_event_bus)
+
+        stats = {"current_health": -5}
+        mock_player.get_stats.return_value = stats
+        mock_player.is_dead.return_value = False
+        mock_player.name = "TestPlayer"
+
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+
+        result = await service.process_mortally_wounded_tick("test-player-id", mock_session)
+
+        assert result is True
+        # Verify event was published
+        mock_event_bus.publish.assert_called_once()
+        event = mock_event_bus.publish.call_args[0][0]
+        assert event.event_type == "PlayerHPDecayEvent"
+        assert event.old_hp == -5
+        assert event.new_hp == -6
+
+    @pytest.mark.asyncio
+    async def test_process_mortally_wounded_tick_database_exception(self, player_death_service, mock_player):
+        """Test HP decay handles database exceptions gracefully."""
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+        mock_session.commit.side_effect = Exception("Database error")
+
+        mock_player.get_stats.return_value = {"current_health": -5}
+        mock_player.is_dead.return_value = False
+
+        result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
+
+        assert result is False
+        mock_session.rollback.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_handle_player_death_with_event_bus(self, mock_player):
+        """Test player death handling with event bus integration."""
+        # Create service with event bus
+        mock_event_bus = Mock()
+        service = PlayerDeathService(event_bus=mock_event_bus)
+
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "death-room"
+
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+
+        killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
+
+        result = await service.handle_player_death("test-player-id", "death-room", killer_info, mock_session)
+
+        assert result is True
+        # Verify event was published
+        mock_event_bus.publish.assert_called_once()
+        event = mock_event_bus.publish.call_args[0][0]
+        assert event.event_type == "PlayerDiedEvent"
+        assert event.player_id == "test-player-id"
+        assert event.killer_id == "npc-123"
+
+    @pytest.mark.asyncio
+    async def test_handle_player_death_database_exception(self, player_death_service, mock_player):
+        """Test death handling handles database exceptions gracefully."""
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+        mock_session.commit.side_effect = Exception("Database error")
+
+        result = await player_death_service.handle_player_death("test-player-id", "death-room", None, mock_session)
+
+        assert result is False
+        mock_session.rollback.assert_called_once()

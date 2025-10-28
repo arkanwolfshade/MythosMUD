@@ -156,3 +156,67 @@ class TestPlayerRespawnService:
             assert updated_stats["sanity"] == 50
 
             mock_player.reset_mock()
+
+    @pytest.mark.asyncio
+    async def test_move_player_to_limbo_database_exception(self, player_respawn_service, mock_player):
+        """Test limbo movement handles database exceptions gracefully."""
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+        mock_session.commit.side_effect = Exception("Database error")
+
+        result = await player_respawn_service.move_player_to_limbo("test-player-id", "death-room", mock_session)
+
+        assert result is False
+        mock_session.rollback.assert_called_once()
+
+    def test_get_respawn_room_database_exception(self, player_respawn_service):
+        """Test get_respawn_room handles database exceptions gracefully."""
+        mock_session = Mock()
+        mock_session.get.side_effect = Exception("Database error")
+
+        result = player_respawn_service.get_respawn_room("test-player-id", mock_session)
+
+        # Should return default room on error
+        assert result == DEFAULT_RESPAWN_ROOM
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_with_event_bus(self, mock_player):
+        """Test player respawn with event bus integration."""
+        # Create service with event bus
+        mock_event_bus = Mock()
+        service = PlayerRespawnService(event_bus=mock_event_bus)
+
+        stats = {"current_health": -10}
+        mock_player.get_stats.return_value = stats
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "limbo_death_void"
+        mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
+
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+
+        result = await service.respawn_player("test-player-id", mock_session)
+
+        assert result is True
+        # Verify event was published
+        mock_event_bus.publish.assert_called_once()
+        event = mock_event_bus.publish.call_args[0][0]
+        assert event.event_type == "PlayerRespawnedEvent"
+        assert event.player_id == "test-player-id"
+        assert event.old_hp == -10
+        assert event.new_hp == 100
+        assert event.respawn_room_id == DEFAULT_RESPAWN_ROOM
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_database_exception(self, player_respawn_service, mock_player):
+        """Test respawn handles database exceptions gracefully."""
+        mock_session = Mock()
+        mock_session.get.return_value = mock_player
+        mock_session.commit.side_effect = Exception("Database error")
+
+        mock_player.get_stats.return_value = {"current_health": -10}
+
+        result = await player_respawn_service.respawn_player("test-player-id", mock_session)
+
+        assert result is False
+        mock_session.rollback.assert_called_once()
