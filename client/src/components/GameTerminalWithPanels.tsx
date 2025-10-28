@@ -1168,7 +1168,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             updates.messages.push(messageObj);
 
             // Update player HP in state
-            if (currentPlayerRef.current) {
+            if (currentPlayerRef.current && currentPlayerRef.current.stats) {
               updates.player = {
                 ...currentPlayerRef.current,
                 stats: {
