@@ -313,9 +313,7 @@ async def respawn_player(
                 if not player:
                     context = create_context_from_request(request)
                     context.user_id = str(current_user.id)
-                    raise LoggedHTTPException(
-                        status_code=404, detail="Player not found", context=context
-                    )
+                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context)
 
                 # Verify player is dead
                 if not player.is_dead():
@@ -334,7 +332,9 @@ async def respawn_player(
                 if not hasattr(app.state, "player_respawn_service"):
                     logger.error("Player respawn service not available")
                     raise LoggedHTTPException(
-                        status_code=500, detail="Respawn service not available", context=create_context_from_request(request)
+                        status_code=500,
+                        detail="Respawn service not available",
+                        context=create_context_from_request(request),
                     )
 
                 respawn_service: PlayerRespawnService = app.state.player_respawn_service
@@ -395,9 +395,7 @@ async def respawn_player(
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
-        raise LoggedHTTPException(
-            status_code=500, detail="Unexpected error during respawn", context=context
-        ) from e
+        raise LoggedHTTPException(status_code=500, detail="Unexpected error during respawn", context=context) from e
 
 
 # Character Creation and Stats Generation Endpoints

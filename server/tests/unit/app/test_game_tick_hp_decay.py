@@ -33,7 +33,9 @@ class TestGameTickHPDecay:
     """Test suite for HP decay processing in game tick loop."""
 
     @pytest.mark.asyncio
-    async def test_hp_decay_processes_mortally_wounded_players(self, mock_player_death_service, mock_mortally_wounded_player):
+    async def test_hp_decay_processes_mortally_wounded_players(
+        self, mock_player_death_service, mock_mortally_wounded_player
+    ):
         """Test that game tick processes HP decay for all mortally wounded players."""
         # Setup mock service to return one mortally wounded player
         mock_player_death_service.get_mortally_wounded_players.return_value = [mock_mortally_wounded_player]
