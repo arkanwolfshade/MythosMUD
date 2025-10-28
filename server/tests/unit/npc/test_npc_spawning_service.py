@@ -600,8 +600,8 @@ class TestNPCSpawningService:
             max_population=1,
             spawn_probability=1.0,
             base_stats='{"strength": 10, "sanity": 50, "current_health": 50}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         definition.id = 4
 
@@ -614,6 +614,7 @@ class TestNPCSpawningService:
         """Test _create_npc_instance exception handling."""
         # Create a definition that will cause an exception during instance creation
         bad_definition = MagicMock()
+
         # Make getattr raise an exception for specific attributes
         def side_effect(attr):
             if attr in ("id", "name", "npc_type", "room_id", "base_stats", "behavior_config", "ai_integration_stub"):
