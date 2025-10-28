@@ -6,7 +6,7 @@ in memory during active combat sessions.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -78,7 +78,7 @@ class CombatInstance:
     status: CombatStatus = CombatStatus.ACTIVE
     start_tick: int = 0
     last_activity_tick: int = 0
-    last_activity: datetime = field(default_factory=datetime.utcnow)
+    last_activity: datetime = field(default_factory=lambda: datetime.now(UTC))
     combat_round: int = 0
     # Auto-progression features
     auto_progression_enabled: bool = True
