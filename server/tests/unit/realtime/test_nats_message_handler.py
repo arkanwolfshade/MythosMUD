@@ -75,6 +75,10 @@ class TestNATSMessageHandler:
             "combat.started.*",
             "combat.ended.*",
             "combat.npc_died.*",
+            "events.player_mortally_wounded.*",
+            "events.player_hp_decay.*",
+            "events.player_died.*",
+            "events.player_respawned.*",
         ]
 
         # Verify chat subscriptions
@@ -569,6 +573,10 @@ class TestNATSMessageHandlerEventSubscription:
             "combat.started.*",
             "combat.ended.*",
             "combat.npc_died.*",
+            "events.player_mortally_wounded.*",
+            "events.player_hp_decay.*",
+            "events.player_died.*",
+            "events.player_respawned.*",
         ]
 
         assert self.mock_nats_service.subscribe.call_count == len(expected_calls)
@@ -592,8 +600,8 @@ class TestNATSMessageHandlerEventSubscription:
         # Verify result
         assert result is False
 
-        # Verify NATS service was called for all event subjects (9 total)
-        assert self.mock_nats_service.subscribe.call_count == 9
+        # Verify NATS service was called for all event subjects (13 total including death/respawn events)
+        assert self.mock_nats_service.subscribe.call_count == 13
 
     @pytest.mark.asyncio
     async def test_subscribe_to_event_subjects_exception(self):
@@ -607,8 +615,8 @@ class TestNATSMessageHandlerEventSubscription:
         # Verify result
         assert result is False
 
-        # Verify NATS service was called for all event subjects (9 total)
-        assert self.mock_nats_service.subscribe.call_count == 9
+        # Verify NATS service was called for all event subjects (13 total including death/respawn events)
+        assert self.mock_nats_service.subscribe.call_count == 13
 
     @pytest.mark.asyncio
     async def test_unsubscribe_from_event_subjects_success(self):

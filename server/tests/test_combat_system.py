@@ -42,17 +42,38 @@ class TestCombatModels:
         assert participant.is_alive() is True
 
     def test_combat_participant_death(self):
-        """Test combat participant death state."""
-        participant = CombatParticipant(
+        """Test combat participant death state for players and NPCs."""
+        # Players die at -10 HP (mortally wounded at 0 HP)
+        player_mortally_wounded = CombatParticipant(
             participant_id=uuid4(),
             participant_type=CombatParticipantType.PLAYER,
-            name="TestPlayer",
+            name="MortallyWoundedPlayer",
             current_hp=0,
             max_hp=100,
             dexterity=15,
         )
+        assert player_mortally_wounded.is_alive() is True  # Mortally wounded is still "alive" for combat
 
-        assert participant.is_alive() is False
+        player_dead = CombatParticipant(
+            participant_id=uuid4(),
+            participant_type=CombatParticipantType.PLAYER,
+            name="DeadPlayer",
+            current_hp=-10,
+            max_hp=100,
+            dexterity=15,
+        )
+        assert player_dead.is_alive() is False  # Dead at -10 HP
+
+        # NPCs die at 0 HP
+        npc_dead = CombatParticipant(
+            participant_id=uuid4(),
+            participant_type=CombatParticipantType.NPC,
+            name="DeadNPC",
+            current_hp=0,
+            max_hp=50,
+            dexterity=10,
+        )
+        assert npc_dead.is_alive() is False  # NPCs die at 0 HP
 
     def test_combat_instance_creation(self):
         """Test creating a combat instance."""
