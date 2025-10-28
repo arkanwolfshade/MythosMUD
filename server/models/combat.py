@@ -126,8 +126,9 @@ class CombatInstance:
         return [p for p in self.participants.values() if p.is_alive()]
 
     def update_activity(self, current_tick: int) -> None:
-        """Update the last activity tick."""
+        """Update the last activity tick and datetime."""
         self.last_activity_tick = current_tick
+        self.last_activity = datetime.now(UTC)
 
 
 @dataclass
