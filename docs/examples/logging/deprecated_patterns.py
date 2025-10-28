@@ -76,7 +76,7 @@ def deprecated_security_logging():
     logger.info("API request", api_key="sk-123456789", secret="very_secret")
 
     # ❌ WRONG - String formatting with sensitive data
-    logger.info(f"User {username} logged in with password {password}")
+    logger.info(f"User {username} logged in with password [REDACTED]")
 
 
 def deprecated_async_logging():
