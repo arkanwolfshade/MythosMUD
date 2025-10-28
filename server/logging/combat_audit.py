@@ -5,7 +5,7 @@ This module provides specialized logging for combat events to ensure
 security, compliance, and monitoring of combat activities in the MUD.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 # from uuid import UUID  # Not currently used
@@ -49,7 +49,7 @@ class CombatAuditLogger:
             timestamp: When the combat started (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.info(
             "Combat encounter initiated",
@@ -94,7 +94,7 @@ class CombatAuditLogger:
             timestamp: When the attack occurred (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.info(
             "Combat attack executed",
@@ -134,7 +134,7 @@ class CombatAuditLogger:
             timestamp: When the death occurred (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.info(
             "Combat target defeated",
@@ -172,7 +172,7 @@ class CombatAuditLogger:
             timestamp: When the combat ended (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.info(
             "Combat encounter ended",
@@ -211,7 +211,7 @@ class CombatAuditLogger:
             timestamp: When the event occurred (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         log_data = {
             "event_type": f"combat_security_{event_type}",
@@ -249,7 +249,7 @@ class CombatAuditLogger:
             timestamp: When the failure occurred (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.warning(
             "Combat validation failure",
@@ -285,7 +285,7 @@ class CombatAuditLogger:
             timestamp: When the rate limit was triggered (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         self.logger.warning(
             "Combat rate limit triggered",
@@ -323,7 +323,7 @@ class CombatAuditLogger:
             timestamp: When the alert occurred (defaults to now)
         """
         if timestamp is None:
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC)
 
         log_data = {
             "event_type": f"combat_monitoring_{alert_type}",

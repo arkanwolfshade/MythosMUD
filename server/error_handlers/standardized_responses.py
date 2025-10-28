@@ -63,7 +63,7 @@ class StandardizedErrorResponse:
         ErrorType.INVALID_TOKEN: status.HTTP_401_UNAUTHORIZED,
         ErrorType.TOKEN_EXPIRED: status.HTTP_401_UNAUTHORIZED,
         # Validation errors
-        ErrorType.VALIDATION_ERROR: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        ErrorType.VALIDATION_ERROR: status.HTTP_422_UNPROCESSABLE_CONTENT,
         ErrorType.INVALID_INPUT: status.HTTP_400_BAD_REQUEST,
         ErrorType.MISSING_REQUIRED_FIELD: status.HTTP_400_BAD_REQUEST,
         ErrorType.INVALID_FORMAT: status.HTTP_400_BAD_REQUEST,
@@ -259,7 +259,7 @@ class StandardizedErrorResponse:
 
         # Determine status code
         error_type = ErrorType(response_data.get("error_type", "validation_error"))
-        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
         return JSONResponse(status_code=status_code, content=response_data)
 

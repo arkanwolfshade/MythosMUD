@@ -8,7 +8,7 @@ This module tests the integration of all auto-progression features:
 - End-to-end auto-progression combat scenarios
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
@@ -329,7 +329,7 @@ class TestAutoProgressionIntegration:
         )
 
         # Measure time for complete auto-progression flow
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
 
         # Process multiple rounds with auto-progression
         for _ in range(5):
@@ -337,7 +337,7 @@ class TestAutoProgressionIntegration:
             if result.combat_ended:
                 break
 
-        end_time = datetime.utcnow()
+        end_time = datetime.now(UTC)
         duration = (end_time - start_time).total_seconds()
 
         # Should complete quickly (under 2 seconds for 5 rounds)

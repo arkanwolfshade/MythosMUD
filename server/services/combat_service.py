@@ -5,7 +5,7 @@ This service handles all combat-related operations including state management,
 turn order calculation, and combat resolution.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
@@ -778,7 +778,7 @@ class CombatService:
         Returns:
             Number of combats cleaned up
         """
-        cutoff_time = datetime.utcnow() - timedelta(minutes=self._combat_timeout_minutes)
+        cutoff_time = datetime.now(UTC) - timedelta(minutes=self._combat_timeout_minutes)
         stale_combats = []
 
         for combat_id, combat in self._active_combats.items():

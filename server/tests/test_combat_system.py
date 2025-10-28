@@ -5,7 +5,7 @@ This module tests the core combat logic, state management, messaging,
 and integration with the existing systems.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -410,7 +410,7 @@ class TestCombatService:
         )
 
         # Manually set last activity to be stale
-        combat.last_activity = datetime.utcnow() - timedelta(minutes=35)
+        combat.last_activity = datetime.now(UTC) - timedelta(minutes=35)
 
         # Clean up stale combats
         cleaned_count = await combat_service.cleanup_stale_combats()
@@ -535,7 +535,7 @@ class TestCombatEvents:
             participants={"player": "Player", "npc": "Rat"},
             turn_order=["player", "npc"],
             event_type="combat_started",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(UTC),
         )
 
         assert event.room_id == "test_room"
@@ -551,7 +551,7 @@ class TestCombatEvents:
             duration_seconds=30,
             participants={"player": "Player", "npc": "Rat"},
             event_type="combat_ended",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(UTC),
         )
 
         assert event.room_id == "test_room"
@@ -572,7 +572,7 @@ class TestCombatEvents:
             target_current_hp=45,
             target_max_hp=50,
             event_type="player_attacked",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(UTC),
         )
 
         assert event.attacker_name == "Player"

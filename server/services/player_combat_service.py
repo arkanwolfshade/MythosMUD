@@ -6,7 +6,7 @@ and integration with the existing player service for XP persistence.
 """
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from server.events.event_types import BaseEvent
@@ -29,14 +29,14 @@ class PlayerCombatState:
     def __post_init__(self):
         """Initialize last_activity if not provided."""
         if self.last_activity is None:
-            self.last_activity = datetime.utcnow()
+            self.last_activity = datetime.now(UTC)
 
 
 class PlayerXPAwardEvent(BaseEvent):
     """Event published when a player receives XP."""
 
     def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime = None):
-        super().__init__(event_type="player_xp_awarded", timestamp=timestamp or datetime.utcnow())
+        super().__init__(event_type="player_xp_awarded", timestamp=timestamp or datetime.now(UTC))
         self.player_id = player_id
         self.xp_amount = xp_amount
         self.new_level = new_level
@@ -368,7 +368,7 @@ class PlayerCombatService:
         Returns:
             Number of stale states cleaned up
         """
-        cutoff_time = datetime.utcnow() - timedelta(minutes=self._combat_timeout_minutes)
+        cutoff_time = datetime.now(UTC) - timedelta(minutes=self._combat_timeout_minutes)
         stale_players = []
 
         for player_id, state in self._player_combat_states.items():

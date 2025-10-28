@@ -5,7 +5,7 @@ This module tests player combat state tracking, XP rewards, and integration
 with the persistence layer in isolation from other systems.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
@@ -259,7 +259,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Manually set last activity to be stale
-        player_combat_service._player_combat_states[player_id].last_activity = datetime.utcnow() - timedelta(minutes=35)
+        player_combat_service._player_combat_states[player_id].last_activity = datetime.now(UTC) - timedelta(minutes=35)
 
         # Clean up stale states
         cleaned_count = await player_combat_service.cleanup_stale_combat_states()

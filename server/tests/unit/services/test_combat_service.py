@@ -5,7 +5,7 @@ This module tests the core combat logic, state management, and turn order
 calculations in isolation from other systems.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
@@ -393,7 +393,7 @@ class TestCombatServiceUnit:
         )
 
         # Manually set last activity to be stale
-        combat.last_activity = datetime.utcnow() - timedelta(minutes=35)
+        combat.last_activity = datetime.now(UTC) - timedelta(minutes=35)
 
         # Clean up stale combats
         cleaned_count = await combat_service.cleanup_stale_combats()
@@ -427,7 +427,7 @@ class TestCombatServiceUnit:
         )
 
         # Manually set last activity to be stale
-        combat.last_activity = datetime.utcnow() - timedelta(minutes=35)
+        combat.last_activity = datetime.now(UTC) - timedelta(minutes=35)
 
         # Clean up stale combats
         cleaned_count = await combat_service_with_player_service.cleanup_stale_combats()

@@ -9,7 +9,7 @@ This module tests the new health tracking features:
 - Integration with combat system
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
@@ -347,12 +347,12 @@ class TestHealthTrackingSystem:
         )
 
         # Measure time for multiple health tracking operations
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
 
         for _ in range(10):  # 10 health tracking operations
             await combat_service.process_attack(player_id, npc_id, damage=1)
 
-        end_time = datetime.utcnow()
+        end_time = datetime.now(UTC)
         duration = (end_time - start_time).total_seconds()
 
         # Should complete quickly (under 2 seconds for 10 operations)

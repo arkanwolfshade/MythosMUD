@@ -8,7 +8,7 @@ This module tests the new auto-progression features:
 - Integration with existing combat system
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -267,7 +267,7 @@ class TestCombatAutoProgressionSystem:
         )
 
         # Simulate timeout by setting last activity to past
-        combat.last_activity = datetime.utcnow() - timedelta(minutes=31)
+        combat.last_activity = datetime.now(UTC) - timedelta(minutes=31)
 
         # Cleanup should end the combat
         cleaned_up = await combat_service.cleanup_stale_combats()
@@ -384,12 +384,12 @@ class TestCombatAutoProgressionSystem:
         )
 
         # Measure time for multiple turn progressions
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
 
         for _ in range(10):  # 10 turn progressions
             await combat_service._advance_turn_automatically(combat, current_tick=2)
 
-        end_time = datetime.utcnow()
+        end_time = datetime.now(UTC)
         duration = (end_time - start_time).total_seconds()
 
         # Should complete quickly (under 1 second for 10 progressions)

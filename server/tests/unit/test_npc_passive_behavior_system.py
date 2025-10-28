@@ -8,7 +8,7 @@ This module tests the new NPC passive behavior features:
 - Integration with auto-progression system
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
@@ -397,12 +397,12 @@ class TestNPCPassiveBehaviorSystem:
         current_participant = combat.get_current_turn_participant()
 
         # Measure time for multiple NPC turns
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
 
         for _ in range(10):  # 10 NPC turns
             await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
 
-        end_time = datetime.utcnow()
+        end_time = datetime.now(UTC)
         duration = (end_time - start_time).total_seconds()
 
         # Should complete quickly (under 1 second for 10 turns)
