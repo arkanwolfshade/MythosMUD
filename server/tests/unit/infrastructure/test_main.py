@@ -129,7 +129,7 @@ class TestEndpoints:
 
             try:
                 response = client.post(
-                    "/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
+                    "/api/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
                 )
 
                 assert response.status_code == 200
@@ -145,7 +145,7 @@ class TestEndpoints:
         ) as mock_get_player:
             mock_get_player.return_value = Mock(name="testplayer")  # Player exists
 
-            response = client.post("/players?name=testplayer")
+            response = client.post("/api/players?name=testplayer")
 
             assert response.status_code == 400
             assert "Invalid input provided" in response.json()["error"]["message"]
@@ -205,7 +205,7 @@ class TestEndpoints:
         ) as mock_list_players:
             mock_list_players.return_value = mock_players
 
-            response = client.get("/players")
+            response = client.get("/api/players")
 
             assert response.status_code == 200
             # Convert expected format to match PlayerRead schema
@@ -244,7 +244,7 @@ class TestEndpoints:
         with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             mock_get_player.return_value = mock_player
 
-            response = client.get(f"/players/{test_uuid}")
+            response = client.get(f"/api/players/{test_uuid}")
 
             assert response.status_code == 200
             # Convert expected format to match PlayerRead schema
@@ -257,7 +257,7 @@ class TestEndpoints:
         with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             mock_get_player.return_value = None
 
-            response = client.get("/players/nonexistent")
+            response = client.get("/api/players/nonexistent")
 
             assert response.status_code == 404
             assert "not found" in response.json()["error"]["message"]
@@ -287,7 +287,7 @@ class TestEndpoints:
         ) as mock_get_player:
             mock_get_player.return_value = mock_player
 
-            response = client.get("/players/name/testplayer")
+            response = client.get("/api/players/name/testplayer")
 
             assert response.status_code == 200
             # Convert expected format to match PlayerRead schema
@@ -307,7 +307,7 @@ class TestEndpoints:
         ) as mock_get_player:
             mock_get_player.return_value = None
 
-            response = client.get("/players/name/nonexistent")
+            response = client.get("/api/players/name/nonexistent")
 
             assert response.status_code == 404
             assert "not found" in response.json()["error"]["message"]
@@ -318,7 +318,7 @@ class TestEndpoints:
             # Mock that player doesn't exist
             mock_get_player.return_value = None
 
-            response = client.delete("/players/non_existent_id")
+            response = client.delete("/api/players/non_existent_id")
 
             assert response.status_code == 404
             assert "Player not found" in response.text
@@ -339,7 +339,7 @@ class TestEndpoints:
                 mock_delete_player.return_value = True
 
                 # Test the delete endpoint
-                response = client.delete("/players/test_player_id")
+                response = client.delete("/api/players/test_player_id")
 
                 assert response.status_code == 200
                 assert "has been deleted" in response.text

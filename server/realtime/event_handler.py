@@ -791,9 +791,7 @@ class RealTimeEventHandler:
 
             await self.connection_manager.send_personal_message(player_id_str, death_event)
 
-            self._logger.info(
-                "Sent death notification to player", player_id=player_id_str, room_id=event.room_id
-            )
+            self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
 
         except Exception as e:
             self._logger.error("Error handling player died event", error=str(e), exc_info=True)

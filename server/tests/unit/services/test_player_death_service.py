@@ -1,6 +1,6 @@
 """Tests for player death service."""
 
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -27,17 +27,21 @@ def mock_player():
 class TestPlayerDeathService:
     """Test suite for PlayerDeathService."""
 
-    def test_get_mortally_wounded_players_empty(self, player_death_service):
+    @pytest.mark.asyncio
+    async def test_get_mortally_wounded_players_empty(self, player_death_service):
         """Test getting mortally wounded players when none exist."""
-        # Mock database session to return no players
-        mock_session = Mock()
-        mock_session.query().all.return_value = []
+        # Mock database session to return no players (using async SQLAlchemy 2.0 API)
+        mock_session = AsyncMock()
+        mock_result = AsyncMock()
+        mock_result.scalars().all.return_value = []
+        mock_session.execute.return_value = mock_result
 
-        result = player_death_service.get_mortally_wounded_players(mock_session)
+        result = await player_death_service.get_mortally_wounded_players(mock_session)
 
         assert result == []
 
-    def test_get_mortally_wounded_players_with_valid_players(self, player_death_service):
+    @pytest.mark.asyncio
+    async def test_get_mortally_wounded_players_with_valid_players(self, player_death_service):
         """Test getting mortally wounded players when some exist."""
         # Create mock players with different HP values
         player1 = Mock(spec=Player)
@@ -56,10 +60,13 @@ class TestPlayerDeathService:
         player4.player_id = "player-4"
         player4.get_stats.return_value = {"current_health": -10}  # Dead
 
-        mock_session = Mock()
-        mock_session.query().all.return_value = [player1, player2, player3, player4]
+        # Mock database session to return all players (using async SQLAlchemy 2.0 API)
+        mock_session = AsyncMock()
+        mock_result = AsyncMock()
+        mock_result.scalars().all.return_value = [player1, player2, player3, player4]
+        mock_session.execute.return_value = mock_result
 
-        result = player_death_service.get_mortally_wounded_players(mock_session)
+        result = await player_death_service.get_mortally_wounded_players(mock_session)
 
         # Should only return player1 and player2 (mortally wounded)
         assert len(result) == 2
@@ -76,7 +83,7 @@ class TestPlayerDeathService:
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = False
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
@@ -96,7 +103,7 @@ class TestPlayerDeathService:
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = False
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
@@ -115,7 +122,7 @@ class TestPlayerDeathService:
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = True
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
@@ -128,7 +135,7 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_process_mortally_wounded_tick_player_not_found(self, player_death_service):
         """Test HP decay when player doesn't exist."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = None
 
         result = await player_death_service.process_mortally_wounded_tick("nonexistent-player", mock_session)
@@ -141,7 +148,7 @@ class TestPlayerDeathService:
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Terrible Beast"}
@@ -159,7 +166,7 @@ class TestPlayerDeathService:
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await player_death_service.handle_player_death("test-player-id", "death-room", None, mock_session)
@@ -170,20 +177,21 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_handle_player_death_player_not_found(self, player_death_service):
         """Test death handling when player doesn't exist."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = None
 
         result = await player_death_service.handle_player_death("nonexistent-player", "test-room", None, mock_session)
 
         assert result is False
 
-    def test_get_mortally_wounded_players_database_exception(self, player_death_service):
+    @pytest.mark.asyncio
+    async def test_get_mortally_wounded_players_database_exception(self, player_death_service):
         """Test get_mortally_wounded_players handles database exceptions gracefully."""
-        # Mock session that raises an exception
-        mock_session = Mock()
-        mock_session.query.side_effect = Exception("Database connection error")
+        # Mock session that raises an exception (using async SQLAlchemy 2.0 API)
+        mock_session = AsyncMock()
+        mock_session.execute.side_effect = Exception("Database connection error")
 
-        result = player_death_service.get_mortally_wounded_players(mock_session)
+        result = await player_death_service.get_mortally_wounded_players(mock_session)
 
         # Should return empty list on error
         assert result == []
@@ -200,7 +208,7 @@ class TestPlayerDeathService:
         mock_player.is_dead.return_value = False
         mock_player.name = "TestPlayer"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         result = await service.process_mortally_wounded_tick("test-player-id", mock_session)
@@ -216,7 +224,7 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_process_mortally_wounded_tick_database_exception(self, player_death_service, mock_player):
         """Test HP decay handles database exceptions gracefully."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
@@ -238,7 +246,7 @@ class TestPlayerDeathService:
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
@@ -256,7 +264,7 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_handle_player_death_database_exception(self, player_death_service, mock_player):
         """Test death handling handles database exceptions gracefully."""
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 

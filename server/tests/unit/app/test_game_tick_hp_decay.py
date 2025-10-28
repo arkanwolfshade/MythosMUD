@@ -40,7 +40,7 @@ class TestGameTickHPDecay:
         # Setup mock service to return one mortally wounded player
         mock_player_death_service.get_mortally_wounded_players.return_value = [mock_mortally_wounded_player]
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
 
         # Process one tick
         for player in mock_player_death_service.get_mortally_wounded_players():
@@ -67,7 +67,7 @@ class TestGameTickHPDecay:
         player.is_dead.return_value = True
 
         service = PlayerDeathService()
-        mock_session = Mock()
+        mock_session = AsyncMock()
         mock_session.get.return_value = player
 
         # Try to process decay on dead player
@@ -90,7 +90,7 @@ class TestGameTickHPDecay:
 
         mock_player_death_service.get_mortally_wounded_players.return_value = [player1, player2, player3]
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
 
         # Process one tick
         for player in mock_player_death_service.get_mortally_wounded_players():
@@ -104,7 +104,7 @@ class TestGameTickHPDecay:
         """Test that HP decay continues on each tick until death."""
         mock_player_death_service.get_mortally_wounded_players.return_value = [mock_mortally_wounded_player]
 
-        mock_session = Mock()
+        mock_session = AsyncMock()
 
         # Simulate multiple ticks
         for _tick in range(5):

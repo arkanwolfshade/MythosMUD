@@ -51,7 +51,7 @@ class TestComprehensiveIntegration:
     def test_security_headers_integration(self, client):
         """Test that security headers are applied to all endpoints."""
         # Test various endpoints to ensure security headers are present
-        endpoints = ["/", "/players/", "/rooms/test-room-id", "/docs", "/openapi.json"]
+        endpoints = ["/", "/api/players/", "/rooms/test-room-id", "/docs", "/openapi.json"]
 
         for endpoint in endpoints:
             response = client.get(endpoint)
@@ -73,7 +73,7 @@ class TestComprehensiveIntegration:
         """Test that CORS configuration works with environment variables."""
         # Test preflight request with allowed origin
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",
@@ -87,14 +87,14 @@ class TestComprehensiveIntegration:
         assert "access-control-allow-headers" in response.headers
 
         # Test actual request with CORS headers
-        response = client.get("/players/", headers={"Origin": "http://localhost:5173"})
+        response = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
 
         assert "access-control-allow-origin" in response.headers
 
     def test_logging_middleware_integration(self, client):
         """Test that comprehensive logging middleware works correctly."""
         # Make requests to various endpoints to test logging
-        endpoints = ["/players/", "/rooms/test-room-id", "/docs"]
+        endpoints = ["/api/players/", "/rooms/test-room-id", "/docs"]
 
         for endpoint in endpoints:
             response = client.get(endpoint)
@@ -108,7 +108,7 @@ class TestComprehensiveIntegration:
     def test_service_layer_dependency_injection_integration(self, client):
         """Test that service layer dependency injection works correctly."""
         # Test that endpoints use the service layer properly
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should return 200 (empty list) or 401 (unauthorized)
         assert response.status_code in [200, 401]
@@ -121,7 +121,7 @@ class TestComprehensiveIntegration:
     def test_async_operations_integration(self, client):
         """Test that async operations work correctly throughout the stack."""
         # Test async route handlers
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Verify async operations don't cause blocking
         assert response.status_code in [200, 401]
@@ -132,7 +132,7 @@ class TestComprehensiveIntegration:
     def test_middleware_stack_integration(self, client):
         """Test that all middleware work together correctly."""
         # Make a request that goes through the entire middleware stack
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Verify all middleware layers work together
         assert response.status_code in [200, 401]
@@ -142,7 +142,7 @@ class TestComprehensiveIntegration:
         assert "x-frame-options" in response.headers
 
         # Check that CORS headers are present (middleware integration) - need Origin header
-        response_with_origin = client.get("/players/", headers={"Origin": "http://localhost:5173"})
+        response_with_origin = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
         assert "access-control-allow-origin" in response_with_origin.headers
 
     def test_error_handling_integration(self, client):
@@ -152,7 +152,7 @@ class TestComprehensiveIntegration:
         assert response.status_code == 404
 
         # Test invalid endpoint
-        response = client.get("/players/invalid-uuid")
+        response = client.get("/api/players/invalid-uuid")
         assert response.status_code in [404, 422, 401]
 
         # Verify error responses still have security headers
@@ -168,7 +168,7 @@ class TestComprehensiveIntegration:
         def make_request():
             """Make a request and store the result."""
             start_time = time.time()
-            response = client.get("/players/")
+            response = client.get("/api/players/")
             end_time = time.time()
 
             results.append(
@@ -200,7 +200,7 @@ class TestComprehensiveIntegration:
     def test_database_operations_integration(self, client):
         """Test that database operations work correctly with async patterns."""
         # Test that async database operations don't cause issues
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should complete without blocking
         assert response.status_code in [200, 401]
@@ -212,7 +212,7 @@ class TestComprehensiveIntegration:
     def test_authentication_integration(self, client):
         """Test that authentication works correctly with all improvements."""
         # Test unauthenticated request
-        response = client.get("/players/")
+        response = client.get("/api/players/")
         assert response.status_code in [200, 401]
 
         # Verify security headers are still present for unauthenticated requests
@@ -239,7 +239,7 @@ class TestComprehensiveIntegration:
         response_times = []
         for _ in range(10):
             start_time = time.time()
-            response = client.get("/players/")
+            response = client.get("/api/players/")
             end_time = time.time()
 
             response_times.append(end_time - start_time)
@@ -267,7 +267,7 @@ class TestComprehensiveIntegration:
     async def test_async_service_layer_integration(self, client):
         """Test async service layer integration specifically."""
         # Test that async service methods work correctly
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should complete successfully with async operations
         assert response.status_code in [200, 401]
@@ -278,7 +278,7 @@ class TestComprehensiveIntegration:
     def test_error_logging_integration(self, client):
         """Test that error logging works correctly with all improvements."""
         # Make a request that should generate an error
-        response = client.get("/players/invalid-uuid")
+        response = client.get("/api/players/invalid-uuid")
 
         # Should handle error gracefully
         assert response.status_code in [404, 422, 401]
@@ -289,11 +289,11 @@ class TestComprehensiveIntegration:
     def test_comprehensive_workflow_integration(self, client):
         """Test a comprehensive workflow that uses all improvements."""
         # 1. Test security headers on all requests
-        response = client.get("/players/")
+        response = client.get("/api/players/")
         assert "x-content-type-options" in response.headers
 
         # 2. Test CORS functionality
-        response = client.options("/players/", headers={"Origin": "http://localhost:5173"})
+        response = client.options("/api/players/", headers={"Origin": "http://localhost:5173"})
         assert "access-control-allow-origin" in response.headers
 
         # 3. Test async service layer

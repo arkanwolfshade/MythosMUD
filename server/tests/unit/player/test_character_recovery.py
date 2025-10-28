@@ -42,7 +42,7 @@ class TestCharacterRecoveryFlow:
         # Step 3: Verify the user can roll stats (indicating they're in stats rolling flow)
         token = login_data["access_token"]
         stats_response = test_client.post(
-            "/players/roll-stats",
+            "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
         )
@@ -66,7 +66,7 @@ class TestCharacterRecoveryFlow:
 
         # Step 2: Roll stats
         stats_response = test_client.post(
-            "/players/roll-stats",
+            "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
         )
@@ -77,7 +77,7 @@ class TestCharacterRecoveryFlow:
 
         # Step 3: Create character
         create_response = test_client.post(
-            "/players/create-character",
+            "/api/players/create-character",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"name": unique_username, "stats": stats},
         )

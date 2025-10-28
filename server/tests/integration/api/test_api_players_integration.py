@@ -92,7 +92,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_save_player.return_value = sample_player_data
 
         response = client.post(
-            "/players/",
+            "/api/players/",
             params={"name": "TestPlayer", "starting_room_id": "earth_arkhamcity_northside_intersection_derby_high"},
         )
 
@@ -105,7 +105,7 @@ class TestPlayerAPIIntegration:
         # Setup mocks - return empty list to avoid iteration issues
         mock_persistence.async_list_players.return_value = []
 
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -117,7 +117,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
 
         player_id = str(uuid.uuid4())
-        response = client.get(f"/players/{player_id}")
+        response = client.get(f"/api/players/{player_id}")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -128,7 +128,7 @@ class TestPlayerAPIIntegration:
         # Setup mocks
         mock_persistence.async_get_player_by_name.return_value = sample_player_data
 
-        response = client.get("/players/name/TestPlayer")
+        response = client.get("/api/players/name/TestPlayer")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -141,7 +141,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_delete_player.return_value = (True, "Player deleted successfully")
 
         player_id = str(uuid.uuid4())
-        response = client.delete(f"/players/{player_id}")
+        response = client.delete(f"/api/players/{player_id}")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -153,7 +153,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.apply_sanity_loss.return_value = None
 
-        response = client.post("/players/test-player-id/sanity-loss", params={"amount": 10, "source": "test"})
+        response = client.post("/api/players/test-player-id/sanity-loss", params={"amount": 10, "source": "test"})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -165,7 +165,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.apply_fear.return_value = None
 
-        response = client.post("/players/test-player-id/fear", params={"amount": 5, "source": "test"})
+        response = client.post("/api/players/test-player-id/fear", params={"amount": 5, "source": "test"})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -177,7 +177,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.apply_corruption.return_value = None
 
-        response = client.post("/players/test-player-id/corruption", params={"amount": 3, "source": "test"})
+        response = client.post("/api/players/test-player-id/corruption", params={"amount": 3, "source": "test"})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -189,7 +189,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.gain_occult_knowledge.return_value = None
 
-        response = client.post("/players/test-player-id/occult-knowledge", params={"amount": 2, "source": "test"})
+        response = client.post("/api/players/test-player-id/occult-knowledge", params={"amount": 2, "source": "test"})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -201,7 +201,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.heal_player.return_value = None
 
-        response = client.post("/players/test-player-id/heal", params={"amount": 20})
+        response = client.post("/api/players/test-player-id/heal", params={"amount": 20})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -213,7 +213,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_get_player.return_value = sample_player_data
         mock_persistence.damage_player.return_value = None
 
-        response = client.post("/players/test-player-id/damage", params={"amount": 15, "damage_type": "physical"})
+        response = client.post("/api/players/test-player-id/damage", params={"amount": 15, "damage_type": "physical"})
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -221,7 +221,7 @@ class TestPlayerAPIIntegration:
 
     def test_roll_stats_success(self, client):
         """Test successful stats rolling."""
-        response = client.post("/players/roll-stats")
+        response = client.post("/api/players/roll-stats")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -229,7 +229,7 @@ class TestPlayerAPIIntegration:
 
     def test_validate_stats_success(self, client):
         """Test successful stats validation."""
-        response = client.post("/players/validate-stats")
+        response = client.post("/api/players/validate-stats")
 
         # The endpoint should return 422 when no data is provided (validation error)
         # or 401 if authentication is required
@@ -237,7 +237,7 @@ class TestPlayerAPIIntegration:
 
     def test_get_available_classes_success(self, client):
         """Test successful class listing."""
-        response = client.get("/players/available-classes")
+        response = client.get("/api/players/available-classes")
 
         # The endpoint should work (200) or require authentication (401)
         # Both are valid responses depending on the authentication setup
@@ -245,14 +245,14 @@ class TestPlayerAPIIntegration:
 
     def test_get_class_description_success(self, client):
         """Test successful class description retrieval."""
-        response = client.get("/players/class-description/investigator")
+        response = client.get("/api/players/class-description/investigator")
 
         # This endpoint doesn't exist, so we expect 404
         assert response.status_code == 404
 
     def test_create_character_with_stats_success(self, client):
         """Test successful character creation with stats."""
-        response = client.post("/players/create-character-with-stats")
+        response = client.post("/api/players/create-character-with-stats")
 
         # This endpoint doesn't exist, so we expect 405 (Method Not Allowed)
         assert response.status_code == 405
@@ -263,7 +263,7 @@ class TestPlayerAPIIntegration:
         # by ensuring that requests don't fail with dependency resolution errors
 
         # Test a simple endpoint
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should not get a 500 error due to dependency injection issues
         assert response.status_code != 500

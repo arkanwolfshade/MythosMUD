@@ -8,7 +8,7 @@ creation, retrieval, listing, and deletion of player characters.
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
-from ..auth.users import get_current_active_user
+from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
@@ -49,7 +49,7 @@ player_router = APIRouter(prefix="/api/players", tags=["players"])
 async def create_player(
     name: str,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -67,7 +67,7 @@ async def create_player(
 
 @player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -77,7 +77,7 @@ async def list_players(
 
 @player_router.get("/available-classes")
 async def get_available_classes(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Get information about all available character classes and their prerequisites.
@@ -97,7 +97,7 @@ async def get_available_classes(
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -116,7 +116,7 @@ async def get_player(
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
 async def get_player_by_name(
     player_name: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -135,7 +135,7 @@ async def get_player_by_name(
 @player_router.delete("/{player_id}")
 async def delete_player(
     player_id: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -164,7 +164,7 @@ async def apply_sanity_loss(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -184,7 +184,7 @@ async def apply_fear(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -204,7 +204,7 @@ async def apply_corruption(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -224,7 +224,7 @@ async def gain_occult_knowledge(
     player_id: str,
     amount: int,
     source: str = "unknown",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -243,7 +243,7 @@ async def gain_occult_knowledge(
 async def heal_player(
     player_id: str,
     amount: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -263,7 +263,7 @@ async def damage_player(
     player_id: str,
     amount: int,
     damage_type: str = "physical",
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -401,7 +401,7 @@ async def roll_character_stats(
     required_class: str | None = None,
     max_attempts: int = 10,
     profession_id: int | None = None,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
     request: Request = None,
 ):
@@ -512,7 +512,7 @@ async def roll_character_stats(
 @player_router.post("/roll-stats")
 def roll_character_stats_endpoint(
     request_data: RollStatsRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
     return roll_character_stats(
@@ -528,7 +528,7 @@ def roll_character_stats_endpoint(
 @player_router.post("/create-character")
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ):
@@ -638,7 +638,7 @@ async def create_character_with_stats(
 async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Validate character stats against class prerequisites.
