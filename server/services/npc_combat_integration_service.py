@@ -223,10 +223,25 @@ class NPCCombatIntegrationService:
                 # Start new combat first
                 player_name = self._get_player_name(player_id)
 
-                # Use default player stats for now (TODO: get from player service)
-                attacker_hp = 100
-                attacker_max_hp = 100
-                attacker_dex = 10
+                # Fetch actual player stats from persistence to ensure correct HP
+                # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
+                player = self._persistence.get_player(player_id)
+                if not player:
+                    logger.error("Player not found when starting combat", player_id=player_id)
+                    return False
+
+                player_stats = player.get_stats()
+                attacker_hp = player_stats.get("current_health", 100)
+                attacker_max_hp = player_stats.get("max_health", 100)
+                attacker_dex = player_stats.get("dexterity", 10)
+
+                logger.info(
+                    "Starting combat with player stats",
+                    player_id=player_id,
+                    current_hp=attacker_hp,
+                    max_hp=attacker_max_hp,
+                    dex=attacker_dex,
+                )
 
                 # Get NPC stats properly from the NPC instance
                 npc_stats = npc_instance.get_stats()

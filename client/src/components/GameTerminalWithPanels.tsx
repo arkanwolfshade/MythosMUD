@@ -867,6 +867,22 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
+            // BUGFIX: Update player health in Status panel when taking damage
+            if (currentPlayerRef.current && currentPlayerRef.current.stats) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  current_health: targetCurrentHp,
+                },
+              };
+              logger.info('GameTerminalWithPanels', 'Updated player health after taking damage', {
+                oldHealth: currentPlayerRef.current.stats.current_health,
+                newHealth: targetCurrentHp,
+                damage,
+              });
+            }
+
             console.log('🔍 DEBUG: npc_attacked message added to updates:', messageObj);
 
             logger.info('GameTerminalWithPanels', 'NPC attacked event received', {
@@ -1270,6 +1286,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           roomUpdate: updates.room,
           roomOccupants: updates.room?.occupants,
           roomOccupantCount: updates.room?.occupant_count,
+          hasPlayerUpdate: !!updates.player,
+          playerHealth: updates.player?.stats?.current_health,
         });
 
         setGameState(prev => {
@@ -1277,11 +1295,13 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             ...prev,
             ...updates,
             messages: updates.messages || prev.messages,
+            player: updates.player || prev.player,
           };
 
           logger.info('GameTerminalWithPanels', 'State updated', {
             newMessageCount: newState.messages.length,
             hasMessages: newState.messages.length > 0,
+            playerHealth: newState.player?.stats?.current_health,
           });
 
           return newState;
