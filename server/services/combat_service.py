@@ -902,6 +902,29 @@ class CombatService:
             # Publish HP update event for real-time UI updates
             await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))
 
+            # Check if player has reached death threshold
+            # CRITICAL: Players at 0 HP or below should enter mortally wounded state immediately
+            # Players at -10 HP should trigger death handling and limbo transition
+            if current_hp <= -10 and old_hp > -10:
+                # Player just reached death threshold - trigger death handling
+                logger.info(
+                    "Player reached death threshold in combat",
+                    player_id=player_id,
+                    player_name=player.name,
+                    final_hp=current_hp,
+                )
+                # Death handling and limbo transition will be processed by PlayerDeathService on next tick
+                # TODO: Implement immediate death handling trigger (requires player_death_service and respawn_service access)
+            elif current_hp <= 0 and old_hp > 0:
+                # Player just became mortally wounded
+                logger.info(
+                    "Player became mortally wounded in combat",
+                    player_id=player_id,
+                    player_name=player.name,
+                    current_hp=current_hp,
+                )
+                # HP decay will be processed automatically by the tick loop
+
         except Exception as e:
             logger.error(
                 "Error persisting player HP to database",
