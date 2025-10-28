@@ -62,10 +62,10 @@ test-server: setup-test-env
 	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
 
 test-client:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path client/tests
+	cd $(PROJECT_ROOT)/client && npm run test:unit:run
 
 test-client-e2e:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e --path client/tests
+	cd $(PROJECT_ROOT)/client && npm run test
 
 test-server-e2e:
 	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e
