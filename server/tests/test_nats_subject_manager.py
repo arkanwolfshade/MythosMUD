@@ -520,9 +520,12 @@ class TestSubscriptionPatterns:
         assert "combat.started.*" in patterns
         assert "combat.ended.*" in patterns
         assert "combat.npc_died.*" in patterns
+        assert "combat.damage.*" in patterns
+        assert "combat.turn.*" in patterns
+        assert "combat.timeout.*" in patterns
 
-        # Should have 13 event/combat patterns
-        assert len(patterns) == 13
+        # Should have 16 event/combat patterns (7 event + 9 combat)
+        assert len(patterns) == 16
 
     def test_subscription_patterns_are_valid(self):
         """Test that generated subscription patterns are valid NATS subjects."""
