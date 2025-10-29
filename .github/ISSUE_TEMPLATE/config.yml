@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/arkanwolfshade/MythosMUD/security/advisories/new
+    about: Report security issues privately (do not create public issues)
+  - name: 💬 Questions & Discussions
+    url: https://github.com/arkanwolfshade/MythosMUD/discussions
+    about: Ask questions or discuss ideas with the community

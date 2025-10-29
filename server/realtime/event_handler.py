@@ -13,11 +13,12 @@ from datetime import UTC, datetime
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events import EventBus
-from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
-from ..logging_config import get_logger
+from ..events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerHPUpdated, PlayerLeftRoom
+from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
+from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
-from .connection_manager import connection_manager
+from .connection_manager import _get_npc_name_from_instance, connection_manager
 
 
 class RealTimeEventHandler:
@@ -64,6 +65,15 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
+        self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
+        self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
+
+        # Subscribe to death/respawn events
+        from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
+
+        self.event_bus.subscribe(PlayerDiedEvent, self._handle_player_died)
+        self.event_bus.subscribe(PlayerHPDecayEvent, self._handle_player_hp_decay)
+        self.event_bus.subscribe(PlayerRespawnedEvent, self._handle_player_respawned)
 
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
@@ -90,7 +100,7 @@ class RealTimeEventHandler:
             # Get player information
             player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for entered event: {processed_event.player_id}")
+                self._logger.warning("Player not found for entered event", player_id=processed_event.player_id)
                 return
 
             player_name = getattr(player, "name", processed_event.player_id)
@@ -111,7 +121,7 @@ class RealTimeEventHandler:
                     room_name=room_name,
                 )
             except Exception as e:
-                self._logger.error(f"Error logging player joined room: {e}")
+                self._logger.error("Error logging player joined room", error=str(e))
 
             # Create real-time message with processed event
             message = self._create_player_entered_message(processed_event, player_name)
@@ -156,14 +166,16 @@ class RealTimeEventHandler:
                 }
                 await self.connection_manager.send_personal_message(exclude_player_id, personal)
             except Exception as e:
-                self._logger.error(f"Error sending personal occupants update: {e}")
+                self._logger.error("Error sending personal occupants update", error=str(e))
 
             self._logger.info(
-                f"Player {player_name} entered room {processed_event.room_id} with enhanced synchronization"
+                "Player entered room with enhanced synchronization",
+                player_name=player_name,
+                room_id=processed_event.room_id,
             )
 
         except Exception as e:
-            self._logger.error(f"Error handling player entered event: {e}", exc_info=True)
+            self._logger.error("Error handling player entered event", error=str(e), exc_info=True)
 
     async def _handle_player_left(self, event: PlayerLeftRoom):
         """
@@ -183,7 +195,7 @@ class RealTimeEventHandler:
             # Get player information
             player = self.connection_manager._get_player(processed_event.player_id)
             if not player:
-                self._logger.warning(f"Player not found for left event: {processed_event.player_id}")
+                self._logger.warning("Player not found for left event", player_id=processed_event.player_id)
                 return
 
             player_name = getattr(player, "name", processed_event.player_id)
@@ -204,7 +216,7 @@ class RealTimeEventHandler:
                     room_name=room_name,
                 )
             except Exception as e:
-                self._logger.error(f"Error logging player left room: {e}")
+                self._logger.error("Error logging player left room", error=str(e))
 
             # Create real-time message with processed event
             message = self._create_player_left_message(processed_event, player_name)
@@ -226,10 +238,14 @@ class RealTimeEventHandler:
             # Send room occupants update to remaining players
             await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
-            self._logger.info(f"Player {player_name} left room {processed_event.room_id} with enhanced synchronization")
+            self._logger.info(
+                "Player left room with enhanced synchronization",
+                player_name=player_name,
+                room_id=processed_event.room_id,
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling player left event: {e}", exc_info=True)
+            self._logger.error("Error handling player left event", error=str(e), exc_info=True)
 
     def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict:
         """
@@ -323,7 +339,7 @@ class RealTimeEventHandler:
             await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except Exception as e:
-            self._logger.error(f"Error sending room occupants update: {e}", exc_info=True)
+            self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
     def _get_room_occupants(self, room_id: str) -> list[dict]:
         """
@@ -367,17 +383,27 @@ class RealTimeEventHandler:
 
             # Convert NPCs to occupant information
             for npc_id in npc_ids:
-                # Extract NPC name from the NPC ID (format: npc_name_room_id_timestamp_random)
-                npc_name = npc_id.split("_")[0].replace("_", " ").title()
-                occupant_info = {
-                    "npc_id": npc_id,
-                    "npc_name": npc_name,
-                    "type": "npc",
-                }
-                occupants.append(occupant_info)
+                # Get NPC name from the actual NPC instance, preserving original case from database
+                npc_name = _get_npc_name_from_instance(npc_id)
+                if npc_name:
+                    occupant_info = {
+                        "npc_id": npc_id,
+                        "npc_name": npc_name,
+                        "type": "npc",
+                    }
+                    occupants.append(occupant_info)
+                else:
+                    # Fallback: Extract NPC name from the NPC ID if instance not found
+                    npc_name = npc_id.split("_")[0].replace("_", " ").title()
+                    occupant_info = {
+                        "npc_id": npc_id,
+                        "npc_name": npc_name,
+                        "type": "npc",
+                    }
+                    occupants.append(occupant_info)
 
         except Exception as e:
-            self._logger.error(f"Error getting room occupants: {e}", exc_info=True)
+            self._logger.error("Error getting room occupants", error=str(e), exc_info=True)
 
         return occupants
 
@@ -385,14 +411,15 @@ class RealTimeEventHandler:
         """
         Handle NPC entering a room.
 
-        This method updates the room state to include the NPC in the occupant list
-        and broadcasts the room update to all players in the room.
+        This method updates the room state to include the NPC in the occupant list,
+        broadcasts a spawn message to the room (if configured), and broadcasts
+        the room update to all players in the room.
 
         Args:
             event: NPCEnteredRoom event containing NPC and room information
         """
         try:
-            self._logger.info(f"NPC {event.npc_id} entered room {event.room_id}")
+            self._logger.info("NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
             # Get the room from persistence
             persistence = self.connection_manager.persistence
@@ -402,11 +429,17 @@ class RealTimeEventHandler:
 
             room = persistence.get_room(event.room_id)
             if not room:
-                self._logger.warning(f"Room not found for NPC entry: {event.room_id}")
+                self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
 
             # Add NPC to room's occupant list
             room.npc_entered(event.npc_id)
+
+            # Get the NPC's spawn message from behavior_config (if available)
+            spawn_message = self._get_npc_spawn_message(event.npc_id)
+            if spawn_message:
+                # Send the spawn message to all players in the room
+                self._send_room_message(event.room_id, spawn_message)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -436,10 +469,12 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(f"NPC {event.npc_id} successfully added to room {event.room_id} occupant list")
+            self._logger.debug(
+                "NPC successfully added to room occupant list", npc_id=event.npc_id, room_id=event.room_id
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling NPC entered room event: {e}", exc_info=True)
+            self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
 
     def _handle_npc_left(self, event: NPCLeftRoom):
         """
@@ -452,7 +487,7 @@ class RealTimeEventHandler:
             event: NPCLeftRoom event containing NPC and room information
         """
         try:
-            self._logger.info(f"NPC {event.npc_id} left room {event.room_id}")
+            self._logger.info("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
             # Get the room from persistence
             persistence = self.connection_manager.persistence
@@ -462,7 +497,7 @@ class RealTimeEventHandler:
 
             room = persistence.get_room(event.room_id)
             if not room:
-                self._logger.warning(f"Room not found for NPC exit: {event.room_id}")
+                self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
 
             # Remove NPC from room's occupant list
@@ -496,26 +531,351 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(f"NPC {event.npc_id} successfully removed from room {event.room_id} occupant list")
+            self._logger.debug(
+                "NPC successfully removed from room occupant list", npc_id=event.npc_id, room_id=event.room_id
+            )
 
         except Exception as e:
-            self._logger.error(f"Error handling NPC left room event: {e}", exc_info=True)
+            self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)
 
     def shutdown(self):
         """Shutdown the event handler."""
         self._logger.info("Shutting down RealTimeEventHandler")
         # Note: EventBus will handle its own shutdown
 
+    async def _handle_player_xp_awarded(self, event: PlayerXPAwardEvent):
+        """
+        Handle player XP award events by sending updates to the client.
+
+        Args:
+            event: The PlayerXPAwardEvent containing XP award information
+        """
+        try:
+            player_id_str = str(event.player_id)
+
+            # Get the current player data to send updated XP
+            player = self.connection_manager._get_player(player_id_str)
+            if not player:
+                self._logger.warning("Player not found for XP award event", player_id=player_id_str)
+                return
+
+            # Create player update event with new XP
+            player_update_data = {
+                "player_id": player_id_str,
+                "name": player.name,
+                "level": player.level,
+                "xp": player.experience_points,
+                "current_room_id": getattr(player, "current_room_id", None),
+            }
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            xp_update_event = build_event(
+                "player_xp_updated",
+                {
+                    "xp_amount": event.xp_amount,
+                    "new_level": event.new_level,
+                    "player": player_update_data,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, xp_update_event)
+
+            self._logger.info(
+                "Sent XP award update to player",
+                player_id=player_id_str,
+                xp_amount=event.xp_amount,
+                new_level=event.new_level,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player XP award event", error=str(e), exc_info=True)
+
+    def _get_npc_spawn_message(self, npc_id: str) -> str | None:
+        """
+        Get the spawn message for an NPC from its behavior_config.
+
+        If no custom spawn message is defined, returns a default message: "<npc-name> appears."
+
+        Args:
+            npc_id: The NPC ID
+
+        Returns:
+            Spawn message (custom or default), or None if NPC not found
+        """
+        try:
+            # Get the NPC instance from the lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return None
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                return None
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+
+            # Get the NPC name for the default message
+            npc_name = getattr(npc_instance, "name", "An NPC")
+
+            # Get the behavior_config from the NPC instance
+            behavior_config = getattr(npc_instance, "behavior_config", None)
+            if behavior_config:
+                # Parse the behavior_config if it's a JSON string
+                import json
+
+                if isinstance(behavior_config, str):
+                    try:
+                        behavior_config = json.loads(behavior_config)
+                    except (json.JSONDecodeError, ValueError):
+                        # If parsing fails, use default message
+                        return f"{npc_name} appears."
+
+                # Get the spawn_message from the behavior_config
+                spawn_message = behavior_config.get("spawn_message")
+                if spawn_message:
+                    return spawn_message
+
+            # Return default message if no custom message is defined
+            return f"{npc_name} appears."
+
+        except Exception as e:
+            self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
+            return None
+
+    def _send_room_message(self, room_id: str, message: str):
+        """
+        Send a message to all players in a room.
+
+        Args:
+            room_id: The room ID
+            message: The message to send
+        """
+        try:
+            # Get all players in the room
+            from ..persistence import get_persistence
+            from .envelope import build_event
+
+            persistence = get_persistence()
+            room = persistence.get_room(room_id)
+            if not room:
+                self._logger.warning("Room not found for sending room message", room_id=room_id)
+                return
+
+            # Get all player IDs in the room
+            player_ids = list(room._players)  # Get the player IDs from the room
+
+            # Send the message to each player in the room
+            import asyncio
+
+            for player_id in player_ids:
+                # Create the message event
+                message_event = build_event(
+                    "room_message",
+                    {
+                        "message": message,
+                        "room_id": room_id,
+                        "message_type": "npc_spawn",
+                    },
+                    player_id=player_id,
+                )
+
+                # Schedule the async message send
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # Create a task to send the message
+                        if self.task_registry:
+                            self.task_registry.register_task(
+                                self.connection_manager.send_personal_message(player_id, message_event),
+                                f"event_handler/room_message_{room_id}_{player_id}",
+                                "event_handler",
+                            )
+                        else:
+                            from ..async_utils.tracked_task_manager import get_global_tracked_manager
+
+                            tracked_manager = get_global_tracked_manager()
+                            tracked_manager.create_tracked_task(
+                                self.connection_manager.send_personal_message(player_id, message_event),
+                                task_name=f"event_handler/room_message_{room_id}_{player_id}",
+                                task_type="event_handler",
+                            )
+                except RuntimeError:
+                    self._logger.debug("No event loop available for room message broadcast")
+
+        except Exception as e:
+            self._logger.error("Error sending room message", room_id=room_id, error=str(e), exc_info=True)
+
+    async def _handle_player_hp_updated(self, event: PlayerHPUpdated):
+        """
+        Handle player HP update events by sending updates to the client.
+
+        Args:
+            event: The PlayerHPUpdated event containing HP change information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Get the current player data to send updated HP
+            player = self.connection_manager._get_player(player_id_str)
+            if not player:
+                self._logger.warning("Player not found for HP update event", player_id=player_id_str)
+                return
+
+            # Create player update event with new HP
+            player_update_data = {
+                "player_id": player_id_str,
+                "name": player.name,
+                "health": event.new_hp,
+                "max_health": event.max_hp,
+                "current_room_id": getattr(player, "current_room_id", None),
+            }
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            hp_update_event = build_event(
+                "player_hp_updated",
+                {
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "max_hp": event.max_hp,
+                    "damage_taken": event.damage_taken,
+                    "player": player_update_data,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, hp_update_event)
+
+            self._logger.info(
+                "Sent HP update to player",
+                player_id=player_id_str,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                damage_taken=event.damage_taken,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player HP update event", error=str(e), exc_info=True)
+
+    async def _handle_player_died(self, event):
+        """
+        Handle player death events by sending death notification to the client.
+
+        Args:
+            event: The PlayerDiedEvent containing death information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            death_event = build_event(
+                "player_died",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "death_location": event.room_id,
+                    "killer_id": event.killer_id,
+                    "killer_name": event.killer_name,
+                    "message": "You have died. The darkness claims you utterly.",
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, death_event)
+
+            self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
+
+        except Exception as e:
+            self._logger.error("Error handling player died event", error=str(e), exc_info=True)
+
+    async def _handle_player_hp_decay(self, event):
+        """
+        Handle player HP decay events by sending decay notification to the client.
+
+        Args:
+            event: The PlayerHPDecayEvent containing HP decay information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            decay_event = build_event(
+                "player_hp_decay",
+                {
+                    "player_id": player_id_str,
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "decay_amount": event.decay_amount,
+                    "room_id": event.room_id,
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, decay_event)
+
+            self._logger.debug("Sent HP decay notification to player", player_id=player_id_str, new_hp=event.new_hp)
+
+        except Exception as e:
+            self._logger.error("Error handling player HP decay event", error=str(e), exc_info=True)
+
+    async def _handle_player_respawned(self, event):
+        """
+        Handle player respawn events by sending respawn notification to the client.
+
+        Args:
+            event: The PlayerRespawnedEvent containing respawn information
+        """
+        try:
+            player_id_str = event.player_id
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            respawn_event = build_event(
+                "player_respawned",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "respawn_room_id": event.respawn_room_id,
+                    "old_hp": event.old_hp,
+                    "new_hp": event.new_hp,
+                    "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                },
+                player_id=player_id_str,
+            )
+
+            await self.connection_manager.send_personal_message(player_id_str, respawn_event)
+
+            self._logger.info(
+                "Sent respawn notification to player",
+                player_id=player_id_str,
+                respawn_room=event.respawn_room_id,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
+
 
 # Global instance
 real_time_event_handler: RealTimeEventHandler | None = None
 
 
-def get_real_time_event_handler(task_registry=None) -> RealTimeEventHandler:
+def get_real_time_event_handler(event_bus=None, task_registry=None) -> RealTimeEventHandler:
     """
     Get the global RealTimeEventHandler instance.
 
     Args:
+        event_bus: Optional EventBus instance. If None, will get the global instance.
         task_registry: Optional TaskRegistry instance for task lifecycle tracking
 
     Returns:
@@ -523,7 +883,7 @@ def get_real_time_event_handler(task_registry=None) -> RealTimeEventHandler:
     """
     global real_time_event_handler
     if real_time_event_handler is None:
-        real_time_event_handler = RealTimeEventHandler(task_registry=task_registry)
+        real_time_event_handler = RealTimeEventHandler(event_bus=event_bus, task_registry=task_registry)
     # If we've passed a task_registry after init, update the instance
     elif task_registry and not real_time_event_handler.task_registry:
         real_time_event_handler.task_registry = task_registry

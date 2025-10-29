@@ -22,7 +22,7 @@ from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -182,9 +182,11 @@ class NPCLifecycleManager:
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
         self.active_npcs: dict[str, NPCBase] = {}
         self.respawn_queue: dict[str, dict[str, Any]] = {}  # npc_id -> respawn_data
+        self.death_suppression: dict[str, float] = {}  # npc_id -> death_timestamp
 
         # Configuration
         self.default_respawn_delay = 300.0  # 5 minutes
+        self.death_suppression_duration = 30.0  # 30 seconds suppression after death
         self.max_respawn_attempts = 3
         self.cleanup_interval = 3600.0  # 1 hour
         self.last_cleanup = time.time()
@@ -193,6 +195,43 @@ class NPCLifecycleManager:
         self._subscribe_to_events()
 
         logger.info("NPC Lifecycle Manager initialized")
+
+    def record_npc_death(self, npc_id: str) -> None:
+        """
+        Record the death of an NPC to suppress respawning for 30 seconds.
+
+        Args:
+            npc_id: ID of the NPC that died
+        """
+        current_time = time.time()
+        self.death_suppression[npc_id] = current_time
+        logger.info(
+            f"Recorded death of NPC {npc_id}, suppressing respawn for {self.death_suppression_duration} seconds"
+        )
+
+    def is_npc_death_suppressed(self, npc_id: str) -> bool:
+        """
+        Check if an NPC is currently under death suppression.
+
+        Args:
+            npc_id: ID of the NPC to check
+
+        Returns:
+            True if NPC is under death suppression, False otherwise
+        """
+        if npc_id not in self.death_suppression:
+            return False
+
+        death_time = self.death_suppression[npc_id]
+        current_time = time.time()
+        suppression_elapsed = current_time - death_time
+
+        if suppression_elapsed >= self.death_suppression_duration:
+            # Suppression period has expired, clean up
+            del self.death_suppression[npc_id]
+            return False
+
+        return True
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
@@ -228,7 +267,7 @@ class NPCLifecycleManager:
         try:
             # Check if we can spawn this NPC
             if not self._can_spawn_npc(definition, room_id):
-                logger.warning(f"Cannot spawn NPC {definition.name} in {room_id}")
+                logger.warning("Cannot spawn NPC", npc_name=definition.name, room_id=room_id)
                 return None
 
             # Generate NPC ID
@@ -239,8 +278,8 @@ class NPCLifecycleManager:
             record.add_event(NPCLifecycleEvent.SPAWNED, {"room_id": room_id, "reason": reason})
             self.lifecycle_records[npc_id] = record
 
-            # Create NPC instance
-            npc_instance = self.spawning_service._create_npc_instance(definition, room_id)
+            # Create NPC instance with pre-generated ID
+            npc_instance = self.spawning_service._create_npc_instance(definition, room_id, npc_id)
             if not npc_instance:
                 record.change_state(NPCLifecycleState.ERROR, "Failed to create NPC instance")
                 record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": "Failed to create NPC instance"})
@@ -251,19 +290,16 @@ class NPCLifecycleManager:
             npc_instance.npc_id = npc_id
             npc_instance.spawned_at = time.time()
 
-            # Update population controller
-            self.population_controller._spawn_npc(definition, room_id)
-
             # Publish NPC entered room event
             event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
             self.event_bus.publish(event)
 
-            logger.info(f"Successfully spawned NPC: {npc_id} ({definition.name}) in {room_id}")
+            logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
 
             return npc_id
 
         except Exception as e:
-            logger.error(f"Failed to spawn NPC {definition.name}: {str(e)}")
+            logger.error("Failed to spawn NPC", npc_name=definition.name, error=str(e))
             if npc_id in self.lifecycle_records:
                 record = self.lifecycle_records[npc_id]
                 record.change_state(NPCLifecycleState.ERROR, str(e))
@@ -282,7 +318,7 @@ class NPCLifecycleManager:
             True if NPC was despawned successfully
         """
         if npc_id not in self.lifecycle_records:
-            logger.warning(f"Attempted to despawn non-existent NPC: {npc_id}")
+            logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
             return False
 
         try:
@@ -308,12 +344,12 @@ class NPCLifecycleManager:
             record.change_state(NPCLifecycleState.DESPAWNED, reason)
             record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": reason})
 
-            logger.info(f"Successfully despawned NPC: {npc_id} (reason: {reason})")
+            logger.info("Successfully despawned NPC", npc_id=npc_id, reason=reason)
 
             return True
 
         except Exception as e:
-            logger.error(f"Failed to despawn NPC {npc_id}: {str(e)}")
+            logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
             if npc_id in self.lifecycle_records:
                 record = self.lifecycle_records[npc_id]
                 record.change_state(NPCLifecycleState.ERROR, str(e))
@@ -333,7 +369,12 @@ class NPCLifecycleManager:
             True if respawn was scheduled successfully
         """
         if npc_id not in self.lifecycle_records:
-            logger.warning(f"Attempted to respawn non-existent NPC: {npc_id}")
+            logger.warning("Attempted to respawn non-existent NPC", npc_id=npc_id)
+            return False
+
+        # Check if NPC is under death suppression
+        if self.is_npc_death_suppressed(npc_id):
+            logger.info("NPC is under death suppression, respawn blocked", npc_id=npc_id)
             return False
 
         try:
@@ -342,7 +383,7 @@ class NPCLifecycleManager:
 
             # Check if NPC is already scheduled for respawn
             if npc_id in self.respawn_queue:
-                logger.debug(f"NPC {npc_id} is already scheduled for respawn")
+                logger.debug("NPC is already scheduled for respawn", npc_id=npc_id)
                 return True
 
             # Determine respawn delay
@@ -364,12 +405,12 @@ class NPCLifecycleManager:
             record.change_state(NPCLifecycleState.RESPAWNING, reason)
             record.add_event(NPCLifecycleEvent.RESPAWNED, {"delay": respawn_delay, "reason": reason})
 
-            logger.info(f"Scheduled respawn for NPC: {npc_id} in {respawn_delay} seconds")
+            logger.info("Scheduled respawn for NPC", npc_id=npc_id, respawn_delay=respawn_delay)
 
             return True
 
         except Exception as e:
-            logger.error(f"Failed to schedule respawn for NPC {npc_id}: {str(e)}")
+            logger.error("Failed to schedule respawn for NPC", npc_id=npc_id, error=str(e))
             if npc_id in self.lifecycle_records:
                 record = self.lifecycle_records[npc_id]
                 record.change_state(NPCLifecycleState.ERROR, str(e))
@@ -398,7 +439,7 @@ class NPCLifecycleManager:
                     # Increment attempt count
                     respawn_data["attempts"] += 1
                     if respawn_data["attempts"] >= self.max_respawn_attempts:
-                        logger.warning(f"Max respawn attempts reached for NPC {npc_id}")
+                        logger.warning("Max respawn attempts reached for NPC", npc_id=npc_id)
                         npcs_to_remove.append(npc_id)
 
         # Remove processed NPCs from queue
@@ -425,7 +466,7 @@ class NPCLifecycleManager:
 
             # Check if we can spawn this NPC
             if not self._can_spawn_npc(definition, room_id):
-                logger.debug(f"Cannot respawn NPC {npc_id} - spawn conditions not met")
+                logger.debug("Cannot respawn NPC - spawn conditions not met", npc_id=npc_id)
                 return False
 
             # Spawn the NPC
@@ -438,13 +479,13 @@ class NPCLifecycleManager:
                         self.lifecycle_records[new_npc_id] = old_record
                         del self.lifecycle_records[npc_id]
 
-                logger.info(f"Successfully respawned NPC: {npc_id} -> {new_npc_id}")
+                logger.info("Successfully respawned NPC", old_npc_id=npc_id, new_npc_id=new_npc_id)
                 return True
 
             return False
 
         except Exception as e:
-            logger.error(f"Failed to respawn NPC {npc_id}: {str(e)}")
+            logger.error("Failed to respawn NPC", npc_id=npc_id, error=str(e))
             return False
 
     def _can_spawn_npc(self, definition: NPCDefinition, room_id: str) -> bool:
@@ -462,8 +503,16 @@ class NPCLifecycleManager:
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
-            current_count = stats.npcs_by_type.get(definition.npc_type, 0)
+            # Check by individual NPC definition ID, not by type
+            current_count = stats.npcs_by_definition.get(definition.id, 0)
             if not definition.can_spawn(current_count):
+                logger.debug(
+                    "NPC spawn blocked by population limit",
+                    npc_id=definition.id,
+                    npc_name=definition.name,
+                    current_count=current_count,
+                    max_population=definition.max_population,
+                )
                 return False
 
         # Additional checks can be added here (e.g., room capacity, special conditions)
@@ -563,7 +612,7 @@ class NPCLifecycleManager:
             del self.lifecycle_records[npc_id]
 
         if records_to_remove:
-            logger.info(f"Cleaned up {len(records_to_remove)} old lifecycle records")
+            logger.info("Cleaned up old lifecycle records", count=len(records_to_remove))
 
         return len(records_to_remove)
 

@@ -10,7 +10,7 @@ import datetime
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.users import get_current_user
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_manager import connection_manager
 
 logger = get_logger(__name__)

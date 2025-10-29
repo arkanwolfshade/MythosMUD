@@ -9,7 +9,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
@@ -143,10 +143,8 @@ class ChatService:
             Dictionary with success status and message details
         """
 
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: send_say_message called ===", context={"player_id": player_id, "message": message}
-        )
-        logger.debug("Processing say message", context={"player_id": player_id, "message_length": len(message)})
+        logger.debug("=== CHAT SERVICE DEBUG: send_say_message called ===", player_id=player_id, message=message)
+        logger.debug("Processing say message")
 
         # Validate input
         if not message or not message.strip():
@@ -160,7 +158,7 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for chat message", context={"player_id": player_id})
+            logger.warning("Player not found for chat message")
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
@@ -168,9 +166,7 @@ class ChatService:
 
         # Check rate limits before allowing message
         if not self.rate_limiter.check_rate_limit(player_id, "say", player.name):
-            logger.warning(
-                "Rate limit exceeded for say message", context={"player_id": player_id, "player_name": player.name}
-            )
+            logger.warning("Rate limit exceeded for say message", player_id=player_id, player_name=player.name)
             return {
                 "success": False,
                 "error": "Rate limit exceeded. Please wait before sending another message.",
@@ -180,26 +176,24 @@ class ChatService:
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", context={"player_id": player_id})
+            logger.warning("Player not in a room")
             return {"success": False, "error": "Player not in a room"}
 
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Player found ===", context={"player_id": player_id, "player_name": player.name}
-        )
+        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
 
         # Check if player is muted in say channel (synchronous for MVP)
         if self.user_manager.is_channel_muted(player_id, "say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===")
             return {"success": False, "error": "You are muted in the say channel"}
 
         # Check if player is globally muted
         if self.user_manager.is_globally_muted(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
             return {"success": False, "error": "You are globally muted and cannot send messages"}
 
         # Check if player can send messages (admin check, etc.)
         if not self.user_manager.can_send_message(player_id, channel="say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
@@ -227,7 +221,7 @@ class ChatService:
         # Also log to communications log (existing behavior)
         chat_message.log_message()
 
-        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===", context={"message_id": chat_message.id})
+        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
 
         # Store message in room history
         if room_id not in self._room_messages:
@@ -249,12 +243,12 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
-        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service object: {self.nats_service} ===")
-        logger.debug(f"=== CHAT SERVICE DEBUG: NATS service type: {type(self.nats_service)} ===")
-        if self.nats_service:
-            logger.debug(f"=== CHAT SERVICE DEBUG: NATS service is_connected(): {self.nats_service.is_connected()} ===")
-        else:
-            logger.error("=== CHAT SERVICE DEBUG: NATS service is None ===")
+        logger.debug(
+            "Chat service NATS service status",
+            nats_service_object=self.nats_service,
+            nats_service_type=type(self.nats_service).__name__,
+            nats_connected=self.nats_service.is_connected() if self.nats_service else False,
+        )
 
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
@@ -281,9 +275,10 @@ class ChatService:
         """
         logger.debug(
             "=== CHAT SERVICE DEBUG: send_local_message called ===",
-            context={"player_id": player_id, "message": message},
+            player_id=player_id,
+            message=message,
         )
-        logger.debug("Processing local message", context={"player_id": player_id, "message_length": len(message)})
+        logger.debug("Processing local message")
 
         # Validate input
         if not message or not message.strip():
@@ -297,7 +292,7 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for local message", context={"player_id": player_id})
+            logger.warning("Player not found for local message")
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
@@ -305,9 +300,7 @@ class ChatService:
 
         # Check rate limits before allowing message
         if not self.rate_limiter.check_rate_limit(player_id, "local", player.name):
-            logger.warning(
-                "Rate limit exceeded for local message", context={"player_id": player_id, "player_name": player.name}
-            )
+            logger.warning("Rate limit exceeded for local message", player_id=player_id, player_name=player.name)
             return {
                 "success": False,
                 "error": "Rate limit exceeded. Please wait before sending another message.",
@@ -317,26 +310,24 @@ class ChatService:
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", context={"player_id": player_id})
+            logger.warning("Player not in a room")
             return {"success": False, "error": "Player not in a room"}
 
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Player found ===", context={"player_id": player_id, "player_name": player.name}
-        )
+        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
 
         # Check if player is muted in local channel
         if self.user_manager.is_channel_muted(player_id, "local"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===")
             return {"success": False, "error": "You are muted in the local channel"}
 
         # Check if player is globally muted
         if self.user_manager.is_globally_muted(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
             return {"success": False, "error": "You are globally muted and cannot send messages"}
 
         # Check if player can send messages (admin check, etc.)
         if not self.user_manager.can_send_message(player_id, channel="local"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
@@ -364,7 +355,7 @@ class ChatService:
         # Also log to communications log (existing behavior)
         chat_message.log_message()
 
-        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===", context={"message_id": chat_message.id})
+        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
 
         # Store message in room history
         if room_id not in self._room_messages:
@@ -409,8 +400,8 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===", context={"player_id": player_id})
-        logger.debug("Processing global message", context={"player_id": player_id, "message_length": len(message)})
+        logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===")
+        logger.debug("Processing global message")
 
         # Validate input
         if not message or not message.strip():
@@ -424,14 +415,15 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for global message", context={"player_id": player_id})
+            logger.warning("Player not found for global message")
             return {"success": False, "error": "Player not found"}
 
         # Check level requirement (minimum level 1 for global chat)
         if player.level < 1:
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Player level too low ===",
-                context={"player_id": player_id, "level": player.level},
+                player_id=player_id,
+                level=player.level,
             )
             return {"success": False, "error": "You must be level 1 or higher to use global chat"}
 
@@ -440,24 +432,22 @@ class ChatService:
 
         # Check rate limits before allowing global message
         if not self.rate_limiter.check_rate_limit(player_id, "global", player.name):
-            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
             return {"success": False, "error": "Rate limit exceeded for global chat", "rate_limited": True}
 
         # Check if player is muted from global channel
         if self.user_manager.is_channel_muted(player_id, "global"):
-            logger.debug(
-                "=== CHAT SERVICE DEBUG: Player muted from global channel ===", context={"player_id": player_id}
-            )
+            logger.debug("=== CHAT SERVICE DEBUG: Player muted from global channel ===", player_id=player_id)
             return {"success": False, "error": "You are muted from global chat"}
 
         # Check if player is globally muted
         if self.user_manager.is_globally_muted(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
             return {"success": False, "error": "You are globally muted and cannot send messages"}
 
         # Check if player can send messages (admin check, etc.)
         if not self.user_manager.can_send_message(player_id, channel="global"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
@@ -498,7 +488,7 @@ class ChatService:
         # Also log to communications log (existing behavior)
         chat_message.log_message()
 
-        logger.debug("=== CHAT SERVICE DEBUG: Global chat message created ===", context={"message_id": chat_message.id})
+        logger.debug("=== CHAT SERVICE DEBUG: Global chat message created ===")
 
         # Store message in global history
         if "global" not in self._room_messages:
@@ -542,8 +532,8 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===", context={"player_id": player_id})
-        logger.debug("Processing system message", context={"player_id": player_id, "message_length": len(message)})
+        logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===")
+        logger.debug("Processing system message")
 
         # Validate input
         if not message or not message.strip():
@@ -557,12 +547,12 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for system message", context={"player_id": player_id})
+            logger.warning("Player not found for system message")
             return {"success": False, "error": "Player not found"}
 
         # Check admin requirement
         if not self.user_manager.is_admin(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player not admin ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player not admin ===")
             return {"success": False, "error": "You must be an admin to send system messages"}
 
         # Load player's mute data to ensure it's available for permission checks
@@ -570,7 +560,7 @@ class ChatService:
 
         # Check rate limits before allowing system message
         if not self.rate_limiter.check_rate_limit(player_id, "system", player.name):
-            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
             return {"success": False, "error": "Rate limit exceeded for system messages", "rate_limited": True}
 
         # Note: Admins can send system messages even when globally muted
@@ -614,7 +604,7 @@ class ChatService:
         # Also log to communications log (existing behavior)
         chat_message.log_message()
 
-        logger.debug("=== CHAT SERVICE DEBUG: System chat message created ===", context={"message_id": chat_message.id})
+        logger.debug("=== CHAT SERVICE DEBUG: System chat message created ===")
 
         # Store message in system history
         if "system" not in self._room_messages:
@@ -794,10 +784,8 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: send_emote_message called ===", context={"player_id": player_id, "action": action}
-        )
-        logger.debug("Processing emote message", context={"player_id": player_id, "action_length": len(action)})
+        logger.debug("=== CHAT SERVICE DEBUG: send_emote_message called ===", player_id=player_id, action=action)
+        logger.debug("Processing emote message")
 
         # Validate input
         if not action or not action.strip():
@@ -811,7 +799,7 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for emote message", context={"player_id": player_id})
+            logger.warning("Player not found for emote message")
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
@@ -830,9 +818,7 @@ class ChatService:
 
         # Check rate limits before allowing emote
         if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):
-            logger.warning(
-                "Rate limit exceeded for emote message", context={"player_id": player_id, "player_name": player.name}
-            )
+            logger.warning("Rate limit exceeded for emote message", player_id=player_id, player_name=player.name)
             return {
                 "success": False,
                 "error": "Rate limit exceeded. Please wait before sending another emote.",
@@ -842,26 +828,24 @@ class ChatService:
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", context={"player_id": player_id})
+            logger.warning("Player not in a room")
             return {"success": False, "error": "Player not in a room"}
 
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Player found ===", context={"player_id": player_id, "player_name": player.name}
-        )
+        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
 
         # Check if player is muted in say channel (emotes use same channel as say)
         if self.user_manager.is_channel_muted(player_id, "say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===")
             return {"success": False, "error": "You are muted in the say channel"}
 
         # Check if player is globally muted
         if self.user_manager.is_globally_muted(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
             return {"success": False, "error": "You are globally muted and cannot send messages"}
 
         # Check if player can send messages (admin check, etc.)
         if not self.user_manager.can_send_message(player_id, channel="say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message for emote
@@ -934,9 +918,7 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: set_player_pose called ===", context={"player_id": player_id, "pose": pose}
-        )
+        logger.debug("=== CHAT SERVICE DEBUG: set_player_pose called ===", player_id=player_id, pose=pose)
 
         # Validate input
         if not pose or not pose.strip():
@@ -950,13 +932,13 @@ class ChatService:
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for pose", context={"player_id": player_id})
+            logger.warning("Player not found for pose")
             return {"success": False, "error": "Player not found"}
 
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", context={"player_id": player_id})
+            logger.warning("Player not in a room")
             return {"success": False, "error": "Player not in a room"}
 
         # Set the pose in memory
@@ -1061,13 +1043,13 @@ class ChatService:
 
         # Check if this is a valid emote command
         if not emote_service.is_emote_alias(emote_command):
-            logger.warning("Invalid emote command", context={"player_id": player_id, "emote_command": emote_command})
+            logger.warning("Invalid emote command")
             return {"success": False, "error": f"Unknown emote: {emote_command}"}
 
         # Get player information
         player = await self.player_service.get_player_by_id(player_id)
         if not player:
-            logger.warning("Player not found for predefined emote", context={"player_id": player_id})
+            logger.warning("Player not found for predefined emote")
             return {"success": False, "error": "Player not found"}
 
         # Load player's mute data to ensure it's available for permission checks
@@ -1075,9 +1057,7 @@ class ChatService:
 
         # Check rate limits before allowing emote
         if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):
-            logger.warning(
-                "Rate limit exceeded for predefined emote", context={"player_id": player_id, "player_name": player.name}
-            )
+            logger.warning("Rate limit exceeded for predefined emote", player_id=player_id, player_name=player.name)
             return {
                 "success": False,
                 "error": "Rate limit exceeded. Please wait before sending another emote.",
@@ -1087,22 +1067,22 @@ class ChatService:
         # Get player's current room
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", context={"player_id": player_id})
+            logger.warning("Player not in a room")
             return {"success": False, "error": "Player not in a room"}
 
         # Check if player is muted in say channel (emotes use same channel as say)
         if self.user_manager.is_channel_muted(player_id, "say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===")
             return {"success": False, "error": "You are muted in the say channel"}
 
         # Check if player is globally muted
         if self.user_manager.is_globally_muted(player_id):
-            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
             return {"success": False, "error": "You are globally muted and cannot send messages"}
 
         # Check if player can send messages (admin check, etc.)
         if not self.user_manager.can_send_message(player_id, channel="say"):
-            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===", context={"player_id": player_id})
+            logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
             return {"success": False, "error": "You cannot send messages at this time"}
 
         try:
@@ -1174,14 +1154,22 @@ class ChatService:
             True if published successfully, False otherwise
         """
         try:
+            # Pre-transmission validation
+            if not self._validate_chat_message(chat_message):
+                logger.warning("Chat message validation failed", message_id=chat_message.id)
+                return False
+
+            if not self._validate_room_access(chat_message.sender_id, room_id):
+                logger.warning("Room access validation failed", sender_id=chat_message.sender_id, room_id=room_id)
+                return False
+
             # Check if NATS service is available and connected
-            logger.debug("=== CHAT SERVICE DEBUG: Checking NATS service ===")
-            logger.debug(f"NATS service object: {self.nats_service}")
-            logger.debug(f"NATS service type: {type(self.nats_service)}")
-            if self.nats_service:
-                logger.debug(f"NATS service is_connected(): {self.nats_service.is_connected()}")
-            else:
-                logger.debug("NATS service is None")
+            logger.debug(
+                "Checking NATS service availability",
+                nats_service_available=self.nats_service is not None,
+                nats_service_type=type(self.nats_service).__name__ if self.nats_service else None,
+                nats_connected=self.nats_service.is_connected() if self.nats_service else False,
+            )
 
             if not self.nats_service or not self.nats_service.is_connected():
                 logger.error("NATS service not available or not connected - NATS is mandatory for chat functionality")
@@ -1213,15 +1201,15 @@ class ChatService:
                 if not subzone:
                     subzone = "unknown"
                 subject = f"chat.local.subzone.{subzone}"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Local channel subject: {subject} ===")
+                logger.debug("Local channel subject determined", subject=subject, subzone=subzone)
             elif chat_message.channel == "global":
                 # For global channel, use global subject
                 subject = "chat.global"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Global channel subject: {subject} ===")
+                logger.debug("Global channel subject determined", subject=subject)
             elif chat_message.channel == "system":
                 # For system channel, use system subject
                 subject = "chat.system"
-                logger.debug(f"=== CHAT SERVICE DEBUG: System channel subject: {subject} ===")
+                logger.debug("System channel subject determined", subject=subject)
             elif chat_message.channel == "whisper":
                 # For whisper channel, use whisper subject with target player
                 target_id = getattr(chat_message, "target_id", None)
@@ -1229,11 +1217,13 @@ class ChatService:
                     subject = f"chat.whisper.{target_id}"
                 else:
                     subject = "chat.whisper"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Whisper channel subject: {subject} ===")
+                logger.debug("Whisper channel subject determined", subject=subject, target_id=target_id)
             else:
                 # For other channels, use room level subject
                 subject = f"chat.{chat_message.channel}.{room_id}"
-                logger.debug(f"=== CHAT SERVICE DEBUG: Other channel subject: {subject} ===")
+                logger.debug(
+                    "Other channel subject determined", subject=subject, channel=chat_message.channel, room_id=room_id
+                )
 
             # Publish to NATS
             success = await self.nats_service.publish(subject, message_data)
@@ -1389,6 +1379,84 @@ class ChatService:
         """Check if a player is an admin."""
         return self.user_manager.is_admin(player_id)
 
+    def _validate_chat_message(self, chat_message: ChatMessage) -> bool:
+        """Validate chat message before transmission."""
+        try:
+            # Check message content
+            if not chat_message.content or len(chat_message.content.strip()) == 0:
+                logger.warning("Empty message content", message_id=chat_message.id)
+                return False
+
+            # Check message length
+            if len(chat_message.content) > 1000:  # Max length
+                logger.warning("Message too long", message_id=chat_message.id, length=len(chat_message.content))
+                return False
+
+            # Check sender information
+            if not chat_message.sender_id or not chat_message.sender_name:
+                logger.warning("Missing sender information", message_id=chat_message.id)
+                return False
+
+            # Check for malicious content patterns
+            if self._contains_malicious_content(chat_message.content):
+                logger.warning(
+                    "Malicious content detected", message_id=chat_message.id, sender_id=chat_message.sender_id
+                )
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error("Error validating chat message", error=str(e), message_id=chat_message.id)
+            return False
+
+    def _validate_room_access(self, sender_id: str, room_id: str) -> bool:
+        """Validate sender has access to the room."""
+        try:
+            # Check if sender exists and is active
+            if not sender_id:
+                return False
+
+            # Allow None room_id for system messages (broadcast to all players)
+            if room_id is None:
+                return True
+
+            # Check room access permissions
+            # This would integrate with your room access system
+            # For now, basic validation
+            if not room_id:
+                return False
+
+            return True
+
+        except Exception as e:
+            logger.error("Error validating room access", error=str(e), sender_id=sender_id, room_id=room_id)
+            return False
+
+    def _contains_malicious_content(self, content: str) -> bool:
+        """Check for malicious content patterns."""
+        try:
+            # Basic malicious pattern detection
+            malicious_patterns = [
+                r"<script[^>]*>.*?</script>",  # Script tags
+                r"javascript:",  # JavaScript URLs
+                r"data:text/html",  # Data URLs
+                r"vbscript:",  # VBScript URLs
+                r"on\w+\s*=",  # Event handlers
+            ]
+
+            import re
+
+            for pattern in malicious_patterns:
+                if re.search(pattern, content, re.IGNORECASE):
+                    return True
+
+            return False
+
+        except Exception as e:
+            logger.error("Error checking malicious content", error=str(e))
+            return True  # Fail safe - reject if check fails
+
     def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
         """Check if a player can send a message."""
         return self.user_manager.can_send_message(sender_id, target_id, channel)
@@ -1530,7 +1598,7 @@ class ChatService:
             return "\n".join(status_lines)
 
         except Exception as e:
-            logger.error("Error getting mute status", error=str(e), context={"player_id": player_id})
+            logger.error("Error getting mute status", error=str(e), player_id=player_id)
             return "Error retrieving mute status."
 
     def store_last_whisper_sender(self, receiver_name: str, sender_name: str) -> None:

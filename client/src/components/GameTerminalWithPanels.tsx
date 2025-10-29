@@ -22,6 +22,7 @@ interface GameEvent {
 }
 
 import { CommandHelpDrawer } from './CommandHelpDrawer';
+import { DeathInterstitial } from './DeathInterstitial';
 import { GameTerminal } from './GameTerminal';
 
 interface GameTerminalWithPanelsProps {
@@ -54,7 +55,9 @@ interface Player {
   };
   level?: number;
   experience?: number;
+  xp?: number;
   current_room_id?: string;
+  in_combat?: boolean;
 }
 
 interface Room {
@@ -109,6 +112,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     commandHistory: [],
   });
 
+  // Death/respawn states for UI theming
+  const [isMortallyWounded, setIsMortallyWounded] = useState(false);
+  const [isDead, setIsDead] = useState(false);
+  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
+  const [isRespawning, setIsRespawning] = useState(false);
+
   // Memory monitoring for this component
   const { detector } = useMemoryMonitor('GameTerminalWithPanels');
 
@@ -126,6 +135,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const processingTimeout = useRef<number | null>(null);
   const currentMessagesRef = useRef<ChatMessage[]>([]);
   const currentRoomRef = useRef<Room | null>(null);
+  const currentPlayerRef = useRef<Player | null>(null);
 
   // Keep the refs in sync with the state
   useEffect(() => {
@@ -133,11 +143,23 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   }, [gameState.messages]);
 
   useEffect(() => {
+    console.log('🔍 DEBUG: Room state updated', {
+      oldRoom: currentRoomRef.current,
+      newRoom: gameState.room,
+      occupantsChanged: currentRoomRef.current?.occupants?.length !== gameState.room?.occupants?.length,
+    });
     currentRoomRef.current = gameState.room;
   }, [gameState.room]);
 
+  useEffect(() => {
+    currentPlayerRef.current = gameState.player;
+  }, [gameState.player]);
+
   // Track the last room update timestamp to prevent stale data overwrites
   const lastRoomUpdateTime = useRef<number>(0);
+
+  // Ref to store sendCommand function for use in event handlers
+  const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
 
   // Room data validation function to prevent stale data overwrites
   const validateRoomDataForOccupants = useCallback((currentRoom: Room, event: GameEvent) => {
@@ -256,6 +278,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           occupants: event.data?.occupants,
         });
 
+        console.log('🔍 DEBUG: Processing event type:', eventType, event);
         switch (eventType) {
           case 'game_state': {
             const playerData = event.data.player as Player;
@@ -693,6 +716,556 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             break;
           }
+          case 'game_tick': {
+            const tickNumber = event.data.tick_number as number;
+            const showTickVerbosity = localStorage.getItem('showTickVerbosity') === 'true';
+
+            console.log('🔍 DEBUG: game_tick event received!', {
+              tickNumber,
+              showTickVerbosity,
+              isEvery10th: tickNumber % 10 === 0,
+            });
+
+            // Debug logging for game tick events
+            logger.debug('GameTerminalWithPanels', 'Received game_tick event', {
+              tickNumber,
+              showTickVerbosity,
+              isEvery10th: tickNumber % 10 === 0,
+            });
+
+            // Display every 10th tick by default (or if verbosity is enabled)
+            if ((showTickVerbosity || localStorage.getItem('showTickVerbosity') === null) && tickNumber % 10 === 0) {
+              const message = {
+                text: `[Game Tick ${tickNumber}]`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+              };
+
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+              updates.messages.push(message);
+
+              logger.info('GameTerminalWithPanels', 'Game tick displayed', {
+                tickNumber,
+                showTickVerbosity,
+              });
+            }
+            break;
+          }
+          case 'npc_action': {
+            const npcName = event.data.npc_name as string;
+            const action = event.data.action as string;
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC action received', {
+              npcName,
+              action,
+              message,
+            });
+            break;
+          }
+          case 'player_attacked': {
+            console.log('🔍 DEBUG: player_attacked event received!', event);
+            const attackerName = event.data.attacker_name as string;
+            const targetName = event.data.target_name as string;
+            const damage = event.data.damage as number;
+            const actionType = event.data.action_type as string;
+            const targetCurrentHp = event.data.target_current_hp as number;
+            const targetMaxHp = event.data.target_max_hp as number;
+
+            // Check if this is the current player's attack
+            const isCurrentPlayer = currentPlayerRef.current && currentPlayerRef.current.name === attackerName;
+
+            let message: string;
+            if (isCurrentPlayer) {
+              // Format message for current player's attack with target health
+              message = `You hit ${targetName} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+            } else {
+              // Format message for other players' attacks with target health
+              message =
+                `${attackerName} attacks ${targetName} for ${damage} damage! ` +
+                `(${targetCurrentHp}/${targetMaxHp} HP)`;
+            }
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player attacked event received', {
+              attackerName,
+              targetName,
+              damage,
+              actionType,
+              isCurrentPlayer,
+            });
+            break;
+          }
+          case 'npc_attacked': {
+            console.log('🔍 DEBUG: npc_attacked event received!', event);
+            const attackerName = event.data.attacker_name as string;
+            const npcName = event.data.npc_name as string;
+            const damage = event.data.damage as number;
+            const actionType = event.data.action_type as string;
+            const targetCurrentHp = event.data.target_current_hp as number;
+            const targetMaxHp = event.data.target_max_hp as number;
+
+            console.log('🔍 DEBUG: npc_attacked data:', {
+              attackerName,
+              npcName,
+              damage,
+              targetCurrentHp,
+              targetMaxHp,
+            });
+
+            // For npc_attacked events, attacker_name is the NPC and npc_name is the player
+            // We want to show "Dr. Francis Morgan attacks you for 10 damage! (90/100 HP)"
+            const message = `${attackerName} attacks you for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+
+            // Check for duplicate npc_attacked events
+            // Look for any message that contains the same attack message
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(msg => msg.text === message);
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate npc_attacked event detected, skipping', { message });
+              break;
+            }
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // BUGFIX: Update player health in Status panel when taking damage
+            if (currentPlayerRef.current && currentPlayerRef.current.stats) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  current_health: targetCurrentHp,
+                },
+              };
+              logger.info('GameTerminalWithPanels', 'Updated player health after taking damage', {
+                oldHealth: currentPlayerRef.current.stats.current_health,
+                newHealth: targetCurrentHp,
+                damage,
+              });
+            }
+
+            console.log('🔍 DEBUG: npc_attacked message added to updates:', messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC attacked event received', {
+              attackerName,
+              npcName,
+              damage,
+              actionType,
+            });
+            break;
+          }
+          case 'npc_took_damage': {
+            const npcName = event.data.npc_name as string;
+            const damage = event.data.damage as number;
+            const currentHp = event.data.current_hp as number;
+            const maxHp = event.data.max_hp as number;
+
+            const message = `${npcName} takes ${damage} damage! (${currentHp}/${maxHp} HP)`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'NPC took damage event received', {
+              npcName,
+              damage,
+              currentHp,
+              maxHp,
+            });
+            break;
+          }
+          case 'player_xp_updated': {
+            const xpAmount = event.data.xp_amount as number;
+            const newLevel = event.data.new_level as number;
+            const playerData = event.data.player as Player;
+
+            // Update player data with new XP and level
+            if (currentPlayerRef.current && playerData) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                xp: playerData.xp,
+                level: playerData.level,
+              };
+            }
+
+            // Add XP award message to game log
+            const message = `You gained ${xpAmount} experience points!${newLevel > (currentPlayerRef.current?.level || 1) ? ` (Level up to ${newLevel}!)` : ''}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player XP updated', {
+              xpAmount,
+              newLevel,
+              playerData,
+            });
+            break;
+          }
+          case 'npc_died': {
+            const npcName = event.data.npc_name as string;
+            const xpReward = event.data.xp_reward as number;
+
+            const message = `${npcName} has been defeated!${xpReward > 0 ? ` (+${xpReward} XP)` : ''}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // Update player XP if reward was given and clear combat state
+            if (currentPlayerRef.current && xpReward > 0) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                xp: (currentPlayerRef.current.xp || 0) + xpReward,
+                in_combat: false,
+              };
+            } else if (currentPlayerRef.current) {
+              // Clear combat state even if no XP reward
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
+              };
+            }
+
+            // Remove NPC from room occupants
+            if (currentRoomRef.current && currentRoomRef.current.occupants) {
+              const originalOccupants = currentRoomRef.current.occupants;
+              const filteredOccupants = originalOccupants.filter(occupant => occupant !== npcName);
+              console.log('🔍 DEBUG: Removing NPC from room occupants', {
+                npcName,
+                originalOccupants: originalOccupants,
+                filteredOccupants: filteredOccupants,
+              });
+              updates.room = {
+                ...currentRoomRef.current,
+                occupants: filteredOccupants,
+              };
+            }
+
+            logger.info('GameTerminalWithPanels', 'NPC died event received', {
+              npcName,
+              xpReward,
+            });
+            break;
+          }
+          case 'combat_started': {
+            console.log('🔍 DEBUG: combat_started event received!', event);
+            const combatId = event.data.combat_id as string;
+            const turnOrder = event.data.turn_order as string[];
+
+            // Check if we've already processed this combat_started event
+            // Look for any message that contains "Combat has begun!" and the same turn order
+            // Check both current messages and pending updates
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(
+              msg => msg.text.includes('Combat has begun!') && msg.text.includes(turnOrder.join(', '))
+            );
+
+            console.log('🔍 DEBUG: Checking for duplicate combat_started', {
+              combatId,
+              turnOrder,
+              existingMessage: existingMessage ? existingMessage.text : null,
+              currentMessagesCount: currentMessagesRef.current.length,
+            });
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', { combatId, turnOrder });
+              break;
+            }
+
+            const message = `Combat has begun! Turn order: ${turnOrder.join(', ')}`;
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // Update player combat status immediately
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: true,
+              };
+            }
+
+            logger.info('GameTerminalWithPanels', 'Combat started event received', {
+              combatId,
+              turnOrder,
+            });
+            break;
+          }
+          case 'combat_ended': {
+            const reason = event.data.reason as string;
+            const durationSeconds = event.data.duration_seconds as number;
+            const message = `Combat has ended. ${reason}${durationSeconds > 0 ? ` (Duration: ${durationSeconds}s)` : ''}`;
+
+            // Check for duplicate combat_ended events
+            const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
+            const existingMessage = allMessages.find(
+              msg => msg.text.includes('Combat has ended.') && msg.text.includes(reason)
+            );
+
+            if (existingMessage) {
+              console.log('🔍 DEBUG: Duplicate combat_ended event detected, skipping', { reason, durationSeconds });
+              break;
+            }
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // Update player combat status immediately
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
+              };
+            }
+
+            logger.info('GameTerminalWithPanels', 'Combat ended event received', {
+              reason,
+              durationSeconds,
+            });
+            break;
+          }
+          case 'player_mortally_wounded': {
+            // Player has reached 0 HP - enter mortally wounded state
+            const message = event.data.message as string;
+
+            setIsMortallyWounded(true);
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player mortally wounded', {
+              message,
+            });
+            break;
+          }
+          case 'player_mortally_wounded_room': {
+            // Other player became mortally wounded
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'combat' as const,
+              channel: 'combat' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
+          case 'player_hp_decay': {
+            // HP decay tick for mortally wounded player
+            const message = event.data.message as string;
+            const currentHp = event.data.current_hp as number;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            // Update player HP in state
+            if (currentPlayerRef.current && currentPlayerRef.current.stats) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  current_health: currentHp,
+                },
+              };
+            }
+            break;
+          }
+          case 'player_died': {
+            // Player has died (reached -10 HP)
+            const message = event.data.message as string;
+            const eventDeathLocation = event.data.death_location as string;
+
+            setIsDead(true);
+            setIsMortallyWounded(false);
+            setDeathLocation(eventDeathLocation || currentRoomRef.current?.name || 'Unknown Location');
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'death' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player died', {
+              message,
+              deathLocation: eventDeathLocation,
+            });
+            break;
+          }
+          case 'player_died_room': {
+            // Other player died
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
+          case 'player_respawned': {
+            // Player has respawned
+            const message = event.data.message as string;
+
+            setIsDead(false);
+            setIsMortallyWounded(false);
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+
+            logger.info('GameTerminalWithPanels', 'Player respawned');
+            break;
+          }
+          case 'player_respawned_room': {
+            // Other player respawned
+            const message = event.data.message as string;
+
+            const messageObj = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(messageObj);
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,
@@ -713,6 +1286,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           roomUpdate: updates.room,
           roomOccupants: updates.room?.occupants,
           roomOccupantCount: updates.room?.occupant_count,
+          hasPlayerUpdate: !!updates.player,
+          playerHealth: updates.player?.stats?.current_health,
         });
 
         setGameState(prev => {
@@ -720,11 +1295,13 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             ...prev,
             ...updates,
             messages: updates.messages || prev.messages,
+            player: updates.player || prev.player,
           };
 
           logger.info('GameTerminalWithPanels', 'State updated', {
             newMessageCount: newState.messages.length,
             hasMessages: newState.messages.length > 0,
+            playerHealth: newState.player?.stats?.current_health,
           });
 
           return newState;
@@ -813,13 +1390,17 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
   // Use the game connection hook for real server communication
   const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
-    playerName,
     authToken,
     onEvent: handleGameEvent,
     onConnect: handleConnect,
     onDisconnect: handleDisconnect,
     onError: handleError,
   });
+
+  // Store sendCommand in ref for use in event handlers
+  useEffect(() => {
+    sendCommandRef.current = sendCommand;
+  }, [sendCommand]);
 
   // Note: Connection loss handling is now done through the handleDisconnect callback
   // which is passed to the useGameConnection hook
@@ -924,6 +1505,101 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     setGameState(prev => ({ ...prev, commandHistory: [] }));
   };
 
+  const handleRespawn = async () => {
+    logger.info('GameTerminalWithPanels', 'Respawn requested');
+    setIsRespawning(true);
+
+    try {
+      // Call the respawn API endpoint
+      const response = await fetch('/api/players/respawn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('GameTerminalWithPanels', 'Respawn failed', {
+          status: response.status,
+          error: errorData,
+        });
+
+        // Add error message
+        const errorMessage: ChatMessage = {
+          text: `Respawn failed: ${errorData.detail || 'Unknown error'}`,
+          timestamp: new Date().toISOString(),
+          messageType: 'error',
+          isHtml: false,
+        };
+
+        setGameState(prev => ({
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        }));
+
+        setIsRespawning(false);
+        return;
+      }
+
+      const respawnData = await response.json();
+      logger.info('GameTerminalWithPanels', 'Respawn successful', {
+        room: respawnData.room,
+        player: respawnData.player,
+      });
+
+      // Reset death states
+      setIsDead(false);
+      setIsMortallyWounded(false);
+      setIsRespawning(false);
+
+      // Update game state with new room and player data
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...respawnData.player,
+          stats: {
+            ...prev.player?.stats,
+            current_health: respawnData.player.hp,
+          },
+        } as Player,
+        room: respawnData.room as Room,
+      }));
+
+      // Add respawn message
+      const respawnMessage: ChatMessage = {
+        text: respawnData.message || 'You have been resurrected',
+        timestamp: new Date().toISOString(),
+        messageType: 'system',
+        isHtml: false,
+      };
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, respawnMessage],
+      }));
+    } catch (error) {
+      logger.error('GameTerminalWithPanels', 'Error calling respawn API', { error });
+
+      // Add error message
+      const errorMessage: ChatMessage = {
+        text: 'Failed to respawn. Please try again.',
+        timestamp: new Date().toISOString(),
+        messageType: 'error',
+        isHtml: false,
+      };
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorMessage],
+      }));
+
+      setIsRespawning(false);
+    }
+  };
+
   const handleLogout = () => {
     // Add logout confirmation message before logout (only once)
     const logoutMessage: ChatMessage = {
@@ -952,7 +1628,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   };
 
   return (
-    <div className="game-terminal-container">
+    <div className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}>
       <GameTerminal
         playerName={playerName}
         isConnected={isConnected}
@@ -972,10 +1648,20 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         onSendChatMessage={handleChatMessage}
         onClearMessages={handleClearMessages}
         onClearHistory={handleClearHistory}
+        isMortallyWounded={isMortallyWounded}
+        isDead={isDead}
       />
 
       {/* Command Help Drawer */}
       <CommandHelpDrawer open={false} onClose={() => {}} />
+
+      {/* Death Interstitial Screen */}
+      <DeathInterstitial
+        isVisible={isDead}
+        deathLocation={deathLocation}
+        onRespawn={handleRespawn}
+        isRespawning={isRespawning}
+      />
     </div>
   );
 };

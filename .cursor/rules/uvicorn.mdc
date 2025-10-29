@@ -1,0 +1,166 @@
+---
+description: Comprehensive best practices for developing robust and scalable ASGI applications using Uvicorn server. Covers code organization, performance optimization, security considerations, testing strategies, and common pitfalls.
+globs: *.py
+---
+# Uvicorn ASGI Server Best Practices
+
+This document outlines best practices and coding standards for developing ASGI applications with Uvicorn server. Uvicorn is a lightning-fast ASGI server implementation for Python web applications.
+
+## 1. Code Organization and Structure
+
+### 1.1. Directory Structure
+
+Organize your ASGI application with clear separation of concerns:
+
+```
+project_name/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # ASGI application entry point
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── api.py
+│   │   └── websocket.py
+│   ├── middleware/
+│   │   ├── __init__.py
+│   │   ├── cors.py
+│   │   └── auth.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── user.py
+│   └── utils/
+│       ├── __init__.py
+│       └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_main.py
+│   └── test_routers/
+├── requirements.txt
+├── pyproject.toml
+└── README.md
+```
+
+### 1.2. File Naming Conventions
+
+- Use descriptive names for all files and directories
+- Follow Python naming conventions (snake_case)
+- Use clear, consistent naming for routers and middleware
+
+### 1.3. Module Organization
+
+- **Main Application:** Define your ASGI application in `main.py`
+- **Routers:** Organize routes by functionality
+- **Middleware:** Separate middleware into individual modules
+- **Models:** Define data models in dedicated modules
+
+## 2. Common Patterns and Anti-patterns
+
+### 2.1. Design Patterns
+
+- **ASGI Application Pattern:** Use the standard ASGI application signature
+- **Router Pattern:** Organize routes using FastAPI or Starlette routers
+- **Middleware Pattern:** Implement reusable middleware components
+- **Dependency Injection:** Use dependency injection for better testability
+
+### 2.2. Recommended Approaches
+
+- Use FastAPI or Starlette for ASGI framework
+- Implement proper error handling and logging
+- Use async/await patterns consistently
+- Implement proper request/response validation
+
+### 2.3. Anti-patterns
+
+- Avoid blocking operations in async functions
+- Don't mix sync and async code unnecessarily
+- Avoid global state in ASGI applications
+- Don't ignore proper error handling
+
+## 3. Performance Considerations
+
+### 3.1. Optimization Techniques
+
+- Use async/await for I/O operations
+- Implement connection pooling for databases
+- Use appropriate data structures
+- Optimize response serialization
+
+### 3.2. Memory Management
+
+- Monitor memory usage in production
+- Use generators for large datasets
+- Implement proper resource cleanup
+- Avoid memory leaks in long-running processes
+
+## 4. Security Best Practices
+
+### 4.1. Common Vulnerabilities
+
+- **Input Validation:** Validate all incoming data
+- **Authentication:** Implement proper authentication mechanisms
+- **Authorization:** Use role-based access control
+- **HTTPS:** Always use HTTPS in production
+
+### 4.2. Security Implementation
+
+- Use secure headers middleware
+- Implement rate limiting
+- Validate and sanitize all inputs
+- Use secure session management
+
+## 5. Testing Approaches
+
+### 5.1. Unit Testing
+
+- Test individual components in isolation
+- Mock external dependencies
+- Use pytest-asyncio for async tests
+- Test error conditions and edge cases
+
+### 5.2. Integration Testing
+
+- Test complete request/response cycles
+- Test middleware integration
+- Test database interactions
+- Test WebSocket connections
+
+## 6. Common Pitfalls and Gotchas
+
+### 6.1. Frequent Mistakes
+
+- Mixing sync and async code incorrectly
+- Not handling exceptions properly
+- Ignoring proper logging
+- Not implementing proper health checks
+
+### 6.2. Debugging Strategies
+
+- Use structured logging
+- Implement proper error tracking
+- Use debugging tools and profilers
+- Monitor application metrics
+
+## 7. Tooling and Environment
+
+### 7.1. Recommended Development Tools
+
+- **ASGI Framework:** FastAPI or Starlette
+- **Testing:** pytest with pytest-asyncio
+- **Logging:** structlog or standard logging
+- **Monitoring:** Prometheus, Grafana, or similar
+
+### 7.2. Deployment Best Practices
+
+- Use process managers like Gunicorn with Uvicorn workers
+- Implement proper health checks
+- Use reverse proxies like Nginx
+- Monitor application performance
+
+### 7.3. CI/CD Integration
+
+- Automate testing in CI/CD pipelines
+- Implement automated deployments
+- Use containerization with Docker
+- Monitor deployment health
+
+By following these best practices, you can build robust, scalable, and maintainable ASGI applications with Uvicorn.

@@ -3,11 +3,15 @@ import sqlite3
 import threading
 from collections.abc import Callable
 
+from server.logging.enhanced_logging_config import get_logger
+
 from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.room import Room
 from .utils.error_logging import create_error_context, log_and_raise
 from .world_loader import ROOMS_BASE_PATH
+
+logger = get_logger(__name__)
 
 
 # --- Custom Exceptions ---
@@ -108,7 +112,7 @@ class PersistenceLayer:
 
     def _setup_logger(self):
         # Use centralized logging configuration
-        from .logging_config import get_logger
+        from .logging.enhanced_logging_config import get_logger
 
         return get_logger("PersistenceLayer")
 
@@ -816,5 +820,27 @@ class PersistenceLayer:
     async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical"):
         """Async wrapper for damage_player."""
         return self.damage_player(player, amount, damage_type)
+
+    def get_npc_lifecycle_manager(self):
+        """
+        Get the NPC lifecycle manager from app.state.
+
+        Returns:
+            NPCLifecycleManager: The NPC lifecycle manager instance, or None if not available
+        """
+        try:
+            from server.main import app
+
+            lifecycle_manager = getattr(app.state, "npc_lifecycle_manager", None)
+            logger.debug(
+                "get_npc_lifecycle_manager called",
+                has_app=bool(app),
+                has_state=bool(getattr(app, "state", None)),
+                has_lifecycle_manager=bool(lifecycle_manager),
+            )
+            return lifecycle_manager
+        except Exception as e:
+            logger.debug("get_npc_lifecycle_manager failed", error=str(e))
+            return None
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

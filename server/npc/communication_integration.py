@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 from ..events import EventBus
 from ..events.event_types import NPCListened, NPCSpoke
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
 
 # Import ChatService only for type checking to avoid circular dependency

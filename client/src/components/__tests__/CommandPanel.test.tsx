@@ -9,6 +9,7 @@ vi.mock('../../config/channels', () => ({
   AVAILABLE_CHANNELS: [
     { id: 'say', name: 'Say', shortcut: 'say' },
     { id: 'local', name: 'Local', shortcut: 'local' },
+    { id: 'global', name: 'Global', shortcut: 'g' },
     { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
   ],
   DEFAULT_CHANNEL: 'say',
@@ -304,16 +305,17 @@ describe('CommandPanel', () => {
       expect(channelSelector).toHaveValue('local');
     });
 
-    it('should prefix commands with channel shortcut when not on say channel', async () => {
+    it('should prefix commands with channel shortcut when not on say or local channel', async () => {
       const user = userEvent.setup();
       const mockOnSendCommand = vi.fn();
-      render(<CommandPanel {...defaultProps} onSendCommand={mockOnSendCommand} selectedChannel="local" />);
+      // Use 'global' channel instead of 'local' since local is excluded from prefixing
+      render(<CommandPanel {...defaultProps} onSendCommand={mockOnSendCommand} selectedChannel="global" />);
 
       const input = screen.getByTestId('terminal-input');
       await user.type(input, 'hello everyone');
       await user.keyboard('{Enter}');
 
-      expect(mockOnSendCommand).toHaveBeenCalledWith('/local hello everyone');
+      expect(mockOnSendCommand).toHaveBeenCalledWith('/g hello everyone');
     });
 
     it('should not prefix commands that already start with slash', async () => {

@@ -26,7 +26,7 @@ from server.events.event_types import (
 )
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -175,17 +175,25 @@ class NPCPopulationController:
     based on zone configurations, player counts, and game state conditions.
     """
 
-    def __init__(self, event_bus: EventBus, spawning_service=None, rooms_data_path: str = "data/local/rooms"):
+    def __init__(
+        self,
+        event_bus: EventBus,
+        spawning_service=None,
+        lifecycle_manager=None,
+        rooms_data_path: str = "data/local/rooms",
+    ):
         """
         Initialize the NPC population controller.
 
         Args:
             event_bus: Event bus for publishing and subscribing to events
             spawning_service: Optional NPC spawning service for proper NPC creation
+            lifecycle_manager: Optional NPC lifecycle manager for consistent ID generation
             rooms_data_path: Path to the rooms data directory
         """
         self.event_bus = event_bus
         self.spawning_service = spawning_service
+        self.lifecycle_manager = lifecycle_manager
         self.rooms_data_path = Path(rooms_data_path)
 
         # Population tracking
@@ -215,7 +223,7 @@ class NPCPopulationController:
         # Subscribe to relevant events
         self._subscribe_to_events()
 
-        logger.info(f"NPC Population Controller initialized with {len(self.zone_configurations)} zones loaded")
+        logger.info("NPC Population Controller initialized", zones_loaded=len(self.zone_configurations))
 
     def _load_zone_configurations(self) -> None:
         """Load zone and sub-zone configurations from JSON files.
@@ -229,14 +237,14 @@ class NPCPopulationController:
                 if not plane_dir.is_dir():
                     continue
 
-                logger.debug(f"Processing plane: {plane_dir.name}")
+                logger.debug("Processing plane", plane_name=plane_dir.name)
 
                 # Second level: zone directories (arkhamcity, innsmouth, katmandu, etc.)
                 for zone_dir in plane_dir.iterdir():
                     if not zone_dir.is_dir():
                         continue
 
-                    logger.debug(f"  Processing zone: {zone_dir.name}")
+                    logger.debug("Processing zone", zone_name=zone_dir.name)
 
                     # Load zone configuration
                     zone_config_file = zone_dir / "zone_config.json"
@@ -245,7 +253,7 @@ class NPCPopulationController:
                             zone_data = json.load(f)
                             zone_config = ZoneConfiguration(zone_data)
                             self.zone_configurations[zone_dir.name] = zone_config
-                            logger.debug(f"    Loaded zone config: {zone_dir.name}")
+                            logger.debug("Loaded zone config", zone_name=zone_dir.name)
 
                     # Third level: sub-zone directories (sanitarium, downtown, etc.)
                     for sub_zone_dir in zone_dir.iterdir():
@@ -259,14 +267,14 @@ class NPCPopulationController:
                                 sub_zone_config = ZoneConfiguration(sub_zone_data)
                                 sub_zone_key = f"{zone_dir.name}/{sub_zone_dir.name}"
                                 self.zone_configurations[sub_zone_key] = sub_zone_config
-                                logger.debug(f"    Loaded sub-zone config: {sub_zone_key}")
+                                logger.debug("Loaded sub-zone config", sub_zone_key=sub_zone_key)
 
             logger.info(
                 f"Loaded {len(self.zone_configurations)} zone configurations: {list(self.zone_configurations.keys())}"
             )
 
         except Exception as e:
-            logger.error(f"Error loading zone configurations: {str(e)}")
+            logger.error("Error loading zone configurations", error=str(e))
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
@@ -298,13 +306,13 @@ class NPCPopulationController:
         """Handle NPC entering a room."""
         # Note: Population statistics are tracked in _spawn_npc_instance, not here
         # This method is kept for potential future room-specific tracking needs
-        logger.debug(f"NPC {event.npc_id} entered room {event.room_id}")
+        logger.debug("NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
         # Note: Population statistics are tracked in _despawn_npc_instance, not here
         # This method is kept for potential future room-specific tracking needs
-        logger.debug(f"NPC {event.npc_id} left room {event.room_id}")
+        logger.debug("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
     def _get_zone_key_from_room_id(self, room_id: str) -> str:
         """
@@ -347,7 +355,9 @@ class NPCPopulationController:
         self.npc_definitions.clear()
         for definition in definitions:
             self.npc_definitions[definition.id] = definition
-            logger.debug(f"Loaded NPC definition: {definition.id} - {definition.name} ({definition.npc_type})")
+            logger.debug(
+                "Loaded NPC definition", npc_id=definition.id, npc_name=definition.name, npc_type=definition.npc_type
+            )
 
     def load_spawn_rules(self, rules: list[NPCSpawnRule]) -> None:
         """
@@ -361,7 +371,12 @@ class NPCPopulationController:
             if rule.npc_definition_id not in self.spawn_rules:
                 self.spawn_rules[rule.npc_definition_id] = []
             self.spawn_rules[rule.npc_definition_id].append(rule)
-            logger.debug(f"Loaded spawn rule: {rule.id} for NPC {rule.npc_definition_id} in {rule.sub_zone_id}")
+            logger.debug(
+                "Loaded spawn rule",
+                rule_id=rule.id,
+                npc_definition_id=rule.npc_definition_id,
+                sub_zone_id=rule.sub_zone_id,
+            )
 
     def update_game_state(self, new_state: dict[str, Any]) -> None:
         """
@@ -371,7 +386,7 @@ class NPCPopulationController:
             new_state: Dictionary containing new game state values
         """
         self.current_game_state.update(new_state)
-        logger.debug(f"Updated game state: {new_state}")
+        logger.debug("Updated game state", new_state=new_state)
 
     def get_zone_configuration(self, zone_key: str) -> ZoneConfiguration | None:
         """
@@ -404,34 +419,36 @@ class NPCPopulationController:
         Args:
             room_id: The room identifier
         """
-        logger.info(f"Checking spawn requirements for room: {room_id}")
+        logger.info("Checking spawn requirements for room", room_id=room_id)
         zone_key = self._get_zone_key_from_room_id(room_id)
-        logger.info(f"Generated zone key: {zone_key}")
+        logger.info("Generated zone key", zone_key=zone_key)
         zone_config = self.get_zone_configuration(zone_key)
 
         if not zone_config:
-            logger.warning(f"No zone configuration found for {zone_key} (room: {room_id})")
+            logger.warning("No zone configuration found", zone_key=zone_key, room_id=room_id)
             return
 
-        logger.info(f"Zone configuration found for {zone_key}")
+        logger.info("Zone configuration found", zone_key=zone_key)
 
         # Check each NPC definition for spawn requirements
-        logger.info(f"Checking {len(self.npc_definitions)} NPC definitions for spawn requirements")
+        logger.info("Checking NPC definitions for spawn requirements", npc_count=len(self.npc_definitions))
         for _npc_def_id, definition in self.npc_definitions.items():
-            logger.info(f"Checking NPC {definition.id} ({definition.name}) - sub_zone: {definition.sub_zone_id}")
+            logger.info(
+                "Checking NPC", npc_id=definition.id, npc_name=definition.name, sub_zone_id=definition.sub_zone_id
+            )
             if definition.sub_zone_id not in zone_key:
                 logger.info(
                     f"NPC {definition.id} sub_zone '{definition.sub_zone_id}' not in zone_key '{zone_key}', skipping"
                 )
                 continue
 
-            logger.info(f"NPC {definition.id} sub_zone matches, checking spawn conditions")
+            logger.info("NPC sub_zone matches, checking spawn conditions", npc_id=definition.id)
             # Check if this NPC should spawn
             if self._should_spawn_npc(definition, zone_config, room_id):
-                logger.info(f"NPC {definition.id} ({definition.name}) should spawn, attempting spawn")
+                logger.info("NPC should spawn, attempting spawn", npc_id=definition.id, npc_name=definition.name)
                 self._spawn_npc(definition, room_id)
             else:
-                logger.info(f"NPC {definition.id} ({definition.name}) should not spawn")
+                logger.info("NPC should not spawn", npc_id=definition.id, npc_name=definition.name)
 
     def _should_spawn_npc(self, definition: NPCDefinition, zone_config: ZoneConfiguration, room_id: str) -> bool:
         """
@@ -445,7 +462,7 @@ class NPCPopulationController:
         Returns:
             True if NPC should spawn, False otherwise
         """
-        logger.info(f"Evaluating spawn conditions for NPC {definition.id} ({definition.name})")
+        logger.info("Evaluating spawn conditions for NPC", npc_id=definition.id, npc_name=definition.name)
 
         # Check population limits
         zone_key = self._get_zone_key_from_room_id(room_id)
@@ -453,23 +470,30 @@ class NPCPopulationController:
         if stats:
             # Check by individual NPC definition ID, not by type
             current_count = stats.npcs_by_definition.get(definition.id, 0)
-            logger.info(f"Current count for NPC {definition.id} ({definition.name}) in zone: {current_count}")
+            logger.info(
+                "Current count for NPC in zone",
+                npc_id=definition.id,
+                npc_name=definition.name,
+                current_count=current_count,
+            )
             if not definition.can_spawn(current_count):
                 logger.info(
                     f"NPC {definition.id} cannot spawn due to population limits (current: {current_count}, max: {definition.max_population})"
                 )
                 return False
         else:
-            logger.info(f"No population stats found for zone {zone_key}")
+            logger.info("No population stats found for zone", zone_key=zone_key)
 
         # Check spawn rules
         if definition.id in self.spawn_rules:
-            logger.info(f"Found {len(self.spawn_rules[definition.id])} spawn rules for NPC {definition.id}")
+            logger.info(
+                "Found spawn rules for NPC", rule_count=len(self.spawn_rules[definition.id]), npc_id=definition.id
+            )
             # Get current NPC count for population checks
             current_npc_count = stats.npcs_by_definition.get(definition.id, 0) if stats else 0
 
             for i, rule in enumerate(self.spawn_rules[definition.id]):
-                logger.info(f"Checking spawn rule {i + 1} for NPC {definition.id}")
+                logger.info("Checking spawn rule", rule_number=i + 1, npc_id=definition.id)
 
                 # Check if current NPC population is below the rule's max_population limit
                 if not rule.can_spawn_with_population(current_npc_count):
@@ -478,10 +502,10 @@ class NPCPopulationController:
                     )
                     continue
 
-                logger.info(f"Spawn rule {i + 1} spawn conditions: {rule.spawn_conditions}")
-                logger.info(f"Current game state: {self.current_game_state}")
+                logger.info("Spawn rule spawn conditions", rule_number=i + 1, spawn_conditions=rule.spawn_conditions)
+                logger.info("Current game state", game_state=self.current_game_state)
                 if not rule.check_spawn_conditions(self.current_game_state):
-                    logger.info(f"Spawn rule {i + 1} failed spawn conditions check")
+                    logger.info("Spawn rule failed spawn conditions check", rule_number=i + 1)
                     continue
 
                 # Check spawn probability with zone modifier
@@ -491,24 +515,24 @@ class NPCPopulationController:
                     f"Spawn rule {i + 1} probability check: roll={random_roll:.3f}, threshold={effective_probability:.3f}"
                 )
                 if random_roll <= effective_probability:
-                    logger.info(f"NPC {definition.id} should spawn based on spawn rule {i + 1}")
+                    logger.info("NPC should spawn based on spawn rule", npc_id=definition.id, rule_number=i + 1)
                     return True
                 else:
-                    logger.info(f"NPC {definition.id} failed probability roll for spawn rule {i + 1}")
+                    logger.info("NPC failed probability roll for spawn rule", npc_id=definition.id, rule_number=i + 1)
         else:
-            logger.info(f"No spawn rules found for NPC {definition.id}")
+            logger.info("No spawn rules found for NPC", npc_id=definition.id)
 
         # Required NPCs always spawn if conditions are met
         if definition.is_required():
-            logger.info(f"NPC {definition.id} is required and conditions are met, spawning")
+            logger.info("NPC is required and conditions are met, spawning", npc_id=definition.id)
             return True
 
-        logger.info(f"NPC {definition.id} should not spawn")
+        logger.info("NPC should not spawn", npc_id=definition.id)
         return False
 
     def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:
         """
-        Spawn an NPC instance using the spawning service.
+        Spawn an NPC instance using the lifecycle manager.
 
         Args:
             definition: NPC definition
@@ -517,28 +541,15 @@ class NPCPopulationController:
         Returns:
             Generated NPC instance ID
         """
-        if not self.spawning_service:
-            logger.error("No spawning service available - cannot spawn NPC")
+        if not self.lifecycle_manager:
+            logger.error("No lifecycle manager available - cannot spawn NPC")
             return None
 
         try:
-            # Import locally to avoid circular import
-            from server.npc.spawning_service import NPCSpawnRequest
+            # Use the lifecycle manager to spawn the NPC (this ensures consistent ID generation)
+            npc_id = self.lifecycle_manager.spawn_npc(definition, room_id, "population_control")
 
-            # Use the spawning service to create the NPC
-            spawn_request = NPCSpawnRequest(
-                definition=definition,
-                room_id=room_id,
-                spawn_rule=None,  # We don't have a specific spawn rule for population control
-                priority=0,
-                reason="population_control",
-            )
-
-            npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
-
-            if npc_instance and npc_instance.success:
-                npc_id = npc_instance.npc_id
-
+            if npc_id:
                 # Update population statistics
                 zone_key = self._get_zone_key_from_room_id(room_id)
                 if zone_key not in self.population_stats:
@@ -546,7 +557,30 @@ class NPCPopulationController:
                     self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
 
                 stats = self.population_stats[zone_key]
+
+                # Log population stats before adding NPC
+                logger.debug(
+                    "Population stats before adding NPC",
+                    npc_id=npc_id,
+                    npc_name=definition.name,
+                    definition_id=definition.id,
+                    zone_key=zone_key,
+                    current_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    max_population=definition.max_population,
+                )
+
                 stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
+
+                # Log population stats after adding NPC
+                logger.debug(
+                    "Population stats after adding NPC",
+                    npc_id=npc_id,
+                    npc_name=definition.name,
+                    definition_id=definition.id,
+                    zone_key=zone_key,
+                    new_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    max_population=definition.max_population,
+                )
 
                 # Store NPC data for tracking
                 self.active_npcs[npc_id] = {
@@ -567,13 +601,13 @@ class NPCPopulationController:
             else:
                 # Use getattr to avoid potential lazy loading issues
                 definition_name = getattr(definition, "name", "Unknown NPC")
-                logger.error(f"Failed to spawn NPC {definition_name} in {room_id}")
+                logger.error("Failed to spawn NPC", npc_name=definition_name, room_id=room_id)
                 return None
 
         except Exception as e:
             # Use getattr to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
-            logger.error(f"Error spawning NPC {definition_name}: {e}")
+            logger.error("Error spawning NPC", npc_name=definition_name, error=str(e))
             return None
 
     def despawn_npc(self, npc_id: str) -> bool:
@@ -587,7 +621,7 @@ class NPCPopulationController:
             True if NPC was despawned, False if not found
         """
         if npc_id not in self.active_npcs:
-            logger.warning(f"Attempted to despawn non-existent NPC: {npc_id}")
+            logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
             return False
 
         npc_data = self.active_npcs[npc_id]
@@ -602,7 +636,7 @@ class NPCPopulationController:
         # Remove from active NPCs
         del self.active_npcs[npc_id]
 
-        logger.info(f"Despawned NPC: {npc_id} ({npc_data['name']})")
+        logger.info("Despawned NPC", npc_id=npc_id, npc_name=npc_data["name"])
         return True
 
     def get_zone_population_summary(self) -> dict[str, Any]:
@@ -652,6 +686,6 @@ class NPCPopulationController:
             self.despawn_npc(npc_id)
 
         if npcs_to_remove:
-            logger.info(f"Cleaned up {len(npcs_to_remove)} inactive NPCs")
+            logger.info("Cleaned up inactive NPCs", count=len(npcs_to_remove))
 
         return len(npcs_to_remove)

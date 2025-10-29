@@ -45,6 +45,10 @@ from unittest.mock import MagicMock
 import pytest
 from dotenv import load_dotenv
 
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Import Windows-specific logging fixes
 try:
     from .windows_logging_fix import configure_windows_logging, disable_problematic_log_handlers
@@ -75,13 +79,15 @@ EXAMPLE_ENV_PATH = project_root / "env.unit_test.example"
 def validate_test_environment():
     """Validate that required test environment files exist."""
     if not TEST_ENV_PATH.exists():
-        print(f"[ERROR] Test environment file not found at {TEST_ENV_PATH}")
+        logger.error("Test environment file not found", test_env_path=str(TEST_ENV_PATH))
         if EXAMPLE_ENV_PATH.exists():
-            print(f"[INFO] Example file exists at {EXAMPLE_ENV_PATH}")
-            print("[SOLUTION] Copy the example file to create the required test environment:")
-            print(f'  Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
+            logger.info("Example file exists", example_path=str(EXAMPLE_ENV_PATH))
+            logger.info(
+                "Copy example file to create required test environment",
+                copy_command=f'Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"',
+            )
         else:
-            print("[ERROR] No example file found to copy from")
+            logger.error("No example file found to copy from")
         raise FileNotFoundError(
             f"Required test environment file missing: {TEST_ENV_PATH}\n"
             f"Please copy env.unit_test.example to server/tests/.env.unit_test"
@@ -98,12 +104,15 @@ def validate_test_environment():
                     missing_vars.append(var)
 
             if missing_vars:
-                print(f"[ERROR] Test environment file is missing required variables: {missing_vars}")
-                print(f"[SOLUTION] Please ensure {TEST_ENV_PATH} contains all required configuration variables")
+                logger.error(
+                    "Test environment file missing required variables",
+                    missing_variables=missing_vars,
+                    test_env_path=str(TEST_ENV_PATH),
+                )
                 raise ValueError(f"Test environment file missing required variables: {missing_vars}")
 
     except Exception as e:
-        print(f"[ERROR] Failed to validate test environment file: {e}")
+        logger.error("Failed to validate test environment file", error=str(e))
         raise
 
 
@@ -111,14 +120,14 @@ def validate_test_environment():
 try:
     validate_test_environment()
     load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"[OK] Loaded test environment secrets from {TEST_ENV_PATH}")
+    logger.info("Loaded test environment secrets", test_env_path=str(TEST_ENV_PATH))
 except (FileNotFoundError, ValueError) as e:
-    print(f"[CRITICAL ERROR] Test environment validation failed: {e}")
-    print("\n[SETUP INSTRUCTIONS]")
-    print("1. Copy the example environment file:")
-    print(f'   Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"')
-    print("2. Verify the file contains all required variables")
-    print("3. Run tests again")
+    logger.critical("Test environment validation failed", error=str(e))
+    logger.critical(
+        "Setup instructions: Copy example environment file",
+        copy_command=f'Copy-Item "{EXAMPLE_ENV_PATH}" "{TEST_ENV_PATH}"',
+    )
+    logger.critical("Additional setup steps: Verify file contains all required variables and run tests again")
     raise SystemExit(1) from e
 
 # Set environment variables BEFORE any imports to prevent module-level
@@ -364,22 +373,43 @@ def test_npc_database():
 
     npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
 
-    # Remove existing database file to ensure clean state
-    # Handle Windows file locking with retry logic
+    # Check if database exists and has proper schema before deciding to recreate
+    should_recreate = True
     if npc_test_db_path.exists():
-        for attempt in range(3):
-            try:
-                os.unlink(npc_test_db_path)
-                break
-            except PermissionError:
-                if attempt < 2:
-                    time.sleep(0.1)  # Brief delay before retry
-                else:
-                    # If we can't delete it, let init_npc_test_database recreate it
-                    pass
+        try:
+            # Check if the database has the expected schema by querying sqlite_master
+            import sqlite3
 
-    # Initialize the NPC test database with schema
-    init_npc_test_database()
+            conn = sqlite3.connect(str(npc_test_db_path))
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='npc_definitions'")
+            result = cursor.fetchone()
+            conn.close()
+
+            if result:
+                # Database exists and has the expected schema, don't recreate
+                should_recreate = False
+        except Exception:
+            # If we can't check the schema, assume we need to recreate
+            should_recreate = True
+
+    if should_recreate:
+        # Remove existing database file to ensure clean state
+        # Handle Windows file locking with retry logic
+        if npc_test_db_path.exists():
+            for attempt in range(3):
+                try:
+                    os.unlink(npc_test_db_path)
+                    break
+                except PermissionError:
+                    if attempt < 2:
+                        time.sleep(0.1)  # Brief delay before retry
+                    else:
+                        # If we can't delete it, let init_npc_test_database recreate it
+                        pass
+
+        # Initialize the NPC test database with schema
+        init_npc_test_database()
 
     # The SQLAlchemy metadata initialization will happen when the NPC database
     # module is imported and the engine is created. We don't need to call

@@ -1,0 +1,3 @@
+# Spec Summary (Lite)
+
+Implement a comprehensive turn-based combat system for MythosMUD featuring dexterity-based turn order, thematic messaging, XP rewards, and full integration with existing game systems. Players can attack NPCs using `attack <target>` commands, engage in tactical combat with 1 damage attacks, and receive immediate XP rewards when defeating mobs. The system includes perspective-based combat messages, in-memory state management with automatic cleanup, and comprehensive integration with existing event, messaging, and security systems. This tracer-bullet implementation establishes the foundation for future combat enhancements while maintaining the game's Cthulhu Mythos atmosphere.

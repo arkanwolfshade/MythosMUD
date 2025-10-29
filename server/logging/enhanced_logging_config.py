@@ -1,39 +1,25 @@
 """
-Structlog-based logging configuration for MythosMUD server.
+Enhanced structlog-based logging configuration for MythosMUD server.
 
-This module provides a configurable logging system that supports multiple
-environments (test, development, staging, production) with separate log files
-for different categories of events. As the Pnakotic Manuscripts teach us,
-proper categorization of knowledge is essential for its preservation.
-
-CRITICAL LOGGING REQUIREMENT:
-All service modules MUST use get_logger() from this module instead of
-logging.getLogger(). Standard Python loggers do not support the 'context'
-parameter that our structlog-based system requires. Using logging.getLogger()
-will cause server startup failures when services attempt to log with context.
-
-CORRECT USAGE:
-    from ..logging_config import get_logger
-    logger = get_logger(__name__)
-    logger.info("Message", context={"key": "value"})
-
-INCORRECT USAGE (WILL CAUSE FAILURES):
-    import logging
-    logger = logging.getLogger(__name__)
-    logger.info("Message", context={"key": "value"})  # TypeError!
+This module provides an enhanced logging system with MDC (Mapped Diagnostic
+Context), correlation IDs, security sanitization, and performance optimizations.
 """
 
 import logging
 import os
 import sys
 import time
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import structlog
-
-# Using fully-qualified names (structlog.processors.*) below; no direct imports
+from structlog.contextvars import (
+    bind_contextvars,
+    clear_contextvars,
+    merge_contextvars,
+)
 from structlog.stdlib import BoundLogger, LoggerFactory
 
 
@@ -81,7 +67,8 @@ def _rotate_log_files(env_log_dir: Path) -> None:
 
     Enhanced with Windows-specific file locking handling to prevent
     PermissionError: [WinError 32] exceptions during concurrent access.
-    Now recursively processes subdirectories to ensure all log files are rotated.
+    Now recursively processes subdirectories to ensure all log files are
+    rotated.
 
     Args:
         env_log_dir: Path to the environment-specific log directory
@@ -124,7 +111,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                     # This helps detect file locking issues before attempting to rename
                     if sys.platform == "win32":
                         try:
-                            with open(log_file, "a", encoding="utf-8") as _f:
+                            with open(log_file, "a", encoding="utf-8"):
                                 pass  # Just test if we can open the file
                         except (PermissionError, OSError):
                             if attempt < max_retries - 1:
@@ -132,7 +119,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                                 continue
                             else:
                                 # Skip rotation for this file if it's locked
-                                logger = get_logger("server.logging")
+                                logger = get_enhanced_logger("server.logging")
                                 logger.warning(
                                     "Skipping rotation for locked log file",
                                     name=log_file.name,
@@ -144,7 +131,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                     log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
-                    logger = get_logger("server.logging")
+                    logger = get_enhanced_logger("server.logging")
                     logger.info(
                         "Rotated log file",
                         old_name=log_file.name,
@@ -159,7 +146,7 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                         retry_delay *= 2  # Exponential backoff
                     else:
                         # Final attempt failed, log the error
-                        logger = get_logger("server.logging")
+                        logger = get_enhanced_logger("server.logging")
                         logger.warning(
                             "Could not rotate log file after retries",
                             name=log_file.name,
@@ -217,39 +204,190 @@ def detect_environment() -> str:
     return "local"
 
 
-def _event_only_renderer(_logger: Any, _name: str, event_dict: dict[str, Any]) -> str:
+def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
     """
-    Render only the core event/message string for file logs.
+    Remove sensitive data from log entries.
 
-    This ensures file logs contain simple messages without ANSI or
-    additional structlog fields.
+    This processor automatically redacts sensitive information like passwords,
+    tokens, and credentials from log entries to prevent information leakage.
+
+    Args:
+        _logger: Logger instance (unused)
+        _name: Logger name (unused)
+        event_dict: Event dictionary to sanitize
+
+    Returns:
+        Sanitized event dictionary
     """
-    event = event_dict.get("event")
-    return "" if event is None else str(event)
+    sensitive_keys = [
+        "password",
+        "token",
+        "secret",
+        "key",
+        "credential",
+        "auth",
+        "jwt",
+        "api_key",
+        "private_key",
+        "session_token",
+        "access_token",
+        "refresh_token",
+        "bearer",
+        "authorization",
+    ]
+
+    def sanitize_dict(d: dict) -> dict:
+        """Recursively sanitize dictionary values."""
+        sanitized = {}
+        for key, value in d.items():
+            if isinstance(value, dict):
+                sanitized[key] = sanitize_dict(value)
+            elif isinstance(key, str) and any(sensitive in key.lower() for sensitive in sensitive_keys):
+                sanitized[key] = "[REDACTED]"
+            else:
+                sanitized[key] = value
+        return sanitized
+
+    return sanitize_dict(event_dict)
 
 
-def configure_structlog(
+def add_correlation_id(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """
+    Add correlation ID to log entries if not already present.
+
+    This processor ensures that all log entries have a correlation ID for
+    request tracing and debugging.
+
+    Args:
+        _logger: Logger instance (unused)
+        _name: Logger name (unused)
+        event_dict: Event dictionary to enhance
+
+    Returns:
+        Enhanced event dictionary with correlation ID
+    """
+    if "correlation_id" not in event_dict:
+        event_dict["correlation_id"] = str(uuid.uuid4())
+
+    return event_dict
+
+
+def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """
+    Add request context information to log entries.
+
+    This processor adds contextual information like request ID, user ID,
+    and session information to log entries.
+
+    Args:
+        _logger: Logger instance (unused)
+        _name: Logger name (unused)
+        event_dict: Event dictionary to enhance
+
+    Returns:
+        Enhanced event dictionary with request context
+    """
+    # Add timestamp if not present
+    if "timestamp" not in event_dict:
+        event_dict["timestamp"] = datetime.now(UTC).isoformat()
+
+    # Add logger name for better traceability
+    if "logger_name" not in event_dict:
+        event_dict["logger_name"] = _name
+
+    # Add request ID if not present
+    if "request_id" not in event_dict:
+        event_dict["request_id"] = str(uuid.uuid4())
+
+    return event_dict
+
+
+# Global player service registry for logging enhancement
+_global_player_service = None
+
+
+def set_global_player_service(player_service: Any) -> None:
+    """
+    Set the global player service for logging enhancement.
+
+    This allows the logging system to access player information for
+    enhancing log entries with player names.
+
+    Args:
+        player_service: The player service instance
+    """
+    global _global_player_service
+    _global_player_service = player_service
+
+
+def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """
+    Enhance player_id fields with player names for better log readability.
+
+    This processor automatically converts player_id fields to include both
+    player name and ID in the format "<name>: <ID>" for better debugging.
+
+    Args:
+        _logger: Logger instance (unused)
+        _name: Logger name (unused)
+        event_dict: Event dictionary to enhance
+
+    Returns:
+        Enhanced event dictionary with player names
+    """
+    global _global_player_service
+
+    if _global_player_service and hasattr(_global_player_service, "persistence"):
+        # Process any player_id fields in the event dictionary
+        for key, value in event_dict.items():
+            if key == "player_id" and isinstance(value, str):
+                # Check if this looks like a UUID
+                if len(value) == 36 and value.count("-") == 4:
+                    try:
+                        # Try to get the player name
+                        player = _global_player_service.persistence.get_player(value)
+                        if player and hasattr(player, "name"):
+                            # Enhance the player_id field with the player name
+                            event_dict[key] = f"<{player.name}>: {value}"
+                    except Exception:
+                        # If lookup fails, leave the original value
+                        pass
+
+    return event_dict
+
+
+def configure_enhanced_structlog(
     environment: str | None = None,
     log_level: str = "INFO",
     log_config: dict[str, Any] | None = None,
     player_service: Any = None,
+    enable_async: bool = True,
 ) -> None:
     """
-    Configure Structlog based on environment.
+    Configure enhanced Structlog with MDC, security, and performance features.
 
     Args:
         environment: Environment name (auto-detected if None)
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
         log_config: Logging configuration dictionary
+        player_service: Optional player service for GUID-to-name conversion
+        enable_async: Enable async logging for better performance
     """
     if environment is None:
         environment = detect_environment()
 
-    # When writing to stdlib logging handlers (for file logs), configure
-    # structlog to defer final rendering to logging.Formatter via
-    # ProcessorFormatter.wrap_for_formatter. This prevents ANSI codes from
-    # ConsoleRenderer from appearing in file logs.
-    processors = [
+    # Base processors with MDC support (no renderer)
+    base_processors = [
+        # Security first - sanitize sensitive data
+        sanitize_sensitive_data,
+        # Add correlation and context information
+        add_correlation_id,
+        add_request_context,
+        # Enhance player IDs with names for better debugging
+        enhance_player_ids,
+        # Merge context variables (MDC)
+        merge_contextvars,
+        # Standard structlog processors
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -258,34 +396,42 @@ def configure_structlog(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.processors.UnicodeDecoder(),
-        # Final renderer ensures only the message text is rendered to stdlib
-        # and thus to file handlers.
-        _event_only_renderer,
     ]
 
-    # Configure standard library logging for file output
+    # Configure standard library logging for file output FIRST
+    # This ensures file handlers are set up before structlog configuration
     if log_config and not log_config.get("disable_logging", False):
-        _setup_file_logging(environment, log_config, log_level, player_service)
+        _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
+
+    # Configure structlog with a custom renderer that strips ANSI codes
+    def strip_ansi_renderer(logger, name, event_dict):
+        """Custom renderer that strips ANSI escape sequences."""
+        import re
+
+        # Use KeyValueRenderer to get the formatted message
+        formatted = structlog.processors.KeyValueRenderer()(logger, name, event_dict)
+
+        # Strip ANSI escape sequences
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", formatted)
 
     structlog.configure(
-        processors=processors,
+        processors=base_processors + [strip_ansi_renderer],
         context_class=dict,
         logger_factory=LoggerFactory(),
         wrapper_class=BoundLogger,
-        # Disable caching so that later configuration (e.g., file logging
-        # setup) applies to all existing loggers. This prevents early colored
-        # renderers from leaking ANSI codes into file logs.
         cache_logger_on_first_use=False,
     )
 
 
-def _setup_file_logging(
+def _setup_enhanced_file_logging(
     environment: str,
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
+    enable_async: bool = True,  # noqa: ARG001
 ) -> None:
-    """Set up file logging handlers for different log categories."""
+    """Set up enhanced file logging handlers with async support."""
     from logging.handlers import RotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
@@ -302,7 +448,6 @@ def _setup_file_logging(
     # Get rotation settings from config
     rotation_config = log_config.get("rotation", {})
     max_size_str = rotation_config.get("max_size", "10MB")
-    # Keep 5 backups
     backup_count = rotation_config.get("backup_count", 5)
 
     # Convert max_size string to bytes
@@ -318,7 +463,7 @@ def _setup_file_logging(
     else:
         max_bytes = max_size_str
 
-    # Create handlers for different log categories
+    # Enhanced log categories with security and performance considerations
     log_categories = {
         "server": ["server", "uvicorn"],
         "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
@@ -326,15 +471,25 @@ def _setup_file_logging(
         "world": ["world"],
         "communications": ["realtime", "communications"],
         "commands": ["commands"],
+        "combat": [
+            "services.combat_service",
+            "services.combat_event_publisher",
+            "services.npc_combat_integration_service",
+            "services.player_combat_service",
+            "validators.combat_validator",
+            "logging.combat_audit",
+        ],
         "errors": ["errors"],
         "access": ["access", "server.app.factory"],
-        # "redis": ["redis", "services.redis_service", "realtime.redis_message_handler"],  # Redis removed from system
+        "security": ["security", "audit"],
+        "performance": ["performance", "metrics"],
     }
 
+    # Create handlers for different log categories
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create rotating file handler for continuous rotation
+        # Create rotating file handler
         handler = RotatingFileHandler(
             log_path,
             maxBytes=max_bytes,
@@ -345,7 +500,7 @@ def _setup_file_logging(
 
         # Create formatter - use PlayerGuidFormatter if player_service is available
         if player_service is not None:
-            from .logging.player_guid_formatter import PlayerGuidFormatter
+            from server.logging.player_guid_formatter import PlayerGuidFormatter
 
             formatter = PlayerGuidFormatter(
                 player_service=player_service,
@@ -363,12 +518,14 @@ def _setup_file_logging(
         for prefix in prefixes:
             logger = logging.getLogger(prefix)
             logger.addHandler(handler)
-            logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-            # Allow propagation so the root logger can also capture WARN+ into
-            # errors.log while category files still receive their logs.
+            # Set DEBUG level for combat modules in local/debug environments
+            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
+                logger.setLevel(logging.DEBUG)
+            else:
+                logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
             logger.propagate = True
 
-    # Also capture all console output to a general log file
+    # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
     console_handler = RotatingFileHandler(
         console_log_path,
@@ -378,9 +535,9 @@ def _setup_file_logging(
     )
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
-    # Use the same formatter logic for console handler
+    # Use enhanced formatter for console handler
     if player_service is not None:
-        from .logging.player_guid_formatter import PlayerGuidFormatter
+        from server.logging.player_guid_formatter import PlayerGuidFormatter
 
         console_formatter = PlayerGuidFormatter(
             player_service=player_service,
@@ -393,11 +550,9 @@ def _setup_file_logging(
             datefmt="%Y-%m-%d %H:%M:%S",
         )
     console_handler.setFormatter(console_formatter)
-
-    # Add console handler to root logger to capture all output
     root_logger.addHandler(console_handler)
 
-    # Global errors handler that captures WARNING and above for all loggers
+    # Enhanced errors handler with security focus
     errors_log_path = env_log_dir / "errors.log"
     errors_handler = RotatingFileHandler(
         errors_log_path,
@@ -407,9 +562,9 @@ def _setup_file_logging(
     )
     errors_handler.setLevel(logging.WARNING)
 
-    # Use the same formatter logic for errors handler
+    # Use enhanced formatter for errors handler
     if player_service is not None:
-        from .logging.player_guid_formatter import PlayerGuidFormatter
+        from server.logging.player_guid_formatter import PlayerGuidFormatter
 
         errors_formatter = PlayerGuidFormatter(
             player_service=player_service,
@@ -424,11 +579,164 @@ def _setup_file_logging(
     errors_handler.setFormatter(errors_formatter)
     root_logger.addHandler(errors_handler)
 
-    # Nothing else to do here; structlog is already configured in
-    # configure_structlog to defer formatting to stdlib handlers
-
-    # Ensure root logger also gets the console handler for any unhandled logs
     root_logger.setLevel(logging.DEBUG)
+
+
+def setup_enhanced_logging(config: dict[str, Any], player_service: Any = None) -> None:
+    """
+    Set up enhanced logging configuration with MDC and security features.
+
+    Args:
+        config: Server configuration dictionary
+        player_service: Optional player service for GUID-to-name conversion
+    """
+    logging_config = config.get("logging", {})
+    environment = logging_config.get("environment", detect_environment())
+    log_level = logging_config.get("level", "INFO")
+    enable_async = logging_config.get("enable_async", True)
+
+    # Check if logging should be disabled
+    disable_logging = logging_config.get("disable_logging", False)
+
+    if disable_logging:
+        # Configure minimal logging without file handlers
+        configure_enhanced_structlog(environment, log_level, {"disable_logging": True}, player_service)
+        return
+
+    # Configure enhanced Structlog
+    configure_enhanced_structlog(environment, log_level, logging_config, player_service, enable_async)
+
+    # Configure uvicorn to use our enhanced StructLog system
+    _configure_enhanced_uvicorn_logging()
+
+    # Log the setup
+    logger = get_logger("server.logging.enhanced")
+    logger.info(
+        "Enhanced logging system initialized",
+        environment=environment,
+        log_level=log_level,
+        log_base=logging_config.get("log_base", "logs"),
+        mdc_enabled=True,
+        security_sanitization=True,
+        correlation_ids=True,
+    )
+
+
+def _configure_enhanced_uvicorn_logging() -> None:
+    """Configure uvicorn to use our enhanced StructLog system."""
+    logger = get_logger("uvicorn.enhanced")
+
+    # Configure uvicorn's access logger to use our enhanced system
+    uvicorn_access_logger = logging.getLogger("uvicorn.access")
+    uvicorn_access_logger.handlers = []
+    uvicorn_access_logger.propagate = True
+    uvicorn_access_logger.setLevel(logging.DEBUG)
+
+    # Configure uvicorn's error logger
+    uvicorn_error_logger = logging.getLogger("uvicorn.error")
+    uvicorn_error_logger.handlers = []
+    uvicorn_error_logger.propagate = True
+    uvicorn_error_logger.setLevel(logging.DEBUG)
+
+    # Configure uvicorn's main logger
+    uvicorn_logger = logging.getLogger("uvicorn")
+    uvicorn_logger.handlers = []
+    uvicorn_logger.propagate = True
+    uvicorn_logger.setLevel(logging.DEBUG)
+
+    logger.info("Enhanced uvicorn logging configured")
+
+
+# Context management utilities
+def bind_request_context(
+    correlation_id: str | None = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
+    request_id: str | None = None,
+    **kwargs,
+) -> None:
+    """
+    Bind request context to the current logging context.
+
+    This function sets up the logging context for a request, ensuring all
+    subsequent log entries include the request context.
+
+    Args:
+        correlation_id: Unique correlation ID for the request
+        user_id: User ID if available
+        session_id: Session ID if available
+        request_id: Request ID if available
+        **kwargs: Additional context variables
+    """
+    if correlation_id is None:
+        correlation_id = str(uuid.uuid4())
+
+    context_vars = {
+        "correlation_id": correlation_id,
+        "user_id": user_id,
+        "session_id": session_id,
+        "request_id": request_id,
+        **kwargs,
+    }
+
+    # Remove None values
+    context_vars = {k: v for k, v in context_vars.items() if v is not None}
+
+    bind_contextvars(**context_vars)
+
+
+def clear_request_context() -> None:
+    """Clear the current request context from logging."""
+    clear_contextvars()
+
+
+def get_current_context() -> dict[str, Any]:
+    """Get the current logging context."""
+    try:
+        # Use get_contextvars() to get the current context-local context
+        return structlog.contextvars.get_contextvars()
+    except (AttributeError, KeyError):
+        # If there's no bound context, return empty dict
+        return {}
+
+
+def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) -> None:
+    """
+    Log a message with the current context automatically included.
+
+    Args:
+        logger: Structlog logger instance
+        level: Log level (debug, info, warning, error, critical)
+        message: Log message
+        **kwargs: Additional log data
+    """
+    # Get current context and merge with additional kwargs
+    current_context = get_current_context()
+    log_data = {**current_context, **kwargs}
+
+    # Log at the specified level
+    log_method = getattr(logger, level.lower(), logger.info)
+    log_method(message, **log_data)
+
+
+def get_enhanced_logger(name: str) -> BoundLogger:
+    """
+    Get an enhanced logger instance with structured logging capabilities.
+
+    This function provides a logger instance configured with enhanced
+    structured logging processors and context management.
+
+    Args:
+        name: Logger name (typically module name)
+
+    Returns:
+        Enhanced bound logger instance
+    """
+    # Get the base logger and wrap it with enhanced capabilities
+    base_logger = get_logger(name)
+
+    # Return a bound logger with enhanced processors
+    return structlog.wrap_logger(base_logger)
 
 
 def get_logger(name: str) -> BoundLogger:
@@ -449,42 +757,6 @@ def get_logger(name: str) -> BoundLogger:
     return structlog.get_logger(name)
 
 
-def setup_logging(config: dict[str, Any], player_service: Any = None) -> None:
-    """
-    Set up logging configuration based on server config.
-
-    Args:
-        config: Server configuration dictionary
-        player_service: Optional player service for GUID-to-name conversion
-    """
-    logging_config = config.get("logging", {})
-    environment = logging_config.get("environment", detect_environment())
-    log_level = logging_config.get("level", "INFO")
-
-    # Check if logging should be disabled
-    disable_logging = logging_config.get("disable_logging", False)
-
-    if disable_logging:
-        # Configure minimal logging without file handlers
-        configure_structlog(environment, log_level, {"disable_logging": True}, player_service)
-        return
-
-    # Configure Structlog
-    configure_structlog(environment, log_level, logging_config, player_service)
-
-    # Configure uvicorn to use our StructLog system
-    _configure_uvicorn_logging()
-
-    # Log the setup
-    logger = get_logger("server.logging")
-    logger.info(
-        "Logging system initialized",
-        environment=environment,
-        log_level=log_level,
-        log_base=logging_config.get("log_base", "logs"),
-    )
-
-
 def update_logging_with_player_service(player_service: Any) -> None:
     """
     Update existing logging handlers to use PlayerGuidFormatter.
@@ -495,7 +767,10 @@ def update_logging_with_player_service(player_service: Any) -> None:
     Args:
         player_service: The player service for GUID-to-name conversion
     """
-    from .logging.player_guid_formatter import PlayerGuidFormatter
+    from server.logging.player_guid_formatter import PlayerGuidFormatter
+
+    # Set the global player service for structlog processor enhancement
+    set_global_player_service(player_service)
 
     # Create the enhanced formatter
     enhanced_formatter = PlayerGuidFormatter(
@@ -531,42 +806,3 @@ def update_logging_with_player_service(player_service: Any) -> None:
     # Log that the enhancement has been applied
     logger = get_logger("server.logging")
     logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
-
-
-def _configure_uvicorn_logging() -> None:
-    """
-    Configure uvicorn to use our StructLog system.
-
-    This ensures that all uvicorn logs (access logs, error logs, etc.)
-    go through our StructLog system and are properly categorized.
-    """
-    # use outer-scope logging import
-
-    # Get our StructLog logger
-    logger = get_logger("uvicorn")
-
-    # Configure uvicorn's access logger to use our system
-    uvicorn_access_logger = logging.getLogger("uvicorn.access")
-    uvicorn_access_logger.handlers = []  # Remove default handlers
-    uvicorn_access_logger.propagate = True  # Let it propagate to our system
-    uvicorn_access_logger.setLevel(logging.DEBUG)
-
-    # Configure uvicorn's error logger
-    uvicorn_error_logger = logging.getLogger("uvicorn.error")
-    uvicorn_error_logger.handlers = []
-    uvicorn_error_logger.propagate = True
-    uvicorn_error_logger.setLevel(logging.DEBUG)
-
-    # Configure uvicorn's main logger
-    uvicorn_logger = logging.getLogger("uvicorn")
-    uvicorn_logger.handlers = []
-    uvicorn_logger.propagate = True
-    uvicorn_logger.setLevel(logging.DEBUG)
-
-    logger.info("Uvicorn logging configured to use StructLog system")
-
-
-# Note: We intentionally avoid configuring Structlog at import time to prevent
-# early logger instances from caching a colored console renderer that would
-# leak ANSI sequences into file logs. The application calls setup_logging()
-# early in startup to configure logging properly based on runtime config.

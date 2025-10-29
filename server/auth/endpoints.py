@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
@@ -104,13 +104,13 @@ async def register_user(
         context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
 
-    logger.info(f"Registration attempt for username: {user_create.username}")
+    logger.info("Registration attempt", username=user_create.username)
 
     # Generate unique bogus email if not provided
     if not user_create.email:
         # Use a simple email format to avoid the complex generation
         user_create.email = f"{user_create.username}@wolfshade.org"
-        logger.info(f"Generated simple bogus email for {user_create.username}: {user_create.email}")
+        logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
 
     # Validate invite code (but don't use it yet)
     if user_create.invite_code:
@@ -196,13 +196,13 @@ async def register_user(
         lifetime_seconds=3600,  # 1 hour
     )
 
-    logger.debug(f"JWT token generated for user {user.username}")
-    logger.debug(f"JWT data: {data}")
-    logger.debug(f"JWT secret: {jwt_secret}")
-    logger.debug(f"JWT token preview: {access_token[:50]}...")
+    logger.debug("JWT token generated for user", username=user.username)
+    logger.debug("JWT data", data=data)
+    logger.debug("JWT secret", jwt_secret=jwt_secret)
+    logger.debug("JWT token preview", token_preview=access_token[:50])
 
     # Newly registered users don't have characters yet
-    logger.info(f"Registration successful for user {user.username}, has_character: False")
+    logger.info("Registration successful for user", username=user.username, has_character=False)
 
     return LoginResponse(
         access_token=access_token,
@@ -234,7 +234,7 @@ async def login_user(
         context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
 
-    logger.info(f"Login attempt for username: {request.username}")
+    logger.info("Login attempt", username=request.username)
 
     from sqlalchemy import select
 
@@ -243,10 +243,10 @@ async def login_user(
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
 
-    logger.info(f"User lookup result: {user}")
+    logger.info("User lookup result", user=user)
 
     if not user:
-        logger.info(f"User not found: {request.username}")
+        logger.info("User not found", username=request.username)
         context = create_context_from_request(http_request)
         context.metadata["username"] = request.username
         context.metadata["operation"] = "login_user"
@@ -257,7 +257,7 @@ async def login_user(
         # Get the user's email for FastAPI Users authentication
         user_email = user.email
         if not user_email:
-            logger.error(f"User {request.username} has no email address")
+            logger.error("User has no email address", username=request.username)
             context = create_context_from_request(http_request)
             context.metadata["username"] = request.username
             context.metadata["user_id"] = str(user.id)
@@ -288,7 +288,7 @@ async def login_user(
 
         # Verify we got the same user back
         if authenticated_user.id != user.id:
-            logger.error(f"User ID mismatch: expected {user.id}, got {authenticated_user.id}")
+            logger.error("User ID mismatch", expected_id=user.id, got_id=authenticated_user.id)
             context = create_context_from_request(http_request)
             context.metadata["username"] = request.username
             context.metadata["expected_user_id"] = str(user.id)
@@ -296,7 +296,7 @@ async def login_user(
             context.metadata["operation"] = "login_user"
             raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
     except Exception as e:
-        logger.error(f"Authentication failed: {str(e)}")
+        logger.error("Authentication failed", error=str(e))
         context = create_context_from_request(http_request)
         context.metadata["username"] = request.username
         context.metadata["operation"] = "login_user"
@@ -348,7 +348,7 @@ async def login_user(
                 f"Login session management failed for player {player.player_id}: {session_results['errors']}"
             )
 
-    logger.info(f"Login successful for user {user.username}, has_character: {has_character}")
+    logger.info("Login successful for user", username=user.username, has_character=has_character)
 
     return LoginResponse(
         access_token=access_token,

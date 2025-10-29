@@ -9,7 +9,7 @@ from argon2 import PasswordHasher, exceptions
 from argon2.exceptions import VerificationError
 
 from ..exceptions import AuthenticationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)

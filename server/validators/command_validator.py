@@ -11,7 +11,7 @@ AI: Multiple layers of validation prevent command injection and other attacks.
 
 import re
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .security_validator import INJECTION_PATTERNS, comprehensive_sanitize_input
 
 logger = get_logger(__name__)

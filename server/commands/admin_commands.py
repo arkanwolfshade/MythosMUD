@@ -11,7 +11,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..logging.admin_actions_logger import get_admin_actions_logger
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..realtime.websocket_handler import broadcast_room_update
 from ..utils.command_parser import get_username_from_user
 
@@ -34,7 +34,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
     """
     try:
         if not player:
-            logger.warning(f"Admin permission check failed - no player object for {player_name}")
+            logger.warning("Admin permission check failed - no player object", player_name=player_name)
 
             # Log the failed permission check
             admin_logger = get_admin_actions_logger()
@@ -51,11 +51,13 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             # Determine the specific reason for failure
             if not hasattr(player, "is_admin"):
                 error_msg = "No is_admin attribute"
-                logger.warning(f"Admin permission check failed - player {player_name} has no is_admin attribute")
+                logger.warning(
+                    "Admin permission check failed - player has no is_admin attribute", player_name=player_name
+                )
                 additional_data = {"error": error_msg, "player_type": type(player).__name__}
             else:
                 error_msg = f"is_admin value: {player.is_admin}"
-                logger.info(f"Admin permission denied for {player_name} - {error_msg}")
+                logger.info("Admin permission denied", player_name=player_name, error_msg=error_msg)
                 additional_data = {"player_type": type(player).__name__, "is_admin_value": player.is_admin}
 
             # Log the failed permission check
@@ -77,11 +79,11 @@ async def validate_admin_permission(player, player_name: str) -> bool:
             additional_data={"player_type": type(player).__name__, "is_admin_value": player.is_admin},
         )
 
-        logger.info(f"Admin permission granted for {player_name} - is_admin value: {player.is_admin}")
+        logger.info("Admin permission granted", player_name=player_name, is_admin_value=player.is_admin)
         return True
 
     except Exception as e:
-        logger.error(f"Error checking admin permissions for {player_name}: {str(e)}")
+        logger.error("Error checking admin permissions", player_name=player_name, error=str(e))
 
         # Log the failed permission check
         try:
@@ -93,7 +95,7 @@ async def validate_admin_permission(player, player_name: str) -> bool:
                 additional_data={"error": str(e), "player_type": type(player).__name__ if player else "None"},
             )
         except Exception as log_error:
-            logger.error(f"Failed to log permission check error: {str(log_error)}")
+            logger.error("Failed to log permission check error", error=str(log_error))
 
         return False
 
@@ -165,10 +167,12 @@ async def broadcast_teleport_effects(
             # Broadcast arrival effect to destination room
             await connection_manager.broadcast_to_room(to_room_id, arrival_message, exclude_player=player_name)
 
-        logger.debug(f"Teleport effects broadcast for {player_name} from {from_room_id} to {to_room_id}")
+        logger.debug(
+            "Teleport effects broadcast", player_name=player_name, from_room_id=from_room_id, to_room_id=to_room_id
+        )
 
     except Exception as e:
-        logger.error(f"Failed to broadcast teleport effects for {player_name}: {str(e)}")
+        logger.error("Failed to broadcast teleport effects", player_name=player_name, error=str(e))
 
 
 async def notify_player_of_teleport(
@@ -196,10 +200,10 @@ async def notify_player_of_teleport(
             if player_id and hasattr(connection_manager, "send_to_player"):
                 await connection_manager.send_to_player(player_id, message)
 
-        logger.debug(f"Teleport notification sent to {target_player_name} by {admin_name}")
+        logger.debug("Teleport notification sent", target_player_name=target_player_name, admin_name=admin_name)
 
     except Exception as e:
-        logger.error(f"Failed to notify {target_player_name} of teleport: {str(e)}")
+        logger.error("Failed to notify player of teleport", target_player_name=target_player_name, error=str(e))
 
 
 # --- Mute Command Handlers ---
@@ -221,13 +225,13 @@ async def handle_mute_command(
     Returns:
         dict: Mute command result
     """
-    logger.debug(f"Processing mute command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing mute command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Mute command failed - no user manager for {player_name}")
+        logger.warning("Mute command failed - no user manager", player_name=player_name)
         return {"result": "Mute functionality is not available."}
 
     # Extract target player and duration from command_data
@@ -237,7 +241,7 @@ async def handle_mute_command(
 
     if not target_player:
         # If target player is not in command_data, this is a validation issue
-        logger.warning(f"Mute command with no target player for {player_name}, command_data: {command_data}")
+        logger.warning("Mute command with no target player", player_name=player_name, command_data=command_data)
         return {"result": "Usage: mute <player_name> [duration_in_minutes]"}
 
     duration = int(duration_minutes) if duration_minutes else None  # None means permanent
@@ -269,13 +273,18 @@ async def handle_mute_command(
         )
         if success:
             duration_text = f"for {duration} minutes" if duration else "permanently"
-            logger.info(f"Player muted successfully - {player_name} muted {target_player} for {duration_text}")
+            logger.info(
+                "Player muted successfully",
+                admin_name=player_name,
+                target_player=target_player,
+                duration_text=duration_text,
+            )
             return {"result": f"You have muted {target_player} {duration_text}."}
         else:
-            logger.warning(f"Mute command failed - {player_name} tried to mute {target_player}")
+            logger.warning("Mute command failed", admin_name=player_name, target_player=target_player)
             return {"result": f"Failed to mute {target_player}."}
     except Exception as e:
-        logger.error(f"Mute command error - {player_name} tried to mute {target_player}: {str(e)}")
+        logger.error("Mute command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error muting {target_player}: {str(e)}"}
 
 
@@ -295,13 +304,13 @@ async def handle_unmute_command(
     Returns:
         dict: Unmute command result
     """
-    logger.debug(f"Processing unmute command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing unmute command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Unmute command failed - no user manager for {player_name}")
+        logger.warning("Unmute command failed - no user manager", player_name=player_name)
         return {"result": "Unmute functionality is not available."}
 
     # Extract target player from command_data
@@ -309,7 +318,7 @@ async def handle_unmute_command(
 
     if not target_player:
         # If target player is not in command_data, this is a validation issue
-        logger.warning(f"Unmute command with no target player for {player_name}, command_data: {command_data}")
+        logger.warning("Unmute command with no target player", player_name=player_name, command_data=command_data)
         return {"result": "Usage: unmute <player_name>"}
 
     try:
@@ -336,13 +345,13 @@ async def handle_unmute_command(
             target_name=target_player,
         )
         if success:
-            logger.info(f"Player unmuted successfully - {player_name} unmuted {target_player}")
+            logger.info("Player unmuted successfully", admin_name=player_name, target_player=target_player)
             return {"result": f"You have unmuted {target_player}."}
         else:
-            logger.warning(f"Unmute command failed - {player_name} tried to unmute {target_player}")
+            logger.warning("Unmute command failed", admin_name=player_name, target_player=target_player)
             return {"result": f"Failed to unmute {target_player}."}
     except Exception as e:
-        logger.error(f"Unmute command error - {player_name} tried to unmute {target_player}: {str(e)}")
+        logger.error("Unmute command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error unmuting {target_player}: {str(e)}"}
 
 
@@ -362,25 +371,25 @@ async def handle_mute_global_command(
     Returns:
         dict: Mute global command result
     """
-    logger.debug(f"Processing mute_global command for {player_name} with args: {args}")
+    logger.debug("Processing mute_global command", player_name=player_name, args=args)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Mute global command failed - no user manager for {player_name}")
+        logger.warning("Mute global command failed - no user manager", player_name=player_name)
         return {"result": "Global mute functionality is not available."}
 
     try:
         success = user_manager.mute_global(get_username_from_user(current_user))
         if success:
-            logger.info(f"Global mute activated by {player_name}")
+            logger.info("Global mute activated", admin_name=player_name)
             return {"result": "Global mute has been activated."}
         else:
-            logger.warning(f"Global mute command failed for {player_name}")
+            logger.warning("Global mute command failed", player_name=player_name)
             return {"result": "Failed to activate global mute."}
     except Exception as e:
-        logger.error(f"Global mute command error for {player_name}: {str(e)}")
+        logger.error("Global mute command error", player_name=player_name, error=str(e))
         return {"result": f"Error activating global mute: {str(e)}"}
 
 
@@ -400,25 +409,25 @@ async def handle_unmute_global_command(
     Returns:
         dict: Unmute global command result
     """
-    logger.debug(f"Processing unmute_global command for {player_name} with args: {args}")
+    logger.debug("Processing unmute_global command", player_name=player_name, args=args)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Unmute global command failed - no user manager for {player_name}")
+        logger.warning("Unmute global command failed - no user manager", player_name=player_name)
         return {"result": "Global unmute functionality is not available."}
 
     try:
         success = user_manager.unmute_global(get_username_from_user(current_user))
         if success:
-            logger.info(f"Global mute deactivated by {player_name}")
+            logger.info("Global mute deactivated", admin_name=player_name)
             return {"result": "Global mute has been deactivated."}
         else:
-            logger.warning(f"Global unmute command failed for {player_name}")
+            logger.warning("Global unmute command failed", player_name=player_name)
             return {"result": "Failed to deactivate global mute."}
     except Exception as e:
-        logger.error(f"Global unmute command error for {player_name}: {str(e)}")
+        logger.error("Global unmute command error", player_name=player_name, error=str(e))
         return {"result": f"Error deactivating global mute: {str(e)}"}
 
 
@@ -438,17 +447,17 @@ async def handle_add_admin_command(
     Returns:
         dict: Add admin command result
     """
-    logger.debug(f"Processing add_admin command for {player_name} with args: {args}")
+    logger.debug("Processing add_admin command", player_name=player_name, args=args)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Add admin command failed - no user manager for {player_name}")
+        logger.warning("Add admin command failed - no user manager", player_name=player_name)
         return {"result": "Admin management is not available."}
 
     if len(args) < 1:
-        logger.warning(f"Add admin command with insufficient arguments for {player_name}, args: {args}")
+        logger.warning("Add admin command with insufficient arguments", player_name=player_name, args=args)
         return {"result": "Usage: add_admin <player_name>"}
 
     target_player = args[0]
@@ -456,13 +465,13 @@ async def handle_add_admin_command(
     try:
         success = user_manager.add_admin(target_player, get_username_from_user(current_user))
         if success:
-            logger.info(f"Admin added successfully - {player_name} added {target_player}")
+            logger.info("Admin added successfully", admin_name=player_name, target_player=target_player)
             return {"result": f"{target_player} has been granted administrator privileges."}
         else:
-            logger.warning(f"Add admin command failed - {player_name} tried to add {target_player}")
+            logger.warning("Add admin command failed", admin_name=player_name, target_player=target_player)
             return {"result": f"Failed to grant administrator privileges to {target_player}."}
     except Exception as e:
-        logger.error(f"Add admin command error - {player_name} tried to add {target_player}: {str(e)}")
+        logger.error("Add admin command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error granting administrator privileges: {str(e)}"}
 
 
@@ -482,13 +491,13 @@ async def handle_mutes_command(
     Returns:
         dict: Mutes command result
     """
-    logger.debug(f"Processing mutes command for {player_name} with args: {args}")
+    logger.debug("Processing mutes command", player_name=player_name, args=args)
 
     app = request.app if request else None
     user_manager = app.state.user_manager if app else None
 
     if not user_manager:
-        logger.warning(f"Mutes command failed - no user manager for {player_name}")
+        logger.warning("Mutes command failed - no user manager", player_name=player_name)
         return {"result": "Mute information is not available."}
 
     try:
@@ -502,13 +511,13 @@ async def handle_mutes_command(
                     mute_list.append(f"{mute['target_player']} (permanent)")
 
             result = "Current mutes:\n" + "\n".join(mute_list)
-            logger.debug(f"Mutes listed successfully for {player_name}, count: {len(mutes)}")
+            logger.debug("Mutes listed successfully", player_name=player_name, count=len(mutes))
             return {"result": result}
         else:
-            logger.debug(f"No mutes found for {player_name}")
+            logger.debug("No mutes found", player_name=player_name)
             return {"result": "No active mutes found."}
     except Exception as e:
-        logger.error(f"Mutes command error for {player_name}: {str(e)}")
+        logger.error("Mutes command error", player_name=player_name, error=str(e))
         return {"result": f"Error retrieving mute information: {str(e)}"}
 
 
@@ -531,24 +540,24 @@ async def handle_teleport_command(
     Returns:
         dict: Teleport command result
     """
-    logger.debug(f"Processing teleport command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing teleport command", player_name=player_name, command_data=command_data)
 
     try:
         app = request.app if request else None
         if not app:
-            logger.warning(f"Teleport command failed - no app context for {player_name}")
+            logger.warning("Teleport command failed - no app context", player_name=player_name)
             return {"result": "Teleport functionality is not available."}
 
         # Get player service
         player_service = app.state.player_service if app else None
         if not player_service:
-            logger.warning(f"Teleport command failed - no player service for {player_name}")
+            logger.warning("Teleport command failed - no player service", player_name=player_name)
             return {"result": "Player service not available."}
 
         # Get current player and validate admin permissions
         current_player = player_service.get_player_by_name(player_name)
         if not current_player:
-            logger.warning(f"Teleport command failed - current player not found for {player_name}")
+            logger.warning("Teleport command failed - current player not found", player_name=player_name)
             return {"result": "Player not found."}
 
         is_admin = await validate_admin_permission(current_player, player_name)
@@ -563,7 +572,7 @@ async def handle_teleport_command(
         # Get connection manager
         connection_manager = app.state.connection_manager if app else None
         if not connection_manager:
-            logger.warning(f"Teleport command failed - no connection manager for {player_name}")
+            logger.warning("Teleport command failed - no connection manager", player_name=player_name)
             return {"result": "Connection manager not available."}
 
         # Find target player online
@@ -574,7 +583,9 @@ async def handle_teleport_command(
         # Get target player object
         target_player = player_service.get_player_by_name(target_player_name)
         if not target_player:
-            logger.warning(f"Teleport command failed - target player not found in database: {target_player_name}")
+            logger.warning(
+                "Teleport command failed - target player not found in database", target_player_name=target_player_name
+            )
             return {"result": f"Player '{target_player_name}' not found in database."}
 
         # Check if target is already in the same room
@@ -592,7 +603,7 @@ async def handle_teleport_command(
             # Update target player's location using PlayerService
             success = player_service.update_player_location(target_player_name, target_room_id)
             if not success:
-                logger.error(f"Failed to update target player location: {target_player_name}")
+                logger.error("Failed to update target player location", target_player_name=target_player_name)
                 return {"result": f"Failed to teleport {target_player_name}: database update failed."}
 
             # Update connection manager's online player info
@@ -647,10 +658,12 @@ async def handle_teleport_command(
                 },
             )
 
-            logger.error(f"Teleport execution failed - {player_name} tried to teleport {target_player_name}: {str(e)}")
+            logger.error(
+                "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
+            )
             return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
     except Exception as e:
-        logger.error(f"Exception in teleport command handler: {str(e)}", exc_info=True)
+        logger.error("Exception in teleport command handler", error=str(e), exc_info=True)
         return {"result": f"Error processing teleport command: {str(e)}"}
 
 
@@ -670,23 +683,23 @@ async def handle_goto_command(
     Returns:
         dict: Goto command result
     """
-    logger.debug(f"Processing goto command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing goto command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     if not app:
-        logger.warning(f"Goto command failed - no app context for {player_name}")
+        logger.warning("Goto command failed - no app context", player_name=player_name)
         return {"result": "Goto functionality is not available."}
 
     # Get player service
     player_service = app.state.player_service if app else None
     if not player_service:
-        logger.warning(f"Goto command failed - no player service for {player_name}")
+        logger.warning("Goto command failed - no player service", player_name=player_name)
         return {"result": "Player service not available."}
 
     # Get current player and validate admin permissions
     current_player = player_service.get_player_by_name(player_name)
     if not current_player:
-        logger.warning(f"Goto command failed - current player not found for {player_name}")
+        logger.warning("Goto command failed - current player not found", player_name=player_name)
         return {"result": "Player not found."}
 
     is_admin = await validate_admin_permission(current_player, player_name)
@@ -701,7 +714,7 @@ async def handle_goto_command(
     # Get connection manager
     connection_manager = app.state.connection_manager if app else None
     if not connection_manager:
-        logger.warning(f"Goto command failed - no connection manager for {player_name}")
+        logger.warning("Goto command failed - no connection manager", player_name=player_name)
         return {"result": "Connection manager not available."}
 
     # Find target player online
@@ -712,7 +725,9 @@ async def handle_goto_command(
     # Get target player object
     target_player = player_service.get_player_by_name(target_player_name)
     if not target_player:
-        logger.warning(f"Goto command failed - target player not found in database: {target_player_name}")
+        logger.warning(
+            "Goto command failed - target player not found in database", target_player_name=target_player_name
+        )
         return {"result": f"Player '{target_player_name}' not found in database."}
 
     # Check if admin is already in the same room
@@ -728,7 +743,7 @@ async def handle_goto_command(
         # Update admin player's location using PlayerService
         success = player_service.update_player_location(player_name, target_room_id)
         if not success:
-            logger.error(f"Failed to update admin player location: {player_name}")
+            logger.error("Failed to update admin player location", player_name=player_name)
             return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
 
         # Update connection manager's online player info for admin
@@ -779,7 +794,9 @@ async def handle_goto_command(
             },
         )
 
-        logger.error(f"Goto execution failed - {player_name} tried to goto {target_player_name}: {str(e)}")
+        logger.error(
+            "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
+        )
         return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
 
 
@@ -799,23 +816,23 @@ async def handle_confirm_teleport_command(
     Returns:
         dict: Teleport confirmation result
     """
-    logger.debug(f"Processing confirm teleport command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing confirm teleport command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     if not app:
-        logger.warning(f"Confirm teleport command failed - no app context for {player_name}")
+        logger.warning("Confirm teleport command failed - no app context", player_name=player_name)
         return {"result": "Teleport functionality is not available."}
 
     # Get player service
     player_service = app.state.player_service if app else None
     if not player_service:
-        logger.warning(f"Confirm teleport command failed - no player service for {player_name}")
+        logger.warning("Confirm teleport command failed - no player service", player_name=player_name)
         return {"result": "Player service not available."}
 
     # Get current player and validate admin permissions
     current_player = player_service.get_player_by_name(player_name)
     if not current_player:
-        logger.warning(f"Confirm teleport command failed - current player not found for {player_name}")
+        logger.warning("Confirm teleport command failed - current player not found", player_name=player_name)
         return {"result": "Player not found."}
 
     is_admin = await validate_admin_permission(current_player, player_name)
@@ -830,7 +847,7 @@ async def handle_confirm_teleport_command(
     # Get connection manager
     connection_manager = app.state.connection_manager if app else None
     if not connection_manager:
-        logger.warning(f"Confirm teleport command failed - no connection manager for {player_name}")
+        logger.warning("Confirm teleport command failed - no connection manager", player_name=player_name)
         return {"result": "Connection manager not available."}
 
     # Find target player online
@@ -841,7 +858,10 @@ async def handle_confirm_teleport_command(
     # Get target player object
     target_player = player_service.get_player_by_name(target_player_name)
     if not target_player:
-        logger.warning(f"Confirm teleport command failed - target player not found in database: {target_player_name}")
+        logger.warning(
+            "Confirm teleport command failed - target player not found in database",
+            target_player_name=target_player_name,
+        )
         return {"result": f"Player '{target_player_name}' not found in database."}
 
     # Check if target is already in the same room
@@ -856,7 +876,7 @@ async def handle_confirm_teleport_command(
         # Update target player's location using PlayerService
         success = player_service.update_player_location(target_player_name, target_room_id)
         if not success:
-            logger.error(f"Failed to update target player location: {target_player_name}")
+            logger.error("Failed to update target player location", target_player_name=target_player_name)
             return {"result": f"Failed to teleport {target_player_name}: database update failed."}
 
         # Update connection manager's online player info
@@ -911,7 +931,9 @@ async def handle_confirm_teleport_command(
             },
         )
 
-        logger.error(f"Teleport execution failed - {player_name} tried to teleport {target_player_name}: {str(e)}")
+        logger.error(
+            "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
+        )
         return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
 
 
@@ -931,23 +953,23 @@ async def handle_confirm_goto_command(
     Returns:
         dict: Goto confirmation result
     """
-    logger.debug(f"Processing confirm goto command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing confirm goto command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     if not app:
-        logger.warning(f"Confirm goto command failed - no app context for {player_name}")
+        logger.warning("Confirm goto command failed - no app context", player_name=player_name)
         return {"result": "Goto functionality is not available."}
 
     # Get player service
     player_service = app.state.player_service if app else None
     if not player_service:
-        logger.warning(f"Confirm goto command failed - no player service for {player_name}")
+        logger.warning("Confirm goto command failed - no player service", player_name=player_name)
         return {"result": "Player service not available."}
 
     # Get current player and validate admin permissions
     current_player = player_service.get_player_by_name(player_name)
     if not current_player:
-        logger.warning(f"Confirm goto command failed - current player not found for {player_name}")
+        logger.warning("Confirm goto command failed - current player not found", player_name=player_name)
         return {"result": "Player not found."}
 
     is_admin = await validate_admin_permission(current_player, player_name)
@@ -962,7 +984,7 @@ async def handle_confirm_goto_command(
     # Get connection manager
     connection_manager = app.state.connection_manager if app else None
     if not connection_manager:
-        logger.warning(f"Confirm goto command failed - no connection manager for {player_name}")
+        logger.warning("Confirm goto command failed - no connection manager", player_name=player_name)
         return {"result": "Connection manager not available."}
 
     # Find target player online
@@ -973,7 +995,9 @@ async def handle_confirm_goto_command(
     # Get target player object
     target_player = player_service.get_player_by_name(target_player_name)
     if not target_player:
-        logger.warning(f"Confirm goto command failed - target player not found in database: {target_player_name}")
+        logger.warning(
+            "Confirm goto command failed - target player not found in database", target_player_name=target_player_name
+        )
         return {"result": f"Player '{target_player_name}' not found in database."}
 
     # Check if admin is already in the same room
@@ -988,7 +1012,7 @@ async def handle_confirm_goto_command(
         # Update admin player's location using PlayerService
         success = player_service.update_player_location(player_name, target_room_id)
         if not success:
-            logger.error(f"Failed to update admin player location: {player_name}")
+            logger.error("Failed to update admin player location", player_name=player_name)
             return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
 
         # Update connection manager's online player info for admin
@@ -1039,5 +1063,7 @@ async def handle_confirm_goto_command(
             },
         )
 
-        logger.error(f"Goto execution failed - {player_name} tried to goto {target_player_name}: {str(e)}")
+        logger.error(
+            "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
+        )
         return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}

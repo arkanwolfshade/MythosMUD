@@ -46,7 +46,7 @@ class TestJWTAuthenticationFlow:
 
         # Step 3: Test the token with the stats rolling endpoint
         stats_response = test_client.post(
-            "/players/roll-stats",
+            "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
         )
@@ -73,7 +73,7 @@ class TestJWTAuthenticationFlow:
     def test_authentication_without_token_fails(self, test_client):
         """Test that stats rolling fails without authentication token."""
         stats_response = test_client.post(
-            "/players/roll-stats", headers={"Content-Type": "application/json"}, json={"method": "3d6"}
+            "/api/players/roll-stats", headers={"Content-Type": "application/json"}, json={"method": "3d6"}
         )
 
         assert stats_response.status_code == 401
@@ -83,7 +83,7 @@ class TestJWTAuthenticationFlow:
     def test_authentication_with_invalid_token_fails(self, test_client):
         """Test that stats rolling fails with invalid authentication token."""
         stats_response = test_client.post(
-            "/players/roll-stats",
+            "/api/players/roll-stats",
             headers={"Authorization": "Bearer invalid-token", "Content-Type": "application/json"},
             json={"method": "3d6"},
         )
@@ -116,7 +116,7 @@ class TestJWTAuthenticationFlow:
         # Test the login token with stats rolling
         token = login_data["access_token"]
         stats_response = test_client.post(
-            "/players/roll-stats",
+            "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
         )

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
-import { MotdContent } from './MotdContent';
 import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
@@ -102,7 +101,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
   onClearMessages,
   onClearHistory,
 }) => {
-  const [showMotd, setShowMotd] = useState(true);
+  // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminalPresentation');
 
   // Responsive panel sizing based on viewport
@@ -151,22 +150,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
         </div>
       </div>
 
-      {/* MOTD Overlay (preserved styles) */}
-      {showMotd && (
-        <div
-          className="motd-display"
-          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100000 }}
-        >
-          <div className="motd-content">
-            <MotdContent />
-          </div>
-          <div className="motd-actions">
-            <button className="continue-button" onClick={() => setShowMotd(false)}>
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
+      {/* MOTD is now handled by the interstitial screen in App.tsx */}
 
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">
@@ -367,14 +351,6 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
                   </div>
                 </>
               )}
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Messages:</span>
-                <span className="text-base text-mythos-terminal-text">{messages.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Commands:</span>
-                <span className="text-base text-mythos-terminal-text">{commandHistory.length}</span>
-              </div>
             </div>
           </DraggablePanel>
         </div>

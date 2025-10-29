@@ -10,7 +10,7 @@ import asyncio
 from collections.abc import Awaitable
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger("server.task_registry")
 
@@ -76,11 +76,11 @@ class TaskRegistry:
             The created asyncio.Task that is now tracked
         """
         if self._shutdown_in_progress:
-            logger.warning(f"Attempting to register task '{task_name}' during shutdown - denied")
+            logger.warning("Attempting to register task during shutdown - denied", task_name=task_name)
             raise RuntimeError("Task registration denied during shutdown")
 
         if task_name in self._task_names:
-            logger.debug(f"Warning: Task name '{task_name}' already exists, appending timestamp")
+            logger.debug("Warning: Task name already exists, appending timestamp", task_name=task_name)
             task_name = f"{task_name}_{asyncio.get_event_loop().time()}"
 
         try:
@@ -105,17 +105,17 @@ class TaskRegistry:
                         self._lifecycle_tasks.discard(completed_task)
                     if task_name in self._task_names and self._task_names[task_name] == completed_task:
                         del self._task_names[task_name]
-                    logger.debug(f"Task '{task_name}' completed and cleaned up")
+                    logger.debug("Task completed and cleaned up", task_name=task_name)
                 except Exception as e:
-                    logger.error(f"Error during task completion cleanup for '{task_name}': {e}")
+                    logger.error("Error during task completion cleanup", task_name=task_name, error=str(e))
 
             task.add_done_callback(task_completion_callback)
 
-            logger.debug(f"Registered task: {task_name} (type: {task_type})")
+            logger.debug("Registered task", task_name=task_name, task_type=task_type)
             return task
 
         except Exception as e:
-            logger.error(f"Failed to register task '{task_name}': {e}")
+            logger.error("Failed to register task", task_name=task_name, error=str(e))
             raise RuntimeError(f"Task registration failed for {task_name}") from e
 
     def unregister_task(self, task: str | asyncio.Task[Any]) -> bool:
@@ -133,7 +133,7 @@ class TaskRegistry:
             target_task = task
             if isinstance(task, str):
                 if task not in self._task_names:
-                    logger.warning(f"Task '{task}' not found in registry")
+                    logger.warning("Task not found in registry", task=task)
                     return False
                 target_task = self._task_names[task]
             elif task not in self._active_tasks:
@@ -151,13 +151,13 @@ class TaskRegistry:
                 if target_task in self._lifecycle_tasks:
                     self._lifecycle_tasks.discard(target_task)
 
-                logger.debug(f"Registered task {task_name} unregistered successfully")
+                logger.debug("Registered task unregistered successfully", task_name=task_name)
                 return True
             else:
                 return False
 
         except Exception as e:
-            logger.error(f"Task unregistration error: {e}")
+            logger.error("Task unregistration error", error=str(e))
             return False
 
     async def cancel_task(self, task: str | asyncio.Task[Any], wait_timeout: float = 2.0) -> bool:
@@ -176,7 +176,7 @@ class TaskRegistry:
             target_task = task
             if isinstance(task, str):
                 if task not in self._task_names:
-                    logger.debug(f"Cancellation target '{task}' not found")
+                    logger.debug("Cancellation target not found", task=task)
                     return False
                 target_task = self._task_names[task]
             elif target_task not in self._active_tasks:
@@ -189,18 +189,18 @@ class TaskRegistry:
                 try:
                     await asyncio.wait_for(target_task, timeout=wait_timeout)
                 except TimeoutError:
-                    logger.warning(f"Cancellation timeout reached for {target_task}")
+                    logger.warning("Cancellation timeout reached", target_task=target_task)
                     return False
                 except asyncio.CancelledError:
-                    logger.debug(f"Cancelled task successfully: {target_task}")
+                    logger.debug("Cancelled task successfully", target_task=target_task)
                     return True
                 except Exception as e:
-                    logger.error(f"Unexpected task completion error: {e}")
+                    logger.error("Unexpected task completion error", error=str(e))
                     return True
 
             return True  # Task is already done
         except Exception as e:
-            logger.error(f"Task cancellation failed: {e}")
+            logger.error("Task cancellation failed", error=str(e))
             return False
 
     async def shutdown_all(self, timeout: float = 5.0) -> bool:
@@ -233,12 +233,12 @@ class TaskRegistry:
             for task in lifecycle_futures:
                 if task in self._active_tasks and not task.done():
                     metadata = self._active_tasks[task]
-                    logger.info(f"Phase 1: Cancelling lifecycle task {metadata.task_name}")
+                    logger.info("Phase 1: Cancelling lifecycle task", task_name=metadata.task_name)
                     try:
                         task.cancel()
                         cancelled_count += 1
                     except Exception as e:
-                        logger.error(f"Cancel lifecycle failed {metadata.task_name}: {e}")
+                        logger.error("Cancel lifecycle failed", task_name=metadata.task_name, error=str(e))
 
             # Phase 2: Cancel remaining active tasks
             active_futures = list(self._active_tasks.keys())
@@ -249,9 +249,9 @@ class TaskRegistry:
                         task.cancel()
                         cancelled_count += 1
                     except Exception as e:
-                        logger.error(f"Cancel task failed {metadata.task_name}: {e}")
+                        logger.error("Cancel task failed", task_name=metadata.task_name, error=str(e))
 
-            logger.info(f"Cancelled {cancelled_count} active tasks - awaiting completion")
+            logger.info("Cancelled active tasks - awaiting completion", cancelled_count=cancelled_count)
 
             # Wait for completion with timeout boundary
             await asyncio.wait_for(asyncio.gather(*self._active_tasks.keys(), return_exceptions=True), timeout)
@@ -262,10 +262,10 @@ class TaskRegistry:
             if success:
                 logger.info("Successful shutdown - all tasks terminated gracefully")
             else:
-                logger.error(f"Shutdown timeout - {remaining} tasks still active")
+                logger.error("Shutdown timeout - tasks still active", remaining=remaining)
 
         except TimeoutError:
-            logger.error(f"TaskRegistry shutdown timeout after {timeout}sec - forcible cleanup")
+            logger.error("TaskRegistry shutdown timeout - forcible cleanup", timeout=timeout)
             # Final sweep to cancel any lingering tasks that didn't respond to gracelful cancellation
             final_cancelled = 0
             for task in list(self._active_tasks.keys()):
@@ -274,10 +274,10 @@ class TaskRegistry:
                         task.cancel()  # Forcible cancel
                         final_cancelled += 1
                 except Exception as e:
-                    logger.error(f"Forcible cancellation error: {e}")
-            logger.info(f"Forcibly cancelled {final_cancelled} remaining tasks")
+                    logger.error("Forcible cancellation error", error=str(e))
+            logger.info("Forcibly cancelled remaining tasks", final_cancelled=final_cancelled)
         except Exception as e:
-            logger.error(f"Critical shutdown coordination error: {e}", exc_info=True)
+            logger.error("Critical shutdown coordination error", error=str(e), exc_info=True)
             success = False
         finally:
             # Emptify active collections after final shutdown
@@ -287,7 +287,7 @@ class TaskRegistry:
                         continue  # Might already be collected by gc
                     self.unregister_task(task)
             except Exception as cleanup_e:
-                logger.warning(f"Collection cleanup error ignored: {cleanup_e}")
+                logger.warning("Collection cleanup error ignored", error=str(cleanup_e))
             self._lifecycle_tasks.clear()
 
         self._shutdown_in_progress = False
@@ -296,7 +296,7 @@ class TaskRegistry:
         full_success = len(self._active_tasks) == 0
         if not full_success:
             logger.warning("Cleaned up most tasks, timeout reached")
-            logger.warning(f"Remaining active: {[m.task_name for m in self._active_tasks.values()]}")
+            logger.warning("Remaining active", active_tasks=[m.task_name for m in self._active_tasks.values()])
 
         return full_success
 

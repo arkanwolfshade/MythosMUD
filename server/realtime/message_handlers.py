@@ -9,7 +9,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -47,5 +47,7 @@ async def handle_ping_message(websocket: WebSocket, player_id: str, data: dict[s
     """Handle ping message type."""
     from .envelope import build_event
 
+    logger.debug("🔍 DEBUG: Received ping", player_id=player_id)
     pong_event = build_event("pong", {}, player_id=player_id)
     await websocket.send_json(pong_event)
+    logger.debug("🔍 DEBUG: Sent pong", player_id=player_id)

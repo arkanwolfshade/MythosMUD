@@ -39,41 +39,50 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 - **Audience:** Friends, family, and invited contributors (not public)
 - **Tech Stack:**
   - Frontend: React 19 + TypeScript (Vite 7)
-  - Backend: Python 3.12+ (FastAPI 0.116)
+  - Backend: Python 3.12+ (FastAPI 0.119+)
   - Database: SQLite (MVP) → PostgreSQL (production)
   - Real-time: WebSockets + NATS messaging
   - Authentication: FastAPI Users + Argon2 + JWT
   - Testing: pytest + Playwright + Vitest
+  - Dependency Management: uv for Python, npm for Node.js
+  - Code Quality: ruff (Python linter/formatter), ESLint + Prettier (JavaScript/TypeScript)
 
 ---
 
 ## Current Status
 
-**🟡 Active Development** - Core systems implemented, multiplayer messaging in progress
+**🟢 Beta Development** - Core systems implemented and tested, multiplayer features active
 
 ### ✅ Completed Systems
 
-- **Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing
-- **Real-time Communication** - NATS-based messaging system with WebSocket clients
-- **Player Management** - Character creation, stats generation, and persistence
-- **Room System** - Hierarchical room structure with movement and navigation
-- **Chat System** - Multi-channel communication (say, local, whisper, system)
-- **Command Processing** - Unified command handler with alias system
-- **Database Layer** - SQLite persistence with thread-safe operations
-- **Testing Framework** - Comprehensive test suite with 75%+ coverage
+- **Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
+- **Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
+- **Player Management** - Character creation, stats generation, and persistence with SQLite
+- **Room System** - Hierarchical room structure with movement, navigation, and dynamic descriptions
+- **Chat System** - Multi-channel communication (say, local, whisper, system, emotes)
+- **Command Processing** - Unified command handler with alias system and help system
+- **Admin Tools** - Teleportation, player management, and monitoring commands
+- **NPC System** - Basic NPC spawning, behavior, and combat interactions
+- **Database Layer** - SQLite persistence with thread-safe operations and migration support
+- **Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
+- **Testing Framework** - Comprehensive test suite with 80%+ coverage and 114 automated E2E tests
+- **Security Framework** - Input validation, rate limiting, XSS protection, and COPPA compliance measures
 
 ### 🔄 In Progress
 
-- **Multiplayer Messaging** - Critical messaging system fixes and improvements
-- **Advanced Chat Channels** - Enhanced communication features
+- **Advanced Chat Channels** - Tab-based channel management and filtering
+- **Combat System** - Expanded combat mechanics with sanity effects
 - **Performance Optimization** - Database connection pooling and query optimization
+- **Advanced NPC Behaviors** - Improved AI patterns and dialogue systems
 
 ### 📋 Planned Features
 
-- **Combat System** - Real-time combat with Lovecraftian themes
-- **Magic/Spellcasting** - Spell system with sanity costs
+- **Magic/Spellcasting** - Spell system with sanity costs and eldritch effects
 - **Quest System** - Dynamic quest generation and tracking
-- **NPC System** - Advanced NPC behavior and interactions
+- **Crafting System** - Item crafting and modification
+- **Advanced World Systems** - Dynamic events, weather, and time progression
+- **Player Housing** - Personal spaces and storage systems
+- **Achievement System** - Tracking player accomplishments
 
 ---
 
@@ -90,11 +99,17 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 ### Technical Features
 
 - **Browser Accessible** - No client installation required, runs in modern browsers
-- **Real-time Updates** - WebSocket and Server-Sent Events for instant updates
-- **Secure Authentication** - JWT tokens with Argon2 password hashing
-- **COPPA Compliant** - Privacy-first design for minor users
-- **Comprehensive Testing** - 75%+ test coverage with automated CI/CD
-- **Structured Logging** - AI-optimized logging for monitoring and debugging
+- **Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
+- **Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
+- **COPPA Compliant** - Privacy-first design for minor users with no personal data collection
+- **Comprehensive Testing** - 80%+ test coverage with automated CI/CD and 114 automated E2E tests
+- **Enhanced Structured Logging** - Enterprise-grade logging with:
+  - MDC (Mapped Diagnostic Context) for automatic context propagation
+  - Correlation IDs for request tracing across service boundaries
+  - Automatic security sanitization of sensitive data
+  - Built-in performance monitoring and metrics collection
+  - 100% exception coverage with rich context
+- **Modular Test Framework** - Hierarchical test organization with 210+ test files across unit, integration, E2E, security, and performance categories
 
 ### Security & Privacy
 
@@ -108,13 +123,13 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ## Getting Started
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
+See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
 ### Quickstart
 
 1. **Prerequisites:**
    - Python 3.12+ (managed via pyenv-win recommended)
-   - Node.js 18+ and npm
+   - Node.js 22+ and npm (NVM for Windows recommended)
    - [uv](https://github.com/astral-sh/uv) for Python dependency management
    - Git
 
@@ -205,21 +220,32 @@ MythosMUD/
 │   ├── auth/                  # Authentication system (Argon2, JWT, invites)
 │   ├── api/                   # API endpoints (game, players, rooms, monitoring, admin)
 │   ├── game/                  # Game logic services (chat, movement, stats, character creation)
-│   ├── realtime/              # Real-time communication (WebSockets, NATS, SSE)
+│   ├── realtime/              # Real-time communication (WebSockets, NATS, SSE dual connection)
 │   ├── commands/              # Command processing (admin, alias, chat, help, exploration)
-│   ├── models/                # Data models (player, room, command, chat, user)
+│   ├── models/                # Data models (player, room, command, chat, user, NPC)
 │   ├── services/              # Business logic services (NATS, chat logging, rate limiting)
 │   ├── utils/                 # Utility modules (command parsing, processing)
 │   ├── validators/            # Input validation (command, security)
-│   ├── middleware/            # Request middleware (logging, security headers)
+│   ├── middleware/            # Request middleware (correlation IDs, logging, security headers)
 │   ├── schemas/               # JSON schemas (player, invite, user)
 │   ├── sql/                   # Database schema and migrations
 │   ├── help/                  # Help system (help_content)
 │   ├── events/                # Event system (event_bus, event_types)
-│   ├── app/                   # Application factory (factory, lifespan)
-│   ├── npc/                   # NPC system (behaviors, combat, communication)
-│   ├── logging/               # Logging utilities and formatters
-│   ├── tests/                 # Test suite (comprehensive test coverage)
+│   ├── app/                   # Application factory (factory, lifespan, memory management)
+│   ├── npc/                   # NPC system (behaviors, combat, communication, state machines)
+│   ├── logging/               # Enhanced logging (MDC, correlation IDs, security sanitization)
+│   ├── tests/                 # Hierarchical test suite (210+ test files organized by type)
+│   │   ├── unit/              # Unit tests (130 files, 61.9% of suite)
+│   │   ├── integration/       # Integration tests (30 files, 14.3% of suite)
+│   │   ├── e2e/               # End-to-end tests
+│   │   ├── security/          # Security-specific tests
+│   │   ├── performance/       # Performance and load tests
+│   │   ├── regression/        # Bug fix regression tests
+│   │   ├── monitoring/        # Monitoring and observability tests
+│   │   ├── coverage/          # Coverage improvement tests
+│   │   ├── verification/      # Verification tests
+│   │   ├── fixtures/          # Shared test fixtures
+│   │   └── scripts/           # Test utility scripts
 │   └── [core files]           # Main app, persistence, config, etc.
 │
 ├── data/                      # World data (git submodule)
@@ -325,12 +351,14 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - Automated with GitHub Actions for both backend and frontend
   - Includes CI, CodeQL security analysis, and Semgrep static analysis
 - **Testing:**
-  - Server: pytest with 75%+ coverage target
+  - Server: pytest with 80%+ coverage (target 90%)
   - Client: Vitest for unit tests, Playwright for E2E tests
-  - E2E Automated: 114 automated Playwright CLI tests (10 scenarios)
+  - Test Organization: Hierarchical structure with 210+ test files across 9 categories
+  - E2E Automated: 114 automated Playwright CLI tests (10 scenarios, ~50% faster execution)
   - E2E Manual: 11 multiplayer MCP scenarios requiring AI Agent coordination
   - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
-  - **IMPORTANT**: Run `make setup-test-env` before running server tests
+  - **CRITICAL**: Run `make setup-test-env` before running server tests for the first time
+  - **CRITICAL**: Always use `make test` from project root, NEVER from `/server/` directory
   - See [Test Setup Guide](server/tests/SETUP.md) for detailed setup instructions
 - **Security:**
   - Semgrep static analysis for security vulnerabilities
@@ -346,14 +374,41 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ## Documentation
 
+### Core Documentation
+
 - [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
 - [PLANNING.md](PLANNING.md) — Comprehensive project planning and current status
 - [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
-- [DEVELOPMENT.md](DEVELOPMENT.md) — Dev environment setup with security guidelines
-- [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) — AI agent development guide
-- [Multiplayer Test Rules](e2e-tests/MULTIPLAYER_TEST_RULES.md) — E2E testing framework and scenarios
-- [Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Technical architecture documentation
+
+### Development Guides
+
+- [DEVELOPMENT.md](docs/DEVELOPMENT.md) — Dev environment setup with security guidelines
+- [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
+- [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
+
+### Testing Documentation
+
+- [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) — Comprehensive E2E testing documentation
+- [Multiplayer Test Rules](e2e-tests/MULTIPLAYER_TEST_RULES.md) — E2E testing framework and 21 scenarios
+- [Command Testing Guide](docs/COMMAND_TESTING_GUIDE.md) — Testing command implementations
+
+### Architecture & Technical Specs
+
+- [Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
 - [Advanced Chat Channels Spec](docs/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
+- [Dual Connection System](docs/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
+
+### Logging & Monitoring
+
+- [Enhanced Logging Guide](docs/LOGGING_BEST_PRACTICES.md) — Structured logging best practices and patterns
+- [Logging Quick Reference](docs/LOGGING_QUICK_REFERENCE.md) — One-page logging cheat sheet
+- [Enhanced Logging Implementation](docs/ENHANCED_LOGGING_GUIDE.md) — Detailed logging implementation guide
+
+### Security & Error Handling
+
+- [Security Fixes](docs/SECURITY_FIXES.md) — Security implementation and fixes
+- [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md) — Error handling patterns and best practices
+- [Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md) — Common issues and solutions
 
 ---
 

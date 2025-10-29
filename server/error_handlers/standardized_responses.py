@@ -40,7 +40,7 @@ from ..exceptions import (
 from ..exceptions import (
     ValidationError as MythosValidationError,
 )
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .pydantic_error_handler import PydanticErrorHandler
 
 logger = get_logger(__name__)
@@ -63,7 +63,7 @@ class StandardizedErrorResponse:
         ErrorType.INVALID_TOKEN: status.HTTP_401_UNAUTHORIZED,
         ErrorType.TOKEN_EXPIRED: status.HTTP_401_UNAUTHORIZED,
         # Validation errors
-        ErrorType.VALIDATION_ERROR: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        ErrorType.VALIDATION_ERROR: status.HTTP_422_UNPROCESSABLE_CONTENT,
         ErrorType.INVALID_INPUT: status.HTTP_400_BAD_REQUEST,
         ErrorType.MISSING_REQUIRED_FIELD: status.HTTP_400_BAD_REQUEST,
         ErrorType.INVALID_FORMAT: status.HTTP_400_BAD_REQUEST,
@@ -213,7 +213,7 @@ class StandardizedErrorResponse:
 
         except Exception as e:
             # Fallback error handling
-            logger.error(f"Error in StandardizedErrorResponse: {e}", exc_info=True)
+            logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
             return self._create_fallback_response(exc, response_type)
 
     def _handle_mythos_error(self, error: MythosMUDError, include_details: bool, response_type: str) -> JSONResponse:
@@ -259,7 +259,7 @@ class StandardizedErrorResponse:
 
         # Determine status code
         error_type = ErrorType(response_data.get("error_type", "validation_error"))
-        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
         return JSONResponse(status_code=status_code, content=response_data)
 
@@ -331,7 +331,7 @@ class StandardizedErrorResponse:
             details["exception_message"] = str(exc)
 
         # Log the error
-        logger.error(f"Unhandled exception: {exc}", exc_info=True, context=self.context.to_dict())
+        logger.error("Unhandled exception", error=str(exc), exc_info=True, context=self.context.to_dict())
 
         # Create appropriate response
         response_data = create_standard_error_response(

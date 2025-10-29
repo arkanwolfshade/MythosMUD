@@ -8,7 +8,7 @@ It replaces the previous Redis message handler with NATS-based messaging.
 from datetime import UTC, datetime
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.connection_manager import connection_manager
@@ -36,6 +36,7 @@ class NATSMessageHandler:
 
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         """
+        logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
         self.subscriptions = {}
 
@@ -69,9 +70,12 @@ class NATSMessageHandler:
         Returns:
             True if started successfully, False otherwise
         """
+        logger.info("NATS message handler start() called - ENHANCED LOGGING TEST")
         try:
+            logger.info("About to call _subscribe_to_chat_subjects()", debug=True)
             # Subscribe to chat message subjects
             await self._subscribe_to_chat_subjects()
+            logger.info("Finished _subscribe_to_chat_subjects()", debug=True)
 
             # Subscribe to event subjects if enabled
             if enable_event_subscriptions:
@@ -82,7 +86,7 @@ class NATSMessageHandler:
             )
             return True
         except Exception as e:
-            logger.error("Failed to start NATS message handler", context={"error": str(e)})
+            logger.error("Failed to start NATS message handler", error=str(e))
             return False
 
     async def stop(self):
@@ -99,7 +103,7 @@ class NATSMessageHandler:
             logger.info("NATS message handler stopped successfully")
             return True
         except Exception as e:
-            logger.error("Error stopping NATS message handler", context={"error": str(e)})
+            logger.error("Error stopping NATS message handler", error=str(e))
             return False
 
     async def _subscribe_to_chat_subjects(self):
@@ -115,26 +119,29 @@ class NATSMessageHandler:
             "chat.whisper.*",  # Whisper messages per player
             "chat.system",  # System messages
             "chat.admin",  # Admin messages
+            # Combat event subjects (moved to event subjects to avoid duplicates)
         ]
 
-        logger.debug("=== NATS MESSAGE HANDLER DEBUG: Subscribing to subjects ===")
+        logger.info("Starting _subscribe_to_chat_subjects - subscribing to chat and combat subjects", debug=True)
         for subject in subjects:
-            logger.debug(f"Attempting to subscribe to: {subject}")
+            logger.info("About to subscribe to subject", subject=subject, debug=True)
             await self._subscribe_to_subject(subject)
+        logger.info("Finished _subscribe_to_chat_subjects", debug=True)
 
     async def _subscribe_to_subject(self, subject: str):
         """Subscribe to a specific NATS subject."""
         try:
+            logger.info("Attempting to subscribe to NATS subject", subject=subject, debug=True)
             success = await self.nats_service.subscribe(subject, self._handle_nats_message)
             if success:
                 self.subscriptions[subject] = True
-                logger.info("Subscribed to NATS subject", context={"subject": subject})
+                logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
                 return True
             else:
-                logger.error("Failed to subscribe to NATS subject", context={"subject": subject})
+                logger.error("Failed to subscribe to NATS subject", subject=subject, debug=True)
                 return False
         except Exception as e:
-            logger.error("Error subscribing to NATS subject", subject=subject, context={"error": str(e)})
+            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
             return False
 
     async def _unsubscribe_from_subject(self, subject: str):
@@ -144,13 +151,13 @@ class NATSMessageHandler:
             if success:
                 if subject in self.subscriptions:
                     del self.subscriptions[subject]
-                logger.info("Unsubscribed from NATS subject", context={"subject": subject})
+                logger.info("Unsubscribed from NATS subject")
                 return True
             else:
-                logger.error("Failed to unsubscribe from NATS subject", context={"subject": subject})
+                logger.error("Failed to unsubscribe from NATS subject")
                 return False
         except Exception as e:
-            logger.error("Error unsubscribing from NATS subject", subject=subject, context={"error": str(e)})
+            logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
 
     async def _handle_nats_message(self, message_data: dict[str, Any]):
@@ -165,6 +172,7 @@ class NATSMessageHandler:
 
         AI: Entry point with full error boundary protection.
         """
+        logger.info("_handle_nats_message called", message_data=message_data, debug=True)
         channel = message_data.get("channel", "unknown")
         message_id = message_data.get("message_id", "unknown")
 
@@ -272,9 +280,12 @@ class NATSMessageHandler:
         AI: This is the core processing logic - exceptions trigger retries.
         """
         logger.debug("=== NATS MESSAGE HANDLER DEBUG: Processing message ===")
-        logger.debug(f"Message data: {message_data}")
-        logger.debug(f"Message type: {type(message_data)}")
-        logger.debug(f"Message keys: {list(message_data.keys()) if isinstance(message_data, dict) else 'Not a dict'}")
+        logger.debug(
+            "NATS message received",
+            message_data=message_data,
+            message_type=type(message_data).__name__,
+            message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None,
+        )
 
         # Check if this is an event message
         if message_data.get("event_type"):
@@ -1135,7 +1146,7 @@ class NATSMessageHandler:
                 logger.info("Cleaned up empty sub-zone subscription", subzone=subzone)
 
         except Exception as e:
-            logger.error("Error cleaning up empty sub-zone subscriptions", context={"error": str(e)})
+            logger.error("Error cleaning up empty sub-zone subscriptions", error=str(e))
 
     # Event subscription methods
     async def subscribe_to_event_subjects(self) -> bool:
@@ -1150,6 +1161,16 @@ class NATSMessageHandler:
                 "events.player_entered.*",  # Player entered events per room
                 "events.player_left.*",  # Player left events per room
                 "events.game_tick",  # Global game tick events
+                "combat.attack.*",  # Combat attack events per room
+                "combat.npc_attacked.*",  # NPC attack events per room
+                "combat.npc_action.*",  # NPC action events per room
+                "combat.started.*",  # Combat started events per room
+                "combat.ended.*",  # Combat ended events per room
+                "combat.npc_died.*",  # NPC death events per room
+                "events.player_mortally_wounded.*",  # Player mortally wounded events per room
+                "events.player_hp_decay.*",  # Player HP decay events per room
+                "events.player_died.*",  # Player death events per room
+                "events.player_respawned.*",  # Player respawn events per room
             ]
 
             logger.debug("Subscribing to event subjects", subjects=event_subjects)
@@ -1170,7 +1191,7 @@ class NATSMessageHandler:
                 return success_count == len(event_subjects)
 
         except Exception as e:
-            logger.error("Error subscribing to event subjects", context={"error": str(e)})
+            logger.error("Error subscribing to event subjects", error=str(e))
             return False
 
     async def unsubscribe_from_event_subjects(self) -> bool:
@@ -1185,6 +1206,10 @@ class NATSMessageHandler:
                 "events.player_entered.*",
                 "events.player_left.*",
                 "events.game_tick",
+                "combat.attack.*",
+                "combat.npc_action.*",
+                "combat.started.*",
+                "combat.ended.*",
             ]
 
             logger.debug("Unsubscribing from event subjects", subjects=event_subjects)
@@ -1208,7 +1233,7 @@ class NATSMessageHandler:
                 return success_count == len(event_subjects)
 
         except Exception as e:
-            logger.error("Error unsubscribing from event subjects", context={"error": str(e)})
+            logger.error("Error unsubscribing from event subjects", error=str(e))
             return False
 
     async def _handle_event_message(self, message_data: dict[str, Any]):
@@ -1219,11 +1244,14 @@ class NATSMessageHandler:
             message_data: Event message data from NATS
         """
         try:
-            logger.debug("Handling event message", message_data=message_data)
+            logger.info("Handling event message", message_data=message_data)
 
             # Extract event details
             event_type = message_data.get("event_type")
             data = message_data.get("data", {})
+
+            # Debug logging for all messages
+            logger.debug("NATS message received", event_type=event_type, data=data)
 
             # Validate required fields
             if not event_type or not data:
@@ -1237,6 +1265,19 @@ class NATSMessageHandler:
                 await self._handle_player_left_event(data)
             elif event_type == "game_tick":
                 await self._handle_game_tick_event(data)
+            elif event_type == "combat_started":
+                await self._handle_combat_started_event(data)
+            elif event_type == "combat_ended":
+                await self._handle_combat_ended_event(data)
+            elif event_type == "player_attacked":
+                await self._handle_player_attacked_event(data)
+            elif event_type == "npc_attacked":
+                logger.debug("NPC attacked event received in NATS handler", data=data)
+                await self._handle_npc_attacked_event(data)
+            elif event_type == "npc_took_damage":
+                await self._handle_npc_took_damage_event(data)
+            elif event_type == "npc_died":
+                await self._handle_npc_died_event(data)
             else:
                 logger.debug("Unknown event type received", event_type=event_type)
 
@@ -1353,6 +1394,134 @@ class NATSMessageHandler:
         """
         return subject in self.subscriptions
 
+    async def _handle_combat_started_event(self, data: dict[str, Any]):
+        """Handle combat_started event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Combat started event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("combat_started", room_id, data)
+            logger.debug("Combat started event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling combat started event", error=str(e), data=data)
+
+    async def _handle_combat_ended_event(self, data: dict[str, Any]):
+        """Handle combat_ended event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Combat ended event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("combat_ended", room_id, data)
+            logger.debug("Combat ended event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling combat ended event", error=str(e), data=data)
+
+    async def _handle_player_attacked_event(self, data: dict[str, Any]):
+        """Handle player_attacked event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("Player attacked event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("player_attacked", room_id, data)
+            logger.debug("Player attacked event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling player attacked event", error=str(e), data=data)
+
+    async def _handle_npc_attacked_event(self, data: dict[str, Any]):
+        """Handle npc_attacked event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("NPC attacked event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_attacked", room_id, data)
+            logger.debug("NPC attacked event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC attacked event", error=str(e), data=data)
+
+    async def _handle_npc_took_damage_event(self, data: dict[str, Any]):
+        """Handle npc_took_damage event."""
+        try:
+            room_id = data.get("room_id")
+            if not room_id:
+                logger.warning("NPC took damage event missing room_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from .connection_manager import connection_manager
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_took_damage", room_id, data)
+            logger.debug("NPC took damage event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC took damage event", error=str(e), data=data)
+
+    async def _handle_npc_died_event(self, data: dict[str, Any]):
+        """Handle npc_died event."""
+        try:
+            room_id = data.get("room_id")
+            npc_id = data.get("npc_id")
+            npc_name = data.get("npc_name")
+
+            if not room_id:
+                logger.warning("NPC died event missing room_id", data=data)
+                return
+
+            if not npc_id:
+                logger.warning("NPC died event missing npc_id", data=data)
+                return
+
+            # Import here to avoid circular imports
+            from ..persistence import get_persistence
+            from .connection_manager import connection_manager
+
+            # Remove NPC from room occupants on server side
+            try:
+                persistence = get_persistence()
+                room = persistence.get_room(room_id)
+                if room:
+                    room.npc_left(npc_id)
+                    logger.info("NPC removed from room occupants", npc_id=npc_id, npc_name=npc_name, room_id=room_id)
+                else:
+                    logger.warning("Room not found for NPC death", room_id=room_id, npc_id=npc_id)
+            except Exception as e:
+                logger.error("Error removing NPC from room", error=str(e), npc_id=npc_id, room_id=room_id)
+
+            # Broadcast to room
+            await connection_manager.broadcast_room_event("npc_died", room_id, data)
+            logger.debug("NPC died event broadcasted", room_id=room_id)
+
+        except Exception as e:
+            logger.error("Error handling NPC died event", error=str(e), data=data)
+
 
 # Global NATS message handler instance
 nats_message_handler = None
@@ -1369,6 +1538,14 @@ def get_nats_message_handler(nats_service=None):
         NATSMessageHandler instance
     """
     global nats_message_handler
+    logger.info(
+        "get_nats_message_handler called",
+        nats_service_provided=nats_service is not None,
+        global_handler_exists=nats_message_handler is not None,
+    )
     if nats_message_handler is None and nats_service is not None:
+        logger.info("Creating new NATSMessageHandler instance")
         nats_message_handler = NATSMessageHandler(nats_service)
+    else:
+        logger.info("Using existing global NATSMessageHandler instance")
     return nats_message_handler

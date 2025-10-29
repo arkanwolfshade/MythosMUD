@@ -11,8 +11,11 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+from server.logging.enhanced_logging_config import (
+    _setup_enhanced_file_logging,
+    configure_enhanced_structlog,
+)
 from server.logging.player_guid_formatter import PlayerGuidFormatter
-from server.logging_config import _setup_file_logging, configure_structlog
 
 
 class TestLoggingIntegration:
@@ -38,7 +41,7 @@ class TestLoggingIntegration:
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_player_guid_formatter_integration(self):
-        """Test that PlayerGuidFormatter can be integrated with logging system."""
+        """Test PlayerGuidFormatter integration with logging."""
         # Create formatter instance
         formatter = PlayerGuidFormatter(
             player_service=self.mock_player_service,
@@ -72,13 +75,16 @@ class TestLoggingIntegration:
         )
 
         # Mock the formatter creation in _setup_file_logging
-        with patch("server.logging_config.logging.Formatter") as mock_formatter_class:
+        with patch("server.logging.enhanced_logging_config.logging.Formatter") as mock_formatter_class:
             mock_formatter_class.return_value = custom_formatter
 
             # Set up logging with test configuration
-            log_config = {"log_base": str(self.log_dir), "rotation": {"max_size": "1MB", "backup_count": 2}}
+            log_config = {
+                "log_base": str(self.log_dir),
+                "rotation": {"max_size": "1MB", "backup_count": 2},
+            }
 
-            _setup_file_logging("test", log_config, "INFO")
+            _setup_enhanced_file_logging("test", log_config, "INFO")
 
             # Verify formatter was created
             mock_formatter_class.assert_called()
@@ -143,15 +149,15 @@ class TestLoggingIntegration:
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
 
-        # Test logging with player GUID
+        # Test logging with player GUID in message text (formatter extracts from text)
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        logger.info(f"Player {test_guid} connected")
+        logger.info("Player 123e4567-e89b-12d3-a456-426614174000 connected")
 
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
 
     def test_formatter_with_multiple_log_categories(self):
-        """Test PlayerGuidFormatter across multiple log categories simultaneously."""
+        """Test PlayerGuidFormatter across multiple log categories."""
         # Mock player data
         mock_player = Mock()
         mock_player.name = "ProfessorWolfshade"
@@ -166,7 +172,6 @@ class TestLoggingIntegration:
 
         # Test multiple log categories
         categories = ["server", "persistence", "communications", "errors"]
-        test_guid = "123e4567-e89b-12d3-a456-426614174000"
 
         for category in categories:
             logger = logging.getLogger(category)
@@ -175,8 +180,8 @@ class TestLoggingIntegration:
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
 
-            # Log message with GUID
-            logger.info(f"Category {category}: Player {test_guid} action")
+            # Log message with GUID (formatter extracts from message text)
+            logger.info("Category action: Player 123e4567-e89b-12d3-a456-426614174000 performed action")
 
             # Clean up
             logger.removeHandler(handler)
@@ -207,7 +212,7 @@ class TestLoggingIntegration:
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
 
         # This should not raise an exception
-        logger.info(f"Player {test_guid} connected")
+        logger.info("Player 123e4567-e89b-12d3-a456-426614174000 connected")
 
         # Verify player service was called despite error
         self.mock_persistence.get_player.assert_called_with(test_guid)
@@ -227,7 +232,7 @@ class TestLoggingIntegration:
         )
 
         # Configure structlog (minimal setup for testing)
-        configure_structlog("test", "INFO", {"disable_logging": True})
+        configure_enhanced_structlog("test", "INFO", {"disable_logging": True})
 
         # Create logger that would be used by structlog
         logger = logging.getLogger("structlog.test")
@@ -238,7 +243,7 @@ class TestLoggingIntegration:
 
         # Test logging with GUID
         test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        logger.info(f"Structlog message: Player {test_guid} connected")
+        logger.info("Structlog message: Player 123e4567-e89b-12d3-a456-426614174000 connected")
 
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
@@ -265,7 +270,6 @@ class TestLoggingIntegration:
         logger.setLevel(logging.INFO)
 
         # Test multiple log messages
-        test_guid = "123e4567-e89b-12d3-a456-426614174000"
         num_messages = 50
 
         import time
@@ -273,7 +277,9 @@ class TestLoggingIntegration:
         start_time = time.time()
 
         for i in range(num_messages):
-            logger.info(f"Message {i}: Player {test_guid} action {i}")
+            logger.info(
+                "Message " + str(i) + ": Player 123e4567-e89b-12d3-a456-426614174000 performed action " + str(i)
+            )
 
         end_time = time.time()
         duration = end_time - start_time
@@ -301,20 +307,19 @@ class TestLoggingIntegration:
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
-        # Create logger
+        # Create logger using standard logging for test setup
         logger = logging.getLogger("test.levels")
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         logger.addHandler(handler)
         logger.setLevel(logging.DEBUG)
 
-        # Test different log levels
-        test_guid = "123e4567-e89b-12d3-a456-426614174000"
+        # Test different log levels - PlayerGuidFormatter extracts GUID from message text
 
-        logger.debug(f"DEBUG: Player {test_guid} debug action")
-        logger.info(f"INFO: Player {test_guid} info action")
-        logger.warning(f"WARNING: Player {test_guid} warning action")
-        logger.error(f"ERROR: Player {test_guid} error action")
+        logger.debug("DEBUG: Player 123e4567-e89b-12d3-a456-426614174000 debug action")
+        logger.info("INFO: Player 123e4567-e89b-12d3-a456-426614174000 info action")
+        logger.warning("WARNING: Player 123e4567-e89b-12d3-a456-426614174000 warning action")
+        logger.error("ERROR: Player 123e4567-e89b-12d3-a456-426614174000 error action")
 
         # Verify persistence layer was called for each level
         assert self.mock_persistence.get_player.call_count == 4
@@ -344,14 +349,11 @@ class TestLoggingIntegration:
         logger.setLevel(logging.INFO)
 
         # Test complex messages
-        test_guid = "123e4567-e89b-12d3-a456-426614174000"
-        test_guid2 = "550e8400-e29b-41d4-a716-446655440000"
-
         complex_messages = [
-            f"Player {test_guid} moved from room A to room B",
-            f"Multiple players: {test_guid} and {test_guid2} in room",
-            f"Database query for player {test_guid} returned 5 results",
-            f"Player {test_guid} completed quest successfully",
+            "Player 123e4567-e89b-12d3-a456-426614174000 moved from room A to room B",
+            "Multiple players: 123e4567-e89b-12d3-a456-426614174000 and 550e8400-e29b-41d4-a716-446655440000 in room",
+            "Database query for player 123e4567-e89b-12d3-a456-426614174000 returned 5 results",
+            "Player 123e4567-e89b-12d3-a456-426614174000 completed quest successfully",
         ]
 
         for message in complex_messages:
@@ -362,6 +364,3 @@ class TestLoggingIntegration:
         # Message 4: 1 GUID = 5 total calls
         expected_calls = 5  # 1 + 2 + 1 + 1 = 5 GUIDs total
         assert self.mock_persistence.get_player.call_count == expected_calls
-
-        # Clean up
-        logger.removeHandler(handler)

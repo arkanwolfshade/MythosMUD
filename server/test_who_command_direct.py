@@ -9,10 +9,14 @@ import time
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock
 
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Set up environment variables
 os.environ["ENVIRONMENT"] = "unit_test"
-os.environ["DATABASE_PATH"] = "data/unit_test/players.db"
-os.environ["NPC_DATABASE_PATH"] = "data/unit_test/npcs.db"
+os.environ["DATABASE_PATH"] = "data/unit_test/players/unit_test_players.db"
+os.environ["NPC_DATABASE_PATH"] = "data/unit_test/npcs/unit_test_npcs.db"
 os.environ["DEFAULT_PLAYER_ROOM"] = "earth_arkhamcity_northside_intersection_derby_high"
 os.environ["ALIASES_DIRECTORY"] = "data/unit_test/aliases"
 os.environ["LOG_LEVEL"] = "DEBUG"
@@ -34,7 +38,7 @@ async def test_who_command():
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
         players = []
 
-        print("Creating 2000 mock players...")
+        logger.info("Creating 2000 mock players for who command test")
         for i in range(2000):
             player = MagicMock()
             player.name = f"player_{i:04d}"
@@ -48,7 +52,7 @@ async def test_who_command():
         mock_request.app.state.persistence = mock_persistence
 
         # Test the command
-        print("Executing handle_who_command with 2000 players...")
+        logger.info("Executing handle_who_command with 2000 players")
         start_time = time.time()
 
         result = await handle_who_command(
@@ -60,17 +64,18 @@ async def test_who_command():
         )
 
         end_time = time.time()
-        print(f"Command completed in {end_time - start_time:.2f} seconds")
-        print(f"Result length: {len(result['result'])} characters")
-        print(f"Result preview: {result['result'][:100]}...")
+        execution_time = end_time - start_time
+        logger.info(
+            "Who command test completed",
+            execution_time_seconds=execution_time,
+            result_length=len(result["result"]),
+            result_preview=result["result"][:100],
+        )
 
         return True
 
     except Exception as e:
-        print(f"Error: {e}")
-        import traceback
-
-        traceback.print_exc()
+        logger.error("Who command test failed", error=str(e), exc_info=True)
         return False
 
 
@@ -88,7 +93,7 @@ async def test_who_command_multiple_iterations():
         recent_time = datetime.now(UTC) - timedelta(minutes=2)
         players = []
 
-        print("Creating 2000 mock players...")
+        logger.info("Creating 2000 mock players for multiple iterations test")
         for i in range(2000):
             player = MagicMock()
             player.name = f"player_{i:04d}"
@@ -102,9 +107,9 @@ async def test_who_command_multiple_iterations():
         mock_request.app.state.persistence = mock_persistence
 
         # Execute who command multiple times (like in the original test)
-        print("Executing who command 10 times...")
+        logger.info("Executing who command 10 times for performance testing")
         for iteration in range(10):
-            print(f"  Iteration {iteration + 1}/10...")
+            logger.debug("Executing who command iteration", iteration=iteration + 1, total_iterations=10)
 
             result = await handle_who_command(
                 {"target_player": ""},
@@ -115,36 +120,35 @@ async def test_who_command_multiple_iterations():
             )
 
             if "Online Players (2000):" not in result["result"]:
-                print(f"ERROR: Unexpected result in iteration {iteration + 1}: {result['result'][:100]}...")
+                logger.error(
+                    "Unexpected result in iteration", iteration=iteration + 1, result_preview=result["result"][:100]
+                )
                 return False
 
-        print("All 10 iterations completed successfully!")
+        logger.info("All 10 iterations completed successfully")
         return True
 
     except Exception as e:
-        print(f"Error in multiple iterations test: {e}")
-        import traceback
-
-        traceback.print_exc()
+        logger.error("Multiple iterations test failed", error=str(e), exc_info=True)
         return False
 
 
 async def main():
-    print("Starting direct who command testing...")
+    logger.info("Starting direct who command testing")
 
     # Test 1: Single execution
-    print("\n=== Test 1: Single execution ===")
+    logger.info("Starting Test 1: Single execution")
     if not await test_who_command():
-        print("Single execution test failed")
+        logger.error("Single execution test failed")
         return
 
     # Test 2: Multiple iterations
-    print("\n=== Test 2: Multiple iterations ===")
+    logger.info("Starting Test 2: Multiple iterations")
     if not await test_who_command_multiple_iterations():
-        print("Multiple iterations test failed")
+        logger.error("Multiple iterations test failed")
         return
 
-    print("\nAll tests completed successfully!")
+    logger.info("All tests completed successfully")
 
 
 if __name__ == "__main__":

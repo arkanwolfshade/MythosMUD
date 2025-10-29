@@ -555,7 +555,7 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_creation_error_logging(self, test_mixin, test_client):
         """Test error logging in player creation API endpoint."""
-        with patch("server.api.players.get_current_user") as mock_auth:
+        with patch("server.api.players.get_current_active_user") as mock_auth:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.create_player") as mock_create_player:
@@ -567,7 +567,7 @@ class TestAPIErrorLoggingIntegration:
                     mock_create_context.return_value = mock_context
 
                     # Test the API endpoint through the test client
-                    response = test_client.post("/players/?name=ExistingPlayer&starting_room_id=test_room")
+                    response = test_client.post("/api/players/?name=ExistingPlayer&starting_room_id=test_room")
 
                     # Verify error response
                     assert response.status_code == 400
@@ -575,7 +575,7 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_deletion_error_logging(self, test_mixin, test_client):
         """Test error logging in player deletion API endpoint."""
-        with patch("server.api.players.get_current_user") as mock_auth:
+        with patch("server.api.players.get_current_active_user") as mock_auth:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.delete_player") as mock_delete_player:
@@ -587,7 +587,7 @@ class TestAPIErrorLoggingIntegration:
                     mock_create_context.return_value = mock_context
 
                     # Test the API endpoint through the test client
-                    response = test_client.delete("/players/nonexistent-player-id")
+                    response = test_client.delete("/api/players/nonexistent-player-id")
 
                     # Verify error response
                     assert response.status_code == 404
@@ -595,7 +595,7 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_retrieval_error_logging(self, test_mixin, test_client):
         """Test error logging in player retrieval API endpoint."""
-        with patch("server.api.players.get_current_user") as mock_auth:
+        with patch("server.api.players.get_current_active_user") as mock_auth:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.get_player_by_id") as mock_get_player:
@@ -607,7 +607,7 @@ class TestAPIErrorLoggingIntegration:
                     mock_create_context.return_value = mock_context
 
                     # Test the API endpoint through the test client
-                    response = test_client.get("/players/nonexistent-player-id")
+                    response = test_client.get("/api/players/nonexistent-player-id")
 
                     # Verify error response
                     assert response.status_code == 404

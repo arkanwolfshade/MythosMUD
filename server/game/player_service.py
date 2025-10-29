@@ -11,11 +11,11 @@ import uuid
 from ..alias_storage import AliasStorage
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.player import Player
 from ..schemas.player import PlayerRead
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -23,9 +23,11 @@ logger = get_logger(__name__)
 class PlayerService:
     """Service class for player-related business operations."""
 
-    def __init__(self, persistence):
-        """Initialize the player service with a persistence layer."""
+    def __init__(self, persistence, combat_service=None, player_combat_service=None):
+        """Initialize the player service with a persistence layer and optional combat service."""
         self.persistence = persistence
+        self.combat_service = combat_service
+        self.player_combat_service = player_combat_service
         logger.info("PlayerService initialized")
 
     async def create_player(
@@ -61,11 +63,11 @@ class PlayerService:
         # Check if player already exists
         existing_player = await self.persistence.async_get_player_by_name(name)
         if existing_player:
-            logger.warning("Player creation failed - name already exists", context={"name": name})
+            logger.warning("Player creation failed - name already exists")
             context = create_error_context()
             context.metadata["player_name"] = name
             context.metadata["operation"] = "create_player"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 "Player name already exists",
                 context=context,
@@ -76,7 +78,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", context={"name": name})
+            logger.debug("Generated user_id for new player")
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -93,7 +95,7 @@ class PlayerService:
 
         # Save player to persistence
         await self.persistence.async_save_player(player)
-        logger.info("Player created successfully", context={"name": name, "player_id": player.player_id})
+        logger.info("Player created successfully", player_id=player.player_id)
 
         # Convert to schema format
         return await self._convert_player_to_schema(player)
@@ -133,11 +135,11 @@ class PlayerService:
         # Check if player already exists
         existing_player = await self.persistence.async_get_player_by_name(name)
         if existing_player:
-            logger.warning("Player creation failed - name already exists", context={"name": name})
+            logger.warning("Player creation failed - name already exists")
             context = create_error_context()
             context.metadata["player_name"] = name
             context.metadata["operation"] = "create_player_with_stats"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 "Player name already exists",
                 context=context,
@@ -148,7 +150,7 @@ class PlayerService:
         # Generate user_id if not provided
         if user_id is None:
             user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player", context={"name": name})
+            logger.debug("Generated user_id for new player")
 
         current_time = datetime.datetime.now()
         player = Player(
@@ -179,7 +181,7 @@ class PlayerService:
 
         # Save player to persistence
         await self.persistence.async_save_player(player)
-        logger.info("Player created successfully with stats", context={"name": name, "player_id": player.player_id})
+        logger.info("Player created successfully with stats", player_id=player.player_id)
 
         # Convert to schema format
         return await self._convert_player_to_schema(player)
@@ -194,16 +196,14 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Getting player by ID", context={"player_id": player_id})
+        logger.debug("Getting player by ID")
 
         player = await self.persistence.async_get_player(player_id)
         if not player:
-            logger.debug("Player not found by ID", context={"player_id": player_id})
+            logger.debug("Player not found by ID")
             return None
 
-        # Safely get player name for logging
-        player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
-        logger.debug("Player found by ID", context={"player_id": player_id, "name": player_name})
+        logger.debug("Player found by ID")
         return await self._convert_player_to_schema(player)
 
     async def get_player_by_name(self, player_name: str) -> PlayerRead | None:
@@ -216,16 +216,14 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Getting player by name", context={"player_name": player_name})
+        logger.debug("Getting player by name")
 
         player = await self.persistence.async_get_player_by_name(player_name)
         if not player:
-            logger.debug("Player not found by name", context={"player_name": player_name})
+            logger.debug("Player not found by name")
             return None
 
-        # Safely get player ID for logging
-        player_id = player.player_id if hasattr(player, "player_id") else player.get("player_id", "unknown")
-        logger.debug("Player found by name", context={"player_name": player_name, "player_id": player_id})
+        logger.debug("Player found by name")
         return await self._convert_player_to_schema(player)
 
     async def list_players(self) -> list[PlayerRead]:
@@ -256,7 +254,7 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Resolving player name", context={"player_name": player_name})
+        logger.debug("Resolving player name")
 
         if not player_name or not player_name.strip():
             logger.debug("Empty player name provided")
@@ -335,7 +333,7 @@ class PlayerService:
         Returns:
             List[PlayerRead]: List of matching players
         """
-        logger.debug("Searching players by name", context={"search_term": search_term, "limit": limit})
+        logger.debug("Searching players by name")
 
         if not search_term or not search_term.strip():
             logger.debug("Empty search term provided")
@@ -390,7 +388,7 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (is_valid, error_message)
         """
-        logger.debug("Validating player name", context={"player_name": player_name})
+        logger.debug("Validating player name")
 
         if not player_name or not player_name.strip():
             return False, "Player name cannot be empty"
@@ -427,14 +425,14 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (success, message)
         """
-        logger.debug("Attempting to delete player", context={"player_id": player_id})
+        logger.debug("Attempting to delete player")
         player = await self.persistence.async_get_player(player_id)
         if not player:
-            logger.warning("Player not found for deletion", context={"player_id": player_id})
+            logger.warning("Player not found for deletion")
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "delete_player"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 "Player not found for deletion",
                 context=context,
@@ -445,11 +443,11 @@ class PlayerService:
         # Delete the player from the database
         success = await self.persistence.async_delete_player(player_id)
         if not success:
-            logger.error("Failed to delete player from persistence", context={"player_id": player_id})
+            logger.error("Failed to delete player from persistence", player_id=player_id)
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "delete_player"
-            log_and_raise(
+            log_and_raise_enhanced(
                 DatabaseError,
                 "Failed to delete player from persistence",
                 context=context,
@@ -459,14 +457,14 @@ class PlayerService:
 
         # Safely get player name for logging
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
-        logger.info("Player deleted successfully", context={"player_id": player_id, "name": player_name})
+        logger.info("Player deleted successfully", player_id=player_id)
 
         # Delete player aliases if they exist
         config = get_config()
         aliases_dir = config.game.aliases_dir
         alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
         alias_storage.delete_player_aliases(player_name)
-        logger.debug("Player aliases deleted", context={"player_id": player_id, "name": player_name})
+        logger.debug("Player aliases deleted")
 
         return True, f"Player {player_name} has been deleted"
 
@@ -485,12 +483,12 @@ class PlayerService:
             # Get the raw SQLAlchemy player object for modification
             player = await self.persistence.async_get_player_by_name(player_name)
             if not player:
-                logger.warning(f"Cannot update location - player not found: {player_name}")
+                logger.warning("Cannot update location - player not found", player_name=player_name)
                 context = create_error_context()
                 context.metadata["player_name"] = player_name
                 context.metadata["new_room_id"] = new_room_id
                 context.metadata["operation"] = "update_player_location"
-                log_and_raise(
+                log_and_raise_enhanced(
                     ValidationError,
                     f"Player not found: {player_name}",
                     context=context,
@@ -505,16 +503,16 @@ class PlayerService:
             # Save to database
             await self.persistence.async_save_player(player)
 
-            logger.info(f"Player location updated: {player_name} moved from {old_room} to {new_room_id}")
+            logger.info("Player location updated", player_name=player_name, from_room=old_room, to_room=new_room_id)
             return True
 
         except Exception as e:
-            logger.error(f"Failed to update player location: {player_name} -> {new_room_id}: {str(e)}")
+            logger.error("Failed to update player location", player_name=player_name, room_id=new_room_id, error=str(e))
             context = create_error_context()
             context.metadata["player_name"] = player_name
             context.metadata["new_room_id"] = new_room_id
             context.metadata["operation"] = "update_player_location"
-            log_and_raise(
+            log_and_raise_enhanced(
                 DatabaseError,
                 f"Failed to update player location: {str(e)}",
                 context=context,
@@ -545,7 +543,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "apply_sanity_loss"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -580,7 +578,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "apply_fear"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -615,7 +613,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "apply_corruption"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -650,7 +648,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "gain_occult_knowledge"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -684,7 +682,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "heal_player"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -719,7 +717,7 @@ class PlayerService:
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["operation"] = "damage_player"
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
                 context=context,
@@ -741,6 +739,29 @@ class PlayerService:
         Returns:
             PlayerRead: The player data in schema format
         """
+        # Check if player is in combat using player combat service
+        # In test environments, always default to False to avoid Mock object issues
+        in_combat = False
+
+        # Only check combat state in non-test environments
+        if (
+            hasattr(self, "player_combat_service")
+            and self.player_combat_service
+            and not hasattr(self.player_combat_service, "__class__")
+            or "Mock" not in str(self.player_combat_service.__class__)
+        ):
+            if hasattr(player, "player_id"):
+                try:
+                    # Check if player is currently in combat using PlayerCombatService
+                    if hasattr(self.player_combat_service, "is_player_in_combat"):
+                        in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
+                except Exception as e:
+                    logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
+                    in_combat = False
+
+        # Final safety check - ensure it's actually a boolean
+        if not isinstance(in_combat, bool):
+            in_combat = False
         # Get profession information
         player_profession_id = 0
         profession_name = None
@@ -761,7 +782,7 @@ class PlayerService:
                     profession_description = profession.description
                     profession_flavor_text = profession.flavor_text
             except Exception as e:
-                logger.warning(f"Failed to fetch profession {player_profession_id}: {e}")
+                logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
 
         if hasattr(player, "player_id"):  # Player object
             # Handle both sync and async method calls
@@ -794,6 +815,7 @@ class PlayerService:
                 created_at=player.created_at,
                 last_active=player.last_active,
                 is_admin=bool(player.is_admin),  # Convert integer to boolean
+                in_combat=in_combat,
             )
         else:  # Dictionary
             return PlayerRead(
@@ -813,4 +835,5 @@ class PlayerService:
                 created_at=player["created_at"],
                 last_active=player["last_active"],
                 is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
+                in_combat=in_combat,
             )

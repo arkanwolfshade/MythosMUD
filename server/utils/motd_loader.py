@@ -8,7 +8,7 @@ from configured files, with fallback handling for missing or corrupted files.
 import os
 
 from ..config import get_config
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .error_logging import create_error_context
 
 logger = get_logger(__name__)

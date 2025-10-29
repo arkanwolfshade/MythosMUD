@@ -48,7 +48,7 @@ class TestCORSConfigurationVerification:
     def test_cors_preflight_request_with_allowed_origin(self, client):
         """Test CORS preflight request with allowed origin."""
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",
@@ -74,7 +74,7 @@ class TestCORSConfigurationVerification:
     def test_cors_preflight_request_with_alternative_allowed_origin(self, client):
         """Test CORS preflight request with alternative allowed origin."""
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://127.0.0.1:5173",
                 "Access-Control-Request-Method": "GET",
@@ -92,7 +92,7 @@ class TestCORSConfigurationVerification:
     def test_cors_preflight_request_with_disallowed_origin(self, client):
         """Test CORS preflight request with disallowed origin."""
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://malicious-site.com",
                 "Access-Control-Request-Method": "POST",
@@ -109,7 +109,7 @@ class TestCORSConfigurationVerification:
 
     def test_cors_actual_request_with_allowed_origin(self, client):
         """Test CORS actual request with allowed origin."""
-        response = client.get("/players/", headers={"Origin": "http://localhost:5173"})
+        response = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
 
         # Should have CORS headers on actual requests too
         assert "access-control-allow-origin" in response.headers
@@ -117,7 +117,7 @@ class TestCORSConfigurationVerification:
 
     def test_cors_actual_request_with_alternative_allowed_origin(self, client):
         """Test CORS actual request with alternative allowed origin."""
-        response = client.get("/players/", headers={"Origin": "http://127.0.0.1:5173"})
+        response = client.get("/api/players/", headers={"Origin": "http://127.0.0.1:5173"})
 
         # Should have CORS headers
         assert "access-control-allow-origin" in response.headers
@@ -125,7 +125,7 @@ class TestCORSConfigurationVerification:
 
     def test_cors_actual_request_with_disallowed_origin(self, client):
         """Test CORS actual request with disallowed origin."""
-        response = client.get("/players/", headers={"Origin": "http://malicious-site.com"})
+        response = client.get("/api/players/", headers={"Origin": "http://malicious-site.com"})
 
         # Should return 200 (the request succeeds)
         assert response.status_code in [200, 401]
@@ -139,7 +139,7 @@ class TestCORSConfigurationVerification:
 
         for method in methods:
             response = client.options(
-                "/players/",
+                "/api/players/",
                 headers={
                     "Origin": "http://localhost:5173",
                     "Access-Control-Request-Method": method,
@@ -160,7 +160,7 @@ class TestCORSConfigurationVerification:
 
         for header in headers:
             response = client.options(
-                "/players/",
+                "/api/players/",
                 headers={
                     "Origin": "http://localhost:5173",
                     "Access-Control-Request-Method": "POST",
@@ -178,7 +178,7 @@ class TestCORSConfigurationVerification:
     def test_cors_credentials_support(self, client):
         """Test CORS credentials support."""
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",
@@ -193,7 +193,7 @@ class TestCORSConfigurationVerification:
     def test_cors_max_age_configuration(self, client):
         """Test CORS max age configuration."""
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",
@@ -207,7 +207,7 @@ class TestCORSConfigurationVerification:
 
     def test_cors_on_different_endpoints(self, client):
         """Test CORS configuration on different endpoints."""
-        endpoints = ["/players/", "/rooms/test-room-id", "/docs", "/openapi.json"]
+        endpoints = ["/api/players/", "/rooms/test-room-id", "/docs", "/openapi.json"]
 
         for endpoint in endpoints:
             response = client.options(
@@ -225,7 +225,7 @@ class TestCORSConfigurationVerification:
 
     def test_cors_without_origin_header(self, client):
         """Test CORS behavior without Origin header."""
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # Should work without Origin header
         assert response.status_code in [200, 401]
@@ -239,14 +239,14 @@ class TestCORSConfigurationVerification:
         # as expected based on the environment variables set in the app
 
         # Test with allowed origin
-        response = client.get("/players/", headers={"Origin": "http://localhost:5173"})
+        response = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
 
         # Should have CORS headers for allowed origin
         assert "access-control-allow-origin" in response.headers
         assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
 
         # Test with disallowed origin
-        response = client.get("/players/", headers={"Origin": "http://unauthorized-site.com"})
+        response = client.get("/api/players/", headers={"Origin": "http://unauthorized-site.com"})
 
         # Should not have CORS headers for disallowed origin
         # This verifies the environment variable configuration is working
@@ -258,7 +258,7 @@ class TestCORSConfigurationVerification:
         # Measure preflight request performance
         start_time = time.time()
         response = client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",
@@ -280,7 +280,7 @@ class TestCORSConfigurationVerification:
         allowed_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
         for origin in allowed_origins:
-            response = client.get("/players/", headers={"Origin": origin})
+            response = client.get("/api/players/", headers={"Origin": origin})
 
             # Should have CORS headers for each allowed origin
             assert "access-control-allow-origin" in response.headers
@@ -300,7 +300,7 @@ class TestCORSConfigurationVerification:
         """Test CORS configuration consistency across requests."""
         # Make multiple requests to verify consistent CORS behavior
         for _i in range(5):
-            response = client.get("/players/", headers={"Origin": "http://localhost:5173"})
+            response = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
 
             # Should have consistent CORS headers
             assert "access-control-allow-origin" in response.headers

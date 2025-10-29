@@ -99,6 +99,9 @@ class TestRunner:
         """
         Clean test databases before running tests.
 
+        Note: NPC database is persistent and should not be deleted during unit testing
+        to maintain test performance and reliability.
+
         Args:
             env: Environment variables dictionary
 
@@ -108,17 +111,18 @@ class TestRunner:
         logger.info("Cleaning test databases")
 
         try:
-            # Clean player database
+            # Clean player database only
             player_db_path = self.data_dir / "players" / "unit_test_players.db"
             if player_db_path.exists():
                 player_db_path.unlink()
                 logger.info("Cleaned player database", path=str(player_db_path))
 
-            # Clean NPC database
+            # NPC database should be persistent - do not delete
             npc_db_path = self.data_dir / "npcs" / "unit_test_npcs.db"
             if npc_db_path.exists():
-                npc_db_path.unlink()
-                logger.info("Cleaned NPC database", path=str(npc_db_path))
+                logger.info("Preserving NPC database for performance", path=str(npc_db_path))
+            else:
+                logger.info("NPC database does not exist yet", path=str(npc_db_path))
 
             # Ensure directories exist
             player_db_path.parent.mkdir(parents=True, exist_ok=True)

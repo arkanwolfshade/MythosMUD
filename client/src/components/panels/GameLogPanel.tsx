@@ -48,6 +48,8 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
         return 'text-mythos-terminal-secondary italic';
       case 'shout':
         return 'text-mythos-terminal-warning font-bold';
+      case 'combat':
+        return 'text-mythos-terminal-warning font-bold';
       default:
         return 'text-mythos-terminal-text';
     }
@@ -180,6 +182,7 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
             <option value="whisper">Whispers</option>
             <option value="shout">Shouts</option>
             <option value="error">Errors</option>
+            <option value="combat">Combat</option>
           </select>
           <select
             value={timeFilter}

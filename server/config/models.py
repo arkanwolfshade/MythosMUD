@@ -11,6 +11,10 @@ the seepage of secrets into unintended dimensions."
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
+from ..logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 class ServerConfig(BaseSettings):
     """Server network configuration."""
@@ -22,8 +26,11 @@ class ServerConfig(BaseSettings):
     @classmethod
     def validate_port(cls, v: int) -> int:
         """Validate port is in valid range."""
+        logger.debug("Validating server port", port=v)
         if not 1024 <= v <= 65535:
+            logger.error("Invalid server port", port=v, valid_range="1024-65535")
             raise ValueError("Port must be between 1024 and 65535")
+        logger.debug("Server port validation successful", port=v)
         return v
 
     model_config = {"env_prefix": "SERVER_", "case_sensitive": False, "extra": "ignore"}
@@ -39,11 +46,19 @@ class DatabaseConfig(BaseSettings):
     @classmethod
     def validate_database_url(cls, v: str) -> str:
         """Validate database URL format."""
+        logger.debug("Validating database URL", url_length=len(v) if v else 0)
         if not v:
+            logger.error("Database URL validation failed - empty URL")
             raise ValueError("Database URL cannot be empty")
         # Accept both sqlite:/// and sqlite+aiosqlite:/// formats
         if not (v.startswith("sqlite") or v.startswith("postgresql")):
+            logger.error(
+                "Database URL validation failed - invalid protocol",
+                url_preview=v[:50] if len(v) > 50 else v,
+                expected_protocols=["sqlite", "postgresql"],
+            )
             raise ValueError("Database URL must start with 'sqlite' or 'postgresql'")
+        logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
 
     model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
@@ -60,6 +75,15 @@ class NATSConfig(BaseSettings):
     connect_timeout: int = Field(default=5, description="Connection timeout in seconds")
     ping_interval: int = Field(default=30, description="Ping interval in seconds")
     max_outstanding_pings: int = Field(default=5, description="Maximum outstanding pings")
+
+    # Connection pooling configuration
+    connection_pool_size: int = Field(default=5, description="Number of connections in pool")
+    enable_connection_pooling: bool = Field(default=True, description="Enable connection pooling")
+
+    # Message batching configuration
+    batch_size: int = Field(default=100, description="Maximum messages per batch")
+    batch_timeout: float = Field(default=0.1, description="Batch timeout in seconds")
+    enable_message_batching: bool = Field(default=True, description="Enable message batching")
 
     @field_validator("max_payload")
     @classmethod
@@ -90,11 +114,14 @@ class SecurityConfig(BaseSettings):
     @classmethod
     def validate_admin_password(cls, v: str) -> str:
         """Validate admin password strength (production only)."""
+        logger.debug("Validating admin password strength", password_length=len(v))
         # Only enforce strict validation in production
         # This is determined by LoggingConfig.environment but we can't access it here
         # So we check if it looks like a real password vs test password
         if len(v) < 8:
+            logger.error("Admin password validation failed - too short", password_length=len(v), minimum_length=8)
             raise ValueError("Admin password must be at least 8 characters")
+        logger.debug("Admin password validation successful", password_length=len(v))
         return v
 
     model_config = {"env_prefix": "MYTHOSMUD_", "case_sensitive": False, "extra": "ignore"}
@@ -116,9 +143,12 @@ class LoggingConfig(BaseSettings):
     @classmethod
     def validate_environment(cls, v: str) -> str:
         """Validate logging environment."""
+        logger.debug("Validating logging environment", environment=v)
         valid_environments = ["local", "unit_test", "e2e_test", "production"]
         if v not in valid_environments:
+            logger.error("Invalid logging environment", environment=v, valid_environments=valid_environments)
             raise ValueError(f"Environment must be one of {valid_environments}, got '{v}'")
+        logger.debug("Logging environment validation successful", environment=v)
         return v
 
     @field_validator("level")
@@ -186,6 +216,19 @@ class GameConfig(BaseSettings):
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
     save_interval: int = Field(default=60, description="Player save interval in seconds")
 
+    # Combat system configuration
+    combat_enabled: bool = Field(default=True, description="Enable/disable combat system")
+    combat_timeout_seconds: int = Field(default=180, description="Combat timeout in seconds")
+    combat_xp_multiplier: float = Field(default=1.0, description="XP multiplier for combat rewards")
+    combat_logging_enabled: bool = Field(default=True, description="Enable combat audit logging")
+    combat_monitoring_enabled: bool = Field(default=True, description="Enable combat monitoring and alerting")
+    combat_alert_threshold: int = Field(default=5, description="Alert threshold for combat events")
+    combat_performance_threshold: int = Field(default=1000, description="Performance threshold in milliseconds")
+    combat_error_threshold: int = Field(default=3, description="Error threshold for combat failures")
+
+    # Combat damage configuration
+    basic_unarmed_damage: int = Field(default=10, description="Base damage for unarmed melee attacks")
+
     @field_validator("max_connections_per_player")
     @classmethod
     def validate_max_connections(cls, v: int) -> int:
@@ -200,6 +243,54 @@ class GameConfig(BaseSettings):
         """Validate aliases directory path."""
         if not v:
             raise ValueError("Aliases directory must be specified")
+        return v
+
+    @field_validator("combat_tick_interval")
+    @classmethod
+    def validate_combat_tick_interval(cls, v: int) -> int:
+        """Validate combat tick interval."""
+        if not 1 <= v <= 60:
+            raise ValueError("Combat tick interval must be between 1 and 60 seconds")
+        return v
+
+    @field_validator("combat_timeout_seconds")
+    @classmethod
+    def validate_combat_timeout(cls, v: int) -> int:
+        """Validate combat timeout."""
+        if not 60 <= v <= 1800:
+            raise ValueError("Combat timeout must be between 60 and 1800 seconds")
+        return v
+
+    @field_validator("combat_xp_multiplier")
+    @classmethod
+    def validate_combat_xp_multiplier(cls, v: float) -> float:
+        """Validate combat XP multiplier."""
+        if not 1.0 <= v <= 5.0:
+            raise ValueError("XP multiplier must be between 1.0 and 5.0")
+        return v
+
+    @field_validator("combat_alert_threshold")
+    @classmethod
+    def validate_combat_alert_threshold(cls, v: int) -> int:
+        """Validate combat alert threshold."""
+        if not 1 <= v <= 100:
+            raise ValueError("Alert threshold must be between 1 and 100")
+        return v
+
+    @field_validator("combat_performance_threshold")
+    @classmethod
+    def validate_combat_performance_threshold(cls, v: int) -> int:
+        """Validate combat performance threshold."""
+        if not 100 <= v <= 5000:
+            raise ValueError("Performance threshold must be between 100 and 5000 milliseconds")
+        return v
+
+    @field_validator("combat_error_threshold")
+    @classmethod
+    def validate_combat_error_threshold(cls, v: int) -> int:
+        """Validate combat error threshold."""
+        if not 1 <= v <= 50:
+            raise ValueError("Error threshold must be between 1 and 50")
         return v
 
     model_config = {"env_prefix": "GAME_", "case_sensitive": False, "extra": "ignore"}
@@ -366,6 +457,15 @@ class AppConfig(BaseSettings):
             "game_tick_rate": self.game.game_tick_rate,
             "weather_update_interval": self.game.weather_update_interval,
             "save_interval": self.game.save_interval,
+            # Combat configuration
+            "combat_enabled": self.game.combat_enabled,
+            "combat_timeout_seconds": self.game.combat_timeout_seconds,
+            "combat_xp_multiplier": self.game.combat_xp_multiplier,
+            "combat_logging_enabled": self.game.combat_logging_enabled,
+            "combat_monitoring_enabled": self.game.combat_monitoring_enabled,
+            "combat_alert_threshold": self.game.combat_alert_threshold,
+            "combat_performance_threshold": self.game.combat_performance_threshold,
+            "combat_error_threshold": self.game.combat_error_threshold,
             # NATS (convert to nested dict)
             "nats": {
                 "enabled": self.nats.enabled,

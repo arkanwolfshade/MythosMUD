@@ -7,7 +7,7 @@ This module contains handlers for exploration-related commands like look and go.
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -49,8 +49,53 @@ async def handle_look_command(
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return {"result": "You see nothing special."}
 
-    # Extract direction from command_data
+    # Extract direction and target from command_data
     direction = command_data.get("direction")
+    target = command_data.get("target")
+
+    # Handle target lookups (NPCs take priority over directions)
+    if target:
+        target_lower = target.lower()
+        logger.debug("Looking at target", player=player_name, target=target, room_id=room_id)
+
+        # Check if target is a direction
+        if target_lower in ["north", "south", "east", "west", "up", "down", "n", "s", "e", "w", "u", "d"]:
+            direction = target_lower
+        else:
+            # Look for NPC in current room
+            npc_ids = room.get_npcs()
+            if npc_ids:
+                # Find matching NPCs (case-insensitive partial match)
+                matching_npcs = []
+                for npc_id in npc_ids:
+                    # Get NPC instance to check name
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    # Use the same approach as combat system
+                    if hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                            npc_instance = lifecycle_manager.active_npcs[npc_id]
+                            if npc_instance and target_lower in npc_instance.name.lower():
+                                matching_npcs.append(npc_instance)
+
+                if len(matching_npcs) == 1:
+                    npc = matching_npcs[0]
+                    logger.debug("Found NPC to look at", player=player_name, npc_name=npc.name, npc_id=npc.npc_id)
+                    return {"result": f"You look at {npc.name}.\n{npc.description}"}
+                elif len(matching_npcs) > 1:
+                    npc_names = [npc.name for npc in matching_npcs]
+                    logger.debug("Multiple NPCs match target", player=player_name, target=target, matches=npc_names)
+                    return {"result": f"You see multiple NPCs matching '{target}': {', '.join(npc_names)}"}
+                else:
+                    logger.debug("No NPCs match target", player=player_name, target=target, room_id=room_id)
+                    return {"result": f"You don't see anyone named '{target}' here."}
+            else:
+                logger.debug("No NPCs in room", player=player_name, target=target, room_id=room_id)
+                return {"result": f"You don't see anyone named '{target}' here."}
+
+    # Handle direction lookups
     if direction:
         direction = direction.lower()
         logger.debug("Looking in direction", player=player_name, direction=direction, room_id=room_id)
@@ -147,12 +192,21 @@ async def handle_go_command(
         success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
 
         if success:
-            logger.info(f"Player moved successfully for {player_name}: from {room_id} to {target_room_id}")
+            logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You move to the new location."}
         else:
-            logger.warning(f"Movement service failed for {player_name}: from {room_id} to {target_room_id}")
+            logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way."}
 
     except Exception as e:
-        logger.error(f"Go command error for {player_name}: {str(e)}")
+        logger.error(
+            "Go command error",
+            player=player_name,
+            command_data=command_data,
+            room_id=room_id,
+            target_room_id=target_room_id,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error during movement: {str(e)}"}

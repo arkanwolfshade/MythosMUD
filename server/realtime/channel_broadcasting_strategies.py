@@ -9,7 +9,7 @@ O(1) lookup and eliminates the need for repetitive conditional logic.
 
 from abc import ABC, abstractmethod
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -60,7 +60,7 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
                 sender_id=sender_id,
             )
         else:
-            logger.warning("Room-based message missing room_id", context={"channel": self.channel_type})
+            logger.warning("Room-based message missing room_id")
 
 
 class GlobalChannelStrategy(ChannelBroadcastingStrategy):
@@ -74,7 +74,7 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):
         from ..realtime.connection_manager import connection_manager
 
         await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
-        logger.debug("Broadcasted global message", context={"sender_id": sender_id})
+        logger.debug("Broadcasted global message", sender_id=sender_id)
 
 
 class PartyChannelStrategy(ChannelBroadcastingStrategy):
@@ -86,7 +86,7 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):
         """Broadcast party message to party members."""
         if party_id:
             # TODO: Implement party-based broadcasting when party system is available
-            logger.debug("Party message received", context={"party_id": party_id, "sender_id": sender_id})
+            logger.debug("Party message received")
         else:
             logger.warning("Party message missing party_id")
 
@@ -132,7 +132,7 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         from ..realtime.connection_manager import connection_manager
 
         await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
-        logger.debug(f"Broadcasted {self.channel_type} message", context={"sender_id": sender_id})
+        logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 
 
 class UnknownChannelStrategy(ChannelBroadcastingStrategy):
@@ -151,7 +151,7 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):
         self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Handle unknown channel type."""
-        logger.warning("Unknown channel type", context={"channel": self.channel_type})
+        logger.warning("Unknown channel type")
 
 
 class ChannelBroadcastingStrategyFactory:
@@ -198,7 +198,7 @@ class ChannelBroadcastingStrategyFactory:
             strategy: Strategy to register
         """
         self._strategies[channel_type] = strategy
-        logger.info(f"Registered strategy for channel type: {channel_type}")
+        logger.info("Registered strategy for channel type", channel_type=channel_type)
 
 
 # Global strategy factory instance

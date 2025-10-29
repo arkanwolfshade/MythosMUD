@@ -13,7 +13,7 @@ from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 
 class MovementMonitor:
@@ -155,7 +155,7 @@ class MovementMonitor:
         self.record_integrity_check(len(violations) > 0)
 
         if violations:
-            self._logger.warning(f"Room integrity violations found: {violations}")
+            self._logger.warning("Room integrity violations found", violations=violations)
         else:
             self._logger.debug("Room integrity check passed")
 
@@ -227,7 +227,7 @@ class MovementMonitor:
         """Check for alerts and log them."""
         alerts = self.get_alerts()
         if alerts:
-            self._logger.warning(f"Movement system alerts: {alerts}")
+            self._logger.warning("Movement system alerts", alerts=alerts)
 
     def reset_metrics(self):
         """Reset all metrics (useful for testing)."""
@@ -265,7 +265,7 @@ class MovementMonitor:
 
         if alerts:
             for alert in alerts:
-                self._logger.warning(f"Alert: {alert}")
+                self._logger.warning("Alert", alert=alert)
 
 
 # Global monitor instance

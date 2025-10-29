@@ -12,7 +12,7 @@ import re
 import networkx as nx
 
 from ..alias_storage import AliasStorage
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

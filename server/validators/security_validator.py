@@ -424,6 +424,52 @@ def validate_target_player(value: str) -> str:
     return value
 
 
+def validate_combat_target(value: str) -> str:
+    """
+    Validation for combat target fields that can be either players or NPCs.
+
+    This function allows for more flexible naming conventions that support
+    both player names and NPC names with titles (e.g., "Dr. Francis Morgan").
+
+    Args:
+        value: The combat target name to validate
+
+    Returns:
+        str: The validated combat target name
+
+    Raises:
+        ValueError: If the combat target name has invalid format
+    """
+    if not value:
+        return value
+
+    # Check basic security: no dangerous characters
+    dangerous_chars = ["<", ">", "&", '"', "'", "\\", "/", "|", ":", ";", "*", "?"]
+    for char in dangerous_chars:
+        if char in value:
+            raise ValueError(f"Combat target name cannot contain '{char}'")
+
+    # Check length limits
+    if len(value) < 1:
+        raise ValueError("Combat target name cannot be empty")
+
+    if len(value) > 50:
+        raise ValueError("Combat target name must be 50 characters or less")
+
+    # Check that it starts with a letter or number (allows NPC titles like "Dr.")
+    if not re.match(r"^[a-zA-Z0-9]", value):
+        raise ValueError("Combat target name must start with a letter or number")
+
+    # Allow letters, numbers, spaces, periods, underscores, and hyphens
+    # This supports both player names and NPC names with titles
+    if not re.match(r"^[a-zA-Z0-9\s._-]+$", value):
+        raise ValueError(
+            "Combat target name can only contain letters, numbers, spaces, periods, underscores, and hyphens"
+        )
+
+    return value
+
+
 def validate_help_topic(value: str) -> str:
     """
     Centralized validation for help topic fields.
@@ -549,6 +595,8 @@ def validate_security_comprehensive(text: str, field_type: str = "message") -> s
         return validate_filter_name(text)
     elif field_type == "target":
         return validate_target_player(text)
+    elif field_type == "combat_target":
+        return validate_combat_target(text)
     else:
         # Default to message validation for unknown field types
         return validate_message_content(text)

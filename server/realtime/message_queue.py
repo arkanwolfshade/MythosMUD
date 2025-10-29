@@ -8,7 +8,7 @@ of messages to players who may be temporarily disconnected.
 import time
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -56,13 +56,13 @@ class MessageQueue:
             # Limit queue size
             if len(self.pending_messages[player_id]) > self.max_messages_per_player:
                 self.pending_messages[player_id] = self.pending_messages[player_id][-self.max_messages_per_player :]
-                logger.warning(f"Message queue limit reached for player {player_id}, dropping oldest messages")
+                logger.warning("Message queue limit reached, dropping oldest messages", player_id=player_id)
 
-            logger.debug(f"Added message to queue for player {player_id}")
+            logger.debug("Added message to queue", player_id=player_id)
             return True
 
         except Exception as e:
-            logger.error(f"Error adding message to queue for player {player_id}: {e}")
+            logger.error("Error adding message to queue", player_id=player_id, error=str(e))
             return False
 
     def get_messages(self, player_id: str) -> list[dict[str, Any]]:
@@ -79,11 +79,11 @@ class MessageQueue:
             messages = self.pending_messages.get(player_id, [])
             if player_id in self.pending_messages:
                 del self.pending_messages[player_id]
-                logger.debug(f"Retrieved and cleared {len(messages)} messages for player {player_id}")
+                logger.debug("Retrieved and cleared messages", message_count=len(messages), player_id=player_id)
             return messages
 
         except Exception as e:
-            logger.error(f"Error retrieving messages for player {player_id}: {e}")
+            logger.error("Error retrieving messages", player_id=player_id, error=str(e))
             return []
 
     def has_messages(self, player_id: str) -> bool:
@@ -120,9 +120,9 @@ class MessageQueue:
         try:
             if player_id in self.pending_messages:
                 del self.pending_messages[player_id]
-                logger.debug(f"Removed all pending messages for player {player_id}")
+                logger.debug("Removed all pending messages", player_id=player_id)
         except Exception as e:
-            logger.error(f"Error removing messages for player {player_id}: {e}")
+            logger.error("Error removing messages", player_id=player_id, error=str(e))
 
     def cleanup_old_messages(self, max_age_seconds: int = 3600):
         """
@@ -160,7 +160,7 @@ class MessageQueue:
                 )
 
         except Exception as e:
-            logger.error(f"Error cleaning up old messages: {e}")
+            logger.error("Error cleaning up old messages", error=str(e))
 
     def cleanup_large_structures(self, max_entries: int = 1000):
         """
@@ -179,7 +179,7 @@ class MessageQueue:
                     )
 
         except Exception as e:
-            logger.error(f"Error cleaning up large message queue structures: {e}")
+            logger.error("Error cleaning up large message queue structures", error=str(e))
 
     def _is_message_recent(self, msg: dict[str, Any], current_time: float, max_age_seconds: int) -> bool:
         """
@@ -240,5 +240,5 @@ class MessageQueue:
                 "average_queue_size": total_messages / total_queues if total_queues > 0 else 0,
             }
         except Exception as e:
-            logger.error(f"Error getting message queue stats: {e}")
+            logger.error("Error getting message queue stats", error=str(e))
             return {}

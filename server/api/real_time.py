@@ -49,7 +49,7 @@ async def sse_events_token(request: Request):
     Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
     token = request.query_params.get("token")
@@ -67,7 +67,7 @@ async def sse_events_token(request: Request):
         context.user_id = user_id
         raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
     player_id = player.player_id
-    logger.info(f"SSE connection attempt for player {player_id} with session {session_id}")
+    logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
 
     return StreamingResponse(
         game_event_stream(player_id, session_id),
@@ -87,7 +87,7 @@ async def websocket_endpoint(websocket: WebSocket):
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -107,7 +107,7 @@ async def websocket_endpoint(websocket: WebSocket):
         persistence = get_persistence()
         player = persistence.get_player(player_id)
         if not player:
-            logger.warning(f"WebSocket connection attempt for non-existent player: {player_id}")
+            logger.warning("WebSocket connection attempt for non-existent player", player_id=player_id)
             context = create_context_from_websocket(websocket)
             context.user_id = player_id
             raise LoggedHTTPException(status_code=404, detail=f"Player {player_id} not found", context=context)
@@ -121,12 +121,12 @@ async def websocket_endpoint(websocket: WebSocket):
             raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
         player_id = player.player_id
 
-    logger.info(f"WebSocket connection attempt for player {player_id} with session {session_id}")
+    logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
         await handle_websocket_connection(websocket, player_id, session_id)
     except Exception as e:
-        logger.error(f"Error in WebSocket endpoint for player {player_id}: {e}", exc_info=True)
+        logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
 
 
@@ -136,7 +136,7 @@ async def get_player_connections(player_id: str, request: Request):
     Get connection information for a player.
     Returns detailed connection metadata including session information.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -163,7 +163,7 @@ async def get_player_connections(player_id: str, request: Request):
         "timestamp": time.time(),
     }
 
-    logger.info(f"Connection info requested for player {player_id}")
+    logger.info("Connection info requested", player_id=player_id)
     return connection_data
 
 
@@ -175,7 +175,7 @@ async def handle_new_game_session(player_id: str, request: Request):
     """
     import json
 
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -193,7 +193,7 @@ async def handle_new_game_session(player_id: str, request: Request):
         # Handle new game session
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
 
-        logger.info(f"New game session handled for player {player_id}: {session_results}")
+        logger.info("New game session handled", player_id=player_id, session_results=session_results)
         return session_results
 
     except json.JSONDecodeError as e:
@@ -201,7 +201,7 @@ async def handle_new_game_session(player_id: str, request: Request):
         context.user_id = player_id
         raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
     except Exception as e:
-        logger.error(f"Error handling new game session for player {player_id}: {e}", exc_info=True)
+        logger.error("Error handling new game session", player_id=player_id, error=str(e), exc_info=True)
         context = create_context_from_request(request)
         context.user_id = player_id
         raise LoggedHTTPException(
@@ -215,7 +215,7 @@ async def get_connection_statistics(request: Request):
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
     from ..realtime.connection_manager import connection_manager
 
     logger = get_logger(__name__)
@@ -243,13 +243,13 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     prefers JWT token identity when provided.
     Supports session tracking for dual connection management.
     """
-    from ..logging_config import get_logger
+    from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
     # Get session parameter
     session_id = websocket.query_params.get("session_id")
-    logger.info(f"WebSocket (compat) connection attempt for player {player_id} with session {session_id}")
+    logger.info("WebSocket (compat) connection attempt", player_id=player_id, session_id=session_id)
 
     try:
         token = websocket.query_params.get("token")
@@ -263,5 +263,5 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
                 resolved_player_id = player.player_id
         await handle_websocket_connection(websocket, resolved_player_id, session_id)
     except Exception as e:
-        logger.error(f"Error in WebSocket endpoint for player {player_id}: {e}", exc_info=True)
+        logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise

@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from ..auth.users import get_current_user
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 
 logger = get_logger(__name__)

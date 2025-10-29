@@ -1,0 +1,53 @@
+name: 📝 Documentation
+description: Improve our scholarly records and research documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        *"Knowledge unrecorded is knowledge lost to the void."*
+
+        Help improve MythosMUD's documentation.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs attention?
+      options:
+        - Missing documentation
+        - Incorrect/outdated information
+        - Unclear explanation
+        - Typo/grammar
+        - Example needed
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Which file(s) or section(s) need improvement?
+      placeholder: "e.g., README.md, docs/DEVELOPMENT.md, line 45"
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What's the Issue?
+      description: Describe what's wrong or missing
+      placeholder: Clear description of the documentation problem
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How should this be fixed or improved?
+      placeholder: Your suggested changes or additions
+    validations:
+      required: false

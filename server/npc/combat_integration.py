@@ -14,9 +14,9 @@ import time
 from typing import Any
 
 from ..events import EventBus
-from ..events.event_types import NPCAttacked, NPCDied
+from ..events.event_types import NPCAttacked
 from ..game.mechanics import GameMechanicsService
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
 
 logger = get_logger(__name__)
@@ -213,34 +213,35 @@ class NPCCombatIntegration:
             bool: True if death was handled successfully
         """
         try:
-            # Apply effects to killer if it's a player
+            # Calculate XP reward for the killer
+            xp_reward = 0
+
             if killer_id:
+                # For now, use a default XP reward since NPC retrieval is complex
+                # TODO: Implement proper NPC retrieval from NPC database
+                xp_reward = 10  # Default XP reward for aggressive mobs
+
+                # Apply effects to killer if it's a player
                 player = self._persistence.get_player(killer_id)
                 if player:
-                    # Gain occult knowledge for killing certain NPCs
-                    npc = self._persistence.get_npc(npc_id)
-                    if npc and npc.npc_type.value == "aggressive_mob":
-                        occult_gain = 5  # Small amount of occult knowledge
-                        self._game_mechanics.gain_occult_knowledge(killer_id, occult_gain, f"killed_{npc_id}")
+                    # Gain occult knowledge for killing NPCs
+                    occult_gain = 5  # Small amount of occult knowledge
+                    self._game_mechanics.gain_occult_knowledge(killer_id, occult_gain, f"killed_{npc_id}")
 
                     # Apply sanity loss for killing (even aggressive NPCs)
                     sanity_loss = 2  # Small sanity loss for taking a life
                     self._game_mechanics.apply_sanity_loss(killer_id, sanity_loss, f"killed_{npc_id}")
 
-            # Publish death event
-            if self.event_bus:
-                self.event_bus.publish(
-                    NPCDied(
-                        timestamp=time.time(),
-                        event_type="NPCDied",
-                        npc_id=npc_id,
-                        room_id=room_id,
-                        cause=cause,
-                        killer_id=killer_id,
-                    )
-                )
+            # Note: NPCDied event is now published by CombatService via NATS
+            # This prevents duplicate event publishing and ensures consistent event handling
 
-            logger.info("NPC death handled", npc_id=npc_id, cause=cause, killer_id=killer_id)
+            logger.info(
+                "NPC death handled",
+                npc_id=npc_id,
+                cause=cause,
+                killer_id=killer_id,
+                xp_reward=xp_reward,
+            )
             return True
 
         except Exception as e:

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
-import { MotdContent } from './MotdContent';
 import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
@@ -29,6 +28,8 @@ interface Player {
     cult_affiliation?: number;
   };
   level?: number;
+  xp?: number;
+  in_combat?: boolean;
 }
 
 interface Room {
@@ -80,6 +81,8 @@ interface GameTerminalProps {
   onSendChatMessage: (message: string, channel: string) => void;
   onClearMessages: () => void;
   onClearHistory: () => void;
+  isMortallyWounded?: boolean;
+  isDead?: boolean;
 }
 
 export const GameTerminal: React.FC<GameTerminalProps> = ({
@@ -97,12 +100,14 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onLogout,
   isLoggingOut = false,
   onDownloadLogs,
+  isMortallyWounded = false,
+  isDead = false,
   onSendCommand,
   onSendChatMessage,
   onClearMessages,
   onClearHistory,
 }) => {
-  const [showMotd, setShowMotd] = useState(true);
+  // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
 
   // Responsive panel sizing based on viewport
@@ -154,22 +159,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         </div>
       </div>
 
-      {/* MOTD Overlay (preserved styles) */}
-      {showMotd && (
-        <div
-          className="motd-display"
-          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100000 }}
-        >
-          <div className="motd-content">
-            <MotdContent />
-          </div>
-          <div className="motd-actions">
-            <button className="continue-button" onClick={() => setShowMotd(false)} data-testid="continue-button">
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
+      {/* MOTD is now handled by the interstitial screen in App.tsx */}
 
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">
@@ -237,6 +227,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               onLogout={onLogout}
               isConnected={isConnected}
               isLoggingOut={isLoggingOut}
+              disabled={isMortallyWounded || isDead}
             />
           </DraggablePanel>
 
@@ -325,6 +316,14 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                     <span className="text-base text-mythos-terminal-text-secondary">Sanity:</span>
                     <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-base text-mythos-terminal-text-secondary">XP:</span>
+                    <span className="text-base text-mythos-terminal-text">{player.xp || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-base text-mythos-terminal-text-secondary">In Combat:</span>
+                    <span className="text-base text-mythos-terminal-text">{player.in_combat ? 'Yes' : 'No'}</span>
+                  </div>
                   {/* Core Attributes */}
                   <div className="border-t border-mythos-terminal-border pt-2">
                     <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Core Attributes:</h5>
@@ -399,14 +398,6 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                   </div>
                 </>
               )}
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Messages:</span>
-                <span className="text-base text-mythos-terminal-text">{messages.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-base text-mythos-terminal-text-secondary">Commands:</span>
-                <span className="text-base text-mythos-terminal-text">{commandHistory.length}</span>
-              </div>
             </div>
           </DraggablePanel>
         </div>

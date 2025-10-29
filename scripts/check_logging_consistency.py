@@ -36,13 +36,13 @@ def check_file_for_logging_issues(file_path: Path) -> list[str]:
         for i, line in enumerate(lines, 1):
             if re.search(r"logging\.getLogger\(", line):
                 # Check if this file imports get_logger
-                if "from ..logging_config import get_logger" not in content:
+                if "from ..logging.enhanced_logging_config import get_logger" not in content:
                     issues.append(f"Line {i}: Uses logging.getLogger() but doesn't import get_logger()")
 
         # Check for context parameter usage with standard logger
         for i, line in enumerate(lines, 1):
             if re.search(r"logger\.(info|debug|warning|error|critical)\([^)]*context\s*=", line):
-                if "from ..logging_config import get_logger" not in content:
+                if "from ..logging.enhanced_logging_config import get_logger" not in content:
                     issues.append(f"Line {i}: Uses context parameter but doesn't import get_logger()")
 
     except Exception as e:
@@ -70,12 +70,12 @@ def main():
                     all_issues.extend([f"  {issue}" for issue in issues])
 
     if all_issues:
-        print("🚨 LOGGING CONSISTENCY ISSUES FOUND:")
+        print("LOGGING CONSISTENCY ISSUES FOUND:")
         for issue in all_issues:
             print(issue)
-        print("\n💡 SOLUTION:")
+        print("\nSOLUTION:")
         print("Replace 'logging.getLogger(__name__)' with 'get_logger(__name__)'")
-        print("Add import: 'from ..logging_config import get_logger'")
+        print("Add import: 'from ..logging.enhanced_logging_config import get_logger'")
         print("Remove import: 'import logging'")
         sys.exit(1)
     else:

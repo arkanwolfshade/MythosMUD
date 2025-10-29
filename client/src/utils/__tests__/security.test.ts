@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { secureTokenStorage, sessionManager, inputSanitizer, csrfProtection } from '../security';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { csrfProtection, inputSanitizer, secureTokenStorage, sessionManager } from '../security';
 
 // Mock localStorage
 const localStorageMock = {
@@ -33,35 +33,32 @@ describe('Secure Token Storage', () => {
   });
 
   describe('Token Storage', () => {
-    it('should store token in httpOnly cookie', () => {
+    it('should store token in localStorage', () => {
       const token = 'test-jwt-token';
       secureTokenStorage.setToken(token);
 
-      expect(document.cookie).toContain('authToken=');
-      expect(document.cookie).toContain('HttpOnly');
-      expect(document.cookie).toContain('Secure');
-      expect(document.cookie).toContain('SameSite=Strict');
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('authToken', token);
     });
 
-    it('should retrieve token from cookie', () => {
+    it('should retrieve token from localStorage', () => {
       const token = 'test-jwt-token';
-      document.cookie = `authToken=${token}; HttpOnly; Secure; SameSite=Strict`;
+      localStorageMock.getItem.mockReturnValue(token);
 
       const retrievedToken = secureTokenStorage.getToken();
       expect(retrievedToken).toBe(token);
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('authToken');
     });
 
     it('should return null for missing token', () => {
-      document.cookie = '';
+      localStorageMock.getItem.mockReturnValue(null);
       const token = secureTokenStorage.getToken();
       expect(token).toBeNull();
     });
 
-    it('should clear token from cookie', () => {
-      document.cookie = 'authToken=test-token; HttpOnly; Secure; SameSite=Strict';
+    it('should clear token from localStorage', () => {
       secureTokenStorage.clearToken();
 
-      expect(document.cookie).toContain('authToken=; expires=');
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('authToken');
     });
 
     it('should validate token format', () => {
@@ -87,8 +84,8 @@ describe('Secure Token Storage', () => {
         json: () => Promise.resolve(refreshResponse),
       } as Response);
 
-      // Set a refresh token in cookie
-      document.cookie = 'refreshToken=test-refresh-token; HttpOnly; Secure; SameSite=Strict';
+      // Set a refresh token in localStorage
+      localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
       const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -112,8 +109,8 @@ describe('Secure Token Storage', () => {
         status: 401,
       } as Response);
 
-      // Set a refresh token in cookie
-      document.cookie = 'refreshToken=test-refresh-token; HttpOnly; Secure; SameSite=Strict';
+      // Set a refresh token in localStorage
+      localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
       const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';

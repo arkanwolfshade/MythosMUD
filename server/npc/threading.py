@@ -19,7 +19,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
 
 logger = get_logger(__name__)

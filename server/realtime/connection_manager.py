@@ -15,7 +15,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import Player
 from .memory_monitor import MemoryMonitor
 from .message_queue import MessageQueue
@@ -38,20 +38,21 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         NPC name from the database, or None if instance not found
     """
     try:
-        # Get the NPC instance from the spawning service
+        # Get the NPC instance from the lifecycle manager (single source of truth)
         from ..services.npc_instance_service import get_npc_instance_service
 
         npc_instance_service = get_npc_instance_service()
-        if hasattr(npc_instance_service, "spawning_service"):
-            spawning_service = npc_instance_service.spawning_service
-            if npc_id in spawning_service.active_npc_instances:
-                npc_instance = spawning_service.active_npc_instances[npc_id]
+        if hasattr(npc_instance_service, "lifecycle_manager"):
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                npc_instance = lifecycle_manager.active_npcs[npc_id]
                 name = getattr(npc_instance, "name", None)
-                return name
+                if name:
+                    return name
 
         return None
     except Exception as e:
-        logger.debug(f"Error getting NPC name from instance for {npc_id}: {e}")
+        logger.debug("Error getting NPC name from instance", npc_id=npc_id, error=str(e))
         return None
 
 
@@ -303,7 +304,7 @@ class ConnectionManager:
                 if room is not None and getattr(room, "id", None):
                     return room.id
         except Exception as e:
-            logger.error(f"Error resolving canonical room id for {room_id}: {e}")
+            logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id
 
     def _reconcile_room_presence(self, room_id: str):
@@ -425,9 +426,9 @@ class ConnectionManager:
             player = self._get_player(player_id)
             if not player:
                 if self.persistence is None:
-                    logger.warning(f"Persistence not available, connecting without player tracking for {player_id}")
+                    logger.warning("Persistence not available, connecting without player tracking", player_id=player_id)
                 else:
-                    logger.error(f"Player {player_id} not found")
+                    logger.error("Player not found", player_id=player_id)
                     return False
             else:
                 canonical_room_id = getattr(player, "current_room_id", None)
@@ -446,7 +447,7 @@ class ConnectionManager:
                     await self._broadcast_connection_message(player_id, player)
 
         except Exception as e:
-            logger.error(f"Error connecting WebSocket for {player_id}: {e}", exc_info=True)
+            logger.error("Error connecting WebSocket", player_id=player_id, error=str(e), exc_info=True)
             return False
 
         # Track performance metrics
@@ -471,18 +472,34 @@ class ConnectionManager:
             is_force_disconnect: If True, don't broadcast player_left_game
         """
         try:
+            logger.info(
+                f"🔍 DEBUG: Starting WebSocket disconnect for player {player_id}, force_disconnect={is_force_disconnect}"
+            )
+
             if player_id in self.player_websockets:
                 connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
+                logger.info(
+                    f"🔍 DEBUG: Found {len(connection_ids)} WebSocket connections for player {player_id}: {connection_ids}"
+                )
 
                 # Disconnect all WebSocket connections for this player
                 for connection_id in connection_ids:
                     if connection_id in self.active_websockets:
                         websocket = self.active_websockets[connection_id]
+                        logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
                         # Properly close the WebSocket connection
                         try:
                             await asyncio.wait_for(websocket.close(code=1000, reason="Connection closed"), timeout=2.0)
+                            logger.info(
+                                f"🔍 DEBUG: Successfully closed WebSocket {connection_id} for player {player_id}"
+                            )
                         except (TimeoutError, Exception) as e:
-                            logger.warning(f"Error closing WebSocket {connection_id} for {player_id}: {e}")
+                            logger.warning(
+                                "Error closing WebSocket",
+                                connection_id=connection_id,
+                                player_id=player_id,
+                                error=str(e),
+                            )
                         del self.active_websockets[connection_id]
 
                     # Clean up connection metadata
@@ -501,7 +518,7 @@ class ConnectionManager:
                             self.processed_disconnects.add(player_id)
                             should_track_disconnect = True
                         else:
-                            logger.debug(f"Disconnect already processed for player {player_id}, skipping")
+                            logger.debug("Disconnect already processed, skipping", player_id=player_id)
 
                     # Track disconnect outside of disconnect_lock to avoid deadlock
                     if should_track_disconnect:
@@ -525,10 +542,10 @@ class ConnectionManager:
                     if player_id in self.last_seen:
                         del self.last_seen[player_id]
 
-                logger.info(f"WebSocket disconnected for player {player_id}")
+                logger.info("WebSocket disconnected", player_id=player_id)
 
         except Exception as e:
-            logger.error(f"Error during WebSocket disconnect for {player_id}: {e}", exc_info=True)
+            logger.error("Error during WebSocket disconnect", player_id=player_id, error=str(e), exc_info=True)
 
     async def force_disconnect_player(self, player_id: str):
         """
@@ -538,7 +555,7 @@ class ConnectionManager:
             player_id: The player's ID
         """
         try:
-            logger.info(f"Force disconnecting player {player_id} from all connections")
+            logger.info("Force disconnecting player from all connections", player_id=player_id)
 
             # Disconnect WebSocket if active (without broadcasting player_left_game)
             if player_id in self.player_websockets:
@@ -548,9 +565,9 @@ class ConnectionManager:
             if player_id in self.active_sse_connections:
                 self.disconnect_sse(player_id, is_force_disconnect=True)
 
-            logger.info(f"Player {player_id} force disconnected from all connections")
+            logger.info("Player force disconnected from all connections", player_id=player_id)
         except Exception as e:
-            logger.error(f"Error force disconnecting player {player_id}: {e}", exc_info=True)
+            logger.error("Error force disconnecting player", player_id=player_id, error=str(e), exc_info=True)
 
     async def disconnect_connection_by_id(self, connection_id: str) -> bool:
         """
@@ -564,23 +581,32 @@ class ConnectionManager:
         """
         try:
             if connection_id not in self.connection_metadata:
-                logger.warning(f"Connection {connection_id} not found in metadata")
+                logger.warning("Connection not found in metadata", connection_id=connection_id)
                 return False
 
             metadata = self.connection_metadata[connection_id]
             player_id = metadata.player_id
             connection_type = metadata.connection_type
 
-            logger.info(f"Disconnecting {connection_type} connection {connection_id} for player {player_id}")
+            logger.info(
+                "Disconnecting connection",
+                connection_type=connection_type,
+                connection_id=connection_id,
+                player_id=player_id,
+            )
 
             if connection_type == "websocket":
                 # Disconnect WebSocket connection
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
+                    logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
                     try:
                         await websocket.close(code=1000, reason="Connection closed")
+                        logger.info(
+                            "DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id
+                        )
                     except Exception as e:
-                        logger.warning(f"Error closing WebSocket {connection_id}: {e}")
+                        logger.warning("Error closing WebSocket", connection_id=connection_id, error=str(e))
                     del self.active_websockets[connection_id]
 
                 # Remove from player's connection list
@@ -613,13 +639,15 @@ class ConnectionManager:
                     del self.last_seen[player_id]
                 # Remove from room subscriptions
                 self.room_manager.remove_player_from_all_rooms(player_id)
-                logger.info(f"Player {player_id} has no remaining connections, cleaned up player data")
+                logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
 
-            logger.info(f"Successfully disconnected {connection_type} connection {connection_id}")
+            logger.info(
+                "Successfully disconnected connection", connection_type=connection_type, connection_id=connection_id
+            )
             return True
 
         except Exception as e:
-            logger.error(f"Error disconnecting connection {connection_id}: {e}", exc_info=True)
+            logger.error("Error disconnecting connection", connection_id=connection_id, error=str(e), exc_info=True)
             return False
 
     async def disconnect_websocket_connection(self, player_id: str, connection_id: str) -> bool:
@@ -636,7 +664,7 @@ class ConnectionManager:
         try:
             # Verify the connection belongs to this player
             if connection_id not in self.connection_metadata:
-                logger.warning(f"Connection {connection_id} not found in metadata")
+                logger.warning("Connection not found in metadata", connection_id=connection_id)
                 return False
 
             metadata = self.connection_metadata[connection_id]
@@ -668,7 +696,7 @@ class ConnectionManager:
         try:
             # Verify the connection belongs to this player
             if connection_id not in self.connection_metadata:
-                logger.warning(f"Connection {connection_id} not found in metadata")
+                logger.warning("Connection not found in metadata", connection_id=connection_id)
                 return False
 
             metadata = self.connection_metadata[connection_id]
@@ -700,9 +728,9 @@ class ConnectionManager:
                     del self.last_seen[player_id]
                 # Remove from room subscriptions
                 self.room_manager.remove_player_from_all_rooms(player_id)
-                logger.info(f"Player {player_id} has no remaining connections, cleaned up player data")
+                logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
 
-            logger.info(f"Successfully disconnected SSE connection {connection_id}")
+            logger.info("Successfully disconnected SSE connection", connection_id=connection_id)
             return True
 
         except Exception as e:
@@ -788,12 +816,14 @@ class ConnectionManager:
                 if player_id not in self.online_players:
                     await self._track_player_connected(player_id, player, "sse")
                 else:
-                    logger.info(f"Player {player_id} already tracked as online, skipping _track_player_connected")
+                    logger.info(
+                        "Player already tracked as online, skipping _track_player_connected", player_id=player_id
+                    )
             elif self.persistence is None:
-                logger.warning(f"Persistence not available, SSE connecting without player tracking for {player_id}")
+                logger.warning("Persistence not available, SSE connecting without player tracking", player_id=player_id)
 
         except Exception as e:
-            logger.error(f"Error tracking SSE presence for {player_id}: {e}", exc_info=True)
+            logger.error("Error tracking SSE presence", player_id=player_id, error=str(e), exc_info=True)
 
         # Track performance metrics
         duration_ms = (time.time() - start_time) * 1000
@@ -851,7 +881,11 @@ class ConnectionManager:
             # Check if player has an existing session
             if player_id in self.player_sessions:
                 session_results["previous_session_id"] = self.player_sessions[player_id]
-                logger.info(f"Player {player_id} had existing session {session_results['previous_session_id']}")
+                logger.info(
+                    "Player had existing session",
+                    player_id=player_id,
+                    previous_session_id=session_results["previous_session_id"],
+                )
 
             # Disconnect all existing WebSocket connections
             if player_id in self.player_websockets:
@@ -873,14 +907,24 @@ class ConnectionManager:
                                 )
 
                             if is_connected:
+                                logger.info(
+                                    f"🔍 DEBUG: Closing WebSocket {connection_id} due to new game session for player {player_id}"
+                                )
                                 await websocket.close(code=1000, reason="New game session established")
+                                logger.info(
+                                    f"🔍 DEBUG: Successfully closed WebSocket {connection_id} due to new game session"
+                                )
                                 session_results["connections_disconnected"] += 1
                             else:
-                                logger.debug(f"Skipping close for WebSocket {connection_id} (not connected)")
+                                logger.debug(
+                                    "Skipping close for WebSocket (not connected)", connection_id=connection_id
+                                )
                                 session_results["connections_disconnected"] += 1  # Count as disconnected
                         except Exception as e:
                             # Don't let close errors propagate - log and continue
-                            logger.debug(f"Non-critical error closing WebSocket {connection_id}: {e}")
+                            logger.debug(
+                                "Non-critical error closing WebSocket", connection_id=connection_id, error=str(e)
+                            )
                             session_results["connections_disconnected"] += 1  # Still count as disconnected
                         # Clean up from active websockets regardless of close success
                         try:
@@ -1049,16 +1093,16 @@ class ConnectionManager:
                         # No running loop in this thread; execute synchronously
                         asyncio.run(self._check_and_process_disconnect(player_id))
 
-            logger.info(f"SSE disconnected for player {player_id}")
+            logger.info("SSE disconnected", player_id=player_id)
         except Exception as e:
-            logger.error(f"Error during SSE disconnect for {player_id}: {e}", exc_info=True)
+            logger.error("Error during SSE disconnect", player_id=player_id, error=str(e), exc_info=True)
 
     def mark_player_seen(self, player_id: str):
         """Update last-seen timestamp for a player."""
         try:
             self.last_seen[player_id] = time.time()
         except Exception as e:
-            logger.error(f"Error marking player {player_id} seen: {e}")
+            logger.error("Error marking player seen", player_id=player_id, error=str(e))
 
     def prune_stale_players(self, max_age_seconds: int = 90):
         """
@@ -1093,9 +1137,9 @@ class ConnectionManager:
                 if pid in self.active_sse_connections:
                     del self.active_sse_connections[pid]
             if stale_ids:
-                logger.info(f"Pruned stale players: {stale_ids}")
+                logger.info("Pruned stale players", stale_ids=stale_ids)
         except Exception as e:
-            logger.error(f"Error pruning stale players: {e}")
+            logger.error("Error pruning stale players", error=str(e))
 
     async def cleanup_orphaned_data(self):
         """Clean up orphaned data that might accumulate over time."""
@@ -1120,16 +1164,22 @@ class ConnectionManager:
             # Clean up stale connections
             stale_connections = []
             for connection_id, timestamp in list(self.connection_timestamps.items()):
-                if now_ts - timestamp > self.memory_monitor.max_connection_age:
+                connection_age = now_ts - timestamp
+                if connection_age > self.memory_monitor.max_connection_age:
+                    logger.info(
+                        f"🔍 DEBUG: Connection {connection_id} is stale (age: {connection_age:.1f}s, max: {self.memory_monitor.max_connection_age}s)"
+                    )
                     stale_connections.append(connection_id)
 
             for connection_id in stale_connections:
                 if connection_id in self.active_websockets:
                     try:
                         websocket = self.active_websockets[connection_id]
+                        logger.info("DEBUG: Closing stale WebSocket due to timeout", connection_id=connection_id)
                         await websocket.close(code=1000, reason="Connection timeout")
+                        logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
                     except Exception as e:
-                        logger.warning(f"Error closing stale connection {connection_id}: {e}")
+                        logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
                     del self.active_websockets[connection_id]
                 del self.connection_timestamps[connection_id]
                 cleanup_stats["stale_connections"] += 1
@@ -1139,10 +1189,10 @@ class ConnectionManager:
             self.memory_monitor.update_cleanup_time()
 
             if any(cleanup_stats.values()):
-                logger.info(f"Memory cleanup completed: {cleanup_stats['stale_connections']} stale connections")
+                logger.info("Memory cleanup completed", stale_connections=cleanup_stats["stale_connections"])
 
         except Exception as e:
-            logger.error(f"Error cleaning up orphaned data: {e}", exc_info=True)
+            logger.error("Error cleaning up orphaned data", error=str(e), exc_info=True)
 
     def get_active_connection_count(self) -> int:
         """
@@ -1211,7 +1261,7 @@ class ConnectionManager:
 
             # Debug logging to see what's being sent
             if event.get("event_type") == "game_state":
-                logger.info(f"DEBUG: Sending game_state event to {player_id}: {serializable_event}")
+                logger.info("Sending game_state event", player_id=player_id, event_data=serializable_event)
 
             # Count total connections
             websocket_count = len(self.player_websockets.get(player_id, []))
@@ -1266,11 +1316,11 @@ class ConnectionManager:
                 )
             )
 
-            logger.debug(f"Message delivery status for player {player_id}: {delivery_status}")
+            logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status
 
         except Exception as e:
-            logger.error(f"Failed to send personal message to {player_id}: {e}")
+            logger.error("Failed to send personal message", player_id=player_id, error=str(e))
             delivery_status["success"] = False
             return delivery_status
 
@@ -1353,7 +1403,7 @@ class ConnectionManager:
             return health_status
 
         except Exception as e:
-            logger.error(f"Error checking connection health for player {player_id}: {e}")
+            logger.error("Error checking connection health", player_id=player_id, error=str(e))
             health_status["overall_health"] = "error"
             return health_status
 
@@ -1400,11 +1450,11 @@ class ConnectionManager:
                 except Exception as e:
                     cleanup_results["errors"].append(f"Error cleaning player {pid}: {e}")
 
-            logger.info(f"Connection cleanup completed: {cleanup_results}")
+            logger.info("Connection cleanup completed", cleanup_results=cleanup_results)
             return cleanup_results
 
         except Exception as e:
-            logger.error(f"Error during connection cleanup: {e}")
+            logger.error("Error during connection cleanup", error=str(e))
             cleanup_results["errors"].append(str(e))
             return cleanup_results
 
@@ -1420,10 +1470,14 @@ class ConnectionManager:
             # Close the WebSocket if it's still in active_websockets
             if connection_id in self.active_websockets:
                 websocket = self.active_websockets[connection_id]
+                logger.info("Closing dead WebSocket", connection_id=connection_id, player_id=player_id)
                 try:
                     await asyncio.wait_for(websocket.close(code=1000, reason="Connection cleaned up"), timeout=2.0)
+                    logger.info("Successfully closed dead WebSocket", connection_id=connection_id, player_id=player_id)
                 except (TimeoutError, Exception) as e:
-                    logger.warning(f"Error closing dead WebSocket {connection_id} for {player_id}: {e}")
+                    logger.warning(
+                        "Error closing dead WebSocket", connection_id=connection_id, player_id=player_id, error=str(e)
+                    )
                 del self.active_websockets[connection_id]
 
             # Remove from player's connection list
@@ -1437,9 +1491,11 @@ class ConnectionManager:
             if connection_id in self.connection_metadata:
                 del self.connection_metadata[connection_id]
 
-            logger.info(f"Cleaned up dead WebSocket connection {connection_id} for player {player_id}")
+            logger.info("Cleaned up dead WebSocket connection", connection_id=connection_id, player_id=player_id)
         except Exception as e:
-            logger.error(f"Error cleaning up dead WebSocket {connection_id} for player {player_id}: {e}")
+            logger.error(
+                "Error cleaning up dead WebSocket", connection_id=connection_id, player_id=player_id, error=str(e)
+            )
 
     async def broadcast_to_room(
         self, room_id: str, event: dict[str, Any], exclude_player: str | None = None
@@ -1467,12 +1523,12 @@ class ConnectionManager:
         }
 
         # Debug logging for self-message exclusion
-        logger.debug(f"broadcast_to_room: room_id={room_id}, exclude_player={exclude_player}")
-        logger.debug(f"broadcast_to_room: targets={targets}")
+        logger.debug("broadcast_to_room", room_id=room_id, exclude_player=exclude_player)
+        logger.debug("broadcast_to_room targets", targets=targets)
 
         for pid in targets:
             if pid != exclude_player:
-                logger.debug(f"broadcast_to_room: sending to player {pid}")
+                logger.debug("broadcast_to_room sending to player", player_id=pid)
                 delivery_status = await self.send_personal_message(pid, event)
 
                 # Track delivery statistics
@@ -1482,10 +1538,10 @@ class ConnectionManager:
                 else:
                     broadcast_stats["failed_deliveries"] += 1
             else:
-                logger.debug(f"broadcast_to_room: excluding player {pid} (self-message exclusion)")
+                logger.debug("broadcast_to_room: excluding player (self-message exclusion)", player_id=pid)
                 broadcast_stats["excluded_players"] += 1
 
-        logger.debug(f"broadcast_to_room: delivery stats for room {room_id}: {broadcast_stats}")
+        logger.debug("broadcast_to_room: delivery stats for room", room_id=room_id, stats=broadcast_stats)
         return broadcast_stats
 
     async def broadcast_global(self, event: dict[str, Any], exclude_player: str | None = None) -> dict[str, Any]:
@@ -1523,7 +1579,7 @@ class ConnectionManager:
             else:
                 global_stats["excluded_players"] += 1
 
-        logger.debug(f"broadcast_global: delivery stats: {global_stats}")
+        logger.debug("broadcast_global: delivery stats", stats=global_stats)
         return global_stats
 
     async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, Any]) -> dict[str, Any]:
@@ -1615,18 +1671,18 @@ class ConnectionManager:
             Optional[Player]: The player object or None if not found
         """
         if self.persistence is None:
-            logger.warning(f"Persistence layer not initialized for player lookup: {player_id}")
+            logger.warning("Persistence layer not initialized for player lookup", player_id=player_id)
             return None
 
         player = self.persistence.get_player(player_id)
         if player is None:
             # Fallback to get_player_by_name
-            logger.info(f"Player not found by ID, trying by name: {player_id}")
+            logger.info("Player not found by ID, trying by name", player_id=player_id)
             player = self.persistence.get_player_by_name(player_id)
             if player:
-                logger.info(f"Player found by name: {player_id}")
+                logger.info("Player found by name", player_id=player_id)
             else:
-                logger.warning(f"Player not found by name: {player_id}")
+                logger.warning("Player not found by name", player_id=player_id)
         return player
 
     def _convert_uuids_to_strings(self, obj):
@@ -1705,9 +1761,9 @@ class ConnectionManager:
 
                         player.last_active = datetime.now(UTC)
                         self.persistence.save_player(player)
-                        logger.debug(f"Updated last_active for player {player_id} on connection")
+                        logger.debug("Updated last_active for player on connection", player_id=player_id)
                     except Exception as e:
-                        logger.warning(f"Failed to update last_active for player {player_id}: {e}")
+                        logger.warning("Failed to update last_active for player", player_id=player_id, error=str(e))
 
                 # Clear any pending messages to ensure fresh game state
                 self.message_queue.remove_player_messages(player_id)
@@ -1734,9 +1790,13 @@ class ConnectionManager:
                         if room:
                             # Call room.player_entered() to ensure proper event publishing
                             room.player_entered(player_id)
-                            logger.info(f"Player {player_id} entered room {room_id} via player_entered()")
+                            logger.info(
+                                "Player entered room via player_entered()", player_id=player_id, room_id=room_id
+                            )
                         else:
-                            logger.warning(f"Room {room_id} not found when trying to add player {player_id}")
+                            logger.warning(
+                                "Room not found when trying to add player", room_id=room_id, player_id=player_id
+                            )
 
                     # Send initial game_state event to the player
                     await self._send_initial_game_state(player_id, player, room_id)
@@ -1746,12 +1806,14 @@ class ConnectionManager:
                     # which are handled by the RealTimeEventHandler to create "enters the room" messages
                     # This eliminates duplicate "has entered the game" messages
 
-                logger.info(f"Player {player_id} presence tracked as connected (new connection)")
+                logger.info("Player presence tracked as connected (new connection)", player_id=player_id)
             else:
-                logger.info(f"Player {player_id} additional {connection_type} connection tracked")
+                logger.info(
+                    "Player additional connection tracked", player_id=player_id, connection_type=connection_type
+                )
 
         except Exception as e:
-            logger.error(f"Error tracking player connection: {e}", exc_info=True)
+            logger.error("Error tracking player connection", error=str(e), exc_info=True)
 
     async def _broadcast_connection_message(self, player_id: str, player: Player):
         """
@@ -1775,10 +1837,12 @@ class ConnectionManager:
                 # PlayerEnteredRoom events which are handled by the RealTimeEventHandler
                 # This eliminates duplicate "has entered the game" messages for players
                 # who are already tracked as online but connecting via additional channels
-                logger.debug(f"Player {player_id} already tracked as online, skipping duplicate connection message")
+                logger.debug(
+                    "Player already tracked as online, skipping duplicate connection message", player_id=player_id
+                )
 
         except Exception as e:
-            logger.error(f"Error broadcasting connection message for {player_id}: {e}", exc_info=True)
+            logger.error("Error broadcasting connection message", player_id=player_id, error=str(e), exc_info=True)
 
     async def _track_player_disconnected(self, player_id: str, connection_type: str | None = None):
         """
@@ -1804,12 +1868,14 @@ class ConnectionManager:
             # Prevent duplicate disconnect events for the same player using async lock
             async with self.disconnect_lock:
                 if player_id in self.disconnecting_players:
-                    logger.debug(f"🔍 DEBUG: Player {player_id} already being disconnected, skipping duplicate event")
+                    logger.debug(
+                        "🔍 DEBUG: Player already being disconnected, skipping duplicate event", player_id=player_id
+                    )
                     return
 
                 # Mark player as being disconnected
                 self.disconnecting_players.add(player_id)
-                logger.debug(f"🔍 DEBUG: Marked player {player_id} as disconnecting")
+                logger.debug("🔍 DEBUG: Marked player as disconnecting", player_id=player_id)
 
             # Resolve player using flexible lookup (ID or name)
             pl = self._get_player(player_id)
@@ -1835,7 +1901,7 @@ class ConnectionManager:
                 if room_id and self.persistence:
                     room = self.persistence.get_room(room_id)
                     if room and room.has_player(key):
-                        logger.debug(f"🔍 DEBUG: Removing ghost player {key} from room {room_id}")
+                        logger.debug("🔍 DEBUG: Removing ghost player from room", ghost_player=key, room_id=room_id)
                         room.player_left(key)
 
                 # CRITICAL FIX: Clean up all ghost players from all rooms
@@ -1860,7 +1926,7 @@ class ConnectionManager:
                     room_id=room_id,
                 )
                 # Exclude the disconnecting player from their own "left game" message
-                logger.info(f"🔍 DEBUG: Broadcasting player_left_game for {player_id} in room {room_id}")
+                logger.info("🔍 DEBUG: Broadcasting player_left_game", player_id=player_id, room_id=room_id)
                 await self.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
                 # 2) occupants update (names only)
@@ -1877,10 +1943,10 @@ class ConnectionManager:
                 )
                 await self.broadcast_to_room(room_id, occ_event)
 
-            logger.info(f"Player {player_id} presence tracked as disconnected")
+            logger.info("Player presence tracked as disconnected", player_id=player_id)
 
         except Exception as e:
-            logger.error(f"Error tracking player disconnection: {e}", exc_info=True)
+            logger.error("Error tracking player disconnection", error=str(e), exc_info=True)
         finally:
             # Always remove player from disconnecting set, even on error
             async with self.disconnect_lock:
@@ -1912,13 +1978,15 @@ class ConnectionManager:
                 ghost_players = room_player_ids - online_player_ids
 
                 if ghost_players:
-                    logger.debug(f"🔍 DEBUG: Found ghost players in room {room.id}: {ghost_players}")
+                    logger.debug("🔍 DEBUG: Found ghost players in room", room_id=room.id, ghost_players=ghost_players)
                     for ghost_player_id in ghost_players:
                         room._players.discard(ghost_player_id)
-                        logger.debug(f"🔍 DEBUG: Removed ghost player {ghost_player_id} from room {room.id}")
+                        logger.debug(
+                            "🔍 DEBUG: Removed ghost player from room", ghost_player_id=ghost_player_id, room_id=room.id
+                        )
 
         except Exception as e:
-            logger.error(f"Error cleaning up ghost players: {e}", exc_info=True)
+            logger.error("Error cleaning up ghost players", error=str(e), exc_info=True)
 
     async def detect_and_handle_error_state(
         self, player_id: str, error_type: str, error_details: str, connection_id: str | None = None
@@ -1951,7 +2019,12 @@ class ConnectionManager:
             import json
             from datetime import datetime
 
-            logger.error(f"ERROR STATE DETECTED for player {player_id}: {error_type} - {error_details}")
+            logger.error(
+                "ERROR STATE DETECTED for player",
+                player_id=player_id,
+                error_type=error_type,
+                error_details=error_details,
+            )
 
             # Get detailed connection information
             websocket_connections = len(self.player_websockets.get(player_id, []))
@@ -1981,7 +2054,7 @@ class ConnectionManager:
 
             # Write to error log file using proper logging configuration
             from ..config import get_config
-            from ..logging_config import _resolve_log_base
+            from ..logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base
@@ -2007,7 +2080,7 @@ class ConnectionManager:
             error_results["fatal_error"] = error_type in fatal_errors
 
             if error_results["fatal_error"]:
-                logger.error(f"FATAL ERROR: Terminating all connections for player {player_id}")
+                logger.error("FATAL ERROR: Terminating all connections for player", player_id=player_id)
 
                 # Terminate all connections for the player
                 await self.force_disconnect_player(player_id)
@@ -2030,12 +2103,12 @@ class ConnectionManager:
 
             else:
                 # Non-fatal error, keep all connections alive
-                logger.warning(f"Non-critical error: Keeping all connections alive for player {player_id}")
+                logger.warning("Non-critical error: Keeping all connections alive for player", player_id=player_id)
                 error_results["connections_terminated"] = 0
                 error_results["connections_kept"] = total_connections
 
             error_results["success"] = True
-            logger.info(f"Error handling completed for player {player_id}: {error_results}")
+            logger.info("Error handling completed for player", player_id=player_id, error_results=error_results)
 
         except Exception as e:
             error_msg = f"Error in detect_and_handle_error_state for {player_id}: {e}"
@@ -2097,7 +2170,13 @@ class ConnectionManager:
         Returns:
             dict: Error handling results
         """
-        logger.warning(f"SSE error for player {player_id}, connection {connection_id}: {error_type} - {error_details}")
+        logger.warning(
+            "SSE error for player",
+            player_id=player_id,
+            connection_id=connection_id,
+            error_type=error_type,
+            error_details=error_details,
+        )
 
         # Check if this is a critical SSE error
         critical_sse_errors = ["STREAM_INTERRUPTED", "INVALID_EVENT_FORMAT", "CONNECTION_TIMEOUT", "BUFFER_OVERFLOW"]
@@ -2124,7 +2203,9 @@ class ConnectionManager:
         Returns:
             dict: Error handling results
         """
-        logger.error(f"Authentication error for player {player_id}: {error_type} - {error_details}")
+        logger.error(
+            "Authentication error for player", player_id=player_id, error_type=error_type, error_details=error_details
+        )
 
         return await self.detect_and_handle_error_state(
             player_id, "AUTHENTICATION_FAILURE", f"{error_type}: {error_details}"
@@ -2144,7 +2225,12 @@ class ConnectionManager:
         Returns:
             dict: Error handling results
         """
-        logger.error(f"Security violation for player {player_id}: {violation_type} - {violation_details}")
+        logger.error(
+            "Security violation for player",
+            player_id=player_id,
+            violation_type=violation_type,
+            violation_details=violation_details,
+        )
 
         return await self.detect_and_handle_error_state(
             player_id, "SECURITY_VIOLATION", f"{violation_type}: {violation_details}"
@@ -2171,7 +2257,7 @@ class ConnectionManager:
         }
 
         try:
-            logger.info(f"Attempting {recovery_type} recovery for player {player_id}")
+            logger.info("Attempting recovery for player", recovery_type=recovery_type, player_id=player_id)
 
             if recovery_type in ["FULL", "CONNECTIONS_ONLY"]:
                 # Clean up any dead connections
@@ -2188,7 +2274,7 @@ class ConnectionManager:
                     recovery_results["sessions_cleared"] = 1
 
             recovery_results["success"] = True
-            logger.info(f"Recovery completed for player {player_id}: {recovery_results}")
+            logger.info("Recovery completed for player", player_id=player_id, recovery_results=recovery_results)
 
         except Exception as e:
             error_msg = f"Error during recovery for player {player_id}: {e}"
@@ -2345,7 +2431,7 @@ class ConnectionManager:
         """
         # Get the proper error log path using logging configuration
         from ..config import get_config
-        from ..logging_config import _resolve_log_base
+        from ..logging.enhanced_logging_config import _resolve_log_base
 
         config = get_config()
         log_base = config.logging.log_base
@@ -2374,7 +2460,7 @@ class ConnectionManager:
             player_id: The player's ID
         """
         try:
-            logger.info(f"NEW LOGIN detected for player {player_id}, terminating existing connections")
+            logger.info("NEW LOGIN detected for player, terminating existing connections", player_id=player_id)
 
             # Log the new login event
             import json
@@ -2402,7 +2488,7 @@ class ConnectionManager:
             await self.force_disconnect_player(player_id)
 
         except Exception as e:
-            logger.error(f"Error handling new login for {player_id}: {e}", exc_info=True)
+            logger.error("Error handling new login", player_id=player_id, error=str(e), exc_info=True)
 
     async def _check_and_process_disconnect(self, player_id: str):
         """
@@ -2416,7 +2502,7 @@ class ConnectionManager:
                 self.processed_disconnects.add(player_id)
                 await self._track_player_disconnected(player_id)
             else:
-                logger.debug(f"Disconnect already processed for player {player_id}, skipping")
+                logger.debug("Disconnect already processed for player, skipping", player_id=player_id)
 
     def get_online_players(self) -> list[dict[str, Any]]:
         """
@@ -2442,10 +2528,10 @@ class ConnectionManager:
 
         for player_id, player_info in self.online_players.items():
             if player_info.get("player_name", "").lower() == display_name_lower:
-                logger.debug(f"Found online player {display_name} with ID {player_id}")
+                logger.debug("Found online player", display_name=display_name, player_id=player_id)
                 return player_info
 
-        logger.debug(f"Online player {display_name} not found")
+        logger.debug("Online player not found", display_name=display_name)
         return None
 
     def get_room_occupants(self, room_id: str) -> list[dict[str, Any]]:
@@ -2496,17 +2582,21 @@ class ConnectionManager:
                     room = self.persistence.get_room(room_id)
                     if room:
                         npc_ids = room.get_npcs()
-                        logger.info(f"DEBUG: Room {room_id} has NPCs: {npc_ids}")
-                        logger.info(f"DEBUG: Room {room_id} occupant_count: {room.get_occupant_count()}")
+                        logger.info("DEBUG: Room has NPCs", room_id=room_id, npc_ids=npc_ids)
+                        logger.info(
+                            "DEBUG: Room occupant_count", room_id=room_id, occupant_count=room.get_occupant_count()
+                        )
                         for npc_id in npc_ids:
                             # Get NPC name from the actual NPC instance, preserving original case from database
                             npc_name = _get_npc_name_from_instance(npc_id)
                             if npc_name:
-                                logger.info(f"DEBUG: Got NPC name '{npc_name}' from database for ID '{npc_id}'")
+                                logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
                                 occupants.append(npc_name)
                             else:
                                 # Log warning if NPC instance not found - this should not happen in normal operation
-                                logger.warning(f"NPC instance not found for ID: {npc_id} - skipping from room display")
+                                logger.warning(
+                                    "NPC instance not found for ID - skipping from room display", npc_id=npc_id
+                                )
 
             # Create game_state event
             game_state_data = {
@@ -2514,22 +2604,23 @@ class ConnectionManager:
                     "player_id": str(getattr(player, "player_id", player_id)),
                     "name": getattr(player, "name", player_id),
                     "level": getattr(player, "level", 1),
+                    "xp": getattr(player, "experience_points", 0),
                     "current_room_id": room_id,
                 },
                 "room": room_data,
                 "occupants": occupants,
             }
 
-            logger.info(f"DEBUG: Sending initial game state with occupants: {occupants}")
+            logger.info("DEBUG: Sending initial game state with occupants", occupants=occupants)
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
 
             # Send the event to the player
             await self.send_personal_message(player_id, game_state_event)
-            logger.info(f"Sent initial game_state to player {player_id}")
+            logger.info("Sent initial game_state to player", player_id=player_id)
 
         except Exception as e:
-            logger.error(f"Error sending initial game_state to player {player_id}: {e}", exc_info=True)
+            logger.error("Error sending initial game_state to player", player_id=player_id, error=str(e), exc_info=True)
 
     async def _check_and_cleanup(self):
         """Periodically check for cleanup conditions and perform cleanup if needed."""
@@ -2621,7 +2712,7 @@ class ConnectionManager:
                 "room_manager": room_stats,
             }
         except Exception as e:
-            logger.error(f"Error getting memory stats: {e}", exc_info=True)
+            logger.error("Error getting memory stats", error=str(e), exc_info=True)
             return {}
 
     def get_dual_connection_stats(self) -> dict[str, Any]:
@@ -2726,7 +2817,7 @@ class ConnectionManager:
                 "timestamp": now,
             }
         except Exception as e:
-            logger.error(f"Error getting dual connection stats: {e}", exc_info=True)
+            logger.error("Error getting dual connection stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get dual connection stats: {e}", "timestamp": time.time()}
 
     def get_performance_stats(self) -> dict[str, Any]:
@@ -2808,7 +2899,7 @@ class ConnectionManager:
                 "timestamp": time.time(),
             }
         except Exception as e:
-            logger.error(f"Error getting performance stats: {e}", exc_info=True)
+            logger.error("Error getting performance stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get performance stats: {e}", "timestamp": time.time()}
 
     def get_connection_health_stats(self) -> dict[str, Any]:
@@ -2918,7 +3009,7 @@ class ConnectionManager:
                 "timestamp": now,
             }
         except Exception as e:
-            logger.error(f"Error getting connection health stats: {e}", exc_info=True)
+            logger.error("Error getting connection health stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection health stats: {e}", "timestamp": time.time()}
 
     def get_memory_alerts(self) -> list[str]:
@@ -2938,7 +3029,7 @@ class ConnectionManager:
             }
             return self.memory_monitor.get_memory_alerts(connection_stats)
         except Exception as e:
-            logger.error(f"Error getting memory alerts: {e}", exc_info=True)
+            logger.error("Error getting memory alerts", error=str(e), exc_info=True)
             return [f"ERROR: Failed to get memory alerts: {e}"]
 
     async def force_cleanup(self):
@@ -2955,7 +3046,7 @@ class ConnectionManager:
                 except asyncio.CancelledError:
                     pass
                 except Exception as e:
-                    logger.error(f"Error cancelling cleanup task: {e}")
+                    logger.error("Error cancelling cleanup task", error=str(e))
 
             await self.cleanup_orphaned_data()
             self.prune_stale_players()
@@ -2964,7 +3055,7 @@ class ConnectionManager:
             self.memory_monitor.update_cleanup_time()
             logger.info("Force cleanup completed")
         except Exception as e:
-            logger.error(f"Error during force cleanup: {e}", exc_info=True)
+            logger.error("Error during force cleanup", error=str(e), exc_info=True)
 
     # --- Event Subscription Methods ---
 
@@ -2989,7 +3080,7 @@ class ConnectionManager:
             event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
             logger.info("Successfully subscribed to room movement events")
         except Exception as e:
-            logger.error(f"Error subscribing to room events: {e}", exc_info=True)
+            logger.error("Error subscribing to room events", error=str(e), exc_info=True)
 
     async def unsubscribe_from_room_events(self):
         """Unsubscribe from room movement events."""
@@ -3004,7 +3095,7 @@ class ConnectionManager:
             event_bus.unsubscribe(PlayerLeftRoom, self._handle_player_left_room)
             logger.info("Successfully unsubscribed from room movement events")
         except Exception as e:
-            logger.error(f"Error unsubscribing from room events: {e}", exc_info=True)
+            logger.error("Error unsubscribing from room events", error=str(e), exc_info=True)
 
     async def _handle_player_entered_room(self, event_data):
         """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
@@ -3026,7 +3117,7 @@ class ConnectionManager:
                         player_id=player_id, room_id=room_id, timestamp=timestamp
                     )
                 except Exception as e:
-                    logger.error(f"Failed to publish player_entered NATS event: {e}")
+                    logger.error("Failed to publish player_entered NATS event", error=str(e))
 
             # Get current room occupants
             occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
@@ -3046,10 +3137,10 @@ class ConnectionManager:
             )
             await self.broadcast_to_room(room_id, occ_event)
 
-            logger.debug(f"Broadcasted room_occupants event for room {room_id} with {len(names)} occupants")
+            logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
 
         except Exception as e:
-            logger.error(f"Error handling PlayerEnteredRoom event: {e}", exc_info=True)
+            logger.error("Error handling PlayerEnteredRoom event", error=str(e), exc_info=True)
 
     async def _handle_player_left_room(self, event_data):
         """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
@@ -3071,7 +3162,7 @@ class ConnectionManager:
                         player_id=player_id, room_id=room_id, timestamp=timestamp
                     )
                 except Exception as e:
-                    logger.error(f"Failed to publish player_left NATS event: {e}")
+                    logger.error("Failed to publish player_left NATS event", error=str(e))
 
             # Get current room occupants
             occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
@@ -3091,10 +3182,10 @@ class ConnectionManager:
             )
             await self.broadcast_to_room(room_id, occ_event)
 
-            logger.debug(f"Broadcasted room_occupants event for room {room_id} with {len(names)} occupants")
+            logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
 
         except Exception as e:
-            logger.error(f"Error handling PlayerLeftRoom event: {e}", exc_info=True)
+            logger.error("Error handling PlayerLeftRoom event", error=str(e), exc_info=True)
 
 
 # Global connection manager instance

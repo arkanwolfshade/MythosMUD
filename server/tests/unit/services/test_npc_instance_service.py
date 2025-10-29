@@ -26,6 +26,7 @@ def mock_lifecycle_manager():
     manager.spawn_npc = MagicMock(return_value="npc_test_001")
     manager.despawn_npc = MagicMock(return_value=True)
     manager.lifecycle_records = {}
+    manager.active_npcs = {}  # Initialize active_npcs dictionary
     return manager
 
 
@@ -33,7 +34,7 @@ def mock_lifecycle_manager():
 def mock_spawning_service():
     """Create a mock NPC spawning service."""
     service = MagicMock()
-    service.active_npc_instances = {}
+    # Note: active_npc_instances removed - NPC instances now managed by lifecycle manager
     return service
 
 
@@ -41,6 +42,8 @@ def mock_spawning_service():
 def mock_population_controller():
     """Create a mock NPC population controller."""
     controller = MagicMock()
+    # Configure _spawn_npc to return a proper NPC ID
+    controller._spawn_npc = MagicMock(return_value="npc_test_001")
     return controller
 
 
@@ -164,8 +167,8 @@ class TestSpawnNPCInstance:
 
         mock_get_session.return_value = mock_session_generator()
 
-        # Mock lifecycle manager to return None (spawn failure)
-        npc_instance_service_fixture.lifecycle_manager.spawn_npc.return_value = None
+        # Mock population controller to return None (spawn failure)
+        npc_instance_service_fixture.population_controller._spawn_npc.return_value = None
 
         with pytest.raises(RuntimeError, match="Failed to spawn NPC from definition 1"):
             await npc_instance_service_fixture.spawn_npc_instance(definition_id=1, room_id="earth_arkham_001")
@@ -181,7 +184,7 @@ class TestDespawnNPCInstance:
         mock_npc = MagicMock()
         mock_npc.name = "Test NPC"
         mock_npc.current_room_id = "earth_arkham_001"
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_test_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_test_001"] = mock_npc
 
         result = await npc_instance_service_fixture.despawn_npc_instance(npc_id="npc_test_001", reason="admin_despawn")
 
@@ -203,7 +206,7 @@ class TestDespawnNPCInstance:
         mock_npc = MagicMock()
         mock_npc.name = "Test NPC"
         mock_npc.current_room_id = "earth_arkham_001"
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_test_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_test_001"] = mock_npc
 
         # Mock lifecycle manager to return False (despawn failure)
         npc_instance_service_fixture.lifecycle_manager.despawn_npc.return_value = False
@@ -222,7 +225,7 @@ class TestMoveNPCInstance:
         mock_npc.name = "Test NPC"
         mock_npc.current_room_id = "earth_arkham_001"
         mock_npc.move_to_room = MagicMock()
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_test_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_test_001"] = mock_npc
 
         result = await npc_instance_service_fixture.move_npc_instance(
             npc_id="npc_test_001", new_room_id="earth_arkham_002", reason="admin_move"
@@ -241,7 +244,7 @@ class TestMoveNPCInstance:
         mock_npc = MagicMock(spec=["name", "current_room_id"])  # No move_to_room method
         mock_npc.name = "Test NPC"
         mock_npc.current_room_id = "earth_arkham_001"
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_test_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_test_001"] = mock_npc
 
         result = await npc_instance_service_fixture.move_npc_instance(
             npc_id="npc_test_001", new_room_id="earth_arkham_002"
@@ -287,7 +290,7 @@ class TestGetNPCInstances:
         mock_npc2.is_alive = lambda: True
         mock_npc2.stats = {"health": 150}
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances = {
+        npc_instance_service_fixture.lifecycle_manager.active_npcs = {
             "npc_001": mock_npc1,
             "npc_002": mock_npc2,
         }
@@ -314,7 +317,7 @@ class TestGetNPCInstances:
         mock_record.spawn_time = "2025-01-01T12:00:00"
         mock_record.last_activity = "2025-01-01T12:05:00"
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
         npc_instance_service_fixture.lifecycle_manager.lifecycle_records["npc_001"] = mock_record
 
         result = await npc_instance_service_fixture.get_npc_instances()
@@ -337,7 +340,7 @@ class TestGetNPCStats:
         mock_npc.is_alive = lambda: True
         mock_npc.stats = {"health": 100, "level": 5}
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
 
         result = await npc_instance_service_fixture.get_npc_stats(npc_id="npc_001")
 
@@ -369,7 +372,7 @@ class TestGetNPCStats:
         mock_record.spawn_count = 1
         mock_record.despawn_count = 0
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
         npc_instance_service_fixture.lifecycle_manager.lifecycle_records["npc_001"] = mock_record
 
         result = await npc_instance_service_fixture.get_npc_stats(npc_id="npc_001")
@@ -408,7 +411,7 @@ class TestGetPopulationStats:
         mock_npc3.npc_type = "shopkeeper"
         mock_npc3.current_room_id = "earth_innsmouth_harbor_001"
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances = {
+        npc_instance_service_fixture.lifecycle_manager.active_npcs = {
             "npc_001": mock_npc1,
             "npc_002": mock_npc2,
             "npc_003": mock_npc3,
@@ -459,7 +462,7 @@ class TestGetZoneStats:
         mock_npc3 = MagicMock()
         mock_npc3.current_room_id = "earth_innsmouth_harbor_001"
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances = {
+        npc_instance_service_fixture.lifecycle_manager.active_npcs = {
             "npc_001": mock_npc1,
             "npc_002": mock_npc2,
             "npc_003": mock_npc3,
@@ -495,7 +498,7 @@ class TestGetSystemStats:
     async def test_get_system_stats_with_active_npcs(self, npc_instance_service_fixture):
         """Test system stats with active NPCs."""
         mock_npc = MagicMock()
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
 
         result = await npc_instance_service_fixture.get_system_stats()
 
@@ -619,7 +622,7 @@ class TestErrorHandling:
         mock_npc.name = None  # Missing attribute
         type(mock_npc).current_room_id = property(lambda self: 1 / 0)  # Raises error
 
-        npc_instance_service_fixture.spawning_service.active_npc_instances["npc_001"] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
 
         with pytest.raises(ZeroDivisionError):
             await npc_instance_service_fixture.get_npc_instances()
@@ -667,7 +670,7 @@ class TestIntegrationScenarios:
 
         # Add spawned NPC to active instances for subsequent operations
         npc_id = spawn_result["npc_id"]
-        npc_instance_service_fixture.spawning_service.active_npc_instances[npc_id] = mock_npc
+        npc_instance_service_fixture.lifecycle_manager.active_npcs[npc_id] = mock_npc
 
         # 2. Query stats
         stats = await npc_instance_service_fixture.get_npc_stats(npc_id)
@@ -697,7 +700,7 @@ class TestIntegrationScenarios:
             mock_npc = MagicMock()
             mock_npc.npc_type = data["type"]
             mock_npc.current_room_id = data["room"]
-            npc_instance_service_fixture.spawning_service.active_npc_instances[npc_id] = mock_npc
+            npc_instance_service_fixture.lifecycle_manager.active_npcs[npc_id] = mock_npc
 
         # Get population stats
         pop_stats = await npc_instance_service_fixture.get_population_stats()

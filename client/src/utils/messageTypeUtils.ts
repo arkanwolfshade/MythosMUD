@@ -79,6 +79,8 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: /has entered the game\.?$/i, type: 'system' },
   { pattern: /has left the game\.?$/i, type: 'system' },
   { pattern: /^You are now in /i, type: 'system' },
+  // Combat messages - should appear in Game Log only
+  { pattern: /^You (attack|punch|kick|strike|hit|smack|thump) /i, type: 'system' },
   // Room descriptions - MOST RELIABLE PATTERN: Contains "Exits:" anywhere in the message
   // This pattern catches ALL room descriptions regardless of how they start or what follows
   { pattern: /Exits?:/i, type: 'system' },

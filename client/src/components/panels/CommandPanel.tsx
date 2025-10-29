@@ -87,19 +87,26 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       'admin',
       'alias',
       'aliases',
+      'attack', // Combat command
       'emote',
       'go',
       'goto',
       'help',
+      'hit', // Combat command
       'inventory',
+      'kick', // Combat command
       'look',
       'logout',
       'me',
       'mute',
       'pose',
+      'punch', // Combat command
       'quit',
+      'smack', // Combat command
       'status',
+      'strike', // Combat command
       'teleport',
+      'thump', // Combat command
       'unalias',
       'unmute',
       'w',
@@ -113,7 +120,8 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     // prepend the channel command ONLY if:
     // 1. The command doesn't already start with the channel name
     // 2. The command is NOT a standalone system command
-    if (!command.startsWith('/') && currentChannel !== 'say' && !isStandaloneCommand) {
+    // 3. The current channel is NOT 'local' (to prevent /l prefix on combat commands)
+    if (!command.startsWith('/') && currentChannel !== 'say' && currentChannel !== 'local' && !isStandaloneCommand) {
       const channel = AVAILABLE_CHANNELS.find(c => c.id === currentChannel);
       // Don't prepend if command already starts with the channel name
       const commandLower = command.toLowerCase();

@@ -7,7 +7,7 @@ This module contains handlers for communication-related commands like say, me, a
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -29,16 +29,16 @@ async def handle_say_command(
     Returns:
         dict: Say command result
     """
-    logger.debug(f"Processing say command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing say command", player_name=player_name, command_data=command_data)
 
     # Extract message from command data
     message = command_data.get("message")
     if not message:
-        logger.warning(f"Say command with no message for {player_name}, command_data: {command_data}")
+        logger.warning("Say command with no message", player_name=player_name, command_data=command_data)
         return {"result": "Say what? Usage: say <message>"}
 
     # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} saying message: {message}")
+    logger.debug("Player saying message", player_name=player_name, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -46,11 +46,11 @@ async def handle_say_command(
     chat_service = app.state.chat_service if app else None
 
     if not player_service:
-        logger.warning(f"Say command failed - no player service for {player_name}")
+        logger.warning("Say command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"Say command failed - no chat service for {player_name}")
+        logger.warning("Say command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     try:
@@ -82,11 +82,18 @@ async def handle_say_command(
             return {"result": f"You say: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"Say command failed for {player_name}: {error_msg}")
+            logger.warning("Say command failed", player_name=player_name, error=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Say command error for {player_name}: {str(e)}")
+        logger.error(
+            "Say command error",
+            player=player_name,
+            command_data=command_data,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error sending message: {str(e)}"}
 
 
@@ -106,16 +113,16 @@ async def handle_me_command(
     Returns:
         dict: Me command result
     """
-    logger.debug(f"Processing me command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing me command", player_name=player_name, command_data=command_data)
 
     # Extract action from command data
     action = command_data.get("action")
     if not action:
-        logger.warning(f"Me command with no action for {player_name}, command_data: {command_data}")
+        logger.warning("Me command with no action", player_name=player_name, command_data=command_data)
         return {"result": "Do what? Usage: me <action>"}
 
     # action is already a complete string from the validation system
-    logger.debug(f"Player {player_name} performing action: {action}")
+    logger.debug("Player performing action", player_name=player_name, action=action)
 
     # For now, return a simple response
     # In a full implementation, this would broadcast to other players in the room
@@ -138,18 +145,18 @@ async def handle_pose_command(
     Returns:
         dict: Pose command result
     """
-    logger.debug(f"Processing pose command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing pose command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
     if not persistence:
-        logger.warning(f"Pose command failed - no persistence layer for {player_name}")
+        logger.warning("Pose command failed - no persistence layer", player_name=player_name)
         return {"result": "You cannot set your pose right now."}
 
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        logger.warning(f"Pose command failed - player not found for {player_name}")
+        logger.warning("Pose command failed - player not found", player_name=player_name)
         return {"result": "You cannot set your pose right now."}
 
     # Extract pose from command data
@@ -158,17 +165,17 @@ async def handle_pose_command(
         # Clear pose
         player.pose = None
         persistence.save_player(player)
-        logger.info(f"Player {player_name} cleared pose")
+        logger.info("Player cleared pose", player_name=player_name)
         return {"result": "Your pose has been cleared."}
 
     pose_description = pose
-    logger.debug(f"Player {player_name} setting pose: {pose_description}")
+    logger.debug("Player setting pose", player_name=player_name, pose_description=pose_description)
 
     # Set the pose
     player.pose = pose_description
     persistence.save_player(player)
 
-    logger.info(f"Player {player_name} pose set: {pose_description}")
+    logger.info("Player pose set", player_name=player_name, pose_description=pose_description)
     return {"result": f"Your pose is now: {pose_description}"}
 
 
@@ -188,16 +195,16 @@ async def handle_local_command(
     Returns:
         dict: Local command result
     """
-    logger.debug(f"Processing local command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing local command", player_name=player_name, command_data=command_data)
 
     # Extract message from command data
     message = command_data.get("message")
     if not message or not message.strip():
-        logger.warning(f"Local command with no message for {player_name}, command_data: {command_data}")
+        logger.warning("Local command with no message", player_name=player_name, command_data=command_data)
         return {"result": "Say what? Usage: local <message> or /l <message>"}
 
     # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} saying local message: {message}")
+    logger.debug("Player saying local message", player_name=player_name, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -205,23 +212,23 @@ async def handle_local_command(
     chat_service = app.state.chat_service if app else None
 
     if not player_service:
-        logger.warning(f"Local command failed - no player service for {player_name}")
+        logger.warning("Local command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"Local command failed - no chat service for {player_name}")
+        logger.warning("Local command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     try:
         # Get player object to find current room
         player_obj = await player_service.resolve_player_name(player_name)
-        logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
+        logger.debug("Player resolved player_obj", player_name=player_name, player_obj=player_obj)
         if not player_obj:
             return {"result": "Player not found."}
 
         # Get the player's current room
         current_room_id = getattr(player_obj, "current_room_id", None)
-        logger.debug(f"Player {player_name} current_room_id: {current_room_id}")
+        logger.debug("Player current_room_id", player_name=player_name, current_room_id=current_room_id)
         if not current_room_id:
             return {"result": "You are not in a room."}
 
@@ -243,11 +250,18 @@ async def handle_local_command(
             return {"result": f"You say locally: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"Local command failed for {player_name}: {error_msg}")
+            logger.warning("Local command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Local command error for {player_name}: {str(e)}")
+        logger.error(
+            "Local command error",
+            player=player_name,
+            command_data=command_data,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
         return {"result": f"Error sending message: {str(e)}"}
 
 
@@ -267,16 +281,16 @@ async def handle_global_command(
     Returns:
         dict: Global command result
     """
-    logger.debug(f"Processing global command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing global command", player_name=player_name, command_data=command_data)
 
     # Extract message from command data
     message = command_data.get("message")
     if not message or not message.strip():
-        logger.warning(f"Global command with no message for {player_name}, command_data: {command_data}")
+        logger.warning("Global command with no message", player_name=player_name, command_data=command_data)
         return {"result": "Say what? Usage: global <message> or /g <message>"}
 
     # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} saying global message: {message}")
+    logger.debug("Player saying global message", player_name=player_name, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -284,17 +298,17 @@ async def handle_global_command(
     chat_service = app.state.chat_service if app else None
 
     if not player_service:
-        logger.warning(f"Global command failed - no player service for {player_name}")
+        logger.warning("Global command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"Global command failed - no chat service for {player_name}")
+        logger.warning("Global command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     try:
         # Get player object to check level and get player ID
         player_obj = await player_service.resolve_player_name(player_name)
-        logger.debug(f"Player {player_name} resolved player_obj: {player_obj}")
+        logger.debug("Player resolved player_obj", player_name=player_name, player_obj=player_obj)
         if not player_obj:
             return {"result": "Player not found."}
 
@@ -321,11 +335,11 @@ async def handle_global_command(
             return {"result": f"You say (global): {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"Global command failed for {player_name}: {error_msg}")
+            logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Global command error for {player_name}: {str(e)}")
+        logger.error("Global command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending message: {str(e)}"}
 
 
@@ -345,16 +359,16 @@ async def handle_system_command(
     Returns:
         dict: System command result
     """
-    logger.debug(f"Processing system command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing system command", player_name=player_name, command_data=command_data)
 
     # Extract message from command data
     message = command_data.get("message")
     if not message or not message.strip():
-        logger.warning(f"System command with no message for {player_name}, command_data: {command_data}")
+        logger.warning("System command with no message", player_name=player_name, command_data=command_data)
         return {"result": "System what? Usage: system <message>"}
 
     # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} sending system message: {message}")
+    logger.debug("Player sending system message", player_name=player_name, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -363,15 +377,15 @@ async def handle_system_command(
     user_manager = app.state.user_manager if app else None
 
     if not player_service:
-        logger.warning(f"System command failed - no player service for {player_name}")
+        logger.warning("System command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"System command failed - no chat service for {player_name}")
+        logger.warning("System command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not user_manager:
-        logger.warning(f"System command failed - no user manager for {player_name}")
+        logger.warning("System command failed - no user manager", player_name=player_name)
         return {"result": "Admin functionality is not available."}
 
     try:
@@ -387,7 +401,7 @@ async def handle_system_command(
 
         # Check if player is an admin
         if not user_manager.is_admin(player_id):
-            logger.warning(f"Non-admin player {player_name} attempted to use system command")
+            logger.warning("Non-admin player attempted to use system command", player_name=player_name)
             return {"result": "You must be an admin to send system messages."}
 
         # Use the chat service to send the system message
@@ -402,11 +416,11 @@ async def handle_system_command(
             return {"result": f"You system: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"System command failed for {player_name}: {error_msg}")
+            logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending system message: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"System command error for {player_name}: {str(e)}")
+        logger.error("System command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending system message: {str(e)}"}
 
 
@@ -426,7 +440,7 @@ async def handle_whisper_command(
     Returns:
         dict: Whisper command result
     """
-    logger.debug(f"Processing whisper command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing whisper command", player_name=player_name, command_data=command_data)
 
     # Extract target and message from command data
     target = command_data.get("target")
@@ -438,8 +452,8 @@ async def handle_whisper_command(
         )
         return {"result": "Say what? Usage: whisper <player> <message>"}
 
-    # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} whispering to {target}: {message}")
+        # message is already a complete string from the validation system
+        logger.debug("Player whispering", player_name=player_name, target=target, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -447,11 +461,11 @@ async def handle_whisper_command(
     chat_service = app.state.chat_service if app else None
 
     if not player_service:
-        logger.warning(f"Whisper command failed - no player service for {player_name}")
+        logger.warning("Whisper command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"Whisper command failed - no chat service for {player_name}")
+        logger.warning("Whisper command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     try:
@@ -488,11 +502,11 @@ async def handle_whisper_command(
             return {"result": f"You whisper to {target}: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"Whisper command failed for {player_name}: {error_msg}")
+            logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending whisper: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Whisper command error for {player_name}: {str(e)}")
+        logger.error("Whisper command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending whisper: {str(e)}"}
 
 
@@ -512,17 +526,17 @@ async def handle_reply_command(
     Returns:
         dict: Reply command result
     """
-    logger.debug(f"Processing reply command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing reply command", player_name=player_name, command_data=command_data)
 
     # Extract message from command data
     message = command_data.get("message")
 
     if not message:
-        logger.warning(f"Reply command with no message for {player_name}, command_data: {command_data}")
+        logger.warning("Reply command with no message", player_name=player_name, command_data=command_data)
         return {"result": "Say what? Usage: reply <message>"}
 
     # message is already a complete string from the validation system
-    logger.debug(f"Player {player_name} replying to last whisper: {message}")
+    logger.debug("Player replying to last whisper", player_name=player_name, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -530,11 +544,11 @@ async def handle_reply_command(
     chat_service = app.state.chat_service if app else None
 
     if not player_service:
-        logger.warning(f"Reply command failed - no player service for {player_name}")
+        logger.warning("Reply command failed - no player service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     if not chat_service:
-        logger.warning(f"Reply command failed - no chat service for {player_name}")
+        logger.warning("Reply command failed - no chat service", player_name=player_name)
         return {"result": "Chat functionality is not available."}
 
     try:
@@ -573,9 +587,9 @@ async def handle_reply_command(
             return {"result": f"You whisper to {last_whisper_sender}: {message}"}
         else:
             error_msg = result.get("error", "Unknown error")
-            logger.warning(f"Reply command failed for {player_name}: {error_msg}")
+            logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending reply: {error_msg}"}
 
     except Exception as e:
-        logger.error(f"Reply command error for {player_name}: {str(e)}")
+        logger.error("Reply command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending reply: {str(e)}"}

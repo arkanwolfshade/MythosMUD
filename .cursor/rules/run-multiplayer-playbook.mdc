@@ -3,17 +3,8 @@ alwaysApply: false
 ---
 ## 🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨
 
-**MANDATORY LLM REQUIREMENT:**
-
-- **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and strict instruction adherence
-- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
-- **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
-- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
-
 **CURSOR AI CONFIGURATION:**
 
-- Set Cursor to use GPT-4 for this session
-- Ensure model selection is set to "GPT-4" or "GPT-4 Turbo"
 - Verify model capabilities include advanced instruction following and systematic analysis
 
 ## 🛑 MANDATORY EXECUTION PROTOCOL 🛑

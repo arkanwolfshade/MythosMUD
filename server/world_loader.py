@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Any
 
 from .exceptions import ValidationError
-from .logging_config import get_logger
-from .utils.error_logging import create_error_context, log_and_raise
+from .logging.enhanced_logging_config import get_logger
+from .utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -58,7 +58,7 @@ try:
 
 except ImportError as e:
     SCHEMA_VALIDATION_AVAILABLE = False
-    logger.warning(f"Schema validation not available - schemas package not found: {e}")
+    logger.warning("Schema validation not available - schemas package not found", error=str(e))
 
 
 def load_zone_config(zone_path: str) -> dict[str, Any] | None:
@@ -78,12 +78,20 @@ def load_zone_config(zone_path: str) -> dict[str, Any] | None:
     context.metadata["config_path"] = config_path
 
     try:
+        logger.debug("Loading zone configuration", config_path=config_path, zone_path=zone_path)
         with open(config_path, encoding="utf-8") as f:
-            return json.load(f)
+            config = json.load(f)
+        logger.debug(
+            "Zone configuration loaded successfully",
+            config_path=config_path,
+            config_keys=list(config.keys()) if isinstance(config, dict) else "non-dict",
+        )
+        return config
     except (OSError, json.JSONDecodeError) as e:
         logger.warning(
             "Could not load zone configuration",
-            context=context.to_dict(),
+            config_path=config_path,
+            zone_path=zone_path,
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -194,7 +202,7 @@ def validate_room_data(
         try:
             validator = create_validator("unified")
         except Exception as e:
-            logger.warning(f"Could not create schema validator: {e}")
+            logger.warning("Could not create schema validator", error=str(e))
             return []
 
     try:
@@ -204,7 +212,7 @@ def validate_room_data(
             context.metadata["operation"] = "validate_room_data"
             context.metadata["file_path"] = file_path
             context.metadata["validation_errors"] = errors
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Room validation failed: {'; '.join(errors)}",
                 context=context,
@@ -218,14 +226,14 @@ def validate_room_data(
             context.metadata["operation"] = "validate_room_data"
             context.metadata["file_path"] = file_path
             context.metadata["error_type"] = type(e).__name__
-            log_and_raise(
+            log_and_raise_enhanced(
                 ValidationError,
                 f"Schema validation error for {file_path}: {e}",
                 context=context,
                 details={"file_path": file_path, "error": str(e), "error_type": type(e).__name__},
                 user_friendly="Room data validation failed",
             )
-        logger.warning(f"Schema validation error for {file_path}: {e}")
+        logger.warning("Schema validation error", file_path=file_path, error=str(e))
         return [f"Validation error: {e}"]
 
 
@@ -258,7 +266,7 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
         try:
             validator = create_validator("unified")
         except Exception as e:
-            logger.warning(f"Could not create schema validator: {e}")
+            logger.warning("Could not create schema validator", error=str(e))
 
     try:
         for plane_path in rooms_path.iterdir():
@@ -391,32 +399,49 @@ def load_rooms(strict_validation: bool = False, enable_schema_validation: bool =
     Returns:
         Dictionary mapping room IDs to room data
     """
+    logger.info(
+        "Loading rooms from world structure",
+        strict_validation=strict_validation,
+        enable_schema_validation=enable_schema_validation,
+    )
+
     world_data = load_hierarchical_world(strict_validation, enable_schema_validation)
 
     # Log validation errors if any
     if world_data.get("validation_errors"):
         error_count = len(world_data["validation_errors"])
-        logger.warning(f"Found {error_count} rooms with validation errors")
+        logger.warning(
+            "Found rooms with validation errors",
+            error_count=error_count,
+            rooms_with_errors=list(world_data["validation_errors"].keys()),
+        )
         for room_id, errors in world_data["validation_errors"].items():
             for error in errors:
-                logger.warning(f"Room {room_id}: {error}")
+                logger.warning("Room validation error", room_id=room_id, error=error)
+
+    room_count = len(world_data["rooms"])
+    logger.info(
+        "Rooms loaded successfully",
+        total_rooms=room_count,
+        validation_errors=len(world_data.get("validation_errors", [])),
+    )
 
     return world_data["rooms"]
 
 
 if __name__ == "__main__":
-    from .logging_config import get_logger
+    from .logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
     world_data = load_hierarchical_world()
-    logger.info(f"Loaded {len(world_data['rooms'])} rooms:")
+    logger.info("Loaded rooms", room_count=len(world_data["rooms"]))
     for room_id, room in world_data["rooms"].items():
         env = room.get("resolved_environment", "unknown")
-        logger.info(f"- {room_id}: {room['name']} (Environment: {env})")
+        logger.info("Room loaded", room_id=room_id, room_name=room["name"], environment=env)
 
-    logger.info(f"Zone configurations: {len(world_data['zone_configs'])}")
-    logger.info(f"Sub-zone configurations: {len(world_data['subzone_configs'])}")
-    logger.info(f"Room mappings: {len(world_data['room_mappings'])}")
+    logger.info("Zone configurations loaded", count=len(world_data["zone_configs"]))
+    logger.info("Sub-zone configurations loaded", count=len(world_data["subzone_configs"]))
+    logger.info("Room mappings loaded", count=len(world_data["room_mappings"]))
 
     if world_data.get("validation_errors"):
-        logger.warning(f"Validation errors: {len(world_data['validation_errors'])}")
+        logger.warning("Validation errors found", error_count=len(world_data["validation_errors"]))

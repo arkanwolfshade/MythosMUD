@@ -15,6 +15,10 @@ from functools import lru_cache
 import ftfy
 import strip_ansi
 
+from ..logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Pre-compile regex patterns for better performance
 INJECTION_PATTERNS_COMPILED = [
     re.compile(pattern, re.IGNORECASE)
@@ -72,6 +76,8 @@ def optimized_sanitize_unicode_input(text: str) -> str:
     """
     if not text:
         return text
+
+    logger.debug("Sanitizing Unicode input", input_length=len(text))
 
     return _cached_ftfy_fix(text)
 
@@ -136,8 +142,14 @@ def optimized_validate_message_content(value: str) -> str:
     if not value:
         return value
 
+    logger.debug("Validating message content", input_length=len(value))
+
     # Fast check for dangerous characters first
     if any(char in DANGEROUS_CHARS for char in value):
+        logger.warning(
+            "Message validation failed - dangerous characters detected",
+            dangerous_chars=[char for char in DANGEROUS_CHARS if char in value],
+        )
         raise ValueError("Message contains dangerous characters")
 
     # Sanitize input
@@ -146,8 +158,14 @@ def optimized_validate_message_content(value: str) -> str:
     # Check for injection patterns using pre-compiled regex
     for pattern in INJECTION_PATTERNS_COMPILED:
         if pattern.search(sanitized):
+            logger.warning(
+                "Message validation failed - dangerous pattern detected",
+                pattern=pattern.pattern,
+                input_preview=value[:100],
+            )
             raise ValueError(f"Message contains potentially dangerous pattern: {pattern.pattern}")
 
+    logger.debug("Message content validation successful", input_length=len(value), output_length=len(sanitized))
     return sanitized
 
 
@@ -198,12 +216,18 @@ def optimized_validate_player_name(value: str) -> str:
     if not value:
         return value
 
+    logger.debug("Validating player name", player_name=value)
+
     # Use pre-compiled pattern for faster matching
     if not PLAYER_NAME_PATTERN.match(value):
+        logger.warning(
+            "Player name validation failed - invalid format", player_name=value, pattern=PLAYER_NAME_PATTERN.pattern
+        )
         raise ValueError(
             "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
         )
 
+    logger.debug("Player name validation successful", player_name=value)
     return value
 
 
@@ -422,18 +446,19 @@ def benchmark_validation_performance():
     """Benchmark the performance of optimized vs original validation functions."""
     import time
 
+    # Use safer test inputs that won't trigger excessive warnings
     test_inputs = [
         "Hello world!",
-        "Say hello to <script>alert('xss')</script>",
-        "Go north; rm -rf /",
-        "Player with spaces and special chars!",
         "Normal player name",
         "alias_name_test",
         "help topic with spaces",
         "Very long message that contains many characters and should test the performance of the validation functions",
+        "Another safe message for testing",
+        "Test message with numbers 123",
+        "Message with underscores_and_hyphens",
     ]
 
-    print("=== Validation Performance Benchmark ===")
+    logger.info("Starting validation performance benchmark")
 
     # Test optimized functions
     start_time = time.perf_counter()
@@ -445,7 +470,13 @@ def benchmark_validation_performance():
                 pass  # Expected for some test inputs
     optimized_time = time.perf_counter() - start_time
 
-    print(f"Optimized validation: {optimized_time:.6f}s for {len(test_inputs) * 1000} validations")
-    print(f"Average per validation: {optimized_time / (len(test_inputs) * 1000):.8f}s")
+    total_validations = len(test_inputs) * 1000
+    avg_per_validation = optimized_time / total_validations
+    logger.info(
+        "Validation performance benchmark completed",
+        optimized_time_seconds=optimized_time,
+        total_validations=total_validations,
+        average_per_validation_seconds=avg_per_validation,
+    )
 
     return optimized_time

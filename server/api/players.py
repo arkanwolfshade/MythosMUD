@@ -8,14 +8,14 @@ creation, retrieval, listing, and deletion of player characters.
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
-from ..auth.users import get_current_user
+from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..logging_config import get_logger
-from ..models import Stats
+from ..logging.enhanced_logging_config import get_logger
+from ..models import Player, Stats
 from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..utils.error_logging import create_context_from_request
@@ -42,7 +42,7 @@ class RollStatsRequest(BaseModel):
 logger = get_logger(__name__)
 
 # Create player router
-player_router = APIRouter(prefix="/players", tags=["players"])
+player_router = APIRouter(prefix="/api/players", tags=["players"])
 
 
 @player_router.post("/", response_model=PlayerRead)
@@ -278,6 +278,122 @@ async def damage_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
+@player_router.post("/respawn")
+async def respawn_player(
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
+):
+    """
+    Respawn a dead player at their respawn location with full HP.
+
+    This endpoint handles player resurrection after death, moving them from
+    limbo to their designated respawn room and restoring their HP to 100.
+
+    Rate limited to 1 request per 5 seconds per user.
+
+    Returns:
+        dict: Respawn room data and updated player state
+
+    Raises:
+        HTTPException(403): Player is not dead
+        HTTPException(404): Player not found
+        HTTPException(500): Respawn failed
+    """
+    from ..database import get_async_session
+    from ..persistence import get_persistence
+    from ..services.player_respawn_service import PlayerRespawnService
+
+    logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
+
+    try:
+        # Get player data
+        async for session in get_async_session():
+            try:
+                # Look up player by user_id (not primary key player_id)
+                from sqlalchemy import select
+
+                result = await session.execute(select(Player).where(Player.user_id == str(current_user.id)))
+                player = result.scalar_one_or_none()
+                if not player:
+                    context = create_context_from_request(request)
+                    context.user_id = str(current_user.id)
+                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context)
+
+                # Verify player is dead
+                if not player.is_dead():
+                    context = create_context_from_request(request)
+                    context.user_id = str(current_user.id)
+                    context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+                    raise LoggedHTTPException(
+                        status_code=403,
+                        detail="Player must be dead to respawn (HP must be -10 or below)",
+                        context=context,
+                    )
+
+                # Get respawn service directly (already initialized in handler)
+                respawn_service = PlayerRespawnService(event_bus=request.app.state.event_bus)
+
+                # Respawn the player
+                success = await respawn_service.respawn_player(player.player_id, session)
+
+                if not success:
+                    logger.error("Respawn failed", player_id=player.player_id)
+                    raise LoggedHTTPException(
+                        status_code=500, detail="Failed to respawn player", context=create_context_from_request(request)
+                    )
+
+                # Get respawn room data
+                persistence = get_persistence()
+                respawn_room_id = player.current_room_id  # Updated by respawn_player
+                room = persistence.get_room(respawn_room_id)
+
+                if not room:
+                    logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
+                    room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+                else:
+                    room_data = room.to_dict()
+
+                # Get updated player state
+                updated_stats = player.get_stats()
+
+                logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
+
+                return {
+                    "success": True,
+                    "player": {
+                        "id": player.player_id,
+                        "name": player.name,
+                        "hp": updated_stats.get("current_health", 100),
+                        "max_hp": 100,
+                        "current_room_id": respawn_room_id,
+                    },
+                    "room": room_data,
+                    "message": "You have been resurrected and returned to the waking world",
+                }
+
+            except LoggedHTTPException:
+                raise
+            except Exception as e:
+                logger.error("Error in respawn endpoint", error=str(e), exc_info=True)
+                context = create_context_from_request(request)
+                if current_user:
+                    context.user_id = str(current_user.id)
+                raise LoggedHTTPException(
+                    status_code=500, detail="Failed to process respawn request", context=context
+                ) from e
+            # Only need one session iteration - break after first session
+            break
+
+    except LoggedHTTPException:
+        raise
+    except Exception as e:
+        logger.error("Unexpected error in respawn endpoint", error=str(e), exc_info=True)
+        context = create_context_from_request(request)
+        if current_user:
+            context.user_id = str(current_user.id)
+        raise LoggedHTTPException(status_code=500, detail="Unexpected error during respawn", context=context) from e
+
+
 # Character Creation and Stats Generation Endpoints
 @player_router.post("/roll-stats")
 async def roll_character_stats(
@@ -309,16 +425,16 @@ async def roll_character_stats(
             status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
         )
     # Check if user is authenticated
-    logger.debug(f"Authentication check - current_user: {current_user}")
+    logger.debug("Authentication check", current_user=current_user)
     if not current_user:
-        logger.warning("Authentication failed: No user returned from get_current_user")
+        logger.warning("Authentication failed: No user returned from get_current_active_user")
         # Note: We don't have request context here, so we'll create a minimal context
         from ..exceptions import create_error_context
 
         context = create_error_context()
         raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
-    logger.info(f"Authentication successful for user: {current_user.username} (ID: {current_user.id})")
+    logger.info("Authentication successful for user", username=current_user.username, user_id=current_user.id)
 
     # Apply rate limiting
     try:
@@ -494,7 +610,7 @@ async def create_character_with_stats(
 
         # Note: For now, we'll skip marking the invite as used to avoid complexity
         # TODO: Implement a proper way to track and mark invites as used
-        logger.info(f"Character {request_data.name} created successfully for user {current_user.id}")
+        logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
         return {
             "message": f"Character {request_data.name} created successfully",

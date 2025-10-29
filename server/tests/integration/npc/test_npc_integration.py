@@ -17,7 +17,7 @@ import pytest
 
 from server.events import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.game.movement_service import MovementService
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 from server.models.npc import NPCDefinitionType
 from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
 
@@ -958,7 +958,7 @@ class TestNPCSystemIntegration:
         # Should execute all NPCs quickly
         assert execution_time < 1.0
 
-        logger.info(f"NPC system execution time: {execution_time:.3f}s for {len(test_npcs)} NPCs")
+        logger.info("NPC system execution time", execution_time=execution_time, npc_count=len(test_npcs))
 
     @pytest.mark.asyncio
     async def test_npc_system_error_handling(self, test_npcs):
@@ -1120,14 +1120,14 @@ class TestNPCEventReactionSystem:
         low_priority_reaction = NPCEventReaction(
             event_type=PlayerEnteredRoom,
             condition=lambda event, context: True,
-            action=lambda event, context: print("Low priority"),
+            action=lambda event, context: logger.debug("Low priority reaction triggered"),
             priority=1,
         )
 
         high_priority_reaction = NPCEventReaction(
             event_type=PlayerEnteredRoom,
             condition=lambda event, context: True,
-            action=lambda event, context: print("High priority"),
+            action=lambda event, context: logger.debug("High priority reaction triggered"),
             priority=10,
         )
 

@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
-from .logging_config import get_logger
+from .logging.enhanced_logging_config import get_logger
 from .npc_metadata import npc_metadata
 from .utils.error_logging import create_error_context, log_and_raise
 
@@ -102,7 +102,7 @@ def _initialize_npc_database() -> None:
         """Enable foreign key constraints for SQLite connections."""
         conn_str = str(dbapi_connection)
         conn_type = str(type(dbapi_connection))
-        logger.debug(f"NPC database connect event fired, type: {conn_type}, str: {conn_str[:100]}")
+        logger.debug("NPC database connect event fired", conn_type=conn_type, conn_str=conn_str[:100])
 
         # Check both the connection string and type for sqlite
         if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
@@ -111,7 +111,7 @@ def _initialize_npc_database() -> None:
             cursor.close()
             logger.debug("Foreign keys enabled for NPC database connection")
         else:
-            logger.warning(f"Skipping PRAGMA for non-SQLite connection: {conn_type}")
+            logger.warning("Skipping PRAGMA for non-SQLite connection", conn_type=conn_type)
 
     logger.info("NPC Database engine created", pool_class=pool_class.__name__)
 

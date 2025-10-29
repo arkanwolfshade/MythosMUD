@@ -10,7 +10,7 @@ import sqlite3
 import threading
 from typing import Any
 
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

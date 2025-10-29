@@ -74,7 +74,7 @@ class TestDependencyInjection:
 
         # Test that the dependency injection works by making a request
         # This should not raise an import error or dependency resolution error
-        response = client.get("/players/")
+        response = client.get("/api/players/")
 
         # The response might be 401 (unauthorized) or 200 (success)
         # The important thing is that it doesn't fail with dependency injection errors

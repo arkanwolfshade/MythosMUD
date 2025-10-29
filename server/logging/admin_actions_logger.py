@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from server.logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -33,7 +33,7 @@ class AdminActionsLogger:
         if log_directory is None:
             # Use environment-based configuration like the rest of the system
             from server.config import get_config
-            from server.logging_config import _resolve_log_base
+            from server.logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base
@@ -48,7 +48,7 @@ class AdminActionsLogger:
 
         # Create today's log file
         self.current_log_file = self._get_log_file_path()
-        logger.info(f"Admin actions logger initialized - logging to {self.current_log_file}")
+        logger.info("Admin actions logger initialized", log_file=str(self.current_log_file))
 
     def _get_log_file_path(self) -> Path:
         """Get the log file path for the current date."""
@@ -149,9 +149,9 @@ class AdminActionsLogger:
 
         # Also log to the main logger for immediate visibility
         if success:
-            logger.info(f"Admin command logged - {admin_name} executed '{command}'")
+            logger.info("Admin command logged", admin_name=admin_name, command=command)
         else:
-            logger.warning(f"Admin command failed - {admin_name} '{command}': {error_message}")
+            logger.warning("Admin command failed", admin_name=admin_name, command=command, error=error_message)
 
     def log_permission_check(
         self,
@@ -181,7 +181,9 @@ class AdminActionsLogger:
         self._log_entry(log_entry)
 
         if not has_permission:
-            logger.warning(f"Permission denied - {player_name} attempted '{action}' without admin privileges")
+            logger.warning(
+                "Permission denied", player_name=player_name, action=action, reason="insufficient_admin_privileges"
+            )
 
     def _log_entry(self, log_entry: dict[str, Any]) -> None:
         """
@@ -196,14 +198,14 @@ class AdminActionsLogger:
             # Check if we need to rotate to a new day's log file
             if self.current_log_file != self._get_log_file_path():
                 self.current_log_file = self._get_log_file_path()
-                logger.info(f"Rotated to new admin actions log file: {self.current_log_file}")
+                logger.info("Rotated to new admin actions log file", log_file=str(self.current_log_file))
 
             # Write the log entry as a JSON line
             with open(self.current_log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
         except Exception as e:
-            logger.error(f"Failed to write admin action log entry: {str(e)}")
+            logger.error("Failed to write admin action log entry", error=str(e), operation="log_entry_write")
 
     def get_recent_actions(
         self, hours: int = 24, action_type: str | None = None, admin_name: str | None = None
@@ -256,13 +258,18 @@ class AdminActionsLogger:
                             actions.append(entry)
 
                         except (json.JSONDecodeError, KeyError, ValueError) as e:
-                            logger.warning(f"Failed to parse log entry: {line[:100]}... Error: {str(e)}")
+                            logger.warning(
+                                "Failed to parse log entry",
+                                line_preview=line[:100],
+                                error=str(e),
+                                operation="log_parsing",
+                            )
                             continue
 
             return actions
 
         except Exception as e:
-            logger.error(f"Failed to retrieve recent admin actions: {str(e)}")
+            logger.error("Failed to retrieve recent admin actions", error=str(e), operation="admin_actions_retrieval")
             return []
 
     def get_teleport_statistics(self, hours: int = 24) -> dict[str, Any]:

@@ -10,7 +10,7 @@ from typing import Any
 
 from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..utils.error_logging import create_error_context, log_and_raise
 

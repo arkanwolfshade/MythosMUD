@@ -9,10 +9,11 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from sqlalchemy import select
 
 from ..config import get_config
 from ..database import init_db
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..npc_database import init_npc_db
 from ..persistence import get_persistence
 from ..realtime.connection_manager import connection_manager
@@ -24,6 +25,15 @@ from .task_registry import TaskRegistry
 
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
+
+# Global tick counter for combat system
+_current_tick = 0
+
+
+def get_current_tick() -> int:
+    """Get the current game tick."""
+    return _current_tick
+
 
 # Log directory creation is now handled by logging_config.py
 
@@ -43,7 +53,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     await init_npc_db()
     # Initialize real-time event handler first to obtain its EventBus with task tracking
-    app.state.event_handler = get_real_time_event_handler(task_registry=task_registry)
+    app.state.event_handler = get_real_time_event_handler(event_bus=None, task_registry=task_registry)
     # Ensure the event handler has access to the connection manager
     app.state.event_handler.connection_manager = connection_manager
 
@@ -60,6 +70,10 @@ async def lifespan(app: FastAPI):
     connection_manager._event_bus = app.state.event_handler.event_bus
     # Give connection manager access to app for WebSocket command processing
     connection_manager.app = app
+
+    # Clear any stale pending messages from previous server sessions
+    connection_manager.message_queue.pending_messages.clear()
+    logger.info("Cleared stale pending messages from previous server sessions")
 
     # Initialize critical services and add to app.state
     from ..game.player_service import PlayerService
@@ -85,8 +99,8 @@ async def lifespan(app: FastAPI):
     app.state.user_manager = UserManager(data_dir=user_management_dir)
 
     logger.info("Critical services (player_service, user_manager) added to app.state")
-    logger.info(f"app.state.player_service: {app.state.player_service}")
-    logger.info(f"app.state.user_manager: {app.state.user_manager}")
+    logger.info("Player service initialized", player_service=app.state.player_service)
+    logger.info("User manager initialized", user_manager=app.state.user_manager)
 
     # Initialize NPC services
     from ..npc.lifecycle_manager import NPCLifecycleManager
@@ -98,13 +112,16 @@ async def lifespan(app: FastAPI):
     # Create NPC services
     # Create spawning service first (it doesn't depend on population controller)
     app.state.npc_spawning_service = NPCSpawningService(app.state.event_bus, None)
-    # Create population controller with spawning service
-    app.state.npc_population_controller = NPCPopulationController(app.state.event_bus, app.state.npc_spawning_service)
+    # Create lifecycle manager first (it needs spawning service)
+    app.state.npc_lifecycle_manager = NPCLifecycleManager(app.state.event_bus, None, app.state.npc_spawning_service)
+    # Create population controller with spawning service and lifecycle manager
+    app.state.npc_population_controller = NPCPopulationController(
+        app.state.event_bus, app.state.npc_spawning_service, app.state.npc_lifecycle_manager
+    )
     # Update spawning service to use population controller
     app.state.npc_spawning_service.population_controller = app.state.npc_population_controller
-    app.state.npc_lifecycle_manager = NPCLifecycleManager(
-        app.state.event_bus, app.state.npc_population_controller, app.state.npc_spawning_service
-    )
+    # Update lifecycle manager to use population controller
+    app.state.npc_lifecycle_manager.population_controller = app.state.npc_population_controller
 
     # Initialize the NPC instance service
     initialize_npc_instance_service(
@@ -123,55 +140,69 @@ async def lifespan(app: FastAPI):
             # Load NPC definitions
             definitions = await npc_service.get_npc_definitions(npc_session)
             app.state.npc_population_controller.load_npc_definitions(definitions)
-            logger.info(f"Loaded {len(definitions)} NPC definitions")
+            logger.info("NPC definitions loaded", count=len(definitions))
 
             # Load spawn rules
             spawn_rules = await npc_service.get_spawn_rules(npc_session)
             app.state.npc_population_controller.load_spawn_rules(spawn_rules)
-            logger.info(f"Loaded {len(spawn_rules)} NPC spawn rules")
+            logger.info("NPC spawn rules loaded", count=len(spawn_rules))
 
         except Exception as e:
-            logger.error(f"Error loading NPC definitions and spawn rules: {e}")
+            logger.error("Error loading NPC definitions and spawn rules", error=str(e))
         break
 
     logger.info("NPC services initialized and added to app.state")
 
-    # Initialize NPC startup spawning - DISABLED TO PREVENT DUPLICATION
-    # Multiple systems were spawning NPCs during startup causing duplication
-    # Only the NPC Population Controller should handle startup spawning
-    # from ..services.npc_startup_service import get_npc_startup_service
+    # Initialize player combat service (NATS service not needed yet)
+    from ..services.player_combat_service import PlayerCombatService
 
-    # logger.info("Starting NPC startup spawning process")
-    # try:
-    #     startup_service = get_npc_startup_service()
-    #     startup_results = await startup_service.spawn_npcs_on_startup()
+    app.state.player_combat_service = PlayerCombatService(app.state.persistence, app.state.event_bus)
+    logger.info("Player combat service initialized and added to app.state")
 
-    #     logger.info(
-    #         "NPC startup spawning completed",
-    #         context={
-    #             "total_spawned": startup_results["total_spawned"],
-    #             "required_spawned": startup_results["required_spawned"],
-    #             "optional_spawned": startup_results["optional_spawned"],
-    #             "failed_spawns": startup_results["failed_spawns"],
-    #             "errors": len(startup_results["errors"]),
-    #         },
-    #     )
+    # Initialize player death service for death/respawn mechanics
+    from ..services.player_death_service import PlayerDeathService
 
-    #     # Log any errors that occurred during startup
-    #     if startup_results["errors"]:
-    #         logger.warning(f"NPC startup spawning had {len(startup_results['errors'])} errors")
-    #         for error in startup_results["errors"]:
-    #             logger.warning(f"Startup spawning error: {error}")
+    app.state.player_death_service = PlayerDeathService(event_bus=app.state.event_bus)
+    logger.info("Player death service initialized and added to app.state")
 
-    # except Exception as e:
-    #     logger.error(f"Critical error during NPC startup spawning: {str(e)}")
-    #     # Don't fail server startup due to NPC spawning issues
-    #     logger.warning("Continuing server startup despite NPC spawning errors")
+    # Initialize player respawn service for resurrection mechanics
+    from ..services.player_respawn_service import PlayerRespawnService
 
-    logger.info("NPC startup spawning DISABLED to prevent duplication - using Population Controller only")
+    app.state.player_respawn_service = PlayerRespawnService(event_bus=app.state.event_bus)
+    logger.info("Player respawn service initialized and added to app.state")
+
+    # Initialize NPC startup spawning
+    # Re-enabled to ensure NPCs spawn during server startup
+    from ..services.npc_startup_service import get_npc_startup_service
+
+    logger.info("Starting NPC startup spawning process")
+    try:
+        startup_service = get_npc_startup_service()
+        startup_results = await startup_service.spawn_npcs_on_startup()
+
+        logger.info(
+            "NPC startup spawning completed",
+            total_spawned=startup_results["total_spawned"],
+            required_spawned=startup_results["required_spawned"],
+            optional_spawned=startup_results["optional_spawned"],
+            failed_spawns=startup_results["failed_spawns"],
+            errors=len(startup_results["errors"]),
+        )
+
+        # Log any errors that occurred during startup
+        if startup_results["errors"]:
+            logger.warning("NPC startup spawning had errors", error_count=len(startup_results["errors"]))
+            for error in startup_results["errors"]:
+                logger.warning("Startup spawning error", error=str(error))
+
+    except Exception as e:
+        logger.error("Critical error during NPC startup spawning", error=str(e))
+        # Don't fail server startup due to NPC spawning issues
+        logger.warning("Continuing server startup despite NPC spawning errors")
+
+    logger.info("NPC startup spawning completed - NPCs should now be present in the world")
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
-    from ..logging_config import update_logging_with_player_service
 
     update_logging_with_player_service(app.state.player_service)
     logger.info("Logging system enhanced with PlayerGuidFormatter")
@@ -201,6 +232,21 @@ async def lifespan(app: FastAPI):
                 logger.info("NATS service connected successfully")
                 app.state.nats_service = nats_service
 
+                # Initialize combat service now that NATS service is available
+                from ..services.combat_service import CombatService
+
+                app.state.combat_service = CombatService(app.state.player_combat_service, app.state.nats_service)
+
+                # Update global combat service instance for tests and other modules
+                from ..services.combat_service import set_combat_service
+
+                set_combat_service(app.state.combat_service)
+
+                # Update PlayerService with combat service and player combat service for dynamic combat state checking
+                app.state.player_service.combat_service = app.state.combat_service
+                app.state.player_service.player_combat_service = app.state.player_combat_service
+                logger.info("Combat service initialized and added to app.state")
+
                 # Initialize NATS message handler
                 try:
                     nats_message_handler = get_nats_message_handler(nats_service)
@@ -222,7 +268,9 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             if is_testing:
                 # In test environment, NATS errors are not fatal
-                logger.warning(f"NATS initialization failed in test environment: {str(e)} - continuing without NATS")
+                logger.warning(
+                    "NATS initialization failed in test environment", error=str(e), message="continuing without NATS"
+                )
                 app.state.nats_service = None
                 app.state.nats_message_handler = None
             else:
@@ -259,7 +307,7 @@ async def lifespan(app: FastAPI):
         raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
     logger.info("Chat service added to app.state")
-    logger.info(f"app.state.chat_service: {app.state.chat_service}")
+    logger.info("Chat service initialized", chat_service=app.state.chat_service)
 
     # Start the game tick loop using TaskRegistry
     tick_task = app.state.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
@@ -296,7 +344,7 @@ async def lifespan(app: FastAPI):
             try:
                 await app.state.connection_manager.force_cleanup()
             except Exception as e:
-                logger.error(f"Error during connection manager cleanup: {e}")
+                logger.error("Error during connection manager cleanup", error=str(e))
 
         # Phase 3: TaskRegistry shutdown coordination with enhanced reprocation logic
         if hasattr(app.state, "task_registry") and app.state.task_registry:
@@ -310,7 +358,7 @@ async def lifespan(app: FastAPI):
                         "TaskRegistry shutdown reached timeout - forcing static termination of remaining tasks"
                     )
             except Exception as e:
-                logger.error(f"TaskRegistry shutdown coordination error: {e}")
+                logger.error("TaskRegistry shutdown coordination error", error=str(e))
                 # Proceedings continue unless critical failure
         else:
             logger.warning("No TaskRegistry found in shutdown phase - falling back to manual task cancellation")
@@ -319,14 +367,24 @@ async def lifespan(app: FastAPI):
             current_task = asyncio.current_task()
             remaining_tasks = [task for task in asyncio.all_tasks() if task is not current_task and not task.done()]
             if remaining_tasks:
-                logger.info(f"Manual cleanup of {len(remaining_tasks)} orphaned tasks")
+                logger.info("Manual cleanup of orphaned tasks", task_count=len(remaining_tasks))
                 for task in remaining_tasks:
                     task.cancel()
                 await asyncio.gather(*remaining_tasks, return_exceptions=True)
     except Exception as e:
         logger.error("Critical shutdown failure:", exc_info=True)
-        logger.error(f"Lifespan shutdown failed with error: {e}")
+        logger.error("Lifespan shutdown failed", error=str(e))
     finally:
+        # Phase 4: Database cleanup
+        logger.info("Closing database connections")
+        try:
+            from ..database import close_db
+
+            await close_db()
+            logger.info("Database connections closed successfully")
+        except Exception as e:
+            logger.error("Error closing database connections", error=str(e))
+
         logger.info("MythosMUD server shutdown execution phase completed")
 
     logger.info("MythosMUD server shutdown complete")
@@ -337,13 +395,129 @@ async def game_tick_loop(app: FastAPI):
 
     This function runs continuously and handles periodic game updates,
     including broadcasting tick information to connected players."""
+    global _current_tick
     tick_count = 0
     logger.info("Game tick loop started")
 
     while True:
         try:
             # TODO: Implement status/effect ticks using persistence layer
-            logger.debug(f"Game tick {tick_count}")
+            logger.debug("Game tick", tick_count=tick_count)
+
+            # Update global tick counter
+            _current_tick = tick_count
+
+            # Process combat auto-progression
+            if hasattr(app.state, "combat_service"):
+                try:
+                    await app.state.combat_service.process_game_tick(tick_count)
+                except Exception as e:
+                    logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
+
+            # Process HP decay for mortally wounded players
+            if hasattr(app.state, "player_death_service"):
+                try:
+                    from ..database import get_async_session
+                    from ..models.player import Player
+
+                    # Get database session for HP decay processing
+                    async for session in get_async_session():
+                        try:
+                            # Get all mortally wounded players
+                            mortally_wounded = await app.state.player_death_service.get_mortally_wounded_players(
+                                session
+                            )
+
+                            if mortally_wounded:
+                                logger.debug(
+                                    "Processing HP decay for mortally wounded players",
+                                    tick_count=tick_count,
+                                    player_count=len(mortally_wounded),
+                                )
+
+                                # Process decay for each mortally wounded player
+                                for player in mortally_wounded:
+                                    await app.state.player_death_service.process_mortally_wounded_tick(
+                                        player.player_id, session
+                                    )
+
+                                    # Refresh player stats to get HP AFTER decay using async API
+                                    await session.refresh(player)
+                                    stats = player.get_stats()
+                                    new_hp = stats.get("current_health", 0)
+
+                                    # Broadcast HP decay message
+                                    if hasattr(app.state, "combat_service"):
+                                        from ..services.combat_messaging_integration import combat_messaging_integration
+
+                                        await combat_messaging_integration.send_hp_decay_message(
+                                            player.player_id, new_hp
+                                        )
+
+                                    # Check if player reached death threshold (-10 HP) after decay
+                                    if new_hp <= -10:
+                                        logger.info(
+                                            "Player reached death threshold",
+                                            player_id=player.player_id,
+                                            player_name=player.name,
+                                            current_hp=new_hp,
+                                        )
+
+                                        # Handle death and move to limbo
+                                        await app.state.player_death_service.handle_player_death(
+                                            player.player_id,
+                                            player.current_room_id,
+                                            None,  # No killer info for decay death
+                                            session,
+                                        )
+
+                                        # Move player to limbo
+                                        await app.state.player_respawn_service.move_player_to_limbo(
+                                            player.player_id,
+                                            player.current_room_id,
+                                            session,
+                                        )
+
+                            # Also check for players already at death threshold who need limbo transition
+                            # This handles players who died but haven't been moved to limbo yet
+                            result = await session.execute(select(Player))
+                            all_players = result.scalars().all()
+                            for player in all_players:
+                                stats = player.get_stats()
+                                current_hp = stats.get("current_health", 0)
+
+                                # If player is dead and not in limbo, move them there
+                                if current_hp <= -10 and player.current_room_id != "limbo_death_void":
+                                    logger.info(
+                                        "Found dead player not in limbo - moving to limbo",
+                                        player_id=player.player_id,
+                                        player_name=player.name,
+                                        current_hp=current_hp,
+                                        current_room=player.current_room_id,
+                                    )
+
+                                    # Handle death and move to limbo
+                                    await app.state.player_death_service.handle_player_death(
+                                        player.player_id,
+                                        player.current_room_id,
+                                        None,  # No killer info
+                                        session,
+                                    )
+
+                                    # Move player to limbo
+                                    await app.state.player_respawn_service.move_player_to_limbo(
+                                        player.player_id,
+                                        player.current_room_id,
+                                        session,
+                                    )
+
+                        except Exception as e:
+                            logger.error("Error in HP decay processing iteration", error=str(e))
+
+                        # Only need one session iteration - break after first session
+                        break
+                except Exception as e:
+                    logger.error("Error processing HP decay", tick_count=tick_count, error=str(e))
 
             # Broadcast game tick to all connected players
             tick_data = {
@@ -351,12 +525,16 @@ async def game_tick_loop(app: FastAPI):
                 "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
                 "active_players": len(connection_manager.player_websockets),
             }
+            logger.debug(
+                "Broadcasting game tick", tick_count=tick_count, player_count=len(connection_manager.player_websockets)
+            )
             await broadcast_game_event("game_tick", tick_data)
+            logger.debug("Game tick broadcast completed", tick_count=tick_count)
             tick_count += 1
             await asyncio.sleep(TICK_INTERVAL)
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
             break
         except Exception as e:
-            logger.error(f"Error in game tick loop: {e}")
+            logger.error("Error in game tick loop", error=str(e))
             await asyncio.sleep(TICK_INTERVAL)

@@ -88,7 +88,7 @@ class TestServiceDependencyInjection:
 
     def test_player_service_dependency_injection_via_endpoint(self, client):
         """Test that PlayerService is correctly injected via API endpoint."""
-        response = client.get("/players/")
+        response = client.get("/api/players/")
         assert response.status_code in [200, 401]
 
         app = client.app
@@ -178,7 +178,7 @@ class TestServiceDependencyInjection:
 
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""
-        endpoints_to_test = ["/players/", "/rooms/test_room"]
+        endpoints_to_test = ["/api/players/", "/rooms/test_room"]
 
         for endpoint in endpoints_to_test:
             response = client.get(endpoint)

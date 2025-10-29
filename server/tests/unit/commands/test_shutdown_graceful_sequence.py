@@ -65,13 +65,13 @@ class TestGracefulShutdownSequence:
 
         # Mock NPC services
         mock_npc_spawning_service = MagicMock()
-        mock_npc_spawning_service.active_npc_instances = {
-            "npc1": MagicMock(),
-            "npc2": MagicMock(),
-        }
         mock_app.state.npc_spawning_service = mock_npc_spawning_service
 
         mock_npc_lifecycle_manager = MagicMock()
+        mock_npc_lifecycle_manager.active_npcs = {
+            "npc1": MagicMock(),
+            "npc2": MagicMock(),
+        }
         mock_npc_lifecycle_manager.despawn_npc = MagicMock(return_value=True)
         mock_app.state.npc_lifecycle_manager = mock_npc_lifecycle_manager
 
@@ -232,13 +232,13 @@ class TestGracefulShutdownSequence:
 
         # Mock NPC services with error on first despawn
         mock_npc_spawning_service = MagicMock()
-        mock_npc_spawning_service.active_npc_instances = {
-            "npc1": MagicMock(),
-            "npc2": MagicMock(),
-        }
         mock_app.state.npc_spawning_service = mock_npc_spawning_service
 
         mock_npc_lifecycle_manager = MagicMock()
+        mock_npc_lifecycle_manager.active_npcs = {
+            "npc1": MagicMock(),
+            "npc2": MagicMock(),
+        }
         mock_npc_lifecycle_manager.despawn_npc = MagicMock(
             side_effect=[
                 Exception("Despawn error"),
@@ -364,10 +364,10 @@ class TestGracefulShutdownSequence:
 
         # Mock NPC services
         mock_npc_spawning_service = MagicMock()
-        mock_npc_spawning_service.active_npc_instances = {"npc1": MagicMock()}
         mock_app.state.npc_spawning_service = mock_npc_spawning_service
 
         mock_npc_lifecycle_manager = MagicMock()
+        mock_npc_lifecycle_manager.active_npcs = {"npc1": MagicMock()}
 
         def record_despawn_npc(npc_id, **kwargs):
             execution_order.append(f"despawn_npc_{npc_id}")

@@ -474,6 +474,85 @@ npm run test:e2e:runtime
 1. Write an MCP scenario in `e2e-tests/scenarios/`
 2. Mock the second player in automated tests if you're only testing integration points
 
+## Enhanced Logging in E2E Tests
+
+### **CRITICAL: Enhanced Logging Requirements**
+All E2E tests MUST use the enhanced logging system for proper observability and debugging.
+
+#### **Required Import Pattern**
+```typescript
+// ✅ CORRECT - Enhanced logging import (MANDATORY)
+import { getLogger } from 'server/logging/enhanced_logging_config';
+const logger = getLogger(__name__);
+```
+
+#### **Forbidden Patterns**
+```typescript
+// ❌ FORBIDDEN - Will cause import failures and system crashes
+import { logging } from 'logging';
+const logger = logging.getLogger(__name__);
+
+// ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+logger.info("Test started", context={"test_name": "example"});
+
+// ❌ FORBIDDEN - String formatting breaks structured logging
+logger.info(`Test ${testName} started`);
+```
+
+#### **Correct Logging Patterns in Tests**
+```typescript
+// ✅ CORRECT - Test setup logging
+logger.info("E2E test started", test_name="local-channel-errors", test_file="error-handling/local-channel-errors.spec.ts");
+
+// ✅ CORRECT - Test step logging
+logger.debug("Test step executed", step="navigate_to_chat", url="/chat", expected_element="chat-panel");
+
+// ✅ CORRECT - Error logging in tests
+logger.error("Test assertion failed", assertion="chat_message_visible", expected=true, actual=false, test_step="verify_message_display");
+
+// ✅ CORRECT - Performance logging
+logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8, assertions_passed=10);
+```
+
+#### **Test Logging Best Practices**
+- **Structured Logging**: Always use key-value pairs for log data
+- **Test Context**: Include test name, file, and step information
+- **Error Context**: Log sufficient context for debugging test failures
+- **Performance Tracking**: Log test execution times and metrics
+- **Security**: Never log sensitive test data (passwords, tokens)
+
+#### **Logging Validation in Tests**
+```typescript
+// ✅ CORRECT - Validate logging behavior in tests
+test('should log user actions correctly', async () => {
+  // Mock the logger to capture log calls
+  const mockLogger = jest.fn();
+  jest.spyOn(enhancedLogging, 'getLogger').mockReturnValue({
+    info: mockLogger,
+    error: mockLogger,
+    debug: mockLogger
+  });
+
+  // Perform test action
+  await page.click('[data-testid="send-message"]');
+
+  // Verify logging occurred
+  expect(mockLogger).toHaveBeenCalledWith(
+    "User action completed",
+    expect.objectContaining({
+      action: "send_message",
+      user_id: expect.any(String),
+      success: true
+    })
+  );
+});
+```
+
+#### **Documentation References**
+- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+- **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
+
 ## Additional Resources
 
 - [Playwright Documentation](https://playwright.dev/docs/intro)

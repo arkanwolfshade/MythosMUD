@@ -18,7 +18,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..logging.admin_actions_logger import AdminActionsLogger
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -41,11 +41,11 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
 
     def _terminator():
         try:
-            logger.info(f"ProcessTerminator thread started, waiting {delay_seconds}s before termination")
+            logger.info("ProcessTerminator thread started", delay_seconds=delay_seconds)
             time.sleep(delay_seconds)
             pid = os.getpid()
             ppid = os.getppid()
-            logger.info(f"ProcessTerminator attempting to terminate process {pid} and parent {ppid}")
+            logger.info("ProcessTerminator attempting to terminate process", pid=pid, ppid=ppid)
 
             # Try to find and kill uvicorn processes specifically
             try:
@@ -57,17 +57,17 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                     try:
                         if proc.info["name"] and "uvicorn" in proc.info["name"].lower():
                             uvicorn_processes.append(proc)
-                            logger.info(f"Found uvicorn process: {proc.info['pid']} ({proc.info['name']})")
+                            logger.info("Found uvicorn process", pid=proc.info["pid"], name=proc.info["name"])
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
                         continue
 
                 # Terminate all uvicorn processes
                 for proc in uvicorn_processes:
                     try:
-                        logger.info(f"Terminating uvicorn process {proc.info['pid']}")
+                        logger.info("Terminating uvicorn process", pid=proc.info["pid"])
                         proc.terminate()
                     except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-                        logger.warning(f"Could not terminate uvicorn process {proc.info['pid']}: {e}")
+                        logger.warning("Could not terminate uvicorn process", pid=proc.info["pid"], error=str(e))
 
                 # Wait for processes to terminate
                 time.sleep(1)
@@ -76,7 +76,7 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                 for proc in uvicorn_processes:
                     try:
                         if proc.is_running():
-                            logger.warning(f"Killing stubborn uvicorn process {proc.info['pid']}")
+                            logger.warning("Killing stubborn uvicorn process", pid=proc.info["pid"])
                             proc.kill()
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
                         pass
@@ -85,19 +85,19 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                 current_process = psutil.Process(pid)
                 children = current_process.children(recursive=True)
                 for child in children:
-                    logger.info(f"Terminating child process {child.pid} ({child.name()})")
+                    logger.info("Terminating child process", pid=child.pid, name=child.name())
                     try:
                         child.terminate()
                     except psutil.NoSuchProcess:
-                        logger.warning(f"Child process {child.pid} already terminated.")
+                        logger.warning("Child process already terminated", pid=child.pid)
 
                 gone, alive = psutil.wait_procs(children, timeout=2)
                 for p in alive:
-                    logger.warning(f"Child process {p.pid} ({p.name()}) did not terminate, killing.")
+                    logger.warning("Child process did not terminate, killing", pid=p.pid, name=p.name())
                     try:
                         p.kill()
                     except psutil.NoSuchProcess:
-                        logger.warning(f"Child process {p.pid} already terminated.")
+                        logger.warning("Child process already terminated", pid=p.pid)
 
             except ImportError:
                 logger.warning("psutil not available, falling back to signal-based termination")
@@ -106,35 +106,35 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                     logger.info("ProcessTerminator sending SIGINT to child")
                     os.kill(pid, signal.SIGINT)
                 except Exception as e:
-                    logger.warning(f"ProcessTerminator SIGINT(child) failed: {e}")
+                    logger.warning("ProcessTerminator SIGINT(child) failed", error=str(e))
 
                 try:
                     if ppid and ppid != 1:
                         logger.info("ProcessTerminator sending SIGINT to parent")
                         os.kill(ppid, signal.SIGINT)
                 except Exception as e:
-                    logger.warning(f"ProcessTerminator SIGINT(parent) failed: {e}")
+                    logger.warning("ProcessTerminator SIGINT(parent) failed", error=str(e))
 
                 time.sleep(0.1)
                 try:
                     logger.info("ProcessTerminator sending SIGTERM to child")
                     os.kill(pid, signal.SIGTERM)
                 except Exception as e:
-                    logger.warning(f"ProcessTerminator SIGTERM(child) failed: {e}")
+                    logger.warning("ProcessTerminator SIGTERM(child) failed", error=str(e))
 
                 try:
                     if ppid and ppid != 1:
                         logger.info("ProcessTerminator sending SIGTERM to parent")
                         os.kill(ppid, signal.SIGTERM)
                 except Exception as e:
-                    logger.warning(f"ProcessTerminator SIGTERM(parent) failed: {e}")
+                    logger.warning("ProcessTerminator SIGTERM(parent) failed", error=str(e))
 
             # As a last resort, force exit to avoid hanging processes
             time.sleep(0.2)
             logger.info("ProcessTerminator forcing exit with os._exit(0)")
             os._exit(0)
         except Exception as e:
-            logger.error(f"ProcessTerminator error: {e}")
+            logger.error("ProcessTerminator error", error=str(e))
             # Final fallback - force exit
             logger.info("ProcessTerminator final fallback - os._exit(0)")
             os._exit(0)
@@ -198,19 +198,19 @@ async def validate_shutdown_admin_permission(player, player_name: str) -> bool:
     """
     try:
         if not player:
-            logger.warning(f"Shutdown permission check failed - no player object for {player_name}")
+            logger.warning("Shutdown permission check failed - no player object", player_name=player_name)
             return False
 
         # Check if player has admin privileges
         if not hasattr(player, "is_admin") or not getattr(player, "is_admin", False):
-            logger.warning(f"Shutdown permission check failed - player {player_name} is not an admin")
+            logger.warning("Shutdown permission check failed - player is not an admin", player_name=player_name)
             return False
 
-        logger.debug(f"Shutdown permission check passed for {player_name}")
+        logger.debug("Shutdown permission check passed", player_name=player_name)
         return True
 
     except Exception as e:
-        logger.error(f"Error checking shutdown admin permission for {player_name}: {str(e)}")
+        logger.error("Error checking shutdown admin permission", player_name=player_name, error=str(e))
         return False
 
 
@@ -272,11 +272,11 @@ async def broadcast_shutdown_notification(connection_manager, seconds_remaining:
 
         await connection_manager.broadcast_global_event("shutdown_notification", event_data)
 
-        logger.info(f"Shutdown notification broadcast: {seconds_remaining} seconds remaining")
+        logger.info("Shutdown notification broadcast", seconds_remaining=seconds_remaining)
         return True
 
     except Exception as e:
-        logger.error(f"Error broadcasting shutdown notification: {str(e)}")
+        logger.error("Error broadcasting shutdown notification", error=str(e))
         return False
 
 
@@ -309,7 +309,7 @@ async def execute_shutdown_sequence(app):
                     for p in app.state.connection_manager.get_online_players()
                     if p.get("player_id") is not None
                 ]
-                logger.info(f"Persisting {len(connected_players)} connected players")
+                logger.info("Persisting connected players", count=len(connected_players))
 
                 persistence = app.state.persistence
                 for player_id in connected_players:
@@ -318,15 +318,15 @@ async def execute_shutdown_sequence(app):
                         player_obj = persistence.get_player(player_id)
                         if player_obj:
                             persistence.save_player(player_obj)
-                            logger.debug(f"Persisted player {player_id}")
+                            logger.debug("Persisted player", player_id=player_id)
                         else:
-                            logger.warning(f"Player object not found for ID {player_id}, skipping persistence")
+                            logger.warning("Player object not found for ID, skipping persistence", player_id=player_id)
                     except Exception as e:
-                        logger.error(f"Failed to persist player {player_id}: {str(e)}")
+                        logger.error("Failed to persist player", player_id=player_id, error=str(e))
 
                 logger.info("Phase 1 complete: All player data persisted")
             except Exception as e:
-                logger.error(f"Error during player persistence phase: {str(e)}", exc_info=True)
+                logger.error("Error during player persistence phase", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping player persistence")
 
@@ -336,23 +336,23 @@ async def execute_shutdown_sequence(app):
             try:
                 npc_lifecycle_manager = getattr(app.state, "npc_lifecycle_manager", None)
                 if npc_lifecycle_manager:
-                    # Get all active NPC IDs
-                    active_npcs = list(app.state.npc_spawning_service.active_npc_instances.keys())
-                    logger.info(f"Despawning {len(active_npcs)} active NPCs")
+                    # Get all active NPC IDs from lifecycle manager
+                    active_npcs = list(npc_lifecycle_manager.active_npcs.keys())
+                    logger.info("Despawning active NPCs", count=len(active_npcs))
 
                     for npc_id in active_npcs:
                         try:
                             # despawn_npc is synchronous (returns bool)
                             _ = npc_lifecycle_manager.despawn_npc(npc_id, reason="server_shutdown")
-                            logger.debug(f"Despawned NPC {npc_id}")
+                            logger.debug("Despawned NPC", npc_id=npc_id)
                         except Exception as e:
-                            logger.error(f"Failed to despawn NPC {npc_id}: {str(e)}")
+                            logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
 
                     logger.info("Phase 2 complete: All NPCs despawned")
                 else:
                     logger.warning("No NPC lifecycle manager found, skipping NPC despawn")
             except Exception as e:
-                logger.error(f"Error during NPC despawn phase: {str(e)}", exc_info=True)
+                logger.error("Error during NPC despawn phase", error=str(e), exc_info=True)
         else:
             logger.warning("No NPC spawning service found, skipping NPC despawn")
 
@@ -366,18 +366,18 @@ async def execute_shutdown_sequence(app):
                     for p in app.state.connection_manager.get_online_players()
                     if p.get("player_id") is not None
                 ]
-                logger.info(f"Disconnecting {len(connected_players)} connected players")
+                logger.info("Disconnecting connected players", count=len(connected_players))
 
                 for player_id in connected_players:
                     try:
                         await app.state.connection_manager.force_disconnect_player(player_id)
-                        logger.debug(f"Disconnected player {player_id}")
+                        logger.debug("Disconnected player", player_id=player_id)
                     except Exception as e:
-                        logger.error(f"Failed to disconnect player {player_id}: {str(e)}")
+                        logger.error("Failed to disconnect player", player_id=player_id, error=str(e))
 
                 logger.info("Phase 3 complete: All players disconnected")
             except Exception as e:
-                logger.error(f"Error during player disconnection phase: {str(e)}", exc_info=True)
+                logger.error("Error during player disconnection phase", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping player disconnection")
 
@@ -388,7 +388,7 @@ async def execute_shutdown_sequence(app):
                 await app.state.nats_message_handler.stop()
                 logger.info("Phase 4 complete: NATS message handler stopped")
             except Exception as e:
-                logger.error(f"Error stopping NATS message handler: {str(e)}", exc_info=True)
+                logger.error("Error stopping NATS message handler", error=str(e), exc_info=True)
         else:
             logger.warning("No NATS message handler found, skipping")
 
@@ -399,7 +399,7 @@ async def execute_shutdown_sequence(app):
                 await app.state.nats_service.disconnect()
                 logger.info("Phase 5 complete: NATS service disconnected")
             except Exception as e:
-                logger.error(f"Error disconnecting NATS service: {str(e)}", exc_info=True)
+                logger.error("Error disconnecting NATS service", error=str(e), exc_info=True)
         else:
             logger.warning("No NATS service found, skipping")
 
@@ -410,7 +410,7 @@ async def execute_shutdown_sequence(app):
                 await app.state.connection_manager.force_cleanup()
                 logger.info("Phase 6 complete: Connection manager cleaned up")
             except Exception as e:
-                logger.error(f"Error cleaning up connection manager: {str(e)}", exc_info=True)
+                logger.error("Error cleaning up connection manager", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping cleanup")
 
@@ -437,7 +437,7 @@ async def execute_shutdown_sequence(app):
                 else:
                     logger.warning("Phase 7: TaskRegistry shutdown reached timeout")
             except Exception as e:
-                logger.error(f"Error during task registry shutdown: {str(e)}", exc_info=True)
+                logger.error("Error during task registry shutdown", error=str(e), exc_info=True)
         else:
             logger.warning("No task registry found, skipping task cancellation")
 
@@ -448,7 +448,7 @@ async def execute_shutdown_sequence(app):
         _schedule_process_termination(0.3)
 
     except Exception as e:
-        logger.error(f"Critical error during shutdown sequence: {str(e)}", exc_info=True)
+        logger.error("Critical error during shutdown sequence", error=str(e), exc_info=True)
         raise
 
 
@@ -508,7 +508,7 @@ async def countdown_loop(app, countdown_seconds: int, admin_username: str):
         logger.info("Shutdown countdown cancelled by request")
         raise
     except Exception as e:
-        logger.error(f"Error in shutdown countdown loop: {str(e)}", exc_info=True)
+        logger.error("Error in shutdown countdown loop", error=str(e), exc_info=True)
 
 
 async def initiate_shutdown_countdown(app, countdown_seconds: int, admin_username: str) -> bool:
@@ -577,7 +577,7 @@ async def initiate_shutdown_countdown(app, countdown_seconds: int, admin_usernam
         return True
 
     except Exception as e:
-        logger.error(f"Error initiating shutdown countdown: {str(e)}", exc_info=True)
+        logger.error("Error initiating shutdown countdown", error=str(e), exc_info=True)
         # Clean up on failure
         app.state.server_shutdown_pending = False
         app.state.shutdown_data = None
@@ -598,7 +598,7 @@ async def cancel_shutdown_countdown(app, admin_username: str) -> bool:
     try:
         # Check if shutdown is active
         if not getattr(app.state, "server_shutdown_pending", False):
-            logger.info(f"No active shutdown to cancel (requested by {admin_username})")
+            logger.info("No active shutdown to cancel", admin_username=admin_username)
             return False
 
         shutdown_data = getattr(app.state, "shutdown_data", None)
@@ -654,12 +654,12 @@ async def cancel_shutdown_countdown(app, admin_username: str) -> bool:
             },
         )
 
-        logger.info(f"Shutdown cancelled by {admin_username}", remaining_seconds=remaining_seconds)
+        logger.info("Shutdown cancelled", admin_username=admin_username, remaining_seconds=remaining_seconds)
 
         return True
 
     except Exception as e:
-        logger.error(f"Error cancelling shutdown: {str(e)}", exc_info=True)
+        logger.error("Error cancelling shutdown", error=str(e), exc_info=True)
         return False
 
 
@@ -694,15 +694,15 @@ def parse_shutdown_parameters(command_data: dict) -> tuple[str, int | None]:
         try:
             seconds = int(param)
             if seconds <= 0:
-                logger.warning(f"Invalid shutdown seconds (must be positive): {seconds}")
+                logger.warning("Invalid shutdown seconds (must be positive)", seconds=seconds)
                 return ("error", None)
             return ("initiate", seconds)
         except ValueError:
-            logger.warning(f"Invalid shutdown parameter (not a number or 'cancel'): {param}")
+            logger.warning("Invalid shutdown parameter (not a number or 'cancel')", param=param)
             return ("error", None)
 
     except Exception as e:
-        logger.error(f"Error parsing shutdown parameters: {str(e)}")
+        logger.error("Error parsing shutdown parameters", error=str(e))
         return ("error", None)
 
 
@@ -725,20 +725,20 @@ async def handle_shutdown_command(
     Returns:
         dict: Shutdown command result with 'result' key
     """
-    logger.debug(f"Processing shutdown command for {player_name} with command_data: {command_data}")
+    logger.debug("Processing shutdown command", player_name=player_name, command_data=command_data)
 
     # Get player object for permission check
     app = request.app if request else None
     player_service = app.state.player_service if app else None
 
     if not player_service:
-        logger.warning(f"Shutdown command failed - no player service for {player_name}")
+        logger.warning("Shutdown command failed - no player service", player_name=player_name)
         return {"result": "Shutdown functionality is not available at this time."}
 
     # Get player object (use same method as other admin commands)
     player_obj = await player_service.get_player_by_name(player_name)
     if not player_obj:
-        logger.warning(f"Shutdown command failed - player not found: {player_name}")
+        logger.warning("Shutdown command failed - player not found", player_name=player_name)
         return {"result": "Unable to verify your credentials. Shutdown unavailable."}
 
     # Check admin permission
@@ -785,5 +785,5 @@ async def handle_shutdown_command(
             return {"result": f"Server shutdown initiated. Shutting down in {seconds} seconds..."}
 
     # Should not reach here
-    logger.error(f"Unexpected action in shutdown command: {action}")
+    logger.error("Unexpected action in shutdown command", action=action)
     return {"result": "An unexpected error occurred processing the shutdown command."}

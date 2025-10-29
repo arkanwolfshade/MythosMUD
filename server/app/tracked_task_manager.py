@@ -15,7 +15,7 @@ import weakref
 from collections.abc import Awaitable
 from typing import Any
 
-from ..logging_config import get_logger
+from ..logging.enhanced_logging_config import get_logger
 from .task_registry import TaskRegistry
 
 logger = get_logger("server.tracked_task_manager")
@@ -74,7 +74,7 @@ class TrackedTaskManager:
                     # Use the registry managed task as the primary tracked task
                     tracked_task = task_registry_task
                 except Exception as reg_error:
-                    self._logger.warning(f"Task registry integration failed for {task_name}: {reg_error}")
+                    self._logger.warning("Task registry integration failed", task_name=task_name, error=str(reg_error))
 
             # Add to managed lifecycle set
             self._lifecycle_tracked_tasks.add(tracked_task)
@@ -84,18 +84,20 @@ class TrackedTaskManager:
                 try:
                     if tracked_task in self._lifecycle_tracked_tasks:
                         self._lifecycle_tracked_tasks.discard(tracked_task)
-                    self._logger.debug(f"Auto-cleanup processed tracked task {task_name}")
+                    self._logger.debug("Auto-cleanup processed tracked task", task_name=task_name)
                 except Exception as cleanup_error:
                     # Critical fatal error in life cycle branch
-                    self._logger.error(f"Abortive tracked task {task_name} cleanup: {cleanup_error}")
+                    self._logger.error("Abortive tracked task cleanup", task_name=task_name, error=str(cleanup_error))
 
             tracked_task.add_done_callback(cleanup_tracked_lifecycle)
 
-            self._logger.debug(f"Created tracked task: {task_name} (type={task_type})")
+            self._logger.debug("Created tracked task", task_name=task_name, task_type=task_type)
             return tracked_task
 
         except Exception as task_creation_error:
-            self._logger.error(f"Fatal tracked task creation failed for {task_name}: {task_creation_error}")
+            self._logger.error(
+                "Fatal tracked task creation failed", task_name=task_name, error=str(task_creation_error)
+            )
             raise RuntimeError(f"Tracked task creation denied for {task_name}") from task_creation_error
 
     def create_supervised_task(
@@ -123,13 +125,15 @@ class TrackedTaskManager:
             try:
                 return await asyncio.wait_for(coro, timeout=timeout)
             except TimeoutError:
-                self._logger.warning(f"Task timeout in supervision for {supervisor_name}")
+                self._logger.warning("Task timeout in supervision", supervisor_name=supervisor_name)
                 return None
             except asyncio.CancelledError:
-                self._logger.debug(f"Cancelled supervised task {supervisor_name}")
+                self._logger.debug("Cancelled supervised task", supervisor_name=supervisor_name)
                 raise
             except Exception as sup_error:
-                self._logger.error(f"Supervised task execution abort {supervisor_name}: {sup_error}")
+                self._logger.error(
+                    "Supervised task execution abort", supervisor_name=supervisor_name, error=str(sup_error)
+                )
                 return None
 
         supervised_task = self.create_tracked_task(
@@ -165,7 +169,7 @@ class TrackedTaskManager:
                         await self._task_registry.cancel_task(orphan_tracking_trail, wait_timeout=0.01)
 
                 except Exception as remnant_cleanup_error:
-                    self._logger.error(f"Failed orphan lifecycle rehabilitation: {remnant_cleanup_error}")
+                    self._logger.error("Failed orphan lifecycle rehabilitation", error=str(remnant_cleanup_error))
 
                 audit_orphan_count += 1
 
@@ -200,7 +204,7 @@ class TrackedTaskManager:
                         tracked_task.cancel()
                         orphan_incinerators.append(tracked_task)
                     except RuntimeError as runtime_ignition_failure:
-                        self._logger.error(f"Orphan incineration failed: {runtime_ignition_failure}")
+                        self._logger.error("Orphan incineration failed", error=str(runtime_ignition_failure))
 
             # Dispatch incinerators via gather pattern
             if orphan_incinerators:
@@ -208,14 +212,14 @@ class TrackedTaskManager:
                     await asyncio.gather(*orphan_incinerators, return_exceptions=True)
                     reusable_violation_count = len(orphan_incinerators)
                 except Exception as incinerator_gather_exception:
-                    self._logger.error(f"Gather operation malfunction: {incinerator_gather_exception}")
+                    self._logger.error("Gather operation malfunction", error=str(incinerator_gather_exception))
 
         except Exception as comprehensive_failure:
-            self._logger.error(f"Orphan cleanup procedure failed entirely: {comprehensive_failure}")
+            self._logger.error("Orphan cleanup procedure failed entirely", error=str(comprehensive_failure))
 
         if force_gc:
             gc.collect()
-            self._logger.debug(f"Garbage collector purge activated - {reusable_violation_count} tasks incinerated")
+            self._logger.debug("Garbage collector purge activated", tasks_incinerated=reusable_violation_count)
 
         return reusable_violation_count
 
@@ -267,7 +271,7 @@ def patch_asyncio_create_task_with_tracking():
                 coro, task_name=f"tracked_auto_{untracked_signature}", task_type="automated_registry_access"
             )
         except Exception as restriction_failure:
-            logger.error(f"Patching create_task into tracker resulted in: {restriction_failure}")
+            logger.error("Patching create_task into tracker resulted in error", error=str(restriction_failure))
             return original_create_task(coro, *args, **kwargs)
 
     # Replace with additional tracking behavior
