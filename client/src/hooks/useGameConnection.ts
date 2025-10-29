@@ -425,11 +425,14 @@ export function useGameConnection({
 
     try {
       logger.info('GameConnection', 'Connecting WebSocket');
-      // Fix: Connect directly to game server for WebSocket (Vite proxy cannot handle WebSocket)
-      // The game server runs on port 54731, not through the Vite dev server proxy
-      const wsUrl = `ws://localhost:54731/api/ws?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
-      logger.info('GameConnection', 'Creating WebSocket connection', { url: wsUrl });
-      const websocket = new WebSocket(wsUrl);
+      // Use relative URL with Vite proxy; pass JWT via subprotocols (bearer, <token>)
+      const url = `/api/ws${currentSessionId.current ? `?session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
+      const protocols: string[] = ['bearer'];
+      if (authToken) {
+        protocols.push(authToken);
+      }
+      logger.info('GameConnection', 'Creating WebSocket connection', { url });
+      const websocket = new WebSocket(url, protocols);
       resourceManager.registerWebSocket(websocket);
 
       websocket.onopen = () => {

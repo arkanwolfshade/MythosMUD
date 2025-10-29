@@ -44,6 +44,10 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   const resourceManager = useResourceCleanup();
   const websocketRef = useRef<WebSocket | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
+  const reconnectTimerRef = useRef<number | null>(null);
+  const manualDisconnectRef = useRef<boolean>(false);
+  const reconnectAttemptsRef = useRef<number>(0);
+  const connectRef = useRef<() => void>();
 
   // Use state instead of refs for values that need to trigger re-renders
   const [isConnected, setIsConnected] = useState(false);
@@ -64,11 +68,19 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   }, [onConnected, onMessage, onError, onDisconnect]);
 
   const disconnect = useCallback(() => {
+    manualDisconnectRef.current = true;
     // Clear ping interval
     if (pingIntervalRef.current !== null) {
       window.clearInterval(pingIntervalRef.current);
       resourceManager.removeInterval(pingIntervalRef.current);
       pingIntervalRef.current = null;
+    }
+
+    // Clear reconnect timer
+    if (reconnectTimerRef.current !== null) {
+      window.clearTimeout(reconnectTimerRef.current);
+      resourceManager.removeTimer(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
     }
 
     // Close WebSocket
@@ -146,21 +158,23 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     }
 
     try {
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsHost = window.location.host;
-      const encodedToken = encodeURIComponent(authToken);
-      const encodedSession = encodeURIComponent(sessionId);
-      const wsUrl = `${wsProtocol}//${wsHost}/api/ws?token=${encodedToken}&session_id=${encodedSession}`;
+      manualDisconnectRef.current = false;
+      // Use relative URL with Vite proxy and pass JWT via subprotocols (bearer, <token>)
+      const wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}`;
+      const protocols: string[] = ['bearer', authToken];
 
       logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
 
-      const ws = new WebSocket(wsUrl);
+      const ws = new WebSocket(wsUrl, protocols);
       websocketRef.current = ws;
 
       ws.onopen = () => {
         logger.info('WebSocketConnection', 'WebSocket connected successfully');
         setIsConnected(true);
         setLastError(null);
+
+        // reset reconnect attempts on successful open
+        reconnectAttemptsRef.current = 0;
 
         // Enhanced ping with NATS health check
         pingIntervalRef.current = window.setInterval(async () => {
@@ -213,6 +227,27 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         }
 
         onDisconnectRef.current?.();
+
+        // Schedule reconnect unless disconnect was manual
+        if (!manualDisconnectRef.current) {
+          const attempt = reconnectAttemptsRef.current + 1;
+          reconnectAttemptsRef.current = attempt;
+          // Exponential backoff with jitter
+          const base = Math.min(30000, 1000 * Math.pow(2, attempt - 1));
+          const jitter = Math.floor(Math.random() * 250);
+          const delay = base + jitter;
+          logger.info('WebSocketConnection', 'Scheduling reconnect', { attempt, delay });
+          reconnectTimerRef.current = window.setTimeout(() => {
+            reconnectTimerRef.current = null;
+            // Only reconnect if still not connected and not manually disconnected
+            if (!manualDisconnectRef.current && !websocketRef.current) {
+              if (connectRef.current) {
+                connectRef.current();
+              }
+            }
+          }, delay);
+          resourceManager.registerTimer(reconnectTimerRef.current);
+        }
       };
     } catch (error) {
       logger.error('WebSocketConnection', 'Error creating WebSocket connection', { error });
@@ -220,6 +255,10 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       onErrorRef.current?.(error as Event);
     }
   }, [authToken, sessionId, resourceManager]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
 
   // Cleanup on unmount
   useEffect(() => {

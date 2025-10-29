@@ -179,9 +179,10 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     await websocket_endpoint(websocket, player_id)
 ```
 
-**Client Connection**:
+**Client Connection (updated)**:
 ```typescript
-const websocket = new WebSocket(`ws://localhost:54731/ws/${playerId}`);
+// Use relative URL behind dev proxy; authenticate via subprotocols
+const websocket = new WebSocket('/api/ws?session_id=' + sessionId, ['bearer', accessToken]);
 
 websocket.onmessage = (event) => {
   const response = JSON.parse(event.data);

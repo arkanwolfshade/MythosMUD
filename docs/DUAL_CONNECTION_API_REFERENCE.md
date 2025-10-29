@@ -18,15 +18,21 @@ This document provides comprehensive API documentation for the dual WebSocket/SS
 
 ### WebSocket Connection
 
-**Endpoint**: `ws://localhost:8000/ws/{player_id}`
+**Preferred Endpoint**: `/api/ws`
+
+**Authentication (Recommended)**: WebSocket subprotocols
+- Send `Sec-WebSocket-Protocol: bearer, <JWT>`
 
 **Query Parameters**:
 - `session_id` (optional): Unique session identifier for the game session
 
 **Example**:
 ```
-ws://localhost:8000/ws/test_player?session_id=session_123
+new WebSocket('/api/ws?session_id=session_123', ['bearer', accessToken])
 ```
+
+**Backward Compatibility**:
+- Legacy path param endpoint `/api/ws/{player_id}` is deprecated and will be removed in a future release.
 
 **Connection Behavior**:
 - Multiple WebSocket connections per player are supported

@@ -31,15 +31,17 @@ async def sse_events(player_id: str, request: Request):
     session_id = request.query_params.get("session_id")
 
     # TODO: Add authentication and player validation as needed
+    # Note: CORS is handled by global middleware; avoid environment-specific logic here
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Access-Control-Allow-Headers": "Cache-Control",
+    }
+
     return StreamingResponse(
         game_event_stream(player_id, session_id),
         media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Cache-Control",
-        },
+        headers=headers,
     )
 
 
@@ -69,15 +71,17 @@ async def sse_events_token(request: Request):
     player_id = player.player_id
     logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
 
+    # Note: CORS is handled by global middleware; avoid environment-specific logic here
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Access-Control-Allow-Headers": "Cache-Control",
+    }
+
     return StreamingResponse(
         game_event_stream(player_id, session_id),
         media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Cache-Control",
-        },
+        headers=headers,
     )
 
 
@@ -91,8 +95,26 @@ async def websocket_endpoint(websocket: WebSocket):
 
     logger = get_logger(__name__)
 
-    # Accept query token, resolve to user and then to player_id
+    # Accept token via WebSocket subprotocol (preferred) or query token (fallback)
     token = websocket.query_params.get("token")
+    try:
+        subproto_header = websocket.headers.get("sec-websocket-protocol")
+        if subproto_header:
+            # Example formats observed: "bearer, <token>" or just "<token>"
+            parts = [p.strip() for p in subproto_header.split(",") if p and p.strip()]
+            # If 'bearer' marker present, prefer the next token-like value; else use the last part
+            if "bearer" in [p.lower() for p in parts]:
+                for p in parts:
+                    if p.lower() == "bearer":
+                        continue
+                    if p:
+                        token = p
+                        break
+            elif parts:
+                token = parts[-1]
+    except Exception:
+        # Non-fatal: fall back to query param token
+        pass
     session_id = websocket.query_params.get("session_id")  # New session parameter
 
     payload = decode_access_token(token)
@@ -250,6 +272,11 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     # Get session parameter
     session_id = websocket.query_params.get("session_id")
     logger.info("WebSocket (compat) connection attempt", player_id=player_id, session_id=session_id)
+    # Deprecation notice: prefer /api/ws with JWT via subprotocols
+    logger.warning(
+        "Deprecated WebSocket route in use; migrate clients to /api/ws with JWT via subprotocols",
+        player_id=player_id,
+    )
 
     try:
         token = websocket.query_params.get("token")

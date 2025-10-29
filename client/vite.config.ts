@@ -22,18 +22,7 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
-        // Enhanced WebSocket proxy configuration
-        ws: {
-          // Increase WebSocket timeout to 5 minutes
-          timeout: 300000,
-          // Keep WebSocket connections alive
-          keepAlive: true,
-          // Retry connection on failure
-          retry: {
-            attempts: 3,
-            delay: 1000,
-          },
-        },
+        ws: true,
       },
       '/auth': {
         target: 'http://127.0.0.1:54731',
