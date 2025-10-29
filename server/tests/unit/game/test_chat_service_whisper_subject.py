@@ -40,12 +40,13 @@ async def test_whisper_subject_includes_player_segment():
     chat_service = ChatService(mock_persistence, mock_room_service, mock_player_service)
 
     target_id = "12aed7c5-dc99-488f-a979-28b9d227e858"
+    room_id = "test_room_id"  # Room ID for NATS subject construction
     chat_message = ChatMessage(
         "sender-id", "TestUser", "whisper", "Test whisper", target_id=target_id, target_name="TargetUser"
     )
 
     # Act
-    subject = chat_service._determine_subject(chat_message)
+    subject = chat_service._build_nats_subject(chat_message, room_id)
 
     # Assert
     expected_subject = f"chat.whisper.player.{target_id}"
@@ -73,10 +74,11 @@ async def test_whisper_subject_without_target_id():
 
     chat_service = ChatService(mock_persistence, mock_room_service, mock_player_service)
 
+    room_id = "test_room_id"  # Room ID for NATS subject construction
     chat_message = ChatMessage("sender-id", "TestUser", "whisper", "Test whisper")
 
     # Act
-    subject = chat_service._determine_subject(chat_message)
+    subject = chat_service._build_nats_subject(chat_message, room_id)
 
     # Assert
     assert subject == "chat.whisper", f"Whisper subject without target should be 'chat.whisper'. Got: {subject}"

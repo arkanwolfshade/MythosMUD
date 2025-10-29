@@ -95,7 +95,7 @@ class TestNATSMessageHandlerStandardizedPatterns:
             "chat.pose.*",
             "chat.global",
             "chat.party.*",
-            "chat.whisper.*",
+            "chat.whisper.player.*",  # Standardized whisper pattern with player segment
             "chat.system",
             "chat.admin",
         ]
