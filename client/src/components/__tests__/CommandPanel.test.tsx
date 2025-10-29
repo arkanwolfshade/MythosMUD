@@ -9,6 +9,7 @@ vi.mock('../../config/channels', () => ({
   AVAILABLE_CHANNELS: [
     { id: 'say', name: 'Say', shortcut: 'say' },
     { id: 'local', name: 'Local', shortcut: 'local' },
+    { id: 'global', name: 'Global', shortcut: 'g' },
     { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
   ],
   DEFAULT_CHANNEL: 'say',
