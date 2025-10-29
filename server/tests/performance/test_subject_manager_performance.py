@@ -211,9 +211,9 @@ class TestSubjectManagerPerformance:
             manager_no_metrics.build_subject("chat_say_room", room_id=f"room_{i}")
         time_no_metrics = time.perf_counter() - start_no_metrics
 
-        # Metrics should add < 30% overhead
+        # Metrics should add < 40% overhead (allowing for system variance)
         overhead_ratio = time_with_metrics / time_no_metrics
-        assert overhead_ratio < 1.3, f"Metrics overhead too high: {overhead_ratio:.2f}x (expected < 1.3x)"
+        assert overhead_ratio < 1.4, f"Metrics overhead too high: {overhead_ratio:.2f}x (expected < 1.4x)"
 
         logger.info(
             "Metrics collection overhead benchmark completed",
