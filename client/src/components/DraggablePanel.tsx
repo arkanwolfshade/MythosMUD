@@ -41,10 +41,18 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   // isMaximized state removed - maximize state managed by parent component
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeDirection, setResizeDirection] = useState<string>('');
+  const [headerHeight, setHeaderHeight] = useState(40); // Track header height to avoid ref access during render
 
   const panelRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Measure header height to avoid ref access during render
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, [isMinimized]); // Re-measure when minimize state changes
 
   // Auto-size panel based on content if enabled
   useEffect(() => {
@@ -256,7 +264,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
           ref={contentRef}
           className="p-3 h-full overflow-auto"
           style={{
-            height: `calc(100% - ${headerRef.current?.offsetHeight || 40}px)`,
+            height: `calc(100% - ${headerHeight}px)`,
             minHeight: '100px', // Ensure minimum content height
           }}
         >

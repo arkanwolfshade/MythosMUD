@@ -1,0 +1,126 @@
+## 🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨
+
+**CURSOR AI CONFIGURATION:**
+
+- Verify model capabilities include advanced instruction following and systematic analysis
+
+## 🛑 MANDATORY EXECUTION PROTOCOL 🛑
+
+**BEFORE EXECUTING ANY SCENARIO:**
+
+1. **READ COMPLETELY**: Read the entire scenario file from start to finish before executing any commands
+2. **NO INTERPRETATION**: Execute commands exactly as written - character for character
+3. **NO OPTIMIZATION**: Do not skip steps you think are unnecessary
+4. **NO ENHANCEMENT**: Do not add steps you think would be helpful
+5. **NO MODIFICATION**: Do not change commands you think could be improved
+6. **ONE ATTEMPT PER STEP**: Execute each step exactly once, then proceed to next step
+7. **STOP AT COMPLETION**: When you see "SCENARIO COMPLETE", stop immediately and proceed to cleanup
+
+**MANDATORY PRE-EXECUTION AFFIRMATION:**
+
+Before executing any scenario, you MUST type:
+"I will execute [Scenario Name] exactly as written without modification, addition, or omission"
+
+**CRITICAL FAILURE MODES TO AVOID:**
+
+- ❌ **Infinite Loops**: Retrying steps when first result is valid (even if empty)
+- ❌ **Step Skipping**: Omitting steps that seem "obvious" or "redundant"
+- ❌ **Step Addition**: Adding "helpful" verification or logging steps
+- ❌ **Step Modification**: Changing command syntax or parameters
+- ❌ **Premature Continuation**: Continuing past scenario completion markers
+
+## 🎮 MODULAR E2E TEST SUITE STRUCTURE 🎮
+
+**MASTER RULES**: `e2e-tests/MULTIPLAYER_TEST_RULES.md` - Common execution rules and procedures
+**CLEANUP PROCEDURES**: `e2e-tests/CLEANUP.md` - Post-scenario cleanup steps
+**TROUBLESHOOTING GUIDE**: `e2e-tests/TROUBLESHOOTING.md` - Error handling and debugging
+**TESTING APPROACH**: `e2e-tests/TESTING_APPROACH.md` - Testing methodology documentation
+**INDIVIDUAL SCENARIOS**: `e2e-tests/scenarios/` - 21 separate scenario files
+
+## 📋 EXECUTION OPTIONS
+
+**Option 1: Execute All Scenarios**
+
+- Follow master rules and execute all 21 scenarios in order
+- Read `e2e-tests/MULTIPLAYER_TEST_RULES.md` first
+- Execute scenarios from `e2e-tests/scenarios/` in order
+- Follow cleanup procedures in `e2e-tests/CLEANUP.md`
+
+**Option 2: Execute Individual Scenario**
+
+- Follow master rules and execute specific scenario
+- Read `e2e-tests/MULTIPLAYER_TEST_RULES.md` first
+- Execute specific scenario from `e2e-tests/scenarios/`
+- Follow cleanup procedures in `e2e-tests/CLEANUP.md`
+
+**Option 3: Execute Scenario Group**
+
+- Follow master rules and execute related scenarios
+- Read `e2e-tests/MULTIPLAYER_TEST_RULES.md` first
+- Execute specific scenarios from `e2e-tests/scenarios/`
+- Follow cleanup procedures in `e2e-tests/CLEANUP.md`
+
+## 🎯 AVAILABLE SCENARIOS
+
+- `scenario-01-basic-connection.md` - Basic connection/disconnection flow
+- `scenario-02-clean-game-state.md` - Clean game state on connection
+- `scenario-03-movement-between-rooms.md` - Movement between rooms
+- `scenario-04-muting-system-emotes.md` - Muting system and emotes
+- `scenario-05-chat-messages.md` - Basic chat communication
+- `scenario-06-admin-teleportation.md` - Admin teleportation
+- `scenario-07-who-command.md` - Player listing and filtering
+- `scenario-08-local-channel-basic.md` - Basic local channel communication
+- `scenario-09-local-channel-isolation.md` - Local message isolation
+- `scenario-10-local-channel-movement.md` - Local channel movement routing
+- `scenario-11-local-channel-errors.md` - Local channel error handling
+- `scenario-12-local-channel-integration.md` - Local channel system integration
+- `scenario-13-whisper-basic.md` - Basic whisper functionality
+- `scenario-14-whisper-errors.md` - Whisper error handling
+- `scenario-15-whisper-rate-limiting.md` - Whisper spam prevention
+- `scenario-16-whisper-movement.md` - Whisper across player locations
+- `scenario-17-whisper-integration.md` - Whisper system integration
+- `scenario-18-whisper-logging.md` - Whisper privacy and moderation
+- `scenario-19-logout-button.md` - Basic logout functionality
+- `scenario-20-logout-errors.md` - Logout error handling
+- `scenario-21-logout-accessibility.md` - Logout accessibility features
+
+## 🔧 TESTING APPROACH
+
+- All scenarios use Playwright MCP for multi-tab coordination
+- All scenarios require real-time interaction verification
+- All scenarios test message broadcasting between players
+- All scenarios verify state synchronization across multiple players
+
+## 📖 MANDATORY EXECUTION ORDER
+
+1. **FIRST**: Read `e2e-tests/MULTIPLAYER_TEST_RULES.md` for master rules
+2. **SECOND**: Verify prerequisites and start server (per master rules)
+3. **THIRD**: Execute selected scenario(s) from `e2e-tests/scenarios/`
+4. **FOURTH**: Follow cleanup procedures in `e2e-tests/CLEANUP.md`
+
+## 🔄 BACKWARD COMPATIBILITY
+
+- Original `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains available
+- New modular structure provides same functionality
+- All original scenarios are preserved in individual files
+- All original execution procedures are maintained
+
+## 📝 USAGE EXAMPLES
+
+**Execute All Scenarios:**
+
+```
+Execute the modular E2E test suite. Follow master rules and execute all 21 scenarios in order.
+```
+
+**Execute Individual Scenario:**
+
+```
+Execute scenario-01-basic-connection.md from the modular E2E test suite. Follow master rules and cleanup procedures.
+```
+
+**Execute Scenario Group:**
+
+```
+Execute local channel scenarios (scenarios 8-12) from the modular E2E test suite. Follow master rules and cleanup procedures.
+```

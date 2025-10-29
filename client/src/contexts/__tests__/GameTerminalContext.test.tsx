@@ -143,14 +143,24 @@ const GameActionsTestComponent: React.FC = () => {
   );
 };
 
-// Error boundary component
-const ErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  try {
-    return <>{children}</>;
-  } catch (error) {
-    return <div data-testid="error-boundary">{(error as Error).message}</div>;
+// Error boundary component - proper React error boundary using class component
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
   }
-};
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div data-testid="error-boundary">{this.state.error?.message}</div>;
+    }
+    return this.props.children;
+  }
+}
 
 describe('GameTerminalContext', () => {
   let mockUseGameTerminal: ReturnType<typeof vi.mocked<typeof useGameTerminal>>;

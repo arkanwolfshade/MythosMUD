@@ -11,6 +11,7 @@ from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
+from ..services.nats_subject_manager import SubjectValidationError
 from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
 
@@ -88,7 +89,15 @@ class ChatService:
     all chat functionality - no fallback to WebSocket broadcasting is provided.
     """
 
-    def __init__(self, persistence, room_service, player_service, nats_service=None, user_manager_instance=None):
+    def __init__(
+        self,
+        persistence,
+        room_service,
+        player_service,
+        nats_service=None,
+        user_manager_instance=None,
+        subject_manager=None,
+    ):
         """
         Initialize chat service.
 
@@ -98,6 +107,7 @@ class ChatService:
             player_service: Player management service
             nats_service: NATS service instance (optional, defaults to global instance)
             user_manager_instance: Optional user manager instance (defaults to global instance)
+            subject_manager: NATSSubjectManager instance (optional, for standardized subject patterns)
         """
         self.persistence = persistence
         self.room_service = room_service
@@ -117,6 +127,9 @@ class ChatService:
 
         self.nats_service = nats_service or global_nats_service
 
+        # NATSSubjectManager for standardized subject patterns (optional)
+        self.subject_manager = subject_manager
+
         # Chat logger for AI processing and log shipping
         self.chat_logger = chat_logger
 
@@ -127,6 +140,81 @@ class ChatService:
         self.user_manager = user_manager_instance or user_manager
 
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
+
+    def _build_nats_subject(self, chat_message: ChatMessage, room_id: str) -> str:
+        """
+        Build NATS subject using standardized patterns or fallback to legacy construction.
+
+        Args:
+            chat_message: The chat message to build subject for
+            room_id: The room ID for the message
+
+        Returns:
+            NATS subject string
+
+        AI: Uses NATSSubjectManager for standardized patterns when available.
+        AI: Falls back to legacy construction for backward compatibility.
+        """
+        if self.subject_manager:
+            try:
+                # Use standardized patterns based on channel type
+                if chat_message.channel == "say":
+                    return self.subject_manager.build_subject("chat_say_room", room_id=room_id)
+                elif chat_message.channel == "local":
+                    from ..utils.room_utils import extract_subzone_from_room_id
+
+                    subzone = extract_subzone_from_room_id(room_id)
+                    if not subzone:
+                        subzone = "unknown"
+                    return self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
+                elif chat_message.channel == "global":
+                    return self.subject_manager.build_subject("chat_global")
+                elif chat_message.channel == "system":
+                    return self.subject_manager.build_subject("chat_system")
+                elif chat_message.channel == "whisper":
+                    target_id = getattr(chat_message, "target_id", None)
+                    if target_id:
+                        return self.subject_manager.build_subject("chat_whisper_player", target_id=target_id)
+                    else:
+                        # Fallback for whisper without target
+                        return "chat.whisper"
+                elif chat_message.channel == "emote":
+                    return self.subject_manager.build_subject("chat_emote_room", room_id=room_id)
+                elif chat_message.channel == "pose":
+                    return self.subject_manager.build_subject("chat_pose_room", room_id=room_id)
+                else:
+                    # For other channels, use room level pattern
+                    return f"chat.{chat_message.channel}.{room_id}"
+            except (ValueError, TypeError, KeyError, SubjectValidationError) as e:
+                logger.warning(
+                    "Failed to build subject with NATSSubjectManager, falling back to legacy construction",
+                    error=str(e),
+                    channel=chat_message.channel,
+                    room_id=room_id,
+                )
+                # Fall through to legacy construction
+
+        # Legacy subject construction (backward compatibility)
+        if chat_message.channel == "local":
+            from ..utils.room_utils import extract_subzone_from_room_id
+
+            subzone = extract_subzone_from_room_id(room_id)
+            if not subzone:
+                subzone = "unknown"
+            return f"chat.local.subzone.{subzone}"
+        elif chat_message.channel == "global":
+            return "chat.global"
+        elif chat_message.channel == "system":
+            return "chat.system"
+        elif chat_message.channel == "whisper":
+            target_id = getattr(chat_message, "target_id", None)
+            if target_id:
+                return f"chat.whisper.player.{target_id}"
+            else:
+                return "chat.whisper"
+        else:
+            # For other channels, use room level subject
+            return f"chat.{chat_message.channel}.{room_id}"
 
     async def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
         """
@@ -1192,38 +1280,15 @@ class ChatService:
             if hasattr(chat_message, "target_name") and chat_message.target_name:
                 message_data["target_name"] = chat_message.target_name
 
-            # Determine NATS subject based on channel
-            if chat_message.channel == "local":
-                # For local channel, use sub-zone level subject
-                from ..utils.room_utils import extract_subzone_from_room_id
-
-                subzone = extract_subzone_from_room_id(room_id)
-                if not subzone:
-                    subzone = "unknown"
-                subject = f"chat.local.subzone.{subzone}"
-                logger.debug("Local channel subject determined", subject=subject, subzone=subzone)
-            elif chat_message.channel == "global":
-                # For global channel, use global subject
-                subject = "chat.global"
-                logger.debug("Global channel subject determined", subject=subject)
-            elif chat_message.channel == "system":
-                # For system channel, use system subject
-                subject = "chat.system"
-                logger.debug("System channel subject determined", subject=subject)
-            elif chat_message.channel == "whisper":
-                # For whisper channel, use whisper subject with target player
-                target_id = getattr(chat_message, "target_id", None)
-                if target_id:
-                    subject = f"chat.whisper.{target_id}"
-                else:
-                    subject = "chat.whisper"
-                logger.debug("Whisper channel subject determined", subject=subject, target_id=target_id)
-            else:
-                # For other channels, use room level subject
-                subject = f"chat.{chat_message.channel}.{room_id}"
-                logger.debug(
-                    "Other channel subject determined", subject=subject, channel=chat_message.channel, room_id=room_id
-                )
+            # Build NATS subject using standardized patterns
+            subject = self._build_nats_subject(chat_message, room_id)
+            logger.debug(
+                "NATS subject determined",
+                subject=subject,
+                channel=chat_message.channel,
+                room_id=room_id,
+                using_subject_manager=self.subject_manager is not None,
+            )
 
             # Publish to NATS
             success = await self.nats_service.publish(subject, message_data)

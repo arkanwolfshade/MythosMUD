@@ -412,8 +412,10 @@ export function useGameConnection({
     resourceManager.registerTimer(wsReconnectTimerRef.current);
   }, [state.sseConnected, state.websocketConnected, resourceManager]);
 
-  // Store the function in ref for use by connectWebSocket
-  scheduleWsReconnectRef.current = scheduleWsReconnect;
+  // Store the function in ref for use by connectWebSocket (in effect to avoid ref update during render)
+  useEffect(() => {
+    scheduleWsReconnectRef.current = scheduleWsReconnect;
+  }, [scheduleWsReconnect]);
 
   const connectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -512,8 +514,10 @@ export function useGameConnection({
     }
   }, [authToken, state.sseConnected, debug, resourceManager]);
 
-  // Store the function in ref for use by scheduleWsReconnect
-  connectWebSocketRef.current = connectWebSocket;
+  // Store the function in ref for use by scheduleWsReconnect (in effect to avoid ref update during render)
+  useEffect(() => {
+    connectWebSocketRef.current = connectWebSocket;
+  }, [connectWebSocket]);
 
   const connect = useCallback(async () => {
     debug.debug('Connect function called', {

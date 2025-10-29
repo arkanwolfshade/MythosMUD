@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
+from ..services.nats_subject_manager import NATSSubjectManager
 
 logger = get_logger("realtime.event_publisher")
 
@@ -22,18 +23,23 @@ class EventPublisher:
     to connected clients.
     """
 
-    def __init__(self, nats_service, initial_sequence: int = 0):
+    def __init__(self, nats_service, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0):
         """
         Initialize EventPublisher service.
 
         Args:
             nats_service: NATS service instance for publishing messages
+            subject_manager: Subject manager for standardized NATS subjects (optional for backward compatibility)
             initial_sequence: Initial sequence number for event ordering
+
+        AI: subject_manager is optional for backward compatibility but recommended for standardized patterns.
+        AI: Falls back to legacy subject construction if subject_manager is None.
         """
         self.nats_service = nats_service
+        self.subject_manager = subject_manager
         self.sequence_number = initial_sequence
 
-        logger.info("EventPublisher initialized")
+        logger.info("EventPublisher initialized", subject_manager_enabled=subject_manager is not None)
 
     async def publish_player_entered_event(
         self,
@@ -76,8 +82,18 @@ class EventPublisher:
                 additional_metadata=additional_metadata,
             )
 
-            # Publish to room-specific NATS subject
-            subject = f"events.player_entered.{room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("event_player_entered", room_id=room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"events.player_entered.{room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="player_entered",
+                    room_id=room_id,
+                )
+
             success = await self.nats_service.publish(subject, event_message)
 
             if success:
@@ -143,8 +159,18 @@ class EventPublisher:
                 event_type="player_left", data=event_data, timestamp=timestamp, additional_metadata=additional_metadata
             )
 
-            # Publish to room-specific NATS subject
-            subject = f"events.player_left.{room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("event_player_left", room_id=room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"events.player_left.{room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="player_left",
+                    room_id=room_id,
+                )
+
             success = await self.nats_service.publish(subject, event_message)
 
             if success:
@@ -203,8 +229,16 @@ class EventPublisher:
                 event_type="game_tick", data=event_data, timestamp=timestamp, additional_metadata=additional_metadata
             )
 
-            # Publish to global NATS subject
-            subject = "events.game_tick"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("event_game_tick")
+            else:
+                # Legacy fallback for backward compatibility
+                subject = "events.game_tick"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured", event_type="game_tick"
+                )
+
             success = await self.nats_service.publish(subject, event_message)
 
             if success:
@@ -291,17 +325,21 @@ class EventPublisher:
 event_publisher = None
 
 
-def get_event_publisher(nats_service=None) -> EventPublisher | None:
+def get_event_publisher(nats_service=None, subject_manager: NATSSubjectManager | None = None) -> EventPublisher | None:
     """
     Get or create the global EventPublisher instance.
 
     Args:
         nats_service: NATS service instance (optional, for testing)
+        subject_manager: Optional subject manager for standardized subjects
 
     Returns:
         EventPublisher instance or None if nats_service not provided
+
+    AI: subject_manager parameter added for standardized subject patterns.
+    AI: Legacy code without subject_manager will still work but use deprecated patterns.
     """
     global event_publisher
     if event_publisher is None and nats_service is not None:
-        event_publisher = EventPublisher(nats_service)
+        event_publisher = EventPublisher(nats_service, subject_manager=subject_manager)
     return event_publisher

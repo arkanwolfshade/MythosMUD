@@ -45,9 +45,30 @@ interface GridLayoutManagerProps {
 }
 
 export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, onLayoutChange, className = '' }) => {
-  // State for current layout
-  const [currentLayout, setCurrentLayout] = useState<Layout[]>(layoutConfig.lg);
-  const [breakpoint, setBreakpoint] = useState<string>('lg');
+  // State for current layout - initialize from localStorage to avoid setState in effect
+  const [currentLayout, setCurrentLayout] = useState<Layout[]>(() => {
+    try {
+      const savedLayout = localStorage.getItem('mythosMUD-panel-layout');
+      if (savedLayout) {
+        return JSON.parse(savedLayout);
+      }
+    } catch (error) {
+      console.warn('Failed to load panel layout:', error);
+    }
+    return layoutConfig.lg;
+  });
+
+  const [breakpoint, setBreakpoint] = useState<string>(() => {
+    try {
+      const savedBreakpoint = localStorage.getItem('mythosMUD-panel-breakpoint');
+      if (savedBreakpoint) {
+        return savedBreakpoint;
+      }
+    } catch (error) {
+      console.warn('Failed to load panel breakpoint:', error);
+    }
+    return 'lg';
+  });
 
   // Handle layout changes
   const handleLayoutChange = useCallback(
@@ -72,20 +93,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
   );
 
   // Load layout from localStorage
-  const loadLayout = useCallback(() => {
-    try {
-      const savedLayout = localStorage.getItem('mythosMUD-panel-layout');
-      const savedBreakpoint = localStorage.getItem('mythosMUD-panel-breakpoint');
-
-      if (savedLayout && savedBreakpoint) {
-        const parsedLayout = JSON.parse(savedLayout);
-        setCurrentLayout(parsedLayout);
-        setBreakpoint(savedBreakpoint);
-      }
-    } catch (error) {
-      console.warn('Failed to load panel layout:', error);
-    }
-  }, []);
+  // loadLayout removed - layout is now initialized from localStorage in state initializer
 
   // Reset layout to default
   const resetLayout = useCallback(() => {
@@ -95,10 +103,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
     localStorage.removeItem('mythosMUD-panel-breakpoint');
   }, [breakpoint]);
 
-  // Load saved layout on mount
-  useEffect(() => {
-    loadLayout();
-  }, [loadLayout]);
+  // Layout is now loaded during state initialization, no need for effect
 
   // Save layout when it changes
   useEffect(() => {

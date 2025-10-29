@@ -116,10 +116,11 @@ export const usePerformanceMonitor = (options: UsePerformanceMonitorOptions) => 
     return () => clearInterval(interval);
   }, [enabled, componentName]);
 
+  // Don't return metrics directly - they should be accessed via getStats()
+  // Returning ref values directly during render violates React's rules
   return {
     startRender,
     endRender,
     getStats,
-    metrics: metricsRef.current,
   };
 };

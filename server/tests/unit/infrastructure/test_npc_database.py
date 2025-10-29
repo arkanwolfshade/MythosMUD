@@ -464,7 +464,9 @@ class TestSQLitePragmaListener:
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
             # Use a test database URL that contains "test"
-            mock_config.database.npc_url = "sqlite+aiosqlite:///server/tests/data/npcs/test_npcs.db"
+            # Use absolute path to prevent nested server/server/ directory creation
+            test_db_path = Path(__file__).parent.parent.parent.parent / "data" / "unit_test" / "npcs" / "test_npcs.db"
+            mock_config.database.npc_url = f"sqlite+aiosqlite:///{test_db_path}"
             mock_get_config.return_value = mock_config
 
             _initialize_npc_database()

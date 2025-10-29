@@ -16,6 +16,7 @@ import nats
 from ..config.models import NATSConfig
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
+from .nats_subject_manager import NATSSubjectManager, SubjectValidationError
 
 logger = get_logger("nats")
 
@@ -95,12 +96,13 @@ class NATSService:
     and managing real-time communication between players using NATS.
     """
 
-    def __init__(self, config: NATSConfig | dict[str, Any] | None = None):
+    def __init__(self, config: NATSConfig | dict[str, Any] | None = None, subject_manager=None):
         """
         Initialize NATS service with state machine and connection pooling.
 
         Args:
             config: NATS configuration (NATSConfig model, dict, or None for defaults)
+            subject_manager: NATSSubjectManager instance (optional, for subject validation)
 
         AI: State machine tracks connection lifecycle and prevents invalid state transitions.
         AI: Accepts dict for backward compatibility but converts to Pydantic model for type safety.
@@ -140,6 +142,12 @@ class NATSService:
         self.state_machine = NATSConnectionStateMachine(
             connection_id="nats-primary", max_reconnect_attempts=self._max_retries
         )
+
+        # NATSSubjectManager for subject validation (optional)
+        if subject_manager is None and self.config.enable_subject_validation:
+            # Create subject manager with configuration
+            subject_manager = NATSSubjectManager(strict_validation=self.config.strict_subject_validation)
+        self.subject_manager = subject_manager
 
     async def connect(self) -> bool:
         """
@@ -301,6 +309,27 @@ class NATSService:
         success = False
 
         try:
+            # Validate subject if subject manager is available and validation is enabled
+            if self.subject_manager and self.config.enable_subject_validation:
+                try:
+                    if not self.subject_manager.validate_subject(subject):
+                        logger.error(
+                            "Subject validation failed",
+                            subject=subject,
+                            message_id=data.get("message_id"),
+                            correlation_id=data.get("correlation_id"),
+                        )
+                        return False
+                except SubjectValidationError as e:
+                    logger.error(
+                        "Subject validation error",
+                        error=str(e),
+                        subject=subject,
+                        message_id=data.get("message_id"),
+                        correlation_id=data.get("correlation_id"),
+                    )
+                    return False
+
             # Validate connection state
             if not self.nc or not self._running:
                 logger.error("NATS client not connected", subject=subject)
@@ -607,6 +636,27 @@ class NATSService:
         """
         connection = None
         try:
+            # Validate subject if subject manager is available and validation is enabled
+            if self.subject_manager and self.config.enable_subject_validation:
+                try:
+                    if not self.subject_manager.validate_subject(subject):
+                        logger.error(
+                            "Subject validation failed",
+                            subject=subject,
+                            message_id=data.get("message_id"),
+                            correlation_id=data.get("correlation_id"),
+                        )
+                        return False
+                except SubjectValidationError as e:
+                    logger.error(
+                        "Subject validation error",
+                        error=str(e),
+                        subject=subject,
+                        message_id=data.get("message_id"),
+                        correlation_id=data.get("correlation_id"),
+                    )
+                    return False
+
             connection = await self._get_connection()
             if not connection:
                 logger.error("No NATS connection available", subject=subject)
@@ -672,6 +722,27 @@ class NATSService:
             True if added to batch successfully, False otherwise
         """
         try:
+            # Validate subject if subject manager is available and validation is enabled
+            if self.subject_manager and self.config.enable_subject_validation:
+                try:
+                    if not self.subject_manager.validate_subject(subject):
+                        logger.error(
+                            "Subject validation failed",
+                            subject=subject,
+                            message_id=data.get("message_id"),
+                            correlation_id=data.get("correlation_id"),
+                        )
+                        return False
+                except SubjectValidationError as e:
+                    logger.error(
+                        "Subject validation error",
+                        error=str(e),
+                        subject=subject,
+                        message_id=data.get("message_id"),
+                        correlation_id=data.get("correlation_id"),
+                    )
+                    return False
+
             # Add message to batch
             self.message_batch.append((subject, data))
 

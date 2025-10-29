@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface CustomResource {
   cleanup: () => void;
@@ -198,21 +198,17 @@ export class ResourceManager {
  * Automatically cleans up all registered resources when the component unmounts
  */
 export const useResourceCleanup = (): ResourceManager => {
-  const resourceManagerRef = useRef<ResourceManager | null>(null);
-
-  // Create resource manager if it doesn't exist
-  if (!resourceManagerRef.current) {
-    resourceManagerRef.current = new ResourceManager();
-  }
+  // Use useMemo to create manager once and avoid ref access during render
+  const resourceManager = useMemo(() => new ResourceManager(), []);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      resourceManagerRef.current?.cleanup();
+      resourceManager.cleanup();
     };
-  }, []);
+  }, [resourceManager]);
 
-  return resourceManagerRef.current;
+  return resourceManager;
 };
 
 /**

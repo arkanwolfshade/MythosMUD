@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 interface ConnectionPanelProps {
   placeholderText?: string;
 }
 
 export const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ placeholderText = 'Connection Panel' }) => {
-  const [showTickVerbosity, setShowTickVerbosity] = useState(false);
-
-  useEffect(() => {
-    // Load setting from localStorage
+  // Initialize state from localStorage to avoid setState in effect
+  const [showTickVerbosity, setShowTickVerbosity] = useState(() => {
     const saved = localStorage.getItem('showTickVerbosity');
-    setShowTickVerbosity(saved === 'true');
-  }, []);
+    return saved === 'true';
+  });
 
   const handleTickVerbosityToggle = () => {
     const newValue = !showTickVerbosity;

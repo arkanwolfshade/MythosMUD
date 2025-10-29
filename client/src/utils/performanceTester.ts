@@ -205,7 +205,8 @@ export class PerformanceTester {
 export const usePerformanceTester = () => {
   const testerRef = useRef<PerformanceTester | null>(null);
 
-  if (!testerRef.current) {
+  // Initialize ref only once using recommended pattern
+  if (testerRef.current == null) {
     testerRef.current = new PerformanceTester();
   }
 

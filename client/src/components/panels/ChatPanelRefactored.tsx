@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DEFAULT_CHANNEL } from '../../config/channels';
 import { extractChannelFromMessage, isChatContent } from '../../utils/messageTypeUtils';
 import {
@@ -47,7 +47,7 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
 }) => {
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [chatFilter, setChatFilter] = useState<string>('current');
-  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
 
   // Calculate chat statistics
   const chatStats = {
@@ -58,25 +58,23 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
     totalMessages: messages.length,
   };
 
-  // Update unread counts
-  useEffect(() => {
-    setUnreadCounts(prev => {
-      const newUnreadCounts = { ...prev };
+  // Compute unread counts using useMemo instead of effect
+  const unreadCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
 
-      messages.forEach(message => {
-        // Handle both 'chat' and 'command' messages that contain chat content
-        if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
-          const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
-          // Increment unread count for other channels
-          if (channelId !== selectedChannel) {
-            newUnreadCounts[channelId] = (newUnreadCounts[channelId] || 0) + 1;
-          }
+    messages.forEach((message, index) => {
+      // Handle both 'chat' and 'command' messages that contain chat content
+      if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
+        const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
+        // Count messages for other channels that are after the "cleared" point
+        if (channelId !== selectedChannel && index >= (clearedChannels[channelId] || 0)) {
+          counts[channelId] = (counts[channelId] || 0) + 1;
         }
-      });
-
-      return newUnreadCounts;
+      }
     });
-  }, [messages, selectedChannel]);
+
+    return counts;
+  }, [messages, selectedChannel, clearedChannels]);
 
   // Filter messages - simplified for display only
   const getFilteredMessages = () => {
@@ -84,8 +82,8 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
   };
 
   const handleChannelSelect = (channelId: string) => {
-    // Clear unread count when switching to a channel
-    setUnreadCounts(prev => ({ ...prev, [channelId]: 0 }));
+    // Mark this channel as "seen" at current message index
+    setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
     onChannelSelect?.(channelId);
   };
 

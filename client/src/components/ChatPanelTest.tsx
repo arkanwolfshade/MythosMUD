@@ -21,100 +21,104 @@ interface ChatMessage {
 }
 
 export const ChatPanelTest: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      text: 'Welcome to MythosMUD, Professor Wolfshade. The eldritch forces await your command.',
-      timestamp: new Date(Date.now() - 300000).toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'You enter the dimly lit library of Miskatonic University. Ancient tomes line the walls, their leather bindings cracked with age.',
-      timestamp: new Date(Date.now() - 240000).toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'Professor Armitage says: "Ah, Professor Wolfshade! I trust your research into the Necronomicon is proceeding well?"',
-      timestamp: new Date(Date.now() - 180000).toISOString(),
-      isHtml: false,
-      messageType: 'chat',
-    },
-    {
-      text: 'You whisper to Professor Armitage: "The forbidden knowledge grows stronger each day. I fear what I have uncovered."',
-      timestamp: new Date(Date.now() - 120000).toISOString(),
-      isHtml: false,
-      messageType: 'whisper',
-    },
-    {
-      text: 'Professor Armitage whispers to you: "Be careful, my friend. Some doors, once opened, cannot be closed."',
-      timestamp: new Date(Date.now() - 90000).toISOString(),
-      isHtml: false,
-      messageType: 'whisper',
-    },
-    {
-      text: 'You SHOUT: "The stars are right! The time is now!"',
-      timestamp: new Date(Date.now() - 60000).toISOString(),
-      isHtml: false,
-      messageType: 'shout',
-    },
-    {
-      text: 'You *adjusts spectacles nervously while examining the ancient manuscript*',
-      timestamp: new Date(Date.now() - 45000).toISOString(),
-      isHtml: false,
-      messageType: 'emote',
-    },
-    {
-      text: 'You cast the spell "Eldritch Sight" and your vision becomes clouded with otherworldly knowledge.',
-      timestamp: new Date(Date.now() - 30000).toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'ERROR: Your sanity has decreased by 5 points due to exposure to forbidden knowledge.',
-      timestamp: new Date(Date.now() - 15000).toISOString(),
-      isHtml: false,
-      messageType: 'error',
-    },
-    {
-      text: 'You say: "n"',
-      timestamp: new Date(Date.now() - 10000).toISOString(),
-      isHtml: false,
-      messageType: 'chat',
-      aliasChain: [
-        {
-          original: 'n',
-          expanded: 'north',
-          alias_name: 'direction',
-        },
-      ],
-    },
-    {
-      text: 'You move north through the ancient corridors.',
-      timestamp: new Date(Date.now() - 5000).toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'You say: "look"',
-      timestamp: new Date(Date.now() - 2000).toISOString(),
-      isHtml: false,
-      messageType: 'chat',
-      aliasChain: [
-        {
-          original: 'look',
-          expanded: 'look around',
-          alias_name: 'action',
-        },
-      ],
-    },
-    {
-      text: "You are in the Restricted Section of the library. The air is thick with the scent of old parchment and something... else. The walls seem to shift when you're not looking directly at them.",
-      timestamp: new Date().toISOString(),
-      isHtml: false,
-      messageType: 'system',
-    },
-  ]);
+  // Use function initializer to ensure Date.now() is only called once during initialization
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    const now = Date.now();
+    return [
+      {
+        text: 'Welcome to MythosMUD, Professor Wolfshade. The eldritch forces await your command.',
+        timestamp: new Date(now - 300000).toISOString(),
+        isHtml: false,
+        messageType: 'system',
+      },
+      {
+        text: 'You enter the dimly lit library of Miskatonic University. Ancient tomes line the walls, their leather bindings cracked with age.',
+        timestamp: new Date(now - 240000).toISOString(),
+        isHtml: false,
+        messageType: 'system',
+      },
+      {
+        text: 'Professor Armitage says: "Ah, Professor Wolfshade! I trust your research into the Necronomicon is proceeding well?"',
+        timestamp: new Date(now - 180000).toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+      },
+      {
+        text: 'You whisper to Professor Armitage: "The forbidden knowledge grows stronger each day. I fear what I have uncovered."',
+        timestamp: new Date(now - 120000).toISOString(),
+        isHtml: false,
+        messageType: 'whisper',
+      },
+      {
+        text: 'Professor Armitage whispers to you: "Be careful, my friend. Some doors, once opened, cannot be closed."',
+        timestamp: new Date(now - 90000).toISOString(),
+        isHtml: false,
+        messageType: 'whisper',
+      },
+      {
+        text: 'You SHOUT: "The stars are right! The time is now!"',
+        timestamp: new Date(now - 60000).toISOString(),
+        isHtml: false,
+        messageType: 'shout',
+      },
+      {
+        text: 'You *adjusts spectacles nervously while examining the ancient manuscript*',
+        timestamp: new Date(now - 45000).toISOString(),
+        isHtml: false,
+        messageType: 'emote',
+      },
+      {
+        text: 'You cast the spell "Eldritch Sight" and your vision becomes clouded with otherworldly knowledge.',
+        timestamp: new Date(now - 30000).toISOString(),
+        isHtml: false,
+        messageType: 'system',
+      },
+      {
+        text: 'ERROR: Your sanity has decreased by 5 points due to exposure to forbidden knowledge.',
+        timestamp: new Date(now - 15000).toISOString(),
+        isHtml: false,
+        messageType: 'error',
+      },
+      {
+        text: 'You say: "n"',
+        timestamp: new Date(now - 10000).toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+        aliasChain: [
+          {
+            original: 'n',
+            expanded: 'north',
+            alias_name: 'direction',
+          },
+        ],
+      },
+      {
+        text: 'You move north through the ancient corridors.',
+        timestamp: new Date(now - 5000).toISOString(),
+        isHtml: false,
+        messageType: 'system',
+      },
+      {
+        text: 'You say: "look"',
+        timestamp: new Date(now - 2000).toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+        aliasChain: [
+          {
+            original: 'look',
+            expanded: 'look around',
+            alias_name: 'action',
+          },
+        ],
+      },
+      {
+        text: "You are in the Restricted Section of the library. The air is thick with the scent of old parchment and something... else. The walls seem to shift when you're not looking directly at them.",
+        timestamp: new Date(now).toISOString(),
+        isHtml: false,
+        messageType: 'system',
+      },
+    ];
+  });
 
   const [newMessage, setNewMessage] = useState('');
   const [messageType, setMessageType] = useState<ChatMessageType>('chat');
