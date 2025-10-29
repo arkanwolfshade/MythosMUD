@@ -54,15 +54,47 @@ export interface UseGridLayoutReturn {
 }
 
 export const useGridLayout = (): UseGridLayoutReturn => {
-  // State management
-  const [currentLayout, setCurrentLayout] = useState<Layout[]>(layoutConfig.lg);
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('lg');
-  const [panelStates, setPanelStates] = useState<Record<string, PanelState>>({
-    chat: { isMinimized: false, isMaximized: false, isVisible: true },
-    gameLog: { isMinimized: false, isMaximized: false, isVisible: true },
-    command: { isMinimized: false, isMaximized: false, isVisible: true },
-    roomInfo: { isMinimized: false, isMaximized: false, isVisible: true },
-    status: { isMinimized: false, isMaximized: false, isVisible: true },
+  // State management - initialize from localStorage to avoid setState in effect
+  const [currentLayout, setCurrentLayout] = useState<Layout[]>(() => {
+    try {
+      const savedLayout = localStorage.getItem(STORAGE_KEYS.LAYOUT);
+      if (savedLayout) {
+        return JSON.parse(savedLayout);
+      }
+    } catch (error) {
+      console.warn('Failed to load layout:', error);
+    }
+    return layoutConfig.lg;
+  });
+
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<string>(() => {
+    try {
+      const savedBreakpoint = localStorage.getItem(STORAGE_KEYS.BREAKPOINT);
+      if (savedBreakpoint) {
+        return savedBreakpoint;
+      }
+    } catch (error) {
+      console.warn('Failed to load breakpoint:', error);
+    }
+    return 'lg';
+  });
+
+  const [panelStates, setPanelStates] = useState<Record<string, PanelState>>(() => {
+    try {
+      const savedPanelStates = localStorage.getItem(STORAGE_KEYS.PANEL_STATES);
+      if (savedPanelStates) {
+        return JSON.parse(savedPanelStates);
+      }
+    } catch (error) {
+      console.warn('Failed to load panel states:', error);
+    }
+    return {
+      chat: { isMinimized: false, isMaximized: false, isVisible: true },
+      gameLog: { isMinimized: false, isMaximized: false, isVisible: true },
+      command: { isMinimized: false, isMaximized: false, isVisible: true },
+      roomInfo: { isMinimized: false, isMaximized: false, isVisible: true },
+      status: { isMinimized: false, isMaximized: false, isVisible: true },
+    };
   });
 
   // Save layout to localStorage
@@ -147,10 +179,7 @@ export const useGridLayout = (): UseGridLayoutReturn => {
     saveLayout();
   }, [saveLayout]);
 
-  // Load saved layout on mount
-  useEffect(() => {
-    loadLayout();
-  }, [loadLayout]);
+  // Layout is now loaded during state initialization, no need for effect
 
   return {
     currentLayout,

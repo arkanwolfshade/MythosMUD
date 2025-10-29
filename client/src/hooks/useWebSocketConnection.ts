@@ -6,7 +6,7 @@
  * AI: Extracted from useGameConnection to reduce complexity and improve testability.
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
 import { csrfProtection, inputSanitizer } from '../utils/security';
@@ -44,8 +44,10 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   const resourceManager = useResourceCleanup();
   const websocketRef = useRef<WebSocket | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
-  const isConnectedRef = useRef(false);
-  const lastErrorRef = useRef<string | null>(null);
+
+  // Use state instead of refs for values that need to trigger re-renders
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
 
   // Stable callback refs
   const onConnectedRef = useRef(onConnected);
@@ -75,59 +77,62 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
       websocketRef.current.close();
       websocketRef.current = null;
-      isConnectedRef.current = false;
+      setIsConnected(false);
 
       onDisconnectRef.current?.();
     }
   }, [resourceManager]);
 
-  const sendMessage = useCallback((message: string) => {
-    if (!websocketRef.current || !isConnectedRef.current) {
-      logger.warn('WebSocketConnection', 'Cannot send message: WebSocket not connected');
-      return;
-    }
-
-    try {
-      // Enhanced input validation
-      if (!message || typeof message !== 'string') {
-        logger.warn('WebSocketConnection', 'Invalid message type');
+  const sendMessage = useCallback(
+    (message: string) => {
+      if (!websocketRef.current || !isConnected) {
+        logger.warn('WebSocketConnection', 'Cannot send message: WebSocket not connected');
         return;
       }
 
-      if (message.length > 1000) {
-        // Message length limit
-        logger.warn('WebSocketConnection', 'Message too long');
-        return;
+      try {
+        // Enhanced input validation
+        if (!message || typeof message !== 'string') {
+          logger.warn('WebSocketConnection', 'Invalid message type');
+          return;
+        }
+
+        if (message.length > 1000) {
+          // Message length limit
+          logger.warn('WebSocketConnection', 'Message too long');
+          return;
+        }
+
+        // Sanitize the message first
+        const sanitizedMessage = inputSanitizer.sanitizeCommand(message);
+
+        // Validate sanitization didn't remove too much
+        if (sanitizedMessage.length < message.length * 0.5) {
+          logger.warn('WebSocketConnection', 'Message heavily sanitized, rejecting');
+          return;
+        }
+
+        // Generate CSRF token and include it in the message
+        const csrfToken = csrfProtection.generateToken();
+
+        // Send the sanitized message with CSRF protection
+        const messageWithCSRF = JSON.stringify({
+          message: sanitizedMessage,
+          csrfToken: csrfToken,
+          timestamp: Date.now(),
+        });
+
+        websocketRef.current.send(messageWithCSRF);
+        logger.debug('WebSocketConnection', 'Message sent', {
+          messageLength: sanitizedMessage.length,
+          csrfToken: csrfToken.substring(0, 8) + '...', // Log partial token
+        });
+      } catch (error) {
+        logger.error('WebSocketConnection', 'Error sending message', { error });
       }
-
-      // Sanitize the message first
-      const sanitizedMessage = inputSanitizer.sanitizeCommand(message);
-
-      // Validate sanitization didn't remove too much
-      if (sanitizedMessage.length < message.length * 0.5) {
-        logger.warn('WebSocketConnection', 'Message heavily sanitized, rejecting');
-        return;
-      }
-
-      // Generate CSRF token and include it in the message
-      const csrfToken = csrfProtection.generateToken();
-
-      // Send the sanitized message with CSRF protection
-      const messageWithCSRF = JSON.stringify({
-        message: sanitizedMessage,
-        csrfToken: csrfToken,
-        timestamp: Date.now(),
-      });
-
-      websocketRef.current.send(messageWithCSRF);
-      logger.debug('WebSocketConnection', 'Message sent', {
-        messageLength: sanitizedMessage.length,
-        csrfToken: csrfToken.substring(0, 8) + '...', // Log partial token
-      });
-    } catch (error) {
-      logger.error('WebSocketConnection', 'Error sending message', { error });
-    }
-  }, []);
+    },
+    [isConnected]
+  );
 
   const connect = useCallback(() => {
     if (!authToken || !sessionId) {
@@ -154,8 +159,8 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
       ws.onopen = () => {
         logger.info('WebSocketConnection', 'WebSocket connected successfully');
-        isConnectedRef.current = true;
-        lastErrorRef.current = null;
+        setIsConnected(true);
+        setLastError(null);
 
         // Enhanced ping with NATS health check
         pingIntervalRef.current = window.setInterval(async () => {
@@ -191,14 +196,14 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
       ws.onerror = error => {
         logger.error('WebSocketConnection', 'WebSocket error', { error });
-        lastErrorRef.current = 'WebSocket connection error';
-        isConnectedRef.current = false;
+        setLastError('WebSocket connection error');
+        setIsConnected(false);
         onErrorRef.current?.(error);
       };
 
       ws.onclose = () => {
         logger.info('WebSocketConnection', 'WebSocket closed');
-        isConnectedRef.current = false;
+        setIsConnected(false);
 
         // Clear ping interval
         if (pingIntervalRef.current !== null) {
@@ -211,7 +216,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       };
     } catch (error) {
       logger.error('WebSocketConnection', 'Error creating WebSocket connection', { error });
-      lastErrorRef.current = error instanceof Error ? error.message : 'Unknown WebSocket error';
+      setLastError(error instanceof Error ? error.message : 'Unknown WebSocket error');
       onErrorRef.current?.(error as Event);
     }
   }, [authToken, sessionId, resourceManager]);
@@ -227,7 +232,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     connect,
     disconnect,
     sendMessage,
-    isConnected: isConnectedRef.current,
-    lastError: lastErrorRef.current,
+    isConnected,
+    lastError,
   };
 }

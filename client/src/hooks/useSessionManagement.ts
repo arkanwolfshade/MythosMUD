@@ -34,17 +34,21 @@ export interface SessionManagementResult {
 export function useSessionManagement(options: SessionManagementOptions = {}): SessionManagementResult {
   const { initialSessionId, onSessionChange } = options;
 
-  const [sessionId, setSessionId] = useState<string | null>(initialSessionId || null);
+  const generateSessionId = useCallback(() => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
+
+  // Initialize session ID to avoid setState in effect
+  const [sessionId, setSessionId] = useState<string | null>(() => {
+    return initialSessionId || generateSessionId();
+  });
+
   const onSessionChangeRef = useRef(onSessionChange);
 
   // Update callback ref
   useEffect(() => {
     onSessionChangeRef.current = onSessionChange;
   }, [onSessionChange]);
-
-  const generateSessionId = useCallback(() => {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }, []);
 
   const createNewSession = useCallback(() => {
     const newSessionId = generateSessionId();
@@ -69,14 +73,7 @@ export function useSessionManagement(options: SessionManagementOptions = {}): Se
     setSessionId(newSessionId);
   }, []);
 
-  // Initialize session ID if not provided
-  useEffect(() => {
-    if (!sessionId) {
-      const newSessionId = generateSessionId();
-      setSessionId(newSessionId);
-      onSessionChangeRef.current?.(newSessionId);
-    }
-  }, [sessionId, generateSessionId]);
+  // Session ID is now initialized during state creation, no need for effect
 
   return {
     sessionId,

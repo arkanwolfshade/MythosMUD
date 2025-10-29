@@ -7,7 +7,7 @@
  * AI: This refactored version uses XState for robust connection management.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { inputSanitizer } from '../utils/security';
 import { useConnectionState } from './useConnectionState';
@@ -259,6 +259,17 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     wasConnectedRef.current = isCurrentlyConnected;
   }, [connectionState.isConnected, options.onDisconnect, disconnect, options]);
 
+  // Memoize connection health - use function initializer to avoid impure calls during render
+  const [lastHealthCheckTime] = useState(() => Date.now());
+  const connectionHealth = useMemo(
+    () => ({
+      websocket: wsConnection.isConnected ? ('healthy' as const) : ('unhealthy' as const),
+      sse: sseConnection.isConnected ? ('healthy' as const) : ('unhealthy' as const),
+      lastHealthCheck: lastHealthCheckTime,
+    }),
+    [wsConnection.isConnected, sseConnection.isConnected, lastHealthCheckTime]
+  );
+
   return {
     // State (mapped for backward compatibility)
     isConnected: connectionState.isConnected,
@@ -269,11 +280,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     sseConnected: sseConnection.isConnected,
     websocketConnected: wsConnection.isConnected,
     sessionId: session.sessionId,
-    connectionHealth: {
-      websocket: wsConnection.isConnected ? ('healthy' as const) : ('unhealthy' as const),
-      sse: sseConnection.isConnected ? ('healthy' as const) : ('unhealthy' as const),
-      lastHealthCheck: Date.now(),
-    },
+    connectionHealth,
     connectionMetadata: {
       websocketConnectionId: null,
       sseConnectionId: null,

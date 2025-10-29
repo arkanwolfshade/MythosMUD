@@ -217,7 +217,8 @@ export const useFeedbackManager = () => {
   const [feedback, setFeedback] = useState<FeedbackData[]>([]);
   const [stats, setStats] = useState<FeedbackStats | null>(null);
 
-  if (!managerRef.current) {
+  // Initialize ref only once using recommended pattern
+  if (managerRef.current == null) {
     managerRef.current = new FeedbackManager();
   }
 

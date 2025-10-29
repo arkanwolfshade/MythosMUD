@@ -117,7 +117,8 @@ export const useMessageBatcher = (
 ) => {
   const batcherRef = useRef<MessageBatcher | null>(null);
 
-  if (!batcherRef.current) {
+  // Initialize ref only once using recommended pattern
+  if (batcherRef.current == null) {
     batcherRef.current = new MessageBatcher(onBatchReady, config);
   }
 

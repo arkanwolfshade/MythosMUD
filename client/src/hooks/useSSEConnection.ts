@@ -6,7 +6,7 @@
  * AI: Extracted from useGameConnection to reduce complexity and improve testability.
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
 
@@ -41,8 +41,10 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
 
   const resourceManager = useResourceCleanup();
   const eventSourceRef = useRef<EventSource | null>(null);
-  const isConnectedRef = useRef(false);
-  const lastErrorRef = useRef<string | null>(null);
+
+  // Use state instead of refs for values that need to trigger re-renders
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
 
   // Stable callback refs
   const onConnectedRef = useRef(onConnected);
@@ -64,7 +66,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
 
       eventSourceRef.current.close();
       eventSourceRef.current = null;
-      isConnectedRef.current = false;
+      setIsConnected(false);
 
       onDisconnectRef.current?.();
     }
@@ -97,8 +99,8 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
 
       eventSource.onopen = () => {
         logger.info('SSEConnection', 'SSE connected successfully');
-        isConnectedRef.current = true;
-        lastErrorRef.current = null;
+        setIsConnected(true);
+        setLastError(null);
         onConnectedRef.current?.(sseSessionId);
       };
 
@@ -108,8 +110,8 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
 
       eventSource.onerror = error => {
         logger.error('SSEConnection', 'SSE connection error', { error });
-        lastErrorRef.current = 'SSE connection error';
-        isConnectedRef.current = false;
+        setLastError('SSE connection error');
+        setIsConnected(false);
         onErrorRef.current?.(error);
 
         // Close and cleanup
@@ -117,7 +119,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       };
     } catch (error) {
       logger.error('SSEConnection', 'Error creating SSE connection', { error });
-      lastErrorRef.current = error instanceof Error ? error.message : 'Unknown SSE error';
+      setLastError(error instanceof Error ? error.message : 'Unknown SSE error');
       onErrorRef.current?.(error as Event);
     }
   }, [authToken, sessionId, disconnect, resourceManager]);
@@ -132,7 +134,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
   return {
     connect,
     disconnect,
-    isConnected: isConnectedRef.current,
-    lastError: lastErrorRef.current,
+    isConnected,
+    lastError,
   };
 }
