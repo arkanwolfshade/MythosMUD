@@ -190,6 +190,13 @@ describe('Input Sanitization', () => {
     expect(sanitized).not.toContain('<script>');
   });
 
+  it('should strip style attributes and be safe for templates', () => {
+    const input = '<span style="color:red">Hello</span>';
+    const sanitized = inputSanitizer.sanitizeHtml(input);
+    expect(sanitized).toBe('<span>Hello</span>');
+    expect(sanitized).not.toContain('style=');
+  });
+
   it('should sanitize user commands', () => {
     const maliciousCommand = 'say <img src=x onerror=alert(1)>';
     const sanitized = inputSanitizer.sanitizeCommand(maliciousCommand);
@@ -215,6 +222,18 @@ describe('Input Sanitization', () => {
     expect(sanitized).not.toContain('<script>');
     expect(sanitized).not.toContain('>');
     expect(sanitized).not.toContain('"');
+  });
+});
+
+describe('JWT base64url decoding and expiry', () => {
+  it('should treat invalid or expired tokens as expired', () => {
+    // header: {"alg":"none","typ":"JWT"}
+    const header = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0';
+    // payload with exp in the past (exp: 1)
+    const payload = 'eyJleHAiOjF9';
+    const signature = '';
+    const token = `${header}.${payload}.${signature}`;
+    expect(secureTokenStorage.isTokenExpired(token)).toBe(true);
   });
 });
 

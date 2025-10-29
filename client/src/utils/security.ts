@@ -27,13 +27,18 @@ export const secureTokenStorage = {
    * NOTE: For production, this should be stored in httpOnly cookies set by the server
    */
   setToken(token: string): void {
-    localStorage.setItem('authToken', token);
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      localStorage.setItem('authToken', token);
+    }
   },
 
   /**
    * Retrieve authentication token from localStorage
    */
   getToken(): string | null {
+    if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
+      return null;
+    }
     return localStorage.getItem('authToken');
   },
 
@@ -41,7 +46,9 @@ export const secureTokenStorage = {
    * Clear authentication token
    */
   clearToken(): void {
-    localStorage.removeItem('authToken');
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      localStorage.removeItem('authToken');
+    }
   },
 
   /**
@@ -62,7 +69,12 @@ export const secureTokenStorage = {
    */
   isTokenExpired(token: string): boolean {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url
+        .replace(/-/g, '+')
+        .replace(/_/g, '/')
+        .padEnd(Math.ceil(base64Url.length / 4) * 4, '=');
+      const payload = JSON.parse(atob(base64));
       const currentTime = Math.floor(Date.now() / 1000);
       return payload.exp && payload.exp < currentTime;
     } catch {
@@ -112,6 +124,9 @@ export const secureTokenStorage = {
    * Get refresh token from localStorage
    */
   getRefreshToken(): string | null {
+    if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
+      return null;
+    }
     return localStorage.getItem('refreshToken');
   },
 
@@ -119,14 +134,18 @@ export const secureTokenStorage = {
    * Set refresh token in localStorage
    */
   setRefreshToken(token: string): void {
-    localStorage.setItem('refreshToken', token);
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      localStorage.setItem('refreshToken', token);
+    }
   },
 
   /**
    * Clear refresh token
    */
   clearRefreshToken(): void {
-    localStorage.removeItem('refreshToken');
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      localStorage.removeItem('refreshToken');
+    }
   },
 
   /**
@@ -276,10 +295,11 @@ export const inputSanitizer = {
     // Configure DOMPurify for MUD content - allow basic formatting but block dangerous elements
     const config = {
       ALLOWED_TAGS: ['b', 'i', 'u', 'em', 'strong', 'br', 'p', 'span', 'div'],
-      ALLOWED_ATTR: ['class', 'style'],
+      ALLOWED_ATTR: ['class'],
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
-    };
+      SAFE_FOR_TEMPLATES: true,
+    } as DOMPurify.Config;
 
     return DOMPurify.sanitize(input, config);
   },
@@ -327,7 +347,8 @@ export const inputSanitizer = {
       ALLOWED_ATTR: [],
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
-    };
+      SAFE_FOR_TEMPLATES: true,
+    } as DOMPurify.Config;
 
     return DOMPurify.sanitize(message, config).substring(0, 500); // Limit message length
   },

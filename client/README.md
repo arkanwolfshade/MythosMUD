@@ -75,6 +75,31 @@ npm run lint
 npm run format
 ```
 
+## Security and Privacy
+
+The client implements strict security measures for authentication, transport, and rendering:
+
+- Authentication and transport
+  - SSE: no tokens in URLs. The SSE connection uses cookies only and is created with `withCredentials: true`. The URL may include a `session_id` but never contains a `token` query parameter.
+  - WebSocket: authentication is passed via subprotocols (bearer, <token>). Tokens are never logged and are not embedded into message payloads.
+  - Health checks: development-only. Runtime NATS health polling is disabled in production builds.
+
+- Token handling
+  - Production uses httpOnly cookies set by the server; client-side storage is disabled.
+  - Dev and test modes only: `secureTokenStorage` may read/write localStorage for faster iteration.
+  - JWT parsing uses base64url-safe decoding; unparseable or expired tokens are treated as invalid.
+
+- Rendering and sanitization
+  - DOMPurify is configured with SAFE_FOR_TEMPLATES and disallows `style` attributes.
+  - Allowed tags are restricted (e.g., `b`, `i`, `em`, `strong`, `br`, `p`, `span`, `div`). Chat messages use an even tighter set.
+  - User commands and usernames are sanitized to remove scripts, protocols, and HTML tags.
+
+- Logging hygiene
+  - No raw payloads or secrets are logged. Logs include only high-level metadata (event type, data keys, lengths).
+  - Zustand devtools are enabled only in development.
+
+These policies support COPPA-style privacy requirements and reduce the risk of token exposure, XSS, and log leakage.
+
 ## Tech Stack
 
 - **Framework**: React 19

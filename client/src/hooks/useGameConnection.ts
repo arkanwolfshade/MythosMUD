@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { debugLogger } from '../utils/debugLogger';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
-import { csrfProtection, inputSanitizer } from '../utils/security';
+import { inputSanitizer } from '../utils/security';
 
 interface GameEvent {
   event_type: string;
@@ -458,15 +458,9 @@ export function useGameConnection({
 
       websocket.onmessage = event => {
         try {
-          logger.info('GameConnection', 'Raw WebSocket message received', {
-            rawData: event.data,
-            dataLength: event.data.length,
-          });
           const gameEvent: GameEvent = JSON.parse(event.data);
           logger.info('GameConnection', 'WebSocket event received', {
             event_type: gameEvent.event_type,
-            hasOccupants: !!(gameEvent.data && gameEvent.data.occupants),
-            occupants: gameEvent.data?.occupants,
             dataKeys: gameEvent.data ? Object.keys(gameEvent.data) : [],
           });
           dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
@@ -548,9 +542,9 @@ export function useGameConnection({
         eventSourceRef.current = null;
       }
 
-      const sseUrl = `/api/events?token=${encodeURIComponent(authToken)}${currentSessionId.current ? `&session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
+      const sseUrl = `/api/events${currentSessionId.current ? `?session_id=${encodeURIComponent(currentSessionId.current)}` : ''}`;
       logger.info('GameConnection', 'Creating SSE connection', { url: sseUrl, sessionId: currentSessionId.current });
-      const eventSource = new EventSource(sseUrl);
+      const eventSource = new EventSource(sseUrl, { withCredentials: true });
       resourceManager.registerEventSource(eventSource);
 
       eventSourceRef.current = eventSource;
@@ -579,7 +573,7 @@ export function useGameConnection({
       eventSource.onmessage = event => {
         try {
           const gameEvent: GameEvent = JSON.parse(event.data);
-          logger.info('GameConnection', 'Received event', { event_type: gameEvent.event_type });
+          logger.info('GameConnection', 'Received SSE event', { event_type: gameEvent.event_type });
           dispatch({ type: 'SET_LAST_EVENT', payload: gameEvent });
           onEventRef.current?.(gameEvent);
         } catch (error) {
@@ -669,25 +663,13 @@ export function useGameConnection({
       const sanitizedCommand = inputSanitizer.sanitizeCommand(command);
       const sanitizedArgs = args.map(arg => inputSanitizer.sanitizeCommand(arg));
 
-      // Generate CSRF token for the command
-      const csrfToken = csrfProtection.generateToken();
-
       const commandData = {
         type: 'game_command', // CRITICAL FIX: Use correct message type
         data: {
           command: sanitizedCommand,
           args: sanitizedArgs,
-          csrf_token: csrfToken,
         },
       };
-
-      console.log('🚨 CLIENT DEBUG: Sending command', {
-        originalCommand: command,
-        originalArgs: args,
-        sanitizedCommand,
-        sanitizedArgs,
-        fullCommandData: commandData,
-      });
 
       websocketRef.current.send(JSON.stringify(commandData));
       logger.info('GameConnection', 'Command sent', { command: sanitizedCommand, args: sanitizedArgs });

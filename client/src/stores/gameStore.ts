@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import type { StateCreator } from 'zustand';
 
 export interface Player {
   id: string;
@@ -129,8 +130,12 @@ const createInitialState = (): GameState => ({
   lastUpdate: null,
 });
 
+const withDevtools: <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []> = import.meta.env.DEV
+  ? (devtools as unknown as <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []>)
+  : fn => fn;
+
 export const useGameStore = create<GameStore>()(
-  devtools(
+  withDevtools(
     (set, get) => ({
       ...createInitialState(),
 

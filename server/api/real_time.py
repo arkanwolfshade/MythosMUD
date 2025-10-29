@@ -35,6 +35,7 @@ async def sse_events(player_id: str, request: Request):
     headers = {
         "Cache-Control": "no-cache",
         "Connection": "keep-alive",
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
@@ -75,6 +76,7 @@ async def sse_events_token(request: Request):
     headers = {
         "Cache-Control": "no-cache",
         "Connection": "keep-alive",
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 

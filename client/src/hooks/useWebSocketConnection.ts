@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
-import { csrfProtection, inputSanitizer } from '../utils/security';
+import { inputSanitizer } from '../utils/security';
 
 export interface WebSocketConnectionOptions {
   authToken: string;
@@ -124,20 +124,15 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           return;
         }
 
-        // Generate CSRF token and include it in the message
-        const csrfToken = csrfProtection.generateToken();
-
-        // Send the sanitized message with CSRF protection
-        const messageWithCSRF = JSON.stringify({
+        // Send the sanitized message without embedding sensitive tokens
+        const outbound = JSON.stringify({
           message: sanitizedMessage,
-          csrfToken: csrfToken,
           timestamp: Date.now(),
         });
 
-        websocketRef.current.send(messageWithCSRF);
+        websocketRef.current.send(outbound);
         logger.debug('WebSocketConnection', 'Message sent', {
           messageLength: sanitizedMessage.length,
-          csrfToken: csrfToken.substring(0, 8) + '...', // Log partial token
         });
       } catch (error) {
         logger.error('WebSocketConnection', 'Error sending message', { error });
@@ -182,19 +177,19 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
             // Send ping to WebSocket
             ws.send(JSON.stringify({ type: 'ping' }));
 
-            // Also check NATS health via server
-            try {
-              const healthResponse = await fetch('/api/health/nats', {
-                method: 'GET',
-                headers: { Authorization: `Bearer ${authToken}` },
-              });
-
-              if (!healthResponse.ok) {
-                logger.warn('WebSocketConnection', 'NATS health check failed');
-                // Trigger reconnection or degradation
+            // DEV-only: check NATS health via server
+            if (import.meta.env.DEV) {
+              try {
+                const healthResponse = await fetch('/api/health/nats', {
+                  method: 'GET',
+                  headers: { Authorization: `Bearer ${authToken}` },
+                });
+                if (!healthResponse.ok) {
+                  logger.warn('WebSocketConnection', 'NATS health check failed');
+                }
+              } catch (error) {
+                logger.warn('WebSocketConnection', 'NATS health check error', { error });
               }
-            } catch (error) {
-              logger.warn('WebSocketConnection', 'NATS health check error', { error });
             }
           }
         }, 30000);
