@@ -169,7 +169,7 @@ class NATSMessageHandler:
             "chat.pose.*",  # Pose messages per room
             "chat.global",  # Global messages
             "chat.party.*",  # Party messages per party
-            "chat.whisper.*",  # Whisper messages per player
+            "chat.whisper.player.*",  # Whisper messages per player
             "chat.system",  # System messages
             "chat.admin",  # Admin messages
             # Combat event subjects (moved to event subjects to avoid duplicates)
