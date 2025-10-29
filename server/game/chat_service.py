@@ -209,7 +209,7 @@ class ChatService:
         elif chat_message.channel == "whisper":
             target_id = getattr(chat_message, "target_id", None)
             if target_id:
-                return f"chat.whisper.{target_id}"
+                return f"chat.whisper.player.{target_id}"
             else:
                 return "chat.whisper"
         else:
