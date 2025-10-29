@@ -85,6 +85,12 @@ class NATSConfig(BaseSettings):
     batch_timeout: float = Field(default=0.1, description="Batch timeout in seconds")
     enable_message_batching: bool = Field(default=True, description="Enable message batching")
 
+    # Subject validation configuration
+    enable_subject_validation: bool = Field(default=True, description="Enable NATS subject validation")
+    strict_subject_validation: bool = Field(
+        default=False, description="Enable strict subject validation (reject invalid subjects)"
+    )
+
     @field_validator("max_payload")
     @classmethod
     def validate_max_payload(cls, v: int) -> int:

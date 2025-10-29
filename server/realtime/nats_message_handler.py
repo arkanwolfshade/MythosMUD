@@ -27,17 +27,19 @@ class NATSMessageHandler:
     them to the appropriate WebSocket clients based on room and channel.
     """
 
-    def __init__(self, nats_service):
+    def __init__(self, nats_service, subject_manager=None):
         """
         Initialize NATS message handler with error boundaries.
 
         Args:
             nats_service: NATS service instance for subscribing to subjects
+            subject_manager: NATSSubjectManager instance for standardized subscription patterns
 
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         """
         logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
+        self.subject_manager = subject_manager
         self.subscriptions = {}
 
         # Sub-zone subscription tracking for local channels
@@ -107,7 +109,58 @@ class NATSMessageHandler:
             return False
 
     async def _subscribe_to_chat_subjects(self):
-        """Subscribe to all chat-related NATS subjects."""
+        """Subscribe to all chat-related NATS subjects using standardized patterns."""
+        if self.subject_manager:
+            # Use NATSSubjectManager for standardized subscription patterns
+            await self._subscribe_to_standardized_chat_subjects()
+        else:
+            # Fallback to legacy hardcoded patterns for backward compatibility
+            await self._subscribe_to_legacy_chat_subjects()
+
+    async def _subscribe_to_standardized_chat_subjects(self):
+        """
+        Subscribe to chat subjects using NATSSubjectManager patterns.
+
+        This method retrieves subscription patterns from the subject manager
+        to ensure consistency with the pattern definitions and reduces
+        the risk of typos or mismatches between publishing and subscribing.
+
+        AI: Uses subject manager to generate subscription patterns dynamically.
+        AI: Includes legacy patterns for backward compatibility during migration.
+        """
+        logger.info(
+            "Starting _subscribe_to_standardized_chat_subjects - subscribing to standardized chat subjects", debug=True
+        )
+
+        # Get standardized chat subscription patterns from subject manager
+        subscription_patterns = self.subject_manager.get_chat_subscription_patterns()
+
+        # Add legacy patterns for backward compatibility
+        # TODO: Remove these after full migration to standardized patterns
+        legacy_patterns = [
+            "chat.local.*",  # Local messages per room (legacy)
+            "chat.party.*",  # Party messages per party
+            "chat.admin",  # Admin messages
+        ]
+
+        # Combine standardized and legacy patterns
+        all_patterns = subscription_patterns + legacy_patterns
+
+        logger.info(
+            "Subscribing to chat subjects",
+            standardized_count=len(subscription_patterns),
+            legacy_count=len(legacy_patterns),
+            total_count=len(all_patterns),
+        )
+
+        for pattern in all_patterns:
+            logger.info("About to subscribe to pattern", pattern=pattern, debug=True)
+            await self._subscribe_to_subject(pattern)
+
+        logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
+
+    async def _subscribe_to_legacy_chat_subjects(self):
+        """Subscribe to chat subjects using legacy hardcoded patterns."""
         subjects = [
             "chat.say.*",  # Say messages per room
             "chat.local.*",  # Local messages per room (for backward compatibility)
@@ -122,11 +175,11 @@ class NATSMessageHandler:
             # Combat event subjects (moved to event subjects to avoid duplicates)
         ]
 
-        logger.info("Starting _subscribe_to_chat_subjects - subscribing to chat and combat subjects", debug=True)
+        logger.info("Starting _subscribe_to_legacy_chat_subjects - subscribing to legacy chat subjects", debug=True)
         for subject in subjects:
-            logger.info("About to subscribe to subject", subject=subject, debug=True)
+            logger.info("About to subscribe to legacy subject", subject=subject, debug=True)
             await self._subscribe_to_subject(subject)
-        logger.info("Finished _subscribe_to_chat_subjects", debug=True)
+        logger.info("Finished _subscribe_to_legacy_chat_subjects", debug=True)
 
     async def _subscribe_to_subject(self, subject: str):
         """Subscribe to a specific NATS subject."""
@@ -883,11 +936,24 @@ class NATSMessageHandler:
 
         Args:
             room_id: Room ID to subscribe to
+
+        AI: Uses subject manager to build standardized subscription subjects.
+        AI: Falls back to legacy patterns if subject manager not available.
         """
-        subjects = [
-            f"chat.say.{room_id}",
-            f"chat.local.{room_id}",
-        ]
+        # Build subjects using standardized patterns if available
+        if self.subject_manager:
+            subjects = [
+                self.subject_manager.build_subject("chat_say_room", room_id=room_id),
+                # Note: chat.local.{room_id} is legacy and not in standardized patterns
+                # The standard pattern is chat.local.subzone.{subzone}
+                # For now, we skip this deprecated pattern
+            ]
+        else:
+            # Legacy fallback
+            subjects = [
+                f"chat.say.{room_id}",
+                f"chat.local.{room_id}",  # Deprecated pattern
+            ]
 
         for subject in subjects:
             if subject not in self.subscriptions:
@@ -899,11 +965,23 @@ class NATSMessageHandler:
 
         Args:
             room_id: Room ID to unsubscribe from
+
+        AI: Uses subject manager to build standardized unsubscription subjects.
+        AI: Falls back to legacy patterns if subject manager not available.
         """
-        subjects = [
-            f"chat.say.{room_id}",
-            f"chat.local.{room_id}",
-        ]
+        # Build subjects using standardized patterns if available
+        if self.subject_manager:
+            subjects = [
+                self.subject_manager.build_subject("chat_say_room", room_id=room_id),
+                # Note: chat.local.{room_id} is legacy and not in standardized patterns
+                # For now, we skip this deprecated pattern
+            ]
+        else:
+            # Legacy fallback
+            subjects = [
+                f"chat.say.{room_id}",
+                f"chat.local.{room_id}",  # Deprecated pattern
+            ]
 
         for subject in subjects:
             if subject in self.subscriptions:
@@ -928,7 +1006,12 @@ class NATSMessageHandler:
             True if subscribed successfully, False otherwise
         """
         try:
-            subzone_subject = f"chat.local.subzone.{subzone}"
+            # Build subject using standardized pattern if available
+            if self.subject_manager:
+                subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
+            else:
+                # Legacy fallback
+                subzone_subject = f"chat.local.subzone.{subzone}"
 
             # Check if already subscribed
             if subzone_subject in self.subscriptions:
@@ -963,7 +1046,12 @@ class NATSMessageHandler:
             True if unsubscribed successfully, False otherwise
         """
         try:
-            subzone_subject = f"chat.local.subzone.{subzone}"
+            # Build subject using standardized pattern if available
+            if self.subject_manager:
+                subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
+            else:
+                # Legacy fallback
+                subzone_subject = f"chat.local.subzone.{subzone}"
 
             # Decrease subscription count
             if subzone in self.subzone_subscriptions:
@@ -1151,29 +1239,49 @@ class NATSMessageHandler:
     # Event subscription methods
     async def subscribe_to_event_subjects(self) -> bool:
         """
-        Subscribe to all event-related NATS subjects.
+        Subscribe to all event-related NATS subjects using standardized patterns.
+
+        This method retrieves event subscription patterns from the subject manager
+        when available, ensuring consistency with pattern definitions. Falls back
+        to legacy hardcoded patterns when subject manager is not available.
 
         Returns:
             True if all subscriptions successful, False otherwise
+
+        AI: Uses subject manager to generate event subscription patterns dynamically.
+        AI: Falls back to legacy patterns when subject manager is not available.
         """
         try:
-            event_subjects = [
-                "events.player_entered.*",  # Player entered events per room
-                "events.player_left.*",  # Player left events per room
-                "events.game_tick",  # Global game tick events
-                "combat.attack.*",  # Combat attack events per room
-                "combat.npc_attacked.*",  # NPC attack events per room
-                "combat.npc_action.*",  # NPC action events per room
-                "combat.started.*",  # Combat started events per room
-                "combat.ended.*",  # Combat ended events per room
-                "combat.npc_died.*",  # NPC death events per room
-                "events.player_mortally_wounded.*",  # Player mortally wounded events per room
-                "events.player_hp_decay.*",  # Player HP decay events per room
-                "events.player_died.*",  # Player death events per room
-                "events.player_respawned.*",  # Player respawn events per room
-            ]
+            if self.subject_manager:
+                # Use standardized event subscription patterns from subject manager
+                event_subjects = self.subject_manager.get_event_subscription_patterns()
+                logger.info(
+                    "Subscribing to event subjects using standardized patterns",
+                    pattern_count=len(event_subjects),
+                )
+            else:
+                # Fallback to legacy hardcoded patterns for backward compatibility
+                event_subjects = [
+                    "events.player_entered.*",  # Player entered events per room
+                    "events.player_left.*",  # Player left events per room
+                    "events.game_tick",  # Global game tick events
+                    "combat.attack.*",  # Combat attack events per room
+                    "combat.npc_attacked.*",  # NPC attack events per room
+                    "combat.npc_action.*",  # NPC action events per room
+                    "combat.started.*",  # Combat started events per room
+                    "combat.ended.*",  # Combat ended events per room
+                    "combat.npc_died.*",  # NPC death events per room
+                    "events.player_mortally_wounded.*",  # Player mortally wounded events per room
+                    "events.player_hp_decay.*",  # Player HP decay events per room
+                    "events.player_died.*",  # Player death events per room
+                    "events.player_respawned.*",  # Player respawn events per room
+                ]
+                logger.info(
+                    "Subscribing to event subjects using legacy patterns",
+                    pattern_count=len(event_subjects),
+                )
 
-            logger.debug("Subscribing to event subjects", subjects=event_subjects)
+            logger.debug("Event subscription patterns", subjects=event_subjects)
 
             success_count = 0
             for subject in event_subjects:
@@ -1527,12 +1635,13 @@ class NATSMessageHandler:
 nats_message_handler = None
 
 
-def get_nats_message_handler(nats_service=None):
+def get_nats_message_handler(nats_service=None, subject_manager=None):
     """
     Get or create the global NATS message handler instance.
 
     Args:
         nats_service: NATS service instance (optional, for testing)
+        subject_manager: NATSSubjectManager instance (optional, for standardized patterns)
 
     Returns:
         NATSMessageHandler instance
@@ -1541,11 +1650,12 @@ def get_nats_message_handler(nats_service=None):
     logger.info(
         "get_nats_message_handler called",
         nats_service_provided=nats_service is not None,
+        subject_manager_provided=subject_manager is not None,
         global_handler_exists=nats_message_handler is not None,
     )
     if nats_message_handler is None and nats_service is not None:
         logger.info("Creating new NATSMessageHandler instance")
-        nats_message_handler = NATSMessageHandler(nats_service)
+        nats_message_handler = NATSMessageHandler(nats_service, subject_manager)
     else:
         logger.info("Using existing global NATSMessageHandler instance")
     return nats_message_handler

@@ -16,6 +16,7 @@ from ..events.combat_events import (
     PlayerAttackedEvent,
 )
 from ..logging.enhanced_logging_config import get_logger
+from .nats_subject_manager import NATSSubjectManager
 
 logger = get_logger("services.combat_event_publisher")
 
@@ -28,22 +29,28 @@ class CombatEventPublisher:
     system to provide real-time combat updates to clients and other systems.
     """
 
-    def __init__(self, nats_service=None):
+    def __init__(self, nats_service=None, subject_manager: NATSSubjectManager | None = None):
         """
         Initialize combat event publisher.
 
         Args:
             nats_service: NATS service instance (optional, defaults to global)
+            subject_manager: Subject manager for standardized NATS subjects (optional for backward compatibility)
+
+        AI: subject_manager is optional for backward compatibility but recommended for standardized patterns.
+        AI: Falls back to legacy subject construction if subject_manager is None.
         """
         logger.debug("CombatEventPublisher __init__ method entered")
         # Import here to avoid circular dependencies
         from ..services.nats_service import nats_service as global_nats_service
 
         self.nats_service = nats_service or global_nats_service
+        self.subject_manager = subject_manager
         logger.info(
             "CombatEventPublisher initialized",
             nats_service_available=bool(self.nats_service),
             nats_service_type=(type(self.nats_service).__name__ if self.nats_service else "None"),
+            subject_manager_enabled=subject_manager is not None,
         )
 
     async def publish_combat_started(self, event: CombatStartedEvent) -> bool:
@@ -105,8 +112,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.started.{room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_started", room_id=room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.started.{room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_started",
+                    room_id=room_id,
+                )
+
             logger.debug(
                 "Publishing combat started event to NATS",
                 combat_id=combat_id,
@@ -195,8 +212,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.ended.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_ended", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.ended.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_ended",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -284,8 +311,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.attack.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_attack", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.attack.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_attack",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -374,8 +411,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.npc_attacked.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_npc_attacked", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.npc_attacked.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_npc_attacked",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -458,8 +505,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.damage.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_damage", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.damage.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_damage",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -537,8 +594,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.npc_died.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_npc_died", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.npc_died.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_npc_died",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -615,8 +682,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.turn.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_turn", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.turn.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_turn",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:
@@ -690,8 +767,18 @@ class CombatEventPublisher:
                 },
             }
 
-            # Publish to NATS using room-specific subject
-            subject = f"combat.timeout.{event.room_id}"
+            # Build subject using standardized pattern
+            if self.subject_manager:
+                subject = self.subject_manager.build_subject("combat_timeout", room_id=event.room_id)
+            else:
+                # Legacy fallback for backward compatibility
+                subject = f"combat.timeout.{event.room_id}"
+                logger.warning(
+                    "Using legacy subject construction - subject_manager not configured",
+                    event_type="combat_timeout",
+                    room_id=event.room_id,
+                )
+
             success = await self.nats_service.publish(subject, message_data)
 
             if success:

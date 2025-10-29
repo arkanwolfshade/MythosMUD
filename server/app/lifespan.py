@@ -249,7 +249,9 @@ async def lifespan(app: FastAPI):
 
                 # Initialize NATS message handler
                 try:
-                    nats_message_handler = get_nats_message_handler(nats_service)
+                    # Get subject manager from NATS service if available
+                    subject_manager = getattr(nats_service, "subject_manager", None)
+                    nats_message_handler = get_nats_message_handler(nats_service, subject_manager)
                     await nats_message_handler.start()
                     app.state.nats_message_handler = nats_message_handler
                     logger.info("NATS message handler started successfully")

@@ -129,7 +129,12 @@ def is_valid_room_id_format(room_id: str) -> bool:
 
 def get_local_channel_subject(room_id: str) -> str | None:
     """
-    Generate NATS subject for local channel messages.
+    DEPRECATED: Generate NATS subject for local channel messages.
+
+    .. deprecated::
+        Use NATSSubjectManager.build_subject("chat_local_subzone", subzone=subzone) instead.
+        This function uses a deprecated subject pattern (chat.local.{room_id}) that doesn't
+        match the standardized hierarchical structure.
 
     Args:
         room_id: The room ID to generate subject for
@@ -140,7 +145,18 @@ def get_local_channel_subject(room_id: str) -> str | None:
     Examples:
         >>> get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
         'chat.local.earth_arkhamcity_northside_intersection_derby_high'
+
+    AI: This function is deprecated and should not be used in new code.
+    AI: It constructs a legacy subject pattern that is not part of the standardized system.
     """
+    import warnings
+
+    warnings.warn(
+        "get_local_channel_subject is deprecated. Use NATSSubjectManager instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     if not is_valid_room_id_format(room_id):
         return None
 
@@ -154,6 +170,10 @@ def get_subzone_local_channel_subject(room_id: str) -> str | None:
     This creates a subject that would be used for broadcasting to all rooms
     in the same sub-zone, rather than just the specific room.
 
+    .. note::
+        This function is still valid but consider using NATSSubjectManager for consistency.
+        Use: subject_manager.build_subject("chat_local_subzone", subzone=subzone)
+
     Args:
         room_id: The room ID to generate subject for
 
@@ -163,6 +183,9 @@ def get_subzone_local_channel_subject(room_id: str) -> str | None:
     Examples:
         >>> get_subzone_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
         'chat.local.subzone.northside'
+
+    AI: This function constructs a valid standardized subject but NATSSubjectManager should be preferred.
+    AI: Not marked as deprecated since it uses the correct standardized pattern.
     """
     subzone = extract_subzone_from_room_id(room_id)
     if not subzone:

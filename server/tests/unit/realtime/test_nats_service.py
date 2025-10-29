@@ -37,8 +37,8 @@ class TestNATSService:
             }
         )
 
-        # Test data
-        self.test_subject = "chat.say.room_001"
+        # Test data - using standardized subject format
+        self.test_subject = "chat.say.room.room_001"  # Updated to match standardized pattern
         self.test_data = {
             "message_id": "test_message_123",
             "sender_id": "test_sender",

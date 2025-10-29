@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..api.admin import npc_router as admin_npc_router
+from ..api.admin import subject_router as admin_subject_router
 from ..api.game import game_router
 from ..api.metrics import router as metrics_router
 from ..api.monitoring import router as monitoring_router
@@ -99,5 +100,6 @@ def create_app() -> FastAPI:
     app.include_router(realtime_router)
     app.include_router(room_router)
     app.include_router(admin_npc_router)
+    app.include_router(admin_subject_router, prefix="/api/admin")  # NATS subject management endpoints
 
     return app
