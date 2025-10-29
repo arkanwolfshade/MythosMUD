@@ -32,12 +32,12 @@ This report documents a comprehensive investigation into the whisper messaging s
 
 ## Phase Completion Status
 
-| Phase                            | Status         | Completion | Summary                                      |
-| -------------------------------- | -------------- | ---------- | -------------------------------------------- |
-| **Phase 1: Immediate Fix**       | ✅ **COMPLETE** | 100%       | All tasks complete, bugs fixed, committed    |
-| **Phase 2: Extended Validation** | 🟡 **PARTIAL**  | 20%        | Scenario 13 passed, scenarios 14-18 pending  |
-| **Phase 3: Code Review**         | ✅ **COMPLETE** | 100%       | All patterns verified, 1 secondary bug fixed |
-| **Phase 4: Documentation**       | 🔵 **PENDING**  | 0%         | All tasks pending (optional enhancements)    |
+| Phase                            | Status         | Completion | Summary                                                    |
+| -------------------------------- | -------------- | ---------- | ---------------------------------------------------------- |
+| **Phase 1: Immediate Fix**       | ✅ **COMPLETE** | 100%       | All tasks complete, bugs fixed, committed                  |
+| **Phase 2: Extended Validation** | 🟡 **PARTIAL**  | 30%        | Scenarios 13-14 passed, Scenario 15 blocked, 16-18 pending |
+| **Phase 3: Code Review**         | ✅ **COMPLETE** | 100%       | All patterns verified, 1 secondary bug fixed               |
+| **Phase 4: Documentation**       | 🔵 **PENDING**  | 0%         | All tasks pending (optional enhancements)                  |
 
 **Overall Progress:** **60% Complete** (Critical paths 100% complete)
 
@@ -454,7 +454,7 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 ---
 
-### Phase 2: Extended Validation (Priority: 🟡 HIGH) - 🟡 **PARTIAL** (20% Complete)
+### Phase 2: Extended Validation (Priority: 🟡 HIGH) - 🟡 **PARTIAL** (30% Complete)
 
 #### Task 2.1: Manual E2E Testing - Scenario 13 - ✅ **COMPLETE**
 
@@ -488,25 +488,54 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 ---
 
-#### Task 2.2: Execute Remaining Whisper Scenarios - ⏳ **PENDING**
+#### Task 2.2: Execute Remaining Whisper Scenarios - 🟡 **IN PROGRESS**
 
 **Execute in Order:**
 
-1. ✅ Scenario 13: Whisper Basic (completed in Task 2.1)
-2. Scenario 14: Whisper Errors
-3. Scenario 15: Whisper Rate Limiting
-4. Scenario 16: Whisper Movement
-5. Scenario 17: Whisper Integration
-6. Scenario 18: Whisper Logging
+1. ✅ **Scenario 13:** Whisper Basic (completed in Task 2.1) - **PASSED**
+2. ✅ **Scenario 14:** Whisper Errors - **PASSED** (4/5 tests, 1 limitation documented)
+3. ❌ **Scenario 15:** Whisper Rate Limiting - **BLOCKED** (missing feature - see below)
+4. ⏳ **Scenario 16:** Whisper Movement - **PENDING**
+5. ⏳ **Scenario 17:** Whisper Integration - **PENDING**
+6. ⏳ **Scenario 18:** Whisper Logging - **PENDING**
 
 **Success Criteria:**
 
-- All scenarios PASS
-- No new bugs discovered
-- All whisper functionality working as expected
+- ✅ Scenarios 13-14 PASSED
+- ❌ Scenario 15 BLOCKED (per-recipient rate limiting not implemented)
+- ⏳ Scenarios 16-18 pending execution
 
-**Estimated Time:** 30-45 minutes (depends on scenario complexity)
-**Status:** ⏳ **PENDING** (Basic whisper works, edge cases not yet validated)
+**Estimated Time:** 25-35 minutes (for scenarios 16-18 only)
+**Status:** 🟡 **IN PROGRESS** (2/6 scenarios complete, 1 blocked, 3 pending)
+
+---
+
+**🔴 BLOCKER DISCOVERED: Scenario 15 - Missing Per-Recipient Rate Limiting**
+
+**Date Discovered:** 2025-10-29 09:20 PST
+
+**Summary:** Scenario 15 testing revealed that per-recipient whisper rate limiting (3 whispers/min to same player) is **not implemented**. Only global rate limiting (5 whispers/min total) exists.
+
+**Impact:**
+
+- Scenario 15 cannot be completed (6/10 test steps blocked)
+- Players can spam individual recipients with up to 5 whispers/min
+- Harassment prevention is only partially effective
+
+**Evidence:**
+
+- Sent 4 rapid whispers to Ithaqua within 8 seconds
+- All 4 messages succeeded (expected: 4th should fail)
+- Server logs show only global limit tracking (`limit=5`)
+- No per-recipient tracking exists in `RateLimiter` class
+
+**Documentation:**
+
+- Full details: `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- Technical requirements and implementation plan included
+- Estimated implementation effort: 6-8 hours
+
+**Resolution:** Scenario 15 marked as BLOCKED pending feature implementation
 
 ---
 
@@ -1607,20 +1636,29 @@ See investigation report for comprehensive remediation plan including:
 
 ### 🟡 Partial Completion
 
-#### Phase 2: Extended Validation - 🟡 **20% COMPLETE**
+#### Phase 2: Extended Validation - 🟡 **30% COMPLETE**
 
 - ✅ Task 2.1: Scenario 13 E2E tested and PASSED
-- ⏳ Task 2.2: Scenarios 14-18 pending (not yet executed)
+- ✅ Task 2.2a: Scenario 14 E2E tested and PASSED (4/5 tests, 1 test limitation)
+- ❌ Task 2.2b: Scenario 15 **BLOCKED** - Per-recipient rate limiting not implemented (see `SCENARIO_15_RATE_LIMITING_BLOCKED.md`)
+- ⏳ Task 2.2c-e: Scenarios 16-18 pending (not yet executed)
+
+**Completed Scenarios:**
+
+1. ✅ **Scenario 13:** Whisper Basic - 100% PASSED
+2. ✅ **Scenario 14:** Whisper Errors - 4/5 tests PASSED, 1 test limitation documented
+
+**Blocked Scenarios:**
+
+1. ❌ **Scenario 15:** Whisper Rate Limiting - **BLOCKED** (missing per-recipient rate limiting feature)
 
 **Remaining Scenarios:**
 
-1. ⏳ **Scenario 14:** Whisper Errors - Error handling validation
-2. ⏳ **Scenario 15:** Whisper Rate Limiting - Spam prevention
-3. ⏳ **Scenario 16:** Whisper Movement - Cross-location messaging
-4. ⏳ **Scenario 17:** Whisper Integration - System integration points
-5. ⏳ **Scenario 18:** Whisper Logging - Privacy and moderation
+1. ⏳ **Scenario 16:** Whisper Movement - Cross-location messaging
+2. ⏳ **Scenario 17:** Whisper Integration - System integration points
+3. ⏳ **Scenario 18:** Whisper Logging - Privacy and moderation
 
-**Estimated Time:** 30-45 minutes
+**Estimated Time:** 25-35 minutes (for scenarios 16-18)
 **Priority:** 🟡 **RECOMMENDED** (validates all edge cases)
 
 ---
