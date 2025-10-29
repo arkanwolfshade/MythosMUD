@@ -16,4 +16,4 @@ updates:
   - package-ecosystem: npm
     directory: /client/.vite/deps
     schedule:
-      interval: daily
+      interval: weekly
