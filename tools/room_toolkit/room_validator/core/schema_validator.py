@@ -7,6 +7,7 @@ supporting both legacy string format and new object format for exits.
 
 import json
 from pathlib import Path
+from typing import Any
 
 from jsonschema import ValidationError, validate
 
@@ -111,7 +112,7 @@ class SchemaValidator:
         """
         normalized = room_data.copy()
         exits = normalized.get("exits", {})
-        normalized_exits = {}
+        normalized_exits: dict[str, Any] = {}
 
         for direction, exit_data in exits.items():
             if exit_data is None:

@@ -942,7 +942,7 @@ class UserManager:
             mute_file = self._get_player_mute_file(player_id)
 
             # Prepare data for serialization
-            data = {
+            data: dict[str, Any] = {
                 "player_id": player_id,
                 "last_updated": datetime.now(UTC).isoformat(),
                 "player_mutes": {},

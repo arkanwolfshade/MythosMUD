@@ -411,7 +411,7 @@ class RoomLoader:
             Dictionary mapping config types to lists of file paths
         """
         search_path = Path(base_path) if base_path else self.base_path
-        config_files = {"subzone_config": [], "zone_config": []}
+        config_files: dict[str, list[Path]] = {"subzone_config": [], "zone_config": []}
 
         if not search_path.exists():
             return config_files

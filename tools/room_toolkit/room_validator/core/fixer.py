@@ -27,8 +27,8 @@ class RoomFixer:
             base_path: Base directory for room files
         """
         self.base_path = Path(base_path)
-        self.fixes_applied = []
-        self.fixes_failed = []
+        self.fixes_applied: list[str] = []
+        self.fixes_failed: list[str] = []
 
     def create_backup(self, file_path: Path) -> Path:
         """

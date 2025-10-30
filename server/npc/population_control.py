@@ -646,7 +646,7 @@ class NPCPopulationController:
         Returns:
             Dictionary containing population summaries
         """
-        summary = {"total_zones": len(self.population_stats), "total_active_npcs": len(self.active_npcs), "zones": {}}
+        summary: dict[str, Any] = {"total_zones": len(self.population_stats), "total_active_npcs": len(self.active_npcs), "zones": {}}
 
         for zone_key, stats in self.population_stats.items():
             summary["zones"][zone_key] = stats.to_dict()

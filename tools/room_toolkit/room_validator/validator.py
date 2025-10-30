@@ -9,6 +9,7 @@ described in the Pnakotic Manuscripts.
 
 import sys
 from datetime import datetime
+from typing import Any
 
 import click
 from core.fixer import RoomFixer
@@ -90,7 +91,7 @@ def main(
 
         # Validation phase
         errors = []
-        warnings = []
+        warnings: list[dict[str, Any]] = []
 
         # Convert parsing errors to validation errors
         parsing_errors = room_loader.get_parsing_errors()

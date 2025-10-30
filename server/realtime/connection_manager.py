@@ -1355,7 +1355,7 @@ class ConnectionManager:
         Returns:
             dict: Message delivery statistics
         """
-        stats = {
+        stats: dict[str, Any] = {
             "player_id": player_id,
             "websocket_connections": len(self.player_websockets.get(player_id, [])),
             "sse_connections": len(self.active_sse_connections.get(player_id, [])),
@@ -1379,7 +1379,7 @@ class ConnectionManager:
         Returns:
             dict: Connection health information
         """
-        health_status = {
+        health_status: dict[str, Any] = {
             "player_id": player_id,
             "websocket_healthy": 0,
             "websocket_unhealthy": 0,
@@ -1445,7 +1445,7 @@ class ConnectionManager:
         Returns:
             dict: Cleanup results
         """
-        cleanup_results = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
+        cleanup_results: dict[str, Any] = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
 
         try:
             if player_id:
@@ -1548,7 +1548,7 @@ class ConnectionManager:
         """
         targets = self.room_manager.get_room_subscribers(room_id)
 
-        broadcast_stats = {
+        broadcast_stats: dict[str, Any] = {
             "room_id": room_id,
             "total_targets": len(targets),
             "excluded_players": 0,
@@ -1593,7 +1593,7 @@ class ConnectionManager:
         # Get all players with any type of connection (WebSocket or SSE)
         all_players = set(list(self.player_websockets.keys()) + list(self.active_sse_connections.keys()))
 
-        global_stats = {
+        global_stats: dict[str, Any] = {
             "total_players": len(all_players),
             "excluded_players": 0,
             "successful_deliveries": 0,
@@ -2287,7 +2287,7 @@ class ConnectionManager:
         Returns:
             dict: Recovery results
         """
-        recovery_results = {
+        recovery_results: dict[str, Any] = {
             "player_id": player_id,
             "recovery_type": recovery_type,
             "success": False,
@@ -2374,7 +2374,7 @@ class ConnectionManager:
         Returns:
             dict: Validation results
         """
-        validation_results = {"player_id": player_id, "is_consistent": True, "issues_found": [], "actions_taken": []}
+        validation_results: dict[str, Any] = {"player_id": player_id, "is_consistent": True, "issues_found": [], "actions_taken": []}
 
         try:
             # Check if player is in online_players but has no actual connections
