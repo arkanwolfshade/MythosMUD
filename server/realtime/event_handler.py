@@ -136,10 +136,12 @@ class RealTimeEventHandler:
             )
 
             # Broadcast to room occupants (excluding the entering player)
-            await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+            if room_id_str is not None:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
             # Subscribe player to the room so they will receive subsequent broadcasts
-            await self.connection_manager.subscribe_to_room(exclude_player_id, room_id_str)
+            if exclude_player_id is not None and room_id_str is not None:
+                await self.connection_manager.subscribe_to_room(exclude_player_id, room_id_str)
 
             # Send room occupants update to the entering player as a personal message
             # so they immediately see who is present on joining
@@ -169,7 +171,8 @@ class RealTimeEventHandler:
                     "room_id": room_id_str,
                     "data": {"occupants": names, "count": len(names)},
                 }
-                await self.connection_manager.send_personal_message(exclude_player_id, personal)
+                if exclude_player_id is not None:
+                    await self.connection_manager.send_personal_message(exclude_player_id, personal)
             except Exception as e:
                 self._logger.error("Error sending personal occupants update", error=str(e))
 
@@ -238,7 +241,8 @@ class RealTimeEventHandler:
             )
 
             # Broadcast to remaining room occupants (excluding the leaving player)
-            await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+            if room_id_str is not None:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
             # Send room occupants update to remaining players
             if room_id_str is not None and exclude_player_id is not None:

@@ -84,9 +84,6 @@ class NPCCombatIntegrationService:
         self._messaging_integration = CombatMessagingIntegration()
         self._event_publisher = CombatEventPublisher(event_bus)
 
-        # NPC combat memory - tracks last attacker for each NPC instance
-        self._npc_combat_memory: dict[str, str] = {}
-
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
 
     async def handle_player_attack_on_npc(
@@ -274,7 +271,7 @@ class NPCCombatIntegrationService:
 
             if combat_result.success:
                 # Broadcast attack message with health info
-                self._messaging_integration.broadcast_combat_attack(
+                await self._messaging_integration.broadcast_combat_attack(
                     room_id=room_id,
                     attacker_name=self._get_player_name(player_id),
                     target_name=npc_instance.name,

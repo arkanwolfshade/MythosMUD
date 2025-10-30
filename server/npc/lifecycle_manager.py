@@ -72,7 +72,7 @@ class NPCLifecycleRecord:
         self.total_active_time = 0.0
         self.last_active_time = 0.0
         self.error_count = 0
-        self.last_error = None
+        self.last_error: dict[str, Any] | None = None
 
     def add_event(self, event_type: NPCLifecycleEvent, details: dict[str, Any] | None = None) -> None:
         """

@@ -567,11 +567,7 @@ async def create_character_with_stats(
         context.metadata["rate_limit_type"] = "character_creation"
         raise LoggedHTTPException(
             status_code=429,
-            detail={
-                "message": "Rate limit exceeded",
-                "retry_after": getattr(e, "retry_after", None),
-                "type": "character_creation",
-            },
+            detail="Rate limit exceeded",
             context=context,
         ) from e
 

@@ -124,7 +124,7 @@ class CommandService:
         command_data: dict,
         current_user: dict,
         request: Any,
-        alias_storage: AliasStorage,
+        alias_storage: AliasStorage | None,
         player_name: str,
     ) -> dict[str, str]:
         """
@@ -181,7 +181,7 @@ class CommandService:
         command: str,
         current_user: dict,
         request: Any,
-        alias_storage: AliasStorage,
+        alias_storage: AliasStorage | None,
         player_name: str,
     ) -> dict[str, str]:
         """

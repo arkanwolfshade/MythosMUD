@@ -422,11 +422,15 @@ class RoomSyncService:
 
             logger.info("Processing room transition", player_id=player_id, from_room=from_room, to_room=to_room)
 
+            # Validate transition data
+            if not all([player_id, from_room, to_room]):
+                return {"success": False, "errors": ["Missing required transition data"], "player_id": player_id}
+
+            # Type guard for mypy
+            assert isinstance(to_room, str), "to_room must be str after validation"
+
             # Use room-specific lock to prevent race conditions
             async with self._room_update_locks[to_room]:
-                # Validate transition data
-                if not all([player_id, from_room, to_room]):
-                    return {"success": False, "errors": ["Missing required transition data"], "player_id": player_id}
 
                 # Process the transition
                 # In a real implementation, this would update room state

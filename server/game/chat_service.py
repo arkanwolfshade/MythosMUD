@@ -163,9 +163,11 @@ class ChatService:
                 elif chat_message.channel == "local":
                     from ..utils.room_utils import extract_subzone_from_room_id
 
-                    subzone = extract_subzone_from_room_id(room_id)
-                    if not subzone:
+                    if room_id is None:
                         subzone = "unknown"
+                    else:
+                        subzone_result = extract_subzone_from_room_id(room_id)
+                        subzone = subzone_result if subzone_result else "unknown"
                     return cast(str, self.subject_manager.build_subject("chat_local_subzone", subzone=subzone))
                 elif chat_message.channel == "global":
                     return cast(str, self.subject_manager.build_subject("chat_global"))
@@ -198,9 +200,11 @@ class ChatService:
         if chat_message.channel == "local":
             from ..utils.room_utils import extract_subzone_from_room_id
 
-            subzone = extract_subzone_from_room_id(room_id)
-            if not subzone:
+            if room_id is None:
                 subzone = "unknown"
+            else:
+                subzone_result = extract_subzone_from_room_id(room_id)
+                subzone = subzone_result if subzone_result else "unknown"
             return f"chat.local.subzone.{subzone}"
         elif chat_message.channel == "global":
             return "chat.global"

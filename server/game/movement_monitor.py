@@ -112,7 +112,7 @@ class MovementMonitor:
         total_players = 0
 
         # Check for players in multiple rooms
-        player_rooms: dict[str, list[str]] = {}
+        player_rooms: dict[str, str] = {}
         for room_id, room in rooms.items():
             if hasattr(room, "get_players"):
                 players = room.get_players()

@@ -517,10 +517,12 @@ class MinimapRenderer:
                     source_depth = node["depth"]
                     break
 
-            if source_depth not in summary["connections_by_depth"]:
-                summary["connections_by_depth"][source_depth] = []
+            # Convert depth to string for dict key
+            depth_key = str(source_depth)
+            if depth_key not in summary["connections_by_depth"]:
+                summary["connections_by_depth"][depth_key] = []
 
-            summary["connections_by_depth"][source_depth].append(
+            summary["connections_by_depth"][depth_key].append(
                 {"from": edge["from"], "to": edge["to"], "direction": edge["direction"]}
             )
 

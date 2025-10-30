@@ -153,7 +153,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Test multiple connection establishment
@@ -229,7 +229,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Set up test player with dual connections
@@ -313,7 +313,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Test connection limit enforcement
@@ -390,7 +390,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Baseline performance test
@@ -503,7 +503,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Stress test with rapid connection/disconnection cycles

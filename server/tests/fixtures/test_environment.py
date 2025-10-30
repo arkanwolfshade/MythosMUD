@@ -146,6 +146,9 @@ class Environment:
         if config_override:
             self._merge_config(self.config, config_override)
 
+        # Type guard for mypy
+        assert self.temp_dir is not None, "temp_dir must be set before _setup_config"
+
         # Set test-specific paths in config dict
         # Note: These are legacy dict accesses for backward compatibility
         self.config["db_path"] = self.database_path
@@ -223,6 +226,7 @@ class Environment:
 
     def get_test_config(self) -> dict[str, Any]:
         """Get test configuration"""
+        assert self.config is not None, "config must be set up before calling get_test_config"
         return self.config.copy()
 
     def get_database_path(self) -> str | None:
@@ -377,6 +381,8 @@ class TestDataSetup:
     @staticmethod
     async def setup_dual_connection_scenario(env: Environment, player_id: str = "test_player"):
         """Set up dual connection scenario"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Create WebSocket connection
         ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id, "test_session")
 
@@ -405,6 +411,8 @@ class TestDataSetup:
     @staticmethod
     async def setup_session_switch_scenario(env: Environment, player_id: str = "session_test_player"):
         """Set up session switch scenario"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Create initial session with connections
         initial_scenario = await TestDataSetup.setup_dual_connection_scenario(env, player_id)
 
@@ -455,6 +463,8 @@ class TestMonitoringSetup:
     @staticmethod
     async def setup_monitoring_endpoints(env: Environment):
         """Set up monitoring endpoints for testing"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # This would typically set up Prometheus metrics, health checks, etc.
         # For now, we'll just ensure the connection manager has monitoring enabled
         env.connection_manager.enable_monitoring = True
@@ -469,6 +479,8 @@ class TestMonitoringSetup:
     @staticmethod
     async def setup_performance_monitoring(env: Environment):
         """Set up performance monitoring for testing"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Enable performance tracking
         env.connection_manager.performance_monitoring = True
 
@@ -487,11 +499,13 @@ class TestCleanup:
     @staticmethod
     async def cleanup_all_connections(env: Environment):
         """Clean up all connections in test environment"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
         await env.connection_manager.cleanup_all_connections()
 
     @staticmethod
     async def cleanup_player_data(env: Environment, player_id: str):
         """Clean up data for specific player"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
         await env.connection_manager.force_disconnect_player(player_id)
 
     @staticmethod

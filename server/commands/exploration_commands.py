@@ -83,7 +83,8 @@ async def handle_look_command(
                 if len(matching_npcs) == 1:
                     npc = matching_npcs[0]
                     logger.debug("Found NPC to look at", player=player_name, npc_name=npc.name, npc_id=npc.npc_id)
-                    return {"result": f"You look at {npc.name}.\n{npc.description}"}
+                    description = getattr(npc.definition, "description", "Nothing remarkable about them.")
+                    return {"result": f"You look at {npc.name}.\n{description}"}
                 elif len(matching_npcs) > 1:
                     npc_names = [npc.name for npc in matching_npcs]
                     logger.debug("Multiple NPCs match target", player=player_name, target=target, matches=npc_names)

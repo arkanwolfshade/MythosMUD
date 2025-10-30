@@ -105,7 +105,7 @@ class InviteManager:
         logger.info("Using invite", invite_code=invite_code)
 
         invite = await self.validate_invite(invite_code)
-        invite.use_invite(user_id)
+        invite.use_invite(str(user_id))
 
         await self.session.commit()
         await self.session.refresh(invite)

@@ -369,6 +369,12 @@ class NATSMessageHandler:
             logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
             raise ValueError("Missing required message fields")
 
+        # Type narrowing for mypy - only assert fields validated above
+        assert isinstance(channel, str), "channel must be str"
+        assert isinstance(sender_name, str), "sender_name must be str"
+        assert isinstance(content, str), "content must be str"
+        assert isinstance(sender_id, str), "sender_id must be str"
+
         # Format message content based on channel type
         formatted_message = self._format_message_content(channel, sender_name, content)
 
@@ -390,7 +396,15 @@ class NATSMessageHandler:
 
         # Broadcast based on channel type
         # AI: This can raise exceptions if broadcasting fails
-        await self._broadcast_by_channel_type(channel, chat_event, room_id, party_id, target_player_id, sender_id)
+        # Provide defaults for optional parameters
+        await self._broadcast_by_channel_type(
+            channel,
+            chat_event,
+            room_id or "",
+            party_id or "",
+            target_player_id or "",
+            sender_id,
+        )
 
     async def _broadcast_by_channel_type(
         self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str

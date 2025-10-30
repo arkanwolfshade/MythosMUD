@@ -462,7 +462,7 @@ class NPCBase(ABC):
                 self.event_bus.publish(
                     NPCTookDamage(
                         npc_id=self.npc_id,
-                        room_id=self.current_room,
+                        room_id=self.current_room or "unknown",
                         damage=damage,
                         damage_type=damage_type,
                         source_id=source_id,
@@ -485,7 +485,7 @@ class NPCBase(ABC):
                         self.event_bus.publish(
                             NPCDied(
                                 npc_id=self.npc_id,
-                                room_id=self.current_room,
+                                room_id=self.current_room or "unknown",
                                 cause="damage",
                                 killer_id=source_id,
                             )
@@ -547,7 +547,7 @@ class NPCBase(ABC):
                         pass
 
                 movement_integration = NPCMovementIntegration(event_bus)
-                success = movement_integration.move_npc_to_room(self.npc_id, self.current_room, room_id)
+                success = movement_integration.move_npc_to_room(self.npc_id, self.current_room or "unknown", room_id)
 
                 if success:
                     self.current_room = room_id
@@ -591,7 +591,7 @@ class NPCBase(ABC):
                     self.event_bus.publish(
                         NPCSpoke(
                             npc_id=self.npc_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             message=message,
                             channel=channel,
                             target_id=target_id,
@@ -621,7 +621,7 @@ class NPCBase(ABC):
                     self.event_bus.publish(
                         NPCListened(
                             npc_id=self.npc_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             message=message,
                             speaker_id=speaker_id,
                             channel=channel,
@@ -1084,7 +1084,7 @@ class AggressiveMobNPC(NPCBase):
                         NPCAttacked(
                             npc_id=self.npc_id,
                             target_id=target_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             damage=attack_damage,
                             attack_type="physical",
                         )

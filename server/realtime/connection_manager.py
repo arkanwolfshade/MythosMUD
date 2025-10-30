@@ -2794,7 +2794,7 @@ class ConnectionManager:
                     unhealthy_connections += 1
 
             # Calculate session distribution
-            session_connection_counts: dict[str, int] = {}
+            session_connection_counts: dict[int, int] = {}
             for _session_id, conn_ids in self.session_connections.items():
                 count = len(conn_ids)
                 session_connection_counts[count] = session_connection_counts.get(count, 0) + 1

@@ -235,7 +235,7 @@ class NPCService:
                 raise ValueError(f"Max population must be at least 1, got: {max_population}")
 
             # Update fields
-            update_data = {}
+            update_data: dict[str, Any] = {}
             if name is not None:
                 update_data["name"] = name
             if description is not None:

@@ -212,7 +212,7 @@ class NPCInstanceService:
                 npc_instance.move_to_room(new_room_id)
             else:
                 # Update the room ID directly if move_to_room method doesn't exist
-                npc_instance.current_room_id = new_room_id
+                npc_instance.current_room = new_room_id
 
             logger.info(
                 "Moved NPC instance",
@@ -268,8 +268,8 @@ class NPCInstanceService:
                     instance_info.update(
                         {
                             "lifecycle_state": record.current_state.value,
-                            "spawn_time": record.spawn_time,
-                            "last_activity": record.last_activity,
+                            "spawn_time": record.created_at,
+                            "last_activity": record.last_active_time,
                         }
                     )
 
@@ -318,8 +318,8 @@ class NPCInstanceService:
                 stats.update(
                     {
                         "lifecycle_state": record.current_state.value,
-                        "spawn_time": record.spawn_time,
-                        "last_activity": record.last_activity,
+                        "spawn_time": record.created_at,
+                        "last_activity": record.last_active_time,
                         "spawn_count": record.spawn_count,
                         "despawn_count": record.despawn_count,
                     }

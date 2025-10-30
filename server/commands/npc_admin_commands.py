@@ -210,6 +210,7 @@ async def handle_npc_create_command(
             definition = await npc_service.create_npc_definition(
                 session=session,
                 name=name,
+                description=None,  # Description can be set later via npc modify
                 npc_type=npc_type,
                 sub_zone_id=sub_zone_id,
                 room_id=room_id,
@@ -611,11 +612,9 @@ async def handle_npc_behavior_command(
         # Get NPC instance service
         instance_service = get_npc_instance_service()
 
-        # Set NPC behavior
-        result = await instance_service.set_npc_behavior(npc_id, behavior_type.lower())
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not set behavior"}
+        # TODO: Implement set_npc_behavior method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC behavior modification not yet implemented"}
 
         logger.info("NPC behavior set", npc_id=npc_id, behavior_type=behavior_type, admin_name=player_name)
         return {"result": f"NPC {npc_id} behavior set to {behavior_type}"}
@@ -647,11 +646,9 @@ async def handle_npc_react_command(
         # Get NPC instance service
         instance_service = get_npc_instance_service()
 
-        # Trigger NPC reaction
-        result = await instance_service.trigger_npc_reaction(npc_id, reaction_type.lower())
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not trigger reaction"}
+        # TODO: Implement trigger_npc_reaction method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC reaction triggering not yet implemented"}
 
         logger.info("NPC reaction triggered", npc_id=npc_id, reaction_type=reaction_type, admin_name=player_name)
         return {"result": f"NPC {npc_id} reaction {reaction_type} triggered"}
@@ -677,11 +674,9 @@ async def handle_npc_stop_command(
         # Get NPC instance service
         instance_service = get_npc_instance_service()
 
-        # Stop NPC behavior
-        result = await instance_service.stop_npc_behavior(npc_id)
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not stop behavior"}
+        # TODO: Implement stop_npc_behavior method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC behavior stopping not yet implemented"}
 
         logger.info("NPC behavior stopped", npc_id=npc_id, admin_name=player_name)
         return {"result": f"NPC {npc_id} behavior stopped"}
