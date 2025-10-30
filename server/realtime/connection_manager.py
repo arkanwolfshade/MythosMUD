@@ -116,6 +116,10 @@ class ConnectionManager:
         self.persistence = None
         # EventPublisher for NATS integration
         self.event_publisher = event_publisher
+        # Event bus reference (set during app startup)
+        self._event_bus: Any = None
+        # FastAPI app reference (set during app startup)
+        self.app: Any = None
 
         # Player presence tracking
         # player_id -> player_info

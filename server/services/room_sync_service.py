@@ -12,10 +12,13 @@ of our eldritch architecture.
 import asyncio
 import time
 from collections import defaultdict
-from typing import Any
+from typing import Any, TypeVar
 
 from ..events.event_types import BaseEvent
 from ..logging.enhanced_logging_config import get_logger
+
+# TypeVar for generic event processing
+T = TypeVar("T", bound=BaseEvent)
 
 # Type aliases for better readability
 type RoomData = dict[str, Any]
@@ -46,7 +49,7 @@ class RoomSyncService:
 
         logger.info("RoomSyncService initialized with enhanced synchronization")
 
-    def _process_event_with_ordering(self, event: BaseEvent) -> BaseEvent:
+    def _process_event_with_ordering(self, event: T) -> T:
         """
         Process events with proper ordering to prevent race conditions.
 

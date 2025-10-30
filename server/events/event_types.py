@@ -30,6 +30,7 @@ class BaseEvent:
 
     timestamp: datetime = field(default_factory=_default_timestamp, init=False)
     event_type: str = field(default="", init=False)
+    sequence_number: int = field(default=0, init=False)
 
     def __post_init__(self) -> None:
         """Initialize the event timestamp if not already set."""
