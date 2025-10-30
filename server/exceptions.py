@@ -283,7 +283,11 @@ class LoggedHTTPException(HTTPException):
             "context": context.to_dict(),
         }
 
-        error_logger.warning("HTTP error logged and exception raised", **log_data)
+        try:
+            error_logger.error("HTTP error logged and exception raised", **log_data)
+        except (OSError, PermissionError, RuntimeError) as log_err:
+            # Avoid test failures due to file handler rotation issues on Windows
+            logger.debug("Suppressed logging backend error during HTTP error logging", error=str(log_err))
 
 
 def handle_exception(exc: Exception, context: ErrorContext | None = None) -> MythosMUDError:

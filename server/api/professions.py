@@ -55,7 +55,7 @@ async def get_all_professions(
             # Fallback to creating a new cache service if not available
             profession_cache = ProfessionCacheService(persistence)
 
-        professions = await profession_cache.get_all_professions()
+        professions = profession_cache.get_all_professions()
 
         # Convert profession objects to dictionaries
         profession_list = []
@@ -115,7 +115,7 @@ async def get_profession_by_id(
             # Fallback to creating a new cache service if not available
             profession_cache = ProfessionCacheService(persistence)
 
-        profession = await profession_cache.get_profession_by_id(profession_id)
+        profession = profession_cache.get_profession_by_id(profession_id)
 
         if not profession:
             context = create_context_from_request(request)

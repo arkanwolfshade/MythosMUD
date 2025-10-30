@@ -63,8 +63,8 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is connected
-            if not self.nats_service.is_connected():
+            # Check if NATS service is available and connected
+            if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish player_entered event")
                 return False
 
@@ -147,8 +147,8 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is connected
-            if not self.nats_service.is_connected():
+            # Check if NATS service is available and connected
+            if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish player_left event")
                 return False
 
@@ -222,8 +222,8 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is connected
-            if not self.nats_service.is_connected():
+            # Check if NATS service is available and connected
+            if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish game_tick event")
                 return False
 

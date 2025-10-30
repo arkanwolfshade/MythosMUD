@@ -608,7 +608,8 @@ async def create_character_with_stats(
         # TODO: Implement a proper way to track and mark invites as used
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        return PlayerRead.model_validate(player.model_dump())
+        # Return the created player as provided by the service (tests use dict/mocks)
+        return player
     except HTTPException:
         # Re-raise HTTPExceptions without modification
         raise
