@@ -175,4 +175,3 @@ class TestSelfMessageBug:
         assert "player1" in player_ids_sent_to
         assert "player2" in player_ids_sent_to
         assert "player3" in player_ids_sent_to
-

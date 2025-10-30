@@ -132,7 +132,7 @@ def get_new_structure_stats() -> dict[str, dict[str, Any]]:
         Nested dictionary with test counts by category and subdirectory
     """
     from typing import Any
-    
+
     stats: dict[str, dict[str, Any]] = {}
 
     for category, subdirs in NEW_STRUCTURE.items():

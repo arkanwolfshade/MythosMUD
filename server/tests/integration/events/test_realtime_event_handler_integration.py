@@ -201,4 +201,3 @@ class TestRealTimeEventHandlerIntegration:
         assert len(published_events) == 2
         assert isinstance(published_events[0], PlayerEnteredRoom)
         assert isinstance(published_events[1], PlayerLeftRoom)
-

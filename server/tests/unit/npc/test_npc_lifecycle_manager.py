@@ -402,4 +402,3 @@ class TestNPCLifecycleManager:
         assert "test_shopkeeper" in npc_id
         assert "room_001" in npc_id
         assert npc_id.count("_") >= 3  # Should have multiple parts
-

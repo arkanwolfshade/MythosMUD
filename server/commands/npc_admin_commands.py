@@ -610,7 +610,7 @@ async def handle_npc_behavior_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
         # TODO: Implement set_npc_behavior method in NPCInstanceService
         # For now, return not implemented message
@@ -644,7 +644,7 @@ async def handle_npc_react_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
         # TODO: Implement trigger_npc_reaction method in NPCInstanceService
         # For now, return not implemented message
@@ -672,7 +672,7 @@ async def handle_npc_stop_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
         # TODO: Implement stop_npc_behavior method in NPCInstanceService
         # For now, return not implemented message

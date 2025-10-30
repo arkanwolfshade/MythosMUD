@@ -43,7 +43,7 @@ def get_all_professions(
         # Ensure request is available
         if not request:
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
-        
+
         persistence = request.app.state.persistence
         if not persistence:
             context = create_context_from_request(request)
@@ -101,7 +101,7 @@ def get_profession_by_id(
         # Ensure request is available
         if not request:
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
-        
+
         persistence = request.app.state.persistence
         if not persistence:
             context = create_context_from_request(request)

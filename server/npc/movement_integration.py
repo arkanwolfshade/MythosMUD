@@ -114,12 +114,10 @@ class NPCMovementIntegration:
             if not self.event_bus:
                 logger.debug("Event bus not available, skipping NPC movement events", npc_id=npc_id)
                 return
-            
+
             # Publish NPC left room event
             # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
-            left_event = NPCLeftRoom(
-                npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id
-            )
+            left_event = NPCLeftRoom(npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id)
             self.event_bus.publish(left_event)
 
             # Publish NPC entered room event
@@ -251,4 +249,3 @@ class NPCMovementIntegration:
         except Exception as e:
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
-

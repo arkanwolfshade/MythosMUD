@@ -193,4 +193,3 @@ class TestMultiplayerIntegration:
         next_seq = event_handler._get_next_sequence()
 
         assert next_seq == initial_seq + 1
-

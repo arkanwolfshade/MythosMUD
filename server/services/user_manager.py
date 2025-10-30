@@ -27,7 +27,9 @@ class UserManager:
     def __init__(self, data_dir: Path | None = None):
         """Initialize the user manager."""
         # Player mute storage: {player_id: {target_type: {target_id: mute_info}}}
-        self._player_mutes: dict[str, dict[str, dict[str, Any]]] = {}  # player_id -> {target_type -> {target_id -> mute_info}}
+        self._player_mutes: dict[
+            str, dict[str, dict[str, Any]]
+        ] = {}  # player_id -> {target_type -> {target_id -> mute_info}}
 
         # Channel mute storage: {player_id: {channel: mute_info}}
         self._channel_mutes: dict[str, dict[str, Any]] = {}  # player_id -> {channel -> mute_info}

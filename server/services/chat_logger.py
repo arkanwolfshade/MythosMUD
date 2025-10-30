@@ -50,7 +50,7 @@ class ChatLogger:
         # with prefixed names to distinguish log types
 
         # Thread-safe logging queue and writer thread
-        self._log_queue: "queue.Queue[dict[str, Any]]" = queue.Queue()
+        self._log_queue: queue.Queue[dict[str, Any]] = queue.Queue()
         self._writer_thread = None
         self._shutdown_event = threading.Event()
         self._start_writer_thread()

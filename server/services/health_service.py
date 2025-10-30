@@ -217,16 +217,18 @@ class HealthService:
     def determine_overall_status(self, components: HealthComponents) -> HealthStatus:
         """Determine overall system health status."""
         # If any component is unhealthy, overall status is unhealthy
-        if any(
-            component.status == HealthStatus.UNHEALTHY
-            for component in [components.server, components.database, components.connections]
+        if (
+            components.server.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
+            or components.database.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
+            or components.connections.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
         ):
             return HealthStatus.UNHEALTHY
 
         # If any component is degraded, overall status is degraded
-        if any(
-            component.status == HealthStatus.DEGRADED
-            for component in [components.server, components.database, components.connections]
+        if (
+            components.server.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
+            or components.database.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
+            or components.connections.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
         ):
             return HealthStatus.DEGRADED
 

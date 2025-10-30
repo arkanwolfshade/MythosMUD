@@ -378,7 +378,7 @@ class AuditLogger:
         event_types: dict[str, int] = {}
         security_events_by_severity: dict[str, int] = {}
         top_players: dict[str, int] = {}
-        
+
         stats: dict[str, Any] = {
             "total_entries": len(entries),
             "time_window_hours": hours,

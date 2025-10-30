@@ -351,4 +351,3 @@ class TestNPCRoomIntegrationRegression:
 
         # This test verifies that the fix works and prevents regression
         print("✅ NPC Room Integration Bug Fix Verified: NPCs now appear in rooms after spawning")
-

@@ -200,7 +200,9 @@ class WebSocketCorrelationMiddleware:
             clear_request_context()
 
 
-def create_correlation_middleware(correlation_header: str = "X-Correlation-ID") -> Callable[[Any], CorrelationMiddleware]:
+def create_correlation_middleware(
+    correlation_header: str = "X-Correlation-ID",
+) -> Callable[[Any], CorrelationMiddleware]:
     """
     Create a correlation middleware factory.
 

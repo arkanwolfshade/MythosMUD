@@ -19,6 +19,7 @@ class PersistenceProtocol(Protocol):
 
     def get_player(self, player_id: str) -> Any: ...
     def get_room(self, room_id: str) -> Any: ...
+    def get_players_in_room(self, room_id: str) -> list[Any]: ...
 
 
 class PlayerServiceProtocol(Protocol):
@@ -155,7 +156,7 @@ class TargetResolutionService:
     ) -> list[TargetMatch]:
         """Search for players in the specified room."""
         try:
-            players_in_room = self.persistence.get_players_in_room(room_id)
+            players_in_room = self.persistence.get_players_in_room(room_id)  # type: ignore[attr-defined]
             matches = []
 
             for player in players_in_room:

@@ -735,7 +735,7 @@ async def handle_shutdown_command(
     if not player_service:
         logger.warning("Shutdown command failed - no player service", player_name=player_name)
         return {"result": "Shutdown functionality is not available at this time."}
-    
+
     # At this point, app must be non-None since player_service exists
     assert app is not None, "App should be available if player_service exists"
 
@@ -778,7 +778,7 @@ async def handle_shutdown_command(
         # AI Agent: Type guard - ensure seconds is not None for initiate action
         if seconds is None:
             return {"result": "Invalid shutdown configuration. Seconds must be specified."}
-            
+
         # Check if superseding existing shutdown
         existing_shutdown = getattr(app.state, "shutdown_data", None)
         is_superseding = existing_shutdown is not None

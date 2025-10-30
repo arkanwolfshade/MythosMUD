@@ -19,7 +19,7 @@ from typing import Any
 from server.events.event_bus import EventBus
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.models.npc import NPCDefinition, NPCSpawnRule
-from server.npc.behaviors import AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC
+from server.npc.behaviors import AggressiveMobNPC, NPCBase, PassiveMobNPC, ShopkeeperNPC
 from server.npc.population_control import NPCPopulationController, ZoneConfiguration
 
 from ..logging.enhanced_logging_config import get_logger
@@ -118,13 +118,13 @@ class NPCSpawningService:
     population control system to ensure proper population management.
     """
 
-    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController"):
+    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController | None"):
         """
         Initialize the NPC spawning service.
 
         Args:
             event_bus: Event bus for publishing and subscribing to events
-            population_controller: Population controller for managing NPC populations
+            population_controller: Population controller for managing NPC populations (can be set later)
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
@@ -181,6 +181,9 @@ class NPCSpawningService:
         Args:
             room_id: The room identifier
         """
+        if self.population_controller is None:
+            return
+
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         zone_config = self.population_controller.get_zone_configuration(zone_key)
 
@@ -212,6 +215,9 @@ class NPCSpawningService:
         Returns:
             List of spawn requests that should be queued
         """
+        if self.population_controller is None:
+            return []
+
         spawn_requests: list[NPCSpawnRequest] = []
 
         # Check population limits
@@ -311,9 +317,10 @@ class NPCSpawningService:
         priority = int(priority * zone_config.npc_spawn_modifier)
 
         # Player count affects priority (more players = higher priority for some NPCs)
-        player_count = self.population_controller.current_game_state["player_count"]
-        if player_count > 0:
-            priority += min(player_count * 5, 25)
+        if self.population_controller is not None and self.population_controller.current_game_state:
+            player_count = self.population_controller.current_game_state["player_count"]
+            if player_count > 0:
+                priority += min(player_count * 5, 25)
 
         return priority
 
@@ -456,6 +463,8 @@ class NPCSpawningService:
                 npc_id = self._generate_npc_id(simple_definition, room_id)
 
             # Create appropriate NPC type based on definition
+            # Type annotation for base class to allow different subclass assignments
+            npc_instance: NPCBase
             if simple_definition.npc_type == "shopkeeper":
                 npc_instance = ShopkeeperNPC(
                     definition=simple_definition,
@@ -602,6 +611,9 @@ class NPCSpawningService:
         """
         from typing import cast
 
+        if self.population_controller is None:
+            return "unknown/unknown"
+
         return cast(str, self.population_controller._get_zone_key_from_room_id(room_id))
 
     def get_population_stats(self, zone_key: str) -> Any | None:
@@ -614,4 +626,7 @@ class NPCSpawningService:
         Returns:
             Population statistics or None if not found
         """
+        if self.population_controller is None:
+            return None
+
         return self.population_controller.get_population_stats(zone_key)

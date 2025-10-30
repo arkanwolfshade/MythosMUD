@@ -720,4 +720,3 @@ class TestNPCSpawningService:
 
         assert npc_instance is not None
         assert npc_instance.current_room == "room_001"
-

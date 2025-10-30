@@ -308,11 +308,11 @@ class CombatService:
                 return
 
         # Debug logging to understand participant type
-        participant_id = getattr(current_participant, "participant_id", "NO_PARTICIPANT_ID")
+        participant_id = getattr(current_participant, "participant_id", None)
         logger.debug(
             "Current participant type",
             participant_type=type(current_participant).__name__,
-            participant_id=participant_id,
+            participant_id=str(participant_id) if participant_id else "NO_PARTICIPANT_ID",
         )
 
         # Additional debugging for the combat state
@@ -619,6 +619,7 @@ class CombatService:
             )
             logger.info("About to publish combat events", attacker_type=current_participant.participant_type)
             # Publish attack event based on attacker type
+            attack_event: PlayerAttackedEvent | NPCAttackedEvent
             if current_participant.participant_type == CombatParticipantType.PLAYER:
                 logger.info("Creating PlayerAttackedEvent")
                 attack_event = PlayerAttackedEvent(
@@ -638,7 +639,7 @@ class CombatService:
                 logger.info("publish_player_attacked completed")
             else:
                 logger.info("Creating NPCAttackedEvent")
-                attack_event = NPCAttackedEvent(
+                npc_attack_event = NPCAttackedEvent(
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     attacker_id=current_participant.participant_id,
@@ -650,8 +651,8 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info("Calling publish_npc_attacked", attack_event=attack_event)
-                await self._combat_event_publisher.publish_npc_attacked(attack_event)
+                logger.info("Calling publish_npc_attacked", attack_event=npc_attack_event)
+                await self._combat_event_publisher.publish_npc_attacked(npc_attack_event)
                 logger.info("publish_npc_attacked completed")
 
             # Publish damage event if target is NPC

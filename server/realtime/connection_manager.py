@@ -2374,7 +2374,12 @@ class ConnectionManager:
         Returns:
             dict: Validation results
         """
-        validation_results: dict[str, Any] = {"player_id": player_id, "is_consistent": True, "issues_found": [], "actions_taken": []}
+        validation_results: dict[str, Any] = {
+            "player_id": player_id,
+            "is_consistent": True,
+            "issues_found": [],
+            "actions_taken": [],
+        }
 
         try:
             # Check if player is in online_players but has no actual connections

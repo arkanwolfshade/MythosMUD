@@ -72,8 +72,10 @@ def analyze_legacy_files() -> dict:
     Returns:
         Dictionary with analysis results
     """
+    from typing import Any
+
     legacy_files = list_legacy_files()
-    analysis: dict[str, int | list[dict] | list[str]] = {
+    analysis: dict[str, Any] = {
         "total": len(legacy_files),
         "files": [],
         "empty": [],

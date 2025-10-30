@@ -214,4 +214,3 @@ class TestRunningEventLoop:
         assert calls[0][0][1]["event_type"] == "player_entered"  # First event
         assert calls[2][0][1]["event_type"] == "player_entered"  # Second event
         assert calls[4][0][1]["event_type"] == "player_left"  # Third event
-

@@ -102,7 +102,7 @@ class CombatEventPublisher:
 
             # Ensure timestamp is set (should be guaranteed by BaseEvent.__post_init__)
             assert event.timestamp is not None, "Event timestamp should be set by BaseEvent.__post_init__"
-            
+
             # Create message data for NATS
             message_data = {
                 "event_type": "combat_started",

@@ -163,7 +163,7 @@ class NPCLifecycleManager:
     def __init__(
         self,
         event_bus: EventBus,
-        population_controller: NPCPopulationController,
+        population_controller: NPCPopulationController | None,
         spawning_service: NPCSpawningService,
     ):
         """
@@ -338,7 +338,8 @@ class NPCLifecycleManager:
                 del self.active_npcs[npc_id]
 
             # Update population controller
-            self.population_controller.despawn_npc(npc_id)
+            if self.population_controller is not None:
+                self.population_controller.despawn_npc(npc_id)
 
             # Update lifecycle record
             record.change_state(NPCLifecycleState.DESPAWNED, reason)
@@ -499,6 +500,9 @@ class NPCLifecycleManager:
         Returns:
             True if NPC can be spawned
         """
+        if self.population_controller is None:
+            return True  # Allow spawn if no population controller
+
         # Check population limits
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
@@ -637,4 +641,3 @@ class NPCLifecycleManager:
             self.last_cleanup = current_time
 
         return results
-

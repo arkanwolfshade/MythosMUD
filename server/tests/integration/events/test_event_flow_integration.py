@@ -480,4 +480,3 @@ class TestRealEventFlow:
         # Note: The loop is closed after asyncio.run() completes, so we can't check is_running()
         # Instead, just verify the loop was set correctly
         assert bus3._main_loop is not None
-

@@ -233,9 +233,7 @@ class TestEventHandlerBroadcasting:
         mock_connection_manager._get_player.return_value = None
 
         # Create and publish event
-        event = PlayerEnteredRoom(
-            player_id="nonexistent_player", room_id="test_room_001"
-        )
+        event = PlayerEnteredRoom(player_id="nonexistent_player", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -263,9 +261,7 @@ class TestEventHandlerBroadcasting:
         mock_connection_manager.persistence.get_room.return_value = None
 
         # Create and publish event
-        event = PlayerEnteredRoom(
-            player_id="test_player_123", room_id="nonexistent_room"
-        )
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="nonexistent_room")
 
         # Publish the event
         event_bus.publish(event)
@@ -299,4 +295,3 @@ class TestEventHandlerBroadcasting:
         assert left_message["data"]["message"] == "TestPlayer leaves the room."
         assert "timestamp" in left_message
         assert "sequence_number" in left_message
-

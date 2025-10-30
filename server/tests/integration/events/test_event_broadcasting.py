@@ -302,4 +302,3 @@ class TestConnectionTimeouts:
 
         # Connection should be removed due to timeout
         assert player_id not in connection_manager.active_websockets
-

@@ -201,4 +201,3 @@ class TestWorkingEventSystem:
         # which sets the main event loop on the EventBus
 
         assert True  # This test passes if we get here, confirming the system works
-

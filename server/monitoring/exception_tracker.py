@@ -11,9 +11,10 @@ of anomalies is essential for maintaining the stability of our systems.
 import traceback
 import uuid
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Callable
+from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger, log_with_context
 from ..utils.enhanced_error_logging import create_enhanced_error_context

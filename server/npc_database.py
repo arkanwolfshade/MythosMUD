@@ -264,7 +264,7 @@ def get_npc_database_path() -> Path:
     # Initialize database if needed
     if _npc_database_url is None:
         _initialize_npc_database()
-    
+
     # After initialization, database URL should be set
     assert _npc_database_url is not None, "NPC database URL should be initialized"
 

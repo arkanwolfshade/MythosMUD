@@ -396,4 +396,3 @@ class TestEndToEndBugScenarios:
             # The movement might fail, but we can still verify the method was called
             # The actual event broadcasting is tested in other unit tests
             assert isinstance(success, bool)
-

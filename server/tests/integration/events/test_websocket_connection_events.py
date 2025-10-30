@@ -400,4 +400,3 @@ class TestWebSocketConnectionEvents:
                 assert len(player_left_events) == 1
                 assert player_left_events[0].player_id == "test_player_123"
                 assert player_left_events[0].room_id == "test_room_001"
-

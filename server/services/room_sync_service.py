@@ -431,7 +431,6 @@ class RoomSyncService:
 
             # Use room-specific lock to prevent race conditions
             async with self._room_update_locks[to_room]:
-
                 # Process the transition
                 # In a real implementation, this would update room state
                 # and broadcast appropriate events

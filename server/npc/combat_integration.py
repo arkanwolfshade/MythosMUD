@@ -10,7 +10,6 @@ for maintaining the balance between mortal investigators and the eldritch
 entities they encounter.
 """
 
-import time
 from typing import Any
 
 from ..events import EventBus

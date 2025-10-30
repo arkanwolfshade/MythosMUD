@@ -45,9 +45,7 @@ class TestEventTypes:
 
     def test_player_entered_room_event(self):
         """Test PlayerEnteredRoom event creation."""
-        event = PlayerEnteredRoom(
-            player_id="player123", room_id="room456", from_room_id="room789"
-        )
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456", from_room_id="room789")
 
         assert event.player_id == "player123"
         assert event.room_id == "room456"
@@ -56,9 +54,7 @@ class TestEventTypes:
 
     def test_player_left_room_event(self):
         """Test PlayerLeftRoom event creation."""
-        event = PlayerLeftRoom(
-            player_id="player123", room_id="room456", to_room_id="room789"
-        )
+        event = PlayerLeftRoom(player_id="player123", room_id="room456", to_room_id="room789")
 
         assert event.player_id == "player123"
         assert event.room_id == "room456"
@@ -67,9 +63,7 @@ class TestEventTypes:
 
     def test_object_added_to_room_event(self):
         """Test ObjectAddedToRoom event creation."""
-        event = ObjectAddedToRoom(
-            object_id="object123", room_id="room456", player_id="player789"
-        )
+        event = ObjectAddedToRoom(object_id="object123", room_id="room456", player_id="player789")
 
         assert event.object_id == "object123"
         assert event.room_id == "room456"
@@ -78,9 +72,7 @@ class TestEventTypes:
 
     def test_object_removed_from_room_event(self):
         """Test ObjectRemovedFromRoom event creation."""
-        event = ObjectRemovedFromRoom(
-            object_id="object123", room_id="room456", player_id="player789"
-        )
+        event = ObjectRemovedFromRoom(object_id="object123", room_id="room456", player_id="player789")
 
         assert event.object_id == "object123"
         assert event.room_id == "room456"
@@ -89,9 +81,7 @@ class TestEventTypes:
 
     def test_npc_entered_room_event(self):
         """Test NPCEnteredRoom event creation."""
-        event = NPCEnteredRoom(
-            npc_id="npc123", room_id="room456", from_room_id="room789"
-        )
+        event = NPCEnteredRoom(npc_id="npc123", room_id="room456", from_room_id="room789")
 
         assert event.npc_id == "npc123"
         assert event.room_id == "room456"
@@ -415,4 +405,3 @@ class TestEventBus(TestingAsyncMixin):
 
         # Give time for cleanup
         await asyncio.sleep(0.1)
-

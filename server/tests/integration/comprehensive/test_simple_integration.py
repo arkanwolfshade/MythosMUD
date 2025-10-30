@@ -358,4 +358,3 @@ class TestSimpleConnectionEvents:
         assert left_event.player_id == "test_player"
         assert left_event.room_id == "test_room"
         assert left_event.event_type == "PlayerLeftRoom"
-

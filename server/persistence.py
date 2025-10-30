@@ -588,7 +588,7 @@ class PersistenceLayer:
                 user_friendly="Failed to retrieve professions",
             )
 
-    def get_profession_by_id(self, profession_id: int) -> object | None:
+    def get_profession_by_id(self, profession_id: int) -> "Profession | None":
         """Get a profession by ID."""
         context = create_error_context()
         context.metadata["operation"] = "get_profession_by_id"

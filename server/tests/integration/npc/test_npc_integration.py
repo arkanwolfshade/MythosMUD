@@ -1247,4 +1247,3 @@ class TestNPCEventReactionSystem:
         # Check that greeting reaction was registered
         reaction_types = [r.event_type.__name__ for r in reactions]
         assert "PlayerEnteredRoom" in reaction_types
-

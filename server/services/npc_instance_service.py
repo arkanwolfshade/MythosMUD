@@ -76,7 +76,7 @@ class NPCInstanceService:
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
                 break
-            
+
             # Ensure definition was retrieved
             if not definition:
                 raise ValueError(f"Failed to retrieve NPC definition {definition_id}")

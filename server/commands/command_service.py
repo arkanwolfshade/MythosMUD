@@ -59,6 +59,9 @@ from .utility_commands import (
 
 logger = get_logger(__name__)
 
+# Type alias for command handler functions
+CommandHandler = Callable[[dict, dict, Any, AliasStorage | None, str], Awaitable[dict[str, str]]]
+
 
 class CommandService:
     """
@@ -70,7 +73,7 @@ class CommandService:
 
     def __init__(self) -> None:
         """Initialize the command service."""
-        self.command_handlers = {
+        self.command_handlers: dict[str, CommandHandler] = {  # type: ignore[dict-item]
             # System commands
             "help": handle_help_command,
             # Alias commands
@@ -148,14 +151,16 @@ class CommandService:
             return {"result": "Invalid command format"}
 
         # Get the appropriate handler
-        handler = self.command_handlers.get(command_type)
+        handler: CommandHandler | None = self.command_handlers.get(command_type)
         if not handler:
             logger.error("No handler found for command type", player=player_name, command_type=command_type)
             return {"result": f"Unknown command: {command_type}"}
 
         try:
             # Call handler with command_data (standardized format)
+            # At this point handler is guaranteed to be CommandHandler (not None) due to check above
             logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
+            assert handler is not None  # Type narrowing for mypy
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
@@ -215,7 +220,7 @@ class CommandService:
 
         # Step 4: Route to appropriate handler
         if cmd in self.command_handlers:
-            handler = self.command_handlers[cmd]
+            handler: CommandHandler = self.command_handlers[cmd]
             try:
                 # Create command_data dictionary for handler using parsed command data
                 command_data = {
@@ -233,6 +238,7 @@ class CommandService:
                 if hasattr(parsed_command, "target"):
                     command_data["target"] = parsed_command.target
 
+                assert handler is not None  # Type narrowing for mypy
                 result = await handler(command_data, current_user, request, alias_storage, player_name)
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
                 # Type assertion to help MyPy understand the return type

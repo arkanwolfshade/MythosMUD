@@ -283,7 +283,7 @@ class StatsGenerator:
             if not profession:
                 raise ValueError(f"Invalid profession ID: {profession_id}")
 
-            stat_requirements = profession.get_stat_requirements()
+            stat_requirements = profession.get_stat_requirements()  # type: ignore[attr-defined]
             logger.debug(
                 "DEBUG: Retrieved profession with requirements",
                 profession_id=profession_id,

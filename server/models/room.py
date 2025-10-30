@@ -128,9 +128,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectAddedToRoom(
-                object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectAddedToRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
     def object_removed(self, object_id: str, player_id: str | None = None) -> None:
@@ -153,9 +151,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectRemovedFromRoom(
-                object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectRemovedFromRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
     def npc_entered(self, npc_id: str) -> None:

@@ -13,6 +13,7 @@ import tracemalloc
 from typing import Any
 
 import psutil
+from pydantic import BaseModel
 
 
 class MemoryProfiler:
@@ -134,7 +135,7 @@ class MemoryProfiler:
         }
 
     def measure_model_deserialization(
-        self, model_class: type, serialized_data: list[dict], iterations: int = 100
+        self, model_class: type[BaseModel], serialized_data: list[dict], iterations: int = 100
     ) -> dict[str, Any]:
         """
         Measure memory usage for model deserialization.
@@ -153,7 +154,7 @@ class MemoryProfiler:
         deserialized_instances = []
         for _ in range(iterations):
             for data in serialized_data:
-                instance = model_class.model_validate(data)
+                instance = model_class.model_validate(data)  # type: ignore[attr-defined]
                 deserialized_instances.append(instance)
 
         # Measure memory usage (memory_after triggers measurement snapshot)
