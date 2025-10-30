@@ -116,15 +116,15 @@ class NPCMovementIntegration:
                 return
             
             # Publish NPC left room event
+            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
             left_event = NPCLeftRoom(
-                timestamp=None, event_type="NPCLeftRoom", npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id
+                npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id
             )
             self.event_bus.publish(left_event)
 
             # Publish NPC entered room event
+            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
             entered_event = NPCEnteredRoom(
-                timestamp=None,
-                event_type="NPCEnteredRoom",
                 npc_id=npc_id,
                 room_id=to_room_id,
                 from_room_id=from_room_id,

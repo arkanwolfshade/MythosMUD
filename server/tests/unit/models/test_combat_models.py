@@ -534,8 +534,6 @@ class TestCombatEvents:
             room_id="test_room",
             participants={"player": "Player", "npc": "Rat"},
             turn_order=["player", "npc"],
-            event_type="combat_started",
-            timestamp=datetime.now(UTC),
         )
 
         assert event.room_id == "test_room"

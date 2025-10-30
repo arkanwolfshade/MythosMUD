@@ -166,13 +166,15 @@ class CombatCommandHandler:
 
             if not target_result.success:
                 logger.debug("DEBUG: Target resolution failed", error_message=target_result.error_message)
-                return {"result": target_result.error_message}
+                # AI Agent: Provide fallback for None case
+                return {"result": target_result.error_message or "Target not found"}
 
             # Get the single match
             target_match = target_result.get_single_match()
             if not target_match:
                 logger.debug("DEBUG: No single match found", player_name=player_name)
-                return {"result": target_result.error_message}
+                # AI Agent: Provide fallback for None case
+                return {"result": target_result.error_message or "No valid target found"}
 
             # Check if target is an NPC (combat only works on NPCs for now)
             if target_match.target_type != TargetType.NPC:

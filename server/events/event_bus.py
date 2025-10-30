@@ -19,10 +19,13 @@ occur throughout our eldritch architecture.
 import asyncio
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Any
+from typing import Any, TypeVar
 
 from ..logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
+
+# Type variable for generic event handling
+T = TypeVar("T", bound=BaseEvent)
 
 logger = get_logger(__name__)
 
@@ -236,7 +239,7 @@ class EventBus:
             self._logger.warning("Event queue at capacity - dropping event", event_type=type(event).__name__)
             raise RuntimeError("Event bus overloaded") from exc
 
-    def subscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], Any]) -> None:
+    def subscribe(self, event_type: type[T], handler: Callable[[T], Any]) -> None:
         """
         Subscribe to events of a specific type with pure async thread-safe patterns.
 
@@ -255,10 +258,10 @@ class EventBus:
 
         # Remove threading dependency - Python dict operations are atomic at GIL
         # level for simple operations like this, sufficient for single-threaded async
-        self._subscribers[event_type].append(handler)
+        self._subscribers[event_type].append(handler)  # type: ignore[arg-type]
         self._logger.debug("Added subscriber for event type", event_type=event_type.__name__)
 
-    def unsubscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], Any]) -> bool:
+    def unsubscribe(self, event_type: type[T], handler: Callable[[T], Any]) -> bool:
         """
         Unsubscribe from events of a specific type with pure async coordination.
 
@@ -275,7 +278,7 @@ class EventBus:
         # Remove threading dependency - GIL atomic operations suffice for read-only
         subscribers = self._subscribers.get(event_type, [])
         try:
-            subscribers.remove(handler)
+            subscribers.remove(handler)  # type: ignore[arg-type]
             self._logger.debug("Removed subscriber for event type", event_type=event_type.__name__)
             return True
         except ValueError:

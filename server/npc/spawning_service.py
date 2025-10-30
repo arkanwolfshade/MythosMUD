@@ -392,9 +392,8 @@ class NPCSpawningService:
             # The population controller will update its own statistics when needed
 
             # Publish NPC entered room event
+            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
             event = NPCEnteredRoom(
-                timestamp=None,
-                event_type="",
                 npc_id=npc_id,
                 room_id=request.room_id,
             )

@@ -16,7 +16,7 @@ from pathlib import Path
 # Add the server directory to the path so we can import models
 sys.path.append(str(Path(__file__).parent.parent.parent / "server"))
 
-from server.database import async_session_maker
+from server.database import get_session_maker
 from server.models.invite import Invite
 
 MYTHOS_WORDS = [
@@ -166,14 +166,14 @@ async def get_existing_codes():
     """Get existing invite codes from the database."""
     from sqlalchemy import text
 
-    async with async_session_maker() as session:
+    async with get_session_maker()() as session:
         result = await session.execute(text("SELECT invite_code FROM invites"))
         return {row[0] for row in result.fetchall()}
 
 
 async def create_invite_in_db(invite_code: str, expires_in_days: int = 30):
     """Create an invite in the database."""
-    async with async_session_maker() as session:
+    async with get_session_maker()() as session:
         # Create new invite
         invite = Invite(
             invite_code=invite_code,

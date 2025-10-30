@@ -283,7 +283,7 @@ async def handle_quit_command(
 
 async def handle_logout_command(
     args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
-) -> dict[str, str]:
+) -> dict[str, str | bool]:
     """
     Handle the logout command for cleanly disconnecting from the game.
 

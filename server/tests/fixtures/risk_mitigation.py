@@ -646,7 +646,8 @@ class RiskMitigationValidator:
 
     def validate_mitigation_results(self, results: list[MitigationResult]) -> dict[str, Any]:
         """Validate risk mitigation test results"""
-        validation_summary = {
+        # AI Agent: Explicit type annotation to help mypy understand dict structure
+        validation_summary: dict[str, Any] = {
             "total_tests": len(results),
             "passed_tests": 0,
             "failed_tests": 0,

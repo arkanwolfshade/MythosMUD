@@ -180,8 +180,6 @@ class NPCCombatIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCAttacked(
-                        timestamp=time.time(),
-                        event_type="NPCAttacked",
                         npc_id=npc_id,
                         target_id=target_id,
                         room_id=room_id,

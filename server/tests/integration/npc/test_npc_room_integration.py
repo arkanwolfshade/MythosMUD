@@ -141,7 +141,8 @@ class TestNPCRoomIntegration:
         assert len(test_room.get_npcs()) == 1
 
         # Create NPC left room event
-        event = NPCLeftRoom(timestamp=None, event_type="NPCLeftRoom", npc_id="test_npc_001", room_id="test_room_001")
+        # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
+        event = NPCLeftRoom(npc_id="test_npc_001", room_id="test_room_001")
 
         # Handle the event
         real_time_event_handler._handle_npc_left(event)

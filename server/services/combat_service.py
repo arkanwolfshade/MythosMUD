@@ -191,8 +191,6 @@ class CombatService:
         try:
             logger.debug("Creating CombatStartedEvent", combat_id=combat.combat_id)
             started_event = CombatStartedEvent(
-                event_type="combat_started",
-                timestamp=datetime.now(),
                 combat_id=combat.combat_id,
                 room_id=room_id,
                 participants={
@@ -624,8 +622,6 @@ class CombatService:
             if current_participant.participant_type == CombatParticipantType.PLAYER:
                 logger.info("Creating PlayerAttackedEvent")
                 attack_event = PlayerAttackedEvent(
-                    event_type="player_attacked",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     attacker_id=current_participant.participant_id,
@@ -643,8 +639,6 @@ class CombatService:
             else:
                 logger.info("Creating NPCAttackedEvent")
                 attack_event = NPCAttackedEvent(
-                    event_type="npc_attacked",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     attacker_id=current_participant.participant_id,
@@ -663,8 +657,6 @@ class CombatService:
             # Publish damage event if target is NPC
             if target.participant_type == CombatParticipantType.NPC:
                 damage_event = NPCTookDamageEvent(
-                    event_type="npc_took_damage",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     npc_id=target.participant_id,
@@ -683,8 +675,6 @@ class CombatService:
             if target_died and target.participant_type == CombatParticipantType.NPC:
                 logger.info("Creating NPCDiedEvent", target_name=target.name)
                 death_event = NPCDiedEvent(
-                    event_type="npc_died",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     npc_id=target.participant_id,
@@ -752,8 +742,6 @@ class CombatService:
         # Publish combat ended event
         try:
             ended_event = CombatEndedEvent(
-                event_type="combat_ended",
-                timestamp=datetime.now(),
                 combat_id=combat_id,
                 room_id=combat.room_id,
                 reason=reason,
@@ -956,8 +944,6 @@ class CombatService:
 
             # Create and publish the event
             hp_update_event = PlayerHPUpdated(
-                timestamp=None,  # Will be set by BaseEvent.__post_init__
-                event_type="PlayerHPUpdated",  # Will be set by BaseEvent.__post_init__
                 player_id=str(player_id),
                 old_hp=old_hp,
                 new_hp=new_hp,

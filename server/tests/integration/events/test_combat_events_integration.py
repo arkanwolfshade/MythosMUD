@@ -48,8 +48,6 @@ class TestCombatEventPublisher:
         """Test successful combat started event publishing."""
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={"player1": {"id": str(self.test_player_id), "name": "TestPlayer"}},
@@ -82,8 +80,6 @@ class TestCombatEventPublisher:
         """Test successful combat ended event publishing."""
         # Create combat ended event
         event = CombatEndedEvent(
-            event_type="combat_ended",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             reason="npc_died",
@@ -115,8 +111,6 @@ class TestCombatEventPublisher:
         """Test successful player attacked event publishing."""
         # Create player attacked event
         event = PlayerAttackedEvent(
-            event_type="player_attacked",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             attacker_id=self.test_player_id,
@@ -156,8 +150,6 @@ class TestCombatEventPublisher:
         """Test successful NPC attacked event publishing."""
         # Create NPC attacked event
         event = NPCAttackedEvent(
-            event_type="npc_attacked",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             attacker_id=self.test_player_id,
@@ -335,8 +327,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -358,8 +348,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -380,8 +368,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -403,8 +389,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},

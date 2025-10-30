@@ -39,7 +39,8 @@ async def handle_alias_command(
     # View existing alias
     if len(args) == 1:
         logger.debug("Viewing alias", player_name=player_name, alias_name=alias_name)
-        alias = alias_storage.get_alias(alias_name)
+        # AI Agent: get_alias requires player_name as first argument
+        alias = alias_storage.get_alias(player_name, alias_name)
         if alias:
             logger.debug("Alias found", player_name=player_name, alias_name=alias_name, command=alias.command)
             return {"result": f"Alias '{alias_name}' = '{alias.command}'"}
@@ -67,7 +68,8 @@ async def handle_alias_command(
             return {"result": "Alias cannot reference itself."}
 
         # Create the alias
-        alias_storage.create_alias(alias_name, command)
+        # AI Agent: create_alias requires player_name as first argument
+        alias_storage.create_alias(player_name, alias_name, command)
         logger.info("Alias created", player_name=player_name, alias_name=alias_name, command=command)
         return {"result": f"Alias '{alias_name}' created successfully."}
 
@@ -97,7 +99,8 @@ async def handle_aliases_command(
     logger.debug("Listing aliases", player_name=player_name)
 
     try:
-        aliases = alias_storage.list_aliases()
+        # AI Agent: Method is get_player_aliases, not list_aliases
+        aliases = alias_storage.get_player_aliases(player_name)
         if not aliases:
             logger.debug("No aliases found", player_name=player_name)
             return {"result": "You have no aliases defined."}
@@ -143,13 +146,15 @@ async def handle_unalias_command(
 
     try:
         # Check if alias exists
-        existing_alias = alias_storage.get_alias(alias_name)
+        # AI Agent: get_alias requires player_name as first argument
+        existing_alias = alias_storage.get_alias(player_name, alias_name)
         if not existing_alias:
             logger.debug("Alias not found for removal", player_name=player_name, alias_name=alias_name)
             return {"result": f"No alias found for '{alias_name}'"}
 
         # Remove the alias
-        alias_storage.delete_alias(alias_name)
+        # AI Agent: Method is remove_alias, not delete_alias, and requires player_name
+        alias_storage.remove_alias(player_name, alias_name)
         logger.info("Alias removed", player_name=player_name, alias_name=alias_name)
         return {"result": f"Alias '{alias_name}' removed successfully."}
 

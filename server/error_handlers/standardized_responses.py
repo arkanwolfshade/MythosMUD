@@ -146,7 +146,8 @@ class StandardizedErrorResponse:
             return create_error_context()
 
         # Extract context information from request
-        context_data = {}
+        # AI Agent: Explicit typing to prevent mypy from inferring dict[str, str]
+        context_data: dict[str, Any] = {}
 
         # Extract user information if available
         if hasattr(request.state, "user") and request.state.user:
@@ -168,6 +169,7 @@ class StandardizedErrorResponse:
             context_data["session_id"] = request.state.session_id
 
         # Extract request information
+        # AI Agent: getattr returns Any, which is compatible with str | None in ErrorContext
         context_data["request_id"] = getattr(request.state, "request_id", None)
 
         # Extract additional metadata

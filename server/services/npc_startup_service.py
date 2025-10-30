@@ -43,7 +43,8 @@ class NPCStartupService:
         """
         logger.info("Starting NPC startup spawning process")
 
-        startup_results = {
+        # AI Agent: Explicit type annotation to help mypy understand dict structure
+        startup_results: dict[str, Any] = {
             "total_attempted": 0,
             "total_spawned": 0,
             "required_spawned": 0,
@@ -127,7 +128,8 @@ class NPCStartupService:
         Returns:
             Dictionary with spawning results
         """
-        results = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
+        # AI Agent: Explicit type annotation to help mypy understand dict structure
+        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
 
         logger.info("Spawning required NPCs", count=len(required_npcs))
 
@@ -188,7 +190,8 @@ class NPCStartupService:
         Returns:
             Dictionary with spawning results
         """
-        results = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
+        # AI Agent: Explicit type annotation to help mypy understand dict structure
+        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
 
         logger.info("Evaluating optional NPCs for spawning", count=len(optional_npcs))
 

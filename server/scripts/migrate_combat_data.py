@@ -40,7 +40,8 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    migration_results = {
+    # AI Agent: Explicit type annotation to help mypy understand dict structure
+    migration_results: dict[str, Any] = {
         "total_npcs": len(npcs),
         "updated_npcs": 0,
         "skipped_npcs": 0,
@@ -131,7 +132,8 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    validation_results = {
+    # AI Agent: Explicit type annotation to help mypy understand dict structure
+    validation_results: dict[str, Any] = {
         "total_npcs": len(npcs),
         "valid_npcs": 0,
         "invalid_npcs": 0,
@@ -198,7 +200,8 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
     result = await session.execute(select(NPCDefinition))
     npcs = result.scalars().all()
 
-    rollback_results = {
+    # AI Agent: Explicit type annotation to help mypy understand dict structure
+    rollback_results: dict[str, Any] = {
         "total_npcs": len(npcs),
         "rolled_back_npcs": 0,
         "skipped_npcs": 0,

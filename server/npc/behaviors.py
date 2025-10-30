@@ -458,10 +458,9 @@ class NPCBase(ABC):
             if self.event_bus:
                 from ..events.event_types import NPCTookDamage
 
+                # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
                 self.event_bus.publish(
                     NPCTookDamage(
-                        timestamp=time.time(),
-                        event_type="NPCTookDamage",
                         npc_id=self.npc_id,
                         room_id=self.current_room,
                         damage=damage,
@@ -482,10 +481,9 @@ class NPCBase(ABC):
                     if self.event_bus:
                         from ..events.event_types import NPCDied
 
+                        # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
                         self.event_bus.publish(
                             NPCDied(
-                                timestamp=time.time(),
-                                event_type="NPCDied",
                                 npc_id=self.npc_id,
                                 room_id=self.current_room,
                                 cause="damage",
@@ -592,8 +590,6 @@ class NPCBase(ABC):
 
                     self.event_bus.publish(
                         NPCSpoke(
-                            timestamp=time.time(),
-                            event_type="NPCSpoke",
                             npc_id=self.npc_id,
                             room_id=self.current_room,
                             message=message,
@@ -624,8 +620,6 @@ class NPCBase(ABC):
 
                     self.event_bus.publish(
                         NPCListened(
-                            timestamp=time.time(),
-                            event_type="NPCListened",
                             npc_id=self.npc_id,
                             room_id=self.current_room,
                             message=message,
@@ -1088,8 +1082,6 @@ class AggressiveMobNPC(NPCBase):
 
                     self.event_bus.publish(
                         NPCAttacked(
-                            timestamp=time.time(),
-                            event_type="NPCAttacked",
                             npc_id=self.npc_id,
                             target_id=target_id,
                             room_id=self.current_room,

@@ -25,10 +25,11 @@ class Environment:
 
     def __init__(self, test_name: str = "default"):
         self.test_name = test_name
-        self.temp_dir = None
-        self.database_path = None
-        self.connection_manager = None
-        self.config = None
+        # AI Agent: Explicit type annotations for attributes initialized as None
+        self.temp_dir: str | None = None
+        self.database_path: str | None = None
+        self.connection_manager: ConnectionManager | None = None
+        self.config: dict[str, Any] | None = None
         self.logger = structlog.get_logger(f"test_env_{test_name}")
 
     async def setup(self, config_override: dict[str, Any] | None = None):

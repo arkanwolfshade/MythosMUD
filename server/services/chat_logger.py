@@ -103,6 +103,11 @@ class ChatLogger:
                 logger.error("Invalid log entry", log_entry=log_entry)
                 return
 
+            # Type narrowing for mypy
+            # AI Agent: After validation, we assert types for mypy type safety
+            assert isinstance(file_path, str), "file_path must be str after validation"
+            assert isinstance(content, str), "content must be str after validation"
+
             # Ensure directory exists
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
 

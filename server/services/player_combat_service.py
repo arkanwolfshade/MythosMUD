@@ -37,7 +37,11 @@ class PlayerXPAwardEvent(BaseEvent):
     """Event published when a player receives XP."""
 
     def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime | None = None) -> None:
-        super().__init__(event_type="player_xp_awarded", timestamp=timestamp or datetime.now(UTC))
+        # AI Agent: BaseEvent fields have init=False, so we can't pass them to super().__init__()
+        # Instead, we set them directly after calling super().__init__() with no args
+        super().__init__()
+        object.__setattr__(self, "event_type", "player_xp_awarded")
+        object.__setattr__(self, "timestamp", timestamp or datetime.now(UTC))
         self.player_id = player_id
         self.xp_amount = xp_amount
         self.new_level = new_level

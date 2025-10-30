@@ -70,8 +70,6 @@ class NPCCommunicationIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
-                        timestamp=datetime.now(UTC),
-                        event_type="NPCSpoke",
                         npc_id=npc_id,
                         room_id=room_id,
                         message=message,
@@ -106,8 +104,6 @@ class NPCCommunicationIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
-                        timestamp=datetime.now(UTC),
-                        event_type="NPCSpoke",
                         npc_id=npc_id,
                         room_id=room_id,
                         message=message,
@@ -154,8 +150,6 @@ class NPCCommunicationIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCListened(
-                        timestamp=time.time(),
-                        event_type="NPCListened",
                         npc_id=npc_id,
                         room_id=room_id,
                         message=message,
