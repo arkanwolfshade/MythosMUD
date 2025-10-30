@@ -122,7 +122,7 @@ def deprecated_api_logging():
     logger.info("API request processed")
 
 
-def deprecated_websocket_logging():
+async def deprecated_websocket_logging():
     """Demonstrate DEPRECATED WebSocket logging patterns - EXAMPLE ONLY."""
 
     # ❌ WRONG - No WebSocket connection logging

@@ -154,7 +154,8 @@ class MemoryProfiler:
         deserialized_instances = []
         for _ in range(iterations):
             for data in serialized_data:
-                instance = model_class.model_validate(data)  # type: ignore[attr-defined]
+                # Cast is necessary because mypy doesn't recognize class methods on type[BaseModel]
+                instance = model_class.model_validate(data)  # type: ignore
                 deserialized_instances.append(instance)
 
         # Measure memory usage (memory_after triggers measurement snapshot)

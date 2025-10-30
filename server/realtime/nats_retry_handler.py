@@ -79,8 +79,6 @@ class NATSRetryHandler:
     AI: Critical for handling network partitions and temporary outages.
     """
 
-    config: RetryConfig  # Type annotation for instance attribute
-
     def __init__(self, max_retries: int = 3, base_delay: float = 1.0, max_delay: float = 60.0):
         """
         Initialize retry handler.
@@ -96,13 +94,9 @@ class NATSRetryHandler:
         self.base_delay = base_delay
         self.max_delay = max_delay
         self.total_retries = 0
-        
+
         # Create config object for get_config() and update_config() methods
-        self.config = RetryConfig(
-            max_attempts=max_retries,
-            base_delay=base_delay,
-            max_delay=max_delay
-        )
+        self.config = RetryConfig(max_attempts=max_retries, base_delay=base_delay, max_delay=max_delay)
 
         logger.info(
             "NATSRetryHandler initialized",
