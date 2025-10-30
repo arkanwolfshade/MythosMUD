@@ -62,7 +62,7 @@ class TrackedTaskManager:
         """
         try:
             # Create the actual task using asyncio.create_task with provided arguments
-            tracked_task = asyncio.create_task(coro, *create_task_args, **create_task_kwargs)
+            tracked_task: asyncio.Task[Any] = asyncio.create_task(coro, *create_task_args, **create_task_kwargs)
 
             # Register task with activity tracker
             if self._task_registry:

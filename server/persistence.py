@@ -839,31 +839,6 @@ class PersistenceLayer:
         # Rooms are still handled by the sync layer for now
         return self.save_rooms(rooms)
 
-    # Player stats and effects async wrappers
-    async def async_apply_sanity_loss(self, player: Player, amount: int, source: str = "unknown"):
-        """Async wrapper for apply_sanity_loss."""
-        return self.apply_sanity_loss(player, amount, source)
-
-    async def async_apply_fear(self, player: Player, amount: int, source: str = "unknown"):
-        """Async wrapper for apply_fear."""
-        return self.apply_fear(player, amount, source)
-
-    async def async_apply_corruption(self, player: Player, amount: int, source: str = "unknown"):
-        """Async wrapper for apply_corruption."""
-        return self.apply_corruption(player, amount, source)
-
-    async def async_gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown"):
-        """Async wrapper for gain_occult_knowledge."""
-        return self.gain_occult_knowledge(player, amount, source)
-
-    async def async_heal_player(self, player: Player, amount: int):
-        """Async wrapper for heal_player."""
-        return self.heal_player(player, amount)
-
-    async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical"):
-        """Async wrapper for damage_player."""
-        return self.damage_player(player, amount, damage_type)
-
     def get_npc_lifecycle_manager(self):
         """
         Get the NPC lifecycle manager from app.state.

@@ -46,7 +46,7 @@ class TestSelfMessageBug:
         # Create event for Ithaqua entering a room
         player_id = "ithaqua_player_id"
         room_id = "test_room_001"
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
 
         # Handle the event
         await event_handler._handle_player_entered(event)
@@ -175,3 +175,4 @@ class TestSelfMessageBug:
         assert "player1" in player_ids_sent_to
         assert "player2" in player_ids_sent_to
         assert "player3" in player_ids_sent_to
+

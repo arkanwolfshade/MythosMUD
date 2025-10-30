@@ -291,7 +291,7 @@ class NPCLifecycleManager:
             npc_instance.spawned_at = time.time()
 
             # Publish NPC entered room event
-            event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
+            event = NPCEnteredRoom(npc_id=npc_id, room_id=room_id)
             self.event_bus.publish(event)
 
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
@@ -331,7 +331,7 @@ class NPCLifecycleManager:
                 room_id = getattr(npc_instance, "room_id", "unknown")
 
                 # Publish NPC left room event
-                event = NPCLeftRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
+                event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
                 self.event_bus.publish(event)
 
                 # Remove from active NPCs
@@ -560,13 +560,13 @@ class NPCLifecycleManager:
         respawn_queue_size = len(self.respawn_queue)
 
         # Count by state
-        state_counts = {}
+        state_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
             state = record.current_state
             state_counts[state] = state_counts.get(state, 0) + 1
 
         # Count by NPC type
-        type_counts = {}
+        type_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
             npc_type = record.definition.npc_type
             type_counts[npc_type] = type_counts.get(npc_type, 0) + 1
@@ -637,3 +637,4 @@ class NPCLifecycleManager:
             self.last_cleanup = current_time
 
         return results
+

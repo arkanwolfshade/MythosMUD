@@ -5,13 +5,15 @@ This module contains the comprehensive command documentation and
 help system for the MythosMUD game.
 """
 
+from typing import Any, cast
+
 from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
 # Command definitions for help system
-COMMANDS = {
+COMMANDS: dict[str, dict[str, Any]] = {
     "look": {
         "category": "Exploration",
         "description": ("Examine your surroundings or look in a specific direction"),
@@ -429,7 +431,7 @@ def get_help_content(command_name: str | None = None) -> str:
     command_name = command_name.lower()
     if command_name in COMMANDS:
         command_info = COMMANDS[command_name]
-        return command_info["detailed_help"]
+        return cast(str, command_info["detailed_help"])
     else:
         return f"""
 <div style="color: #FF4500;">
@@ -442,7 +444,7 @@ def get_help_content(command_name: str | None = None) -> str:
 def _get_general_help() -> str:
     """Get general help content with command categories."""
     # Group commands by category
-    categories = {}
+    categories: dict[str, list[tuple[str, Any]]] = {}
     for cmd_name, cmd_info in COMMANDS.items():
         category = cmd_info["category"]
         if category not in categories:

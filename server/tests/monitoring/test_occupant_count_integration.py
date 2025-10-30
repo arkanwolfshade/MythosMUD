@@ -595,3 +595,4 @@ class TestOccupantCountSimpleIntegration:
             final_call_args = websocket.send_json.call_args[0][0]
             assert final_call_args["event_type"] == "room_occupants"
             assert final_call_args["data"]["count"] == 3
+

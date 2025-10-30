@@ -829,8 +829,8 @@ class TestSessionBoundaryEnforcement:
     preventing event loop conflicts between test sessions.
     """
 
-    _active_loops = set()
-    _session_loop_registry = {}
+    _active_loops: set[Any] = set()
+    _session_loop_registry: dict[str, Any] = {}
 
     @classmethod
     def register_test_loop(cls, test_id: str, loop: asyncio.AbstractEventLoop):

@@ -27,16 +27,16 @@ class UserManager:
     def __init__(self, data_dir: Path | None = None):
         """Initialize the user manager."""
         # Player mute storage: {player_id: {target_type: {target_id: mute_info}}}
-        self._player_mutes = {}  # player_id -> {target_type -> {target_id -> mute_info}}
+        self._player_mutes: dict[str, dict[str, dict[str, Any]]] = {}  # player_id -> {target_type -> {target_id -> mute_info}}
 
         # Channel mute storage: {player_id: {channel: mute_info}}
-        self._channel_mutes = {}  # player_id -> {channel -> mute_info}
+        self._channel_mutes: dict[str, dict[str, Any]] = {}  # player_id -> {channel -> mute_info}
 
         # Global mute storage: {player_id: mute_info}
-        self._global_mutes = {}  # player_id -> mute_info
+        self._global_mutes: dict[str, Any] = {}  # player_id -> mute_info
 
         # Admin players (immune to mutes)
-        self._admin_players = set()
+        self._admin_players: set[str] = set()
 
         # Chat logger for AI processing
         self.chat_logger = chat_logger
@@ -715,7 +715,7 @@ class UserManager:
             Dictionary with mute information
         """
         try:
-            mutes = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+            mutes: dict[str, dict[str, Any]] = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
             # Get player mutes
             if player_id in self._player_mutes:

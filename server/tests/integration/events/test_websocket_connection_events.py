@@ -234,7 +234,7 @@ class TestWebSocketConnectionEvents:
         event_handler.connection_manager = mock_connection_manager
 
         # Create a PlayerEnteredRoom event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
@@ -285,7 +285,7 @@ class TestWebSocketConnectionEvents:
         event_handler.connection_manager = mock_connection_manager
 
         # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
@@ -400,3 +400,4 @@ class TestWebSocketConnectionEvents:
                 assert len(player_left_events) == 1
                 assert player_left_events[0].player_id == "test_player_123"
                 assert player_left_events[0].room_id == "test_room_001"
+

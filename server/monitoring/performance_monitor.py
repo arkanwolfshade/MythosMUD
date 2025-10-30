@@ -12,7 +12,7 @@ import time
 from collections import defaultdict, deque
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
 from ..logging.enhanced_logging_config import get_logger, log_with_context
 
@@ -64,7 +64,7 @@ class PerformanceMonitor:
         self.alert_threshold_ms = alert_threshold_ms
         self.metrics: deque = deque(maxlen=max_metrics)
         self.operation_stats: dict[str, list[PerformanceMetric]] = defaultdict(list)
-        self.alert_callbacks: list[callable] = []
+        self.alert_callbacks: list[Callable] = []
 
         logger.info("Performance monitor initialized", max_metrics=max_metrics, alert_threshold_ms=alert_threshold_ms)
 
@@ -135,14 +135,14 @@ class PerformanceMonitor:
             error_rate=(len(successes) - sum(successes)) / len(successes) * 100,
         )
 
-    def get_all_stats(self) -> dict[str, PerformanceStats]:
+    def get_all_stats(self) -> dict[str, PerformanceStats | None]:
         """
         Get performance statistics for all operations.
 
         Returns:
-            Dictionary mapping operation names to their statistics
+            Dictionary mapping operation names to their statistics (None if no stats available)
         """
-        stats = {}
+        stats: dict[str, PerformanceStats | None] = {}
         for operation in self.operation_stats:
             stats[operation] = self.get_operation_stats(operation)
         return stats
@@ -183,7 +183,7 @@ class PerformanceMonitor:
         """
         return [m for m in self.metrics if not m.success]
 
-    def add_alert_callback(self, callback: callable) -> None:
+    def add_alert_callback(self, callback: Callable) -> None:
         """
         Add an alert callback function.
 

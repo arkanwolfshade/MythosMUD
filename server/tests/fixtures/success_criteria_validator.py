@@ -1062,7 +1062,7 @@ class SuccessCriteriaValidator:
         overall_score = statistics.mean([r.score for r in self.validation_results]) if self.validation_results else 0.0
 
         # Calculate category scores
-        categories = {}
+        categories: dict[str, list[Any]] = {}
         for result in self.validation_results:
             if result.category not in categories:
                 categories[result.category] = []

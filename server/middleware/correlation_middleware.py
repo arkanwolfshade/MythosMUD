@@ -10,6 +10,7 @@ the cosmic flow is essential for understanding the deeper patterns.
 
 import uuid
 from collections.abc import Callable
+from typing import Any
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -199,18 +200,18 @@ class WebSocketCorrelationMiddleware:
             clear_request_context()
 
 
-def create_correlation_middleware(correlation_header: str = "X-Correlation-ID") -> CorrelationMiddleware:
+def create_correlation_middleware(correlation_header: str = "X-Correlation-ID") -> Callable[[Any], CorrelationMiddleware]:
     """
-    Create a correlation middleware instance.
+    Create a correlation middleware factory.
 
     Args:
         correlation_header: HTTP header name for correlation ID
 
     Returns:
-        Configured correlation middleware
+        Factory function that creates configured correlation middleware
     """
 
-    def middleware_factory(app):
+    def middleware_factory(app: Any) -> CorrelationMiddleware:
         return CorrelationMiddleware(app, correlation_header)
 
     return middleware_factory

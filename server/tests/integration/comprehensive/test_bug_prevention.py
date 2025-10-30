@@ -300,7 +300,7 @@ class TestUUIDSerializationIntegration:
         player_id = uuid4()
         room_id = uuid4()
 
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
 
         await event_handler._handle_player_left(event)
 
@@ -396,3 +396,4 @@ class TestEndToEndBugScenarios:
             # The movement might fail, but we can still verify the method was called
             # The actual event broadcasting is tested in other unit tests
             assert isinstance(success, bool)
+

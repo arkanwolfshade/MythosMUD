@@ -49,7 +49,9 @@ class RoomService:
                 logger.debug("Room not found by ID", room_id=room_id)
                 return None
 
-            logger.debug("Room found by ID", room_id=room_id, room_name=room.name)
+            # Room could be a dict or a Room object
+            room_name = room.name if hasattr(room, "name") else room.get("name", "Unknown")
+            logger.debug("Room found by ID", room_id=room_id, room_name=room_name)
             return room.to_dict() if hasattr(room, "to_dict") else room
 
     def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:

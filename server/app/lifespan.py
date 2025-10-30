@@ -79,10 +79,19 @@ async def lifespan(app: FastAPI):
 
     # Initialize cache services for improved performance
     from ..caching import ProfessionCacheService, RoomCacheService
+    from ..caching.lru_cache import get_cache_manager
 
-    app.state.room_cache_service = RoomCacheService(app.state.persistence)
-    app.state.profession_cache_service = ProfessionCacheService(app.state.persistence)
-    logger.info("Cache services initialized and added to app.state")
+    # Ensure cache manager is initialized
+    _ = get_cache_manager()
+
+    try:
+        app.state.room_cache_service = RoomCacheService(app.state.persistence)
+        app.state.profession_cache_service = ProfessionCacheService(app.state.persistence)
+        logger.info("Cache services initialized and added to app.state")
+    except RuntimeError as e:
+        logger.warning("Cache initialization failed, using persistence directly", error=str(e))
+        app.state.room_cache_service = None
+        app.state.profession_cache_service = None
 
     # Clear any stale pending messages from previous server sessions
     connection_manager.message_queue.pending_messages.clear()

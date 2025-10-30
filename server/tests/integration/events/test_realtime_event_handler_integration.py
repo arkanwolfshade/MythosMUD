@@ -73,7 +73,7 @@ class TestRealTimeEventHandlerIntegration:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -106,7 +106,7 @@ class TestRealTimeEventHandlerIntegration:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -187,8 +187,8 @@ class TestRealTimeEventHandlerIntegration:
         event_bus.subscribe(PlayerLeftRoom, mock_handler)
 
         # Create and publish events
-        entered_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
-        left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
+        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
 
         # Publish events
         event_bus.publish(entered_event)
@@ -201,3 +201,4 @@ class TestRealTimeEventHandlerIntegration:
         assert len(published_events) == 2
         assert isinstance(published_events[0], PlayerEnteredRoom)
         assert isinstance(published_events[1], PlayerLeftRoom)
+

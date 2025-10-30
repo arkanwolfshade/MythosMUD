@@ -22,7 +22,7 @@ class MemoryProfiler:
         """Initialize the memory profiler."""
         self.process = psutil.Process()
         self.baseline_memory = None
-        self.measurements = []
+        self.measurements: list[dict[str, Any]] = []
 
     def start_profiling(self) -> None:
         """Start memory profiling."""
@@ -274,7 +274,7 @@ class MemoryProfiler:
             print(f"Average Memory per Instance: {stats['avg_memory_bytes']:.2f} bytes")
 
 
-def benchmark_model_memory_usage() -> None:
+def benchmark_model_memory_usage() -> dict[str, Any]:
     """Benchmark memory usage for all major models."""
     from server.models.alias import Alias
     from server.models.command import LookCommand, SayCommand

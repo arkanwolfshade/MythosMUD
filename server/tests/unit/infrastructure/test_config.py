@@ -196,20 +196,20 @@ class TestGameConfig:
 
     def test_valid_game_config(self):
         """Test valid game configuration."""
-        config = GameConfig(aliases_dir="data/aliases")
+        config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"))
         assert config.default_player_room == "earth_arkhamcity_northside_intersection_derby_high"
         assert config.max_connections_per_player == 3
 
     def test_invalid_max_connections_too_low(self):
         """Test max connections validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
-            GameConfig(aliases_dir="data/aliases", max_connections_per_player=0)
+            GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=0)
         assert "Max connections per player must be between 1 and 10" in str(exc_info.value)
 
     def test_invalid_max_connections_too_high(self):
         """Test max connections validation rejects values above 10."""
         with pytest.raises(ValidationError) as exc_info:
-            GameConfig(aliases_dir="data/aliases", max_connections_per_player=20)
+            GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=20)
         assert "Max connections per player must be between 1 and 10" in str(exc_info.value)
 
     def test_aliases_dir_required(self, monkeypatch):
@@ -303,7 +303,7 @@ class TestAppConfig:
         monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
-        monkeypatch.setenv("GAME_ALIASES_DIR", "data/test/aliases")
+        monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
         # Reset config cache before each test
         reset_config()
@@ -328,7 +328,7 @@ class TestAppConfig:
         # Check that DATABASE_URL environment variable is set
         assert os.environ.get("DATABASE_URL") == "sqlite+aiosqlite:///test.db"
         assert os.environ.get("NPC_DATABASE_URL") == "sqlite+aiosqlite:///test_npcs.db"
-        assert os.environ.get("ALIASES_DIR") == "data/test/aliases"
+        assert os.environ.get("ALIASES_DIR") == os.environ.get("GAME_ALIASES_DIR")
 
     def test_to_legacy_dict_format(self, monkeypatch):
         """Test conversion to legacy dict format."""

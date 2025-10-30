@@ -93,7 +93,7 @@ class TestPlayerMovementMessageExclusion:
         event_handler.connection_manager._get_player = Mock(return_value=mock_player)
 
         # Create and handle a PlayerEnteredRoomEvent
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
 
         await event_handler._handle_player_entered(event)
 
@@ -121,7 +121,7 @@ class TestPlayerMovementMessageExclusion:
         event_handler.connection_manager._get_player = Mock(return_value=mock_player)
 
         # Create and handle a PlayerLeftRoomEvent
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
 
         await event_handler._handle_player_left(event)
 
@@ -302,3 +302,4 @@ class TestConnectionTimeouts:
 
         # Connection should be removed due to timeout
         assert player_id not in connection_manager.active_websockets
+

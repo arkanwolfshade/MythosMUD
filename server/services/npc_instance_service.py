@@ -11,6 +11,7 @@ for maintaining control over the eldritch entities that inhabit our world.
 from typing import Any
 
 from server.events.event_bus import EventBus
+from server.models.npc import NPCDefinition
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
@@ -69,11 +70,16 @@ class NPCInstanceService:
         """
         try:
             # Get the NPC definition from database
+            definition: NPCDefinition | None = None
             async for session in get_npc_session():
                 definition = await npc_service.get_npc_definition(session, definition_id)
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
                 break
+            
+            # Ensure definition was retrieved
+            if not definition:
+                raise ValueError(f"Failed to retrieve NPC definition {definition_id}")
 
             # Spawn the NPC using the population controller to ensure proper population limits
             # The population controller will handle all spawning through the lifecycle manager

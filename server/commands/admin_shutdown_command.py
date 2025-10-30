@@ -39,7 +39,7 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
         logger.info("Process termination scheduling disabled by environment variable")
         return
 
-    def _terminator():
+    def _terminator() -> None:
         try:
             logger.info("ProcessTerminator thread started", delay_seconds=delay_seconds)
             time.sleep(delay_seconds)
@@ -146,7 +146,7 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
 # --- Shutdown State Check Functions ---
 
 
-def is_shutdown_pending(app) -> bool:
+def is_shutdown_pending(app: Any) -> bool:
     """
     Check if server shutdown is currently pending.
 
@@ -185,7 +185,7 @@ def get_shutdown_blocking_message(context: str = "login") -> str:
 # --- Permission Validation ---
 
 
-async def validate_shutdown_admin_permission(player, player_name: str) -> bool:
+async def validate_shutdown_admin_permission(player: Any, player_name: str) -> bool:
     """
     Validate that a player has admin permissions for server shutdown.
 
@@ -248,7 +248,7 @@ def calculate_notification_times(countdown_seconds: int) -> list[int]:
     return sorted(notification_times, reverse=True)
 
 
-async def broadcast_shutdown_notification(connection_manager, seconds_remaining: int) -> bool:
+async def broadcast_shutdown_notification(connection_manager: Any, seconds_remaining: int) -> bool:
     """
     Broadcast shutdown notification to all players.
 
@@ -280,7 +280,7 @@ async def broadcast_shutdown_notification(connection_manager, seconds_remaining:
         return False
 
 
-async def execute_shutdown_sequence(app):
+async def execute_shutdown_sequence(app: Any) -> None:
     """
     Execute the graceful shutdown sequence.
 
@@ -452,7 +452,7 @@ async def execute_shutdown_sequence(app):
         raise
 
 
-async def countdown_loop(app, countdown_seconds: int, admin_username: str):
+async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) -> None:
     """
     Main countdown loop that sends notifications and executes shutdown.
 
@@ -511,7 +511,7 @@ async def countdown_loop(app, countdown_seconds: int, admin_username: str):
         logger.error("Error in shutdown countdown loop", error=str(e), exc_info=True)
 
 
-async def initiate_shutdown_countdown(app, countdown_seconds: int, admin_username: str) -> bool:
+async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_username: str) -> bool:
     """
     Initiate server shutdown countdown.
 
@@ -584,7 +584,7 @@ async def initiate_shutdown_countdown(app, countdown_seconds: int, admin_usernam
         return False
 
 
-async def cancel_shutdown_countdown(app, admin_username: str) -> bool:
+async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
     """
     Cancel active shutdown countdown.
 
@@ -735,6 +735,9 @@ async def handle_shutdown_command(
     if not player_service:
         logger.warning("Shutdown command failed - no player service", player_name=player_name)
         return {"result": "Shutdown functionality is not available at this time."}
+    
+    # At this point, app must be non-None since player_service exists
+    assert app is not None, "App should be available if player_service exists"
 
     # Get player object (use same method as other admin commands)
     player_obj = await player_service.get_player_by_name(player_name)

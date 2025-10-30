@@ -10,8 +10,13 @@ dimensional events is essential for maintaining the integrity of our
 eldritch architecture.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
+
+
+def _default_timestamp() -> datetime:
+    """Factory function for default timestamp."""
+    return datetime.now(UTC)
 
 
 @dataclass
@@ -23,13 +28,14 @@ class BaseEvent:
     interface for event handling and logging.
     """
 
-    timestamp: datetime | None
-    event_type: str
+    timestamp: datetime = field(default_factory=_default_timestamp, init=False)
+    event_type: str = field(default="", init=False)
 
     def __post_init__(self) -> None:
-        """Set timestamp if not provided."""
-        if self.timestamp is None:
-            self.timestamp = datetime.now(UTC)
+        """Initialize the event timestamp if not already set."""
+        # Timestamp is already set by default_factory
+        # event_type is set by child classes
+        pass
 
 
 @dataclass

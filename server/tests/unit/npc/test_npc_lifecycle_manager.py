@@ -350,7 +350,7 @@ class TestNPCLifecycleManager:
         record = NPCLifecycleRecord("npc_001", shopkeeper_definition)
         lifecycle_manager.lifecycle_records["npc_001"] = record
 
-        event = NPCEnteredRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
+        event = NPCEnteredRoom(npc_id="npc_001", room_id="room_001")
 
         # Use the lifecycle manager's event bus
         lifecycle_manager.event_bus.publish(event)
@@ -370,7 +370,7 @@ class TestNPCLifecycleManager:
         record = NPCLifecycleRecord("npc_001", shopkeeper_definition)
         lifecycle_manager.lifecycle_records["npc_001"] = record
 
-        event = NPCLeftRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
+        event = NPCLeftRoom(npc_id="npc_001", room_id="room_001")
 
         # Use the lifecycle manager's event bus
         lifecycle_manager.event_bus.publish(event)
@@ -402,3 +402,4 @@ class TestNPCLifecycleManager:
         assert "test_shopkeeper" in npc_id
         assert "room_001" in npc_id
         assert npc_id.count("_") >= 3  # Should have multiple parts
+

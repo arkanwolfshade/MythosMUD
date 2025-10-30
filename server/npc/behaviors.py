@@ -167,6 +167,9 @@ class BehaviorEngine:
             else:
                 # Treat as boolean variable
                 return bool(context.get(condition, False))
+            
+            # Fallback for malformed conditions
+            return False
 
         except Exception as e:
             logger.error(

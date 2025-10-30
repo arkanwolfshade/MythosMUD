@@ -13,7 +13,7 @@ import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Callable
 
 from ..logging.enhanced_logging_config import get_logger, log_with_context
 from ..utils.enhanced_error_logging import create_enhanced_error_context
@@ -81,8 +81,8 @@ class ExceptionTracker:
         )
 
         # Exception handlers
-        self.exception_handlers: dict[type[Exception], list[callable]] = defaultdict(list)
-        self.global_handlers: list[callable] = []
+        self.exception_handlers: dict[type[Exception], list[Callable]] = defaultdict(list)
+        self.global_handlers: list[Callable] = []
 
         logger.info("Exception tracker initialized", max_records=max_records)
 
@@ -263,7 +263,7 @@ class ExceptionTracker:
         """
         return self.exception_stats
 
-    def add_exception_handler(self, exception_type: type[Exception], handler: callable) -> None:
+    def add_exception_handler(self, exception_type: type[Exception], handler: Callable) -> None:
         """
         Add an exception handler for a specific exception type.
 
@@ -273,7 +273,7 @@ class ExceptionTracker:
         """
         self.exception_handlers[exception_type].append(handler)
 
-    def add_global_exception_handler(self, handler: callable) -> None:
+    def add_global_exception_handler(self, handler: Callable) -> None:
         """
         Add a global exception handler for all exceptions.
 

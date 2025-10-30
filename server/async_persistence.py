@@ -512,7 +512,7 @@ class AsyncPersistenceLayer:
             "last_active": player.last_active.isoformat()
             if hasattr(player.last_active, "isoformat")
             else str(player.last_active),
-            "is_admin": int(player.is_admin) if hasattr(player, "is_admin") else 0,
+            "is_admin": int(player.is_admin) if hasattr(player, "is_admin") and player.is_admin is not None else 0,
         }
 
     def _convert_row_to_profession_data(self, row: aiosqlite.Row) -> dict[str, Any]:

@@ -530,7 +530,7 @@ class NPCPopulationController:
         logger.info("NPC should not spawn", npc_id=definition.id)
         return False
 
-    def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:
+    def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str | None:
         """
         Spawn an NPC instance using the lifecycle manager.
 
@@ -539,7 +539,7 @@ class NPCPopulationController:
             room_id: Room where to spawn the NPC
 
         Returns:
-            Generated NPC instance ID
+            Generated NPC instance ID, or None if spawn failed
         """
         if not self.lifecycle_manager:
             logger.error("No lifecycle manager available - cannot spawn NPC")

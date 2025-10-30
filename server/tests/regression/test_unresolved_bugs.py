@@ -505,3 +505,4 @@ class TestMovementServiceIntegrationBugs:
             assert movement_service_1._event_bus is not movement_service_2._event_bus
 
         # This prevents the event storm issue we encountered
+

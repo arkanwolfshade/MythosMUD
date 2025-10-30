@@ -18,6 +18,7 @@ Usage:
 import argparse
 import sys
 from pathlib import Path
+from typing import Any
 
 # Project root
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -123,18 +124,20 @@ def get_old_structure_stats() -> dict[str, int]:
     return stats
 
 
-def get_new_structure_stats() -> dict[str, dict[str, int]]:
+def get_new_structure_stats() -> dict[str, dict[str, Any]]:
     """
     Get statistics about the new hierarchical structure.
 
     Returns:
         Nested dictionary with test counts by category and subdirectory
     """
-    stats = {}
+    from typing import Any
+    
+    stats: dict[str, dict[str, Any]] = {}
 
     for category, subdirs in NEW_STRUCTURE.items():
         category_path = NEW_TEST_ROOT / category
-        category_stats = {
+        category_stats: dict[str, Any] = {
             "total": count_test_files(category_path, recursive=True),
             "subdirs": {},
         }
@@ -148,7 +151,7 @@ def get_new_structure_stats() -> dict[str, dict[str, int]]:
     return stats
 
 
-def get_migration_progress() -> dict[str, any]:
+def get_migration_progress() -> dict[str, Any]:
     """
     Calculate migration progress.
 
@@ -178,7 +181,7 @@ def get_migration_progress() -> dict[str, any]:
     }
 
 
-def print_summary(progress: dict[str, any]) -> None:
+def print_summary(progress: dict[str, Any]) -> None:
     """
     Print a summary of migration progress.
 
@@ -217,7 +220,7 @@ def print_summary(progress: dict[str, any]) -> None:
     print()
 
 
-def print_detailed(progress: dict[str, any]) -> None:
+def print_detailed(progress: dict[str, Any]) -> None:
     """
     Print detailed file listings.
 
@@ -295,7 +298,7 @@ def validate_migration() -> tuple[bool, list[str]]:
     return is_valid, issues
 
 
-def generate_report(progress: dict[str, any]) -> str:
+def generate_report(progress: dict[str, Any]) -> str:
     """
     Generate a markdown progress report.
 

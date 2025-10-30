@@ -127,11 +127,7 @@ class PlayerDeathService:
 
             # Publish HP decay event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerHPDecayEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerHPDecayEvent",
                     player_id=player_id,
                     old_hp=old_hp,
                     new_hp=new_hp,
@@ -186,11 +182,7 @@ class PlayerDeathService:
 
             # Publish player died event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerDiedEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerDiedEvent",
                     player_id=player_id,
                     player_name=player.name,
                     room_id=death_location,

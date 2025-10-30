@@ -66,7 +66,7 @@ class MemoryMonitor:
             memory_percent = process.memory_percent()
             assert isinstance(memory_percent, (int, float))
             return float(memory_percent) / 100.0
-        except (OSError, ValueError, TypeError, RuntimeError) as e:
+        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
             logger.error("Error getting memory usage", error=str(e), error_type=type(e).__name__, exc_info=True)
             return 0.0
 
@@ -87,7 +87,7 @@ class MemoryMonitor:
                 "available_mb": psutil.virtual_memory().available / 1024 / 1024,
                 "total_mb": psutil.virtual_memory().total / 1024 / 1024,
             }
-        except (OSError, ValueError, TypeError, RuntimeError) as e:
+        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
             logger.error("Error getting memory stats", error=str(e), error_type=type(e).__name__, exc_info=True)
             return {}
 

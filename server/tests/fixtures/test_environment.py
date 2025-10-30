@@ -224,11 +224,11 @@ class Environment:
         """Get test configuration"""
         return self.config.copy()
 
-    def get_database_path(self) -> str:
+    def get_database_path(self) -> str | None:
         """Get test database path"""
         return self.database_path
 
-    def get_temp_dir(self) -> str:
+    def get_temp_dir(self) -> str | None:
         """Get temporary directory path"""
         return self.temp_dir
 

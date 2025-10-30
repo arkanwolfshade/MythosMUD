@@ -173,11 +173,7 @@ class PlayerRespawnService:
 
             # Publish respawn event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerRespawnedEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerRespawnedEvent",
                     player_id=player_id,
                     player_name=player.name,
                     respawn_room_id=respawn_room,

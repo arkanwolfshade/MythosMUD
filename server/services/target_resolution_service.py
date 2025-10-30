@@ -178,7 +178,7 @@ class TargetResolutionService:
 
             # Add disambiguation suffixes if multiple players have the same name
             if len(matches) > 1:
-                name_counts = {}
+                name_counts: dict[str, int] = {}
                 for match in matches:
                     name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
 
@@ -252,7 +252,7 @@ class TargetResolutionService:
 
             # Add disambiguation suffixes if multiple NPCs have the same name
             if len(matches) > 1:
-                name_counts = {}
+                name_counts: dict[str, int] = {}
                 for match in matches:
                     name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
 

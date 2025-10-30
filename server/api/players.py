@@ -567,7 +567,11 @@ async def create_character_with_stats(
         context.metadata["rate_limit_type"] = "character_creation"
         raise LoggedHTTPException(
             status_code=429,
-            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
+            detail={
+                "message": "Rate limit exceeded",
+                "retry_after": getattr(e, "retry_after", None),
+                "type": "character_creation",
+            },
             context=context,
         ) from e
 
@@ -608,7 +612,7 @@ async def create_character_with_stats(
         # TODO: Implement a proper way to track and mark invites as used
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        # Return the created player as provided by the service (tests use dict/mocks)
+        # player is already a PlayerRead from the service layer
         return player
     except HTTPException:
         # Re-raise HTTPExceptions without modification

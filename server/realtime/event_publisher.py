@@ -106,15 +106,14 @@ class EventPublisher:
                     subject=subject,
                     sequence_number=event_message["sequence_number"],
                 )
+                return True
             else:
                 logger.error(
                     "Failed to publish player entered event", player_id=player_id, room_id=room_id, subject=subject
                 )
+                return False
 
-                assert isinstance(success, bool)
-                return success
-
-        except (OSError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:
             logger.error(
                 "Error publishing player entered event",
                 error=str(e),
@@ -187,15 +186,14 @@ class EventPublisher:
                     subject=subject,
                     sequence_number=event_message["sequence_number"],
                 )
+                return True
             else:
                 logger.error(
                     "Failed to publish player left event", player_id=player_id, room_id=room_id, subject=subject
                 )
+                return False
 
-                assert isinstance(success, bool)
-                return success
-
-        except (OSError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:
             logger.error(
                 "Error publishing player left event",
                 error=str(e),
@@ -258,13 +256,12 @@ class EventPublisher:
                     sequence_number=event_message["sequence_number"],
                     tick_number=event_data["tick_number"],
                 )
+                return True
             else:
                 logger.error("Failed to publish game tick event")
+                return False
 
-                assert isinstance(success, bool)
-                return success
-
-        except (OSError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
             return False
 

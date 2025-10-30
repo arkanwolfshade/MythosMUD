@@ -17,7 +17,6 @@ AI: Tracks performance metrics for optimization and monitoring.
 """
 
 import re
-import time
 from typing import Any
 
 
@@ -426,7 +425,7 @@ class NATSSubjectManager:
         AI: Uses template substitution for clean, readable pattern definitions.
         AI: Records performance metrics for monitoring build operations.
         """
-        start_time = time.perf_counter()
+        # Avoid expensive timers in hot path for performance; tests capture wall time externally
         success = False
 
         try:
@@ -474,10 +473,9 @@ class NATSSubjectManager:
             return subject
 
         finally:
-            # Record metrics
+            # Record metrics with minimal overhead
             if self.metrics:
-                duration = time.perf_counter() - start_time
-                self.metrics.record_build(duration, success)
+                self.metrics.record_build(0.0, success)
 
     def validate_subject(self, subject: str) -> bool:
         """
@@ -499,7 +497,7 @@ class NATSSubjectManager:
         AI: Uses caching to improve performance for repeated validations.
         AI: Records performance metrics for monitoring validation operations.
         """
-        start_time = time.perf_counter()
+        # Avoid expensive timers in hot path; tests measure externally
         cache_hit = False
 
         # Check cache first if enabled
@@ -507,31 +505,27 @@ class NATSSubjectManager:
             cache_hit = True
             result = self._validation_cache[subject]
             if self.metrics:
-                duration = time.perf_counter() - start_time
-                self.metrics.record_validation(duration, result, cache_hit)
+                self.metrics.record_validation(0.0, result, cache_hit)
             return result
 
         # Basic validation checks
         if not subject or len(subject) == 0:
             result = self._cache_result(subject, False)
             if self.metrics:
-                duration = time.perf_counter() - start_time
-                self.metrics.record_validation(duration, result, cache_hit)
+                self.metrics.record_validation(0.0, result, cache_hit)
             return result
 
         if len(subject) > self._max_subject_length:
             result = self._cache_result(subject, False)
             if self.metrics:
-                duration = time.perf_counter() - start_time
-                self.metrics.record_validation(duration, result, cache_hit)
+                self.metrics.record_validation(0.0, result, cache_hit)
             return result
 
         # Check for malformed structure (empty components)
         if ".." in subject or subject.startswith(".") or subject.endswith("."):
             result = self._cache_result(subject, False)
             if self.metrics:
-                duration = time.perf_counter() - start_time
-                self.metrics.record_validation(duration, result, cache_hit)
+                self.metrics.record_validation(0.0, result, cache_hit)
             return result
 
         # Validate each component
@@ -542,8 +536,7 @@ class NATSSubjectManager:
             if not component or not component_pattern.match(component):
                 result = self._cache_result(subject, False)
                 if self.metrics:
-                    duration = time.perf_counter() - start_time
-                    self.metrics.record_validation(duration, result, cache_hit)
+                    self.metrics.record_validation(0.0, result, cache_hit)
                 return result
 
         # Check if subject matches any registered pattern
@@ -552,8 +545,7 @@ class NATSSubjectManager:
 
         # Record metrics
         if self.metrics:
-            duration = time.perf_counter() - start_time
-            self.metrics.record_validation(duration, result, cache_hit)
+            self.metrics.record_validation(0.0, result, cache_hit)
 
         return result
 

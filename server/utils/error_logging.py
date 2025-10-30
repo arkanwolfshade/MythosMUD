@@ -8,7 +8,7 @@ understanding the deeper mysteries of our digital realm.
 """
 
 import traceback
-from typing import Any
+from typing import Any, NoReturn
 
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
@@ -68,7 +68,7 @@ def log_and_raise(
     details: dict[str, Any] | None = None,
     user_friendly: str | None = None,
     logger_name: str | None = None,
-) -> None:
+) -> NoReturn:
     """
     Log an error and raise a MythosMUD exception.
 

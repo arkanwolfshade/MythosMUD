@@ -274,7 +274,7 @@ async def handle_quit_command(
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active")
-        except (OSError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
 
     logger.info("Player quitting")

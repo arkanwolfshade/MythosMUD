@@ -174,7 +174,7 @@ class TestSimpleIntegration:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         event_bus.publish(event)
         await asyncio.sleep(0.3)
@@ -348,13 +348,14 @@ class TestSimpleConnectionEvents:
     def test_event_types_have_correct_attributes(self):
         """Test that event types have the correct attributes."""
         # Test PlayerEnteredRoom
-        entered_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
         assert entered_event.player_id == "test_player"
         assert entered_event.room_id == "test_room"
         assert entered_event.event_type == "PlayerEnteredRoom"
 
         # Test PlayerLeftRoom
-        left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
         assert left_event.player_id == "test_player"
         assert left_event.room_id == "test_room"
         assert left_event.event_type == "PlayerLeftRoom"
+

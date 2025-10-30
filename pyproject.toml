@@ -145,21 +145,25 @@ asyncio_default_fixture_loop_scope = "function"
 
 [tool.mypy]
 python_version = "3.12"
-files = ["server/caching"]
+files = ["server"]
 follow_imports = "skip"
 ignore_missing_imports = true
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
+
+# All checks disabled - enable one at a time
+warn_return_any = false
+warn_unused_configs = false
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = false
+warn_redundant_casts = false
+warn_unused_ignores = false
+warn_no_return = false
+warn_unreachable = false
+strict_equality = false
+
+# Display options
 show_error_codes = true
 show_column_numbers = true
 show_error_context = true

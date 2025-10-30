@@ -110,6 +110,11 @@ class NPCMovementIntegration:
             to_room_id: Destination room ID
         """
         try:
+            # Only publish events if event bus is available
+            if not self.event_bus:
+                logger.debug("Event bus not available, skipping NPC movement events", npc_id=npc_id)
+                return
+            
             # Publish NPC left room event
             left_event = NPCLeftRoom(
                 timestamp=None, event_type="NPCLeftRoom", npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id
@@ -246,3 +251,4 @@ class NPCMovementIntegration:
         except Exception as e:
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
+

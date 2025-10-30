@@ -85,7 +85,7 @@ class TaskRegistry:
 
         try:
             # Create the task with enhanced metadata
-            task = asyncio.create_task(coro, *args)
+            task: asyncio.Task[Any] = asyncio.create_task(coro, *args)
             metadata = TaskMetadata(task, task_name, task_type)
 
             self._active_tasks[task] = metadata
@@ -173,15 +173,16 @@ class TaskRegistry:
         """
         try:
             # Resolve task reference
-            target_task = task
             if isinstance(task, str):
                 if task not in self._task_names:
                     logger.debug("Cancellation target not found", task=task)
                     return False
-                target_task = self._task_names[task]
-            elif target_task not in self._active_tasks:
-                logger.debug("Cancellation task not found in active tasks")
-                return False
+                target_task: asyncio.Task[Any] = self._task_names[task]
+            else:
+                target_task = task
+                if target_task not in self._active_tasks:
+                    logger.debug("Cancellation task not found in active tasks")
+                    return False
 
             # Execute cancellation with wait_bound boundaries
             if not target_task.done():

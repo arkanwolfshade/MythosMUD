@@ -294,9 +294,10 @@ class NPCCombatIntegrationService:
                     npc_id=npc_id,
                     damage=damage,
                     combat_ended=combat_result.combat_ended,
+                    message=combat_result.message,
                 )
 
-                return combat_result.message
+                return combat_result.success
             else:
                 logger.warning(
                     "Combat attack failed",
@@ -304,7 +305,7 @@ class NPCCombatIntegrationService:
                     npc_id=npc_id,
                     message=combat_result.message,
                 )
-                return combat_result.message
+                return combat_result.success
 
         except Exception as e:
             logger.error(
@@ -498,7 +499,7 @@ class NPCCombatIntegrationService:
         try:
             player = self._persistence.get_player(player_id)
             return player.name if player else "Unknown Player"
-        except (OSError, ValueError, TypeError) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
 

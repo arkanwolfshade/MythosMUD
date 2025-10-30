@@ -403,11 +403,11 @@ class TestStatsRandomGeneration:
 
     def test_stats_random_generation_deterministic(self):
         """Test that Stats generation is deterministic with same seed."""
-        # Create two Stats instances without explicit values
-        stats1 = Stats()
-        stats2 = Stats()
+        # Create two Stats instances with the same test seed
+        stats1 = Stats(_test_seed=42)
+        stats2 = Stats(_test_seed=42)
 
-        # They should have the same values due to fixed seed
+        # They should have the same values due to same seed
         assert stats1.strength == stats2.strength
         assert stats1.dexterity == stats2.dexterity
         assert stats1.constitution == stats2.constitution
@@ -538,11 +538,11 @@ class TestStatsRandomGeneration:
         assert stats_from_dict.charisma == stats.charisma
 
     def test_stats_multiple_instances_consistency(self):
-        """Test that multiple instances have consistent random generation."""
-        # Create multiple instances
-        stats_list = [Stats() for _ in range(5)]
+        """Test that multiple instances have consistent random generation with same seed."""
+        # Create multiple instances with the same seed
+        stats_list = [Stats(_test_seed=42) for _ in range(5)]
 
-        # All instances should have the same values due to fixed seed
+        # All instances should have the same values due to same seed
         for i in range(1, len(stats_list)):
             assert stats_list[i].strength == stats_list[0].strength
             assert stats_list[i].dexterity == stats_list[0].dexterity

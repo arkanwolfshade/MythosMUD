@@ -646,7 +646,7 @@ class TestNPCPopulationController:
 
         # Test player entering room (should trigger spawn check)
         player_event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="test_player", room_id="earth_arkhamcity_downtown_001"
+            player_id="test_player", room_id="earth_arkhamcity_downtown_001"
         )
 
         # This should trigger spawn checking
@@ -1350,3 +1350,4 @@ class TestNPCZoneIntegration:
         assert room_dict["name"] == arkham_downtown_room.name
         assert room_dict["zone"] == arkham_downtown_room.zone
         assert room_dict["sub_zone"] == arkham_downtown_room.sub_zone
+

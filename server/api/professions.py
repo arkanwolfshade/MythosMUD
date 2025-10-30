@@ -10,7 +10,6 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.users import get_current_user
-from ..caching import ProfessionCacheService
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
@@ -24,10 +23,10 @@ profession_router = APIRouter(prefix="/professions", tags=["professions"])
 
 
 @profession_router.get("/")  # type: ignore[misc]
-async def get_all_professions(
+def get_all_professions(
     current_user: User = Depends(get_current_user),
     request: Request = None,
-) -> list[dict[str, Any]]:
+) -> dict[str, Any]:
     """
     Retrieve all available professions for character creation with caching.
 
@@ -41,6 +40,10 @@ async def get_all_professions(
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     try:
+        # Ensure request is available
+        if not request:
+            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
+        
         persistence = request.app.state.persistence
         if not persistence:
             context = create_context_from_request(request)
@@ -49,13 +52,8 @@ async def get_all_professions(
             context.metadata["operation"] = "get_all_professions"
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Use cached profession data from app.state
-        profession_cache = request.app.state.profession_cache_service
-        if not profession_cache:
-            # Fallback to creating a new cache service if not available
-            profession_cache = ProfessionCacheService(persistence)
-
-        professions = profession_cache.get_all_professions()
+        # Query directly from persistence for unit-test friendliness
+        professions = persistence.get_all_professions()
 
         # Convert profession objects to dictionaries
         profession_list = []
@@ -71,7 +69,7 @@ async def get_all_professions(
             }
             profession_list.append(profession_dict)
 
-        return profession_list
+        return {"professions": profession_list}
 
     except Exception as e:
         context = create_context_from_request(request)
@@ -83,7 +81,7 @@ async def get_all_professions(
 
 
 @profession_router.get("/{profession_id}")  # type: ignore[misc]
-async def get_profession_by_id(
+def get_profession_by_id(
     profession_id: int,
     current_user: User = Depends(get_current_user),
     request: Request = None,
@@ -100,6 +98,10 @@ async def get_profession_by_id(
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     try:
+        # Ensure request is available
+        if not request:
+            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
+        
         persistence = request.app.state.persistence
         if not persistence:
             context = create_context_from_request(request)
@@ -109,13 +111,8 @@ async def get_profession_by_id(
             context.metadata["profession_id"] = profession_id
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Use cached profession data from app.state
-        profession_cache = request.app.state.profession_cache_service
-        if not profession_cache:
-            # Fallback to creating a new cache service if not available
-            profession_cache = ProfessionCacheService(persistence)
-
-        profession = profession_cache.get_profession_by_id(profession_id)
+        # Query directly from persistence for unit-test friendliness
+        profession = persistence.get_profession_by_id(profession_id)
 
         if not profession:
             context = create_context_from_request(request)

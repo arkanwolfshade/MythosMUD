@@ -12,6 +12,7 @@ import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -23,7 +24,7 @@ from server.utils.error_logging import log_and_raise
 class PerformanceTestMixin:
     """Mixin class providing performance testing utilities."""
 
-    def measure_execution_time(self, func, *args, **kwargs) -> tuple[float, any]:
+    def measure_execution_time(self, func, *args, **kwargs) -> tuple[float, Any]:
         """
         Measure the execution time of a function.
 
@@ -35,7 +36,7 @@ class PerformanceTestMixin:
         end_time = time.perf_counter()
         return end_time - start_time, result
 
-    def measure_memory_usage(self, func, *args, **kwargs) -> tuple[float, any]:
+    def measure_memory_usage(self, func, *args, **kwargs) -> tuple[float, Any]:
         """
         Measure memory usage during function execution.
 
