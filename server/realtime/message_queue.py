@@ -124,7 +124,13 @@ class MessageQueue:
                 del self.pending_messages[player_id]
                 logger.debug("Removed all pending messages", player_id=player_id)
         except (ValueError, TypeError, KeyError) as e:
-            logger.error("Error removing messages", player_id=player_id, error=str(e), error_type=type(e).__name__)
+            logger.error(
+                "Error removing messages",
+                player_id=player_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
     def cleanup_old_messages(self, max_age_seconds: int = 3600) -> None:
         """
@@ -157,12 +163,18 @@ class MessageQueue:
 
             if total_removed > 0 or orphaned_players:
                 logger.info(
-                    f"Message cleanup completed: {total_removed} old messages removed, "
-                    f"{len(orphaned_players)} empty queues cleaned"
+                    "Message cleanup completed",
+                    removed_messages=total_removed,
+                    cleaned_empty_queues=len(orphaned_players),
                 )
 
         except (ValueError, TypeError, KeyError) as e:
-            logger.error("Error cleaning up old messages", error=str(e), error_type=type(e).__name__)
+            logger.error(
+                "Error cleaning up old messages",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
     def cleanup_large_structures(self, max_entries: int = 1000) -> None:
         """
@@ -181,7 +193,12 @@ class MessageQueue:
                     )
 
         except (ValueError, TypeError, KeyError) as e:
-            logger.error("Error cleaning up large message queue structures", error=str(e), error_type=type(e).__name__)
+            logger.error(
+                "Error cleaning up large message queue structures",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
     def _is_message_recent(self, msg: dict[str, Any], current_time: float, max_age_seconds: int) -> bool:
         """

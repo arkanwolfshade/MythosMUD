@@ -251,10 +251,10 @@ class RoomSubscriptionManager:
         """
         if room_id is None or room_id == "":
             return room_id
-        
+
         if self.persistence is None:
             return room_id
-            
+
         try:  # type: ignore[unreachable]
             room = self.persistence.get_room(room_id)
             if room is not None and getattr(room, "id", None):

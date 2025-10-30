@@ -86,6 +86,7 @@ def load_zone_config(zone_path: str) -> dict[str, Any] | None:
             config_path=config_path,
             config_keys=list(config.keys()) if isinstance(config, dict) else "non-dict",
         )
+        assert isinstance(config, dict)
         return config
     except (OSError, json.JSONDecodeError) as e:
         logger.warning(
@@ -116,7 +117,9 @@ def load_subzone_config(subzone_path: str) -> dict[str, Any] | None:
 
     try:
         with open(config_path, encoding="utf-8") as f:
-            return json.load(f)
+            result = json.load(f)
+            assert isinstance(result, dict)
+            return result
     except (OSError, json.JSONDecodeError) as e:
         logger.warning(
             "Could not load sub-zone configuration",
@@ -166,15 +169,21 @@ def get_room_environment(
     """
     # Check room-specific environment first
     if room_data.get("environment"):
-        return room_data["environment"]
+        result = room_data["environment"]
+        assert isinstance(result, str)
+        return result
 
     # Check sub-zone environment
     if subzone_config and subzone_config.get("environment"):
-        return subzone_config["environment"]
+        result = subzone_config["environment"]
+        assert isinstance(result, str)
+        return result
 
     # Check zone environment
     if zone_config and zone_config.get("environment"):
-        return zone_config["environment"]
+        result = zone_config["environment"]
+        assert isinstance(result, str)
+        return result
 
     # Default fallback
     return "outdoors"
@@ -219,6 +228,7 @@ def validate_room_data(
                 details={"file_path": file_path, "validation_errors": errors},
                 user_friendly="Room data validation failed",
             )
+        assert isinstance(errors, list)
         return errors
     except Exception as e:
         if strict_validation:
@@ -248,7 +258,7 @@ def load_hierarchical_world(strict_validation: bool = False, enable_schema_valid
     Returns:
         Dictionary containing all world data with hierarchical structure
     """
-    world_data = {
+    world_data: dict[str, Any] = {
         "rooms": {},
         "zone_configs": {},
         "subzone_configs": {},
@@ -380,7 +390,9 @@ def resolve_room_reference(room_id: str, world_data: dict[str, Any] | None = Non
 
     # Check if it's an old ID that maps to a new one
     if room_id in world_data["room_mappings"]:
-        return world_data["room_mappings"][room_id]
+        result = world_data["room_mappings"][room_id]
+        assert isinstance(result, str)
+        return result
 
     return None
 
@@ -426,7 +438,9 @@ def load_rooms(strict_validation: bool = False, enable_schema_validation: bool =
         validation_errors=len(world_data.get("validation_errors", [])),
     )
 
-    return world_data["rooms"]
+    result = world_data["rooms"]
+    assert isinstance(result, dict)
+    return result
 
 
 if __name__ == "__main__":

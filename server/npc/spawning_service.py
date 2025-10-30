@@ -212,7 +212,7 @@ class NPCSpawningService:
         Returns:
             List of spawn requests that should be queued
         """
-        spawn_requests = []
+        spawn_requests: list[NPCSpawnRequest] = []
 
         # Check population limits
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
@@ -548,14 +548,14 @@ class NPCSpawningService:
         failed_spawns = total_requests - successful_spawns
 
         # Count by reason
-        reason_counts = {}
+        reason_counts: dict[str, int] = {}
         for result in self.spawn_history:
             if result.spawn_request:
                 reason = result.spawn_request.reason
                 reason_counts[reason] = reason_counts.get(reason, 0) + 1
 
         # Count by NPC type
-        type_counts = {}
+        type_counts: dict[str, int] = {}
         for result in self.spawn_history:
             if result.success and result.spawn_request:
                 npc_type = result.spawn_request.definition.npc_type
@@ -601,9 +601,11 @@ class NPCSpawningService:
         Returns:
             Zone key in format "zone/sub_zone"
         """
-        return self.population_controller._get_zone_key_from_room_id(room_id)
+        from typing import cast
 
-    def get_population_stats(self, zone_key: str):
+        return cast(str, self.population_controller._get_zone_key_from_room_id(room_id))
+
+    def get_population_stats(self, zone_key: str) -> Any | None:
         """
         Get population statistics for a given zone by delegating to the population controller.
 

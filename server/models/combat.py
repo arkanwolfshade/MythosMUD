@@ -20,7 +20,9 @@ def _get_default_damage() -> int:
     """Get the default damage value from configuration."""
     try:
         config = get_config()
-        return config.game.basic_unarmed_damage
+        damage = config.game.basic_unarmed_damage
+        assert isinstance(damage, int)
+        return damage
     except (ImportError, AttributeError, ValueError) as e:
         logger.error("Error getting basic unarmed damage config", error=str(e), error_type=type(e).__name__)
         # Fallback to hardcoded value if config is not available

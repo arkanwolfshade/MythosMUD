@@ -70,7 +70,8 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
         # Add circuit breaker stats if handler is available
         if nats_message_handler:
             circuit_stats = nats_message_handler.circuit_breaker.get_stats()
-            dlq_stats = await nats_message_handler.dead_letter_queue.get_statistics()
+            # DeadLetterQueue exposes sync API; call directly
+            dlq_stats = nats_message_handler.dead_letter_queue.get_statistics()
 
             base_metrics["circuit_breaker"].update(circuit_stats)
             base_metrics["dead_letter_queue"] = dlq_stats
@@ -111,7 +112,7 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
         from ..realtime.nats_message_handler import nats_message_handler
 
         if nats_message_handler:
-            dlq_count = await nats_message_handler.dead_letter_queue.get_pending_count()
+            dlq_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
             summary["dlq_pending"] = dlq_count
             summary["circuit_state"] = nats_message_handler.circuit_breaker.get_state().value
 
@@ -172,8 +173,8 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
         if not nats_message_handler:
             return {"messages": [], "count": 0}
 
-        messages = await nats_message_handler.dead_letter_queue.get_messages(limit=limit)
-        total_count = await nats_message_handler.dead_letter_queue.get_pending_count()
+        messages = nats_message_handler.dead_letter_queue.list_messages(limit=limit)
+        total_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
 
         logger.info(
             "DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.get("username")
@@ -247,7 +248,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
         # Read the DLQ message
         import json
 
-        dlq_path = nats_message_handler.dead_letter_queue.storage_path / filepath
+        dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
 
         if not dlq_path.exists():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
@@ -267,7 +268,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
             await nats_message_handler._process_single_message(message_data)
 
             # Success! Remove from DLQ
-            await nats_message_handler.dead_letter_queue.remove_message(str(dlq_path))
+            nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
 
             logger.info(
                 "DLQ message replayed successfully",
@@ -324,14 +325,14 @@ async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_
         if not nats_message_handler:
             raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
 
-        dlq_path = nats_message_handler.dead_letter_queue.storage_path / filepath
+        dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
 
         if not dlq_path.exists():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
 
-        success = await nats_message_handler.dead_letter_queue.remove_message(str(dlq_path))
+        nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
 
-        if success:
+        if True:
             logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
             return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
         else:

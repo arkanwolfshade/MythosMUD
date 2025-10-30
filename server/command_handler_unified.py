@@ -527,7 +527,7 @@ async def handle_expanded_command(
     alias_storage: AliasStorage,
     player_name: str,
     depth: int = 0,
-    alias_chain: list[dict[str, Any]] = None,
+    alias_chain: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Handle command processing with alias expansion and loop detection."""
     logger.debug("Handling expanded command", player=player_name, command_line=command_line, depth=depth)

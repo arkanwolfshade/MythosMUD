@@ -7,14 +7,16 @@ for each user, including stats, inventory, and current location.
 
 import json
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
 
-Base = declarative_base(metadata=metadata)
+
+class Base(DeclarativeBase):
+    metadata = metadata
 
 
 class Player(Base):
@@ -71,7 +73,7 @@ class Player(Base):
     def get_stats(self) -> dict[str, Any]:
         """Get player stats as dictionary."""
         try:
-            return json.loads(self.stats)
+            return cast(dict[str, Any], json.loads(self.stats))
         except (json.JSONDecodeError, TypeError):
             return {
                 "strength": 10,
@@ -95,7 +97,7 @@ class Player(Base):
     def get_inventory(self) -> list[dict[str, Any]]:
         """Get player inventory as list."""
         try:
-            return json.loads(self.inventory)
+            return cast(list[dict[str, Any]], json.loads(self.inventory))
         except (json.JSONDecodeError, TypeError):
             return []
 
@@ -106,7 +108,7 @@ class Player(Base):
     def get_status_effects(self) -> list[dict[str, Any]]:
         """Get player status effects as list."""
         try:
-            return json.loads(self.status_effects)
+            return cast(list[dict[str, Any]], json.loads(self.status_effects))
         except (json.JSONDecodeError, TypeError):
             return []
 
@@ -123,7 +125,7 @@ class Player(Base):
     def is_alive(self) -> bool:
         """Check if player is alive (HP > 0)."""
         stats = self.get_stats()
-        return stats.get("current_health", 0) > 0
+        return bool(stats.get("current_health", 0) > 0)
 
     def is_mortally_wounded(self) -> bool:
         """
@@ -134,7 +136,7 @@ class Player(Base):
         """
         stats = self.get_stats()
         current_hp = stats.get("current_health", 0)
-        return 0 >= current_hp > -10
+        return bool(0 >= current_hp > -10)
 
     def is_dead(self) -> bool:
         """
@@ -145,7 +147,7 @@ class Player(Base):
         """
         stats = self.get_stats()
         current_hp = stats.get("current_health", 0)
-        return current_hp <= -10
+        return bool(current_hp <= -10)
 
     def get_health_state(self) -> str:
         """
@@ -179,4 +181,4 @@ class Player(Base):
         stats = self.get_stats()
         current_health = stats.get("current_health", 100)
         max_health = 100  # Could be made configurable
-        return (current_health / max_health) * 100
+        return float((current_health / max_health) * 100)

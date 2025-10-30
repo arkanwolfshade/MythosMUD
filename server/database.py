@@ -211,7 +211,7 @@ class DatabaseManager:
             Path: Path to the database file
         """
         database_url = self.get_database_url()
-        
+
         if database_url is None:
             context = create_error_context()
             context.metadata["operation"] = "get_database_path"

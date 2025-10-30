@@ -6,8 +6,8 @@ for real-time game communication.
 """
 
 import time
-
 from typing import Any
+
 from fastapi import APIRouter, Request, WebSocket
 from fastapi.responses import StreamingResponse
 

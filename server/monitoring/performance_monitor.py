@@ -99,7 +99,7 @@ class PerformanceMonitor:
         log_with_context(
             logger,
             "info",
-            f"Performance metric recorded: {operation}",
+            "Performance metric recorded",
             operation=operation,
             duration_ms=duration_ms,
             success=success,
@@ -208,7 +208,12 @@ class PerformanceMonitor:
         }
 
         # Log the alert
-        log_with_context(logger, "warning", f"Performance alert: {metric.operation} exceeded threshold", **alert_data)
+        log_with_context(
+            logger,
+            "warning",
+            "Performance alert: operation exceeded threshold",
+            **alert_data,
+        )
 
         # Call alert callbacks
         for callback in self.alert_callbacks:

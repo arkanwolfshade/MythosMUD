@@ -6,14 +6,16 @@ including requirements, effects, and availability status.
 """
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import Boolean, Column, Integer, String, Text
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
 
-Base = declarative_base(metadata=metadata)
+
+class Base(DeclarativeBase):
+    metadata = metadata
 
 
 class Profession(Base):
@@ -49,7 +51,7 @@ class Profession(Base):
     def get_stat_requirements(self) -> dict[str, Any]:
         """Get profession stat requirements as dictionary."""
         try:
-            return json.loads(self.stat_requirements)
+            return cast(dict[str, Any], json.loads(self.stat_requirements))
         except (json.JSONDecodeError, TypeError):
             return {}
 
@@ -60,7 +62,7 @@ class Profession(Base):
     def get_mechanical_effects(self) -> dict[str, Any]:
         """Get profession mechanical effects as dictionary."""
         try:
-            return json.loads(self.mechanical_effects)
+            return cast(dict[str, Any], json.loads(self.mechanical_effects))
         except (json.JSONDecodeError, TypeError):
             return {}
 
@@ -88,7 +90,7 @@ class Profession(Base):
 
     def is_available_for_selection(self) -> bool:
         """Check if profession is available for player selection."""
-        return self.is_available
+        return bool(self.is_available)
 
     def get_requirement_display_text(self) -> str:
         """

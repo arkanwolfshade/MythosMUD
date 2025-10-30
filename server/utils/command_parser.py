@@ -275,7 +275,7 @@ class CommandParser:
                 MythosValidationError, f"Failed to create command: {e}", context=context, logger_name=__name__
             )
             # This should never be reached due to log_and_raise_enhanced above
-            raise RuntimeError("Unreachable code")
+            raise RuntimeError("Unreachable code") from None
 
     def _create_look_command(self, args: list[str]) -> LookCommand:
         """

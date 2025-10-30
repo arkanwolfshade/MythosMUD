@@ -8,7 +8,9 @@ As noted in the Pnakotic Manuscripts, proper initialization of our systems
 is essential for maintaining their stability and observability.
 """
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -105,7 +107,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
     """Setup monitoring and health check endpoints."""
     from fastapi import HTTPException
 
-    @app.get("/health")
+    @app.get("/health")  # type: ignore[misc]
     async def health_check() -> dict[str, Any]:
         """Enhanced health check endpoint."""
         try:
@@ -125,40 +127,46 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             logger.error("Health check failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=503, detail="Health check failed") from e
 
-    @app.get("/metrics")
+    @app.get("/metrics")  # type: ignore[misc]
     async def get_metrics() -> dict[str, Any]:
         """Get system metrics."""
         try:
             dashboard = get_monitoring_dashboard()
-            return dashboard.export_monitoring_data()
+            result = dashboard.export_monitoring_data()
+            assert isinstance(result, dict)
+            return result
         except Exception as e:
             logger = get_logger("server.metrics")
             logger.error("Metrics retrieval failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Metrics retrieval failed") from e
 
-    @app.get("/monitoring/summary")
+    @app.get("/monitoring/summary")  # type: ignore[misc]
     async def get_monitoring_summary() -> dict[str, Any]:
         """Get comprehensive monitoring summary."""
         try:
             dashboard = get_monitoring_dashboard()
-            return dashboard.get_monitoring_summary()
+            result = dashboard.get_monitoring_summary()
+            assert isinstance(result, dict)
+            return result
         except Exception as e:
             logger = get_logger("server.monitoring")
             logger.error("Monitoring summary failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Monitoring summary failed") from e
 
-    @app.get("/monitoring/alerts")
+    @app.get("/monitoring/alerts")  # type: ignore[misc]
     async def get_alerts() -> dict[str, Any]:
         """Get system alerts."""
         try:
             dashboard = get_monitoring_dashboard()
-            return dashboard.check_alerts()
+            result = dashboard.check_alerts()
+            assert isinstance(result, dict)
+            return result
         except Exception as e:
             logger = get_logger("server.alerts")
             logger.error("Alert retrieval failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Alert retrieval failed") from e
 
-    @app.post("/monitoring/alerts/{alert_id}/resolve")
+    @app.post("/monitoring/alerts/{alert_id}/resolve")  # type: ignore[misc]
     async def resolve_alert(alert_id: str) -> dict[str, str]:
         """Resolve a system alert."""
         try:
@@ -177,7 +185,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             raise HTTPException(status_code=500, detail="Alert resolution failed") from e
 
 
-def main():
+def main() -> None:
     """Main entry point for enhanced server."""
     import uvicorn
 

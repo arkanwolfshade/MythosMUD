@@ -174,9 +174,9 @@ async def apply_sanity_loss(
 ) -> dict[str, str]:
     """Apply sanity loss to a player."""
     try:
-            result = await player_service.apply_sanity_loss(player_id, amount, source)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.apply_sanity_loss(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -196,9 +196,9 @@ async def apply_fear(
 ) -> dict[str, str]:
     """Apply fear to a player."""
     try:
-            result = await player_service.apply_fear(player_id, amount, source)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.apply_fear(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -218,9 +218,9 @@ async def apply_corruption(
 ) -> dict[str, str]:
     """Apply corruption to a player."""
     try:
-            result = await player_service.apply_corruption(player_id, amount, source)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.apply_corruption(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -240,9 +240,9 @@ async def gain_occult_knowledge(
 ) -> dict[str, str]:
     """Gain occult knowledge (with sanity loss)."""
     try:
-            result = await player_service.gain_occult_knowledge(player_id, amount, source)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.gain_occult_knowledge(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -261,9 +261,9 @@ async def heal_player(
 ) -> dict[str, str]:
     """Heal a player's health."""
     try:
-            result = await player_service.heal_player(player_id, amount)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.heal_player(player_id, amount)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -283,9 +283,9 @@ async def damage_player(
 ) -> dict[str, str]:
     """Damage a player's health."""
     try:
-            result = await player_service.damage_player(player_id, amount, damage_type)
-            assert isinstance(result, dict)
-            return result
+        result = await player_service.damage_player(player_id, amount, damage_type)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:

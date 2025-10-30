@@ -358,7 +358,9 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await websocket.send_json(error_response)
 
 
-async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None) -> None:
+async def handle_game_command(
+    websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None
+) -> None:
     """
     Handle a game command from a player.
 

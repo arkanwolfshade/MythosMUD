@@ -13,6 +13,7 @@ eldritch digital realm.
 from __future__ import annotations
 
 import time
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from ..events import EventBus
@@ -69,7 +70,7 @@ class NPCCommunicationIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
-                        timestamp=time.time(),
+                        timestamp=datetime.now(UTC),
                         event_type="NPCSpoke",
                         npc_id=npc_id,
                         room_id=room_id,
@@ -78,22 +79,7 @@ class NPCCommunicationIntegration:
                     )
                 )
 
-            # If we have a chat service, use it for actual message delivery
-            if self._chat_service:
-                # Create a chat message for the NPC
-                from ..game.chat_service import ChatMessage
-
-                chat_message = ChatMessage(
-                    sender_id=npc_id,
-                    sender_name=f"NPC_{npc_id}",
-                    room_id=room_id,
-                    message=message,
-                    channel=channel,
-                    timestamp=time.time(),
-                )
-
-                # Send through chat service
-                self._chat_service.send_message(chat_message)
+            # Direct ChatService dispatch is not used for NPCs; events drive distribution
 
             logger.info("NPC sent message to room", npc_id=npc_id, room_id=room_id, message=message, channel=channel)
             return True
@@ -120,7 +106,7 @@ class NPCCommunicationIntegration:
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
-                        timestamp=time.time(),
+                        timestamp=datetime.now(UTC),
                         event_type="NPCSpoke",
                         npc_id=npc_id,
                         room_id=room_id,
@@ -130,23 +116,7 @@ class NPCCommunicationIntegration:
                     )
                 )
 
-            # If we have a chat service, use it for actual whisper delivery
-            if self._chat_service:
-                # Create a whisper message for the NPC
-                from ..game.chat_service import ChatMessage
-
-                chat_message = ChatMessage(
-                    sender_id=npc_id,
-                    sender_name=f"NPC_{npc_id}",
-                    room_id=room_id,
-                    message=message,
-                    channel="whisper",
-                    target_id=target_player_id,
-                    timestamp=time.time(),
-                )
-
-                # Send through chat service
-                self._chat_service.send_whisper(chat_message)
+            # Direct ChatService dispatch is not used for NPCs; events drive distribution
 
             logger.info(
                 "NPC sent whisper to player",

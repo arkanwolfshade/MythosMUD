@@ -338,8 +338,8 @@ class NPCInstanceService:
             active_instances = self.lifecycle_manager.active_npcs
 
             # Count by type
-            by_type = {}
-            by_zone = {}
+            by_type: dict[str, int] = {}
+            by_zone: dict[str, int] = {}
             total_npcs = len(active_instances)
 
             for _npc_id, npc_instance in active_instances.items():
@@ -385,7 +385,7 @@ class NPCInstanceService:
             active_instances = self.lifecycle_manager.active_npcs
 
             # Group by zone
-            zone_data = {}
+            zone_data: dict[str, dict[str, Any]] = {}
             total_npcs = 0
 
             for npc_id, npc_instance in active_instances.items():

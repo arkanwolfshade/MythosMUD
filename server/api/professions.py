@@ -6,6 +6,7 @@ retrieval of available professions and profession details.
 """
 
 from typing import Any
+
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.users import get_current_user

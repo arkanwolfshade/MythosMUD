@@ -5,7 +5,8 @@ This module provides the main command processing service that orchestrates
 command validation, routing, and execution.
 """
 
-from typing import Any, Awaitable, Callable
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError

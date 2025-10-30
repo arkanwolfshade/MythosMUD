@@ -41,6 +41,7 @@ def hash_password(password: str) -> str:
     try:
         hashed = argon2_hash_password(password)
         logger.debug("Password hashed successfully")
+        assert isinstance(hashed, str)
         return hashed
     except Exception as e:
         logger.error("Password hashing failed", error=str(e))
@@ -68,6 +69,7 @@ def verify_password(password: str, password_hash: str) -> bool:
             logger.debug("Password verification successful")
         else:
             logger.debug("Password verification failed")
+        assert isinstance(result, bool)
         return result
     except Exception as e:
         logger.error("Password verification error", error=str(e))
@@ -77,7 +79,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 def create_access_token(
     data: dict,
     expires_delta: timedelta | None = None,
-    secret_key: str = SECRET_KEY,
+    secret_key: str | None = SECRET_KEY,
     algorithm: str = ALGORITHM,
 ) -> str:
     """Create a JWT access token."""
@@ -90,6 +92,7 @@ def create_access_token(
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         logger.debug("Access token created successfully")
+        assert isinstance(token, str)
         return token
     except Exception as e:
         logger.error("Failed to create access token", error=str(e))
@@ -99,9 +102,13 @@ def create_access_token(
             details={"original_error": str(e), "error_type": type(e).__name__, "user_id": data.get("sub")},
             user_friendly="Authentication token creation failed",
         )
+        # This should never be reached, but mypy needs it
+        return ""
 
 
-def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str = ALGORITHM) -> dict:
+def decode_access_token(
+    token: str | None, secret_key: str | None = SECRET_KEY, algorithm: str = ALGORITHM
+) -> dict | None:
     """Decode and validate a JWT access token."""
     if token is None:
         logger.debug("No token provided for decoding")
@@ -110,6 +117,7 @@ def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         logger.debug("Access token decoded successfully")
+        assert isinstance(payload, dict)
         return payload
     except JWTError as e:
         logger.warning("JWT decode error", error=str(e))

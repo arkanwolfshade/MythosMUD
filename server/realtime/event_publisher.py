@@ -23,7 +23,9 @@ class EventPublisher:
     to connected clients.
     """
 
-    def __init__(self, nats_service: Any, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0) -> None:
+    def __init__(
+        self, nats_service: Any, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0
+    ) -> None:
         """
         Initialize EventPublisher service.
 
@@ -121,7 +123,7 @@ class EventPublisher:
                 room_id=room_id,
             )
             return False
-        
+
         # This should never be reached, but mypy needs it
         return False
 
@@ -202,7 +204,7 @@ class EventPublisher:
                 room_id=room_id,
             )
             return False
-        
+
         # This should never be reached, but mypy needs it
         return False
 
@@ -265,7 +267,7 @@ class EventPublisher:
         except (OSError, ValueError, TypeError) as e:
             logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
             return False
-        
+
         # This should never be reached, but mypy needs it
         return False
 
@@ -337,7 +339,9 @@ class EventPublisher:
 event_publisher = None
 
 
-def get_event_publisher(nats_service: Any = None, subject_manager: NATSSubjectManager | None = None) -> EventPublisher | None:
+def get_event_publisher(
+    nats_service: Any = None, subject_manager: NATSSubjectManager | None = None
+) -> EventPublisher | None:
     """
     Get or create the global EventPublisher instance.
 

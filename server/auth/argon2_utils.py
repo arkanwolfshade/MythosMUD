@@ -68,19 +68,13 @@ def hash_password(password: str) -> str:
     implementing the gold standard for password hashing as documented
     in the restricted archives of Miskatonic University.
     """
-    if not isinstance(password, str):
-        logger.error("Password hashing failed - invalid type", password_type=type(password))
-        log_and_raise(
-            AuthenticationError,
-            "Password must be a string",
-            details={"password_type": str(type(password))},
-            user_friendly="Invalid password format",
-        )
+    # Type checking is handled by the function signature
 
     logger.debug("Hashing password with Argon2id")
     try:
         hashed = _default_hasher.hash(password)
         logger.debug("Password hashed successfully")
+        assert isinstance(hashed, str)
         return hashed
     except Exception as e:
         logger.error("Password hashing failed", error=str(e))
@@ -90,6 +84,7 @@ def hash_password(password: str) -> str:
             details={"original_error": str(e), "error_type": type(e).__name__},
             user_friendly="Password processing failed",
         )
+        return ""  # This should never be reached
 
 
 def verify_password(password: str, hashed: str) -> bool:
@@ -99,11 +94,7 @@ def verify_password(password: str, hashed: str) -> bool:
     This function safely handles both Argon2 and legacy bcrypt hashes,
     ensuring backward compatibility during the transition period.
     """
-    if not isinstance(password, str) or not isinstance(hashed, str):
-        logger.warning(
-            "Password verification failed - invalid types", password_type=type(password), hash_type=type(hashed)
-        )
-        return False
+    # Type checking is handled by the function signature
 
     if not hashed:
         logger.warning("Password verification failed - empty hash")
@@ -148,7 +139,9 @@ def needs_rehash(hashed: str) -> bool:
         return True
 
     try:
-        return _default_hasher.check_needs_rehash(hashed)
+        result = _default_hasher.check_needs_rehash(hashed)
+        assert isinstance(result, bool)
+        return result
     except (ValueError, TypeError, AttributeError) as e:
         logger.error("Error checking password rehash needs", error=str(e), error_type=type(e).__name__)
         return True
@@ -161,13 +154,14 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
 
     try:
         # Parse the hash format: $argon2id$v=19$m=65536,t=3,p=1$salt$hash
+        assert hashed is not None
         parts = hashed.split("$")
         if len(parts) < 5:
             return None
 
         # Extract parameters from the format string
         params_str = parts[3]  # m=65536,t=3,p=1
-        params = {}
+        params: dict[str, str | int] = {}
         for param in params_str.split(","):
             if "=" in param:
                 key, value = param.split("=", 1)

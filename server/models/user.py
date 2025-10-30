@@ -9,12 +9,13 @@ from datetime import UTC, datetime
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, DateTime, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
 
-# Create base class for declarative models
-Base = declarative_base(metadata=metadata)
+
+class Base(DeclarativeBase):
+    metadata = metadata
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
@@ -54,7 +55,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     @property
     def is_authenticated(self) -> bool:
         """Check if user is authenticated."""
-        return self.is_active
+        return bool(self.is_active)
 
     def get_display_name(self) -> str:
         """Get display name for the user."""

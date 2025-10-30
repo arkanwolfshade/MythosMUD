@@ -6,6 +6,7 @@ room information retrieval and room state management.
 """
 
 from typing import Any
+
 from fastapi import APIRouter, Request
 
 from ..dependencies import RoomServiceDep
