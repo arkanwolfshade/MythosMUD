@@ -149,7 +149,8 @@ def needs_rehash(hashed: str) -> bool:
 
     try:
         return _default_hasher.check_needs_rehash(hashed)
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error checking password rehash needs", error=str(e), error_type=type(e).__name__)
         return True
 
 
@@ -176,5 +177,6 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
                     params[key] = value
 
         return params
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error extracting hash parameters", error=str(e), error_type=type(e).__name__)
         return None

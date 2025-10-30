@@ -6,6 +6,7 @@ and real-time updates for the game.
 """
 
 import json
+from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
@@ -47,7 +48,7 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         return None
 
 
-async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
+async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None) -> None:
     """
     Handle a WebSocket connection for a player.
 
@@ -138,7 +139,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
 
                     # Ensure all UUID objects are converted to strings for JSON serialization
-                    def convert_uuids_to_strings(obj):
+                    def convert_uuids_to_strings(obj: Any) -> Any:
                         if isinstance(obj, dict):
                             return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
                         elif isinstance(obj, list):
@@ -161,15 +162,16 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                                 stats_data = json.loads(raw_stats)
                             elif isinstance(raw_stats, dict):
                                 stats_data = raw_stats
-                    except Exception:
+                    except (ValueError, TypeError, json.JSONDecodeError) as e:
+                        logger.error("Error parsing stats data", error=str(e), error_type=type(e).__name__)
                         stats_data = {}
 
                     # Normalize health field for client (health expected by client)
                     if "health" not in stats_data and "current_health" in stats_data:
                         try:
                             stats_data["health"] = stats_data.get("current_health")
-                        except Exception:
-                            pass
+                        except (KeyError, TypeError) as e:
+                            logger.debug("Error normalizing health field", error=str(e), error_type=type(e).__name__)
 
                     # Get complete player data with profession information using PlayerService
                     # This ensures the Status panel displays profession info automatically
@@ -330,7 +332,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
             logger.error("Error cleaning up mute data", player_id=player_id_str, error=str(e))
 
 
-async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
+async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:
     """
     Handle a WebSocket message from a player.
 
@@ -356,7 +358,7 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await websocket.send_json(error_response)
 
 
-async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list = None):
+async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None) -> None:
     """
     Handle a game command from a player.
 
@@ -416,8 +418,10 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         # Broadcast room updates if the command affected the room
         logger.debug("Command result", result=result)
         if result.get("room_changed"):
-            logger.debug("Room changed detected, broadcasting update", room_id=result.get("room_id"))
-            await broadcast_room_update(player_id, result.get("room_id"))
+            room_id = result.get("room_id")
+            if room_id:
+                logger.debug("Room changed detected, broadcasting update", room_id=room_id)
+                await broadcast_room_update(player_id, str(room_id))
         elif cmd == "go" and result.get("result"):
             # Send room update after movement
             logger.debug("Go command detected, broadcasting update", player_id=player_id)
@@ -598,10 +602,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         alias_storage=alias_storage,
         player_name=player_name,
     )
+    assert isinstance(result, dict)
     return result
 
 
-def get_help_content(command_name: str = None) -> str:
+def get_help_content(command_name: str | None = None) -> str:
     """Get help content for commands."""
     if command_name:
         # Return specific command help
@@ -619,7 +624,7 @@ Directions: north, south, east, west
 """
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, message: str):
+async def handle_chat_message(websocket: WebSocket, player_id: str, message: str) -> None:
     """
     Handle a chat message from a player.
 
@@ -656,7 +661,7 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         await websocket.send_json(error_response)
 
 
-async def broadcast_room_update(player_id: str, room_id: str):
+async def broadcast_room_update(player_id: str, room_id: str) -> None:
     """
     Broadcast a room update to all players in the room.
 
@@ -722,7 +727,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.debug("  - Total occupant_count", count=room.get_occupant_count())
 
         # Ensure all UUID objects are converted to strings for JSON serialization
-        def convert_uuids_to_strings(obj):
+        def convert_uuids_to_strings(obj: Any) -> Any:
             if isinstance(obj, dict):
                 return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
             elif isinstance(obj, list):
@@ -774,7 +779,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.error("Error broadcasting room update for room", room_id=room_id, error=str(e))
 
 
-async def send_system_message(websocket: WebSocket, message: str, message_type: str = "info"):
+async def send_system_message(websocket: WebSocket, message: str, message_type: str = "info") -> None:
     """
     Send a system message to a player.
 

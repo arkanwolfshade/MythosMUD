@@ -29,8 +29,8 @@ class ChatMessage:
         sender_name: str,
         channel: str,
         content: str,
-        target_id: str = None,
-        target_name: str = None,
+        target_id: str | None = None,
+        target_name: str | None = None,
     ):
         self.id = str(uuid.uuid4())
         self.sender_id = sender_id
@@ -60,7 +60,7 @@ class ChatMessage:
 
         return result
 
-    def log_message(self):
+    def log_message(self) -> None:
         """Log this chat message to the communications log."""
         log_data = {
             "message_id": self.id,
@@ -97,7 +97,7 @@ class ChatService:
         nats_service=None,
         user_manager_instance=None,
         subject_manager=None,
-    ):
+    ) -> None:
         """
         Initialize chat service.
 
@@ -1381,7 +1381,7 @@ class ChatService:
         return self.user_manager.is_player_muted(muter_id, target_player_id)
 
     async def mute_global(
-        self, muter_id: str, target_player_name: str, duration_minutes: int = None, reason: str = ""
+        self, muter_id: str, target_player_name: str, duration_minutes: int | None = None, reason: str = ""
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
         # Get muter name for logging
@@ -1522,7 +1522,7 @@ class ChatService:
             logger.error("Error checking malicious content", error=str(e))
             return True  # Fail safe - reject if check fails
 
-    def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
+    def can_send_message(self, sender_id: str, target_id: str | None = None, channel: str | None = None) -> bool:
         """Check if a player can send a message."""
         return self.user_manager.can_send_message(sender_id, target_id, channel)
 
@@ -1604,7 +1604,8 @@ class ChatService:
                                 duration_text = f" ({minutes_left} minutes remaining)"
                             else:
                                 duration_text = " (EXPIRED)"
-                        except Exception:
+                        except (ValueError, TypeError, AttributeError) as e:
+                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
                             duration_text = ""
                     else:
                         duration_text = " (PERMANENT)"
@@ -1645,7 +1646,8 @@ class ChatService:
                                 duration_text = f" ({minutes_left} minutes remaining)"
                             else:
                                 duration_text = " (EXPIRED)"
-                        except Exception:
+                        except (ValueError, TypeError, AttributeError) as e:
+                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
                             duration_text = ""
                     else:
                         duration_text = " (PERMANENT)"

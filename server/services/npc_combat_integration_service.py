@@ -498,7 +498,8 @@ class NPCCombatIntegrationService:
         try:
             player = self._persistence.get_player(player_id)
             return player.name if player else "Unknown Player"
-        except Exception:
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
 
     def _despawn_npc(self, npc_id: str, _room_id: str) -> None:

@@ -7,6 +7,7 @@ for real-time game communication.
 
 import time
 
+from typing import Any
 from fastapi import APIRouter, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
@@ -21,8 +22,8 @@ from ..utils.error_logging import create_context_from_request, create_context_fr
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
-@realtime_router.get("/events/{player_id}")
-async def sse_events(player_id: str, request: Request):
+@realtime_router.get("/events/{player_id}")  # type: ignore[misc]
+async def sse_events(player_id: str, request: Request) -> StreamingResponse:
     """
     Server-Sent Events stream for real-time game updates.
     Supports session tracking for dual connection management.
@@ -46,8 +47,8 @@ async def sse_events(player_id: str, request: Request):
     )
 
 
-@realtime_router.get("/events")
-async def sse_events_token(request: Request):
+@realtime_router.get("/events")  # type: ignore[misc]
+async def sse_events_token(request: Request) -> StreamingResponse:
     """
     Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
     Supports session tracking for dual connection management.
@@ -87,8 +88,8 @@ async def sse_events_token(request: Request):
     )
 
 
-@realtime_router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+@realtime_router.websocket("/ws")  # type: ignore[misc]
+async def websocket_endpoint(websocket: WebSocket) -> None:
     """
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
@@ -114,7 +115,8 @@ async def websocket_endpoint(websocket: WebSocket):
                         break
             elif parts:
                 token = parts[-1]
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error parsing Authorization header", error=str(e), error_type=type(e).__name__)
         # Non-fatal: fall back to query param token
         pass
     session_id = websocket.query_params.get("session_id")  # New session parameter
@@ -154,8 +156,8 @@ async def websocket_endpoint(websocket: WebSocket):
         raise
 
 
-@realtime_router.get("/connections/{player_id}")
-async def get_player_connections(player_id: str, request: Request):
+@realtime_router.get("/connections/{player_id}")  # type: ignore[misc]
+async def get_player_connections(player_id: str, request: Request) -> dict[str, Any]:
     """
     Get connection information for a player.
     Returns detailed connection metadata including session information.
@@ -191,8 +193,8 @@ async def get_player_connections(player_id: str, request: Request):
     return connection_data
 
 
-@realtime_router.post("/connections/{player_id}/session")
-async def handle_new_game_session(player_id: str, request: Request):
+@realtime_router.post("/connections/{player_id}/session")  # type: ignore[misc]
+async def handle_new_game_session(player_id: str, request: Request) -> dict[str, Any]:
     """
     Handle a new game session for a player.
     This will disconnect existing connections and establish a new session.
@@ -218,6 +220,7 @@ async def handle_new_game_session(player_id: str, request: Request):
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
 
         logger.info("New game session handled", player_id=player_id, session_results=session_results)
+        assert isinstance(session_results, dict)
         return session_results
 
     except json.JSONDecodeError as e:
@@ -233,8 +236,8 @@ async def handle_new_game_session(player_id: str, request: Request):
         ) from e
 
 
-@realtime_router.get("/connections/stats")
-async def get_connection_statistics(request: Request):
+@realtime_router.get("/connections/stats")  # type: ignore[misc]
+async def get_connection_statistics(request: Request) -> dict[str, Any]:
     """
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
@@ -260,8 +263,8 @@ async def get_connection_statistics(request: Request):
     return statistics
 
 
-@realtime_router.websocket("/ws/{player_id}")
-async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
+@realtime_router.websocket("/ws/{player_id}")  # type: ignore[misc]
+async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:
     """
     Backward-compatible WebSocket endpoint that accepts a path player_id but
     prefers JWT token identity when provided.

@@ -23,10 +23,10 @@ class BaseEvent:
     interface for event handling and logging.
     """
 
-    timestamp: datetime
+    timestamp: datetime | None
     event_type: str
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Set timestamp if not provided."""
         if self.timestamp is None:
             self.timestamp = datetime.now(UTC)
@@ -45,7 +45,7 @@ class PlayerEnteredRoom(BaseEvent):
     room_id: str
     from_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerEnteredRoom"
@@ -64,7 +64,7 @@ class PlayerLeftRoom(BaseEvent):
     room_id: str
     to_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerLeftRoom"
@@ -83,7 +83,7 @@ class ObjectAddedToRoom(BaseEvent):
     room_id: str
     player_id: str | None = None  # Player who added the object
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "ObjectAddedToRoom"
@@ -103,7 +103,7 @@ class ObjectRemovedFromRoom(BaseEvent):
     room_id: str
     player_id: str | None = None  # Player who removed the object
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "ObjectRemovedFromRoom"
@@ -122,7 +122,7 @@ class NPCEnteredRoom(BaseEvent):
     room_id: str
     from_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCEnteredRoom"
@@ -141,7 +141,7 @@ class NPCLeftRoom(BaseEvent):
     room_id: str
     to_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCLeftRoom"
@@ -165,7 +165,7 @@ class NPCAttacked(BaseEvent):
     npc_name: str | None = None  # NPC name for combat messages
     target_name: str | None = None  # Target name for combat messages
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCAttacked"
@@ -190,7 +190,7 @@ class NPCTookDamage(BaseEvent):
     current_hp: int | None = None  # Current HP after damage
     max_hp: int | None = None  # Maximum HP
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCTookDamage"
@@ -213,7 +213,7 @@ class NPCDied(BaseEvent):
     npc_name: str | None = None  # NPC name for combat messages
     xp_reward: int | None = None  # XP reward for killing the NPC
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCDied"
@@ -234,7 +234,7 @@ class NPCSpoke(BaseEvent):
     channel: str = "local"  # Communication channel (local, say, whisper, etc.)
     target_id: str | None = None  # Specific target if whispering or directed speech
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCSpoke"
@@ -255,7 +255,7 @@ class NPCListened(BaseEvent):
     speaker_id: str
     channel: str = "local"  # Communication channel
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "NPCListened"
@@ -279,7 +279,7 @@ class PlayerHPUpdated(BaseEvent):
     combat_id: str | None = None  # Combat context if applicable
     room_id: str | None = None  # Room where the change occurred
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerHPUpdated"
@@ -302,7 +302,7 @@ class PlayerMortallyWoundedEvent(BaseEvent):
     attacker_name: str | None = None  # Name of the attacker
     combat_id: str | None = None  # Combat context if applicable
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerMortallyWoundedEvent"
@@ -323,7 +323,7 @@ class PlayerHPDecayEvent(BaseEvent):
     decay_amount: int = 1  # Amount of HP lost due to decay
     room_id: str | None = None  # Room where the decay occurred
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerHPDecayEvent"
@@ -346,7 +346,7 @@ class PlayerDiedEvent(BaseEvent):
     combat_id: str | None = None  # Combat context if applicable
     death_location: str | None = None  # Detailed death location information
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerDiedEvent"
@@ -368,7 +368,7 @@ class PlayerRespawnedEvent(BaseEvent):
     new_hp: int
     death_room_id: str | None = None  # Where the player died
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerRespawnedEvent"

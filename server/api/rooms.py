@@ -5,6 +5,7 @@ This module handles all room-related API operations including
 room information retrieval and room state management.
 """
 
+from typing import Any
 from fastapi import APIRouter, Request
 
 from ..dependencies import RoomServiceDep
@@ -21,8 +22,8 @@ room_router = APIRouter(prefix="/rooms", tags=["rooms"])
 logger.info("Rooms API router initialized", prefix="/rooms")
 
 
-@room_router.get("/{room_id}")
-async def get_room(room_id: str, request: Request = None, room_service: RoomService = RoomServiceDep):
+@room_router.get("/{room_id}")  # type: ignore[misc]
+async def get_room(room_id: str, request: Request = None, room_service: RoomService = RoomServiceDep) -> dict[str, Any]:
     """Get room information by room ID."""
     logger.debug("Room information requested", room_id=room_id)
 
@@ -34,4 +35,5 @@ async def get_room(room_id: str, request: Request = None, room_service: RoomServ
         raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
 
     logger.debug("Room information returned", room_id=room_id, room_name=room.get("name", "Unknown"))
+    assert isinstance(room, dict)
     return room

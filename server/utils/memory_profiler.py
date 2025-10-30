@@ -18,19 +18,19 @@ import psutil
 class MemoryProfiler:
     """Memory profiler for analyzing model memory usage."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the memory profiler."""
         self.process = psutil.Process()
         self.baseline_memory = None
         self.measurements = []
 
-    def start_profiling(self):
+    def start_profiling(self) -> None:
         """Start memory profiling."""
         gc.collect()  # Clean up before measuring
         self.baseline_memory = self.process.memory_info().rss
         tracemalloc.start()
 
-    def stop_profiling(self):
+    def stop_profiling(self) -> None:
         """Stop memory profiling."""
         tracemalloc.stop()
 
@@ -230,7 +230,7 @@ class MemoryProfiler:
             "total_mb": psutil.virtual_memory().total / (1024 * 1024),
         }
 
-    def print_memory_summary(self):
+    def print_memory_summary(self) -> None:
         """Print a formatted memory usage summary."""
         summary = self.get_memory_usage_summary()
         print("\n=== Memory Usage Summary ===")
@@ -240,7 +240,7 @@ class MemoryProfiler:
         print(f"Available Memory: {summary['available_mb']:.2f} MB")
         print(f"Total Memory: {summary['total_mb']:.2f} MB")
 
-    def print_model_memory_usage(self, result: dict[str, Any]):
+    def print_model_memory_usage(self, result: dict[str, Any]) -> None:
         """Print formatted model memory usage results."""
         if "error" in result:
             print(f"Error measuring {result.get('model_class', 'Unknown')}: {result['error']}")
@@ -254,7 +254,7 @@ class MemoryProfiler:
         )
         print(f"Peak Memory: {result['peak_memory_bytes']} bytes ({result['peak_memory_bytes'] / 1024:.2f} KB)")
 
-    def print_comparison_results(self, results: dict[str, Any]):
+    def print_comparison_results(self, results: dict[str, Any]) -> None:
         """Print formatted comparison results."""
         print("\n=== Model Memory Usage Comparison ===")
 
@@ -274,7 +274,7 @@ class MemoryProfiler:
             print(f"Average Memory per Instance: {stats['avg_memory_bytes']:.2f} bytes")
 
 
-def benchmark_model_memory_usage():
+def benchmark_model_memory_usage() -> None:
     """Benchmark memory usage for all major models."""
     from server.models.alias import Alias
     from server.models.command import LookCommand, SayCommand

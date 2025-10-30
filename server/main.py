@@ -13,7 +13,7 @@ and chaos. This server implementation follows those ancient principles.
 
 import warnings
 
-from fastapi import Depends
+from fastapi import Depends, FastAPI
 from fastapi.security import HTTPBearer
 
 from .app.factory import create_app
@@ -33,7 +33,7 @@ logger = get_logger(__name__)
 # which provides the same functionality plus request/response logging and better organization
 
 
-def main():
+def main() -> FastAPI:
     """Main entry point for the MythosMUD server."""
     # Set up logging based on configuration
     config = get_config()
@@ -62,18 +62,18 @@ security = HTTPBearer()
 
 
 # Root endpoint
-@app.get("/")
-async def read_root():
+@app.get("/")  # type: ignore[misc]
+async def read_root() -> dict[str, str]:
     """Root endpoint providing basic server information."""
     return {"message": "Welcome to MythosMUD!"}
 
 
 # Test endpoint for JWT validation
-@app.get("/test-auth")
-async def test_auth(current_user: dict = Depends(get_current_user)):
+@app.get("/test-auth")  # type: ignore[misc]
+async def test_auth(current_user: dict = Depends(get_current_user)) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:
-        return {"message": "Authentication successful", "user": current_user}
+        return {"message": "Authentication successful", "user": str(current_user)}
     else:
         return {"message": "No user found"}
 

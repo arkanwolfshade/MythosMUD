@@ -50,6 +50,8 @@ def hash_password(password: str) -> str:
             details={"original_error": str(e), "error_type": type(e).__name__},
             user_friendly="Password processing failed",
         )
+        # This should never be reached, but mypy needs it
+        return ""
 
 
 def verify_password(password: str, password_hash: str) -> bool:

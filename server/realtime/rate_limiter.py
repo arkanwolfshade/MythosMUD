@@ -21,7 +21,7 @@ class RateLimiter:
     windows and thresholds for different types of operations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the rate limiter with default settings."""
         # Connection rate limiting
         self.connection_attempts: dict[str, list[float]] = {}
@@ -84,7 +84,7 @@ class RateLimiter:
             "reset_time": current_time + self.connection_window if recent_attempts else 0,
         }
 
-    def cleanup_old_attempts(self, max_age_seconds: int = 3600):
+    def cleanup_old_attempts(self, max_age_seconds: int = 3600) -> None:
         """
         Clean up old rate limit attempts to prevent memory bloat.
 
@@ -114,7 +114,7 @@ class RateLimiter:
         except Exception as e:
             logger.error("Error cleaning up rate limit attempts", error=str(e))
 
-    def cleanup_large_structures(self, max_entries: int = 1000):
+    def cleanup_large_structures(self, max_entries: int = 1000) -> None:
         """
         Clean up large data structures to prevent memory bloat.
 
@@ -133,7 +133,7 @@ class RateLimiter:
         except Exception as e:
             logger.error("Error cleaning up large rate limit structures", error=str(e))
 
-    def remove_player_data(self, player_id: str):
+    def remove_player_data(self, player_id: str) -> None:
         """
         Remove all rate limit data for a specific player.
 

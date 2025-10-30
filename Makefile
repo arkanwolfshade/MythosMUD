@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
+.PHONY: help clean lint format test coverage build install run semgrep mypy test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -10,6 +10,7 @@ help:
 	@echo "  clean     - Remove build, dist, and cache files"
 	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
+	@echo "  mypy      - Run mypy static type checking"
 	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
 	@echo "  test      - Run all tests (server + client)"
 	@echo "  test-server - Run server tests only (unit + integration)"
@@ -51,6 +52,9 @@ lint:
 
 lint-sqlalchemy:
 	cd $(PROJECT_ROOT) && python scripts/lint_sqlalchemy_async.py
+
+mypy:
+	cd $(PROJECT_ROOT) && uv run mypy server
 
 format:
 	cd $(PROJECT_ROOT) && python scripts/format.py
@@ -125,5 +129,6 @@ run:
 all:
 	cd $(PROJECT_ROOT) && make format
 	cd $(PROJECT_ROOT) && make lint
+	cd $(PROJECT_ROOT) && make mypy
 	cd $(PROJECT_ROOT) && make test-all
 	cd $(PROJECT_ROOT) && make build

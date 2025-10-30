@@ -484,7 +484,8 @@ class NPCInstanceService:
             else:
                 return "unknown/unknown"
 
-        except Exception:
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Error getting NPC location", room_id=room_id, error=str(e), error_type=type(e).__name__)
             return "unknown/unknown"
 
 

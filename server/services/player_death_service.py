@@ -6,6 +6,8 @@ and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 """
 
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,7 +29,7 @@ class PlayerDeathService:
     - Publishing appropriate events for UI updates
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the player death service.
 

@@ -14,7 +14,7 @@ from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
 from ..api.game import game_router
 from ..api.metrics import router as metrics_router
-from ..api.monitoring import router as monitoring_router
+from ..api.monitoring import monitoring_router
 from ..api.players import player_router
 from ..api.professions import profession_router
 from ..api.real_time import realtime_router

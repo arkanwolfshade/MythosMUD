@@ -76,6 +76,10 @@ jobs:
         run: |
           source .venv/bin/activate
           python -m ruff check --line-length=120 server/
+      - name: Type check with mypy
+        run: |
+          source .venv/bin/activate
+          python -m mypy server
       - name: Run tests with coverage
         run: |
           source .venv/bin/activate
@@ -89,6 +93,23 @@ jobs:
           export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
           export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
           python -m pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=70 -v --tb=short
+      - name: Cache benchmark (LRU cache)
+        run: |
+          source .venv/bin/activate
+          python scripts/bench_cache.py
+      - name: Cache benchmark (NPC cache)
+        run: |
+          source .venv/bin/activate
+          python scripts/bench_cache_npc.py
+      - name: Cache benchmark (Profession cache)
+        run: |
+          source .venv/bin/activate
+          python scripts/bench_cache_professions.py
+      - name: Upload performance metrics
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: perf-metrics
+          path: artifacts/perf/
       - name: Upload coverage report
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:

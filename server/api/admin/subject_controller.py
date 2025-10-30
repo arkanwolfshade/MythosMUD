@@ -99,7 +99,7 @@ def get_subject_manager_dependency() -> NATSSubjectManager:
     return nats_subject_manager
 
 
-def require_admin_user(current_user=Depends(get_current_user)):
+def require_admin_user(current_user: Any = Depends(get_current_user)) -> Any:
     """
     Dependency to require admin permissions.
 
@@ -129,7 +129,7 @@ def require_admin_user(current_user=Depends(get_current_user)):
 # API Endpoints
 
 
-@router.get("/health", response_model=SubjectStatisticsResponse)
+@router.get("/health", response_model=SubjectStatisticsResponse)  # type: ignore[misc]
 async def get_subject_statistics(
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> dict[str, Any]:
@@ -180,10 +180,10 @@ async def get_subject_statistics(
         ) from e
 
 
-@router.post("/validate", response_model=ValidateSubjectResponse)
+@router.post("/validate", response_model=ValidateSubjectResponse)  # type: ignore[misc]
 async def validate_subject(
     request: ValidateSubjectRequest,
-    current_user=Depends(require_admin_user),
+    current_user: Any = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> dict[str, Any]:
     """
@@ -250,9 +250,9 @@ async def validate_subject(
         ) from e
 
 
-@router.get("/patterns", response_model=PatternsResponse)
+@router.get("/patterns", response_model=PatternsResponse)  # type: ignore[misc]
 async def get_patterns(
-    current_user=Depends(require_admin_user),
+    current_user: Any = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> dict[str, Any]:
     """
@@ -291,10 +291,10 @@ async def get_patterns(
         ) from e
 
 
-@router.post("/patterns", response_model=RegisterPatternResponse)
+@router.post("/patterns", response_model=RegisterPatternResponse)  # type: ignore[misc]
 async def register_pattern(
     request: RegisterPatternRequest,
-    current_user=Depends(require_admin_user),
+    current_user: Any = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> dict[str, Any]:
     """

@@ -75,8 +75,14 @@ class UserManager:
             self._admin_players.add(player_id)
 
             return True
-        except Exception:
-            logger.error("Error adding admin status")
+        except OSError as e:
+            logger.error("File system error adding admin status", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error adding admin status", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
 
     def remove_admin(self, player_id: str, player_name: str = None):
@@ -112,8 +118,14 @@ class UserManager:
                 self._admin_players.remove(player_id)
 
             return True
-        except Exception:
-            logger.error("Error removing admin status")
+        except OSError as e:
+            logger.error("File system error removing admin status", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error removing admin status", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error removing admin status", error=str(e), error_type=type(e).__name__)
             return False
 
     def is_admin(self, player_id: str) -> bool:
@@ -141,8 +153,18 @@ class UserManager:
                 # Add to cache
                 self._admin_players.add(player_id)
                 return True
-        except Exception:
-            logger.error("Error checking admin status in database")
+        except OSError as e:
+            logger.error(
+                "File system error checking admin status in database", error=str(e), error_type=type(e).__name__
+            )
+        except (ValueError, TypeError) as e:
+            logger.error(
+                "Data validation error checking admin status in database", error=str(e), error_type=type(e).__name__
+            )
+        except Exception as e:
+            logger.error(
+                "Unexpected error checking admin status in database", error=str(e), error_type=type(e).__name__
+            )
 
         return False
 
@@ -224,8 +246,14 @@ class UserManager:
 
             return True
 
-        except Exception:
-            logger.error("Error muting player")
+        except OSError as e:
+            logger.error("File system error muting player", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error muting player", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error muting player", error=str(e), error_type=type(e).__name__)
             return False
 
     def unmute_player(self, unmuter_id: str, unmuter_name: str, target_id: str, target_name: str) -> bool:
@@ -355,8 +383,14 @@ class UserManager:
 
             return True
 
-        except Exception:
-            logger.error("Error muting channel")
+        except OSError as e:
+            logger.error("File system error muting channel", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error muting channel", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error muting channel", error=str(e), error_type=type(e).__name__)
             return False
 
     def unmute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
@@ -625,8 +659,14 @@ class UserManager:
 
             return False
 
-        except Exception:
-            logger.error("Error checking global mute")
+        except OSError as e:
+            logger.error("File system error checking global mute", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error checking global mute", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error checking global mute", error=str(e), error_type=type(e).__name__)
             return False
 
     def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
@@ -700,8 +740,14 @@ class UserManager:
 
             return mutes
 
-        except Exception:
-            logger.error("Error getting player mutes")
+        except OSError as e:
+            logger.error("File system error getting player mutes", error=str(e), error_type=type(e).__name__)
+            return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+        except (ValueError, TypeError) as e:
+            logger.error("Data validation error getting player mutes", error=str(e), error_type=type(e).__name__)
+            return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+        except Exception as e:
+            logger.error("Unexpected error getting player mutes", error=str(e), error_type=type(e).__name__)
             return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
     def is_player_muted_by_others(self, player_id: str) -> bool:
@@ -872,8 +918,14 @@ class UserManager:
             logger.info("Player mute data loaded")
             return True
 
-        except Exception:
-            logger.error("Error loading player mute data")
+        except OSError as e:
+            logger.error("File system error loading player mute data", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError, json.JSONDecodeError) as e:
+            logger.error("Data validation error loading player mute data", error=str(e), error_type=type(e).__name__)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error loading player mute data", error=str(e), error_type=type(e).__name__)
             return False
 
     def save_player_mutes(self, player_id: str) -> bool:
@@ -941,8 +993,8 @@ class UserManager:
             # Validate data is serializable before writing
             try:
                 json.dumps(data, indent=2, ensure_ascii=False)
-            except Exception:
-                logger.error("Data is not JSON serializable")
+            except (TypeError, ValueError) as e:
+                logger.error("Data is not JSON serializable", error=str(e), error_type=type(e).__name__)
                 return False
 
             # Write to file atomically to prevent corruption
@@ -1006,8 +1058,16 @@ class UserManager:
             logger.info("Player mute data cleaned up")
             return True
 
-        except Exception:
-            logger.error("Error cleaning up player mute data")
+        except OSError as e:
+            logger.error("File system error cleaning up player mute data", error=str(e), error_type=type(e).__name__)
+            return False
+        except (ValueError, TypeError) as e:
+            logger.error(
+                "Data validation error cleaning up player mute data", error=str(e), error_type=type(e).__name__
+            )
+            return False
+        except Exception as e:
+            logger.error("Unexpected error cleaning up player mute data", error=str(e), error_type=type(e).__name__)
             return False
 
 

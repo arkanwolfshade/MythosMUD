@@ -259,6 +259,9 @@ class MovementService:
                     user_friendly="Movement failed",
                 )
 
+        # This should never be reached due to the log_and_raise above
+        return False
+
     def _validate_movement(self, player_id: str, from_room_id: str, to_room_id: str) -> bool:
         """
         Validate that a movement operation is allowed.
@@ -411,6 +414,9 @@ class MovementService:
                     user_friendly="Failed to add player to room",
                 )
 
+        # This should never be reached due to the log_and_raise above
+        return False
+
     def remove_player_from_room(self, player_id: str, room_id: str) -> bool:
         """
         Remove a player from a room (for logout, teleportation, etc.).
@@ -479,6 +485,9 @@ class MovementService:
                     user_friendly="Failed to remove player from room",
                 )
 
+        # This should never be reached due to the log_and_raise above
+        return False
+
     def get_player_room(self, player_id: str) -> str | None:
         """
         Get the room ID where a player is currently located.
@@ -498,7 +507,7 @@ class MovementService:
 
         player = self._persistence.get_player(player_id)
         if player:
-            return player.current_room_id
+            return str(player.current_room_id)
 
         return None
 
@@ -521,7 +530,7 @@ class MovementService:
 
         room = self._persistence.get_room(room_id)
         if room:
-            return room.get_players()
+            return list(room.get_players())
 
         return []
 
@@ -563,4 +572,4 @@ class MovementService:
         if not room:
             return False
 
-        return room.has_player(player_id)
+        return bool(room.has_player(player_id))

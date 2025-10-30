@@ -6,6 +6,8 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
+from typing import Any
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerRespawnedEvent
@@ -32,7 +34,7 @@ class PlayerRespawnService:
     - Publishing respawn events for UI updates
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the player respawn service.
 
@@ -111,7 +113,7 @@ class PlayerRespawnService:
             respawn_room = player.respawn_room_id
             if respawn_room:
                 logger.debug("Using custom respawn room", player_id=player_id, respawn_room=respawn_room)
-                return respawn_room
+                return str(respawn_room)
             else:
                 logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
                 return DEFAULT_RESPAWN_ROOM

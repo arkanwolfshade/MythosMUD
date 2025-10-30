@@ -5,6 +5,8 @@ This module handles all player-related API operations including
 creation, retrieval, listing, and deletion of player characters.
 """
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
@@ -45,14 +47,14 @@ logger = get_logger(__name__)
 player_router = APIRouter(prefix="/api/players", tags=["players"])
 
 
-@player_router.post("/", response_model=PlayerRead)
+@player_router.post("/", response_model=PlayerRead)  # type: ignore[misc]
 async def create_player(
     name: str,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Create a new player character."""
     try:
         return await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
@@ -65,20 +67,22 @@ async def create_player(
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from None
 
 
-@player_router.get("/", response_model=list[PlayerRead])
+@player_router.get("/", response_model=list[PlayerRead])  # type: ignore[misc]
 async def list_players(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> list[PlayerRead]:
     """Get a list of all players."""
-    return await player_service.list_players()
+    result = await player_service.list_players()
+    assert isinstance(result, list)
+    return result
 
 
-@player_router.get("/available-classes")
+@player_router.get("/available-classes")  # type: ignore[misc]
 async def get_available_classes(
     current_user: User = Depends(get_current_user),
-):
+) -> dict[str, Any]:
     """
     Get information about all available character classes and their prerequisites.
     """
@@ -94,13 +98,13 @@ async def get_available_classes(
     return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
-@player_router.get("/{player_id}", response_model=PlayerRead)
+@player_router.get("/{player_id}", response_model=PlayerRead)  # type: ignore[misc]
 async def get_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Get a specific player by ID."""
     player = await player_service.get_player_by_id(player_id)
     if not player:
@@ -113,13 +117,13 @@ async def get_player(
     return player
 
 
-@player_router.get("/name/{player_name}", response_model=PlayerRead)
+@player_router.get("/name/{player_name}", response_model=PlayerRead)  # type: ignore[misc]
 async def get_player_by_name(
     player_name: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Get a specific player by name."""
     player = await player_service.get_player_by_name(player_name)
     if not player:
@@ -132,13 +136,13 @@ async def get_player_by_name(
     return player
 
 
-@player_router.delete("/{player_id}")
+@player_router.delete("/{player_id}")  # type: ignore[misc]
 async def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Delete a player character."""
     try:
         success, message = await player_service.delete_player(player_id)
@@ -159,7 +163,7 @@ async def delete_player(
 
 
 # Player stats and effects endpoints
-@player_router.post("/{player_id}/sanity-loss")
+@player_router.post("/{player_id}/sanity-loss")  # type: ignore[misc]
 async def apply_sanity_loss(
     player_id: str,
     amount: int,
@@ -167,10 +171,12 @@ async def apply_sanity_loss(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply sanity loss to a player."""
     try:
-        return await player_service.apply_sanity_loss(player_id, amount, source)
+            result = await player_service.apply_sanity_loss(player_id, amount, source)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -179,7 +185,7 @@ async def apply_sanity_loss(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/fear")
+@player_router.post("/{player_id}/fear")  # type: ignore[misc]
 async def apply_fear(
     player_id: str,
     amount: int,
@@ -187,10 +193,12 @@ async def apply_fear(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply fear to a player."""
     try:
-        return await player_service.apply_fear(player_id, amount, source)
+            result = await player_service.apply_fear(player_id, amount, source)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -199,7 +207,7 @@ async def apply_fear(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/corruption")
+@player_router.post("/{player_id}/corruption")  # type: ignore[misc]
 async def apply_corruption(
     player_id: str,
     amount: int,
@@ -207,10 +215,12 @@ async def apply_corruption(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply corruption to a player."""
     try:
-        return await player_service.apply_corruption(player_id, amount, source)
+            result = await player_service.apply_corruption(player_id, amount, source)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -219,7 +229,7 @@ async def apply_corruption(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/occult-knowledge")
+@player_router.post("/{player_id}/occult-knowledge")  # type: ignore[misc]
 async def gain_occult_knowledge(
     player_id: str,
     amount: int,
@@ -227,10 +237,12 @@ async def gain_occult_knowledge(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Gain occult knowledge (with sanity loss)."""
     try:
-        return await player_service.gain_occult_knowledge(player_id, amount, source)
+            result = await player_service.gain_occult_knowledge(player_id, amount, source)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -239,17 +251,19 @@ async def gain_occult_knowledge(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/heal")
+@player_router.post("/{player_id}/heal")  # type: ignore[misc]
 async def heal_player(
     player_id: str,
     amount: int,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Heal a player's health."""
     try:
-        return await player_service.heal_player(player_id, amount)
+            result = await player_service.heal_player(player_id, amount)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -258,7 +272,7 @@ async def heal_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/damage")
+@player_router.post("/{player_id}/damage")  # type: ignore[misc]
 async def damage_player(
     player_id: str,
     amount: int,
@@ -266,10 +280,12 @@ async def damage_player(
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Damage a player's health."""
     try:
-        return await player_service.damage_player(player_id, amount, damage_type)
+            result = await player_service.damage_player(player_id, amount, damage_type)
+            assert isinstance(result, dict)
+            return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -278,11 +294,11 @@ async def damage_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/respawn")
+@player_router.post("/respawn")  # type: ignore[misc]
 async def respawn_player(
     request: Request,
     current_user: User = Depends(get_current_active_user),
-):
+) -> dict[str, Any]:
     """
     Respawn a dead player at their respawn location with full HP.
 
@@ -381,8 +397,11 @@ async def respawn_player(
                 raise LoggedHTTPException(
                     status_code=500, detail="Failed to process respawn request", context=context
                 ) from e
-            # Only need one session iteration - break after first session
-            break
+
+        # This should never be reached, but mypy needs it
+        raise LoggedHTTPException(
+            status_code=500, detail="No database session available", context=create_context_from_request(request)
+        )
 
     except LoggedHTTPException:
         raise
@@ -395,7 +414,7 @@ async def respawn_player(
 
 
 # Character Creation and Stats Generation Endpoints
-@player_router.post("/roll-stats")
+@player_router.post("/roll-stats")  # type: ignore[misc]
 async def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
@@ -404,7 +423,7 @@ async def roll_character_stats(
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
     request: Request = None,
-):
+) -> dict[str, Any]:
     """
     Roll random stats for character creation.
 
@@ -448,11 +467,7 @@ async def roll_character_stats(
         context.metadata["rate_limit_type"] = "stats_roll"
         raise LoggedHTTPException(
             status_code=429,
-            detail={
-                "message": str(e),
-                "retry_after": e.retry_after,
-                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user.id),
-            },
+            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
             context=context,
         ) from e
 
@@ -509,29 +524,13 @@ async def roll_character_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/roll-stats")
-def roll_character_stats_endpoint(
-    request_data: RollStatsRequest,
-    current_user: User = Depends(get_current_user),
-):
-    """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
-    return roll_character_stats(
-        request_data.method,
-        request_data.required_class,
-        10,
-        profession_id=request_data.profession_id,
-        current_user=current_user,
-        timeout_seconds=request_data.timeout_seconds,
-    )
-
-
-@player_router.post("/create-character")
+@player_router.post("/create-character")  # type: ignore[misc]
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     current_user: User = Depends(get_current_user),
     request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """
     Create a new character with specific stats.
 
@@ -568,11 +567,7 @@ async def create_character_with_stats(
         context.metadata["rate_limit_type"] = "character_creation"
         raise LoggedHTTPException(
             status_code=429,
-            detail={
-                "message": str(e),
-                "retry_after": e.retry_after,
-                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user.id),
-            },
+            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
             context=context,
         ) from e
 
@@ -594,7 +589,8 @@ async def create_character_with_stats(
             from ..config import get_config
 
             default_start_room = get_config().game.default_player_room
-        except Exception:
+        except (ImportError, AttributeError, ValueError) as e:
+            logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
             default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
 
         starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
@@ -612,11 +608,7 @@ async def create_character_with_stats(
         # TODO: Implement a proper way to track and mark invites as used
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        return {
-            "message": f"Character {request_data.name} created successfully",
-            "player": player.model_dump(),
-            "stats": stats_obj.model_dump(),
-        }
+        return PlayerRead.model_validate(player.model_dump())
     except HTTPException:
         # Re-raise HTTPExceptions without modification
         raise
@@ -634,12 +626,12 @@ async def create_character_with_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/validate-stats")
+@player_router.post("/validate-stats")  # type: ignore[misc]
 async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
-):
+) -> dict[str, Any]:
     """
     Validate character stats against class prerequisites.
 

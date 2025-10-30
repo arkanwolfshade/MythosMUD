@@ -5,9 +5,11 @@ This module handles all profession-related API operations including
 retrieval of available professions and profession details.
 """
 
+from typing import Any
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.users import get_current_user
+from ..caching import ProfessionCacheService
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
@@ -20,13 +22,13 @@ logger = get_logger(__name__)
 profession_router = APIRouter(prefix="/professions", tags=["professions"])
 
 
-@profession_router.get("/")
-def get_all_professions(
+@profession_router.get("/")  # type: ignore[misc]
+async def get_all_professions(
     current_user: User = Depends(get_current_user),
     request: Request = None,
-):
+) -> list[dict[str, Any]]:
     """
-    Retrieve all available professions for character creation.
+    Retrieve all available professions for character creation with caching.
 
     Returns a list of all professions that are currently available
     for character creation, including their descriptions, flavor text,
@@ -46,8 +48,13 @@ def get_all_professions(
             context.metadata["operation"] = "get_all_professions"
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Get all available professions from persistence
-        professions = persistence.get_all_professions()
+        # Use cached profession data from app.state
+        profession_cache = request.app.state.profession_cache_service
+        if not profession_cache:
+            # Fallback to creating a new cache service if not available
+            profession_cache = ProfessionCacheService(persistence)
+
+        professions = await profession_cache.get_all_professions()
 
         # Convert profession objects to dictionaries
         profession_list = []
@@ -63,7 +70,7 @@ def get_all_professions(
             }
             profession_list.append(profession_dict)
 
-        return {"professions": profession_list}
+        return profession_list
 
     except Exception as e:
         context = create_context_from_request(request)
@@ -74,14 +81,14 @@ def get_all_professions(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@profession_router.get("/{profession_id}")
-def get_profession_by_id(
+@profession_router.get("/{profession_id}")  # type: ignore[misc]
+async def get_profession_by_id(
     profession_id: int,
     current_user: User = Depends(get_current_user),
     request: Request = None,
-):
+) -> dict[str, Any]:
     """
-    Retrieve specific profession details by ID.
+    Retrieve specific profession details by ID with caching.
 
     Returns detailed information about a specific profession including
     its description, flavor text, stat requirements, and mechanical effects.
@@ -101,8 +108,13 @@ def get_profession_by_id(
             context.metadata["profession_id"] = profession_id
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Get profession by ID from persistence
-        profession = persistence.get_profession_by_id(profession_id)
+        # Use cached profession data from app.state
+        profession_cache = request.app.state.profession_cache_service
+        if not profession_cache:
+            # Fallback to creating a new cache service if not available
+            profession_cache = ProfessionCacheService(persistence)
+
+        profession = await profession_cache.get_profession_by_id(profession_id)
 
         if not profession:
             context = create_context_from_request(request)

@@ -23,7 +23,7 @@ class EventPublisher:
     to connected clients.
     """
 
-    def __init__(self, nats_service, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0):
+    def __init__(self, nats_service: Any, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0) -> None:
         """
         Initialize EventPublisher service.
 
@@ -109,9 +109,10 @@ class EventPublisher:
                     "Failed to publish player entered event", player_id=player_id, room_id=room_id, subject=subject
                 )
 
-            return success
+                assert isinstance(success, bool)
+                return success
 
-        except Exception as e:
+        except (OSError, ValueError, TypeError) as e:
             logger.error(
                 "Error publishing player entered event",
                 error=str(e),
@@ -120,6 +121,9 @@ class EventPublisher:
                 room_id=room_id,
             )
             return False
+        
+        # This should never be reached, but mypy needs it
+        return False
 
     async def publish_player_left_event(
         self,
@@ -186,9 +190,10 @@ class EventPublisher:
                     "Failed to publish player left event", player_id=player_id, room_id=room_id, subject=subject
                 )
 
-            return success
+                assert isinstance(success, bool)
+                return success
 
-        except Exception as e:
+        except (OSError, ValueError, TypeError) as e:
             logger.error(
                 "Error publishing player left event",
                 error=str(e),
@@ -197,6 +202,9 @@ class EventPublisher:
                 room_id=room_id,
             )
             return False
+        
+        # This should never be reached, but mypy needs it
+        return False
 
     async def publish_game_tick_event(
         self, timestamp: str | None = None, additional_metadata: dict[str, Any] | None = None
@@ -251,11 +259,15 @@ class EventPublisher:
             else:
                 logger.error("Failed to publish game tick event")
 
-            return success
+                assert isinstance(success, bool)
+                return success
 
-        except Exception:
-            logger.error("Error publishing game tick event")
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
             return False
+        
+        # This should never be reached, but mypy needs it
+        return False
 
     def _create_event_message(
         self,
@@ -325,7 +337,7 @@ class EventPublisher:
 event_publisher = None
 
 
-def get_event_publisher(nats_service=None, subject_manager: NATSSubjectManager | None = None) -> EventPublisher | None:
+def get_event_publisher(nats_service: Any = None, subject_manager: NATSSubjectManager | None = None) -> EventPublisher | None:
     """
     Get or create the global EventPublisher instance.
 

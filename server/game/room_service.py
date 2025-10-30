@@ -15,14 +15,15 @@ logger = get_logger(__name__)
 class RoomService:
     """Service class for room-related operations."""
 
-    def __init__(self, persistence):
-        """Initialize the room service with a persistence layer."""
+    def __init__(self, persistence, room_cache_service=None):
+        """Initialize the room service with a persistence layer and optional cache service."""
         self.persistence = persistence
-        logger.info("RoomService initialized")
+        self.room_cache = room_cache_service
+        logger.info("RoomService initialized with caching")
 
     async def get_room(self, room_id: str) -> dict[str, Any] | None:
         """
-        Get room information by room ID.
+        Get room information by room ID with caching.
 
         Args:
             room_id: The room's ID
@@ -32,20 +33,24 @@ class RoomService:
         """
         logger.debug("Getting room by ID", room_id=room_id)
 
-        room = await self.persistence.async_get_room(room_id)
-        if not room:
-            logger.debug("Room not found by ID", room_id=room_id)
-            return None
+        # Use cached room data if available
+        if self.room_cache:
+            room_dict = await self.room_cache.get_room(room_id)
+            if room_dict is None:
+                logger.debug("Room not found by ID", room_id=room_id)
+                return None
 
-        # Convert Room object to dictionary if it's a Room object
-        if hasattr(room, "to_dict"):
-            room_dict = room.to_dict()
+            logger.debug("Room found by ID", room_id=room_id, room_name=room_dict.get("name", "Unknown"))
+            return room_dict
         else:
-            # If it's already a dictionary, use it directly
-            room_dict = room
+            # Fallback to direct persistence call
+            room = await self.persistence.async_get_room(room_id)
+            if room is None:
+                logger.debug("Room not found by ID", room_id=room_id)
+                return None
 
-        logger.debug("Room found by ID", room_id=room_id, room_name=room_dict.get("name", "Unknown"))
-        return room_dict
+            logger.debug("Room found by ID", room_id=room_id, room_name=room.name)
+            return room.to_dict() if hasattr(room, "to_dict") else room
 
     def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
         """
@@ -159,7 +164,7 @@ class RoomService:
 
     async def validate_room_exists(self, room_id: str) -> bool:
         """
-        Validate that a room exists.
+        Validate that a room exists using cached data.
 
         Args:
             room_id: The room's ID
@@ -169,8 +174,13 @@ class RoomService:
         """
         logger.debug("Validating room exists", room_id=room_id)
 
-        room = await self.persistence.async_get_room(room_id)
-        exists = room is not None
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            exists = room is not None
+        else:
+            # Fallback to direct persistence call
+            room = await self.persistence.async_get_room(room_id)
+            exists = room is not None
 
         logger.debug("Room existence validation", room_id=room_id, exists=exists)
         return exists
@@ -211,7 +221,7 @@ class RoomService:
 
     async def get_room_occupants(self, room_id: str) -> list[str]:
         """
-        Get all players currently in a room.
+        Get all players currently in a room using cached data.
 
         Args:
             room_id: The ID of the room to check
@@ -221,24 +231,41 @@ class RoomService:
         """
         logger.debug("Getting room occupants", room_id=room_id)
 
-        room = await self.persistence.async_get_room(room_id)
-        if not room:
-            logger.debug("Room not found for occupant lookup", room_id=room_id)
-            return []
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            if not room:
+                logger.debug("Room not found for occupant lookup", room_id=room_id)
+                return []
 
-        # If it's a Room object, use its method
-        if hasattr(room, "get_players"):
-            occupants = room.get_players()
+            # If it's a Room object, use its method
+            if hasattr(room, "get_players"):
+                occupants = room.get_players()
+            else:
+                # If it's a dictionary, check for occupants field
+                occupants = room.get("occupants", [])
+
+            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            return occupants
         else:
-            # If it's a dictionary, check for occupants field
-            occupants = room.get("occupants", [])
+            # Fallback to direct persistence call
+            room = await self.persistence.async_get_room(room_id)
+            if not room:
+                logger.debug("Room not found for occupant lookup", room_id=room_id)
+                return []
 
-        logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
-        return occupants
+            # If it's a Room object, use its method
+            if hasattr(room, "get_players"):
+                occupants = room.get_players()
+            else:
+                # If it's a dictionary, check for occupants field
+                occupants = room.get("occupants", [])
+
+            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            return occupants
 
     async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
-        Validate that a player is in the specified room.
+        Validate that a player is in the specified room using cached data.
 
         Args:
             player_id: The ID of the player to validate
@@ -249,21 +276,39 @@ class RoomService:
         """
         logger.debug("Validating player in room", player_id=player_id, room_id=room_id)
 
-        room = await self.persistence.async_get_room(room_id)
-        if not room:
-            logger.debug("Room not found for player validation", room_id=room_id)
-            return False
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            if not room:
+                logger.debug("Room not found for player validation", room_id=room_id)
+                return False
 
-        # If it's a Room object, use its method
-        if hasattr(room, "has_player"):
-            is_in_room = room.has_player(player_id)
+            # If it's a Room object, use its method
+            if hasattr(room, "has_player"):
+                is_in_room = room.has_player(player_id)
+            else:
+                # If it's a dictionary, check occupants field
+                occupants = room.get("occupants", [])
+                is_in_room = player_id in occupants
+
+            logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
+            return is_in_room
         else:
-            # If it's a dictionary, check occupants field
-            occupants = room.get("occupants", [])
-            is_in_room = player_id in occupants
+            # Fallback to direct persistence call
+            room = await self.persistence.async_get_room(room_id)
+            if not room:
+                logger.debug("Room not found for player validation", room_id=room_id)
+                return False
 
-        logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
-        return is_in_room
+            # If it's a Room object, use its method
+            if hasattr(room, "has_player"):
+                is_in_room = room.has_player(player_id)
+            else:
+                # If it's a dictionary, check occupants field
+                occupants = room.get("occupants", [])
+                is_in_room = player_id in occupants
+
+            logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
+            return is_in_room
 
     async def get_room_exits(self, room_id: str) -> dict[str, str]:
         """

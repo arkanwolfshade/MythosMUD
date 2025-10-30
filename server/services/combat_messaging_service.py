@@ -11,6 +11,10 @@ from server.exceptions import MythosMUDError
 from server.logging.enhanced_logging_config import get_logger
 from server.schemas.combat_schema import validate_combat_messages
 
+# Type aliases for better readability
+type ErrorMessages = dict[str, str]
+type CombatMessages = dict[str, str]
+
 logger = get_logger(__name__)
 
 
@@ -22,10 +26,10 @@ class CombatMessagingService:
     using templates stored in NPC behavior configuration.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the combat messaging service."""
         # Default message templates for when NPCs don't have custom ones
-        self.default_messages = {
+        self.default_messages: CombatMessages = {
             "attack_attacker": "You {action_type} {target_name} for {damage} damage.",
             "attack_defender": "{attacker_name} {action_type}s you for {damage} damage.",
             "attack_other": "{attacker_name} {action_type}s {target_name} for {damage} damage.",
@@ -38,7 +42,7 @@ class CombatMessagingService:
         target_name: str,
         damage: int,
         action_type: str = "attack",
-        npc_messages: dict[str, Any] | None = None,
+        npc_messages: CombatMessages | None = None,
         perspective: str = "attacker",
     ) -> str:
         """
@@ -74,7 +78,7 @@ class CombatMessagingService:
         logger.debug("Generated attack message", perspective=perspective, message=message)
         return message
 
-    async def get_death_message(self, npc_name: str, npc_messages: dict[str, Any] | None = None) -> str:
+    async def get_death_message(self, npc_name: str, npc_messages: CombatMessages | None = None) -> str:
         """
         Generate a death message for an NPC.
 
@@ -99,7 +103,7 @@ class CombatMessagingService:
 
     async def get_combat_start_messages(
         self, attacker_name: str, target_name: str, room_occupants: list[str]
-    ) -> dict[str, str]:
+    ) -> CombatMessages:
         """
         Generate combat start messages for all room occupants.
 
@@ -126,7 +130,7 @@ class CombatMessagingService:
 
     async def get_combat_end_messages(
         self, winner_name: str, loser_name: str, room_occupants: list[str]
-    ) -> dict[str, str]:
+    ) -> CombatMessages:
         """
         Generate combat end messages for all room occupants.
 
@@ -163,7 +167,7 @@ class CombatMessagingService:
         Returns:
             Thematic error message
         """
-        error_messages = {
+        error_messages: ErrorMessages = {
             "no_target": f"{player_name}, you must specify a target to attack.",
             "target_not_found": f"{player_name}, you don't see '{target_name}' here.",
             "not_in_combat": f"{player_name}, you are not currently in combat.",
@@ -178,7 +182,7 @@ class CombatMessagingService:
         logger.debug("Generated error message", error_type=error_type, message=message)
         return message
 
-    async def validate_npc_messages(self, messages_data: dict[str, Any]) -> dict[str, Any]:
+    async def validate_npc_messages(self, messages_data: dict[str, Any]) -> CombatMessages:
         """
         Validate NPC message templates against the schema.
 

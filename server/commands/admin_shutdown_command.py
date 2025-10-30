@@ -617,7 +617,8 @@ async def cancel_shutdown_countdown(app, admin_username: str) -> bool:
             is_done = False
             try:
                 is_done = countdown_task.done() if hasattr(countdown_task, "done") else False
-            except Exception:
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Error checking countdown task status", error=str(e), error_type=type(e).__name__)
                 pass
 
             if not is_done:

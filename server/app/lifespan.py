@@ -35,6 +35,12 @@ def get_current_tick() -> int:
     return _current_tick
 
 
+def reset_current_tick() -> None:
+    """Reset the current tick for testing."""
+    global _current_tick
+    _current_tick = 0
+
+
 # Log directory creation is now handled by logging_config.py
 
 
@@ -70,6 +76,13 @@ async def lifespan(app: FastAPI):
     connection_manager._event_bus = app.state.event_handler.event_bus
     # Give connection manager access to app for WebSocket command processing
     connection_manager.app = app
+
+    # Initialize cache services for improved performance
+    from ..caching import ProfessionCacheService, RoomCacheService
+
+    app.state.room_cache_service = RoomCacheService(app.state.persistence)
+    app.state.profession_cache_service = ProfessionCacheService(app.state.persistence)
+    logger.info("Cache services initialized and added to app.state")
 
     # Clear any stale pending messages from previous server sessions
     connection_manager.message_queue.pending_messages.clear()
@@ -373,9 +386,12 @@ async def lifespan(app: FastAPI):
                 for task in remaining_tasks:
                     task.cancel()
                 await asyncio.gather(*remaining_tasks, return_exceptions=True)
+    except (asyncio.CancelledError, KeyboardInterrupt) as e:
+        logger.warning("Shutdown interrupted", error=str(e), error_type=type(e).__name__)
+        raise
     except Exception as e:
         logger.error("Critical shutdown failure:", exc_info=True)
-        logger.error("Lifespan shutdown failed", error=str(e))
+        logger.error("Lifespan shutdown failed", error=str(e), error_type=type(e).__name__)
     finally:
         # Phase 4: Database cleanup
         logger.info("Closing database connections")
@@ -384,8 +400,11 @@ async def lifespan(app: FastAPI):
 
             await close_db()
             logger.info("Database connections closed successfully")
+        except (asyncio.CancelledError, KeyboardInterrupt) as e:
+            logger.warning("Database cleanup interrupted", error=str(e), error_type=type(e).__name__)
+            raise
         except Exception as e:
-            logger.error("Error closing database connections", error=str(e))
+            logger.error("Error closing database connections", error=str(e), error_type=type(e).__name__)
 
         logger.info("MythosMUD server shutdown execution phase completed")
 

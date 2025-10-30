@@ -45,7 +45,7 @@ def verify_admin_access(current_user: dict = Depends(get_current_user)) -> dict:
     return current_user
 
 
-@router.get("")
+@router.get("")  # type: ignore[misc]
 async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get comprehensive system metrics.
@@ -81,6 +81,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
 
         logger.info("Metrics retrieved", admin_user=current_user.get("username"))
 
+        assert isinstance(base_metrics, dict)
         return base_metrics
 
     except Exception as e:
@@ -88,7 +89,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
 
 
-@router.get("/summary")
+@router.get("/summary")  # type: ignore[misc]
 async def get_metrics_summary(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get concise metrics summary.
@@ -114,6 +115,7 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
             summary["dlq_pending"] = dlq_count
             summary["circuit_state"] = nats_message_handler.circuit_breaker.get_state().value
 
+        assert isinstance(summary, dict)
         return summary
 
     except Exception as e:
@@ -121,7 +123,7 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
 
 
-@router.post("/reset")
+@router.post("/reset")  # type: ignore[misc]
 async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Reset metrics counters.
@@ -147,7 +149,7 @@ async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> di
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting metrics") from e
 
 
-@router.get("/dlq")
+@router.get("/dlq")  # type: ignore[misc]
 async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get messages from dead letter queue.
@@ -186,7 +188,7 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
         ) from e
 
 
-@router.post("/circuit-breaker/reset")
+@router.post("/circuit-breaker/reset")  # type: ignore[misc]
 async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Manually reset circuit breaker to CLOSED state.
@@ -219,7 +221,7 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
         ) from e
 
 
-@router.post("/dlq/{filepath:path}/replay")
+@router.post("/dlq/{filepath:path}/replay")  # type: ignore[misc]
 async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Replay a message from the Dead Letter Queue.
@@ -299,7 +301,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
         ) from e
 
 
-@router.delete("/dlq/{filepath:path}")
+@router.delete("/dlq/{filepath:path}")  # type: ignore[misc]
 async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Delete a message from the Dead Letter Queue without replaying.

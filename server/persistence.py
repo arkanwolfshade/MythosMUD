@@ -65,7 +65,8 @@ def reset_persistence():
                     _persistence_instance._event_bus._shutdown_event.set()
                     # Clear active tasks immediately
                     _persistence_instance._event_bus._active_tasks.clear()
-                except Exception:
+                except (AttributeError, RuntimeError) as e:
+                    logger.warning("Error during event bus cleanup", error=str(e), error_type=type(e).__name__)
                     # Any error during cleanup - just proceed with reset
                     pass
         _persistence_instance = None
@@ -361,6 +362,14 @@ class PersistenceLayer:
                         details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
                         user_friendly="Failed to save player",
                     )
+        except OSError as e:
+            log_and_raise(
+                DatabaseError,
+                f"File system error saving player: {e}",
+                context=context,
+                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                user_friendly="Failed to save player - file system error",
+            )
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -736,64 +745,98 @@ class PersistenceLayer:
         self._log(f"Player {player.name} was in invalid room '{old_room}', moved to default room '{default_room}'")
         return True
 
-    # --- Async Wrapper Methods ---
-    # These methods provide async interfaces while using the existing synchronous database operations
-    # This allows the service layer to use async patterns without breaking the existing persistence layer
+    # --- Async Methods ---
+    # These methods now delegate to the true async persistence layer
+    # This provides real async database operations without blocking the event loop
 
     async def async_get_player_by_name(self, name: str) -> Player | None:
-        """Async wrapper for get_player_by_name."""
-        return self.get_player_by_name(name)
+        """Get a player by name using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_player_by_name(name)
 
     async def async_get_player(self, player_id: str) -> Player | None:
-        """Async wrapper for get_player."""
-        return self.get_player(player_id)
+        """Get a player by ID using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_player_by_id(player_id)
 
     async def async_get_player_by_user_id(self, user_id: str) -> Player | None:
-        """Async wrapper for get_player_by_user_id."""
-        return self.get_player_by_user_id(user_id)
+        """Get a player by user ID using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_player_by_user_id(user_id)
 
     async def async_save_player(self, player: Player):
-        """Async wrapper for save_player."""
-        return self.save_player(player)
+        """Save a player using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.save_player(player)
 
     async def async_list_players(self) -> list[Player]:
-        """Async wrapper for list_players."""
-        return self.list_players()
+        """List all players using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.list_players()
 
     async def async_get_players_in_room(self, room_id: str) -> list[Player]:
-        """Async wrapper for get_players_in_room."""
-        return self.get_players_in_room(room_id)
+        """Get all players in a room using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_players_in_room(room_id)
 
     async def async_save_players(self, players: list[Player]):
-        """Async wrapper for save_players."""
-        return self.save_players(players)
+        """Save multiple players using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.save_players(players)
 
     async def async_delete_player(self, player_id: str) -> bool:
-        """Async wrapper for delete_player."""
-        return self.delete_player(player_id)
+        """Delete a player using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.delete_player(player_id)
 
     async def async_get_all_professions(self) -> list:
-        """Async wrapper for get_all_professions."""
-        return self.get_all_professions()
+        """Get all professions using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_professions()
 
     async def async_get_profession_by_id(self, profession_id: int) -> object | None:
-        """Async wrapper for get_profession_by_id."""
-        return self.get_profession_by_id(profession_id)
+        """Get a profession by ID using async database operations."""
+        from .async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        return await async_persistence.get_profession_by_id(profession_id)
 
     async def async_get_room(self, room_id: str) -> Room | None:
-        """Async wrapper for get_room."""
+        """Get a room by ID using async database operations."""
+        # Rooms are still handled by the sync layer for now
         return self.get_room(room_id)
 
     async def async_save_room(self, room: Room):
-        """Async wrapper for save_room."""
+        """Save a room using async database operations."""
+        # Rooms are still handled by the sync layer for now
         return self.save_room(room)
 
     async def async_list_rooms(self) -> list[Room]:
-        """Async wrapper for list_rooms."""
+        """List all rooms using async database operations."""
+        # Rooms are still handled by the sync layer for now
         return self.list_rooms()
 
     async def async_save_rooms(self, rooms: list[Room]):
-        """Async wrapper for save_rooms."""
+        """Save multiple rooms using async database operations."""
+        # Rooms are still handled by the sync layer for now
         return self.save_rooms(rooms)
 
     # Player stats and effects async wrappers

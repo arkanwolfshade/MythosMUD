@@ -21,7 +21,7 @@ class MessageQueue:
     disconnected, with automatic cleanup of old messages.
     """
 
-    def __init__(self, max_messages_per_player: int = 1000):
+    def __init__(self, max_messages_per_player: int = 1000) -> None:
         """
         Initialize the message queue.
 
@@ -61,8 +61,10 @@ class MessageQueue:
             logger.debug("Added message to queue", player_id=player_id)
             return True
 
-        except Exception as e:
-            logger.error("Error adding message to queue", player_id=player_id, error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error adding message to queue", player_id=player_id, error=str(e), error_type=type(e).__name__
+            )
             return False
 
     def get_messages(self, player_id: str) -> list[dict[str, Any]]:
@@ -82,8 +84,8 @@ class MessageQueue:
                 logger.debug("Retrieved and cleared messages", message_count=len(messages), player_id=player_id)
             return messages
 
-        except Exception as e:
-            logger.error("Error retrieving messages", player_id=player_id, error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error retrieving messages", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return []
 
     def has_messages(self, player_id: str) -> bool:
@@ -110,7 +112,7 @@ class MessageQueue:
         """
         return len(self.pending_messages.get(player_id, []))
 
-    def remove_player_messages(self, player_id: str):
+    def remove_player_messages(self, player_id: str) -> None:
         """
         Remove all pending messages for a specific player.
 
@@ -121,10 +123,10 @@ class MessageQueue:
             if player_id in self.pending_messages:
                 del self.pending_messages[player_id]
                 logger.debug("Removed all pending messages", player_id=player_id)
-        except Exception as e:
-            logger.error("Error removing messages", player_id=player_id, error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error removing messages", player_id=player_id, error=str(e), error_type=type(e).__name__)
 
-    def cleanup_old_messages(self, max_age_seconds: int = 3600):
+    def cleanup_old_messages(self, max_age_seconds: int = 3600) -> None:
         """
         Clean up old messages to prevent memory bloat.
 
@@ -159,10 +161,10 @@ class MessageQueue:
                     f"{len(orphaned_players)} empty queues cleaned"
                 )
 
-        except Exception as e:
-            logger.error("Error cleaning up old messages", error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error cleaning up old messages", error=str(e), error_type=type(e).__name__)
 
-    def cleanup_large_structures(self, max_entries: int = 1000):
+    def cleanup_large_structures(self, max_entries: int = 1000) -> None:
         """
         Clean up large data structures to prevent memory bloat.
 
@@ -178,8 +180,8 @@ class MessageQueue:
                         f"Cleaned up large message queue structure for player {player_id}: kept {max_entries} entries"
                     )
 
-        except Exception as e:
-            logger.error("Error cleaning up large message queue structures", error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error cleaning up large message queue structures", error=str(e), error_type=type(e).__name__)
 
     def _is_message_recent(self, msg: dict[str, Any], current_time: float, max_age_seconds: int) -> bool:
         """
@@ -213,7 +215,8 @@ class MessageQueue:
 
             return current_time - msg_ts < max_age_seconds
 
-        except Exception:
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error checking message age", error=str(e), error_type=type(e).__name__)
             # If any error occurs, assume the message is old
             return False
 
@@ -239,6 +242,6 @@ class MessageQueue:
                 "largest_queues": queue_sizes[:5],  # Top 5 largest queues
                 "average_queue_size": total_messages / total_queues if total_queues > 0 else 0,
             }
-        except Exception as e:
-            logger.error("Error getting message queue stats", error=str(e))
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error("Error getting message queue stats", error=str(e), error_type=type(e).__name__)
             return {}

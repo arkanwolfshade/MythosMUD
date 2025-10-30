@@ -5,7 +5,7 @@ This module provides the main command processing service that orchestrates
 command validation, routing, and execution.
 """
 
-from typing import Any
+from typing import Any, Awaitable, Callable
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
@@ -67,7 +67,7 @@ class CommandService:
     with proper error handling and logging.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the command service."""
         self.command_handlers = {
             # System commands
@@ -159,6 +159,8 @@ class CommandService:
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
+            # Type assertion to help MyPy understand the return type
+            assert isinstance(result, dict)
             return result
         except Exception as e:
             logger.error(
@@ -232,6 +234,8 @@ class CommandService:
 
                 result = await handler(command_data, current_user, request, alias_storage, player_name)
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+                # Type assertion to help MyPy understand the return type
+                assert isinstance(result, dict)
                 return result
             except Exception as e:
                 logger.error(
@@ -254,7 +258,7 @@ class CommandService:
         """Get list of available commands."""
         return list(self.command_handlers.keys())
 
-    def register_command_handler(self, command: str, handler: callable) -> None:
+    def register_command_handler(self, command: str, handler: Callable[..., Awaitable[dict[str, str]]]) -> None:
         """
         Register a new command handler.
 

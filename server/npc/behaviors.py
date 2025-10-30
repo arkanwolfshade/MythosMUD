@@ -539,7 +539,10 @@ class NPCBase(ABC):
 
                         persistence = get_persistence()
                         event_bus = getattr(persistence, "_event_bus", None)
-                    except Exception:
+                    except (ImportError, AttributeError, RuntimeError) as e:
+                        logger.error(
+                            "Error getting persistence or event bus", error=str(e), error_type=type(e).__name__
+                        )
                         pass
 
                 movement_integration = NPCMovementIntegration(event_bus)

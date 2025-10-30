@@ -29,7 +29,7 @@ from .monitoring.performance_monitor import get_performance_monitor
 
 # Enhanced lifespan with monitoring
 @asynccontextmanager
-async def enhanced_lifespan(app: FastAPI):
+async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Enhanced lifespan with comprehensive monitoring and logging."""
     logger = get_logger("server.enhanced_main")
 
@@ -101,12 +101,12 @@ def create_enhanced_app() -> FastAPI:
     return app
 
 
-def setup_monitoring_endpoints(app: FastAPI):
+def setup_monitoring_endpoints(app: FastAPI) -> None:
     """Setup monitoring and health check endpoints."""
     from fastapi import HTTPException
 
     @app.get("/health")
-    async def health_check():
+    async def health_check() -> dict[str, Any]:
         """Enhanced health check endpoint."""
         try:
             dashboard = get_monitoring_dashboard()
@@ -126,7 +126,7 @@ def setup_monitoring_endpoints(app: FastAPI):
             raise HTTPException(status_code=503, detail="Health check failed") from e
 
     @app.get("/metrics")
-    async def get_metrics():
+    async def get_metrics() -> dict[str, Any]:
         """Get system metrics."""
         try:
             dashboard = get_monitoring_dashboard()
@@ -137,7 +137,7 @@ def setup_monitoring_endpoints(app: FastAPI):
             raise HTTPException(status_code=500, detail="Metrics retrieval failed") from e
 
     @app.get("/monitoring/summary")
-    async def get_monitoring_summary():
+    async def get_monitoring_summary() -> dict[str, Any]:
         """Get comprehensive monitoring summary."""
         try:
             dashboard = get_monitoring_dashboard()
@@ -148,7 +148,7 @@ def setup_monitoring_endpoints(app: FastAPI):
             raise HTTPException(status_code=500, detail="Monitoring summary failed") from e
 
     @app.get("/monitoring/alerts")
-    async def get_alerts():
+    async def get_alerts() -> dict[str, Any]:
         """Get system alerts."""
         try:
             dashboard = get_monitoring_dashboard()
@@ -159,7 +159,7 @@ def setup_monitoring_endpoints(app: FastAPI):
             raise HTTPException(status_code=500, detail="Alert retrieval failed") from e
 
     @app.post("/monitoring/alerts/{alert_id}/resolve")
-    async def resolve_alert(alert_id: str):
+    async def resolve_alert(alert_id: str) -> dict[str, str]:
         """Resolve a system alert."""
         try:
             dashboard = get_monitoring_dashboard()

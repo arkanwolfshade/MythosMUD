@@ -22,6 +22,9 @@ from structlog.contextvars import (
 )
 from structlog.stdlib import BoundLogger, LoggerFactory
 
+# Module-level logger for internal use
+logger = structlog.get_logger(__name__)
+
 
 def _resolve_log_base(log_base: str) -> Path:
     """
@@ -349,7 +352,10 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         if player and hasattr(player, "name"):
                             # Enhance the player_id field with the player name
                             event_dict[key] = f"<{player.name}>: {value}"
-                    except Exception:
+                    except (AttributeError, KeyError, TypeError) as e:
+                        logger.error(
+                            "Error looking up player name", player_id=value, error=str(e), error_type=type(e).__name__
+                        )
                         # If lookup fails, leave the original value
                         pass
 

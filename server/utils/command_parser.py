@@ -6,6 +6,7 @@ injection and ensure type safety.
 """
 
 import re
+from typing import Any
 
 from pydantic import ValidationError as PydanticValidationError
 
@@ -59,7 +60,7 @@ class CommandParser:
     Provides comprehensive command validation and injection prevention.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.max_command_length = 1000
         self.valid_commands = {cmd.value for cmd in CommandType}
 
@@ -273,6 +274,8 @@ class CommandParser:
             log_and_raise_enhanced(
                 MythosValidationError, f"Failed to create command: {e}", context=context, logger_name=__name__
             )
+            # This should never be reached due to log_and_raise_enhanced above
+            raise RuntimeError("Unreachable code")
 
     def _create_look_command(self, args: list[str]) -> LookCommand:
         """
@@ -883,7 +886,7 @@ Use 'help <command>' for detailed information about a specific command.
 """
 
 
-def get_username_from_user(user_obj) -> str:
+def get_username_from_user(user_obj: Any) -> str:
     """
     Safely extract username from user object or dictionary.
 
@@ -906,15 +909,15 @@ def get_username_from_user(user_obj) -> str:
 
     # Handle Player objects (which have 'name' attribute)
     if hasattr(user_obj, "name") and hasattr(user_obj, "player_id"):
-        return user_obj.name
+        return str(user_obj.name)
     elif hasattr(user_obj, "username"):
-        return user_obj.username
+        return str(user_obj.username)
     elif hasattr(user_obj, "name"):
-        return user_obj.name
+        return str(user_obj.name)
     elif isinstance(user_obj, dict) and "username" in user_obj:
-        return user_obj["username"]
+        return str(user_obj["username"])
     elif isinstance(user_obj, dict) and "name" in user_obj:
-        return user_obj["name"]
+        return str(user_obj["name"])
     else:
         context = create_error_context()
         context.metadata = {"user_obj_type": type(user_obj).__name__, "user_obj": str(user_obj)}
@@ -924,3 +927,5 @@ def get_username_from_user(user_obj) -> str:
             context=context,
             logger_name=__name__,
         )
+        # This should never be reached due to log_and_raise_enhanced above
+        raise RuntimeError("Unreachable code")

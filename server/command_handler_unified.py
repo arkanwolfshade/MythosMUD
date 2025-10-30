@@ -296,8 +296,8 @@ async def process_command_unified(
             aliases_dir = config.game.aliases_dir
             alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
             logger.debug("AliasStorage initialized")
-        except Exception:
-            logger.error("Failed to initialize AliasStorage")
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Failed to initialize AliasStorage", error=str(e), error_type=type(e).__name__)
             alias_storage = None
 
     # Step 4: Parse command and arguments

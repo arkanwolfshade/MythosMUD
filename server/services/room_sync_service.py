@@ -17,6 +17,10 @@ from typing import Any
 from ..events.event_types import BaseEvent
 from ..logging.enhanced_logging_config import get_logger
 
+# Type aliases for better readability
+type RoomData = dict[str, Any]
+type EventSequence = dict[str, int]
+
 logger = get_logger(__name__)
 
 
@@ -29,16 +33,16 @@ class RoomSyncService:
     and ensure consistent room state across all clients.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the room synchronization service."""
-        self._event_sequence_counter = 0
-        self._room_data_cache: dict[str, dict[str, Any]] = {}
+        self._event_sequence_counter: int = 0
+        self._room_data_cache: dict[str, RoomData] = {}
         self._room_update_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
-        self._processing_queue = asyncio.Queue()
-        self._freshness_threshold_seconds = 5  # Default 5 seconds
+        self._processing_queue: asyncio.Queue[BaseEvent] = asyncio.Queue()
+        self._freshness_threshold_seconds: int = 5  # Default 5 seconds
 
         # Event processing order tracking
-        self._last_processed_events: dict[str, int] = {}
+        self._last_processed_events: EventSequence = {}
 
         logger.info("RoomSyncService initialized with enhanced synchronization")
 
@@ -312,7 +316,10 @@ class RoomSyncService:
             pattern = r"^[a-zA-Z0-9_-]+$"
             return bool(re.match(pattern, room_id))
 
-        except Exception:
+        except (AttributeError, TypeError, re.error) as e:
+            logger.warning(
+                "Error validating room ID format", room_id=room_id, error=str(e), error_type=type(e).__name__
+            )
             return False
 
     def _apply_room_data_fixes(self, room_data: dict[str, Any], errors: list[str]) -> dict[str, Any]:

@@ -24,7 +24,7 @@ class MemoryMonitor:
     memory-related statistics for the connection management system.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the memory monitor with default settings."""
         self.last_cleanup_time = time.time()
         self.cleanup_interval = 300  # 5 minutes
@@ -64,7 +64,8 @@ class MemoryMonitor:
         try:
             process = psutil.Process()
             memory_percent = process.memory_percent()
-            return memory_percent / 100.0
+            assert isinstance(memory_percent, (int, float))
+            return float(memory_percent) / 100.0
         except Exception as e:
             logger.error("Error getting memory usage", error=str(e))
             return 0.0
@@ -134,11 +135,11 @@ class MemoryMonitor:
 
         return alerts
 
-    def update_cleanup_time(self):
+    def update_cleanup_time(self) -> None:
         """Update the last cleanup time to the current time."""
         self.last_cleanup_time = time.time()
 
-    def force_garbage_collection(self):
+    def force_garbage_collection(self) -> None:
         """Force garbage collection to free memory."""
         try:
             gc.collect()

@@ -23,6 +23,8 @@ from collections.abc import Callable
 from ..logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
 
+logger = get_logger(__name__)
+
 
 class EventBus:
     """
@@ -108,7 +110,8 @@ class EventBus:
                         except (TimeoutError, Exception):
                             pass  # Abandon remaining tasks
 
-                except Exception:
+                except (RuntimeError, asyncio.CancelledError) as e:
+                    logger.error("Error during event bus shutdown", error=str(e), error_type=type(e).__name__)
                     # Any error in shutdown - just clear the tasks
                     pass
 
@@ -138,7 +141,10 @@ class EventBus:
                     # Use basic print to avoid Unicode encoding issues during cleanup
                     try:
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
-                    except Exception:
+                    except (UnicodeEncodeError, AttributeError) as e2:
+                        logger.error(
+                            "Error logging event processing error", error=str(e2), error_type=type(e2).__name__
+                        )
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
                     continue
 
@@ -150,7 +156,8 @@ class EventBus:
             # Use basic print to avoid Unicode encoding issues during cleanup
             try:
                 self._logger.error("Fatal error in async event processing", error=str(e), exc_info=True)
-            except Exception:
+            except (UnicodeEncodeError, AttributeError) as e2:
+                logger.error("Error logging fatal event processing error", error=str(e2), error_type=type(e2).__name__)
                 self._logger.critical("Fatal error in async event processing", error=str(e), exc_info=True)
         finally:
             self._logger.info("EventBus pure async processing stopped")
@@ -307,14 +314,16 @@ class EventBus:
             # Use basic print instead of logger to avoid encoding issues during cleanup
             try:
                 self._logger.warning("EventBus destroyed without graceful shutdown")
-            except Exception:
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Error during event bus destruction warning", error=str(e), error_type=type(e).__name__)
                 pass
 
             # Force immediate shutdown to prevent "no running event loop" errors
             self._running = False
             try:
                 self._shutdown_event.set()
-            except Exception:
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Error setting shutdown event", error=str(e), error_type=type(e).__name__)
                 pass
 
             # Cancel all active tasks immediately, but only if event loop is still running

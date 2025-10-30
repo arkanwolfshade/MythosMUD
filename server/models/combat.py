@@ -11,6 +11,9 @@ from enum import Enum
 from uuid import UUID, uuid4
 
 from server.config import get_config
+from server.logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 def _get_default_damage() -> int:
@@ -18,7 +21,8 @@ def _get_default_damage() -> int:
     try:
         config = get_config()
         return config.game.basic_unarmed_damage
-    except Exception:
+    except (ImportError, AttributeError, ValueError) as e:
+        logger.error("Error getting basic unarmed damage config", error=str(e), error_type=type(e).__name__)
         # Fallback to hardcoded value if config is not available
         return 10
 

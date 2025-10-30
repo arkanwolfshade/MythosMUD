@@ -66,7 +66,8 @@ def format_player_location(room_id: str) -> str:
         else:
             # Fallback for unexpected format
             return room_id.replace("_", " ").title()
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error parsing room ID", room_id=room_id, error=str(e), error_type=type(e).__name__)
         # Fallback for any parsing errors
         return room_id.replace("_", " ").title()
 
@@ -273,8 +274,8 @@ async def handle_quit_command(
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active")
-        except Exception:
-            logger.error("Error updating last active on quit")
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
 
     logger.info("Player quitting")
     return {"result": "Goodbye! You have been disconnected from the game."}
@@ -318,8 +319,8 @@ async def handle_logout_command(
                     player.last_active = datetime.now(UTC)
                     persistence.save_player(player)
                     logger.info("Player logout - updated last active")
-            except Exception:
-                logger.error("Error updating last active on logout")
+            except (OSError, ValueError, TypeError) as e:
+                logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
 
         # Disconnect player from all connections
         try:
@@ -331,8 +332,8 @@ async def handle_logout_command(
                 logger.info("Player disconnected from all connections")
             else:
                 logger.warning("Connection manager not available for logout")
-        except Exception:
-            logger.error("Error disconnecting player")
+        except (AttributeError, RuntimeError) as e:
+            logger.error("Error disconnecting player", error=str(e), error_type=type(e).__name__)
 
         logger.info("Player logged out successfully")
 
@@ -343,8 +344,8 @@ async def handle_logout_command(
             "message": "You have been logged out and disconnected from the game.",
         }
 
-    except Exception:
-        logger.error("Unexpected error during logout", exc_info=True)
+    except Exception as e:
+        logger.error("Unexpected error during logout", error=str(e), error_type=type(e).__name__, exc_info=True)
 
         # Even if there's an error, we should still indicate logout success
         # The client will handle the cleanup

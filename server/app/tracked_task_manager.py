@@ -240,7 +240,7 @@ class TrackedTaskManager:
 
 
 # Global singleton tracker for comprehensive memory leak prevention
-instrument_global_tracked_manager: TrackedTaskManager | None = None
+_global_tracked_manager: TrackedTaskManager | None = None
 
 
 def get_global_tracked_manager() -> TrackedTaskManager:
@@ -250,10 +250,16 @@ def get_global_tracked_manager() -> TrackedTaskManager:
     Returns:
         Global TrackedTaskManager with universal oversight into task creation anti-patterns.
     """
-    global instrument_global_tracked_manager
-    if instrument_global_tracked_manager is None:
-        instrument_global_tracked_manager = TrackedTaskManager()
-    return instrument_global_tracked_manager
+    global _global_tracked_manager
+    if _global_tracked_manager is None:
+        _global_tracked_manager = TrackedTaskManager()
+    return _global_tracked_manager
+
+
+def reset_global_tracked_manager() -> None:
+    """Reset the global tracked manager for testing."""
+    global _global_tracked_manager
+    _global_tracked_manager = None
 
 
 def patch_asyncio_create_task_with_tracking():

@@ -1379,7 +1379,14 @@ class ConnectionManager:
                                 health_status["websocket_healthy"] += 1
                             else:
                                 raise Exception("WebSocket not connected")
-                        except Exception:
+                        except (RuntimeError, ConnectionError, AttributeError) as e:
+                            logger.error(
+                                "WebSocket health check failed",
+                                player_id=player_id,
+                                connection_id=connection_id,
+                                error=str(e),
+                                error_type=type(e).__name__,
+                            )
                             health_status["websocket_unhealthy"] += 1
                             # Clean up unhealthy connection
                             await self._cleanup_dead_websocket(player_id, connection_id)
@@ -1443,7 +1450,14 @@ class ConnectionManager:
                                     # Check WebSocket health by checking its state
                                     if websocket.client_state.name != "CONNECTED":
                                         raise Exception("WebSocket not connected")
-                                except Exception:
+                                except (RuntimeError, ConnectionError, AttributeError) as e:
+                                    logger.debug(
+                                        "WebSocket cleanup check failed",
+                                        player_id=pid,
+                                        connection_id=connection_id,
+                                        error=str(e),
+                                        error_type=type(e).__name__,
+                                    )
                                     # Connection is dead, clean it up
                                     await self._cleanup_dead_websocket(pid, connection_id)
                                     cleanup_results["connections_cleaned"] += 1

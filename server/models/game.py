@@ -7,6 +7,7 @@ character statistics and attribute types.
 
 from datetime import UTC, datetime
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
@@ -104,12 +105,14 @@ class Stats(BaseModel):
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
 
-    def __init__(self, **data):
+    def __init__(self, **data: Any) -> None:
         """Initialize Stats with proper random number generation."""
         # Use a local random generator to avoid affecting global state
         import random
 
-        local_rng = random.Random(42)  # Fixed seed for testing reproducibility
+        # Use system random for production, optional seed for testing
+        seed = data.pop("_test_seed", None)
+        local_rng = random.Random(seed) if seed is not None else random.Random()
 
         # Generate random values for any field that is None or not provided
         data.setdefault("strength", local_rng.randint(3, 18))
@@ -127,14 +130,12 @@ class Stats(BaseModel):
         super().__init__(**data)
 
     # Derived stats - computed fields
-    @computed_field
-    @property
+    @computed_field  # type: ignore[misc]
     def max_health(self) -> int:
         """Calculate max health based on constitution."""
         return self.constitution * 10
 
-    @computed_field
-    @property
+    @computed_field  # type: ignore[misc]
     def max_sanity(self) -> int:
         """Calculate max sanity based on wisdom."""
         return self.wisdom * 5
