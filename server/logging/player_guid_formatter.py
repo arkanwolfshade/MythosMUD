@@ -65,7 +65,7 @@ class PlayerGuidFormatter(logging.Formatter):
 
         return enhanced_message
 
-    def _convert_player_guids(self, message: str) -> str:
+    def _convert_player_guids(self, message: Any) -> str:
         """
         Convert player GUIDs in message to enhanced format.
 
@@ -75,6 +75,10 @@ class PlayerGuidFormatter(logging.Formatter):
         Returns:
             Message with player GUIDs converted to "<name>: <GUID>" format
         """
+
+        # Be robust to None or non-string inputs
+        if not isinstance(message, str):
+            return ""
 
         def replace_guid(match: re.Match) -> str:
             """Replace a single GUID with enhanced format."""

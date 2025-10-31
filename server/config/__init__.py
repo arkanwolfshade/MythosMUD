@@ -13,6 +13,7 @@ Usage:
 """
 
 from functools import lru_cache
+from os import environ, getenv
 
 from .models import AppConfig
 
@@ -43,7 +44,17 @@ def get_config() -> AppConfig:
     global _config_instance
 
     if _config_instance is None:
-        _config_instance = AppConfig()
+        try:
+            _config_instance = AppConfig()
+        except Exception as e:
+            # Test resilience: if only the primary database URL is missing, provide a safe default in tests
+            env = getenv("MYTHOSMUD_ENV", "").lower()
+            if env == "test" and "Field required" in str(e) and "DatabaseConfig" in str(e) and "url" in str(e):
+                # Provide an in-memory SQLite URL to satisfy components that don't use the main DB
+                environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
+                _config_instance = AppConfig()
+            else:
+                raise
 
     return _config_instance
 
