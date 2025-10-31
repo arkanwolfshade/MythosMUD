@@ -337,13 +337,21 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
             if key == "player_id" and isinstance(value, str):
                 # Check if this looks like a UUID
                 if len(value) == 36 and value.count("-") == 4:
+                    # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
+                    # Define a local exception type alias for optional dependency
+                    try:
+                        from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
+                        _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
+                    except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
+                        _DatabaseErrorType = Exception
+
                     try:
                         # Try to get the player name
                         player = _global_player_service.persistence.get_player(value)
                         if player and hasattr(player, "name"):
                             # Enhance the player_id field with the player name
                             event_dict[key] = f"<{player.name}>: {value}"
-                    except (AttributeError, KeyError, TypeError) as e:
+                    except (AttributeError, KeyError, TypeError, _DatabaseErrorType) as e:
                         logger.error(
                             "Error looking up player name", player_id=value, error=str(e), error_type=type(e).__name__
                         )

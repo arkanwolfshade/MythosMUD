@@ -43,12 +43,11 @@ async def sse_events(player_id: str, request: Request) -> StreamingResponse:
     # Readiness gate: require persistence to be initialized
     try:
         from ..realtime.connection_manager import connection_manager as _cm
-
         if getattr(_cm, "persistence", None) is None:
             raise HTTPException(status_code=503, detail="Service temporarily unavailable")
-    except Exception:
-        # Do not hard fail if readiness check has an unexpected issue
-        pass
+    except Exception as e:
+        # If connection manager is unavailable, return 503
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from e
 
     return StreamingResponse(
         game_event_stream(player_id, session_id),
