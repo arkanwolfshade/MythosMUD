@@ -275,7 +275,7 @@ class TestRunner:
         """Generate coverage report only."""
         logger.info("Generating coverage report")
         return self.run_tests(
-            test_paths=["tests"], extra_args=["--cov-report=html", "--cov-report=term-missing"], markers="not e2e"
+            test_paths=["server/tests"], extra_args=["--cov-report=html", "--cov-report=term-missing"], markers="not e2e"
         )
 
 
