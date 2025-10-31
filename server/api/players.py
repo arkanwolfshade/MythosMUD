@@ -434,6 +434,7 @@ async def roll_character_stats(
     """
     # Check if server is shutting down
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
     if request and is_shutdown_pending(request.app):
         context = create_error_context(user_id=str(current_user.id) if current_user else None)
         context.metadata["operation"] = "roll_stats"
