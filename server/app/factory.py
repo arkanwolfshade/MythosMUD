@@ -22,6 +22,7 @@ from ..api.rooms import room_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
+from ..config import get_config
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
@@ -53,24 +54,32 @@ def create_app() -> FastAPI:
     )
 
     # Add CORS middleware first (it handles preflight requests)
-    allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
-    allowed_methods = os.getenv("ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS").split(",")
-    allowed_headers = os.getenv("ALLOWED_HEADERS", "Content-Type,Authorization,X-Requested-With").split(",")
+    config = get_config()
+    cors_config = config.cors
 
     logger.info(
         "CORS configuration",
-        allowed_origins=allowed_origins,
-        allowed_methods=allowed_methods,
-        allowed_headers=allowed_headers,
+        allow_origins=cors_config.allow_origins,
+        allow_methods=cors_config.allow_methods,
+        allow_headers=cors_config.allow_headers,
+        expose_headers=cors_config.expose_headers,
+        allow_credentials=cors_config.allow_credentials,
+        max_age=cors_config.max_age,
     )
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=allowed_origins,
-        allow_credentials=True,
-        allow_methods=allowed_methods,
-        allow_headers=allowed_headers,
-    )
+    cors_kwargs = {
+        "allow_origins": cors_config.allow_origins,
+        "allow_credentials": cors_config.allow_credentials,
+        "allow_methods": cors_config.allow_methods,
+        "allow_headers": cors_config.allow_headers,
+        "max_age": cors_config.max_age,
+    }
+    if cors_config.expose_headers:
+        cors_kwargs["expose_headers"] = cors_config.expose_headers
+
+    # Human Explanation: Ensure preflight requests honor the same wards used elsewhere in the realm.
+    # AI Guidance: Maintain consistency with server.main when updating CORS parameters.
+    app.add_middleware(CORSMiddleware, **cors_kwargs)
 
     # Add comprehensive logging middleware (add second to capture all requests and errors)
     app.add_middleware(ComprehensiveLoggingMiddleware)

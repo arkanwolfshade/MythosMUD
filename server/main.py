@@ -186,13 +186,19 @@ app.router.lifespan_context = enhanced_lifespan
 
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=config.cors.allow_origins,
-    allow_credentials=config.cors.allow_credentials,
-    allow_methods=config.cors.allow_methods,
-    allow_headers=config.cors.allow_headers,
-)
+cors_kwargs = {
+    "allow_origins": config.cors.allow_origins,
+    "allow_credentials": config.cors.allow_credentials,
+    "allow_methods": config.cors.allow_methods,
+    "allow_headers": config.cors.allow_headers,
+    "max_age": config.cors.max_age,
+}
+
+if config.cors.expose_headers:
+    cors_kwargs["expose_headers"] = config.cors.expose_headers
+
+# The trusted origins list keeps our gateways as secure as the wards at the Arkham Library.
+app.add_middleware(CORSMiddleware, **cors_kwargs)
 
 setup_monitoring_endpoints(app)
 

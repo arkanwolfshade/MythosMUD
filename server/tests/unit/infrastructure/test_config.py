@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from server.config import AppConfig, get_config, reset_config
 from server.config.models import (
     ChatConfig,
+    CORSConfig,
     DatabaseConfig,
     GameConfig,
     LoggingConfig,
@@ -255,6 +256,48 @@ class TestChatConfig:
         assert "Rate limit must be between 1 and 1000" in str(exc_info.value)
 
 
+class TestCORSConfig:
+    """Test CORSConfig validation and parsing."""
+
+    def test_default_cors_config(self):
+        """Test default CORS configuration values."""
+        config = CORSConfig()
+
+        assert config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+        assert config.allow_credentials is True
+        assert all(method in config.allow_methods for method in ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+        assert "Content-Type" in config.allow_headers
+        assert config.max_age == 600
+
+    def test_cors_env_overrides(self, monkeypatch):
+        """Test that environment variables override defaults."""
+        monkeypatch.setenv("CORS_ORIGINS", "https://example.com, https://alt.example.com")
+        monkeypatch.setenv("CORS_ALLOW_METHODS", "GET,POST")
+        monkeypatch.setenv("CORS_ALLOW_HEADERS", "Content-Type,Authorization")
+        monkeypatch.setenv("CORS_MAX_AGE", "1200")
+
+        config = CORSConfig()
+
+        assert config.allow_origins == ["https://example.com", "https://alt.example.com"]
+        assert config.allow_methods == ["GET", "POST"]
+        assert config.allow_headers == ["Content-Type", "Authorization"]
+        assert config.max_age == 1200
+
+    def test_cors_backwards_compatible_aliases(self, monkeypatch):
+        """Test legacy environment variable aliases such as ALLOWED_ORIGINS."""
+        monkeypatch.delenv("CORS_ORIGINS", raising=False)
+        monkeypatch.setenv("ALLOWED_ORIGINS", "https://legacy.example.com")
+
+        config = CORSConfig()
+
+        assert config.allow_origins == ["https://legacy.example.com"]
+
+    def test_empty_origins_rejected(self):
+        """Test that empty origin lists are rejected for security."""
+        with pytest.raises(ValidationError):
+            CORSConfig(allow_origins=[])
+
+
 class TestPlayerStatsConfig:
     """Test PlayerStatsConfig validation."""
 
@@ -320,6 +363,8 @@ class TestAppConfig:
         assert config.database.url == "sqlite+aiosqlite:///test.db"
         assert config.security.admin_password == "test_admin_pass"
         assert config.logging.environment == "unit_test"
+        assert config.cors.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+        assert config.cors.allow_credentials is True
 
     def test_app_config_sets_environment_variables(self):
         """Test that AppConfig sets environment variables for legacy compatibility."""
@@ -351,6 +396,8 @@ class TestAppConfig:
         assert legacy["nats"]["enabled"] is True
         assert isinstance(legacy["chat"], dict)
         assert isinstance(legacy["default_player_stats"], dict)
+        assert "cors" in legacy
+        assert legacy["cors"]["allow_origins"] == ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     def test_get_config_singleton(self):
         """Test that get_config returns singleton instance."""

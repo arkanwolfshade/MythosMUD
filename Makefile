@@ -54,7 +54,7 @@ lint-sqlalchemy:
 	cd $(PROJECT_ROOT) && python scripts/lint_sqlalchemy_async.py
 
 mypy:
-	cd $(PROJECT_ROOT) && uv run mypy server
+	cd $(PROJECT_ROOT) && uv run pre-commit run mypy --all-files
 
 format:
 	cd $(PROJECT_ROOT) && python scripts/format.py

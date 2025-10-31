@@ -1,15 +1,20 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.14.2
+    rev: v0.14.3
     hooks:
       - id: ruff
         args: ["--line-length=120"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.18.2
     hooks:
       - id: mypy
-        additional_dependencies: [types-requests, types-python-dateutil]
+        additional_dependencies:
+          - types-requests
+          - types-python-dateutil
+          - pydantic-settings>=2.0.0
+          - httpx>=0.28.1
+          - pytest-asyncio>=1.2.0
         args: [--config-file=pyproject.toml]
         # Align exclude patterns with pyproject.toml
         exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|server/alembic/|server/test_who_command_direct\.py)
