@@ -23,7 +23,7 @@ class AdminActionsLogger:
     administrative actions with JSON-structured log entries.
     """
 
-    def __init__(self, log_directory: str = None):
+    def __init__(self, log_directory: str | None = None):
         """
         Initialize the admin actions logger.
 
@@ -284,27 +284,31 @@ class AdminActionsLogger:
         """
         actions = self.get_recent_actions(hours=hours, action_type="teleport")
 
+        teleport_types: dict[str, int] = {}
+        admin_activity: dict[str, int] = {}
+        target_players: dict[str, int] = {}
+
         stats = {
             "total_teleports": len(actions),
             "successful_teleports": len([a for a in actions if a.get("success", False)]),
             "failed_teleports": len([a for a in actions if not a.get("success", False)]),
-            "teleport_types": {},
-            "admin_activity": {},
-            "target_players": {},
+            "teleport_types": teleport_types,
+            "admin_activity": admin_activity,
+            "target_players": target_players,
         }
 
         for action in actions:
             # Count teleport types
             teleport_type = action.get("teleport_type", "unknown")
-            stats["teleport_types"][teleport_type] = stats["teleport_types"].get(teleport_type, 0) + 1
+            teleport_types[teleport_type] = teleport_types.get(teleport_type, 0) + 1
 
             # Count admin activity
             admin_name = action.get("admin_name", "unknown")
-            stats["admin_activity"][admin_name] = stats["admin_activity"].get(admin_name, 0) + 1
+            admin_activity[admin_name] = admin_activity.get(admin_name, 0) + 1
 
             # Count target players
             target_player = action.get("target_player", "unknown")
-            stats["target_players"][target_player] = stats["target_players"].get(target_player, 0) + 1
+            target_players[target_player] = target_players.get(target_player, 0) + 1
 
         return stats
 

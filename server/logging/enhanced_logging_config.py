@@ -12,7 +12,7 @@ import time
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import structlog
 from structlog.contextvars import (
@@ -239,9 +239,9 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
         "authorization",
     ]
 
-    def sanitize_dict(d: dict) -> dict:
+    def sanitize_dict(d: dict[str, Any]) -> dict[str, Any]:
         """Recursively sanitize dictionary values."""
-        sanitized = {}
+        sanitized: dict[str, Any] = {}
         for key, value in d.items():
             if isinstance(value, dict):
                 sanitized[key] = sanitize_dict(value)
@@ -505,6 +505,7 @@ def _setup_enhanced_file_logging(
         handler.setLevel(logging.DEBUG)
 
         # Create formatter - use PlayerGuidFormatter if player_service is available
+        formatter: logging.Formatter
         if player_service is not None:
             from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -542,6 +543,7 @@ def _setup_enhanced_file_logging(
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Use enhanced formatter for console handler
+    console_formatter: logging.Formatter
     if player_service is not None:
         from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -569,6 +571,7 @@ def _setup_enhanced_file_logging(
     errors_handler.setLevel(logging.WARNING)
 
     # Use enhanced formatter for errors handler
+    errors_formatter: logging.Formatter
     if player_service is not None:
         from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -810,5 +813,7 @@ def update_logging_with_player_service(player_service: Any) -> None:
                 handler.setFormatter(enhanced_formatter)
 
     # Log that the enhancement has been applied
-    logger = get_logger("server.logging")
-    logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
+    structured_logger = cast(Any, get_logger("server.logging"))
+    structured_logger.info(
+        "Logging system enhanced with PlayerGuidFormatter", player_service_available=True
+    )

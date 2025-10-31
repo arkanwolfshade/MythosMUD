@@ -616,9 +616,6 @@ async def handle_npc_behavior_command(
         # For now, return not implemented message
         return {"result": "NPC behavior modification not yet implemented"}
 
-        logger.info("NPC behavior set", npc_id=npc_id, behavior_type=behavior_type, admin_name=player_name)
-        return {"result": f"NPC {npc_id} behavior set to {behavior_type}"}
-
     except Exception as e:
         logger.error("Error setting NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error setting NPC behavior: {str(e)}"}
@@ -650,9 +647,6 @@ async def handle_npc_react_command(
         # For now, return not implemented message
         return {"result": "NPC reaction triggering not yet implemented"}
 
-        logger.info("NPC reaction triggered", npc_id=npc_id, reaction_type=reaction_type, admin_name=player_name)
-        return {"result": f"NPC {npc_id} reaction {reaction_type} triggered"}
-
     except Exception as e:
         logger.error("Error triggering NPC reaction", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error triggering NPC reaction: {str(e)}"}
@@ -677,9 +671,6 @@ async def handle_npc_stop_command(
         # TODO: Implement stop_npc_behavior method in NPCInstanceService
         # For now, return not implemented message
         return {"result": "NPC behavior stopping not yet implemented"}
-
-        logger.info("NPC behavior stopped", npc_id=npc_id, admin_name=player_name)
-        return {"result": f"NPC {npc_id} behavior stopped"}
 
     except Exception as e:
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))

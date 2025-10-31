@@ -84,7 +84,6 @@ def hash_password(password: str) -> str:
             details={"original_error": str(e), "error_type": type(e).__name__},
             user_friendly="Password processing failed",
         )
-        return ""  # This should never be reached
 
 
 def verify_password(password: str, hashed: str) -> bool:

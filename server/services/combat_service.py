@@ -42,7 +42,10 @@ class CombatService:
     """
 
     def __init__(
-        self, player_combat_service: PlayerCombatService | None = None, nats_service=None, npc_combat_integration_service=None
+        self,
+        player_combat_service: PlayerCombatService | None = None,
+        nats_service=None,
+        npc_combat_integration_service=None,
     ):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -342,14 +345,6 @@ class CombatService:
             await self._process_npc_turn(combat, current_participant, current_tick)
         else:
             # Player's turn - perform automatic basic attack
-            # Validate that current_participant is a CombatParticipant
-            if not isinstance(current_participant, CombatParticipant):
-                logger.error(
-                    "Expected CombatParticipant",
-                    got_type=type(current_participant).__name__,
-                    participant=current_participant,
-                )
-                return
             await self._process_player_turn(combat, current_participant, current_tick)
 
     async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
@@ -362,11 +357,6 @@ class CombatService:
             current_tick: Current game tick
         """
         try:
-            # Validate that we received a proper CombatParticipant object
-            if not isinstance(npc, CombatParticipant):
-                logger.error("Expected CombatParticipant", got_type=type(npc).__name__, npc=npc)
-                return
-
             # Debug logging to understand what we're receiving
             logger.debug("_process_npc_turn called", npc_type=type(npc).__name__, npc=npc)
             if hasattr(npc, "participant_id"):
@@ -421,11 +411,6 @@ class CombatService:
             current_tick: Current game tick
         """
         try:
-            # Validate that we received a proper CombatParticipant object
-            if not isinstance(player, CombatParticipant):
-                logger.error("Expected CombatParticipant", got_type=type(player), player=player)
-                return
-
             # Debug logging to understand what we're receiving
             logger.debug("_process_player_turn called", player_type=type(player), player=player)
             if hasattr(player, "participant_id"):

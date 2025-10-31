@@ -98,9 +98,6 @@ class CharacterCreationService:
                 user_friendly="Invalid parameters provided",
             )
 
-        # This should never be reached due to the log_and_raise above
-        return {"error": "Unexpected error in stats rolling"}
-
     def validate_character_stats(self, stats: dict, class_name: str | None = None) -> dict[str, Any]:
         """
         Validate character stats against class prerequisites.
@@ -149,9 +146,6 @@ class CharacterCreationService:
                 details={"error": str(e)},
                 user_friendly="Invalid stats format provided",
             )
-
-        # This should never be reached due to the log_and_raise above
-        return {"error": "Unexpected error in stats validation"}
 
     def create_character_with_stats(
         self,
@@ -217,9 +211,6 @@ class CharacterCreationService:
                 details={"error": str(e), "character_name": name},
                 user_friendly="Failed to create character",
             )
-
-        # This should never be reached due to the log_and_raise above
-        return {"error": "Unexpected error in character creation"}
 
     def get_available_classes_info(self) -> dict[str, Any]:
         """

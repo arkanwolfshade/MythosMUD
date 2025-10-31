@@ -62,14 +62,14 @@ security = HTTPBearer()
 
 
 # Root endpoint
-@app.get("/")  # type: ignore[misc]
+@app.get("/")
 async def read_root() -> dict[str, str]:
     """Root endpoint providing basic server information."""
     return {"message": "Welcome to MythosMUD!"}
 
 
 # Test endpoint for JWT validation
-@app.get("/test-auth")  # type: ignore[misc]
+@app.get("/test-auth")
 async def test_auth(current_user: dict = Depends(get_current_user)) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:

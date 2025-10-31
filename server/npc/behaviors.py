@@ -334,9 +334,9 @@ class NPCBase(ABC):
         self.event_reaction_system = event_reaction_system
 
         # Initialize integration systems (will be set by external systems)
-        self.movement_integration = None
-        self.combat_integration = None
-        self.communication_integration = None
+        self.movement_integration: Any | None = None
+        self.combat_integration: Any | None = None
+        self.communication_integration: Any | None = None
 
         # Avoid accessing definition.name in logger to prevent potential lazy loading issues
         # Temporarily disable logging to avoid potential recursion issues

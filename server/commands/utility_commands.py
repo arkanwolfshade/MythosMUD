@@ -42,13 +42,6 @@ def format_player_location(room_id: str) -> str:
         str: Formatted location string
     """
     try:
-        # Ensure room_id is a string
-        if not isinstance(room_id, str):
-            logger.warning(
-                "format_player_location received non-string room_id", room_id_type=type(room_id), room_id=room_id
-            )
-            return str(room_id)
-
         # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
         parts = room_id.split("_")
         if len(parts) >= 4:

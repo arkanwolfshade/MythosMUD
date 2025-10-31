@@ -155,7 +155,7 @@ def validate_admin_permission(current_user: dict, action: AdminAction, request: 
 # --- NPC Definition Endpoints ---
 
 
-@npc_router.get("/definitions", response_model=list[NPCDefinitionResponse])  # type: ignore[misc]
+@npc_router.get("/definitions", response_model=list[NPCDefinitionResponse])
 async def get_npc_definitions(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -189,7 +189,7 @@ async def get_npc_definitions(
         ) from e
 
 
-@npc_router.post("/definitions", response_model=NPCDefinitionResponse, status_code=status.HTTP_201_CREATED)  # type: ignore[misc]
+@npc_router.post("/definitions", response_model=NPCDefinitionResponse, status_code=status.HTTP_201_CREATED)
 async def create_npc_definition(
     npc_data: NPCDefinitionCreate,
     current_user: dict = Depends(get_current_user),
@@ -235,7 +235,7 @@ async def create_npc_definition(
         ) from e
 
 
-@npc_router.get("/definitions/{definition_id}", response_model=NPCDefinitionResponse)  # type: ignore[misc]
+@npc_router.get("/definitions/{definition_id}", response_model=NPCDefinitionResponse)
 async def get_npc_definition(
     definition_id: int,
     current_user: dict = Depends(get_current_user),
@@ -270,7 +270,7 @@ async def get_npc_definition(
         ) from e
 
 
-@npc_router.put("/definitions/{definition_id}", response_model=NPCDefinitionResponse)  # type: ignore[misc]
+@npc_router.put("/definitions/{definition_id}", response_model=NPCDefinitionResponse)
 async def update_npc_definition(
     definition_id: int,
     npc_data: NPCDefinitionUpdate,
@@ -320,7 +320,7 @@ async def update_npc_definition(
         ) from e
 
 
-@npc_router.delete("/definitions/{definition_id}", status_code=status.HTTP_204_NO_CONTENT)  # type: ignore[misc]
+@npc_router.delete("/definitions/{definition_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_npc_definition(
     definition_id: int,
     current_user: dict = Depends(get_current_user),
@@ -361,7 +361,7 @@ async def delete_npc_definition(
 # --- NPC Instance Management Endpoints ---
 
 
-@npc_router.get("/instances")  # type: ignore[misc]
+@npc_router.get("/instances")
 async def get_npc_instances(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -380,9 +380,8 @@ async def get_npc_instances(
         instances = await instance_service.get_npc_instances()
 
         logger.info("Retrieved NPC instances", user=auth_service.get_username(current_user))
-        from typing import cast
 
-        return cast(list[dict[str, Any]], instances)
+        return instances
 
     except HTTPException:
         raise
@@ -394,7 +393,7 @@ async def get_npc_instances(
         ) from e
 
 
-@npc_router.post("/instances/spawn")  # type: ignore[misc]
+@npc_router.post("/instances/spawn")
 async def spawn_npc_instance(
     spawn_data: NPCSpawnRequest,
     current_user: dict = Depends(get_current_user),
@@ -430,9 +429,7 @@ async def spawn_npc_instance(
             room_id=spawn_data.room_id,
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], result)
+        return result
 
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -446,7 +443,7 @@ async def spawn_npc_instance(
         ) from e
 
 
-@npc_router.delete("/instances/{npc_id}")  # type: ignore[misc]
+@npc_router.delete("/instances/{npc_id}")
 async def despawn_npc_instance(
     npc_id: str,
     current_user: dict = Depends(get_current_user),
@@ -475,9 +472,7 @@ async def despawn_npc_instance(
             npc_name=result.get("npc_name"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], result)
+        return result
 
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -491,7 +486,7 @@ async def despawn_npc_instance(
         ) from e
 
 
-@npc_router.put("/instances/{npc_id}/move")  # type: ignore[misc]
+@npc_router.put("/instances/{npc_id}/move")
 async def move_npc_instance(
     npc_id: str,
     move_data: NPCMoveRequest,
@@ -526,9 +521,7 @@ async def move_npc_instance(
             new_room_id=result.get("new_room_id"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], result)
+        return result
 
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -542,7 +535,7 @@ async def move_npc_instance(
         ) from e
 
 
-@npc_router.get("/instances/{npc_id}/stats")  # type: ignore[misc]
+@npc_router.get("/instances/{npc_id}/stats")
 async def get_npc_stats(
     npc_id: str,
     current_user: dict = Depends(get_current_user),
@@ -568,9 +561,7 @@ async def get_npc_stats(
             npc_name=stats.get("name"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], stats)
+        return stats
 
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -587,7 +578,7 @@ async def get_npc_stats(
 # --- Population Monitoring Endpoints ---
 
 
-@npc_router.get("/population")  # type: ignore[misc]
+@npc_router.get("/population")
 async def get_npc_population_stats(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -611,9 +602,7 @@ async def get_npc_population_stats(
             total_npcs=stats.get("total_npcs"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], stats)
+        return stats
 
     except HTTPException:
         raise
@@ -627,7 +616,7 @@ async def get_npc_population_stats(
         ) from e
 
 
-@npc_router.get("/zones")  # type: ignore[misc]
+@npc_router.get("/zones")
 async def get_npc_zone_stats(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -652,9 +641,7 @@ async def get_npc_zone_stats(
             total_npcs=stats.get("total_npcs"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], stats)
+        return stats
 
     except HTTPException:
         raise
@@ -666,7 +653,7 @@ async def get_npc_zone_stats(
         ) from e
 
 
-@npc_router.get("/status")  # type: ignore[misc]
+@npc_router.get("/status")
 async def get_npc_system_status(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -691,9 +678,7 @@ async def get_npc_system_status(
             active_npcs=system_status.get("active_npcs"),
         )
 
-        from typing import cast
-
-        return cast(dict[str, Any], system_status)
+        return system_status
 
     except HTTPException:
         raise
@@ -710,7 +695,7 @@ async def get_npc_system_status(
 # --- NPC Spawn Rule Endpoints ---
 
 
-@npc_router.get("/spawn-rules", response_model=list[NPCSpawnRuleResponse])  # type: ignore[misc]
+@npc_router.get("/spawn-rules", response_model=list[NPCSpawnRuleResponse])
 async def get_npc_spawn_rules(
     current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
@@ -743,7 +728,7 @@ async def get_npc_spawn_rules(
         ) from e
 
 
-@npc_router.post("/spawn-rules", response_model=NPCSpawnRuleResponse, status_code=status.HTTP_201_CREATED)  # type: ignore[misc]
+@npc_router.post("/spawn-rules", response_model=NPCSpawnRuleResponse, status_code=status.HTTP_201_CREATED)
 async def create_npc_spawn_rule(
     spawn_rule_data: NPCSpawnRuleCreate,
     current_user: dict = Depends(get_current_user),
@@ -787,7 +772,7 @@ async def create_npc_spawn_rule(
         ) from e
 
 
-@npc_router.delete("/spawn-rules/{spawn_rule_id}", status_code=status.HTTP_204_NO_CONTENT)  # type: ignore[misc]
+@npc_router.delete("/spawn-rules/{spawn_rule_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_npc_spawn_rule(
     spawn_rule_id: int,
     current_user: dict = Depends(get_current_user),
@@ -828,7 +813,7 @@ async def delete_npc_spawn_rule(
 # --- Admin Management Endpoints ---
 
 
-@npc_router.get("/admin/sessions")  # type: ignore[misc]
+@npc_router.get("/admin/sessions")
 async def get_admin_sessions(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
@@ -858,7 +843,7 @@ async def get_admin_sessions(
         ) from e
 
 
-@npc_router.get("/admin/audit-log")  # type: ignore[misc]
+@npc_router.get("/admin/audit-log")
 async def get_admin_audit_log(
     limit: int = 100,
     current_user: dict = Depends(get_current_user),
@@ -892,7 +877,7 @@ async def get_admin_audit_log(
         ) from e
 
 
-@npc_router.post("/admin/cleanup-sessions")  # type: ignore[misc]
+@npc_router.post("/admin/cleanup-sessions")
 async def cleanup_admin_sessions(
     current_user: dict = Depends(get_current_user),
     request: Request = None,

@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging.enhanced_logging_config import get_logger
@@ -47,7 +47,7 @@ logger = get_logger(__name__)
 player_router = APIRouter(prefix="/api/players", tags=["players"])
 
 
-@player_router.post("/", response_model=PlayerRead)  # type: ignore[misc]
+@player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
@@ -67,7 +67,7 @@ async def create_player(
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from None
 
 
-@player_router.get("/", response_model=list[PlayerRead])  # type: ignore[misc]
+@player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
     current_user: User = Depends(get_current_user),
     request: Request = None,
@@ -79,7 +79,7 @@ async def list_players(
     return result
 
 
-@player_router.get("/available-classes")  # type: ignore[misc]
+@player_router.get("/available-classes")
 async def get_available_classes(
     current_user: User = Depends(get_current_user),
 ) -> dict[str, Any]:
@@ -98,7 +98,7 @@ async def get_available_classes(
     return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
 
 
-@player_router.get("/{player_id}", response_model=PlayerRead)  # type: ignore[misc]
+@player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
@@ -117,7 +117,7 @@ async def get_player(
     return player
 
 
-@player_router.get("/name/{player_name}", response_model=PlayerRead)  # type: ignore[misc]
+@player_router.get("/name/{player_name}", response_model=PlayerRead)
 async def get_player_by_name(
     player_name: str,
     current_user: User = Depends(get_current_user),
@@ -136,7 +136,7 @@ async def get_player_by_name(
     return player
 
 
-@player_router.delete("/{player_id}")  # type: ignore[misc]
+@player_router.delete("/{player_id}")
 async def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
@@ -163,7 +163,7 @@ async def delete_player(
 
 
 # Player stats and effects endpoints
-@player_router.post("/{player_id}/sanity-loss")  # type: ignore[misc]
+@player_router.post("/{player_id}/sanity-loss")
 async def apply_sanity_loss(
     player_id: str,
     amount: int,
@@ -185,7 +185,7 @@ async def apply_sanity_loss(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/fear")  # type: ignore[misc]
+@player_router.post("/{player_id}/fear")
 async def apply_fear(
     player_id: str,
     amount: int,
@@ -207,7 +207,7 @@ async def apply_fear(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/corruption")  # type: ignore[misc]
+@player_router.post("/{player_id}/corruption")
 async def apply_corruption(
     player_id: str,
     amount: int,
@@ -229,7 +229,7 @@ async def apply_corruption(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/occult-knowledge")  # type: ignore[misc]
+@player_router.post("/{player_id}/occult-knowledge")
 async def gain_occult_knowledge(
     player_id: str,
     amount: int,
@@ -251,7 +251,7 @@ async def gain_occult_knowledge(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/heal")  # type: ignore[misc]
+@player_router.post("/{player_id}/heal")
 async def heal_player(
     player_id: str,
     amount: int,
@@ -272,7 +272,7 @@ async def heal_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/damage")  # type: ignore[misc]
+@player_router.post("/{player_id}/damage")
 async def damage_player(
     player_id: str,
     amount: int,
@@ -294,7 +294,7 @@ async def damage_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/respawn")  # type: ignore[misc]
+@player_router.post("/respawn")
 async def respawn_player(
     request: Request,
     current_user: User = Depends(get_current_active_user),
@@ -414,7 +414,7 @@ async def respawn_player(
 
 
 # Character Creation and Stats Generation Endpoints
-@player_router.post("/roll-stats")  # type: ignore[misc]
+@player_router.post("/roll-stats")
 async def roll_character_stats(
     method: str = "3d6",
     required_class: str | None = None,
@@ -434,8 +434,6 @@ async def roll_character_stats(
     """
     # Check if server is shutting down
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
-    from ..utils.error_logging import create_error_context
-
     if request and is_shutdown_pending(request.app):
         context = create_error_context(user_id=str(current_user.id) if current_user else None)
         context.metadata["operation"] = "roll_stats"
@@ -448,8 +446,6 @@ async def roll_character_stats(
     if not current_user:
         logger.warning("Authentication failed: No user returned from get_current_active_user")
         # Note: We don't have request context here, so we'll create a minimal context
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
@@ -459,8 +455,6 @@ async def roll_character_stats(
     try:
         stats_roll_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
@@ -472,8 +466,6 @@ async def roll_character_stats(
         ) from e
 
     stats_generator = StatsGenerator()
-    from ..exceptions import create_error_context
-
     try:
         if profession_id is not None:
             # Use profession-based stat rolling
@@ -524,7 +516,7 @@ async def roll_character_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/create-character")  # type: ignore[misc]
+@player_router.post("/create-character")
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     current_user: User = Depends(get_current_user),
@@ -627,7 +619,7 @@ async def create_character_with_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/validate-stats")  # type: ignore[misc]
+@player_router.post("/validate-stats")
 async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
@@ -662,8 +654,6 @@ async def validate_character_stats(
 
             return {"available_classes": available_classes, "stat_summary": stat_summary}
     except Exception as e:
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)

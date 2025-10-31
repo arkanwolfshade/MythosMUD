@@ -22,7 +22,7 @@ class MemoryProfiler:
     def __init__(self) -> None:
         """Initialize the memory profiler."""
         self.process = psutil.Process()
-        self.baseline_memory = None
+        self.baseline_memory: int | None = None
         self.measurements: list[dict[str, Any]] = []
 
     def start_profiling(self) -> None:
@@ -155,7 +155,7 @@ class MemoryProfiler:
         for _ in range(iterations):
             for data in serialized_data:
                 # Cast is necessary because mypy doesn't recognize class methods on type[BaseModel]
-                instance = model_class.model_validate(data)  # type: ignore
+                instance = model_class.model_validate(data)
                 deserialized_instances.append(instance)
 
         # Measure memory usage (memory_after triggers measurement snapshot)

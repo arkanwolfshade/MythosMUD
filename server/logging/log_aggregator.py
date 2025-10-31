@@ -104,10 +104,10 @@ class LogAggregator:
         level: str,
         logger_name: str,
         message: str,
-        data: dict[str, Any] = None,
-        correlation_id: str = None,
-        user_id: str = None,
-        session_id: str = None,
+        data: dict[str, Any] | None = None,
+        correlation_id: str | None = None,
+        user_id: str | None = None,
+        session_id: str | None = None,
     ) -> None:
         """
         Add a log entry to the aggregation system.
@@ -255,7 +255,9 @@ class LogAggregator:
         """
         return self.get_logs(correlation_id=correlation_id)
 
-    def export_logs(self, file_path: str | None = None, format: str = "json", filters: dict[str, Any] = None) -> str:
+    def export_logs(
+        self, file_path: str | None = None, format: str = "json", filters: dict[str, Any] | None = None
+    ) -> str:
         """
         Export logs to a file.
 
@@ -267,14 +269,16 @@ class LogAggregator:
         Returns:
             Path to the exported file
         """
+        export_path: Path
         if file_path is None:
             if self.export_path is None:
                 raise ValueError("No export path specified")
             timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-            file_path = self.export_path / f"logs_export_{timestamp}.{format}"
+            export_path = self.export_path / f"logs_export_{timestamp}.{format}"
+        else:
+            export_path = Path(file_path)
 
-        file_path = Path(file_path)
-        file_path.parent.mkdir(parents=True, exist_ok=True)
+        export_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Get logs to export
         if filters:
@@ -284,15 +288,15 @@ class LogAggregator:
 
         # Export in specified format
         if format == "json":
-            self._export_json(file_path, logs)
+            self._export_json(export_path, logs)
         elif format == "csv":
-            self._export_csv(file_path, logs)
+            self._export_csv(export_path, logs)
         else:
             raise ValueError(f"Unsupported export format: {format}")
 
-        logger.info("Logs exported", file_path=str(file_path), format=format, log_count=len(logs))
+        logger.info("Logs exported", file_path=str(export_path), format=format, log_count=len(logs))
 
-        return str(file_path)
+        return str(export_path)
 
     def add_aggregation_callback(self, callback: Callable) -> None:
         """
@@ -425,11 +429,11 @@ def aggregate_log_entry(
     level: str,
     logger_name: str,
     message: str,
-    data: dict[str, Any] = None,
-    correlation_id: str = None,
-    user_id: str = None,
-    session_id: str = None,
-    aggregator: LogAggregator = None,
+    data: dict[str, Any] | None = None,
+    correlation_id: str | None = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
+    aggregator: LogAggregator | None = None,
 ) -> None:
     """
     Add a log entry to the aggregation system.

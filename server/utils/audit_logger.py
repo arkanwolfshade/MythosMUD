@@ -405,7 +405,7 @@ class AuditLogger:
 
             # Count failures
             if not entry.get("success", True):
-                stats["failed_commands"] = stats["failed_commands"] + 1  # type: ignore[assignment,operator]
+                stats["failed_commands"] = stats["failed_commands"] + 1
 
         # Sort top players
         stats["top_players"] = dict(sorted(top_players.items(), key=lambda x: x[1], reverse=True)[:10])

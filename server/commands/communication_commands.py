@@ -452,9 +452,6 @@ async def handle_whisper_command(
         )
         return {"result": "Say what? Usage: whisper <player> <message>"}
 
-        # message is already a complete string from the validation system
-        logger.debug("Player whispering", player_name=player_name, target=target, message=message)
-
     # Get app state services for broadcasting
     app = request.app if request else None
     player_service = app.state.player_service if app else None

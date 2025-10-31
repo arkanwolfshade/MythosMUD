@@ -45,7 +45,7 @@ def verify_admin_access(current_user: dict = Depends(get_current_user)) -> dict:
     return current_user
 
 
-@router.get("")  # type: ignore[misc]
+@router.get("")
 async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get comprehensive system metrics.
@@ -90,7 +90,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
 
 
-@router.get("/summary")  # type: ignore[misc]
+@router.get("/summary")
 async def get_metrics_summary(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get concise metrics summary.
@@ -124,7 +124,7 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
 
 
-@router.post("/reset")  # type: ignore[misc]
+@router.post("/reset")
 async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Reset metrics counters.
@@ -150,7 +150,7 @@ async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> di
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting metrics") from e
 
 
-@router.get("/dlq")  # type: ignore[misc]
+@router.get("/dlq")
 async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get messages from dead letter queue.
@@ -189,7 +189,7 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
         ) from e
 
 
-@router.post("/circuit-breaker/reset")  # type: ignore[misc]
+@router.post("/circuit-breaker/reset")
 async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Manually reset circuit breaker to CLOSED state.
@@ -222,7 +222,7 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
         ) from e
 
 
-@router.post("/dlq/{filepath:path}/replay")  # type: ignore[misc]
+@router.post("/dlq/{filepath:path}/replay")
 async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Replay a message from the Dead Letter Queue.
@@ -302,7 +302,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
         ) from e
 
 
-@router.delete("/dlq/{filepath:path}")  # type: ignore[misc]
+@router.delete("/dlq/{filepath:path}")
 async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Delete a message from the Dead Letter Queue without replaying.

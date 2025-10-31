@@ -759,9 +759,6 @@ class PlayerService:
                     logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
                     in_combat = False
 
-        # Final safety check - ensure it's actually a boolean
-        if not isinstance(in_combat, bool):
-            in_combat = False
         # Get profession information
         player_profession_id = 0
         profession_name = None

@@ -113,7 +113,7 @@ class ConnectionManager:
         # Global event sequence counter
         self.sequence_counter = 0
         # Reference to persistence layer (set during app startup)
-        self.persistence = None
+        self.persistence: Any | None = None
         # EventPublisher for NATS integration
         self.event_publisher = event_publisher
         # Event bus reference (set during app startup)

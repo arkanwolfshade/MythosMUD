@@ -124,7 +124,7 @@ class ConnectionHealthStatsResponse(BaseModel):
     timestamp: float
 
 
-@monitoring_router.get("/metrics", response_model=MetricsResponse)  # type: ignore[misc]
+@monitoring_router.get("/metrics", response_model=MetricsResponse)
 async def get_movement_metrics(request: Request) -> MetricsResponse:
     """Get comprehensive movement system metrics."""
     try:
@@ -145,7 +145,7 @@ async def get_movement_metrics(request: Request) -> MetricsResponse:
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}", context=context) from e
 
 
-@monitoring_router.get("/integrity", response_model=IntegrityResponse)  # type: ignore[misc]
+@monitoring_router.get("/integrity", response_model=IntegrityResponse)
 async def validate_room_integrity(request: Request) -> IntegrityResponse:
     """Validate room data integrity and return results."""
     try:
@@ -170,7 +170,7 @@ async def validate_room_integrity(request: Request) -> IntegrityResponse:
         ) from e
 
 
-@monitoring_router.get("/alerts", response_model=AlertsResponse)  # type: ignore[misc]
+@monitoring_router.get("/alerts", response_model=AlertsResponse)
 async def get_system_alerts(request: Request) -> dict[str, Any]:
     """Get current system alerts."""
     try:
@@ -188,7 +188,7 @@ async def get_system_alerts(request: Request) -> dict[str, Any]:
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}", context=context) from e
 
 
-@monitoring_router.post("/reset")  # type: ignore[misc]
+@monitoring_router.post("/reset")
 async def reset_metrics(request: Request) -> dict[str, str]:
     """Reset all movement metrics (admin only)."""
     try:
@@ -202,7 +202,7 @@ async def reset_metrics(request: Request) -> dict[str, str]:
         raise LoggedHTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}", context=context) from e
 
 
-@monitoring_router.get("/performance-summary")  # type: ignore[misc]
+@monitoring_router.get("/performance-summary")
 async def get_performance_summary(request: Request) -> dict[str, Any]:
     """Get a human-readable performance summary."""
     try:
@@ -232,7 +232,7 @@ async def get_performance_summary(request: Request) -> dict[str, Any]:
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}", context=context) from e
 
 
-@monitoring_router.get("/memory", response_model=MemoryStatsResponse)  # type: ignore[misc]
+@monitoring_router.get("/memory", response_model=MemoryStatsResponse)
 async def get_memory_stats(request: Request) -> dict[str, Any]:
     """Get comprehensive memory and connection statistics."""
     try:
@@ -250,7 +250,7 @@ async def get_memory_stats(request: Request) -> dict[str, Any]:
         ) from e
 
 
-@monitoring_router.get("/memory-alerts", response_model=MemoryAlertsResponse)  # type: ignore[misc]
+@monitoring_router.get("/memory-alerts", response_model=MemoryAlertsResponse)
 async def get_memory_alerts(request: Request) -> dict[str, Any]:
     """Get memory-related alerts and warnings."""
     try:
@@ -269,7 +269,7 @@ async def get_memory_alerts(request: Request) -> dict[str, Any]:
         ) from e
 
 
-@monitoring_router.post("/memory/cleanup")  # type: ignore[misc]
+@monitoring_router.post("/memory/cleanup")
 async def force_memory_cleanup(request: Request) -> dict[str, str]:
     """Force immediate memory cleanup (admin only)."""
     try:
@@ -283,7 +283,7 @@ async def force_memory_cleanup(request: Request) -> dict[str, str]:
         ) from e
 
 
-@monitoring_router.get("/dual-connections", response_model=DualConnectionStatsResponse)  # type: ignore[misc]
+@monitoring_router.get("/dual-connections", response_model=DualConnectionStatsResponse)
 async def get_dual_connection_stats(request: Request) -> dict[str, Any]:
     """Get comprehensive dual connection statistics."""
     try:
@@ -297,7 +297,7 @@ async def get_dual_connection_stats(request: Request) -> dict[str, Any]:
         ) from e
 
 
-@monitoring_router.get("/performance", response_model=PerformanceStatsResponse)  # type: ignore[misc]
+@monitoring_router.get("/performance", response_model=PerformanceStatsResponse)
 async def get_performance_stats(request: Request) -> dict[str, Any]:
     """Get connection performance statistics."""
     try:
@@ -311,7 +311,7 @@ async def get_performance_stats(request: Request) -> dict[str, Any]:
         ) from e
 
 
-@monitoring_router.get("/connection-health", response_model=ConnectionHealthStatsResponse)  # type: ignore[misc]
+@monitoring_router.get("/connection-health", response_model=ConnectionHealthStatsResponse)
 async def get_connection_health_stats(request: Request) -> dict[str, Any]:
     """Get connection health statistics."""
     try:
@@ -325,7 +325,7 @@ async def get_connection_health_stats(request: Request) -> dict[str, Any]:
         ) from e
 
 
-@monitoring_router.get("/health", response_model=HealthResponse)  # type: ignore[misc]
+@monitoring_router.get("/health", response_model=HealthResponse)
 async def get_health_status(request: Request) -> HealthResponse:
     """Get comprehensive system health status."""
     try:

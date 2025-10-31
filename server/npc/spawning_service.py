@@ -609,12 +609,10 @@ class NPCSpawningService:
         Returns:
             Zone key in format "zone/sub_zone"
         """
-        from typing import cast
-
         if self.population_controller is None:
             return "unknown/unknown"
 
-        return cast(str, self.population_controller._get_zone_key_from_room_id(room_id))
+        return self.population_controller._get_zone_key_from_room_id(room_id)
 
     def get_population_stats(self, zone_key: str) -> Any | None:
         """

@@ -124,12 +124,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     occupant_names = []
                     try:
                         for occ in room_occupants or []:
-                            if isinstance(occ, dict):
-                                name = occ.get("player_name") or occ.get("name")
-                                if name:
-                                    occupant_names.append(name)
-                            elif isinstance(occ, str):
-                                occupant_names.append(occ)
+                            name = occ.get("player_name") or occ.get("name")
+                            if name:
+                                occupant_names.append(name)
                     except Exception as e:
                         logger.error(
                             "Error transforming game_state occupants", room_id=player.current_room_id, error=str(e)
@@ -694,12 +691,9 @@ async def broadcast_room_update(player_id: str, room_id: str) -> None:
         room_occupants = connection_manager.get_room_occupants(room_id)
         try:
             for occ in room_occupants or []:
-                if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("name")
-                    if name:
-                        occupant_names.append(name)
-                elif isinstance(occ, str):
-                    occupant_names.append(occ)
+                name = occ.get("player_name") or occ.get("name")
+                if name:
+                    occupant_names.append(name)
         except Exception as e:
             logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
 

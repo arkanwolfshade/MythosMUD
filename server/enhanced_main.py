@@ -107,7 +107,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
     """Setup monitoring and health check endpoints."""
     from fastapi import HTTPException
 
-    @app.get("/health")  # type: ignore[misc]
+    @app.get("/health")
     async def health_check() -> dict[str, Any]:
         """Enhanced health check endpoint."""
         try:
@@ -127,7 +127,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             logger.error("Health check failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=503, detail="Health check failed") from e
 
-    @app.get("/metrics")  # type: ignore[misc]
+    @app.get("/metrics")
     async def get_metrics() -> dict[str, Any]:
         """Get system metrics."""
         try:
@@ -140,7 +140,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             logger.error("Metrics retrieval failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Metrics retrieval failed") from e
 
-    @app.get("/monitoring/summary")  # type: ignore[misc]
+    @app.get("/monitoring/summary")
     async def get_monitoring_summary() -> dict[str, Any]:
         """Get comprehensive monitoring summary."""
         try:
@@ -153,20 +153,19 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             logger.error("Monitoring summary failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Monitoring summary failed") from e
 
-    @app.get("/monitoring/alerts")  # type: ignore[misc]
+    @app.get("/monitoring/alerts")
     async def get_alerts() -> dict[str, Any]:
         """Get system alerts."""
         try:
             dashboard = get_monitoring_dashboard()
-            result = dashboard.check_alerts()
-            assert isinstance(result, dict)
-            return result
+            alerts = dashboard.check_alerts()
+            return {"alerts": [alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]}
         except Exception as e:
             logger = get_logger("server.alerts")
             logger.error("Alert retrieval failed", error=str(e), exc_info=True)
             raise HTTPException(status_code=500, detail="Alert retrieval failed") from e
 
-    @app.post("/monitoring/alerts/{alert_id}/resolve")  # type: ignore[misc]
+    @app.post("/monitoring/alerts/{alert_id}/resolve")
     async def resolve_alert(alert_id: str) -> dict[str, str]:
         """Resolve a system alert."""
         try:

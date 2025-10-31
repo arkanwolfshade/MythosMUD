@@ -145,7 +145,7 @@ class DatabaseManager:
         )
 
         # Enable foreign key constraints for SQLite
-        @event.listens_for(self.engine.sync_engine, "connect")  # type: ignore[misc]
+        @event.listens_for(self.engine.sync_engine, "connect")
         def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
             """Enable foreign key constraints for SQLite connections."""
             conn_str = str(dbapi_connection)

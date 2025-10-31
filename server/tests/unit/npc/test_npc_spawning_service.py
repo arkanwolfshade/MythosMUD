@@ -594,7 +594,7 @@ class TestNPCSpawningService:
         definition = NPCDefinition(
             name="Test Unknown",
             description="Unknown NPC type",
-            npc_type="unknown_type",  # type: ignore
+            npc_type="unknown_type",
             sub_zone_id="downtown",
             required_npc=False,
             max_population=1,

@@ -22,7 +22,7 @@ game_router = APIRouter(prefix="/game", tags=["game"])
 logger.info("Game API router initialized", prefix="/game")
 
 
-@game_router.get("/status")  # type: ignore[misc]
+@game_router.get("/status")
 def get_game_status(request: Request = None) -> dict[str, Any]:
     """Get current game status and connection information."""
     logger.debug("Game status requested")
@@ -44,7 +44,7 @@ def get_game_status(request: Request = None) -> dict[str, Any]:
     return status_data
 
 
-@game_router.post("/broadcast")  # type: ignore[misc]
+@game_router.post("/broadcast")
 def broadcast_message(
     message: str,
     current_user: dict = Depends(get_current_user),

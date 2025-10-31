@@ -123,9 +123,6 @@ class EventPublisher:
             )
             return False
 
-        # This should never be reached, but mypy needs it
-        return False
-
     async def publish_player_left_event(
         self,
         player_id: str,
@@ -203,9 +200,6 @@ class EventPublisher:
             )
             return False
 
-        # This should never be reached, but mypy needs it
-        return False
-
     async def publish_game_tick_event(
         self, timestamp: str | None = None, additional_metadata: dict[str, Any] | None = None
     ) -> bool:
@@ -264,9 +258,6 @@ class EventPublisher:
         except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
             return False
-
-        # This should never be reached, but mypy needs it
-        return False
 
     def _create_event_message(
         self,

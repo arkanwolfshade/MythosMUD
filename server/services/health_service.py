@@ -218,17 +218,17 @@ class HealthService:
         """Determine overall system health status."""
         # If any component is unhealthy, overall status is unhealthy
         if (
-            components.server.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
-            or components.database.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
-            or components.connections.status == HealthStatus.UNHEALTHY  # type: ignore[attr-defined]
+            components.server.status == HealthStatus.UNHEALTHY
+            or components.database.status == HealthStatus.UNHEALTHY
+            or components.connections.status == HealthStatus.UNHEALTHY
         ):
             return HealthStatus.UNHEALTHY
 
         # If any component is degraded, overall status is degraded
         if (
-            components.server.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
-            or components.database.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
-            or components.connections.status == HealthStatus.DEGRADED  # type: ignore[attr-defined]
+            components.server.status == HealthStatus.DEGRADED
+            or components.database.status == HealthStatus.DEGRADED
+            or components.connections.status == HealthStatus.DEGRADED
         ):
             return HealthStatus.DEGRADED
 

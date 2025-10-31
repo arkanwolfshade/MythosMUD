@@ -75,11 +75,6 @@ class PlayerGuidFormatter(logging.Formatter):
         Returns:
             Message with player GUIDs converted to "<name>: <GUID>" format
         """
-        # Handle None or non-string input gracefully
-        if message is None:
-            return ""
-        if not isinstance(message, str):
-            return str(message)
 
         def replace_guid(match: re.Match) -> str:
             """Replace a single GUID with enhanced format."""

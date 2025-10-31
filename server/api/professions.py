@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 profession_router = APIRouter(prefix="/professions", tags=["professions"])
 
 
-@profession_router.get("/")  # type: ignore[misc]
+@profession_router.get("/")
 def get_all_professions(
     current_user: User = Depends(get_current_user),
     request: Request = None,
@@ -80,7 +80,7 @@ def get_all_professions(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@profession_router.get("/{profession_id}")  # type: ignore[misc]
+@profession_router.get("/{profession_id}")
 def get_profession_by_id(
     profession_id: int,
     current_user: User = Depends(get_current_user),

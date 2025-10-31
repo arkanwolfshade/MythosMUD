@@ -130,12 +130,12 @@ class Stats(BaseModel):
         super().__init__(**data)
 
     # Derived stats - computed fields
-    @computed_field  # type: ignore[misc]
+    @computed_field
     def max_health(self) -> int:
         """Calculate max health based on constitution."""
         return self.constitution * 10
 
-    @computed_field  # type: ignore[misc]
+    @computed_field
     def max_sanity(self) -> int:
         """Calculate max sanity based on wisdom."""
         return self.wisdom * 5

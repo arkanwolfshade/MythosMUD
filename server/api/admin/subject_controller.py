@@ -129,7 +129,7 @@ def require_admin_user(current_user: Any = Depends(get_current_user)) -> Any:
 # API Endpoints
 
 
-@router.get("/health", response_model=SubjectStatisticsResponse)  # type: ignore[misc]
+@router.get("/health", response_model=SubjectStatisticsResponse)
 async def get_subject_statistics(
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> dict[str, Any]:
@@ -180,7 +180,7 @@ async def get_subject_statistics(
         ) from e
 
 
-@router.post("/validate", response_model=ValidateSubjectResponse)  # type: ignore[misc]
+@router.post("/validate", response_model=ValidateSubjectResponse)
 async def validate_subject(
     request: ValidateSubjectRequest,
     current_user: Any = Depends(require_admin_user),
@@ -250,7 +250,7 @@ async def validate_subject(
         ) from e
 
 
-@router.get("/patterns", response_model=PatternsResponse)  # type: ignore[misc]
+@router.get("/patterns", response_model=PatternsResponse)
 async def get_patterns(
     current_user: Any = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
@@ -291,7 +291,7 @@ async def get_patterns(
         ) from e
 
 
-@router.post("/patterns", response_model=RegisterPatternResponse)  # type: ignore[misc]
+@router.post("/patterns", response_model=RegisterPatternResponse)
 async def register_pattern(
     request: RegisterPatternRequest,
     current_user: Any = Depends(require_admin_user),

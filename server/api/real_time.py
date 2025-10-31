@@ -22,7 +22,7 @@ from ..utils.error_logging import create_context_from_request, create_context_fr
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
-@realtime_router.get("/events/{player_id}")  # type: ignore[misc]
+@realtime_router.get("/events/{player_id}")
 async def sse_events(player_id: str, request: Request) -> StreamingResponse:
     """
     Server-Sent Events stream for real-time game updates.
@@ -47,7 +47,7 @@ async def sse_events(player_id: str, request: Request) -> StreamingResponse:
     )
 
 
-@realtime_router.get("/events")  # type: ignore[misc]
+@realtime_router.get("/events")
 async def sse_events_token(request: Request) -> StreamingResponse:
     """
     Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
@@ -88,7 +88,7 @@ async def sse_events_token(request: Request) -> StreamingResponse:
     )
 
 
-@realtime_router.websocket("/ws")  # type: ignore[misc]
+@realtime_router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     """
     WebSocket endpoint for interactive commands and chat.
@@ -156,7 +156,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         raise
 
 
-@realtime_router.get("/connections/{player_id}")  # type: ignore[misc]
+@realtime_router.get("/connections/{player_id}")
 async def get_player_connections(player_id: str, request: Request) -> dict[str, Any]:
     """
     Get connection information for a player.
@@ -193,7 +193,7 @@ async def get_player_connections(player_id: str, request: Request) -> dict[str, 
     return connection_data
 
 
-@realtime_router.post("/connections/{player_id}/session")  # type: ignore[misc]
+@realtime_router.post("/connections/{player_id}/session")
 async def handle_new_game_session(player_id: str, request: Request) -> dict[str, Any]:
     """
     Handle a new game session for a player.
@@ -236,7 +236,7 @@ async def handle_new_game_session(player_id: str, request: Request) -> dict[str,
         ) from e
 
 
-@realtime_router.get("/connections/stats")  # type: ignore[misc]
+@realtime_router.get("/connections/stats")
 async def get_connection_statistics(request: Request) -> dict[str, Any]:
     """
     Get comprehensive connection statistics.
@@ -263,7 +263,7 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
     return statistics
 
 
-@realtime_router.websocket("/ws/{player_id}")  # type: ignore[misc]
+@realtime_router.websocket("/ws/{player_id}")
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:
     """
     Backward-compatible WebSocket endpoint that accepts a path player_id but

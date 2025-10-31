@@ -272,7 +272,9 @@ def get_performance_monitor() -> PerformanceMonitor:
 
 
 @contextmanager
-def measure_performance(operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None):
+def measure_performance(
+    operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None
+):
     """
     Context manager for measuring operation performance.
 

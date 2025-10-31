@@ -272,10 +272,6 @@ class NPCThreadManager:
             logger.error("NPC thread manager is not running")
             return False
 
-        if npc_definition is None:
-            logger.error("NPC definition is required")
-            return False
-
         try:
             async with self._lock:
                 if npc_id in self.active_threads:
