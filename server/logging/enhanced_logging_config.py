@@ -110,28 +110,19 @@ def _rotate_log_files(env_log_dir: Path) -> None:
 
             for attempt in range(max_retries):
                 try:
-                    # Check if the file is currently in use by attempting to open it exclusively
-                    # This helps detect file locking issues before attempting to rename
+                    # On Windows use copy-then-truncate to avoid rename-while-open issues
                     if sys.platform == "win32":
                         try:
-                            with open(log_file, "a", encoding="utf-8"):
-                                pass  # Just test if we can open the file
-                        except (PermissionError, OSError):
-                            if attempt < max_retries - 1:
-                                time.sleep(retry_delay)
-                                continue
-                            else:
-                                # Skip rotation for this file if it's locked
-                                logger = get_enhanced_logger("server.logging")
-                                logger.warning(
-                                    "Skipping rotation for locked log file",
-                                    name=log_file.name,
-                                    attempt=attempt + 1,
-                                )
-                                break
+                            # Local import to avoid circulars
+                            from server.logging.windows_safe_rotation import _copy_then_truncate
 
-                    # Attempt the rename operation
-                    log_file.rename(rotated_path)
+                            _copy_then_truncate(str(log_file), str(rotated_path))
+                        except Exception:
+                            # If helper not available, fall back to rename with retry
+                            log_file.rename(rotated_path)
+                    else:
+                        # Attempt the rename operation on non-Windows systems
+                        log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
                     logger = get_enhanced_logger("server.logging")
@@ -440,6 +431,15 @@ def _setup_enhanced_file_logging(
     """Set up enhanced file logging handlers with async support."""
     from logging.handlers import RotatingFileHandler
 
+    # Use Windows-safe rotation handlers when available
+    _WinSafeHandler = RotatingFileHandler
+    try:
+        from server.logging.windows_safe_rotation import WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler
+
+        _WinSafeHandler = _ImportedWinSafeHandler
+    except Exception:  # noqa: BLE001 - optional enhancement
+        _WinSafeHandler = RotatingFileHandler
+
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
     env_log_dir.mkdir(parents=True, exist_ok=True)
@@ -495,8 +495,16 @@ def _setup_enhanced_file_logging(
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create rotating file handler
-        handler = RotatingFileHandler(
+        # Create rotating file handler (Windows-safe on win32)
+        handler_class = RotatingFileHandler
+        try:
+            if sys.platform == "win32":
+                handler_class = _WinSafeHandler
+        except Exception:
+            # Fallback to standard handler on any detection error
+            handler_class = RotatingFileHandler
+
+        handler = handler_class(
             log_path,
             maxBytes=max_bytes,
             backupCount=backup_count,
@@ -534,7 +542,14 @@ def _setup_enhanced_file_logging(
 
     # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
-    console_handler = RotatingFileHandler(
+    handler_class = RotatingFileHandler
+    try:
+        if sys.platform == "win32":
+            handler_class = _WinSafeHandler
+    except Exception:
+        handler_class = RotatingFileHandler
+
+    console_handler = handler_class(
         console_log_path,
         maxBytes=max_bytes,
         backupCount=backup_count,
@@ -562,7 +577,14 @@ def _setup_enhanced_file_logging(
 
     # Enhanced errors handler with security focus
     errors_log_path = env_log_dir / "errors.log"
-    errors_handler = RotatingFileHandler(
+    handler_class = RotatingFileHandler
+    try:
+        if sys.platform == "win32":
+            handler_class = _WinSafeHandler
+    except Exception:
+        handler_class = RotatingFileHandler
+
+    errors_handler = handler_class(
         errors_log_path,
         maxBytes=max_bytes,
         backupCount=backup_count,

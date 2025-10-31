@@ -8,7 +8,7 @@ for real-time game communication.
 import time
 from typing import Any
 
-from fastapi import APIRouter, Request, WebSocket
+from fastapi import APIRouter, HTTPException, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
 from ..auth_utils import decode_access_token
@@ -39,6 +39,16 @@ async def sse_events(player_id: str, request: Request) -> StreamingResponse:
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Cache-Control",
     }
+
+    # Readiness gate: require persistence to be initialized
+    try:
+        from ..realtime.connection_manager import connection_manager as _cm
+
+        if getattr(_cm, "persistence", None) is None:
+            raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    except Exception:
+        # Do not hard fail if readiness check has an unexpected issue
+        pass
 
     return StreamingResponse(
         game_event_stream(player_id, session_id),
@@ -81,6 +91,15 @@ async def sse_events_token(request: Request) -> StreamingResponse:
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
+    # Readiness gate for token-authenticated SSE as well
+    try:
+        from ..realtime.connection_manager import connection_manager as _cm
+
+        if getattr(_cm, "persistence", None) is None:
+            raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    except Exception:
+        pass
+
     return StreamingResponse(
         game_event_stream(player_id, session_id),
         media_type="text/event-stream",
@@ -97,6 +116,16 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
+
+    # Readiness gate: if persistence not ready, close with 1013 (Try Again Later)
+    try:
+        from ..realtime.connection_manager import connection_manager as _cm
+
+        if getattr(_cm, "persistence", None) is None:
+            await websocket.close(code=1013)
+            return
+    except Exception:
+        pass
 
     # Accept token via WebSocket subprotocol (preferred) or query token (fallback)
     token = websocket.query_params.get("token")
@@ -284,6 +313,16 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     )
 
     try:
+        # Readiness gate for compatibility route as well
+        try:
+            from ..realtime.connection_manager import connection_manager as _cm
+
+            if getattr(_cm, "persistence", None) is None:
+                await websocket.close(code=1013)
+                return
+        except Exception:
+            pass
+
         token = websocket.query_params.get("token")
         resolved_player_id = player_id
         payload = decode_access_token(token)

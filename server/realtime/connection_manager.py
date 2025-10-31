@@ -14,6 +14,7 @@ from datetime import UTC
 from typing import Any, TypedDict
 
 from fastapi import WebSocket
+from starlette.websockets import WebSocketState
 
 from ..logging.enhanced_logging_config import get_logger
 from ..models import Player
@@ -167,6 +168,34 @@ class ConnectionManager:
         # Session management
         self.player_sessions: dict[str, str] = {}  # player_id -> current_session_id
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
+
+        # Track safely closed websocket objects to avoid duplicate closes
+        self._closed_websockets: set[int] = set()
+
+    def _is_websocket_open(self, websocket: WebSocket) -> bool:
+        try:
+            state = getattr(websocket, "application_state", None)
+            return state not in (WebSocketState.DISCONNECTED, WebSocketState.CLOSING, WebSocketState.CLOSED)
+        except Exception:
+            # If we cannot determine, assume open and let close handle exceptions
+            return True
+
+    async def _safe_close_websocket(
+        self, websocket: WebSocket, code: int = 1000, reason: str = "Connection closed"
+    ) -> None:
+        ws_id = id(websocket)
+        if ws_id in self._closed_websockets:
+            return
+        if not self._is_websocket_open(websocket):
+            self._closed_websockets.add(ws_id)
+            return
+        try:
+            await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
+        except Exception:
+            # Ignore close errors; treat as closed
+            pass
+        finally:
+            self._closed_websockets.add(ws_id)
 
     # Compatibility properties for existing tests and code
     # These provide access to the internal data structures for backward compatibility
@@ -492,13 +521,18 @@ class ConnectionManager:
         """
         try:
             logger.info(
-                f"🔍 DEBUG: Starting WebSocket disconnect for player {player_id}, force_disconnect={is_force_disconnect}"
+                "Starting WebSocket disconnect",
+                player_id=player_id,
+                force_disconnect=bool(is_force_disconnect),
             )
 
             if player_id in self.player_websockets:
                 connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
                 logger.info(
-                    f"🔍 DEBUG: Found {len(connection_ids)} WebSocket connections for player {player_id}: {connection_ids}"
+                    "Found WebSocket connections",
+                    player_id=player_id,
+                    connection_count=len(connection_ids),
+                    connection_ids=connection_ids,
                 )
 
                 # Disconnect all WebSocket connections for this player
@@ -507,18 +541,12 @@ class ConnectionManager:
                         websocket = self.active_websockets[connection_id]
                         logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
                         # Properly close the WebSocket connection
-                        try:
-                            await asyncio.wait_for(websocket.close(code=1000, reason="Connection closed"), timeout=2.0)
-                            logger.info(
-                                f"🔍 DEBUG: Successfully closed WebSocket {connection_id} for player {player_id}"
-                            )
-                        except (TimeoutError, Exception) as e:
-                            logger.warning(
-                                "Error closing WebSocket",
-                                connection_id=connection_id,
-                                player_id=player_id,
-                                error=str(e),
-                            )
+                        await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
+                        logger.info(
+                            "Successfully closed WebSocket",
+                            connection_id=connection_id,
+                            player_id=player_id,
+                        )
                         del self.active_websockets[connection_id]
 
                     # Clean up connection metadata
@@ -549,7 +577,8 @@ class ConnectionManager:
                     self.room_manager.remove_player_from_all_rooms(player_id)
                 else:
                     logger.debug(
-                        f"🔍 DEBUG: Preserving room membership for player {player_id} during force disconnect (reconnection)"
+                        "Preserving room membership during force disconnect (reconnection)",
+                        player_id=player_id,
                     )
 
                 # Clean up rate limiting data only if no other connections
@@ -619,13 +648,8 @@ class ConnectionManager:
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
                     logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
-                    try:
-                        await websocket.close(code=1000, reason="Connection closed")
-                        logger.info(
-                            "DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id
-                        )
-                    except Exception as e:
-                        logger.warning("Error closing WebSocket", connection_id=connection_id, error=str(e))
+                    await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
+                    logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)
                     del self.active_websockets[connection_id]
 
                 # Remove from player's connection list
@@ -922,16 +946,20 @@ class ConnectionManager:
                                 # If we can't check state, assume it's not connected
                                 is_connected = False
                                 logger.debug(
-                                    f"Could not check state for WebSocket {connection_id}, assuming disconnected"
+                                    "Could not check WebSocket state, assuming disconnected",
+                                    connection_id=connection_id,
                                 )
 
                             if is_connected:
                                 logger.info(
-                                    f"🔍 DEBUG: Closing WebSocket {connection_id} due to new game session for player {player_id}"
+                                    "Closing WebSocket due to new game session",
+                                    connection_id=connection_id,
+                                    player_id=player_id,
                                 )
                                 await websocket.close(code=1000, reason="New game session established")
                                 logger.info(
-                                    f"🔍 DEBUG: Successfully closed WebSocket {connection_id} due to new game session"
+                                    "Successfully closed WebSocket due to new game session",
+                                    connection_id=connection_id,
                                 )
                                 session_results["connections_disconnected"] += 1
                             else:

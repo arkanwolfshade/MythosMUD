@@ -121,9 +121,14 @@ def main():
         if violations:
             all_violations.append((str(file_path), violations))
 
-    # Format and display report
+    # Format and display report using console-safe encoding
     report = format_violation_report(all_violations)
-    print(report.encode("utf-8", errors="replace").decode("utf-8"))
+    try:
+        encoding = sys.stdout.encoding or "utf-8"
+        sys.stdout.buffer.write((report + "\n").encode(encoding, errors="replace"))
+    except Exception:
+        # Fallback to ASCII-safe output
+        print(report.encode("ascii", errors="replace").decode("ascii"))
 
     # Exit with error code if violations found
     if all_violations:
