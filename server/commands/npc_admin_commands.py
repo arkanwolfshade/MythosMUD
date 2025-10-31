@@ -10,6 +10,7 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
+import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -82,8 +83,9 @@ async def handle_npc_command(
         logger.warning("NPC command failed - no player service", player_name=player_name)
         return {"result": "NPC functionality is not available."}
 
-    # Get player object
-    player_obj = player_service.resolve_player_name(player_name)
+    # Get player object (supports sync or async implementations)
+    _maybe_coro = player_service.resolve_player_name(player_name)
+    player_obj = await _maybe_coro if inspect.isawaitable(_maybe_coro) else _maybe_coro
     if not player_obj:
         logger.warning("NPC command failed - player not found", player_name=player_name)
         return {"result": "Player not found."}

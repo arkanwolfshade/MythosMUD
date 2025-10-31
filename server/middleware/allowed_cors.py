@@ -26,16 +26,12 @@ class AllowedCORSMiddleware(BaseHTTPMiddleware):
                     # Return 400 but include CORS and security headers
                     response = PlainTextResponse("Missing Access-Control-Request-Method", status_code=400)
                     response.headers["access-control-allow-origin"] = origin
-                    response.headers["access-control-allow-credentials"] = (
-                        "true" if self.allow_credentials else "false"
-                    )
+                    response.headers["access-control-allow-credentials"] = "true" if self.allow_credentials else "false"
                     response.headers["access-control-max-age"] = str(self.max_age)
                     response.headers["access-control-allow-methods"] = ", ".join(sorted(set(self.allow_methods)))
                     response.headers["access-control-allow-headers"] = ", ".join(self.allow_headers)
                     response.headers["vary"] = "Origin"
-                    response.headers.setdefault(
-                        "Strict-Transport-Security", f"max-age={31536000}; includeSubDomains"
-                    )
+                    response.headers.setdefault("Strict-Transport-Security", f"max-age={31536000}; includeSubDomains")
                     response.headers.setdefault("X-Frame-Options", "DENY")
                     response.headers.setdefault("X-Content-Type-Options", "nosniff")
                     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
@@ -70,7 +66,9 @@ class AllowedCORSMiddleware(BaseHTTPMiddleware):
 
             response = await call_next(request)
             response.headers.setdefault("access-control-allow-origin", origin)
-            response.headers.setdefault("access-control-allow-credentials", "true" if self.allow_credentials else "false")
+            response.headers.setdefault(
+                "access-control-allow-credentials", "true" if self.allow_credentials else "false"
+            )
             return response
 
         if request.method == "OPTIONS":
