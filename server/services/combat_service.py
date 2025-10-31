@@ -42,7 +42,7 @@ class CombatService:
     """
 
     def __init__(
-        self, player_combat_service: PlayerCombatService = None, nats_service=None, npc_combat_integration_service=None
+        self, player_combat_service: PlayerCombatService | None = None, nats_service=None, npc_combat_integration_service=None
     ):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}

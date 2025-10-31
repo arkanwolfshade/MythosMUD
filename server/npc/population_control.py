@@ -102,7 +102,7 @@ class PopulationStats:
         self.optional_npcs = 0
         self.last_updated = time.time()
 
-    def add_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
+    def add_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int | None = None) -> None:
         """
         Add an NPC to the population statistics.
 
@@ -127,7 +127,7 @@ class PopulationStats:
 
         self.last_updated = time.time()
 
-    def remove_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
+    def remove_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int | None = None) -> None:
         """
         Remove an NPC from the population statistics.
 
@@ -631,7 +631,8 @@ class NPCPopulationController:
         zone_key = self._get_zone_key_from_room_id(room_id)
         if zone_key in self.population_stats:
             stats = self.population_stats[zone_key]
-            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], npc_data.get("definition_id"))
+            definition_id: int | None = npc_data.get("definition_id")
+            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], definition_id)
 
         # Remove from active NPCs
         del self.active_npcs[npc_id]

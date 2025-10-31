@@ -898,7 +898,7 @@ class ShopkeeperNPC(NPCBase):
             logger.error("Error selling to player", npc_id=self.npc_id, error=str(e))
             return False
 
-    def calculate_price(self, base_price: int, markup: float = None) -> int:
+    def calculate_price(self, base_price: int, markup: float | None = None) -> int:
         """Calculate final price with markup."""
         if markup is None:
             markup = self._behavior_config.get("markup", 1.0)

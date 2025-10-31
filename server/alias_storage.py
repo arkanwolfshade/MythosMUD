@@ -242,7 +242,7 @@ class AliasStorage:
 
         return True  # File doesn't exist, consider it "deleted"
 
-    def backup_aliases(self, player_name: str, backup_dir: str = None) -> bool:
+    def backup_aliases(self, player_name: str, backup_dir: str | None = None) -> bool:
         """Create a backup of a player's aliases."""
         if backup_dir is None:
             backup_dir = str(self.storage_dir / "backups")

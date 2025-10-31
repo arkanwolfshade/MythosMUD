@@ -21,7 +21,7 @@ from server.utils.error_logging import create_error_context, log_and_raise
 class ErrorLoggingTestMixin:
     """Mixin class providing error logging test utilities."""
 
-    def assert_error_logged(self, log_file: str, error_type: str, expected_message: str = None) -> None:
+    def assert_error_logged(self, log_file: str, error_type: str, expected_message: str | None = None) -> None:
         """
         Assert that an error was logged to the specified log file.
 
@@ -44,7 +44,7 @@ class ErrorLoggingTestMixin:
         if expected_message and expected_message not in log_content:
             pytest.fail(f"Expected message '{expected_message}' not found in log file {log_file}")
 
-    def assert_error_context(self, context: ErrorContext, expected_fields: dict[str, Any] = None) -> None:
+    def assert_error_context(self, context: ErrorContext, expected_fields: dict[str, Any] | None = None) -> None:
         """
         Assert that an ErrorContext has the expected structure and values.
 
@@ -69,7 +69,7 @@ class ErrorLoggingTestMixin:
                 actual_value = getattr(context, field, None)
                 assert actual_value == expected_value, f"Field {field}: expected {expected_value}, got {actual_value}"
 
-    def assert_no_sensitive_data(self, log_content: str, sensitive_patterns: list[str] = None) -> None:
+    def assert_no_sensitive_data(self, log_content: str, sensitive_patterns: list[str] | None = None) -> None:
         """
         Assert that no sensitive data is present in log content.
 
@@ -195,9 +195,9 @@ class TestErrorLoggingUtilities:
                 def __init__(
                     self,
                     message: str,
-                    context: ErrorContext = None,
-                    details: dict[str, Any] = None,
-                    user_friendly: str = None,
+                    context: ErrorContext | None = None,
+                    details: dict[str, Any] | None = None,
+                    user_friendly: str | None = None,
                 ):
                     super().__init__(message, context=context, details=details, user_friendly=user_friendly)
 

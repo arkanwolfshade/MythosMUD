@@ -49,7 +49,7 @@ class UserManager:
 
         logger.info("UserManager initialized with JSON file persistence")
 
-    def add_admin(self, player_id: str, player_name: str = None):
+    def add_admin(self, player_id: str, player_name: str | None = None):
         """
         Add a player as an admin.
 
@@ -87,7 +87,7 @@ class UserManager:
             logger.error("Unexpected error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
 
-    def remove_admin(self, player_id: str, player_name: str = None):
+    def remove_admin(self, player_id: str, player_name: str | None = None):
         """
         Remove a player's admin status.
 
@@ -671,7 +671,7 @@ class UserManager:
             logger.error("Unexpected error checking global mute", error=str(e), error_type=type(e).__name__)
             return False
 
-    def can_send_message(self, sender_id: str, target_id: str = None, channel: str = None) -> bool:
+    def can_send_message(self, sender_id: str, target_id: str | None = None, channel: str | None = None) -> bool:
         """
         Check if a player can send a message.
 

@@ -70,7 +70,7 @@ class PerformanceMonitor:
         logger.info("Performance monitor initialized", max_metrics=max_metrics, alert_threshold_ms=alert_threshold_ms)
 
     def record_metric(
-        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, Any] = None
+        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, Any] | None = None
     ) -> None:
         """
         Record a performance metric.
@@ -160,7 +160,7 @@ class PerformanceMonitor:
         """
         return list(self.metrics)[-count:]
 
-    def get_slow_operations(self, threshold_ms: float = None) -> list[PerformanceMetric]:
+    def get_slow_operations(self, threshold_ms: float | None = None) -> list[PerformanceMetric]:
         """
         Get operations that exceeded the performance threshold.
 
@@ -272,7 +272,7 @@ def get_performance_monitor() -> PerformanceMonitor:
 
 
 @contextmanager
-def measure_performance(operation: str, metadata: dict[str, Any] = None, monitor: PerformanceMonitor = None):
+def measure_performance(operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None):
     """
     Context manager for measuring operation performance.
 
@@ -317,8 +317,8 @@ def record_performance_metric(
     operation: str,
     duration_ms: float,
     success: bool = True,
-    metadata: dict[str, Any] = None,
-    monitor: PerformanceMonitor = None,
+    metadata: dict[str, Any] | None = None,
+    monitor: PerformanceMonitor | None = None,
 ) -> None:
     """
     Record a performance metric.
@@ -336,7 +336,7 @@ def record_performance_metric(
     monitor.record_metric(operation, duration_ms, success, metadata)
 
 
-def get_performance_stats(operation: str = None, monitor: PerformanceMonitor = None) -> Any:
+def get_performance_stats(operation: str | None = None, monitor: PerformanceMonitor | None = None) -> Any:
     """
     Get performance statistics.
 
@@ -356,7 +356,7 @@ def get_performance_stats(operation: str = None, monitor: PerformanceMonitor = N
         return monitor.get_all_stats()
 
 
-def reset_performance_metrics(monitor: PerformanceMonitor = None) -> None:
+def reset_performance_metrics(monitor: PerformanceMonitor | None = None) -> None:
     """
     Reset performance metrics.
 

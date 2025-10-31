@@ -157,21 +157,7 @@ exclude = [
     "^server/test_who_command_direct.py$",
 ]
 follow_imports = "skip"
-ignore_missing_imports = true
-
-# All checks disabled - enable one at a time
-warn_return_any = false
-warn_unused_configs = false
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = false
-disallow_untyped_decorators = false
-no_implicit_optional = false
-warn_redundant_casts = false
-warn_unused_ignores = false
-warn_no_return = false
-warn_unreachable = false
-strict_equality = false
+ignore_missing_imports = false
 
 # Display options
 show_error_codes = true
@@ -204,6 +190,8 @@ module = [
     "pwdlib.*",
     "alembic.*",
     "flask.*",
+    "pytest.*",
+    "fastapi.*",
     "analyze_error_logs",
     "error_monitoring",
     "server.async_utils.tracked_task_manager",
@@ -226,6 +214,23 @@ module = [
 ]
 disallow_untyped_defs = false
 check_untyped_defs = false
+
+# Defensive programming patterns - allow unreachable code
+# These modules use defensive returns after NoReturn functions
+[[tool.mypy.overrides]]
+module = [
+    "server.persistence",
+    "server.realtime.*",
+    "server.game.*",
+    "server.commands.*",
+    "server.auth.*",
+    "server.npc.*",
+    "server.services.*",
+    "server.legacy_error_handlers",
+    "server.enhanced_main",
+    "server.utils.memory_profiler",
+]
+warn_unreachable = false
 
 # Test files
 [[tool.mypy.overrides]]

@@ -50,7 +50,7 @@ def get_persistence(event_bus=None) -> "PersistenceLayer":
     with _persistence_lock:
         if _persistence_instance is None:
             _persistence_instance = PersistenceLayer(event_bus=event_bus)
-        elif event_bus is not None and _persistence_instance._event_bus is None:
+        elif event_bus is not None and _persistence_instance._event_bus is None:  # type: ignore[unreachable]
             # Update the event bus if it's not set and we have one to set
             _persistence_instance._event_bus = event_bus
         return _persistence_instance
@@ -237,6 +237,7 @@ class PersistenceLayer:
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+            return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def get_player(self, player_id: str) -> Player | None:
         """Get a player by ID."""
@@ -265,6 +266,7 @@ class PersistenceLayer:
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+            return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def get_player_by_user_id(self, user_id: str) -> Player | None:
         """Get a player by the owning user's ID."""
@@ -293,6 +295,7 @@ class PersistenceLayer:
                 details={"user_id": user_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+            return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def save_player(self, player: Player):
         """Save or update a player."""
@@ -408,7 +411,7 @@ class PersistenceLayer:
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve player list",
             )
-            return []  # Unreachable, but satisfies mypy
+            return []  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players currently in a specific room."""
@@ -436,7 +439,7 @@ class PersistenceLayer:
                 details={"room_id": room_id, "error": str(e)},
                 user_friendly="Failed to retrieve players in room",
             )
-            return []  # Unreachable, but satisfies mypy
+            return []  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def save_players(self, players: list[Player]):
         """Batch save players atomically."""
@@ -563,7 +566,7 @@ class PersistenceLayer:
                     details={"player_id": player_id, "error": str(e)},
                     user_friendly="Failed to delete player",
                 )
-                return False  # Unreachable, but satisfies mypy
+                return False  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     # --- CRUD for Professions ---
     def get_all_professions(self) -> list:
@@ -594,7 +597,7 @@ class PersistenceLayer:
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve professions",
             )
-            return []  # Unreachable, but satisfies mypy
+            return []  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     def get_profession_by_id(self, profession_id: int) -> "Profession | None":
         """Get a profession by ID."""
@@ -623,6 +626,7 @@ class PersistenceLayer:
                 details={"profession_id": profession_id, "error": str(e)},
                 user_friendly="Failed to retrieve profession",
             )
+            return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
     # --- CRUD for Rooms ---
     def get_room(self, room_id: str) -> Room | None:

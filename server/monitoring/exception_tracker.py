@@ -90,14 +90,14 @@ class ExceptionTracker:
     def track_exception(
         self,
         exception: Exception,
-        context: dict[str, Any] = None,
-        user_id: str = None,
-        session_id: str = None,
-        correlation_id: str = None,
-        request_id: str = None,
+        context: dict[str, Any] | None = None,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        correlation_id: str | None = None,
+        request_id: str | None = None,
         severity: str = "error",
         handled: bool = False,
-        metadata: dict[str, Any] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """
         Track an exception with full context information.
@@ -362,15 +362,15 @@ def get_exception_tracker() -> ExceptionTracker:
 
 def track_exception(
     exception: Exception,
-    context: dict[str, Any] = None,
-    user_id: str = None,
-    session_id: str = None,
-    correlation_id: str = None,
-    request_id: str = None,
+    context: dict[str, Any] | None = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
+    correlation_id: str | None = None,
+    request_id: str | None = None,
     severity: str = "error",
     handled: bool = False,
-    metadata: dict[str, Any] = None,
-    tracker: ExceptionTracker = None,
+    metadata: dict[str, Any] | None = None,
+    tracker: ExceptionTracker | None = None,
 ) -> str:
     """
     Track an exception with full context information.
@@ -410,12 +410,12 @@ def track_exception_with_context(
     exception: Exception,
     request=None,
     websocket=None,
-    user_id: str = None,
-    session_id: str = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
     severity: str = "error",
     handled: bool = False,
-    metadata: dict[str, Any] = None,
-    tracker: ExceptionTracker = None,
+    metadata: dict[str, Any] | None = None,
+    tracker: ExceptionTracker | None = None,
 ) -> str:
     """
     Track an exception with enhanced context from request/websocket.
@@ -443,8 +443,8 @@ def track_exception_with_context(
     )
 
     # Extract correlation and request IDs
-    correlation_id = getattr(context, "correlation_id", None)
-    request_id = getattr(context, "request_id", None)
+    correlation_id: str | None = getattr(context, "correlation_id", None)
+    request_id: str | None = getattr(context, "request_id", None)
 
     return tracker.track_exception(
         exception=exception,
