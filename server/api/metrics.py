@@ -257,10 +257,14 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
         with open(dlq_path, encoding="utf-8") as f:
             dlq_entry = json.load(f)
 
-        message_data = dlq_entry.get("message")
-        if not message_data:
+        # DeadLetterQueue stores entries via DeadLetterMessage.to_dict(),
+        # where the original message is under the "data" key (not "message").
+        # Support legacy shape that may have used "message".
+        message_data = dlq_entry.get("data") or dlq_entry.get("message")
+        if not isinstance(message_data, dict):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid DLQ entry: missing message data"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid DLQ entry: missing or malformed message data",
             )
 
         # Attempt to replay message
