@@ -12,14 +12,23 @@ and chaos. This server implementation follows those ancient principles.
 """
 
 import warnings
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
 from .logging.enhanced_logging_config import get_logger, setup_enhanced_logging
+from .logging.log_aggregator import get_log_aggregator
+from .middleware.correlation_middleware import CorrelationMiddleware
+from .monitoring.exception_tracker import get_exception_tracker
+from .monitoring.monitoring_dashboard import get_monitoring_dashboard
+from .monitoring.performance_monitor import get_performance_monitor
 
 # Suppress passlib deprecation warning about pkg_resources
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
@@ -31,6 +40,123 @@ logger = get_logger(__name__)
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
 # which provides the same functionality plus request/response logging and better organization
+
+
+@asynccontextmanager
+async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Enhanced lifespan with comprehensive monitoring and logging."""
+    logger = get_logger("server.enhanced_main")
+    log_aggregator = None
+
+    try:
+        config = get_config()
+        setup_enhanced_logging(config.dict())
+
+        get_performance_monitor()
+        get_exception_tracker()
+        get_monitoring_dashboard()
+        log_aggregator = get_log_aggregator()
+
+        logger.info(
+            "Enhanced logging and monitoring systems initialized",
+            performance_monitoring=True,
+            exception_tracking=True,
+            log_aggregation=True,
+            monitoring_dashboard=True,
+        )
+
+        yield
+
+    except Exception as error:
+        logger.error("Failed to initialize enhanced systems", error=str(error), exc_info=True)
+        raise
+    finally:
+        try:
+            if log_aggregator is not None:
+                log_aggregator.shutdown()
+                logger.info("Enhanced systems shutdown complete")
+        except Exception as error:
+            logger.error("Error during enhanced systems shutdown", error=str(error), exc_info=True)
+
+
+def setup_monitoring_endpoints(app: FastAPI) -> None:
+    """Setup monitoring and health check endpoints."""
+    from fastapi import HTTPException
+
+    @app.get("/health")
+    async def health_check() -> dict[str, Any]:
+        """Enhanced health check endpoint."""
+        try:
+            dashboard = get_monitoring_dashboard()
+            system_health = dashboard.get_system_health()
+
+            return {
+                "status": system_health.status,
+                "timestamp": system_health.timestamp.isoformat(),
+                "performance_score": system_health.performance_score,
+                "error_rate": system_health.error_rate,
+                "warning_rate": system_health.warning_rate,
+                "active_users": system_health.active_users,
+            }
+        except Exception as error:
+            logger = get_logger("server.health")
+            logger.error("Health check failed", error=str(error), exc_info=True)
+            raise HTTPException(status_code=503, detail="Health check failed") from error
+
+    @app.get("/metrics")
+    async def get_metrics() -> dict[str, Any]:
+        """Get system metrics."""
+        try:
+            dashboard = get_monitoring_dashboard()
+            result = dashboard.export_monitoring_data()
+            assert isinstance(result, dict)
+            return result
+        except Exception as error:
+            logger = get_logger("server.metrics")
+            logger.error("Metrics retrieval failed", error=str(error), exc_info=True)
+            raise HTTPException(status_code=500, detail="Metrics retrieval failed") from error
+
+    @app.get("/monitoring/summary")
+    async def get_monitoring_summary() -> dict[str, Any]:
+        """Get comprehensive monitoring summary."""
+        try:
+            dashboard = get_monitoring_dashboard()
+            result = dashboard.get_monitoring_summary()
+            assert isinstance(result, dict)
+            return result
+        except Exception as error:
+            logger = get_logger("server.monitoring")
+            logger.error("Monitoring summary failed", error=str(error), exc_info=True)
+            raise HTTPException(status_code=500, detail="Monitoring summary failed") from error
+
+    @app.get("/monitoring/alerts")
+    async def get_alerts() -> dict[str, Any]:
+        """Get system alerts."""
+        try:
+            dashboard = get_monitoring_dashboard()
+            alerts = dashboard.check_alerts()
+            return {"alerts": [alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]}
+        except Exception as error:
+            logger = get_logger("server.alerts")
+            logger.error("Alert retrieval failed", error=str(error), exc_info=True)
+            raise HTTPException(status_code=500, detail="Alert retrieval failed") from error
+
+    @app.post("/monitoring/alerts/{alert_id}/resolve")
+    async def resolve_alert(alert_id: str) -> dict[str, str]:
+        """Resolve a system alert."""
+        try:
+            dashboard = get_monitoring_dashboard()
+            success = dashboard.resolve_alert(alert_id)
+
+            if success:
+                return {"message": f"Alert {alert_id} resolved"}
+            raise HTTPException(status_code=404, detail="Alert not found")
+        except HTTPException:
+            raise
+        except Exception as error:
+            logger = get_logger("server.alerts")
+            logger.error("Alert resolution failed", error=str(error), exc_info=True)
+            raise HTTPException(status_code=500, detail="Alert resolution failed") from error
 
 
 def main() -> FastAPI:
@@ -56,6 +182,19 @@ logger.info("Logging setup completed")
 
 # Create the FastAPI application
 app = create_app()
+app.router.lifespan_context = enhanced_lifespan
+
+app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=config.cors.allow_origins,
+    allow_credentials=config.cors.allow_credentials,
+    allow_methods=config.cors.allow_methods,
+    allow_headers=config.cors.allow_headers,
+)
+
+setup_monitoring_endpoints(app)
 
 # Security
 security = HTTPBearer()

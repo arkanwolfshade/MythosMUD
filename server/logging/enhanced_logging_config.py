@@ -814,6 +814,4 @@ def update_logging_with_player_service(player_service: Any) -> None:
 
     # Log that the enhancement has been applied
     structured_logger = cast(Any, get_logger("server.logging"))
-    structured_logger.info(
-        "Logging system enhanced with PlayerGuidFormatter", player_service_available=True
-    )
+    structured_logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
