@@ -212,7 +212,9 @@ class NPCInstanceService:
                 npc_instance.move_to_room(new_room_id)
             else:
                 # Update the room ID directly if move_to_room method doesn't exist
-                npc_instance.current_room_id = new_room_id
+                from typing import Any, cast
+
+                cast(Any, npc_instance).current_room_id = new_room_id
 
             logger.info(
                 "Moved NPC instance",

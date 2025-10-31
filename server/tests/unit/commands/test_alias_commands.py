@@ -28,8 +28,8 @@ def mock_alias_storage():
     # Ensure all needed methods are available
     storage.create_alias = MagicMock()
     storage.get_alias = MagicMock(return_value=None)
-    storage.list_aliases = MagicMock(return_value=[])
-    storage.delete_alias = MagicMock()
+    storage.get_player_aliases = MagicMock(return_value=[])
+    storage.remove_alias = MagicMock()
     return storage
 
 
@@ -61,7 +61,7 @@ class TestHandleAliasCommandCreate:
     async def test_create_alias_success(self, mock_alias_storage, mock_current_user, mock_request):
         """Test successful alias creation."""
         result = await handle_alias_command(
-            args=["gw", "go", "west"],
+            command_data={"args": ["gw", "go", "west"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -69,7 +69,7 @@ class TestHandleAliasCommandCreate:
         )
 
         assert result["result"] == "Alias 'gw' created successfully."
-        mock_alias_storage.create_alias.assert_called_once_with("gw", "go west")
+        mock_alias_storage.create_alias.assert_called_once_with("TestPlayer", "gw", "go west")
 
     @pytest.mark.asyncio
     async def test_create_alias_handles_exception(self, mock_alias_storage, mock_current_user, mock_request):
@@ -77,7 +77,7 @@ class TestHandleAliasCommandCreate:
         mock_alias_storage.create_alias.side_effect = Exception("Database error")
 
         result = await handle_alias_command(
-            args=["gw", "go", "west"],
+            command_data={"args": ["gw", "go", "west"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -90,7 +90,7 @@ class TestHandleAliasCommandCreate:
     async def test_alias_name_length_minimum(self, mock_alias_storage, mock_current_user, mock_request):
         """Test alias name length minimum."""
         result = await handle_alias_command(
-            args=["a", "look"],
+            command_data={"args": ["a", "look"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -109,7 +109,7 @@ class TestHandleAliasCommandView:
         mock_alias_storage.get_alias.return_value = sample_alias
 
         result = await handle_alias_command(
-            args=["gw"],
+            command_data={"args": ["gw"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -117,7 +117,7 @@ class TestHandleAliasCommandView:
         )
 
         assert result["result"] == "Alias 'gw' = 'go west'"
-        mock_alias_storage.get_alias.assert_called_once_with("gw")
+        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
 
 
 class TestHandleAliasesCommand:
@@ -131,10 +131,10 @@ class TestHandleAliasesCommand:
             Alias(name="ge", command="go east"),
             Alias(name="gs", command="go south"),
         ]
-        mock_alias_storage.list_aliases.return_value = aliases
+        mock_alias_storage.get_player_aliases.return_value = aliases
 
         result = await handle_aliases_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -154,7 +154,7 @@ class TestHandleUnaliasCommand:
         mock_alias_storage.get_alias.return_value = sample_alias
 
         result = await handle_unalias_command(
-            args=["gw"],
+            command_data={"args": ["gw"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -162,8 +162,8 @@ class TestHandleUnaliasCommand:
         )
 
         assert result["result"] == "Alias 'gw' removed successfully."
-        mock_alias_storage.get_alias.assert_called_once_with("gw")
-        mock_alias_storage.delete_alias.assert_called_once_with("gw")
+        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
+        mock_alias_storage.remove_alias.assert_called_once_with("TestPlayer", "gw")
 
     @pytest.mark.asyncio
     async def test_unalias_not_found(self, mock_alias_storage, mock_current_user, mock_request):
@@ -171,7 +171,7 @@ class TestHandleUnaliasCommand:
         mock_alias_storage.get_alias.return_value = None
 
         result = await handle_unalias_command(
-            args=["gw"],
+            command_data={"args": ["gw"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -179,9 +179,9 @@ class TestHandleUnaliasCommand:
         )
 
         assert result["result"] == "No alias found for 'gw'"
-        mock_alias_storage.get_alias.assert_called_once_with("gw")
+        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
         # delete_alias should NOT be called when alias doesn't exist
-        mock_alias_storage.delete_alias.assert_not_called()
+        mock_alias_storage.remove_alias.assert_not_called()
 
 
 class TestIntegrationScenarios:
@@ -194,7 +194,7 @@ class TestIntegrationScenarios:
 
         # 1. Create alias
         result = await handle_alias_command(
-            args=["gw", "go", "west"],
+            command_data={"args": ["gw", "go", "west"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -205,7 +205,7 @@ class TestIntegrationScenarios:
         # 2. View alias
         mock_alias_storage.get_alias.return_value = sample_alias
         result = await handle_alias_command(
-            args=["gw"],
+            command_data={"args": ["gw"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -214,9 +214,9 @@ class TestIntegrationScenarios:
         assert "Alias 'gw' = 'go west'" in result["result"]
 
         # 3. List aliases
-        mock_alias_storage.list_aliases.return_value = [sample_alias]
+        mock_alias_storage.get_player_aliases.return_value = [sample_alias]
         result = await handle_aliases_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -226,7 +226,7 @@ class TestIntegrationScenarios:
 
         # 4. Delete alias
         result = await handle_unalias_command(
-            args=["gw"],
+            command_data={"args": ["gw"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -242,7 +242,7 @@ class TestIntegrationScenarios:
         # Create multiple aliases
         for name, cmd in aliases_to_create:
             result = await handle_alias_command(
-                args=[name] + cmd.split(),
+                command_data={"args": [name] + cmd.split()},
                 current_user=mock_current_user,
                 request=mock_request,
                 alias_storage=mock_alias_storage,
@@ -252,10 +252,10 @@ class TestIntegrationScenarios:
 
         # List all aliases
         alias_objects = [Alias(name=name, command=cmd) for name, cmd in aliases_to_create]
-        mock_alias_storage.list_aliases.return_value = alias_objects
+        mock_alias_storage.get_player_aliases.return_value = alias_objects
 
         result = await handle_aliases_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,

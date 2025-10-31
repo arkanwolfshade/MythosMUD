@@ -73,7 +73,9 @@ class TestOrphanedTaskDetection:
 
         class TestEvent(BaseEvent):
             def __init__(self):
-                super().__init__(timestamp=datetime.now(UTC), event_type="test_event")
+                super().__init__()
+                self.timestamp = datetime.now(UTC)
+                self.event_type = "test_event"
 
         event_bus.subscribe(TestEvent, subscriber_coro)
 

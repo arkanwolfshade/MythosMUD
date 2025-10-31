@@ -189,8 +189,6 @@ class TestCombatEventPublisher:
         """Test successful NPC took damage event publishing."""
         # Create NPC took damage event
         event = NPCTookDamageEvent(
-            event_type="npc_took_damage",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             npc_id=self.test_npc_id,
@@ -226,8 +224,6 @@ class TestCombatEventPublisher:
         """Test successful NPC died event publishing."""
         # Create NPC died event
         event = NPCDiedEvent(
-            event_type="npc_died",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             npc_id=self.test_npc_id,
@@ -259,8 +255,6 @@ class TestCombatEventPublisher:
         """Test successful combat turn advanced event publishing."""
         # Create combat turn advanced event
         event = CombatTurnAdvancedEvent(
-            event_type="combat_turn_advanced",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             current_turn=2,
@@ -293,8 +287,6 @@ class TestCombatEventPublisher:
         """Test successful combat timeout event publishing."""
         # Create combat timeout event
         event = CombatTimeoutEvent(
-            event_type="combat_timeout",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             timeout_minutes=5,
@@ -409,8 +401,6 @@ class TestExtendedEventTypes:
     def test_npc_attacked_event_with_combat_data(self):
         """Test NPCAttacked event with combat data."""
         event = NPCAttacked(
-            timestamp=None,
-            event_type="NPCAttacked",
             npc_id="npc_001",
             target_id="player_001",
             room_id="room_001",
@@ -433,8 +423,6 @@ class TestExtendedEventTypes:
     def test_npc_took_damage_event_with_combat_data(self):
         """Test NPCTookDamage event with combat data."""
         event = NPCTookDamage(
-            timestamp=None,
-            event_type="NPCTookDamage",
             npc_id="npc_001",
             room_id="room_001",
             damage=5,
@@ -459,8 +447,6 @@ class TestExtendedEventTypes:
     def test_npc_died_event_with_combat_data(self):
         """Test NPCDied event with combat data."""
         event = NPCDied(
-            timestamp=None,
-            event_type="NPCDied",
             npc_id="npc_001",
             room_id="room_001",
             cause="combat",

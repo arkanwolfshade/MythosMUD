@@ -22,6 +22,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.persistence = Mock()
         self.combat_service = AsyncMock()
         self.messaging_integration = Mock()
+        self.messaging_integration.broadcast_combat_attack = AsyncMock(return_value=True)
         self.event_publisher = Mock()
 
         # Mock combat result
@@ -77,7 +78,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result == "Attack successful"
+        assert result is True
         self.combat_service.process_attack.assert_called_once()
         self.messaging_integration.broadcast_combat_attack.assert_called_once()
 
@@ -107,7 +108,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result == "Attack successful"
+        assert result is True
         self.combat_service.start_combat.assert_called_once()
         self.combat_service.process_attack.assert_called_once()
 
@@ -150,7 +151,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         )
 
         # Verify combat was started
-        assert result == "Attack successful"
+        assert result is True
         self.combat_service.start_combat.assert_called_once()
 
         # CRITICAL: Verify player HP was initialized with CURRENT HP (70), not hardcoded 100
@@ -189,7 +190,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result == "Attack successful"
+        assert result is True
         self.service.handle_npc_death.assert_called_once()
 
     @pytest.mark.asyncio
@@ -222,7 +223,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result == "Combat failed"
+        assert result is False
         self.messaging_integration.broadcast_combat_attack.assert_not_called()
 
     @pytest.mark.asyncio
@@ -251,7 +252,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result == "Attack successful"
+        assert result is True
         self.combat_service.start_combat.assert_called_once()
 
     def test_handle_npc_death_with_xp_reward(self):

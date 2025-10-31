@@ -26,7 +26,8 @@ class TestEventHandlerTimestamps:
         handler = RealTimeEventHandler()
 
         # Create event with a deterministic timestamp input; handler doesn't use it directly
-        event = PlayerEnteredRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
+        event = PlayerEnteredRoom(player_id="p1", room_id="r1")
+        event.timestamp = datetime.now(UTC)
 
         message = handler._create_player_entered_message(event, "Alice")
         assert isinstance(message["timestamp"], str)
@@ -35,7 +36,8 @@ class TestEventHandlerTimestamps:
     def test_player_left_message_timestamp(self):
         handler = RealTimeEventHandler()
 
-        event = PlayerLeftRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
+        event = PlayerLeftRoom(player_id="p1", room_id="r1")
+        event.timestamp = datetime.now(UTC)
 
         message = handler._create_player_left_message(event, "Alice")
         assert isinstance(message["timestamp"], str)
@@ -46,8 +48,10 @@ class TestEventHandlerTimestamps:
         handler = RealTimeEventHandler()
 
         # Test multiple events to ensure consistent formatting
-        event1 = PlayerEnteredRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
-        event2 = PlayerLeftRoom(timestamp=datetime.now(UTC), event_type="", player_id="p2", room_id="r1")
+        event1 = PlayerEnteredRoom(player_id="p1", room_id="r1")
+        event1.timestamp = datetime.now(UTC)
+        event2 = PlayerLeftRoom(player_id="p2", room_id="r1")
+        event2.timestamp = datetime.now(UTC)
 
         message1 = handler._create_player_entered_message(event1, "Alice")
         message2 = handler._create_player_left_message(event2, "Bob")

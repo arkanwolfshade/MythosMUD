@@ -28,7 +28,8 @@ async def test_event_bus_creation_and_shutdown():
 
     from server.events import PlayerLeftRoom
 
-    event = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()), timestamp=None, event_type="")
+    event = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()))
+    event.timestamp = None
     event_bus.publish(event)
 
     print("Waiting for processing...")

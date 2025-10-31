@@ -37,7 +37,8 @@ class TestEventTypes:
 
     def test_base_event_creation(self):
         """Test that BaseEvent can be created with proper defaults."""
-        event = BaseEvent(timestamp=None, event_type="TestEvent")
+        event = BaseEvent()
+        event.event_type = "TestEvent"
 
         assert event.timestamp is not None
         assert isinstance(event.timestamp, datetime)

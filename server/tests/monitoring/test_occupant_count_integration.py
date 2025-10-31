@@ -140,9 +140,8 @@ class TestOccupantCountIntegration:
         new_player.current_room_id = room_id
 
         # Create player entered event
-        enter_event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id=player_id, room_id=room_id
-        )
+        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        enter_event.timestamp = None
 
         # Update mock to include new player in occupants
         updated_occupants = sample_occupants + [{"player_name": "Player4", "player_id": "player_4"}]
@@ -193,9 +192,8 @@ class TestOccupantCountIntegration:
         leaving_player_id = "player_2"
 
         # Create player left event
-        leave_event = PlayerLeftRoom(
-            timestamp=None, event_type="player_left", player_id=leaving_player_id, room_id=room_id
-        )
+        leave_event = PlayerLeftRoom(player_id=leaving_player_id, room_id=room_id)
+        leave_event.timestamp = None
 
         # Update mock to reflect player leaving (remove player_2)
         updated_occupants = [occ for occ in sample_occupants if occ["player_id"] != "player_2"]
@@ -243,9 +241,8 @@ class TestOccupantCountIntegration:
         player_id = "player_5"
 
         # Player enters
-        enter_event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id=player_id, room_id=room_id
-        )
+        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        enter_event.timestamp = None
 
         # Update mock for player entering
         updated_occupants = sample_occupants + [{"player_name": "Player5", "player_id": "player_5"}]
@@ -257,7 +254,8 @@ class TestOccupantCountIntegration:
         await connection_manager._handle_player_entered_room(enter_event.__dict__)
 
         # Player immediately leaves
-        leave_event = PlayerLeftRoom(timestamp=None, event_type="player_left", player_id=player_id, room_id=room_id)
+        leave_event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
+        leave_event.timestamp = None
 
         # Update mock for player leaving
         mock_room_manager.get_room_occupants.return_value = sample_occupants
@@ -304,9 +302,8 @@ class TestOccupantCountIntegration:
 
         # Simulate a player entering
         player_id = "player_6"
-        enter_event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id=player_id, room_id=room_id
-        )
+        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        enter_event.timestamp = None
 
         updated_occupants = sample_occupants + [{"player_name": "Player6", "player_id": "player_6"}]
         mock_room_manager.get_room_occupants.return_value = updated_occupants
@@ -358,9 +355,8 @@ class TestOccupantCountIntegration:
 
         # Simulate player entering room 1
         player_id = "player_5"
-        enter_event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id=player_id, room_id=room1_id
-        )
+        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room1_id)
+        enter_event.timestamp = None
 
         # Mock room 1 occupants
         room1_occupants = sample_occupants[:2] + [{"player_name": "Player5", "player_id": "player_5"}]

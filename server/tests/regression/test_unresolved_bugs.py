@@ -72,9 +72,9 @@ class TestSelfMessageExclusionBugs:
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Mock room sync service to pass through the event
-        event_handler.room_sync_service._process_event_with_ordering = Mock(
-            return_value=PlayerLeftRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="player_left")
-        )
+        mock_processed_left = PlayerLeftRoom(player_id=player_id, room_id=room_id)
+        mock_processed_left.timestamp = None
+        event_handler.room_sync_service._process_event_with_ordering = Mock(return_value=mock_processed_left)
 
         # Mock chat logger
         event_handler.chat_logger.log_player_left_room = Mock()
@@ -83,7 +83,8 @@ class TestSelfMessageExclusionBugs:
         event_handler._send_room_occupants_update = AsyncMock()
 
         # Create and handle a PlayerLeftRoomEvent
-        event = PlayerLeftRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")
+        event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
+        event.timestamp = None
 
         await event_handler._handle_player_left(event)
 
@@ -130,11 +131,9 @@ class TestSelfMessageExclusionBugs:
         event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
 
         # Mock room sync service to pass through the event
-        event_handler.room_sync_service._process_event_with_ordering = Mock(
-            return_value=PlayerEnteredRoom(
-                player_id=player_id, room_id=room_id, timestamp=None, event_type="player_entered"
-            )
-        )
+        mock_processed_entered = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        mock_processed_entered.timestamp = None
+        event_handler.room_sync_service._process_event_with_ordering = Mock(return_value=mock_processed_entered)
 
         # Mock chat logger
         event_handler.chat_logger.log_player_joined_room = Mock()
@@ -143,7 +142,8 @@ class TestSelfMessageExclusionBugs:
         event_handler._send_room_occupants_update = AsyncMock()
 
         # Create and handle a PlayerEnteredRoomEvent
-        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id, timestamp=None, event_type="")
+        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        event.timestamp = None
 
         await event_handler._handle_player_entered(event)
 
@@ -254,9 +254,11 @@ class TestEventOrderingAndTimingBugs:
         event_handler._send_room_occupants_update = AsyncMock()
 
         # Create concurrent movement events
-        event_1 = PlayerLeftRoom(player_id=player_1_id, room_id=room_id, timestamp=None, event_type="")
+        event_1 = PlayerLeftRoom(player_id=player_1_id, room_id=room_id)
+        event_1.timestamp = None
 
-        event_2 = PlayerLeftRoom(player_id=player_2_id, room_id=room_id, timestamp=None, event_type="")
+        event_2 = PlayerLeftRoom(player_id=player_2_id, room_id=room_id)
+        event_2.timestamp = None
 
         # Process events concurrently
         await asyncio.gather(event_handler._handle_player_left(event_1), event_handler._handle_player_left(event_2))
@@ -287,7 +289,8 @@ class TestEventOrderingAndTimingBugs:
         # Publish many events rapidly
         events = []
         for _ in range(10):
-            event = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()), timestamp=None, event_type="")
+            event = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()))
+            event.timestamp = None
             events.append(event)
 
         # Publish all events

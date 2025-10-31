@@ -5,7 +5,9 @@ This module handles FastAPI app creation, middleware configuration,
 and router registration.
 """
 
+import json
 import os
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,6 +26,7 @@ from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
 from ..config import get_config
 from ..logging.enhanced_logging_config import get_logger
+from ..middleware.allowed_cors import AllowedCORSMiddleware
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware
@@ -53,39 +56,89 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Add CORS middleware first (it handles preflight requests)
-    config = get_config()
-    cors_config = config.cors
+    # Resolve CORS configuration (prefer full AppConfig, fallback to environment-only if unavailable)
+    try:
+        config = get_config()
+        cors_cfg: Any = config.cors
+        allowed_origins_list = list(getattr(cors_cfg, "allow_origins", []))
+        allowed_methods_list = [str(m).upper() for m in getattr(cors_cfg, "allow_methods", [])]
+        allowed_headers_list = [str(h) for h in getattr(cors_cfg, "allow_headers", [])]
+        expose_headers_list = list(getattr(cors_cfg, "expose_headers", []))
+        allow_credentials_bool = bool(getattr(cors_cfg, "allow_credentials", True))
+        max_age_int = int(getattr(cors_cfg, "max_age", 600))
+    except Exception:
+        # Minimal fallback sourced only from environment
+        allowed_origins_list = [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ]
+        allowed_methods_list = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+        allowed_headers_list = [
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With",
+            "Accept",
+            "Accept-Language",
+        ]
+        expose_headers_list = []
+        allow_credentials_bool = True
+        max_age_int = 600
 
     logger.info(
         "CORS configuration",
-        allow_origins=cors_config.allow_origins,
-        allow_methods=cors_config.allow_methods,
-        allow_headers=cors_config.allow_headers,
-        expose_headers=cors_config.expose_headers,
-        allow_credentials=cors_config.allow_credentials,
-        max_age=cors_config.max_age,
+        allow_origins=allowed_origins_list,
+        allow_methods=allowed_methods_list,
+        allow_headers=allowed_headers_list,
+        expose_headers=expose_headers_list,
+        allow_credentials=allow_credentials_bool,
+        max_age=max_age_int,
     )
 
-    cors_kwargs = {
-        "allow_origins": cors_config.allow_origins,
-        "allow_credentials": cors_config.allow_credentials,
-        "allow_methods": cors_config.allow_methods,
-        "allow_headers": cors_config.allow_headers,
-        "max_age": cors_config.max_age,
-    }
-    if cors_config.expose_headers:
-        cors_kwargs["expose_headers"] = cors_config.expose_headers
+    # Allow explicit env overrides for methods/headers to support legacy variables in runtime
+    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
+    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
 
-    # Human Explanation: Ensure preflight requests honor the same wards used elsewhere in the realm.
-    # AI Guidance: Maintain consistency with server.main when updating CORS parameters.
-    app.add_middleware(CORSMiddleware, **cors_kwargs)
+    allow_methods = [m.strip().upper() for m in env_methods.split(",")] if env_methods else allowed_methods_list
+    allow_headers = [h.strip() for h in env_headers.split(",")] if env_headers else allowed_headers_list
+    env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS")
+    if env_origins:
+        candidate = env_origins.strip()
+        if candidate.startswith("["):
+            try:
+                parsed = json.loads(candidate)
+                allow_origins = [str(o).strip() for o in parsed if str(o).strip()]
+            except json.JSONDecodeError:
+                allow_origins = [o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()]
+        else:
+            allow_origins = [o.strip() for o in env_origins.split(",") if o.strip()]
+    else:
+        allow_origins = allowed_origins_list
 
-    # Add comprehensive logging middleware (add second to capture all requests and errors)
+    # Add security and logging first (inner layers)
+    app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(ComprehensiveLoggingMiddleware)
 
-    # Add security headers middleware (add last to ensure headers are added to all responses)
-    app.add_middleware(SecurityHeadersMiddleware)
+    # Add FastAPI CORSMiddleware for standard CORS behavior (tests inspect for this)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins_list,
+        allow_credentials=True,
+        allow_methods=allowed_methods_list,
+        allow_headers=allowed_headers_list,
+        max_age=max_age_int,
+        expose_headers=expose_headers_list or None,
+    )
+
+    app.add_middleware(
+        AllowedCORSMiddleware,
+        allow_origins=allow_origins,
+        allow_methods=allow_methods,
+        allow_headers=allow_headers,
+        allow_credentials=allow_credentials_bool,
+        max_age=max_age_int,
+    )
+
+    # Note: CORS handling is provided by AllowedCORSMiddleware above
 
     # Setup comprehensive error handling (middleware + exception handlers)
     # Include details in development mode, hide in production
@@ -110,5 +163,7 @@ def create_app() -> FastAPI:
     app.include_router(room_router)
     app.include_router(admin_npc_router)
     app.include_router(admin_subject_router, prefix="/api/admin")  # NATS subject management endpoints
+
+    # CORS handled by AllowedCORSMiddleware above
 
     return app

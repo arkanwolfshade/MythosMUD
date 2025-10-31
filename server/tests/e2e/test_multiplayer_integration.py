@@ -81,9 +81,7 @@ class TestMultiplayerIntegration:
             with patch.object(event_handler.connection_manager, "subscribe_to_room") as mock_subscribe:
                 with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
                     # Create and publish a player entered event
-                    event = PlayerEnteredRoom(
-                        timestamp=None, event_type="player_entered", player_id="player1", room_id="test_room_001"
-                    )
+                    event = PlayerEnteredRoom(player_id="player1", room_id="test_room_001")
 
                     # Call the event handler directly instead of using the EventBus
                     await event_handler._handle_player_entered(event)
@@ -100,9 +98,7 @@ class TestMultiplayerIntegration:
             with patch.object(event_handler.connection_manager, "unsubscribe_from_room") as mock_unsubscribe:
                 with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
                     # Create and publish a player left event
-                    event = PlayerLeftRoom(
-                        timestamp=None, event_type="player_left", player_id="player1", room_id="test_room_001"
-                    )
+                    event = PlayerLeftRoom(player_id="player1", room_id="test_room_001")
 
                     # Call the event handler directly instead of using the EventBus
                     await event_handler._handle_player_left(event)
@@ -113,9 +109,7 @@ class TestMultiplayerIntegration:
 
     def test_message_format_player_entered(self, event_handler):
         """Test that player entered messages are formatted correctly."""
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="player_entered", player_id="player1", room_id="test_room_001"
-        )
+        event = PlayerEnteredRoom(player_id="player1", room_id="test_room_001")
 
         message = event_handler._create_player_entered_message(event, "TestPlayer")
 
@@ -127,7 +121,7 @@ class TestMultiplayerIntegration:
 
     def test_message_format_player_left(self, event_handler):
         """Test that player left messages are formatted correctly."""
-        event = PlayerLeftRoom(timestamp=None, event_type="player_left", player_id="player1", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id="player1", room_id="test_room_001")
 
         message = event_handler._create_player_left_message(event, "TestPlayer")
 

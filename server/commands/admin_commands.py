@@ -453,8 +453,11 @@ async def handle_add_admin_command(
     Returns:
         dict: Add admin command result
     """
-    # Extract args from command_data
+    # Extract args from command_data while supporting legacy and new validation payloads
     args: list = command_data.get("args", [])
+    target_player = command_data.get("target_player")
+    if not target_player and args:
+        target_player = args[0]
 
     logger.debug("Processing add_admin command", player_name=player_name, args=args)
 
@@ -465,11 +468,9 @@ async def handle_add_admin_command(
         logger.warning("Add admin command failed - no user manager", player_name=player_name)
         return {"result": "Admin management is not available."}
 
-    if len(args) < 1:
+    if not target_player:
         logger.warning("Add admin command with insufficient arguments", player_name=player_name, args=args)
         return {"result": "Usage: add_admin <player_name>"}
-
-    target_player = args[0]
 
     try:
         success = user_manager.add_admin(target_player, get_username_from_user(current_user))

@@ -573,7 +573,8 @@ class TestUserManagementCommands:
         )
 
         assert "result" in result
-        assert "Error processing CommandType.ADD_ADMIN command" in result["result"]
+        assert "targetuser has been granted administrator privileges." == result["result"]
+        mock_request.app.state.user_manager.add_admin.assert_called_once_with("targetuser", "testuser")
 
     @pytest.mark.asyncio
     async def test_process_command_mutes(self):

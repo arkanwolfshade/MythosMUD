@@ -52,11 +52,10 @@ class TestEventProcessingOrder:
 
         for i in range(5):
             event = PlayerEnteredRoom(
-                event_type="player_entered_room",
-                timestamp=datetime.fromtimestamp(base_time + i, UTC),
                 player_id=f"player_{i}",
                 room_id="test_room_1",
             )
+            event.timestamp = datetime.fromtimestamp(base_time + i, UTC)
             events.append(event)
 
         # Process events in reverse order to test ordering
@@ -226,11 +225,10 @@ class TestEventProcessingOrder:
             batch = []
             for i in range(10):
                 event = PlayerEnteredRoom(
-                    event_type="player_entered_room",
-                    timestamp=datetime.fromtimestamp(base_time + (batch_id * 10) + i, UTC),
                     player_id=f"batch_{batch_id}_player_{i}",
                     room_id=f"room_{batch_id}",
                 )
+                event.timestamp = datetime.fromtimestamp(base_time + (batch_id * 10) + i, UTC)
                 batch.append(event)
             event_batches.append(batch)
 

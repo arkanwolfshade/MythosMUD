@@ -108,9 +108,7 @@ class TestNPCRoomIntegration:
         mock_connection_manager.persistence.get_room.return_value = test_room
 
         # Create NPC entered room event
-        event = NPCEnteredRoom(
-            timestamp=None, event_type="NPCEnteredRoom", npc_id="test_npc_001", room_id="test_room_001"
-        )
+        event = NPCEnteredRoom(npc_id="test_npc_001", room_id="test_room_001")
 
         # Verify room starts empty
         assert len(test_room.get_npcs()) == 0
@@ -221,9 +219,7 @@ class TestNPCRoomIntegration:
         mock_connection_manager.persistence.get_room.return_value = None
 
         # Create NPC entered room event
-        event = NPCEnteredRoom(
-            timestamp=None, event_type="NPCEnteredRoom", npc_id="test_npc_001", room_id="nonexistent_room"
-        )
+        event = NPCEnteredRoom(npc_id="test_npc_001", room_id="nonexistent_room")
 
         # Handle the event (should not raise exception)
         real_time_event_handler._handle_npc_entered(event)
@@ -247,12 +243,7 @@ class TestNPCRoomIntegration:
         mock_connection_manager.persistence.get_room.return_value = test_room
 
         # Create multiple concurrent events
-        events = [
-            NPCEnteredRoom(
-                timestamp=None, event_type="NPCEnteredRoom", npc_id=f"test_npc_{i:03d}", room_id="test_room_001"
-            )
-            for i in range(5)
-        ]
+        events = [NPCEnteredRoom(npc_id=f"test_npc_{i:03d}", room_id="test_room_001") for i in range(5)]
 
         # Handle all events concurrently
         for event in events:
@@ -327,8 +318,6 @@ class TestNPCRoomIntegrationRegression:
 
         # Create NPC entered room event (this is what was missing before the fix)
         event = NPCEnteredRoom(
-            timestamp=None,
-            event_type="NPCEnteredRoom",
             npc_id="dr._francis_morgan_sanitarium_001",
             room_id="sanitarium_room_001",
         )

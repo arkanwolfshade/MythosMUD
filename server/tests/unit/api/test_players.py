@@ -673,7 +673,7 @@ class TestCharacterCreation:
             await create_character_with_stats(request_data, mock_current_user, mock_request)
 
         assert exc_info.value.status_code == 429
-        assert "Rate limit exceeded" in str(exc_info.value.detail["message"])
+        assert exc_info.value.detail == "Rate limit exceeded"
 
     @pytest.mark.asyncio
     async def test_create_character_authentication_failure(self, mock_request):

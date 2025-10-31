@@ -279,7 +279,7 @@ async def handle_quit_command(
 
 async def handle_logout_command(
     command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
-) -> dict[str, str]:
+) -> dict[str, Any]:
     """
     Handle the logout command for cleanly disconnecting from the game.
 
@@ -338,8 +338,8 @@ async def handle_logout_command(
 
         return {
             "result": "Logged out successfully",
-            "session_terminated": "true",
-            "connections_closed": "true",
+            "session_terminated": True,
+            "connections_closed": True,
             "message": "You have been logged out and disconnected from the game.",
         }
 
@@ -350,8 +350,8 @@ async def handle_logout_command(
         # The client will handle the cleanup
         return {
             "result": "Logged out successfully",
-            "session_terminated": "true",
-            "connections_closed": "true",
+            "session_terminated": True,
+            "connections_closed": True,
             "message": "You have been logged out from the game.",
         }
 

@@ -159,6 +159,7 @@ def validate_admin_permission(current_user: dict, action: AdminAction, request: 
 async def get_npc_definitions(
     current_user: dict = Depends(get_current_user),
     request: Request = None,
+    session: AsyncSession = Depends(get_async_session),
 ) -> list[NPCDefinitionResponse]:
     """Get all NPC definitions."""
     try:
@@ -167,10 +168,8 @@ async def get_npc_definitions(
         auth_service = get_admin_auth_service()
         logger.info("NPC definitions requested", user=auth_service.get_username(current_user))
 
-        # Get NPC definitions from database using NPC database session
-        async for npc_session in get_npc_session():
-            definitions = await npc_service.get_npc_definitions(npc_session)
-            break
+        # Get NPC definitions from the primary application database session
+        definitions = await npc_service.get_npc_definitions(session)
 
         # Convert to response models
         response_definitions = [NPCDefinitionResponse.from_orm(defn) for defn in definitions]
@@ -240,6 +239,7 @@ async def get_npc_definition(
     definition_id: int,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
+    session: AsyncSession = Depends(get_async_session),
 ) -> NPCDefinitionResponse:
     """Get a specific NPC definition by ID."""
     try:
@@ -250,10 +250,8 @@ async def get_npc_definition(
             "NPC definition requested", user=auth_service.get_username(current_user), definition_id=definition_id
         )
 
-        # Get NPC definition from database using NPC database session
-        async for npc_session in get_npc_session():
-            definition = await npc_service.get_npc_definition(npc_session, definition_id)
-            break
+        # Get NPC definition from the primary application database session
+        definition = await npc_service.get_npc_definition(session, definition_id)
 
         if not definition:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found")

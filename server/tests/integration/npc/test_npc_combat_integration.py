@@ -31,6 +31,7 @@ class TestNPCCombatIntegrationService:
         # Mock the player combats dictionary
         self.combat_service._player_combats = {}
         self.messaging_integration = Mock()
+        self.messaging_integration.broadcast_combat_attack = AsyncMock(return_value=True)
         self.event_publisher = Mock()
 
         with (

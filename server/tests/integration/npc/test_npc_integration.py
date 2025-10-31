@@ -808,11 +808,10 @@ class TestNPCEventIntegration:
 
         # Publish a player event
         event = PlayerEnteredRoom(
-            timestamp=None,
-            event_type="PlayerEnteredRoom",
             player_id="test_player_1",
             room_id="earth_arkhamcity_downtown_room_derby_st_001",
         )
+        event.timestamp = None
         event_bus.publish(event)
 
         # Give event processing time
@@ -832,9 +831,8 @@ class TestNPCEventIntegration:
         initial_room = test_npc.current_room
 
         # Simulate a player entering the room
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="PlayerEnteredRoom", player_id="test_player_1", room_id=initial_room
-        )
+        event = PlayerEnteredRoom(player_id="test_player_1", room_id=initial_room)
+        event.timestamp = None
         event_bus.publish(event)
 
         # Give event processing time
@@ -990,14 +988,12 @@ class TestNPCSystemIntegration:
         event_bus.subscribe(NPCLeftRoom, capture_all_events)
 
         # Publish some test events
-        event_bus.publish(
-            PlayerEnteredRoom(
-                timestamp=None,
-                event_type="PlayerEnteredRoom",
-                player_id="test_player_1",
-                room_id="earth_arkhamcity_downtown_room_derby_st_001",
-            )
+        player_event = PlayerEnteredRoom(
+            player_id="test_player_1",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
         )
+        player_event.timestamp = None
+        event_bus.publish(player_event)
 
         # Give event processing time
         await asyncio.sleep(0.1)
@@ -1094,12 +1090,11 @@ class TestNPCEventReactionSystem:
 
         # Simulate a player entering the room
         player_entered_event = PlayerEnteredRoom(
-            timestamp=time.time(),
-            event_type="PlayerEnteredRoom",
             player_id="test_player_1",
             room_id="earth_arkhamcity_downtown_room_derby_st_001",
             from_room_id="earth_arkhamcity_downtown_room_derby_st_002",
         )
+        player_entered_event.timestamp = time.time()
 
         event_bus.publish(player_entered_event)
 
@@ -1162,9 +1157,8 @@ class TestNPCEventReactionSystem:
 
         # Simulate multiple rapid events
         for i in range(3):
-            player_entered_event = PlayerEnteredRoom(
-                timestamp=time.time(), event_type="PlayerEnteredRoom", player_id=f"test_player_{i}", room_id="test_room"
-            )
+            player_entered_event = PlayerEnteredRoom(player_id=f"test_player_{i}", room_id="test_room")
+            player_entered_event.timestamp = time.time()
             event_bus.publish(player_entered_event)
 
         # Wait for event processing

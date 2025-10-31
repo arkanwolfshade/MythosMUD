@@ -79,9 +79,8 @@ class TestSelfMessageBug:
         connection_manager.broadcast_to_room = AsyncMock()
 
         # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(
-            timestamp=None, event_type="player_left", player_id="test_player_123", room_id="test_room_456"
-        )
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_456")
+        event.timestamp = None
 
         # Mock the player lookup
         mock_player = Mock()
