@@ -152,6 +152,9 @@ exclude = [
     "^scripts/",
     "^docs/",
     "^tools/",
+    "^monitoring/",
+    "^server/alembic/",
+    "^server/test_who_command_direct.py$",
 ]
 follow_imports = "skip"
 ignore_missing_imports = true
@@ -199,6 +202,13 @@ module = [
     "bleach.*",
     "tqdm.*",
     "pwdlib.*",
+    "alembic.*",
+    "flask.*",
+    "analyze_error_logs",
+    "error_monitoring",
+    "server.async_utils.tracked_task_manager",
+    "server.tests.windows_logging_fix",
+    "server.tests.windows_event_loop_fix",
 ]
 ignore_missing_imports = true
 
