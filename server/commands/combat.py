@@ -64,7 +64,7 @@ class CombatCommandHandler:
         command_data: dict,
         current_user: dict,
         request: Any,
-        alias_storage: AliasStorage,
+        alias_storage: AliasStorage | None,
         player_name: str,
     ) -> dict[str, str]:
         """
@@ -313,7 +313,7 @@ async def handle_attack_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage,
+    alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Handle attack command."""
@@ -325,7 +325,7 @@ async def handle_punch_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage,
+    alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Handle punch command (alias for attack)."""
@@ -340,7 +340,7 @@ async def handle_kick_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage,
+    alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Handle kick command (alias for attack)."""
@@ -355,7 +355,7 @@ async def handle_strike_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage,
+    alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Handle strike command (alias for attack)."""

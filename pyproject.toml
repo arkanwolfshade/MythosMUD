@@ -150,6 +150,8 @@ exclude = [
     "^data/",
     "^client/",
     "^scripts/",
+    "^docs/",
+    "^tools/",
 ]
 follow_imports = "skip"
 ignore_missing_imports = true

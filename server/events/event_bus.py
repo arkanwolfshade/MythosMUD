@@ -197,7 +197,12 @@ class EventBus:
                     task.add_done_callback(remove_task)
                     # Handle task completion with proper exception handling
                     subscriber_name = subscriber.__name__
-                    task.add_done_callback(lambda t, sn=subscriber_name: self._handle_task_result_async(t, sn))
+
+                    # Create a typed callback to avoid lambda type inference issues
+                    def task_done_callback(t: asyncio.Task, sn: str = subscriber_name) -> None:
+                        self._handle_task_result_async(t, sn)
+
+                    task.add_done_callback(task_done_callback)
 
                     self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber.__name__)
                 else:

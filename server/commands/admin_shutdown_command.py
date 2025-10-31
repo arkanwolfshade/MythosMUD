@@ -711,7 +711,7 @@ def parse_shutdown_parameters(command_data: dict) -> tuple[str, int | None]:
 
 
 async def handle_shutdown_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the /shutdown command for administrators.

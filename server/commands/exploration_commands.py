@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 async def handle_look_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the look command for examining surroundings.
@@ -129,7 +129,7 @@ async def handle_look_command(
 
 
 async def handle_go_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the go command for movement.

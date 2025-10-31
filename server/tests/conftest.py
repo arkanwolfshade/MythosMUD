@@ -693,7 +693,8 @@ def mock_string():
     def _create_mock_string(value: str):
         """Create a mock that behaves like a string."""
         mock = MagicMock()
-        mock.__str__ = MagicMock(return_value=value)
+        # Configure __str__ using configure_mock to avoid method assignment
+        mock.configure_mock(**{"__str__.return_value": value})
         mock.__len__ = MagicMock(return_value=len(value))
         mock.strip = MagicMock(return_value=value.strip())
         mock.startswith = MagicMock(return_value=value.startswith)
@@ -713,7 +714,8 @@ def mock_command_string():
     def _create_mock_command_string(command: str):
         """Create a mock that behaves like a command string."""
         mock = MagicMock()
-        mock.__str__ = MagicMock(return_value=command)
+        # Configure __str__ using configure_mock to avoid method assignment
+        mock.configure_mock(**{"__str__.return_value": command})
         mock.__len__ = MagicMock(return_value=len(command))
         mock.strip = MagicMock(return_value=command.strip())
         mock.startswith = MagicMock(return_value=command.startswith)

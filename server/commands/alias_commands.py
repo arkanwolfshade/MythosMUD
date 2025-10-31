@@ -13,13 +13,13 @@ logger = get_logger(__name__)
 
 
 async def handle_alias_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the alias command for creating and viewing aliases.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -28,7 +28,14 @@ async def handle_alias_command(
     Returns:
         dict: Command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing alias command", player_name=player_name, args=args)
+
+    if alias_storage is None:
+        logger.error("Alias storage not available", player_name=player_name)
+        return {"result": "Alias system is not available"}
 
     if not args:
         logger.warning("Alias command with no arguments", player_name=player_name)
@@ -81,13 +88,13 @@ async def handle_alias_command(
 
 
 async def handle_aliases_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the aliases command for listing all aliases.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -97,6 +104,10 @@ async def handle_aliases_command(
         dict: Aliases command result
     """
     logger.debug("Listing aliases", player_name=player_name)
+
+    if alias_storage is None:
+        logger.error("Alias storage not available", player_name=player_name)
+        return {"result": "Alias system is not available"}
 
     try:
         # AI Agent: Method is get_player_aliases, not list_aliases
@@ -120,13 +131,13 @@ async def handle_aliases_command(
 
 
 async def handle_unalias_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the unalias command for removing aliases.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -135,7 +146,14 @@ async def handle_unalias_command(
     Returns:
         dict: Unalias command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing unalias command", player_name=player_name, args=args)
+
+    if alias_storage is None:
+        logger.error("Alias storage not available", player_name=player_name)
+        return {"result": "Alias system is not available"}
 
     if not args:
         logger.warning("Unalias command with no arguments", player_name=player_name)

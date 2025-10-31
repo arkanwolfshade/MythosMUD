@@ -161,7 +161,9 @@ class CommandService:
             # At this point handler is guaranteed to be CommandHandler (not None) due to check above
             logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
             assert handler is not None  # Type narrowing for mypy
-            result = await cast(CommandHandler, handler)(command_data, current_user, request, alias_storage, player_name)
+            result = await cast(CommandHandler, handler)(
+                command_data, current_user, request, alias_storage, player_name
+            )
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
@@ -239,7 +241,9 @@ class CommandService:
                     command_data["target"] = parsed_command.target
 
                 assert handler is not None  # Type narrowing for mypy
-                result = await cast(CommandHandler, handler)(command_data, current_user, request, alias_storage, player_name)
+                result = await cast(CommandHandler, handler)(
+                    command_data, current_user, request, alias_storage, player_name
+                )
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
                 # Type assertion to help MyPy understand the return type
                 assert isinstance(result, dict)

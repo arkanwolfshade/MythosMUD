@@ -6,6 +6,7 @@ turn order calculation, and combat resolution.
 """
 
 from datetime import UTC, datetime, timedelta
+from typing import Any
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
@@ -308,11 +309,11 @@ class CombatService:
                 return
 
         # Debug logging to understand participant type
-        participant_id = getattr(current_participant, "participant_id", None)
+        debug_participant_id: Any = getattr(current_participant, "participant_id", None)
         logger.debug(
             "Current participant type",
             participant_type=type(current_participant).__name__,
-            participant_id=str(participant_id) if participant_id else "NO_PARTICIPANT_ID",
+            participant_id=str(debug_participant_id) if debug_participant_id else "NO_PARTICIPANT_ID",
         )
 
         # Additional debugging for the combat state

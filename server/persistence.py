@@ -2,6 +2,7 @@ import os
 import sqlite3
 import threading
 from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from server.logging.enhanced_logging_config import get_logger
 
@@ -10,6 +11,9 @@ from .models.player import Player
 from .models.room import Room
 from .utils.error_logging import create_error_context, log_and_raise
 from .world_loader import ROOMS_BASE_PATH
+
+if TYPE_CHECKING:
+    from .models.profession import Profession
 
 logger = get_logger(__name__)
 
@@ -404,6 +408,7 @@ class PersistenceLayer:
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve player list",
             )
+            return []  # Unreachable, but satisfies mypy
 
     def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players currently in a specific room."""
@@ -431,6 +436,7 @@ class PersistenceLayer:
                 details={"room_id": room_id, "error": str(e)},
                 user_friendly="Failed to retrieve players in room",
             )
+            return []  # Unreachable, but satisfies mypy
 
     def save_players(self, players: list[Player]):
         """Batch save players atomically."""
@@ -557,6 +563,7 @@ class PersistenceLayer:
                     details={"player_id": player_id, "error": str(e)},
                     user_friendly="Failed to delete player",
                 )
+                return False  # Unreachable, but satisfies mypy
 
     # --- CRUD for Professions ---
     def get_all_professions(self) -> list:
@@ -587,6 +594,7 @@ class PersistenceLayer:
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve professions",
             )
+            return []  # Unreachable, but satisfies mypy
 
     def get_profession_by_id(self, profession_id: int) -> "Profession | None":
         """Get a profession by ID."""

@@ -157,7 +157,7 @@ class RiskMitigationTester:
 
         try:
             # Test multiple connection establishment
-            players = []
+            players: list[dict[str, Any]] = []
             for i in range(50):  # Create 50 players with dual connections
                 player_id = f"complexity_test_player_{i}"
                 try:

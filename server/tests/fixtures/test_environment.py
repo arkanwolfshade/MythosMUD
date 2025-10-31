@@ -142,12 +142,13 @@ class Environment:
         config_obj = get_config()
         self.config = config_obj.to_legacy_dict()
 
+        # Type guards for mypy
+        assert self.temp_dir is not None, "temp_dir must be set before _setup_config"
+        assert self.config is not None, "config must be set after loading"
+
         # Override with test-specific settings
         if config_override:
             self._merge_config(self.config, config_override)
-
-        # Type guard for mypy
-        assert self.temp_dir is not None, "temp_dir must be set before _setup_config"
 
         # Set test-specific paths in config dict
         # Note: These are legacy dict accesses for backward compatibility
@@ -467,7 +468,7 @@ class TestMonitoringSetup:
 
         # This would typically set up Prometheus metrics, health checks, etc.
         # For now, we'll just ensure the connection manager has monitoring enabled
-        env.connection_manager.enable_monitoring = True
+        env.connection_manager.enable_monitoring = True  # type: ignore[attr-defined]
 
         return {
             "monitoring_enabled": True,
@@ -482,7 +483,7 @@ class TestMonitoringSetup:
         assert env.connection_manager is not None, "connection_manager must be initialized"
 
         # Enable performance tracking
-        env.connection_manager.performance_monitoring = True
+        env.connection_manager.performance_monitoring = True  # type: ignore[attr-defined]
 
         return {
             "performance_monitoring_enabled": True,
@@ -500,7 +501,7 @@ class TestCleanup:
     async def cleanup_all_connections(env: Environment):
         """Clean up all connections in test environment"""
         assert env.connection_manager is not None, "connection_manager must be initialized"
-        await env.connection_manager.cleanup_all_connections()
+        await env.connection_manager.cleanup_all_connections()  # type: ignore[attr-defined]
 
     @staticmethod
     async def cleanup_player_data(env: Environment, player_id: str):

@@ -79,6 +79,8 @@ class NATSRetryHandler:
     AI: Critical for handling network partitions and temporary outages.
     """
 
+    config: RetryConfig
+
     def __init__(self, max_retries: int = 3, base_delay: float = 1.0, max_delay: float = 60.0):
         """
         Initialize retry handler.

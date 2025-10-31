@@ -210,7 +210,7 @@ async def notify_player_of_teleport(
 
 
 async def handle_mute_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the mute command for muting other players.
@@ -289,7 +289,7 @@ async def handle_mute_command(
 
 
 async def handle_unmute_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the unmute command for unmuting other players.
@@ -356,13 +356,13 @@ async def handle_unmute_command(
 
 
 async def handle_mute_global_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the mute_global command for global muting.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -371,6 +371,9 @@ async def handle_mute_global_command(
     Returns:
         dict: Mute global command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing mute_global command", player_name=player_name, args=args)
 
     app = request.app if request else None
@@ -394,13 +397,13 @@ async def handle_mute_global_command(
 
 
 async def handle_unmute_global_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the unmute_global command for removing global mute.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -409,6 +412,9 @@ async def handle_unmute_global_command(
     Returns:
         dict: Unmute global command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing unmute_global command", player_name=player_name, args=args)
 
     app = request.app if request else None
@@ -432,13 +438,13 @@ async def handle_unmute_global_command(
 
 
 async def handle_add_admin_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the add_admin command for adding administrators.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -447,6 +453,9 @@ async def handle_add_admin_command(
     Returns:
         dict: Add admin command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing add_admin command", player_name=player_name, args=args)
 
     app = request.app if request else None
@@ -476,13 +485,13 @@ async def handle_add_admin_command(
 
 
 async def handle_mutes_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the mutes command for listing current mutes.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -491,6 +500,9 @@ async def handle_mutes_command(
     Returns:
         dict: Mutes command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing mutes command", player_name=player_name, args=args)
 
     app = request.app if request else None
@@ -525,7 +537,7 @@ async def handle_mutes_command(
 
 
 async def handle_teleport_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the teleport command for bringing a player to the admin's location.
@@ -668,7 +680,7 @@ async def handle_teleport_command(
 
 
 async def handle_goto_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the goto command for teleporting the admin to a player's location.
@@ -801,7 +813,7 @@ async def handle_goto_command(
 
 
 async def handle_confirm_teleport_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the confirm teleport command for executing the actual teleportation.
@@ -938,7 +950,7 @@ async def handle_confirm_teleport_command(
 
 
 async def handle_confirm_goto_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the confirm goto command for executing the actual teleportation.

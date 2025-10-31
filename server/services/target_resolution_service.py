@@ -156,7 +156,7 @@ class TargetResolutionService:
     ) -> list[TargetMatch]:
         """Search for players in the specified room."""
         try:
-            players_in_room = self.persistence.get_players_in_room(room_id)  # type: ignore[attr-defined]
+            players_in_room = self.persistence.get_players_in_room(room_id)
             matches = []
 
             for player in players_in_room:
