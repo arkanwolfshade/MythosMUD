@@ -301,13 +301,15 @@ class NPCSpawningService:
         priority = 0
 
         # Base priority by NPC type
+        # AI Agent note: Use npc_type.value to get string value from enum
+        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
         type_priorities = {
             "shopkeeper": 80,
             "quest_giver": 70,
             "passive_mob": 30,
             "aggressive_mob": 20,
         }
-        priority += type_priorities.get(str(definition.npc_type), 50)
+        priority += type_priorities.get(str(definition.npc_type.value), 50)
 
         # Required NPCs get higher priority
         if definition.is_required():
@@ -570,11 +572,13 @@ class NPCSpawningService:
                 reason_counts[reason] = reason_counts.get(reason, 0) + 1
 
         # Count by NPC type
+        # AI Agent note: Use npc_type.value to get string value from enum
+        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
         type_counts: dict[str, int] = {}
         for result in self.spawn_history:
             if result.success and result.spawn_request:
-                npc_type = result.spawn_request.definition.npc_type
-                type_counts[str(npc_type)] = type_counts.get(str(npc_type), 0) + 1
+                npc_type_str = str(result.spawn_request.definition.npc_type.value)
+                type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
 
         return {
             "total_requests": total_requests,

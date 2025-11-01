@@ -577,10 +577,12 @@ class NPCLifecycleManager:
             state_counts[state] = state_counts.get(state, 0) + 1
 
         # Count by NPC type
+        # AI Agent note: Use npc_type.value to get string value from enum
+        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
         type_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
-            npc_type = record.definition.npc_type
-            type_counts[str(npc_type)] = type_counts.get(str(npc_type), 0) + 1
+            npc_type_str = str(record.definition.npc_type.value)
+            type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
 
         # Calculate average statistics
         total_spawns = sum(record.spawn_count for record in self.lifecycle_records.values())
