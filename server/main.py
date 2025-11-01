@@ -182,7 +182,21 @@ logger.info("Logging setup completed")
 
 # Create the FastAPI application
 app = create_app()
-app.router.lifespan_context = enhanced_lifespan
+
+# Compose lifespans: run enhanced_lifespan around the app's existing lifespan
+original_lifespan = app.router.lifespan_context
+
+
+@asynccontextmanager
+async def composed_lifespan(application: FastAPI):
+    # Outer: enhanced logging/monitoring
+    async with enhanced_lifespan(application):
+        # Inner: factory/app lifespan (DB init, persistence binding, etc.)
+        async with original_lifespan(application):
+            yield
+
+
+app.router.lifespan_context = composed_lifespan
 
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 

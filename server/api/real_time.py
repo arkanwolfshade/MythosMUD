@@ -92,13 +92,10 @@ async def sse_events_token(request: Request) -> StreamingResponse:
     }
 
     # Readiness gate for token-authenticated SSE as well
-    try:
-        from ..realtime.connection_manager import connection_manager as _cm
+    from ..realtime.connection_manager import connection_manager as _cm
 
-        if getattr(_cm, "persistence", None) is None:
-            raise HTTPException(status_code=503, detail="Service temporarily unavailable")
-    except Exception:
-        pass
+    if getattr(_cm, "persistence", None) is None:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     return StreamingResponse(
         game_event_stream(player_id, session_id),

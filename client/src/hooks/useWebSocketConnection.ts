@@ -47,6 +47,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   const reconnectTimerRef = useRef<number | null>(null);
   const manualDisconnectRef = useRef<boolean>(false);
   const reconnectAttemptsRef = useRef<number>(0);
+  const hasEverConnectedRef = useRef<boolean>(false);
   const connectRef = useRef<() => void>();
 
   // Use state instead of refs for values that need to trigger re-renders
@@ -91,7 +92,9 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       websocketRef.current = null;
       setIsConnected(false);
 
-      onDisconnectRef.current?.();
+      if (hasEverConnectedRef.current) {
+        onDisconnectRef.current?.();
+      }
     }
   }, [resourceManager]);
 
@@ -167,6 +170,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         logger.info('WebSocketConnection', 'WebSocket connected successfully');
         setIsConnected(true);
         setLastError(null);
+        hasEverConnectedRef.current = true;
 
         // reset reconnect attempts on successful open
         reconnectAttemptsRef.current = 0;
@@ -220,8 +224,9 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           resourceManager.removeInterval(pingIntervalRef.current);
           pingIntervalRef.current = null;
         }
-
-        onDisconnectRef.current?.();
+        if (hasEverConnectedRef.current) {
+          onDisconnectRef.current?.();
+        }
 
         // Schedule reconnect unless disconnect was manual
         if (!manualDisconnectRef.current) {
