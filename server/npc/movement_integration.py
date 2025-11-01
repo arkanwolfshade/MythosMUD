@@ -89,9 +89,7 @@ class NPCMovementIntegration:
                 to_room.npc_entered(npc_id)
                 logger.debug("Added NPC to destination room", npc_id=npc_id, to_room=to_room_id)
 
-            # Publish movement events
-            if self.event_bus:
-                self._publish_movement_events(npc_id, from_room_id, to_room_id)
+            # Event publication is handled by Room methods; avoid duplicate publishes
 
             logger.info("NPC moved successfully", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
             return True

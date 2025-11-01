@@ -73,7 +73,7 @@ class Player(Base):
     def get_stats(self) -> dict[str, Any]:
         """Get player stats as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(self.stats))
+            return cast(dict[str, Any], json.loads(cast(str, self.stats)))
         except (json.JSONDecodeError, TypeError):
             return {
                 "strength": 10,
@@ -92,35 +92,35 @@ class Player(Base):
 
     def set_stats(self, stats: dict[str, Any]) -> None:
         """Set player stats from dictionary."""
-        self.stats = json.dumps(stats)
+        self.stats = json.dumps(stats)  # type: ignore[assignment]
 
     def get_inventory(self) -> list[dict[str, Any]]:
         """Get player inventory as list."""
         try:
-            return cast(list[dict[str, Any]], json.loads(self.inventory))
+            return cast(list[dict[str, Any]], json.loads(cast(str, self.inventory)))
         except (json.JSONDecodeError, TypeError):
             return []
 
     def set_inventory(self, inventory: list[dict[str, Any]]) -> None:
         """Set player inventory from list."""
-        self.inventory = json.dumps(inventory)
+        self.inventory = json.dumps(inventory)  # type: ignore[assignment]
 
     def get_status_effects(self) -> list[dict[str, Any]]:
         """Get player status effects as list."""
         try:
-            return cast(list[dict[str, Any]], json.loads(self.status_effects))
+            return cast(list[dict[str, Any]], json.loads(cast(str, self.status_effects)))
         except (json.JSONDecodeError, TypeError):
             return []
 
     def set_status_effects(self, status_effects: list[dict[str, Any]]) -> None:
         """Set player status effects from list."""
-        self.status_effects = json.dumps(status_effects)
+        self.status_effects = json.dumps(status_effects)  # type: ignore[assignment]
 
     def add_experience(self, amount: int) -> None:
         """Add experience points to the player."""
-        self.experience_points += amount
+        self.experience_points += amount  # type: ignore[assignment]
         # Simple level calculation (can be enhanced)
-        self.level = (self.experience_points // 100) + 1
+        self.level = (self.experience_points // 100) + 1  # type: ignore[assignment]
 
     def is_alive(self) -> bool:
         """Check if player is alive (HP > 0)."""
@@ -174,7 +174,7 @@ class Player(Base):
 
     def set_admin_status(self, admin_status: bool) -> None:
         """Set player's admin status."""
-        self.is_admin = 1 if admin_status else 0
+        self.is_admin = 1 if admin_status else 0  # type: ignore[assignment]
 
     def get_health_percentage(self) -> float:
         """Get player health as percentage."""

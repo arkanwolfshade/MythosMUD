@@ -312,14 +312,14 @@ class PersistenceLayer:
                     last_active = None
 
                     if player.created_at:
-                        if isinstance(player.created_at, str):
-                            created_at = player.created_at
+                        if isinstance(player.created_at, str):  # type: ignore[unreachable]
+                            created_at = player.created_at  # type: ignore[unreachable]
                         else:
                             created_at = player.created_at.isoformat()
 
                     if player.last_active:
-                        if isinstance(player.last_active, str):
-                            last_active = player.last_active
+                        if isinstance(player.last_active, str):  # type: ignore[unreachable]
+                            last_active = player.last_active  # type: ignore[unreachable]
                         else:
                             last_active = player.last_active.isoformat()
 
@@ -456,14 +456,14 @@ class PersistenceLayer:
                         last_active = None
 
                         if player.created_at:
-                            if isinstance(player.created_at, str):
-                                created_at = player.created_at
+                            if isinstance(player.created_at, str):  # type: ignore[unreachable]
+                                created_at = player.created_at  # type: ignore[unreachable]
                             else:
                                 created_at = player.created_at.isoformat()
 
                         if player.last_active:
-                            if isinstance(player.last_active, str):
-                                last_active = player.last_active
+                            if isinstance(player.last_active, str):  # type: ignore[unreachable]
+                                last_active = player.last_active  # type: ignore[unreachable]
                             else:
                                 last_active = player.last_active.isoformat()
 
@@ -728,7 +728,7 @@ class PersistenceLayer:
             True if the room was valid or successfully fixed, False otherwise
         """
         # Check if the player's current room exists
-        if self.get_room(player.current_room_id) is not None:
+        if self.get_room(str(player.current_room_id)) is not None:
             return True  # Room exists, no fix needed
 
         # Room doesn't exist, move player to default starting room from config
@@ -752,7 +752,7 @@ class PersistenceLayer:
             )
             default_room = "earth_arkhamcity_sanitarium_room_foyer_001"
 
-        player.current_room_id = default_room
+        player.current_room_id = default_room  # type: ignore[assignment]
 
         self._log(f"Player {player.name} was in invalid room '{old_room}', moved to default room '{default_room}'")
         return True

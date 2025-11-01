@@ -42,7 +42,7 @@ class Profession(Base):
     mechanical_effects = Column(Text(), nullable=False, default="{}")
 
     # Availability status
-    is_available = Column(Boolean(), default=True, nullable=False)
+    is_available: bool = Column(Boolean(), default=True, nullable=False)  # type: ignore[assignment]
 
     def __repr__(self) -> str:
         """String representation of the profession."""
@@ -51,24 +51,24 @@ class Profession(Base):
     def get_stat_requirements(self) -> dict[str, Any]:
         """Get profession stat requirements as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(self.stat_requirements))
+            return cast(dict[str, Any], json.loads(cast(str, self.stat_requirements)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_stat_requirements(self, requirements: dict[str, Any]) -> None:
         """Set profession stat requirements from dictionary."""
-        self.stat_requirements = json.dumps(requirements)
+        self.stat_requirements = json.dumps(requirements)  # type: ignore[assignment]
 
     def get_mechanical_effects(self) -> dict[str, Any]:
         """Get profession mechanical effects as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(self.mechanical_effects))
+            return cast(dict[str, Any], json.loads(cast(str, self.mechanical_effects)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_mechanical_effects(self, effects: dict[str, Any]) -> None:
         """Set profession mechanical effects from dictionary."""
-        self.mechanical_effects = json.dumps(effects)
+        self.mechanical_effects = json.dumps(effects)  # type: ignore[assignment]
 
     def meets_stat_requirements(self, stats: dict[str, int]) -> bool:
         """

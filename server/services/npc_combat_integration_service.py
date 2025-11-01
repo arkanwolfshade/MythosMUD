@@ -379,7 +379,7 @@ class NPCCombatIntegrationService:
                                     )
                         else:
                             # Fallback: directly update player experience
-                            player.stats.experience_points += xp_reward
+                            player.stats.experience_points += xp_reward  # type: ignore[attr-defined]
                             self._persistence.save_player(player)
                             logger.info(
                                 "Awarded XP to player (fallback)",
@@ -495,7 +495,7 @@ class NPCCombatIntegrationService:
         """Get player name for messaging."""
         try:
             player = self._persistence.get_player(player_id)
-            return player.name if player else "Unknown Player"
+            return str(player.name) if player else "Unknown Player"
         except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
@@ -534,7 +534,7 @@ class NPCCombatIntegrationService:
         try:
             player = self._persistence.get_player(player_id)
             if player:
-                return player.current_room_id
+                return str(player.current_room_id)
             return None
         except Exception as e:
             logger.error("Error getting player room ID", player_id=player_id, error=str(e))

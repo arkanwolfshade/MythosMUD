@@ -84,14 +84,14 @@ class Stats(BaseModel):
     )
 
     # Physical Attributes
-    strength: int = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
-    dexterity: int = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
-    constitution: int = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
+    strength: int | None = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
+    dexterity: int | None = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
+    constitution: int | None = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
 
     # Mental Attributes
-    intelligence: int = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
-    wisdom: int = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
-    charisma: int = Field(ge=1, le=20, default=None, description="Social skills and influence")
+    intelligence: int | None = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
+    wisdom: int | None = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
+    charisma: int | None = Field(ge=1, le=20, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
     sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
@@ -133,12 +133,12 @@ class Stats(BaseModel):
     @computed_field
     def max_health(self) -> int:
         """Calculate max health based on constitution."""
-        return self.constitution * 10
+        return (self.constitution or 10) * 10
 
     @computed_field
     def max_sanity(self) -> int:
         """Calculate max sanity based on wisdom."""
-        return self.wisdom * 5
+        return (self.wisdom or 10) * 5
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
         """Get the modifier for a given attribute (standard D&D-style calculation)."""
@@ -304,5 +304,5 @@ class Player(BaseModel):
             bool: True if player can carry the weight
         """
         # Carrying capacity is based on strength (10 lbs per point)
-        max_capacity = self.stats.strength * 10
+        max_capacity = (self.stats.strength or 10) * 10
         return weight <= max_capacity

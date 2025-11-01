@@ -6,6 +6,7 @@ This module defines the Alias model for storing player command aliases.
 
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -85,7 +86,7 @@ class Alias(BaseModel):
         # Future enhancement: could support argument substitution
         return self.command
 
-    def model_dump(self) -> dict:
+    def model_dump(self, **kwargs) -> dict[str, Any]:
         """Convert alias to dictionary for JSON serialization."""
         return {
             "id": self.id,

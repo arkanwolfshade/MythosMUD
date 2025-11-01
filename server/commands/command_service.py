@@ -208,7 +208,7 @@ class CommandService:
         try:
             parsed_command = parse_command(command)
             cmd = parsed_command.command_type.value
-            args = parsed_command.args
+            args = getattr(parsed_command, "args", [])
 
             logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
         except MythosValidationError as e:

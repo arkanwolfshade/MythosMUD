@@ -176,13 +176,14 @@ class DatabaseManager:
         Get the database engine, initializing if necessary.
 
         Returns:
-            AsyncEngine: The database engine
+            AsyncEngine: The database engine (never None after initialization)
 
         Raises:
             ValidationError: If database cannot be initialized
         """
         if not self._initialized:
             self._initialize_database()
+        assert self.engine is not None, "Database engine not initialized"
         return self.engine
 
     def get_session_maker(self) -> async_sessionmaker:
@@ -190,13 +191,14 @@ class DatabaseManager:
         Get the async session maker, initializing if necessary.
 
         Returns:
-            async_sessionmaker: The session maker
+            async_sessionmaker: The session maker (never None after initialization)
 
         Raises:
             ValidationError: If database cannot be initialized
         """
         if not self._initialized:
             self._initialize_database()
+        assert self.session_maker is not None, "Session maker not initialized"
         return self.session_maker
 
     def get_database_url(self) -> str | None:
@@ -280,7 +282,7 @@ def get_engine() -> AsyncEngine:
     Get the database engine, initializing if necessary.
 
     Returns:
-        AsyncEngine: The database engine
+        AsyncEngine: The database engine (never None)
 
     Raises:
         ValidationError: If database cannot be initialized
@@ -293,7 +295,7 @@ def get_session_maker() -> async_sessionmaker:
     Get the async session maker, initializing if necessary.
 
     Returns:
-        async_sessionmaker: The session maker
+        async_sessionmaker: The session maker (never None)
 
     Raises:
         ValidationError: If database cannot be initialized

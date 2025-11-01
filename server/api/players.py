@@ -350,7 +350,7 @@ async def respawn_player(
                 respawn_service = PlayerRespawnService(event_bus=request.app.state.event_bus)
 
                 # Respawn the player
-                success = await respawn_service.respawn_player(player.player_id, session)
+                success = await respawn_service.respawn_player(str(player.player_id), session)
 
                 if not success:
                     logger.error("Respawn failed", player_id=player.player_id)
@@ -361,7 +361,7 @@ async def respawn_player(
                 # Get respawn room data
                 persistence = get_persistence()
                 respawn_room_id = player.current_room_id  # Updated by respawn_player
-                room = persistence.get_room(respawn_room_id)
+                room = persistence.get_room(str(respawn_room_id))
 
                 if not room:
                     logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)

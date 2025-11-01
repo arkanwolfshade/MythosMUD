@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
+from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
@@ -149,14 +150,14 @@ async def register_user(
 
         # Create a minimal user object to avoid FastAPI Users issues
         user = User()
-        user.username = user_create_clean.username
+        user.username = user_create_clean.username  # type: ignore[assignment]
         user.email = user_create_clean.email
         user.hashed_password = hashed_password
         user.is_active = True
         user.is_superuser = False
         user.is_verified = False
-        user.created_at = datetime.now(UTC).replace(tzinfo=None)
-        user.updated_at = datetime.now(UTC).replace(tzinfo=None)
+        user.created_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
+        user.updated_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
 
         session.add(user)
         await session.commit()
@@ -337,7 +338,7 @@ async def login_user(
         new_session_id = f"login_{uuid.uuid4().hex[:8]}"
 
         # Disconnect any existing connections for this player
-        session_results = await connection_manager.handle_new_game_session(player.player_id, new_session_id)
+        session_results = await connection_manager.handle_new_game_session(str(player.player_id), new_session_id)
 
         if session_results["success"]:
             logger.info(
@@ -354,7 +355,7 @@ async def login_user(
         access_token=access_token,
         user_id=str(user.id),
         has_character=has_character,
-        character_name=character_name,
+        character_name=character_name,  # type: ignore[arg-type]
     )
 
 
@@ -379,7 +380,7 @@ async def get_current_user_info(
 async def list_invites(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[InviteRead]:
+) -> list[Invite]:  # FastAPI response_model handles conversion to InviteRead
     """
     List all invite codes.
 
@@ -392,7 +393,7 @@ async def list_invites(
 async def create_invite(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> InviteRead:
+) -> Invite:  # FastAPI response_model handles conversion to InviteRead
     """
     Create a new invite code.
 

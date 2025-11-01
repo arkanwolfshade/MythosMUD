@@ -67,6 +67,8 @@ class NPCDefinitionUpdate(BaseModel):
 class NPCDefinitionResponse(BaseModel):
     """Model for NPC definition responses."""
 
+    model_config = {"from_attributes": True}
+
     id: int
     name: str
     npc_type: str
@@ -79,19 +81,28 @@ class NPCDefinitionResponse(BaseModel):
     @classmethod
     def from_orm(cls, npc_def: NPCDefinition) -> "NPCDefinitionResponse":
         """Create response from ORM object."""
+        # Parse JSON fields if they're strings
+        base_stats = json.loads(str(npc_def.base_stats)) if isinstance(npc_def.base_stats, str) else npc_def.base_stats  # type: ignore[unreachable]
+        behavior_config = (
+            json.loads(str(npc_def.behavior_config))
+            if isinstance(npc_def.behavior_config, str)  # type: ignore[unreachable]
+            else npc_def.behavior_config
+        )
+        ai_integration_stub = (
+            json.loads(str(npc_def.ai_integration_stub))
+            if isinstance(npc_def.ai_integration_stub, str)  # type: ignore[unreachable]
+            else npc_def.ai_integration_stub
+        )
+
         return cls(
-            id=npc_def.id,
-            name=npc_def.name,
-            npc_type=npc_def.npc_type,  # npc_type is stored as string, not enum
-            sub_zone_id=npc_def.sub_zone_id,
-            room_id=npc_def.room_id,
-            base_stats=json.loads(npc_def.base_stats) if isinstance(npc_def.base_stats, str) else npc_def.base_stats,
-            behavior_config=json.loads(npc_def.behavior_config)
-            if isinstance(npc_def.behavior_config, str)
-            else npc_def.behavior_config,
-            ai_integration_stub=json.loads(npc_def.ai_integration_stub)
-            if isinstance(npc_def.ai_integration_stub, str)
-            else npc_def.ai_integration_stub,
+            id=int(npc_def.id),
+            name=str(npc_def.name),
+            npc_type=str(npc_def.npc_type),
+            sub_zone_id=str(npc_def.sub_zone_id),
+            room_id=str(npc_def.room_id),
+            base_stats=base_stats,  # type: ignore[arg-type]
+            behavior_config=behavior_config,  # type: ignore[arg-type]
+            ai_integration_stub=ai_integration_stub,  # type: ignore[arg-type]
         )
 
 
@@ -132,13 +143,13 @@ class NPCSpawnRuleResponse(BaseModel):
     def from_orm(cls, spawn_rule: NPCSpawnRule) -> "NPCSpawnRuleResponse":
         """Create response from ORM object."""
         return cls(
-            id=spawn_rule.id,
-            npc_definition_id=spawn_rule.npc_definition_id,
-            sub_zone_id=spawn_rule.sub_zone_id,
-            min_population=spawn_rule.min_population,
-            max_population=spawn_rule.max_population,
-            spawn_conditions=json.loads(spawn_rule.spawn_conditions)
-            if isinstance(spawn_rule.spawn_conditions, str)
+            id=int(spawn_rule.id),
+            npc_definition_id=int(spawn_rule.npc_definition_id),
+            sub_zone_id=str(spawn_rule.sub_zone_id),
+            min_population=int(spawn_rule.min_population),
+            max_population=int(spawn_rule.max_population),
+            spawn_conditions=json.loads(str(spawn_rule.spawn_conditions))  # type: ignore[arg-type]
+            if isinstance(spawn_rule.spawn_conditions, str)  # type: ignore[unreachable]
             else spawn_rule.spawn_conditions,
         )
 
@@ -146,7 +157,11 @@ class NPCSpawnRuleResponse(BaseModel):
 # --- Helper Functions ---
 
 
-def validate_admin_permission(current_user: dict, action: AdminAction, request: Request | None = None) -> None:
+def validate_admin_permission(
+    current_user: dict,
+    action: AdminAction,
+    request: Request = None,
+) -> None:
     """Validate that the current user has admin permissions for the specified action."""
     auth_service = get_admin_auth_service()
     auth_service.validate_permission(current_user, action, request)

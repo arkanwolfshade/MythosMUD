@@ -68,7 +68,7 @@ class PlayerRespawnService:
 
             # Move player to limbo room
             old_room = player.current_room_id
-            player.current_room_id = LIMBO_ROOM_ID
+            player.current_room_id = LIMBO_ROOM_ID  # type: ignore[assignment]
 
             # Commit changes using async API
             await session.commit()
@@ -156,7 +156,7 @@ class PlayerRespawnService:
             # Update player stats and location
             player.set_stats(stats)
             old_room = player.current_room_id
-            player.current_room_id = respawn_room
+            player.current_room_id = respawn_room  # type: ignore[assignment]
 
             # Commit changes using async API
             await session.commit()
@@ -175,11 +175,11 @@ class PlayerRespawnService:
             if self._event_bus:
                 event = PlayerRespawnedEvent(
                     player_id=player_id,
-                    player_name=player.name,
+                    player_name=str(player.name),
                     respawn_room_id=respawn_room,
                     old_hp=old_hp,
                     new_hp=100,
-                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
+                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
                 )
                 self._event_bus.publish(event)
 

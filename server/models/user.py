@@ -59,4 +59,4 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 
     def get_display_name(self) -> str:
         """Get display name for the user."""
-        return self.username if self.username else str(self.id)
+        return str(self.username) if self.username else str(self.id)

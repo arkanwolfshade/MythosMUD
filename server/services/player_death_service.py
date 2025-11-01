@@ -132,7 +132,7 @@ class PlayerDeathService:
                     old_hp=old_hp,
                     new_hp=new_hp,
                     decay_amount=1,
-                    room_id=player.current_room_id,
+                    room_id=str(player.current_room_id),
                 )
                 self._event_bus.publish(event)
 
@@ -184,7 +184,7 @@ class PlayerDeathService:
             if self._event_bus:
                 event = PlayerDiedEvent(
                     player_id=player_id,
-                    player_name=player.name,
+                    player_name=str(player.name),
                     room_id=death_location,
                     killer_id=killer_info.get("killer_id") if killer_info else None,
                     killer_name=killer_info.get("killer_name") if killer_info else None,

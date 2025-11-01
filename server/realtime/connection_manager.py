@@ -853,7 +853,7 @@ class ConnectionManager:
                     room = self.persistence.get_room(player.current_room_id)
                     if room:
                         canonical_room_id = getattr(room, "id", None) or player.current_room_id
-                await self.subscribe_to_room(player_id, canonical_room_id or player.current_room_id)
+                await self.subscribe_to_room(player_id, str(canonical_room_id or player.current_room_id))
 
                 # Track player presence - only call _track_player_connected if this is the first connection
                 if player_id not in self.online_players:
@@ -1827,7 +1827,7 @@ class ConnectionManager:
                     try:
                         from datetime import UTC, datetime
 
-                        player.last_active = datetime.now(UTC)
+                        player.last_active = datetime.now(UTC)  # type: ignore[assignment]
                         self.persistence.save_player(player)
                         logger.debug("Updated last_active for player on connection", player_id=player_id)
                     except Exception as e:

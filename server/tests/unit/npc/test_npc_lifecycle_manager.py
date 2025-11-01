@@ -170,15 +170,24 @@ class TestNPCLifecycleManager:
                 mock_npc.room_id = "room_001"
                 mock_create.return_value = mock_npc
 
-                npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
+                # Provide a room via persistence so spawn path can mutate domain state
+                class _FakeRoom:
+                    def npc_entered(self, _nid):
+                        # Simulate Room publishing the enter event
+                        lifecycle_manager.event_bus.publish(NPCEnteredRoom(npc_id=_nid, room_id="room_001"))
 
-                # Allow time for the NPCEnteredRoom event to be processed and state to transition
-                await asyncio.sleep(0.1)
+                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
 
-                assert npc_id is not None
-                assert npc_id in lifecycle_manager.lifecycle_records
-                assert npc_id in lifecycle_manager.active_npcs
-                assert lifecycle_manager.lifecycle_records[npc_id].current_state == NPCLifecycleState.ACTIVE
+                    npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
+
+                    # Allow time for the NPCEnteredRoom event to be processed and state to transition
+                    await asyncio.sleep(0.1)
+
+                    assert npc_id is not None
+                    assert npc_id in lifecycle_manager.lifecycle_records
+                    assert npc_id in lifecycle_manager.active_npcs
+                    assert lifecycle_manager.lifecycle_records[npc_id].current_state == NPCLifecycleState.ACTIVE
 
     def test_spawn_npc_failure(self, lifecycle_manager, shopkeeper_definition):
         """Test NPC spawning failure."""
@@ -196,7 +205,13 @@ class TestNPCLifecycleManager:
                 mock_npc.room_id = "room_001"
                 mock_create.return_value = mock_npc
 
-                npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
+                class _FakeRoom:
+                    def npc_entered(self, _nid):
+                        lifecycle_manager.event_bus.publish(NPCEnteredRoom(npc_id=_nid, room_id="room_001"))
+
+                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+                    npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, "room_001", "test")
                 assert npc_id is not None
 
                 # Now despawn it
@@ -254,10 +269,17 @@ class TestNPCLifecycleManager:
                 mock_npc.room_id = "room_001"
                 mock_create.return_value = mock_npc
 
-                respawned_count = lifecycle_manager.process_respawn_queue()
+                class _FakeRoom:
+                    def npc_entered(self, _nid):
+                        lifecycle_manager.event_bus.publish(NPCEnteredRoom(npc_id=_nid, room_id="room_001"))
 
-                assert respawned_count == 1
-                assert "npc_001" not in lifecycle_manager.respawn_queue
+                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+
+                    respawned_count = lifecycle_manager.process_respawn_queue()
+
+                    assert respawned_count == 1
+                    assert "npc_001" not in lifecycle_manager.respawn_queue
 
     def test_get_npc_lifecycle_record(self, lifecycle_manager, shopkeeper_definition):
         """Test getting NPC lifecycle record."""
@@ -338,10 +360,17 @@ class TestNPCLifecycleManager:
                 mock_npc.room_id = "room_001"
                 mock_create.return_value = mock_npc
 
-                results = lifecycle_manager.periodic_maintenance()
+                class _FakeRoom:
+                    def npc_entered(self, _nid):
+                        lifecycle_manager.event_bus.publish(NPCEnteredRoom(npc_id=_nid, room_id="room_001"))
 
-                assert "respawned_npcs" in results
-                assert results["respawned_npcs"] == 1
+                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+
+                    results = lifecycle_manager.periodic_maintenance()
+
+                    assert "respawned_npcs" in results
+                    assert results["respawned_npcs"] == 1
 
     @pytest.mark.asyncio
     async def test_event_handling_npc_entered_room(self, lifecycle_manager, shopkeeper_definition):

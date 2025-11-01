@@ -240,7 +240,7 @@ class CommandParser:
             # Use the factory to get the creation method
             create_method = self._command_factory.get(command)
             if create_method:
-                return create_method(args)
+                return create_method(args)  # type: ignore[return-value]
             else:
                 context = create_error_context()
                 context.metadata = {
@@ -314,7 +314,7 @@ class CommandParser:
                 "southwest",
             ]:
                 # Direction target - set both direction and target fields
-                return LookCommand(direction=target_lower, target=target)
+                return LookCommand(direction=target_lower, target=target)  # type: ignore[arg-type]
             else:
                 # NPC target - set only target field (preserve original case for display)
                 return LookCommand(target=target)
@@ -331,7 +331,7 @@ class CommandParser:
             )
         # Convert to lowercase for case-insensitive matching
         direction = args[0].lower()
-        return GoCommand(direction=direction)
+        return GoCommand(direction=direction)  # type: ignore[arg-type]
 
     def _create_say_command(self, args: list[str]) -> SayCommand:
         """Create SayCommand from arguments."""

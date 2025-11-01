@@ -171,7 +171,7 @@ class PlayerService:
             player.set_stats(stats.model_dump())
         else:
             # Dictionary
-            player.set_stats(stats)
+            player.set_stats(stats)  # type: ignore[arg-type]
 
         # Ensure JSON TEXT fields are initialized (SQLite NOT NULL constraints)
         if not getattr(player, "inventory", None):

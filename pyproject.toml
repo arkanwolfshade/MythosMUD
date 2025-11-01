@@ -146,6 +146,7 @@ asyncio_default_fixture_loop_scope = "function"
 [tool.mypy]
 python_version = "3.12"
 files = ["server"]
+plugins = ["sqlalchemy.ext.mypy.plugin"]
 
 # Gradual strictness: Enable checks incrementally for established codebase
 # NOTE: Full strict = true revealed 962 errors. Enabling selectively instead.
@@ -169,7 +170,7 @@ namespace_packages = true
 explicit_package_bases = true
 
 # Discovery settings
-follow_imports = "skip"
+follow_imports = "normal"
 ignore_missing_imports = false
 
 # Display options

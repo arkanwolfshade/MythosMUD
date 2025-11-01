@@ -193,7 +193,7 @@ class NPCSpawningService:
 
         # Check each NPC definition for spawn requirements
         for _npc_def_id, definition in self.population_controller.npc_definitions.items():
-            if definition.sub_zone_id not in zone_key:
+            if str(definition.sub_zone_id) not in zone_key:
                 continue
 
             # Check if this NPC should spawn
@@ -225,7 +225,7 @@ class NPCSpawningService:
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
-            current_count = stats.npcs_by_definition.get(definition.id, 0)
+            current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             if not definition.can_spawn(current_count):
                 definition_name = getattr(definition, "name", "Unknown NPC")
                 logger.debug(
@@ -238,11 +238,11 @@ class NPCSpawningService:
                 return spawn_requests
 
         # Get current NPC count for this specific definition
-        current_npc_count = stats.npcs_by_definition.get(definition.id, 0) if stats else 0
+        current_npc_count = stats.npcs_by_definition.get(int(definition.id), 0) if stats else 0
 
         # Check spawn rules
-        if definition.id in self.population_controller.spawn_rules:
-            for rule in self.population_controller.spawn_rules[definition.id]:
+        if int(definition.id) in self.population_controller.spawn_rules:
+            for rule in self.population_controller.spawn_rules[int(definition.id)]:
                 # Check if current NPC population allows spawning more instances
                 if not rule.can_spawn_with_population(current_npc_count):
                     logger.debug(
@@ -258,7 +258,7 @@ class NPCSpawningService:
                 priority = self._calculate_spawn_priority(definition, rule, zone_config)
 
                 # Check spawn probability with zone modifier
-                effective_probability = zone_config.get_effective_spawn_probability(definition.spawn_probability)
+                effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
                 if random.random() <= effective_probability:
                     request = NPCSpawnRequest(
                         definition=definition,
@@ -272,7 +272,7 @@ class NPCSpawningService:
         # Required NPCs always spawn if conditions are met
         if definition.is_required() and not spawn_requests:
             # Check if we already have a required NPC of this specific definition
-            if stats and stats.npcs_by_definition.get(definition.id, 0) == 0:
+            if stats and stats.npcs_by_definition.get(int(definition.id), 0) == 0:
                 request = NPCSpawnRequest(
                     definition=definition,
                     room_id=room_id,
@@ -307,7 +307,7 @@ class NPCSpawningService:
             "passive_mob": 30,
             "aggressive_mob": 20,
         }
-        priority += type_priorities.get(definition.npc_type, 50)
+        priority += type_priorities.get(str(definition.npc_type), 50)
 
         # Required NPCs get higher priority
         if definition.is_required():
@@ -398,13 +398,20 @@ class NPCSpawningService:
             # Don't call back into population controller to avoid circular dependency
             # The population controller will update its own statistics when needed
 
-            # Publish NPC entered room event
-            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
-            event = NPCEnteredRoom(
-                npc_id=npc_id,
-                room_id=request.room_id,
-            )
-            self.event_bus.publish(event)
+            # Mutate room state via Room API which will publish the event
+            from ..persistence import get_persistence
+
+            persistence = get_persistence()
+            room = persistence.get_room(request.room_id)
+            if not room:
+                definition_name = getattr(request.definition, "name", "Unknown NPC")
+                logger.warning("Room not found for NPC spawn", npc_name=definition_name, room_id=request.room_id)
+                return NPCSpawnResult(
+                    success=False,
+                    error_message="Room not found",
+                    spawn_request=request,
+                )
+            room.npc_entered(npc_id)
 
             # Use getattr to safely access definition.name to avoid recursion issues
             definition_name = getattr(request.definition, "name", "Unknown NPC")
@@ -567,7 +574,7 @@ class NPCSpawningService:
         for result in self.spawn_history:
             if result.success and result.spawn_request:
                 npc_type = result.spawn_request.definition.npc_type
-                type_counts[npc_type] = type_counts.get(npc_type, 0) + 1
+                type_counts[str(npc_type)] = type_counts.get(str(npc_type), 0) + 1
 
         return {
             "total_requests": total_requests,

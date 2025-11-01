@@ -31,7 +31,7 @@ class TargetMatch(BaseModel):
     target_type: TargetType = Field(..., description="Type of target (player or NPC)")
     room_id: str = Field(..., description="Room ID where the target is located")
     disambiguation_suffix: str | None = Field(
-        None, description="Suffix for disambiguation (e.g., '-1', '-2') when multiple targets have same name"
+        default=None, description="Suffix for disambiguation (e.g., '-1', '-2') when multiple targets have same name"
     )
     metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata about the target")
 
@@ -46,9 +46,9 @@ class TargetResolutionResult(BaseModel):
 
     success: bool = Field(..., description="Whether the resolution was successful")
     matches: list[TargetMatch] = Field(default_factory=list, description="List of matching targets found")
-    error_message: str | None = Field(None, description="Error message if resolution failed")
+    error_message: str | None = Field(default=None, description="Error message if resolution failed")
     disambiguation_required: bool = Field(
-        False, description="Whether disambiguation is required due to multiple matches"
+        default=False, description="Whether disambiguation is required due to multiple matches"
     )
     search_term: str = Field(..., description="The original search term used")
     room_id: str = Field(..., description="Room ID where the search was performed")

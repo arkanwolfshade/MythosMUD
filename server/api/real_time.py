@@ -80,7 +80,7 @@ async def sse_events_token(request: Request) -> StreamingResponse:
         context = create_context_from_request(request)
         context.user_id = user_id
         raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-    player_id = player.player_id
+    player_id = str(player.player_id)
     logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
 
     # Note: CORS is handled by global middleware; avoid environment-specific logic here
@@ -171,7 +171,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             context = create_context_from_websocket(websocket)
             context.user_id = user_id
             raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-        player_id = player.player_id
+        player_id = str(player.player_id)
 
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
@@ -328,7 +328,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             persistence = get_persistence()
             player = persistence.get_player_by_user_id(user_id)
             if player:
-                resolved_player_id = player.player_id
+                resolved_player_id = str(player.player_id)
         await handle_websocket_connection(websocket, resolved_player_id, session_id)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)

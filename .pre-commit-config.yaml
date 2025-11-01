@@ -15,6 +15,7 @@ repos:
           - pydantic-settings>=2.0.0
           - httpx>=0.28.1
           - pytest-asyncio>=1.2.0
+          - sqlalchemy[asyncio]>=2.0.0
         args: [--config-file=pyproject.toml]
         # Align exclude patterns with pyproject.toml
         exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|server/alembic/|server/test_who_command_direct\.py)

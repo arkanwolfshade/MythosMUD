@@ -154,7 +154,7 @@ class MovementService:
                     self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
 
                 # Step 2: Validate the move
-                if not self._validate_movement(resolved_player_id, from_room_id, to_room_id):
+                if not self._validate_movement(str(resolved_player_id), from_room_id, to_room_id):
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
@@ -206,7 +206,7 @@ class MovementService:
                     )
 
                     # Step 4: Verify player is in the from_room (auto-add logic is now in _validate_movement)
-                if not from_room.has_player(resolved_player_id):
+                if not from_room.has_player(str(resolved_player_id)):
                     self._logger.error("Player not in room", player_id=resolved_player_id, room_id=from_room_id)
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
@@ -219,15 +219,15 @@ class MovementService:
 
                 # Remove from old room
                 self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room_id)
-                from_room.player_left(resolved_player_id)
+                from_room.player_left(str(resolved_player_id))
 
                 # Add to new room
                 self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
-                to_room.player_entered(resolved_player_id)
+                to_room.player_entered(str(resolved_player_id))
 
                 # Update player's room in persistence
                 self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
-                player.current_room_id = to_room_id
+                player.current_room_id = to_room_id  # type: ignore[assignment]
                 self._persistence.save_player(player)
 
                 # Record successful movement
@@ -391,7 +391,7 @@ class MovementService:
                 # Update player's room in persistence
                 player = self._persistence.get_player(player_id)
                 if player:
-                    player.current_room_id = room_id
+                    player.current_room_id = room_id  # type: ignore[assignment]
                     self._persistence.save_player(player)
 
                 self._logger.info("Added player to room", player_id=player_id, room_id=room_id)

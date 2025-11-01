@@ -275,7 +275,7 @@ def wrap_third_party_exception_enhanced(
 
 
 def create_enhanced_error_context(
-    request: Request | None = None,
+    request: Request = None,
     websocket: WebSocket | None = None,
     user_id: str | None = None,
     session_id: str | None = None,

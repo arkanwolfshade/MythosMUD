@@ -8,7 +8,6 @@ for true async database operations without blocking the event loop.
 import json
 import os
 import sqlite3
-from pathlib import Path
 from typing import Any
 
 import aiosqlite
@@ -55,25 +54,28 @@ class AsyncPersistenceLayer:
         self._load_room_cache()
 
     def _load_room_cache(self) -> None:
-        """Load room cache from JSON files."""
+        """Load room cache using environment-aware world loader."""
         try:
-            # This is a sync operation but it's just file I/O during initialization
-            # and doesn't block the event loop during runtime
-            rooms_dir = Path("data/rooms")
-            if rooms_dir.exists():
-                self._room_cache = {}
-                for room_file in rooms_dir.glob("*.json"):
-                    with open(room_file, encoding="utf-8") as f:
-                        room_data = json.load(f)
-                        room_id = room_data.get("id")
-                        if room_id:
-                            self._room_cache[room_id] = room_data
-                self._logger.info("Room cache loaded", room_count=len(self._room_cache))
-            else:
-                self._room_cache = {}
-                self._logger.warning("Rooms directory not found", rooms_dir=str(rooms_dir))
+            # Prefer the unified world loader which respects LOGGING_ENVIRONMENT
+            from .world_loader import ROOMS_BASE_PATH, load_hierarchical_world
+
+            world_data = load_hierarchical_world()
+            rooms = world_data.get("rooms", {})
+
+            # Store raw room dicts keyed by id for quick existence checks
+            self._room_cache = dict(rooms)
+
+            self._logger.info(
+                "Room cache loaded",
+                room_count=len(self._room_cache),
+                rooms_base_path=str(ROOMS_BASE_PATH),
+            )
         except (OSError, json.JSONDecodeError) as e:
             self._logger.error("Error loading room cache", error=str(e), error_type=type(e).__name__)
+            self._room_cache = {}
+        except Exception as e:
+            # Fallback to empty cache on unexpected errors to avoid startup failure
+            self._logger.error("Unexpected error loading room cache", error=str(e))
             self._room_cache = {}
 
     async def get_player_by_name(self, name: str) -> Player | None:
@@ -528,7 +530,7 @@ class AsyncPersistenceLayer:
     def validate_and_fix_player_room(self, player: Player) -> None:
         """Validate and fix player room if needed."""
         if not hasattr(player, "current_room_id") or not player.current_room_id:
-            player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+            player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"  # type: ignore[assignment]
             self._logger.warning("Fixed player with missing room", player_id=str(player.player_id))
 
         # Check if room exists in cache

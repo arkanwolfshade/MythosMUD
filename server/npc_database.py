@@ -139,12 +139,12 @@ def _initialize_npc_database() -> None:
     logger.info("NPC Database session maker created")
 
 
-def get_npc_engine() -> AsyncEngine:
+def get_npc_engine() -> AsyncEngine | None:
     """
     Get the NPC database engine, initializing if necessary.
 
     Returns:
-        AsyncEngine: The NPC database engine
+        AsyncEngine | None: The NPC database engine
 
     Raises:
         ValidationError: If NPC database cannot be initialized
@@ -159,13 +159,14 @@ def get_npc_session_maker() -> async_sessionmaker:
     Get the NPC async session maker, initializing if necessary.
 
     Returns:
-        async_sessionmaker: The NPC session maker
+        async_sessionmaker: The NPC session maker (never None)
 
     Raises:
         ValidationError: If NPC database cannot be initialized
     """
     if _npc_async_session_maker is None:
         _initialize_npc_database()
+    assert _npc_async_session_maker is not None, "NPC session maker not initialized"
     return _npc_async_session_maker
 
 

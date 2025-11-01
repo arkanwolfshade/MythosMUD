@@ -401,10 +401,24 @@ class StatsGenerator:
                 "max_sanity": stats.max_sanity,
             },
             "total_points": sum(
-                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+                [
+                    stats.strength or 10,
+                    stats.dexterity or 10,
+                    stats.constitution or 10,
+                    stats.intelligence or 10,
+                    stats.wisdom or 10,
+                    stats.charisma or 10,
+                ]
             ),
             "average_stat": sum(
-                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+                [
+                    stats.strength or 10,
+                    stats.dexterity or 10,
+                    stats.constitution or 10,
+                    stats.intelligence or 10,
+                    stats.wisdom or 10,
+                    stats.charisma or 10,
+                ]
             )
             / 6,
         }

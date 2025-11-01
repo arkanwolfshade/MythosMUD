@@ -157,7 +157,7 @@ class AdminAuthService:
 
         return "unknown"
 
-    def validate_permission(self, current_user: Any, action: AdminAction, request: Request | None = None) -> None:
+    def validate_permission(self, current_user: Any, action: AdminAction, request: Request = None) -> None:
         """
         Validate that the current user has permission to perform the action.
 

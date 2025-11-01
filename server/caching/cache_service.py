@@ -120,6 +120,16 @@ class RoomCacheService:
         self.cache_manager = get_cache_manager()
         cache = self.cache_manager.get_cache("rooms")
         if not cache:
+            # Lazily initialize the rooms cache to avoid spurious startup warnings
+            try:
+                cache = self.cache_manager.create_cache("rooms", max_size=5000, ttl_seconds=None)
+                logger.info("Rooms cache created lazily by RoomCacheService")
+            except ValueError:
+                # Cache was created concurrently; retrieve it now
+                cache = self.cache_manager.get_cache("rooms")
+                logger.debug("Rooms cache already existed; using existing instance")
+        if cache is None:
+            # Defensive check for type safety and runtime correctness
             raise RuntimeError("Rooms cache not initialized")
         self.rooms_cache: LRUCache[Any, Any] = cache
 
@@ -409,9 +419,18 @@ class ProfessionCacheService:
         professions_cache_opt = self.cache_manager.get_cache("professions")
 
         if not professions_cache_opt:
-            raise RuntimeError("Professions cache not initialized")
+            # Lazily initialize professions cache to avoid startup warnings
+            try:
+                professions_cache_opt = self.cache_manager.create_cache("professions", max_size=100, ttl_seconds=None)
+                logger.info("Professions cache created lazily by ProfessionCacheService")
+            except ValueError:
+                # Cache was created concurrently; retrieve it now
+                professions_cache_opt = self.cache_manager.get_cache("professions")
+                logger.debug("Professions cache already existed; using existing instance")
 
-        # Assign with precise types
+        # Assign with precise types, asserting non-None for type safety
+        if professions_cache_opt is None:
+            raise RuntimeError("Professions cache not initialized")
         self.professions_cache: LRUCache[Any, Any] = professions_cache_opt
 
         logger.info("ProfessionCacheService initialized")

@@ -564,7 +564,7 @@ class NPCLifecycleManager:
                     return False
 
                 # Track the active NPC
-                self.active_npcs[npc_definition.id] = {
+                self.active_npcs[int(npc_definition.id)] = {
                     "npc_id": npc_id,
                     "definition": npc_definition,
                     "spawned_at": time.time(),

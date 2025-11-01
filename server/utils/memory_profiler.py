@@ -330,7 +330,7 @@ def benchmark_model_memory_usage() -> dict[str, Any]:
 
     # Compare memory usage
     model_classes = [Alias, SayCommand, LookCommand, Stats, StatusEffect, HealthResponse]
-    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)
+    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)  # type: ignore[arg-type]
 
     profiler.print_comparison_results(results)
     profiler.print_memory_summary()

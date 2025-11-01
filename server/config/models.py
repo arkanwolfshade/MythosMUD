@@ -429,7 +429,7 @@ class CORSConfig(BaseSettings):
         "env_prefix": "CORS_",
         "case_sensitive": False,
         "extra": "ignore",
-        "json_loads": _safe_json_loads,
+        "json_loads": _safe_json_loads,  # type: ignore[typeddict-unknown-key]
     }
 
     def __init__(self, **kwargs: Any) -> None:
@@ -592,7 +592,7 @@ class CORSConfig(BaseSettings):
 
         # Final fallback to the model default
         default_factory = cls.model_fields["allow_origins"].default_factory
-        defaults = list(default_factory()) if default_factory else []
+        defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]
         if not defaults:
             raise ValueError("At least one CORS origin must be provided")
         return defaults
@@ -703,12 +703,12 @@ class AppConfig(BaseSettings):
     """
 
     # Sub-configurations
-    server: ServerConfig = Field(default_factory=ServerConfig)
-    database: DatabaseConfig = Field(default_factory=DatabaseConfig)
+    server: ServerConfig = Field(default_factory=ServerConfig)  # type: ignore[arg-type]
+    database: DatabaseConfig = Field(default_factory=DatabaseConfig)  # type: ignore[arg-type]
     nats: NATSConfig = Field(default_factory=NATSConfig)
-    security: SecurityConfig = Field(default_factory=SecurityConfig)
-    logging: LoggingConfig = Field(default_factory=LoggingConfig)
-    game: GameConfig = Field(default_factory=GameConfig)
+    security: SecurityConfig = Field(default_factory=SecurityConfig)  # type: ignore[arg-type]
+    logging: LoggingConfig = Field(default_factory=LoggingConfig)  # type: ignore[arg-type]
+    game: GameConfig = Field(default_factory=GameConfig)  # type: ignore[arg-type]
     chat: ChatConfig = Field(default_factory=ChatConfig)
     cors: CORSConfig = Field(default_factory=CORSConfig)
     default_player_stats: PlayerStatsConfig = Field(default_factory=PlayerStatsConfig)

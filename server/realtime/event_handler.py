@@ -421,9 +421,8 @@ class RealTimeEventHandler:
         """
         Handle NPC entering a room.
 
-        This method updates the room state to include the NPC in the occupant list,
-        broadcasts a spawn message to the room (if configured), and broadcasts
-        the room update to all players in the room.
+        This method broadcasts NPC appearance and triggers occupant updates.
+        Room state (NPC presence) is mutated only by domain sources (e.g., Room.npc_entered).
 
         Args:
             event: NPCEnteredRoom event containing NPC and room information
@@ -441,9 +440,6 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
-
-            # Add NPC to room's occupant list
-            room.npc_entered(event.npc_id)
 
             # Get the NPC's spawn message from behavior_config (if available)
             spawn_message = self._get_npc_spawn_message(event.npc_id)
@@ -479,9 +475,7 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(
-                "NPC successfully added to room occupant list", npc_id=event.npc_id, room_id=event.room_id
-            )
+            self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
 
         except Exception as e:
             self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
@@ -490,8 +484,7 @@ class RealTimeEventHandler:
         """
         Handle NPC leaving a room.
 
-        This method updates the room state to remove the NPC from the occupant list
-        and broadcasts the room update to all players in the room.
+        This method triggers occupant updates. Room state is mutated by domain sources only.
 
         Args:
             event: NPCLeftRoom event containing NPC and room information
@@ -509,9 +502,6 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
-
-            # Remove NPC from room's occupant list
-            room.npc_left(event.npc_id)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -541,9 +531,7 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(
-                "NPC successfully removed from room occupant list", npc_id=event.npc_id, room_id=event.room_id
-            )
+            self._logger.debug("Processed NPC left event", npc_id=event.npc_id, room_id=event.room_id)
 
         except Exception as e:
             self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)

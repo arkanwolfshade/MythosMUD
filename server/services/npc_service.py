@@ -521,7 +521,7 @@ class NPCService:
             definitions_result = await session.execute(
                 select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)
             )
-            definitions_by_type = dict(definitions_result.all())
+            definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]
 
             # Count total definitions
             total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))

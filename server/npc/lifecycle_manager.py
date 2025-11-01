@@ -23,6 +23,7 @@ from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
 from ..logging.enhanced_logging_config import get_logger
+from ..persistence import get_persistence
 
 logger = get_logger(__name__)
 
@@ -290,9 +291,15 @@ class NPCLifecycleManager:
             npc_instance.npc_id = npc_id
             npc_instance.spawned_at = time.time()
 
-            # Publish NPC entered room event
-            event = NPCEnteredRoom(npc_id=npc_id, room_id=room_id)
-            self.event_bus.publish(event)
+            # Mutate room state via Room API (single source of truth) which will publish the event
+            persistence = get_persistence()
+            room = persistence.get_room(room_id)
+            if not room:
+                logger.warning("Room not found for NPC spawn", room_id=room_id, npc_id=npc_id)
+                return None
+
+            # Single source of truth: mutate via Room API; Room will publish the event
+            room.npc_entered(npc_id)
 
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
 
@@ -508,7 +515,7 @@ class NPCLifecycleManager:
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
-            current_count = stats.npcs_by_definition.get(definition.id, 0)
+            current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             if not definition.can_spawn(current_count):
                 logger.debug(
                     "NPC spawn blocked by population limit",
@@ -573,7 +580,7 @@ class NPCLifecycleManager:
         type_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
             npc_type = record.definition.npc_type
-            type_counts[npc_type] = type_counts.get(npc_type, 0) + 1
+            type_counts[str(npc_type)] = type_counts.get(str(npc_type), 0) + 1
 
         # Calculate average statistics
         total_spawns = sum(record.spawn_count for record in self.lifecycle_records.values())

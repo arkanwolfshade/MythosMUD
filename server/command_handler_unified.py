@@ -548,12 +548,12 @@ async def handle_expanded_command(
 
 
 # HTTP API endpoint
-@router.post("", status_code=status.HTTP_200_OK)
+@router.post("", status_code=status.HTTP_200_OK, response_model=None)
 async def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),
     request: Request = None,
-):
+) -> dict[str, Any]:
     """Handle incoming HTTP command requests."""
     command_line = req.command
 

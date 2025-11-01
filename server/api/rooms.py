@@ -24,7 +24,11 @@ logger.info("Rooms API router initialized", prefix="/rooms")
 
 
 @room_router.get("/{room_id}")
-async def get_room(room_id: str, request: Request = None, room_service: RoomService = RoomServiceDep) -> dict[str, Any]:
+async def get_room(
+    room_id: str,
+    request: Request = None,
+    room_service: RoomService = RoomServiceDep,
+) -> dict[str, Any]:
     """Get room information by room ID."""
     logger.debug("Room information requested", room_id=room_id)
 
