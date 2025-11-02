@@ -335,14 +335,8 @@ async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
 
         nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
-
-        if True:
-            logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
-            return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete DLQ message"
-            )
+        logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
+        return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
 
     except HTTPException:
         raise
