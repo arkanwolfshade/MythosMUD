@@ -952,10 +952,12 @@ class CombatService:
             if self._nats_service:
                 # Convert event to NATS message format
                 # Build subject using combat event publisher's subject manager
-                if hasattr(self._combat_event_publisher, 'subject_manager') and self._combat_event_publisher.subject_manager:
+                if (
+                    hasattr(self._combat_event_publisher, "subject_manager")
+                    and self._combat_event_publisher.subject_manager
+                ):
                     subject = self._combat_event_publisher.subject_manager.build_subject(
-                        "combat_hp_update",
-                        player_id=str(hp_update_event.player_id)
+                        "combat_hp_update", player_id=str(hp_update_event.player_id)
                     )
                 else:
                     # Legacy fallback
@@ -963,7 +965,7 @@ class CombatService:
                     logger.warning(
                         "Using legacy subject construction - subject_manager not available",
                         event_type="combat_hp_update",
-                        player_id=str(hp_update_event.player_id)
+                        player_id=str(hp_update_event.player_id),
                     )
 
                 message_data = {

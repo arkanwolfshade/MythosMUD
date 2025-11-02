@@ -578,8 +578,8 @@ class TestScalability:
                 description=f"Custom pattern {i}",
             )
 
-        # Total patterns: 23 (predefined) + 100 (custom) = 123
-        assert len(manager.patterns) == 123
+        # Total patterns: 24 (predefined) + 100 (custom) = 124
+        assert len(manager.patterns) == 124
 
         # Benchmark: Validate subjects with large pattern registry
         test_subject = "chat.say.room.test"
