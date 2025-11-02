@@ -376,17 +376,28 @@ async def get_current_user_info(
     }
 
 
-@auth_router.get("/invites", response_model=list[InviteRead])
+@auth_router.get("/invites")
 async def list_invites(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[Invite]:  # FastAPI response_model handles conversion to InviteRead
+) -> list[dict]:
     """
     List all invite codes.
 
     This endpoint returns all invite codes in the system.
     """
-    return await invite_manager.list_invites()
+    invites = await invite_manager.list_invites()
+    return [
+        {
+            "id": str(invite.id),
+            "invite_code": invite.invite_code,
+            "used": invite.used,
+            "used_by_user_id": str(invite.used_by_user_id) if invite.used_by_user_id else None,
+            "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
+            "created_at": invite.created_at.isoformat() if invite.created_at else None,
+        }
+        for invite in invites
+    ]
 
 
 @auth_router.post("/invites", response_model=InviteRead)

@@ -41,6 +41,11 @@ def format_player_location(room_id: str) -> str:
     Returns:
         str: Formatted location string
     """
+    # Defensive check: ensure room_id is a valid string
+    if not room_id or not isinstance(room_id, str):
+        logger.warning("Invalid room_id provided", room_id=room_id, room_id_type=type(room_id).__name__)
+        return "Unknown Location"
+
     try:
         # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
         parts = room_id.split("_")
@@ -61,8 +66,8 @@ def format_player_location(room_id: str) -> str:
             return room_id.replace("_", " ").title()
     except (ValueError, TypeError, AttributeError) as e:
         logger.error("Error parsing room ID", room_id=room_id, error=str(e), error_type=type(e).__name__)
-        # Fallback for any parsing errors
-        return room_id.replace("_", " ").title()
+        # Safe fallback that doesn't depend on room_id being a valid string
+        return "Unknown Location"
 
 
 def format_player_entry(player) -> str:

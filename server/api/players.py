@@ -50,9 +50,9 @@ player_router = APIRouter(prefix="/api/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
+        request: Request = None,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
     """Create a new player character."""
@@ -69,8 +69,8 @@ async def create_player(
 
 @player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
+        request: Request = None,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> list[PlayerRead]:
     """Get a list of all players."""
@@ -101,8 +101,8 @@ async def get_available_classes(
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: str,
+        request: Request = None,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
     """Get a specific player by ID."""
@@ -120,8 +120,8 @@ async def get_player(
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
 async def get_player_by_name(
     player_name: str,
+        request: Request = None,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
     """Get a specific player by name."""
@@ -140,7 +140,7 @@ async def get_player_by_name(
 async def delete_player(
     player_id: str,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Delete a player character."""
@@ -169,7 +169,7 @@ async def apply_sanity_loss(
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply sanity loss to a player."""
@@ -191,7 +191,7 @@ async def apply_fear(
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply fear to a player."""
@@ -213,7 +213,7 @@ async def apply_corruption(
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply corruption to a player."""
@@ -235,7 +235,7 @@ async def gain_occult_knowledge(
     amount: int,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Gain occult knowledge (with sanity loss)."""
@@ -256,7 +256,7 @@ async def heal_player(
     player_id: str,
     amount: int,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Heal a player's health."""
@@ -278,7 +278,7 @@ async def damage_player(
     amount: int,
     damage_type: str = "physical",
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Damage a player's health."""
@@ -296,7 +296,7 @@ async def damage_player(
 
 @player_router.post("/respawn")
 async def respawn_player(
-    request: Request,
+        request: Request = None,
     current_user: User = Depends(get_current_active_user),
 ) -> dict[str, Any]:
     """
@@ -422,7 +422,7 @@ async def roll_character_stats(
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
-    request: Request | None = None,
+        request: Request = None,
 ) -> dict[str, Any]:
     """
     Roll random stats for character creation.
@@ -521,7 +521,7 @@ async def roll_character_stats(
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     current_user: User = Depends(get_current_user),
-    request: Request | None = None,
+        request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
     """

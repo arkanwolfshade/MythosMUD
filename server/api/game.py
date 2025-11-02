@@ -23,7 +23,7 @@ logger.info("Game API router initialized", prefix="/game")
 
 
 @game_router.get("/status")
-def get_game_status(request: Request | None = None) -> dict[str, Any]:
+def get_game_status(request: Request) -> dict[str, Any]:
     """Get current game status and connection information."""
     logger.debug("Game status requested")
 
@@ -47,8 +47,8 @@ def get_game_status(request: Request | None = None) -> dict[str, Any]:
 @game_router.post("/broadcast")
 def broadcast_message(
     message: str,
+        request: Request = None,
     current_user: dict = Depends(get_current_user),
-    request: Request | None = None,
 ) -> dict[str, str]:
     """Broadcast a message to all connected players (admin only)."""
     logger.info("Broadcast message requested", user=current_user.get("username"), message=message)

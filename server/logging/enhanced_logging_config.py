@@ -410,7 +410,9 @@ def configure_enhanced_structlog(
         _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
-    def strip_ansi_renderer(logger, name, event_dict):
+    def strip_ansi_renderer(
+        logger: Any, name: str, event_dict: dict[str, Any]
+    ) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
         import re
 
