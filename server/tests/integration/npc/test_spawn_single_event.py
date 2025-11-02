@@ -59,7 +59,9 @@ async def test_spawn_npc_emits_single_enter_event(monkeypatch) -> None:
     definition: NPCDefinition = cast(NPCDefinition, def_ns)
 
     spawning_service = NPCSpawningService(event_bus, population_controller=None)
-    lifecycle_manager = NPCLifecycleManager(event_bus, population_controller=None, spawning_service=spawning_service)
+    lifecycle_manager = NPCLifecycleManager(
+        event_bus, population_controller=None, spawning_service=spawning_service, persistence=None
+    )
 
     npc_id = lifecycle_manager.spawn_npc(definition, "room_001")
 

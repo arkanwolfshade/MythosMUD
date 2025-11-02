@@ -166,6 +166,7 @@ class NPCLifecycleManager:
         event_bus: EventBus,
         population_controller: NPCPopulationController | None,
         spawning_service: NPCSpawningService,
+        persistence=None,
     ):
         """
         Initialize the NPC lifecycle manager.
@@ -174,10 +175,12 @@ class NPCLifecycleManager:
             event_bus: Event bus for publishing and subscribing to events
             population_controller: Population controller for managing NPC populations
             spawning_service: Spawning service for creating NPC instances
+            persistence: Persistence layer for room access (optional, for proper room state mutation)
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
         self.spawning_service = spawning_service
+        self.persistence = persistence
 
         # Lifecycle tracking
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
@@ -195,7 +198,7 @@ class NPCLifecycleManager:
         # Subscribe to relevant events
         self._subscribe_to_events()
 
-        logger.info("NPC Lifecycle Manager initialized")
+        logger.info("NPC Lifecycle Manager initialized", has_persistence=bool(persistence))
 
     def record_npc_death(self, npc_id: str) -> None:
         """
@@ -337,9 +340,23 @@ class NPCLifecycleManager:
             if npc_instance:
                 room_id = getattr(npc_instance, "room_id", "unknown")
 
-                # Publish NPC left room event
-                event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
-                self.event_bus.publish(event)
+                # Remove NPC from room (which publishes NPCLeftRoom event)
+                # AI: Proper domain-driven design - mutate state via domain entity, not by publishing event directly
+                if self.persistence:
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        room.npc_left(npc_id)
+                        logger.debug("NPC removed from room during despawn", npc_id=npc_id, room_id=room_id)
+                    else:
+                        logger.warning("Room not found during NPC despawn", room_id=room_id, npc_id=npc_id)
+                        # If no room found, publish event directly as fallback
+                        event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
+                        self.event_bus.publish(event)
+                else:
+                    # No persistence available - publish event directly
+                    logger.debug("No persistence available for room mutation, publishing event directly")
+                    event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
+                    self.event_bus.publish(event)
 
                 # Remove from active NPCs
                 del self.active_npcs[npc_id]

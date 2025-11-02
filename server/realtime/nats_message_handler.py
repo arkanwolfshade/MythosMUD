@@ -1607,7 +1607,13 @@ class NATSMessageHandler:
             logger.error("Error handling NPC took damage event", error=str(e), data=data)
 
     async def _handle_npc_died_event(self, data: dict[str, Any]):
-        """Handle npc_died event."""
+        """
+        Handle npc_died event.
+
+        Note: NPC removal from room is handled by the NPCLeftRoom event published
+        by the lifecycle manager. This handler only broadcasts the death event
+        to clients - no room state mutation occurs here.
+        """
         try:
             room_id = data.get("room_id")
             npc_id = data.get("npc_id")
@@ -1622,24 +1628,13 @@ class NATSMessageHandler:
                 return
 
             # Import here to avoid circular imports
-            from ..persistence import get_persistence
             from .connection_manager import connection_manager
 
-            # Remove NPC from room occupants on server side
-            try:
-                persistence = get_persistence()
-                room = persistence.get_room(room_id)
-                if room:
-                    room.npc_left(npc_id)
-                    logger.info("NPC removed from room occupants", npc_id=npc_id, npc_name=npc_name, room_id=room_id)
-                else:
-                    logger.warning("Room not found for NPC death", room_id=room_id, npc_id=npc_id)
-            except Exception as e:
-                logger.error("Error removing NPC from room", error=str(e), npc_id=npc_id, room_id=room_id)
-
-            # Broadcast to room
+            # Broadcast death event to room
+            # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
+            # AI: This prevents duplicate removal attempts and maintains single source of truth
             await connection_manager.broadcast_room_event("npc_died", room_id, data)
-            logger.debug("NPC died event broadcasted", room_id=room_id)
+            logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
 
         except Exception as e:
             logger.error("Error handling NPC died event", error=str(e), data=data)

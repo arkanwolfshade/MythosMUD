@@ -132,7 +132,7 @@ class TestNPCLifecycleManager:
     @pytest.fixture
     def lifecycle_manager(self, event_bus, population_controller, spawning_service):
         """Create a lifecycle manager for testing."""
-        return NPCLifecycleManager(event_bus, population_controller, spawning_service)
+        return NPCLifecycleManager(event_bus, population_controller, spawning_service, persistence=None)
 
     @pytest.fixture
     def shopkeeper_definition(self):
