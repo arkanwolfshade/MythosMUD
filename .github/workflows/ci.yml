@@ -79,7 +79,8 @@ jobs:
       - name: Type check with mypy
         run: |
           source .venv/bin/activate
-          python -m mypy server
+          # Use pre-commit to run mypy with identical config to local development
+          pre-commit run mypy --all-files
       - name: Run tests with coverage
         run: |
           source .venv/bin/activate
