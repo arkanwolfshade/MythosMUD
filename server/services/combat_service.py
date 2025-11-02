@@ -46,6 +46,7 @@ class CombatService:
         player_combat_service: PlayerCombatService | None = None,
         nats_service=None,
         npc_combat_integration_service=None,
+        subject_manager=None,
     ):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -55,11 +56,17 @@ class CombatService:
         self._player_combat_service = player_combat_service
         self._nats_service = nats_service
         self._npc_combat_integration_service = npc_combat_integration_service
-        # Create combat event publisher with proper NATS service
+        # Create combat event publisher with proper NATS service and subject_manager
         logger.debug("Creating CombatEventPublisher with NATS service", nats_service_available=bool(nats_service))
         try:
             logger.debug("Creating CombatEventPublisher")
-            self._combat_event_publisher = CombatEventPublisher(nats_service)
+            # If no subject_manager provided, create one with default settings
+            if subject_manager is None and nats_service is not None:
+                from .nats_subject_manager import NATSSubjectManager
+
+                subject_manager = NATSSubjectManager()
+                logger.debug("Created NATSSubjectManager with default settings")
+            self._combat_event_publisher = CombatEventPublisher(nats_service, subject_manager)
             logger.debug("CombatEventPublisher created successfully")
         except Exception as e:
             logger.error(
@@ -943,7 +950,34 @@ class CombatService:
 
             # Use the NATS service directly to publish the event
             if self._nats_service:
-                await self._nats_service.publish_event(hp_update_event)
+                # Convert event to NATS message format
+                # Build subject using combat event publisher's subject manager
+                if hasattr(self._combat_event_publisher, 'subject_manager') and self._combat_event_publisher.subject_manager:
+                    subject = self._combat_event_publisher.subject_manager.build_subject(
+                        "combat_hp_update",
+                        player_id=str(hp_update_event.player_id)
+                    )
+                else:
+                    # Legacy fallback
+                    subject = f"combat.hp_update.{hp_update_event.player_id}"
+                    logger.warning(
+                        "Using legacy subject construction - subject_manager not available",
+                        event_type="combat_hp_update",
+                        player_id=str(hp_update_event.player_id)
+                    )
+
+                message_data = {
+                    "event_type": "player_hp_updated",
+                    "data": {
+                        "player_id": hp_update_event.player_id,
+                        "old_hp": hp_update_event.old_hp,
+                        "new_hp": hp_update_event.new_hp,
+                        "max_hp": hp_update_event.max_hp,
+                        "damage_taken": hp_update_event.damage_taken,
+                        "timestamp": hp_update_event.timestamp.isoformat(),
+                    },
+                }
+                await self._nats_service.publish(subject, message_data)
             else:
                 logger.warning("No NATS service available for HP update event", player_id=player_id)
 

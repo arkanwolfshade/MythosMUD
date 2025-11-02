@@ -178,6 +178,11 @@ PREDEFINED_PATTERNS = {
         "required_params": ["room_id"],
         "description": "Combat timeout events",
     },
+    "combat_hp_update": {
+        "pattern": "combat.hp_update.{player_id}",
+        "required_params": ["player_id"],
+        "description": "Player HP update events",
+    },
 }
 
 

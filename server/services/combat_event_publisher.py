@@ -499,6 +499,7 @@ class CombatEventPublisher:
                 "event_type": "npc_took_damage",
                 "data": {
                     "combat_id": str(event.combat_id),
+                    "room_id": event.room_id,
                     "npc_id": str(event.npc_id),
                     "npc_name": event.npc_name,
                     "damage": event.damage,

@@ -251,7 +251,10 @@ class PlayerCombatService:
                 xp_amount=xp_amount,
                 new_level=player.level,
             )
-            await self._event_bus.publish(event)
+            if self._event_bus:
+                await self._event_bus.publish(event)
+            else:
+                logger.warning("No event bus available for XP award event", player_id=player_id)
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
