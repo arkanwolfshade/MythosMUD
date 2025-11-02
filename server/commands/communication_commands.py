@@ -561,7 +561,7 @@ async def handle_reply_command(
             return {"result": "No one has whispered to you recently."}
 
         # Get target player object
-        target_obj = player_service.resolve_player_name(last_whisper_sender)
+        target_obj = await player_service.resolve_player_name(last_whisper_sender)
         if not target_obj:
             return {"result": "The player you're trying to reply to is no longer available."}
 

@@ -253,13 +253,13 @@ async def handle_mute_command(
             return {"result": "Player service not available."}
 
         # Get current player's actual player object and ID
-        current_player_obj = player_service.resolve_player_name(player_name)
+        current_player_obj = await player_service.resolve_player_name(player_name)
         if not current_player_obj:
             return {"result": "Current player not found."}
         current_user_id = str(current_player_obj.id)
 
         # Resolve target player name to Player object
-        target_player_obj = player_service.resolve_player_name(target_player)
+        target_player_obj = await player_service.resolve_player_name(target_player)
         if not target_player_obj:
             return {"result": f"Player '{target_player}' not found."}
 
@@ -328,13 +328,13 @@ async def handle_unmute_command(
             return {"result": "Player service not available."}
 
         # Get current player's actual player object and ID
-        current_player_obj = player_service.resolve_player_name(player_name)
+        current_player_obj = await player_service.resolve_player_name(player_name)
         if not current_player_obj:
             return {"result": "Current player not found."}
         current_user_id = str(current_player_obj.id)
 
         # Resolve target player name to Player object
-        target_player_obj = player_service.resolve_player_name(target_player)
+        target_player_obj = await player_service.resolve_player_name(target_player)
         if not target_player_obj:
             return {"result": f"Player '{target_player}' not found."}
 
