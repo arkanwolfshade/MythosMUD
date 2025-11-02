@@ -574,10 +574,12 @@ class NPCSpawningService:
         # Count by NPC type
         # AI Agent note: Use npc_type.value to get string value from enum
         # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
+        # Handle both enum and string types (string for mocks in tests)
         type_counts: dict[str, int] = {}
         for result in self.spawn_history:
             if result.success and result.spawn_request:
-                npc_type_str = str(result.spawn_request.definition.npc_type.value)
+                npc_type = result.spawn_request.definition.npc_type
+                npc_type_str = str(npc_type.value if hasattr(npc_type, "value") else npc_type)
                 type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
 
         return {

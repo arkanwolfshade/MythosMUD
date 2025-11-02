@@ -131,6 +131,9 @@ except (FileNotFoundError, ValueError) as e:
     logger.critical("Additional setup steps: Verify file contains all required variables and run tests again")
     raise SystemExit(1) from e
 
+# Set MYTHOSMUD_ENV to enable test-specific config fallbacks
+os.environ["MYTHOSMUD_ENV"] = "test"
+
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
 os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
