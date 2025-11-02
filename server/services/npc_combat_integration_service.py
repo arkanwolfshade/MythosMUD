@@ -13,6 +13,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from ..events.event_bus import EventBus
+from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
@@ -55,6 +56,9 @@ class NPCCombatIntegrationService:
             persistence_type=type(self._persistence).__name__,
             persistence_is_none=self._persistence is None,
         )
+        # Initialize GameMechanicsService for proper XP awards and stat updates
+        self._game_mechanics = GameMechanicsService(self._persistence)
+
         # Pass self to PlayerCombatService for UUID mapping access
         self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
 
@@ -355,44 +359,31 @@ class NPCCombatIntegrationService:
 
             # Award XP to killer if it's a player
             if killer_id:
-                player = self._persistence.get_player(killer_id)
-                if player:
-                    # Award XP using game mechanics service
-                    try:
-                        # Try to get game mechanics service from persistence
-                        if hasattr(self._persistence, "get_game_mechanics_service"):
-                            game_mechanics = self._persistence.get_game_mechanics_service()
-                            if game_mechanics:
-                                success, _ = game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
-                                if success:
-                                    logger.info(
-                                        "Awarded XP to player",
-                                        player_id=killer_id,
-                                        xp_reward=xp_reward,
-                                        npc_id=npc_id,
-                                    )
-                                else:
-                                    logger.warning(
-                                        "Failed to award XP to player",
-                                        player_id=killer_id,
-                                        xp_reward=xp_reward,
-                                    )
-                        else:
-                            # Fallback: directly update player experience
-                            player.stats.experience_points += xp_reward  # type: ignore[attr-defined]
-                            self._persistence.save_player(player)
-                            logger.info(
-                                "Awarded XP to player (fallback)",
-                                player_id=killer_id,
-                                xp_reward=xp_reward,
-                                npc_id=npc_id,
-                            )
-                    except Exception as e:
-                        logger.error(
-                            "Error awarding XP to player",
+                # CRITICAL FIX: Use GameMechanicsService.gain_experience() to prevent
+                # XP awards from overwriting combat damage with stale health values
+                try:
+                    success, message = self._game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
+                    if success:
+                        logger.info(
+                            "Awarded XP to player",
                             player_id=killer_id,
-                            error=str(e),
+                            xp_reward=xp_reward,
+                            npc_id=npc_id,
                         )
+                    else:
+                        logger.warning(
+                            "Failed to award XP to player",
+                            player_id=killer_id,
+                            xp_reward=xp_reward,
+                            message=message,
+                        )
+                except Exception as e:
+                    logger.error(
+                        "Error awarding XP to player",
+                        player_id=killer_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
 
             # Note: NPCDiedEvent is now published by CombatService to avoid duplication
             # The CombatService handles the npc_died event publishing when combat ends

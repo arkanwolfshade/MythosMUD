@@ -49,7 +49,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """Verify password using Argon2 instead of bcrypt."""
         return verify_password(plain_password, hashed_password)
 
-    async def on_after_register(self, user: User, request: Request = None):
+    async def on_after_register(self, user: User, request: Request | None = None):
         """Handle post-registration logic."""
         logger.info("User has registered", username=user.username)
 
@@ -58,11 +58,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
-    async def on_after_forgot_password(self, user: User, token: str, request: Request = None):
+    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
         """Handle forgot password logic."""
         logger.info("User has forgot their password", username=user.username, reset_token=token)
 
-    async def on_after_request_verify(self, user: User, token: str, request: Request = None):
+    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
         """Handle username verification logic."""
         logger.info("Verification requested for user", username=user.username, verification_token=token)
 
@@ -160,7 +160,7 @@ def get_current_user_with_logging():
     """Enhanced get_current_user with detailed logging."""
     logger = get_logger(__name__)
 
-    async def _get_current_user_with_logging(request: Request = None) -> dict | None:
+    async def _get_current_user_with_logging(request: Request | None = None) -> dict | None:
         try:
             # Log the request details
             auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"

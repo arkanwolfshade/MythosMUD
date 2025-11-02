@@ -119,6 +119,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         from ..realtime.connection_manager import connection_manager as _cm
 
         if getattr(_cm, "persistence", None) is None:
+            # CRITICAL FIX: Must accept WebSocket before closing or sending messages
+            await websocket.accept()
+            await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
             await websocket.close(code=1013)
             return
     except Exception:
@@ -315,6 +318,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             from ..realtime.connection_manager import connection_manager as _cm
 
             if getattr(_cm, "persistence", None) is None:
+                # CRITICAL FIX: Must accept WebSocket before closing or sending messages
+                await websocket.accept()
+                await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
                 await websocket.close(code=1013)
                 return
         except Exception:

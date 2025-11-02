@@ -429,6 +429,19 @@ def configure_enhanced_structlog(
         cache_logger_on_first_use=False,
     )
 
+    # AI Agent: Now that structlog is configured, log the enhanced error handling setup
+    # This confirms that the global error handler is capturing all errors from all modules
+    if log_config and not log_config.get("disable_logging", False):
+        env_log_dir = _resolve_log_base(log_config.get("log_base", "logs")) / environment
+        errors_log_path = env_log_dir / "errors.log"
+        configured_logger = structlog.get_logger(__name__)
+        configured_logger.info(
+            "Enhanced error logging configured",
+            errors_log_path=str(errors_log_path),
+            captures_all_errors=True,
+            global_error_handler_enabled=True,
+        )
+
 
 def _setup_enhanced_file_logging(
     environment: str,
@@ -619,7 +632,27 @@ def _setup_enhanced_file_logging(
     errors_handler.setFormatter(errors_formatter)
     root_logger.addHandler(errors_handler)
 
+    # CRITICAL FIX: Route ALL ERROR and CRITICAL logs to errors.log
+    # The above handler only captures "errors.*" prefix modules
+    # This ensures ALL error-level logs from ANY module are captured
+    # AI Agent: This fixes the observability gap where critical errors in combat,
+    # persistence, and game mechanics were being silently suppressed
+    global_errors_handler = handler_class(
+        errors_log_path,  # Same file as errors_handler
+        maxBytes=max_bytes,
+        backupCount=backup_count,
+        encoding="utf-8",
+    )
+    global_errors_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
+    global_errors_handler.setFormatter(errors_formatter)
+
+    # Add to root logger to capture ALL errors from all modules
+    root_logger.addHandler(global_errors_handler)
+
     root_logger.setLevel(logging.DEBUG)
+
+    # AI Agent: Log after structlog is configured using structlog logger
+    # This will be called after configure_enhanced_structlog() completes
 
 
 def setup_enhanced_logging(config: dict[str, Any], player_service: Any = None) -> None:

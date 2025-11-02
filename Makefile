@@ -53,9 +53,9 @@ lint:
 lint-sqlalchemy:
 	cd $(PROJECT_ROOT) && python scripts/lint_sqlalchemy_async.py
 
+# CRITICAL: CI/CD uses the same command (pre-commit run mypy --all-files)
+# If you change this, update .github/workflows/ci.yml to match
 mypy:
-	# CRITICAL: CI/CD uses the same command (pre-commit run mypy --all-files)
-	# If you change this, update .github/workflows/ci.yml to match
 	cd $(PROJECT_ROOT) && uv run pre-commit run mypy --all-files
 
 format:

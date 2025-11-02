@@ -14,6 +14,7 @@ from typing import Any
 
 from ..events import EventBus
 from ..events.event_types import NPCAttacked
+from ..exceptions import ValidationError
 from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
@@ -127,9 +128,46 @@ class NPCCombatIntegration:
             logger.debug("Target is not a player, assuming NPC", target_id=target_id)
             return True
 
-        except Exception as e:
-            logger.error("Error applying combat effects", target_id=target_id, error=str(e))
+        except AttributeError as e:
+            # CRITICAL: Missing method in persistence/game mechanics layer
+            # This is a programming error that must be fixed, not a runtime error
+            logger.critical(
+                "CRITICAL: Missing persistence method called",
+                target_id=target_id,
+                error=str(e),
+                error_type="AttributeError",
+                damage=damage,
+                damage_type=damage_type,
+                source_id=source_id,
+                exc_info=True,
+            )
+            # Re-raise AttributeError - these are programming errors that should crash
+            # rather than silently fail
+            raise
+        except ValidationError as e:
+            # Expected validation error - log and return False
+            logger.warning(
+                "Validation error in combat effects",
+                target_id=target_id,
+                error=str(e),
+                damage=damage,
+                damage_type=damage_type,
+            )
             return False
+        except Exception as e:
+            # Unexpected error - log with full context and re-raise
+            # Don't silently continue on unexpected errors
+            logger.error(
+                "Unexpected error applying combat effects",
+                target_id=target_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                damage=damage,
+                damage_type=damage_type,
+                exc_info=True,
+            )
+            # Re-raise to surface the issue rather than hiding it
+            raise
 
     def handle_npc_attack(
         self,

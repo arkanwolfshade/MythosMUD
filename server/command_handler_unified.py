@@ -552,7 +552,7 @@ async def handle_expanded_command(
 async def handle_command(
     req: CommandRequest,
     current_user: dict = Depends(get_current_user),
-    request: Request = None,
+    request: Request | None = None,
 ) -> dict[str, Any]:
     """Handle incoming HTTP command requests."""
     command_line = req.command

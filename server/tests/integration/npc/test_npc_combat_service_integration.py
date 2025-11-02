@@ -284,7 +284,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         # Note: publish_npc_died and broadcast_combat_death are handled by CombatService, not in handle_npc_death
 
     def test_handle_npc_death_with_game_mechanics_service(self):
-        """Test NPC death with game mechanics service."""
+        """Test NPC death with game mechanics service (PHASE 2A: atomic field updates)."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         killer_id = str(uuid4())
@@ -300,14 +300,14 @@ class TestNPCCombatIntegrationServiceComprehensive:
         # Mock player
         player = Mock()
 
-        # Mock game mechanics service
+        # Mock the game mechanics service instance (now created in __init__)
         game_mechanics = Mock()
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
+        self.service._game_mechanics = game_mechanics
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = Mock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
-        self.persistence.get_game_mechanics_service = Mock(return_value=game_mechanics)
 
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
 
@@ -346,7 +346,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         # Should still handle death even if XP award fails
 
     def test_handle_npc_death_with_fallback_xp_award(self):
-        """Test NPC death with fallback XP award."""
+        """Test NPC death uses GameMechanicsService (PHASE 2A: no fallback needed)."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         killer_id = str(uuid4())
@@ -355,28 +355,27 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        # Mock NPC definition with XP reward
+        # Mock NPC definition with XP reward (uses "xp_value" not "xp_reward")
         npc_definition = Mock()
-        npc_definition.base_stats = {"xp_reward": 25}
+        npc_definition.get_base_stats.return_value = {"xp_value": 25}
 
-        # Mock player with stats object
+        # Mock player
         player = Mock()
-        player.stats.experience_points = 50
+
+        # Mock the game mechanics service instance (always available in Phase 2A)
+        game_mechanics = Mock()
+        game_mechanics.gain_experience.return_value = (True, "XP awarded")
+        self.service._game_mechanics = game_mechanics
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = Mock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
-        # No game mechanics service available - persistence doesn't have the method
-        # This will trigger the fallback XP award logic
-        # Make sure the persistence doesn't have the get_game_mechanics_service method
-        if hasattr(self.persistence, "get_game_mechanics_service"):
-            delattr(self.persistence, "get_game_mechanics_service")
 
         result = self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
 
         assert result is True
-        # Verify that save_player was called (indicating XP was awarded)
-        self.persistence.save_player.assert_called_once_with(player)
+        # Verify GameMechanicsService was used (no fallback path exists in Phase 2A)
+        game_mechanics.gain_experience.assert_called_once_with(killer_id, 25, f"killed_{npc_id}")
 
     def test_handle_npc_death_without_killer(self):
         """Test NPC death without killer."""

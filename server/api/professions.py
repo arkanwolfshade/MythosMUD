@@ -25,7 +25,7 @@ profession_router = APIRouter(prefix="/professions", tags=["professions"])
 @profession_router.get("/")
 def get_all_professions(
     current_user: User = Depends(get_current_user),
-    request: Request = None,
+    request: Request | None = None,
 ) -> dict[str, Any]:
     """
     Retrieve all available professions for character creation with caching.
@@ -84,7 +84,7 @@ def get_all_professions(
 def get_profession_by_id(
     profession_id: int,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
+    request: Request | None = None,
 ) -> dict[str, Any]:
     """
     Retrieve specific profession details by ID with caching.

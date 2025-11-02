@@ -175,7 +175,9 @@ class ConnectionManager:
     def _is_websocket_open(self, websocket: WebSocket) -> bool:
         try:
             state = getattr(websocket, "application_state", None)
-            return state not in (WebSocketState.DISCONNECTED, WebSocketState.CLOSING, WebSocketState.CLOSED)
+            # WebSocketState only has: CONNECTED, CONNECTING, DISCONNECTED, RESPONSE
+            # AI Agent: Fixed mypy error - CLOSING and CLOSED don't exist in Starlette's WebSocketState
+            return state != WebSocketState.DISCONNECTED
         except Exception:
             # If we cannot determine, assume open and let close handle exceptions
             return True
@@ -423,8 +425,10 @@ class ConnectionManager:
                         # No active connections, remove the player entry
                         del self.player_websockets[player_id]
 
-            # Accept the WebSocket connection
-            await websocket.accept()
+            # Accept the WebSocket connection with subprotocol negotiation
+            # CRITICAL FIX: Client sends ['bearer', <token>] as subprotocols
+            # Server must select 'bearer' to complete the handshake
+            await websocket.accept(subprotocol="bearer")
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 

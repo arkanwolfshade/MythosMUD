@@ -130,7 +130,7 @@ class StandardizedErrorResponse:
         ErrorType.MESSAGE_PROCESSING_ERROR: ErrorMessages.MESSAGE_PROCESSING_ERROR,
     }
 
-    def __init__(self, request: Request = None):
+    def __init__(self, request: Request | None = None):
         """
         Initialize standardized error response handler.
 
@@ -274,7 +274,7 @@ class StandardizedErrorResponse:
         user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
         # Create error details
-        details = {"status_code": exc.status_code}
+        details: dict[str, Any] = {"status_code": exc.status_code}
         if include_details:
             details["original_detail"] = str(exc.detail)
 
@@ -305,7 +305,7 @@ class StandardizedErrorResponse:
         user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
         # Create error details
-        details = {"status_code": exc.status_code}
+        details: dict[str, Any] = {"status_code": exc.status_code}
         if include_details:
             details["original_detail"] = str(exc.detail)
 
@@ -442,7 +442,7 @@ class StandardizedErrorResponse:
 
 # Convenience functions for common use cases
 def create_standardized_error_response(
-    request: Request = None,
+    request: Request | None = None,
     include_details: bool = False,
     response_type: str = "http",
 ) -> StandardizedErrorResponse:
@@ -462,7 +462,7 @@ def create_standardized_error_response(
 
 def handle_api_error(
     exc: Exception,
-    request: Request = None,
+    request: Request | None = None,
     include_details: bool = False,
     response_type: str = "http",
 ) -> JSONResponse:

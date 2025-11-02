@@ -157,7 +157,7 @@ class AdminAuthService:
 
         return "unknown"
 
-    def validate_permission(self, current_user: Any, action: AdminAction, request: Request = None) -> None:
+    def validate_permission(self, current_user: Any, action: AdminAction, request: Request | None = None) -> None:
         """
         Validate that the current user has permission to perform the action.
 
@@ -250,7 +250,7 @@ class AdminAuthService:
 
         return action in permissions.get(role, [])
 
-    def _check_rate_limit(self, user_id: str, request: Request = None) -> None:
+    def _check_rate_limit(self, user_id: str, request: Request | None = None) -> None:
         """
         Check if user has exceeded rate limits.
 
@@ -280,7 +280,7 @@ class AdminAuthService:
         # Add current request
         self.rate_limits[user_id].append(now)
 
-    def _update_session(self, user_id: str, username: str, role: AdminRole, request: Request = None) -> None:
+    def _update_session(self, user_id: str, username: str, role: AdminRole, request: Request | None = None) -> None:
         """
         Update or create admin session.
 
@@ -306,7 +306,7 @@ class AdminAuthService:
             )
 
     def _log_audit_event(
-        self, user_id: str, username: str, action: AdminAction, result: str, request: Request = None
+        self, user_id: str, username: str, action: AdminAction, result: str, request: Request | None = None
     ) -> None:
         """
         Log an audit event.

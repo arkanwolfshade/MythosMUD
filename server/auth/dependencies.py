@@ -16,7 +16,7 @@ from .users import get_current_active_user, get_current_user
 
 async def get_current_superuser(
     current_user: User = Depends(get_current_active_user),
-    request: Request = None,
+    request: Request | None = None,
 ) -> User:
     """Get current superuser or raise 403."""
 
@@ -34,7 +34,7 @@ async def get_current_superuser(
 
 async def get_current_verified_user(
     current_user: User = Depends(get_current_active_user),
-    request: Request = None,
+    request: Request | None = None,
 ) -> User:
     """Get current verified user or raise 403."""
 
@@ -53,7 +53,7 @@ async def get_current_verified_user(
 async def require_invite_code(
     invite_code: str,
     invite_manager: InviteManager = Depends(get_invite_manager),
-    request: Request = None,
+    request: Request | None = None,
 ) -> None:
     """Validate invite code for registration."""
 

@@ -467,7 +467,8 @@ class TestNPCCombatIntegration:
 
         # Mock the game mechanics service
         mock_game_mechanics = MagicMock()
-        mock_game_mechanics.apply_combat_effects.return_value = True
+        # CRITICAL FIX: damage_player returns (success, message) tuple, not just True
+        mock_game_mechanics.damage_player.return_value = (True, "Damage applied successfully")
 
         # Create combat integration with mocked dependencies
         with patch("server.npc.combat_integration.get_persistence", return_value=mock_persistence):

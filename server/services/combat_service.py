@@ -859,7 +859,7 @@ class CombatService:
                 return
 
             # Get player from database
-            player = persistence.get_player(str(player_id))
+            player = await persistence.async_get_player(str(player_id))
             if not player:
                 logger.warning("Player not found for HP persistence", player_id=player_id)
                 return
@@ -871,7 +871,7 @@ class CombatService:
             player.set_stats(stats)
 
             # Save player to database
-            persistence.save_player(player)
+            await persistence.async_save_player(player)
 
             logger.info(
                 "Player HP persisted to database",
