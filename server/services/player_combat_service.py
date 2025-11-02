@@ -252,7 +252,7 @@ class PlayerCombatService:
                 new_level=player.level,
             )
             if self._event_bus:
-                await self._event_bus.publish(event)
+                self._event_bus.publish(event)  # EventBus.publish is sync, not async
             else:
                 logger.warning("No event bus available for XP award event", player_id=player_id)
 
