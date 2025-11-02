@@ -260,12 +260,14 @@ class TestNPCStartupService:
         invalid_npcs = []
         for npc_def in npc_definitions:
             if npc_def.room_id and npc_def.room_id not in existing_rooms:
-                invalid_npcs.append({
-                    "npc_id": npc_def.id,
-                    "npc_name": npc_def.name,
-                    "room_id": npc_def.room_id,
-                    "sub_zone_id": npc_def.sub_zone_id
-                })
+                invalid_npcs.append(
+                    {
+                        "npc_id": npc_def.id,
+                        "npc_name": npc_def.name,
+                        "room_id": npc_def.room_id,
+                        "sub_zone_id": npc_def.sub_zone_id,
+                    }
+                )
 
         # AI Agent: Fail the test if any NPCs reference non-existent rooms
         if invalid_npcs:
