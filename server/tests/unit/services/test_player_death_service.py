@@ -276,3 +276,56 @@ class TestPlayerDeathService:
 
         assert result is False
         mock_session.rollback.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_handle_player_death_clears_combat_state(self, mock_player):
+        """Test that player death clears combat state (GitHub issue #244)."""
+        from uuid import uuid4
+
+        # Create service with both event bus and player combat service
+        mock_event_bus = Mock()
+        mock_player_combat_service = AsyncMock()
+        service = PlayerDeathService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
+
+        # Setup player
+        player_id = str(uuid4())
+        mock_player.player_id = player_id
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "death-room"
+
+        mock_session = AsyncMock()
+        mock_session.get.return_value = mock_player
+
+        killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
+
+        # Call handle_player_death
+        result = await service.handle_player_death(player_id, "death-room", killer_info, mock_session)
+
+        # Verify death was handled successfully
+        assert result is True
+        mock_session.commit.assert_called_once()
+
+        # CRITICAL: Verify combat state was cleared
+        mock_player_combat_service.clear_player_combat_state.assert_called_once()
+        # Verify the correct player UUID was passed
+        call_args = mock_player_combat_service.clear_player_combat_state.call_args
+        assert str(call_args[0][0]) == player_id
+
+    @pytest.mark.asyncio
+    async def test_handle_player_death_without_combat_service(self, mock_player):
+        """Test that player death works even without player combat service."""
+        # Create service without player combat service
+        mock_event_bus = Mock()
+        service = PlayerDeathService(event_bus=mock_event_bus, player_combat_service=None)
+
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "death-room"
+
+        mock_session = AsyncMock()
+        mock_session.get.return_value = mock_player
+
+        # Should not raise exception even without combat service
+        result = await service.handle_player_death("test-player-id", "death-room", None, mock_session)
+
+        assert result is True
+        mock_session.commit.assert_called_once()

@@ -27,17 +27,24 @@ class PlayerDeathService:
     - Processing HP decay (1 HP per tick, capped at -10)
     - Detecting and handling player death (HP <= -10)
     - Publishing appropriate events for UI updates
+    - Clearing combat state when player dies
     """
 
-    def __init__(self, event_bus: Any = None) -> None:
+    def __init__(self, event_bus: Any = None, player_combat_service: Any = None) -> None:
         """
         Initialize the player death service.
 
         Args:
             event_bus: Optional event bus for publishing events
+            player_combat_service: Optional player combat service for clearing combat state
         """
         self._event_bus = event_bus
-        logger.info("PlayerDeathService initialized", event_bus_available=bool(event_bus))
+        self._player_combat_service = player_combat_service
+        logger.info(
+            "PlayerDeathService initialized",
+            event_bus_available=bool(event_bus),
+            player_combat_service_available=bool(player_combat_service),
+        )
 
     async def get_mortally_wounded_players(self, session: AsyncSession) -> list[Player]:
         """
@@ -176,6 +183,24 @@ class PlayerDeathService:
                 killer_id=killer_info.get("killer_id") if killer_info else None,
                 killer_name=killer_info.get("killer_name") if killer_info else None,
             )
+
+            # BUGFIX #244: Clear player combat state when they die
+            # As documented in "Mortality and Combat State Persistence" - Dr. Armitage, 1929
+            # A player's combat essence must be severed upon death to prevent lingering in combat
+            if self._player_combat_service:
+                try:
+                    from uuid import UUID
+
+                    player_uuid = UUID(player_id)
+                    await self._player_combat_service.clear_player_combat_state(player_uuid)
+                    logger.info("Cleared combat state for deceased player", player_id=player_id)
+                except Exception as e:
+                    logger.error(
+                        "Error clearing combat state for deceased player",
+                        player_id=player_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
 
             # Commit any pending changes using async API
             await session.commit()

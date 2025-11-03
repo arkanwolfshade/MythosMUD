@@ -191,13 +191,17 @@ async def lifespan(app: FastAPI):
     # Initialize player death service for death/respawn mechanics
     from ..services.player_death_service import PlayerDeathService
 
-    app.state.player_death_service = PlayerDeathService(event_bus=app.state.event_bus)
+    app.state.player_death_service = PlayerDeathService(
+        event_bus=app.state.event_bus, player_combat_service=app.state.player_combat_service
+    )
     logger.info("Player death service initialized and added to app.state")
 
     # Initialize player respawn service for resurrection mechanics
     from ..services.player_respawn_service import PlayerRespawnService
 
-    app.state.player_respawn_service = PlayerRespawnService(event_bus=app.state.event_bus)
+    app.state.player_respawn_service = PlayerRespawnService(
+        event_bus=app.state.event_bus, player_combat_service=app.state.player_combat_service
+    )
     logger.info("Player respawn service initialized and added to app.state")
 
     # Initialize NPC startup spawning

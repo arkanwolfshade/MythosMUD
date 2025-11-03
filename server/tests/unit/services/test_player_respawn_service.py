@@ -224,3 +224,60 @@ class TestPlayerRespawnService:
 
         assert result is False
         mock_session.rollback.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_clears_combat_state(self, mock_player):
+        """Test that player respawn clears combat state (GitHub issue #244)."""
+        from uuid import uuid4
+
+        # Create service with both event bus and player combat service
+        mock_event_bus = Mock()
+        mock_player_combat_service = AsyncMock()
+        service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
+
+        # Setup player in dead state
+        player_id = str(uuid4())
+        stats = {"current_health": -10}
+        mock_player.player_id = player_id
+        mock_player.get_stats.return_value = stats
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "limbo_death_void"
+        mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
+
+        mock_session = AsyncMock()
+        mock_session.get.return_value = mock_player
+
+        # Call respawn_player
+        result = await service.respawn_player(player_id, mock_session)
+
+        # Verify respawn was successful
+        assert result is True
+        mock_session.commit.assert_called_once()
+
+        # CRITICAL: Verify combat state was cleared
+        mock_player_combat_service.clear_player_combat_state.assert_called_once()
+        # Verify the correct player UUID was passed
+        call_args = mock_player_combat_service.clear_player_combat_state.call_args
+        assert str(call_args[0][0]) == player_id
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_without_combat_service(self, mock_player):
+        """Test that player respawn works even without player combat service."""
+        # Create service without player combat service
+        mock_event_bus = Mock()
+        service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=None)
+
+        stats = {"current_health": -10}
+        mock_player.get_stats.return_value = stats
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "limbo_death_void"
+        mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
+
+        mock_session = AsyncMock()
+        mock_session.get.return_value = mock_player
+
+        # Should not raise exception even without combat service
+        result = await service.respawn_player("test-player-id", mock_session)
+
+        assert result is True
+        mock_session.commit.assert_called_once()
