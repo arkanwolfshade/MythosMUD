@@ -8,7 +8,7 @@ game status, broadcasting, and real-time game state management.
 import datetime
 from typing import Any
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 
 from ..auth.dependencies import get_current_superuser
 from ..logging.enhanced_logging_config import get_logger
@@ -23,7 +23,7 @@ logger.info("Game API router initialized", prefix="/game")
 
 
 @game_router.get("/status")
-def get_game_status(request: Request) -> dict[str, Any]:
+def get_game_status() -> dict[str, Any]:
     """Get current game status and connection information."""
     logger.debug("Game status requested")
 
@@ -48,7 +48,7 @@ def get_game_status(request: Request) -> dict[str, Any]:
 async def broadcast_message(
     message: str,
     current_user: Any = Depends(get_current_superuser),
-) -> dict[str, str | int]:
+) -> dict[str, str | int | dict[str, Any]]:
     """
     Broadcast a message to all connected players (admin only).
 
