@@ -273,6 +273,14 @@ class MovementService:
         Returns:
             True if the movement is valid, False otherwise
         """
+        self._logger.info(
+            "VALIDATION START: Checking movement",
+            player_id=player_id,
+            from_room=from_room_id,
+            to_room=to_room_id,
+            has_combat_service=bool(self._player_combat_service),
+        )
+
         # Check if player is in combat - players cannot move during combat
         # As noted in the Pnakotic Manuscripts, entities engaged in mortal combat
         # must not escape through dimensional gateways until the conflict is resolved
