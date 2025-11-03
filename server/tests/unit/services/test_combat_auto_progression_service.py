@@ -344,3 +344,116 @@ class TestCombatAutoProgression:
 
         # Verify player's last action tick was updated
         assert player_participant.last_action_tick == 2
+
+    @pytest.mark.asyncio
+    async def test_dead_npc_cannot_autoattack(self, combat_service):
+        """
+        Test that dead NPCs (HP <= 0) cannot perform automatic attacks.
+
+        This test ensures symmetry with player consciousness checks - NPCs should
+        not be able to act when HP <= 0, as documented in combat model is_alive().
+        """
+        # Setup: NPC with very low HP attacks Player
+        player_id = uuid4()
+        npc_id = uuid4()
+        room_id = "test_room_001"
+
+        # Start combat with NPC having 10 HP and Player having high HP
+        # NPC goes first (higher dex)
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker_id=npc_id,
+            target_id=player_id,
+            attacker_name="TestNPC",
+            target_name="TestPlayer",
+            attacker_hp=10,
+            attacker_max_hp=100,
+            attacker_dex=15,  # Higher dexterity, goes first
+            target_hp=100,
+            target_max_hp=100,
+            target_dex=10,
+            current_tick=1,
+            attacker_type=CombatParticipantType.NPC,
+            target_type=CombatParticipantType.PLAYER,
+        )
+
+        # Verify combat started
+        assert combat.status.value == "active"
+
+        # Get participants
+        npc_participant = combat.participants[npc_id]
+        player_participant = combat.participants[player_id]
+
+        # Record Player's initial HP
+        initial_player_hp = player_participant.current_hp
+
+        # NPC attacks Player (3 damage)
+        result1 = await combat_service.process_attack(npc_id, player_id, damage=3)
+        assert result1.success is True
+
+        # Verify Player took damage
+        assert player_participant.current_hp == initial_player_hp - 3
+
+        # Set NPC HP to 0 (dead)
+        npc_participant.current_hp = 0
+
+        # Record Player's HP before NPC's dead turn
+        player_hp_before_dead_turn = player_participant.current_hp
+
+        # Process NPC turn while dead (auto-progression)
+        await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
+
+        # CRITICAL: Player HP should NOT have changed (dead NPC cannot attack)
+        assert player_participant.current_hp == player_hp_before_dead_turn
+
+        # Verify NPC's last action tick was updated (turn was acknowledged but no action taken)
+        assert npc_participant.last_action_tick == 2
+
+    @pytest.mark.asyncio
+    async def test_negative_hp_npc_cannot_autoattack(self, combat_service):
+        """
+        Test that NPCs with negative HP cannot perform automatic attacks.
+
+        NPCs die immediately at HP <= 0 (unlike players who have mortally wounded state).
+        """
+        # Setup: NPC attacks Player
+        player_id = uuid4()
+        npc_id = uuid4()
+        room_id = "test_room_001"
+
+        # Start combat
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker_id=npc_id,
+            target_id=player_id,
+            attacker_name="TestNPC",
+            target_name="TestPlayer",
+            attacker_hp=50,
+            attacker_max_hp=100,
+            attacker_dex=15,
+            target_hp=100,
+            target_max_hp=100,
+            target_dex=10,
+            current_tick=1,
+            attacker_type=CombatParticipantType.NPC,
+            target_type=CombatParticipantType.PLAYER,
+        )
+
+        # Get participants
+        npc_participant = combat.participants[npc_id]
+        player_participant = combat.participants[player_id]
+
+        # Set NPC HP to negative (well beyond dead)
+        npc_participant.current_hp = -5
+
+        # Record Player's HP before NPC's turn
+        player_hp_before = player_participant.current_hp
+
+        # Process NPC turn while dead
+        await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
+
+        # CRITICAL: Player HP should NOT have changed
+        assert player_participant.current_hp == player_hp_before
+
+        # Verify NPC's last action tick was updated
+        assert npc_participant.last_action_tick == 2

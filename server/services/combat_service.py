@@ -374,6 +374,20 @@ class CombatService:
                 logger.error("NPC object missing participant_id attribute", npc=npc)
                 return
 
+            # BUGFIX: Check if NPC is alive (HP > 0) before allowing actions
+            # NPCs die immediately at HP <= 0, unlike players who enter mortally wounded state
+            # As documented in "Non-Euclidean Biology and Combat Mechanics" - Dr. Armitage, 1929
+            if npc.current_hp <= 0:
+                logger.info(
+                    "NPC is dead and cannot act",
+                    npc_name=npc.name,
+                    current_hp=npc.current_hp,
+                    combat_id=combat.combat_id,
+                )
+                # Skip turn but don't end combat (combat ends when is_alive() returns False)
+                npc.last_action_tick = current_tick
+                return
+
             # Find the target (other participant in combat)
             target = None
             for participant in combat.participants.values():
