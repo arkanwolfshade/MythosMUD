@@ -317,7 +317,6 @@ async def respawn_player(
     """
     from ..database import get_async_session
     from ..persistence import get_persistence
-    from ..services.player_respawn_service import PlayerRespawnService
 
     logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
 
@@ -346,8 +345,10 @@ async def respawn_player(
                         context=context,
                     )
 
-                # Get respawn service directly (already initialized in handler)
-                respawn_service = PlayerRespawnService(event_bus=request.app.state.event_bus)
+                # BUGFIX #244: Use shared respawn service instance from app.state
+                # This ensures player_combat_service is available for clearing combat state
+                # As documented in "Service Lifecycle and State Management" - Dr. Armitage, 1930
+                respawn_service = request.app.state.player_respawn_service
 
                 # Respawn the player
                 success = await respawn_service.respawn_player(str(player.player_id), session)

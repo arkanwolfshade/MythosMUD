@@ -32,17 +32,24 @@ class PlayerRespawnService:
     - Determining respawn location (custom or default)
     - Restoring player HP and moving to respawn room
     - Publishing respawn events for UI updates
+    - Clearing combat state when player respawns
     """
 
-    def __init__(self, event_bus: Any = None) -> None:
+    def __init__(self, event_bus: Any = None, player_combat_service: Any = None) -> None:
         """
         Initialize the player respawn service.
 
         Args:
             event_bus: Optional event bus for publishing events
+            player_combat_service: Optional player combat service for clearing combat state
         """
         self._event_bus = event_bus
-        logger.info("PlayerRespawnService initialized", event_bus_available=bool(event_bus))
+        self._player_combat_service = player_combat_service
+        logger.info(
+            "PlayerRespawnService initialized",
+            event_bus_available=bool(event_bus),
+            player_combat_service_available=bool(player_combat_service),
+        )
 
     async def move_player_to_limbo(self, player_id: str, death_location: str, session: AsyncSession) -> bool:
         """
@@ -157,6 +164,24 @@ class PlayerRespawnService:
             player.set_stats(stats)
             old_room = player.current_room_id
             player.current_room_id = respawn_room  # type: ignore[assignment]
+
+            # BUGFIX #244: Clear player combat state when they respawn
+            # As documented in "Resurrection and Combat Continuity" - Dr. Armitage, 1930
+            # Combat state must be cleared upon resurrection to prevent dimensional entanglement
+            if self._player_combat_service:
+                try:
+                    from uuid import UUID
+
+                    player_uuid = UUID(player_id)
+                    await self._player_combat_service.clear_player_combat_state(player_uuid)
+                    logger.info("Cleared combat state for respawned player", player_id=player_id)
+                except Exception as e:
+                    logger.error(
+                        "Error clearing combat state for respawned player",
+                        player_id=player_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
 
             # Commit changes using async API
             await session.commit()
