@@ -429,6 +429,21 @@ class CombatService:
             else:
                 logger.error("Player object missing participant_id attribute", player=player)
                 return
+
+            # BUGFIX #243: Check if player is conscious (HP > 0) before allowing actions
+            # As documented in "Consciousness and Corporeal Agency in Combat" - Dr. Armitage, 1929
+            # Unconscious entities (HP <= 0) cannot perform voluntary actions
+            if player.current_hp <= 0:
+                logger.info(
+                    "Player is unconscious and cannot act",
+                    player_name=player.name,
+                    current_hp=player.current_hp,
+                    combat_id=combat.combat_id,
+                )
+                # Skip turn but don't end combat (player may be unconscious but not dead)
+                player.last_action_tick = current_tick
+                return
+
             # Find the target (other participant in combat)
             target = None
             for participant in combat.participants.values():
