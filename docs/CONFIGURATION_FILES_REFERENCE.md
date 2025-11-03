@@ -43,7 +43,7 @@ cp env.local.example .env.local
 notepad .env.local
 
 # Start server
-.\scripts\start_dev.ps1
+.\scripts\start_local.ps1
 ```
 
 **Files Used**:
