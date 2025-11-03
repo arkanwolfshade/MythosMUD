@@ -53,7 +53,7 @@ class DependencyAnalyzer:
                 cwd=self.client_dir,
                 capture_output=True,
                 text=True,
-                shell=True,  # Use shell=True for Windows compatibility
+                shell=False,  # Use shell=True for Windows compatibility
             )
 
             if result.returncode != 0 and result.stdout:
@@ -91,7 +91,7 @@ class DependencyAnalyzer:
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
-                shell=True,  # Use shell=True for Windows compatibility
+                shell=False,  # Use shell=True for Windows compatibility
             )
 
             if result.returncode == 0 and result.stdout:

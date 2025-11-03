@@ -26,7 +26,9 @@ from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
 from ..config import get_config
 from ..logging.enhanced_logging_config import get_logger
-from ..middleware.allowed_cors import AllowedCORSMiddleware
+
+# ARCHITECTURE FIX Phase 2.1: Removed AllowedCORSMiddleware import (duplicate functionality)
+# from ..middleware.allowed_cors import AllowedCORSMiddleware
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware
@@ -94,51 +96,58 @@ def create_app() -> FastAPI:
         max_age=max_age_int,
     )
 
-    # Allow explicit env overrides for methods/headers to support legacy variables in runtime
-    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
-    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
+    # ARCHITECTURE FIX Phase 2.1: Simplified CORS configuration
+    # Environment variables take precedence over config file
+    # Precedence: ENV > CONFIG > DEFAULTS
+    final_origins = allowed_origins_list
+    final_methods = allowed_methods_list
+    final_headers = allowed_headers_list
 
-    allow_methods = [m.strip().upper() for m in env_methods.split(",")] if env_methods else allowed_methods_list
-    allow_headers = [h.strip() for h in env_headers.split(",")] if env_headers else allowed_headers_list
+    # Check for environment variable overrides
     env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS")
     if env_origins:
         candidate = env_origins.strip()
         if candidate.startswith("["):
             try:
                 parsed = json.loads(candidate)
-                allow_origins = [str(o).strip() for o in parsed if str(o).strip()]
+                final_origins = [str(o).strip() for o in parsed if str(o).strip()]
             except json.JSONDecodeError:
-                allow_origins = [o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()]
+                final_origins = [o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()]
         else:
-            allow_origins = [o.strip() for o in env_origins.split(",") if o.strip()]
-    else:
-        allow_origins = allowed_origins_list
+            final_origins = [o.strip() for o in candidate.split(",") if o.strip()]
+
+    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
+    if env_methods:
+        final_methods = [m.strip().upper() for m in env_methods.split(",")]
+
+    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
+    if env_headers:
+        final_headers = [h.strip() for h in env_headers.split(",")]
+
+    logger.info(
+        "Final CORS configuration after environment overrides",
+        origins=final_origins,
+        methods=final_methods,
+        headers=final_headers,
+    )
 
     # Add security and logging first (inner layers)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(ComprehensiveLoggingMiddleware)
 
-    # Add FastAPI CORSMiddleware for standard CORS behavior (tests inspect for this)
+    # Add single CORS middleware with environment-aware configuration
+    # SecurityHeadersMiddleware handles all security headers
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=allowed_origins_list,
-        allow_credentials=True,
-        allow_methods=allowed_methods_list,
-        allow_headers=allowed_headers_list,
+        allow_origins=final_origins,
+        allow_credentials=allow_credentials_bool,
+        allow_methods=final_methods,
+        allow_headers=final_headers,
         max_age=max_age_int,
         expose_headers=expose_headers_list if expose_headers_list else [],
     )
 
-    app.add_middleware(
-        AllowedCORSMiddleware,
-        allow_origins=allow_origins,
-        allow_methods=allow_methods,
-        allow_headers=allow_headers,
-        allow_credentials=allow_credentials_bool,
-        max_age=max_age_int,
-    )
-
-    # Note: CORS handling is provided by AllowedCORSMiddleware above
+    # Note: AllowedCORSMiddleware removed - functionality consolidated into CORSMiddleware above
 
     # Setup comprehensive error handling (middleware + exception handlers)
     # Include details in development mode, hide in production

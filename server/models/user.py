@@ -10,12 +10,18 @@ our custom fields with Mapped[] for better type safety.
 """
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import DateTime, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from ..metadata import metadata
+
+# Forward references for relationships (resolves circular imports)
+if TYPE_CHECKING:
+    from .invite import Invite
+    from .player import Player
 
 
 class Base(DeclarativeBase):
@@ -56,6 +62,16 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         default=lambda: datetime.now(UTC).replace(tzinfo=None),
         onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
         nullable=False,
+    )
+
+    # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # These relationships are declared with string references to avoid circular imports
+    player: Mapped["Player"] = relationship("Player", uselist=False, back_populates="user", lazy="joined")
+    created_invites: Mapped[list["Invite"]] = relationship(
+        "Invite", foreign_keys="Invite.created_by_user_id", back_populates="created_by_user"
+    )
+    used_invite: Mapped["Invite | None"] = relationship(
+        "Invite", foreign_keys="Invite.used_by_user_id", back_populates="used_by_user", uselist=False
     )
 
     def __repr__(self) -> str:

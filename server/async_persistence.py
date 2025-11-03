@@ -540,12 +540,21 @@ class AsyncPersistenceLayer:
             )
 
 
-# Global async persistence instance
+# DEPRECATED: Module-level global singleton removed - use ApplicationContainer instead
+# Keeping these functions for backward compatibility during migration
 _async_persistence_instance: AsyncPersistenceLayer | None = None
 
 
 def get_async_persistence() -> AsyncPersistenceLayer:
-    """Get the global async persistence instance."""
+    """
+    Get the global async persistence instance.
+
+    DEPRECATED: Use ApplicationContainer.async_persistence instead.
+    This function exists only for backward compatibility during migration.
+
+    Returns:
+        AsyncPersistenceLayer: The async persistence instance
+    """
     global _async_persistence_instance
     if _async_persistence_instance is None:
         _async_persistence_instance = AsyncPersistenceLayer()
@@ -553,6 +562,11 @@ def get_async_persistence() -> AsyncPersistenceLayer:
 
 
 def reset_async_persistence() -> None:
-    """Reset the global async persistence instance for testing."""
+    """
+    Reset the global async persistence instance for testing.
+
+    DEPRECATED: Use ApplicationContainer.reset_instance() instead.
+    This function exists only for backward compatibility during migration.
+    """
     global _async_persistence_instance
     _async_persistence_instance = None

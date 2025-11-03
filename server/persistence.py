@@ -41,12 +41,25 @@ def register_hook(event: str):
     return decorator
 
 
-# --- PersistenceLayer Singleton ---
+# DEPRECATED: Module-level global singleton removed - use ApplicationContainer instead
+# Keeping these functions for backward compatibility during migration
 _persistence_instance = None
 _persistence_lock = threading.Lock()
 
 
 def get_persistence(event_bus=None) -> "PersistenceLayer":
+    """
+    Get persistence layer instance.
+
+    DEPRECATED: Use ApplicationContainer.persistence instead.
+    This function exists only for backward compatibility during migration.
+
+    Args:
+        event_bus: Optional EventBus instance
+
+    Returns:
+        PersistenceLayer: The persistence layer instance
+    """
     global _persistence_instance
     with _persistence_lock:
         if _persistence_instance is None:
@@ -58,7 +71,12 @@ def get_persistence(event_bus=None) -> "PersistenceLayer":
 
 
 def reset_persistence():
-    """Reset the persistence singleton instance."""
+    """
+    Reset the persistence singleton instance.
+
+    DEPRECATED: Use ApplicationContainer.reset_instance() instead.
+    This function exists only for backward compatibility during migration.
+    """
     global _persistence_instance
     with _persistence_lock:
         if _persistence_instance is not None:

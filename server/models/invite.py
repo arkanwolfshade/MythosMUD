@@ -8,11 +8,16 @@ can create accounts.
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 
 from ..metadata import metadata
+
+# Forward references for relationships (resolves circular imports)
+if TYPE_CHECKING:
+    from .user import User
 
 
 class Base(DeclarativeBase):
@@ -32,6 +37,15 @@ class Invite(Base):
     expires_at = Column(DateTime, nullable=False)
     # Store datetimes in database as naive UTC to keep SQLite comparisons simple.
     created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+
+    # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # Using string references to avoid circular imports
+    created_by_user: Mapped["User | None"] = relationship(
+        "User", foreign_keys=[created_by_user_id], back_populates="created_invites"
+    )
+    used_by_user: Mapped["User | None"] = relationship(
+        "User", foreign_keys=[used_by_user_id], back_populates="used_invite"
+    )
 
     def __repr__(self) -> str:
         return f"<Invite(id='{self.id}', code='{self.invite_code}', used={self.used})>"

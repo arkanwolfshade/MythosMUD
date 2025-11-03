@@ -249,15 +249,29 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                             "Sent death notification to player on login", player_id=player_id_str, in_limbo=True
                         )
 
-                    # Proactively broadcast a room update so existing occupants see the new player
+                    # Note: Room update happens via EventBus flow
+                    # Room.player_entered() publishes PlayerEnteredRoom event
+                    # → EventBus notifies RealTimeEventHandler
+                    # → RealTimeEventHandler sends "player_entered" to room occupants
+                    # → Connecting player receives room state via separate initial state message
+
+                    # Send initial room state ONLY to connecting player (not a broadcast)
                     try:
-                        await broadcast_room_update(player_id_str, str(canonical_room_id))
+                        room = persistence.get_room(canonical_room_id)
+                        if room:
+                            initial_state = build_event(
+                                "room_update",
+                                {"room": room.to_dict(), "entities": [], "occupants": room.get_players()},
+                                player_id=player_id_str,
+                            )
+                            await websocket.send_json(initial_state)
+                            logger.debug("Sent initial room state to connecting player", player_id=player_id_str)
                     except Exception as e:
-                        logger.error("Error broadcasting initial room update", player_id=player_id_str, error=str(e))
+                        logger.error("Error sending initial room state", player_id=player_id_str, error=str(e))
 
                     # Note: Removed synthetic player_entered event generation to prevent duplicates
                     # The natural PlayerEnteredRoom event from Room.player_entered() will handle
-                    # the notification to other players when a player is added to the room
+                    # the notification to other players
 
         # Send welcome message
         welcome_event = build_event(
@@ -416,22 +430,16 @@ async def handle_game_command(
             else:
                 logger.warning("Player not found or missing current_room_id for broadcast", player_id=player_id)
 
-        # Broadcast room updates if the command affected the room
-        logger.debug("Command result", result=result)
-        if result.get("room_changed"):
-            changed_room_id: str = result.get("room_id")  # type: ignore[assignment]
-            if changed_room_id:
-                logger.debug("Room changed detected, broadcasting update", room_id=changed_room_id)
-                await broadcast_room_update(player_id, str(changed_room_id))
-        elif cmd == "go" and result.get("result"):
-            # Send room update after movement
-            logger.debug("Go command detected, broadcasting update", player_id=player_id)
-            player = connection_manager._get_player(player_id)
-            if player and hasattr(player, "current_room_id"):
-                logger.debug("Broadcasting room update", room_id=str(player.current_room_id))
-                await broadcast_room_update(player_id, str(player.current_room_id))
-            else:
-                logger.warning("Player not found or missing current_room_id", player_id=player_id)
+        # ARCHITECTURE FIX: Removed duplicate broadcast_room_update() calls (Phase 1.2)
+        # Room state updates now flow exclusively through EventBus:
+        #   Movement → Room.player_entered() → PlayerEnteredRoom event
+        #   → EventBus → RealTimeEventHandler → "player_entered" message to clients
+        # This eliminates duplicate messages and ensures consistent event ordering
+        #
+        # Note: Moving player receives their updated room state via command_response
+        # Other players receive "player_entered" notification via EventBus flow
+        # No additional broadcast needed here
+        logger.debug("Command completed, room updates handled via EventBus flow", command=cmd)
 
     except Exception as e:
         logger.error("Error processing command", command=command, player_id=player_id, error=str(e))

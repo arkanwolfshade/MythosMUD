@@ -260,21 +260,20 @@ class DatabaseManager:
             logger.info("Database connections closed")
 
 
-# Global database manager instance
-_db_manager: DatabaseManager | None = None
-
-
+# DEPRECATED: Module-level global removed - use ApplicationContainer instead
+# For backward compatibility during migration, delegate to DatabaseManager.get_instance()
+# TODO: Remove this function once all code uses container
 def get_database_manager() -> DatabaseManager:
     """
     Get the database manager singleton.
 
+    DEPRECATED: Use ApplicationContainer.database_manager instead.
+    This function exists only for backward compatibility during migration.
+
     Returns:
         DatabaseManager: The database manager instance
     """
-    global _db_manager
-    if _db_manager is None:
-        _db_manager = DatabaseManager.get_instance()
-    return _db_manager
+    return DatabaseManager.get_instance()
 
 
 def get_engine() -> AsyncEngine:
@@ -366,13 +365,9 @@ async def init_db() -> None:
         from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")
+        # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
+        # No need for setup_relationships() workaround - circular imports resolved
         configure_mappers()
-
-        # Set up relationships after all models are imported and configured
-        from server.models.relationships import setup_relationships
-
-        logger.debug("Setting up model relationships")
-        setup_relationships()
 
         engine = get_engine()  # Initialize if needed
         async with engine.begin() as conn:
