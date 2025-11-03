@@ -150,14 +150,14 @@ async def register_user(
 
         # Create a minimal user object to avoid FastAPI Users issues
         user = User()
-        user.username = user_create_clean.username  # type: ignore[assignment]
+        user.username = user_create_clean.username
         user.email = user_create_clean.email
         user.hashed_password = hashed_password
         user.is_active = True
         user.is_superuser = False
         user.is_verified = False
-        user.created_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
-        user.updated_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
+        user.created_at = datetime.now(UTC).replace(tzinfo=None)
+        user.updated_at = datetime.now(UTC).replace(tzinfo=None)
 
         session.add(user)
         await session.commit()

@@ -89,6 +89,7 @@ ignore = [
 "__init__.py" = ["F401"]
 "tests/**/*" = ["B011"]
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
+"server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
 
 [tool.isort]
 profile = "black"
@@ -147,6 +148,7 @@ asyncio_default_fixture_loop_scope = "function"
 python_version = "3.12"
 files = ["server"]
 plugins = ["sqlalchemy.ext.mypy.plugin"]
+mypy_path = "server/stubs"
 
 # Gradual strictness: Enable checks incrementally for established codebase
 # NOTE: Full strict = true revealed 962 errors. Enabling selectively instead.
@@ -191,37 +193,26 @@ exclude = [
     "^server/test_who_command_direct.py$",
 ]
 
-# Per-module options
+# Per-module options - Third-party libraries without stubs or with incomplete stubs
 [[tool.mypy.overrides]]
 module = [
     "argon2.*",
-    "nats.*",
     "psutil.*",
     "ftfy.*",
     "strip_ansi.*",
     "playwright.*",
     "networkx.*",
     "statemachine.*",
-    "click.*",
     "passlib.*",
     "jose.*",
     "faker.*",
     "dotenv.*",
-    "structlog.*",
-    "fastapi_users.*",
     "aiosqlite.*",
     "jsonschema.*",
-    "bleach.*",
-    "tqdm.*",
     "pwdlib.*",
     "alembic.*",
     "flask.*",
     "pytest.*",
-    "fastapi.*",
-    "pydantic.*",
-    "uvicorn.*",
-    "starlette.*",
-    "sqlalchemy.*",
     "analyze_error_logs",
     "error_monitoring",
     "server.async_utils.tracked_task_manager",
@@ -229,6 +220,22 @@ module = [
     "server.tests.windows_event_loop_fix",
 ]
 ignore_missing_imports = true
+
+# Libraries with local stubs - use our enhanced type definitions
+[[tool.mypy.overrides]]
+module = ["nats.*", "structlog.*", "fastapi_users.*"]
+ignore_missing_imports = false  # Use our stubs!
+
+# Core libraries - use their official types
+[[tool.mypy.overrides]]
+module = ["fastapi.*", "pydantic.*", "uvicorn.*", "starlette.*"]
+ignore_missing_imports = false
+
+# SQLAlchemy - enable strict checking with plugin support
+[[tool.mypy.overrides]]
+module = ["sqlalchemy.*"]
+ignore_missing_imports = false
+warn_return_any = false
 
 # Logging module - use targeted error code disabling instead of blanket ignore_errors
 [[tool.mypy.overrides]]

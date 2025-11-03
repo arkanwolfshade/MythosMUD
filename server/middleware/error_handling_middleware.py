@@ -6,14 +6,18 @@ all API endpoints, ensuring consistent error responses and comprehensive logging
 
 As noted in the Pnakotic Manuscripts: "Every error must be intercepted and
 properly catalogued, lest the system descend into chaos."
+
+IMPLEMENTATION NOTE: This uses pure ASGI middleware instead of BaseHTTPMiddleware
+for better performance and proper type safety with mypy.
 """
 
-from collections.abc import Callable
+import json
+import uuid
+from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import ValidationError
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from ..error_handlers.standardized_responses import StandardizedErrorResponse
 from ..exceptions import (
@@ -25,62 +29,68 @@ from ..logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class ErrorHandlingMiddleware(BaseHTTPMiddleware):
+class ErrorHandlingMiddleware:
     """
-    Middleware to handle all exceptions across FastAPI endpoints.
+    Pure ASGI middleware to handle all exceptions across FastAPI endpoints.
 
     This middleware intercepts all exceptions, converts them to standardized
     error responses, and ensures proper logging with context information.
+
+    Unlike BaseHTTPMiddleware, this uses pure ASGI for better performance and type safety.
     """
 
-    def __init__(self, app: FastAPI, include_details: bool = False):
+    def __init__(self, app: ASGIApp, include_details: bool = False) -> None:
         """
         Initialize error handling middleware.
 
         Args:
-            app: FastAPI application instance
+            app: ASGI application instance
             include_details: Whether to include detailed error information in responses
         """
-        super().__init__(app)
+        self.app = app
         self.include_details = include_details
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
-        Process the request and handle any exceptions.
+        ASGI application interface.
 
         Args:
-            request: FastAPI request object
-            call_next: Next middleware or endpoint handler
-
-        Returns:
-            Response object (may be error response)
+            scope: ASGI connection scope
+            receive: ASGI receive callable
+            send: ASGI send callable
         """
+        if scope["type"] != "http":
+            # Pass through non-HTTP connections
+            await self.app(scope, receive, send)
+            return
+
+        # Add request ID to scope
+        if "state" not in scope:
+            scope["state"] = {}
+        if "request_id" not in scope["state"]:
+            scope["state"]["request_id"] = str(uuid.uuid4())
+
         try:
-            # Add request ID to state for tracking
-            if not hasattr(request.state, "request_id"):
-                import uuid
-
-                request.state.request_id = str(uuid.uuid4())
-
             # Process the request
-            response = await call_next(request)
-            return response
+            await self.app(scope, receive, send)
 
         except Exception as exc:
-            # Handle the exception and return standardized error response
-            return await self._handle_exception(request, exc)
+            # Handle the exception and send error response
+            await self._handle_exception(scope, receive, send, exc)
 
-    async def _handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
+    async def _handle_exception(self, scope: Scope, receive: Receive, send: Send, exc: Exception) -> None:
         """
-        Handle an exception and return a standardized error response.
+        Handle an exception and send a standardized error response.
 
         Args:
-            request: FastAPI request object
+            scope: ASGI scope
+            receive: ASGI receive callable
+            send: ASGI send callable
             exc: The exception to handle
-
-        Returns:
-            Standardized JSON error response
         """
+        # Create Request for error handling
+        request = Request(scope, receive)
+
         try:
             # Create standardized error response handler with request context
             handler = StandardizedErrorResponse(request=request)
@@ -91,16 +101,87 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             # Log the exception with full context
             self._log_exception(request, exc, response.status_code)
 
-            return response
+            # Send the error response
+            await send(
+                {
+                    "type": "http.response.start",
+                    "status": response.status_code,
+                    "headers": [(b"content-type", b"application/json")],
+                }
+            )
+            await send(
+                {
+                    "type": "http.response.body",
+                    "body": response.body,
+                }
+            )
 
         except Exception as handler_error:
             # Fallback error handling if the handler itself fails
             logger.error(
                 f"Error in error handler: {handler_error}",
                 exc_info=True,
-                request_id=getattr(request.state, "request_id", None),
+                request_id=scope["state"].get("request_id"),
             )
-            return self._create_fallback_response(request)
+            # Send fallback response
+            fallback_body = json.dumps(
+                {
+                    "error": {
+                        "type": "internal_error",
+                        "message": "An unexpected error occurred",
+                        "user_friendly": "Please try again later",
+                        "details": {
+                            "request_id": scope["state"].get("request_id"),
+                            "fallback": True,
+                        },
+                        "severity": "high",
+                    }
+                }
+            ).encode("utf-8")
+
+            await send(
+                {
+                    "type": "http.response.start",
+                    "status": 500,
+                    "headers": [(b"content-type", b"application/json")],
+                }
+            )
+            await send(
+                {
+                    "type": "http.response.body",
+                    "body": fallback_body,
+                }
+            )
+
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
+        """
+        Backward-compatible dispatch method for BaseHTTPMiddleware interface.
+
+        This method provides compatibility with tests and code that expects
+        the BaseHTTPMiddleware.dispatch() signature.
+
+        Args:
+            request: HTTP request
+            call_next: Callable to invoke next middleware/handler
+
+        Returns:
+            HTTP response or JSON error response
+        """
+        # Add request ID to state for tracking
+        if not hasattr(request.state, "request_id"):
+            import uuid
+
+            request.state.request_id = str(uuid.uuid4())
+
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as exc:
+            # Handle exception and return JSON response
+            handler = StandardizedErrorResponse(request=request)
+            response = handler.handle_exception(exc, include_details=self.include_details, response_type="http")
+            self._log_exception(request, exc, response.status_code)
+            return response
 
     def _log_exception(self, request: Request, exc: Exception, status_code: int):
         """
@@ -156,32 +237,6 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 f"Request error: {type(exc).__name__}: {str(exc)}",
                 **context_data,
             )
-
-    def _create_fallback_response(self, request: Request) -> JSONResponse:
-        """
-        Create a fallback error response when normal error handling fails.
-
-        Args:
-            request: FastAPI request object
-
-        Returns:
-            Fallback JSON error response
-        """
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": {
-                    "type": "internal_error",
-                    "message": "An unexpected error occurred",
-                    "user_friendly": "Please try again later",
-                    "details": {
-                        "request_id": getattr(request.state, "request_id", None),
-                        "fallback": True,
-                    },
-                    "severity": "high",
-                }
-            },
-        )
 
 
 def add_error_handling_middleware(app: FastAPI, include_details: bool = False):

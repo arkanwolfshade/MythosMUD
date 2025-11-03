@@ -792,7 +792,7 @@ def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) ->
     log_method(message, **log_data)
 
 
-def get_enhanced_logger(name: str) -> BoundLogger:
+def get_enhanced_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
     """
     Get an enhanced logger instance with structured logging capabilities.
 
@@ -812,7 +812,7 @@ def get_enhanced_logger(name: str) -> BoundLogger:
     return structlog.wrap_logger(base_logger)
 
 
-def get_logger(name: str) -> BoundLogger:
+def get_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
     """
     Get a Structlog logger with the specified name.
 

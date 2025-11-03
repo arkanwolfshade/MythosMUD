@@ -8,51 +8,117 @@ As noted in the Pnakotic Manuscripts, the proper organization of arcane
 knowledge requires both efficiency and comprehensiveness. This middleware
 provides both, consolidating multiple logging concerns into a single,
 well-ordered component.
+
+IMPLEMENTATION NOTE: This uses pure ASGI middleware instead of BaseHTTPMiddleware
+for better performance and proper type safety with mypy.
 """
 
 import time
+from typing import Any
 
-from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-class ComprehensiveLoggingMiddleware(BaseHTTPMiddleware):
+class ComprehensiveLoggingMiddleware:
     """
-    Comprehensive logging middleware that combines access, error, and request logging.
+    Pure ASGI middleware that combines access, error, and request logging.
 
     This middleware consolidates all logging functionality into a single,
     efficient middleware component that handles request/response logging,
     error logging, and performance monitoring.
+
+    Unlike BaseHTTPMiddleware, this uses pure ASGI for better performance and type safety.
     """
 
-    def __init__(self, app, **kwargs):
-        super().__init__(app, **kwargs)
+    def __init__(self, app: ASGIApp) -> None:
+        """
+        Initialize comprehensive logging middleware.
+
+        Args:
+            app: ASGI application instance
+        """
+        self.app = app
         logger.info("ComprehensiveLoggingMiddleware initialized")
 
-    async def dispatch(self, request: Request, call_next) -> Response:
-        """Handle comprehensive logging for requests and responses."""
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        ASGI application interface.
+
+        Args:
+            scope: ASGI connection scope
+            receive: ASGI receive callable
+            send: ASGI send callable
+        """
+        if scope["type"] != "http":
+            # Pass through non-HTTP connections
+            await self.app(scope, receive, send)
+            return
+
+        # Create Request for logging
+        request = Request(scope, receive)
         start_time = time.time()
 
         # Log request start
         self._log_request_start(request)
 
+        # Track response status code
+        status_code = 500  # Default for errors
+        response_started = False
+
+        async def send_with_logging(message: Message) -> None:
+            """Wrap send to log response details."""
+            nonlocal status_code, response_started
+
+            if message["type"] == "http.response.start":
+                status_code = message.get("status", 500)
+                response_started = True
+
+            await send(message)
+
         try:
             # Process the request
-            response = await call_next(request)
+            await self.app(scope, receive, send_with_logging)
 
-            # Log successful response
-            process_time = time.time() - start_time
-            self._log_request_success(request, response, process_time)
-
-            return response
+            # Log successful completion
+            if response_started:
+                process_time = time.time() - start_time
+                self._log_request_success_with_status(request, status_code, process_time)
 
         except Exception as e:
             # Log error
+            process_time = time.time() - start_time
+            self._log_request_error(request, e, process_time)
+            raise
+
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
+        """
+        Backward-compatible dispatch method for BaseHTTPMiddleware interface.
+
+        This method provides compatibility with tests and code that expects
+        the BaseHTTPMiddleware.dispatch() signature.
+
+        Args:
+            request: HTTP request
+            call_next: Callable to invoke next middleware/handler
+
+        Returns:
+            HTTP response
+        """
+
+        start_time = time.time()
+        self._log_request_start(request)
+
+        try:
+            response = await call_next(request)
+            process_time = time.time() - start_time
+            self._log_request_success_with_status(request, response.status_code, process_time)
+            return response
+        except Exception as e:
             process_time = time.time() - start_time
             self._log_request_error(request, e, process_time)
             raise
@@ -85,20 +151,20 @@ class ComprehensiveLoggingMiddleware(BaseHTTPMiddleware):
             client=request.client.host if request.client else "Unknown",
         )
 
-    def _log_request_success(self, request: Request, response: Response, process_time: float) -> None:
+    def _log_request_success_with_status(self, request: Request, status_code: int, process_time: float) -> None:
         """Log successful request completion."""
         logger.info(
             "HTTP request completed",
             method=request.method,
             url=str(request.url),
-            status_code=response.status_code,
+            status_code=status_code,
             process_time=process_time,
             client_ip=request.client.host if request.client else "unknown",
         )
 
         logger.debug(
-            f"Response: {response.status_code} for {request.method} {request.url.path}",
-            status_code=response.status_code,
+            f"Response: {status_code} for {request.method} {request.url.path}",
+            status_code=status_code,
             process_time=process_time,
         )
 

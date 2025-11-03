@@ -212,7 +212,8 @@ if config.cors.expose_headers:
     cors_kwargs["expose_headers"] = config.cors.expose_headers
 
 # The trusted origins list keeps our gateways as secure as the wards at the Arkham Library.
-app.add_middleware(CORSMiddleware, **cors_kwargs)
+# CORSMiddleware uses **kwargs which mypy can't validate against strict Starlette signatures
+app.add_middleware(CORSMiddleware, **cors_kwargs)  # type: ignore[arg-type]
 
 setup_monitoring_endpoints(app)
 

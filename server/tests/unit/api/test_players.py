@@ -129,6 +129,8 @@ def mock_persistence():
 def mock_request():
     """Mock FastAPI request object."""
     request = Mock()
+    request.app = Mock()
+    request.app.state = Mock()
     request.app.state.persistence = Mock()
     request.app.state.server_shutdown_pending = False  # No shutdown by default
     return request
@@ -563,7 +565,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_success(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data, mock_request
     ):
         """Test successful stats rolling."""
         # Setup mocks
@@ -576,7 +578,7 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+        result = await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -585,7 +587,7 @@ class TestCharacterCreation:
 
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
-    async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user):
+    async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test stats rolling when rate limited."""
         # Setup mocks
         context = create_error_context(user_id=str(mock_current_user.id))
@@ -593,16 +595,16 @@ class TestCharacterCreation:
         mock_limiter.get_rate_limit_info.return_value = {"remaining": 0, "reset_time": 60}
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 429
         assert "Rate limit exceeded" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    async def test_roll_stats_authentication_failure(self):
+    async def test_roll_stats_authentication_failure(self, mock_request):
         """Test stats rolling with authentication failure."""
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=None)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -610,7 +612,9 @@ class TestCharacterCreation:
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
-    async def test_roll_stats_validation_error(self, mock_limiter, mock_stats_generator_class, mock_current_user):
+    async def test_roll_stats_validation_error(
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
+    ):
         """Test stats rolling with validation error."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
@@ -619,7 +623,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -648,7 +652,7 @@ class TestCharacterCreation:
         request_data.stats = sample_stats_data
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
-        result = await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
+        result = await create_character_with_stats(request_data, mock_request, mock_current_user, mock_service)
 
         # Result is now a PlayerRead object (not a dict)
         assert result is not None
@@ -670,7 +674,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request)
+            await create_character_with_stats(request_data, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 429
         assert exc_info.value.detail == "Rate limit exceeded"
@@ -684,7 +688,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, None, mock_request)
+            await create_character_with_stats(request_data, mock_request, None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -719,7 +723,7 @@ class TestCharacterCreation:
         )
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request)
+            await create_character_with_stats(request_data, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)
@@ -743,7 +747,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
+            await create_character_with_stats(request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)
@@ -752,7 +756,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_success(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
     ):
         """Test successful stats rolling with profession ID."""
         # Setup mocks
@@ -765,7 +769,9 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+        result = await roll_character_stats(
+            mock_request, "3d6", None, 10, profession_id=0, current_user=mock_current_user
+        )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -779,7 +785,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_requirements_not_met(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
     ):
         """Test stats rolling with profession when requirements are not met."""
         # Setup mocks
@@ -792,7 +798,9 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, profession_id=1, current_user=mock_current_user)
+        result = await roll_character_stats(
+            mock_request, "3d6", None, 10, profession_id=1, current_user=mock_current_user
+        )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -805,7 +813,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_invalid_profession(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
     ):
         """Test stats rolling with invalid profession ID."""
         # Setup mocks
@@ -815,7 +823,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, profession_id=999, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, profession_id=999, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 400
         assert "Invalid profession" in str(exc_info.value.detail)
@@ -824,7 +832,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
     ):
         """Test stats rolling with profession when validation fails."""
         # Setup mocks
@@ -834,7 +842,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, profession_id=0, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)

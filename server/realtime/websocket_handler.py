@@ -599,7 +599,9 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     result = await process_command_unified(
         command_line=command_line,
         current_user=player,  # type: ignore[arg-type]
-        request=request_context,
+        # WebSocketRequestContext provides duck-typed Request interface but isn't a subclass
+        # This is intentional - WebSocket contexts need different lifecycle than HTTP Requests
+        request=request_context,  # type: ignore[arg-type]
         alias_storage=alias_storage,
         player_name=player_name,
     )

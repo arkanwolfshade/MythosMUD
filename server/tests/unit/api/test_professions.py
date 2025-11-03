@@ -109,6 +109,8 @@ def mock_persistence():
 def mock_request():
     """Mock FastAPI request object."""
     request = Mock()
+    request.app = Mock()
+    request.app.state = Mock()
     request.app.state.persistence = Mock()
     return request
 
@@ -124,7 +126,7 @@ class TestProfessionRetrieval:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_all_professions.return_value = [sample_profession_data, sample_profession_data_2]
 
-        result = get_all_professions(mock_current_user, mock_request)
+        result = get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
         assert len(result["professions"]) == 2
@@ -140,7 +142,7 @@ class TestProfessionRetrieval:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_all_professions.return_value = []
 
-        result = get_all_professions(mock_current_user, mock_request)
+        result = get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
         assert len(result["professions"]) == 0
@@ -153,7 +155,7 @@ class TestProfessionRetrieval:
         mock_persistence.get_all_professions.side_effect = Exception("Database connection failed")
 
         with pytest.raises(HTTPException) as exc_info:
-            get_all_professions(mock_current_user, mock_request)
+            get_all_professions(mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -166,7 +168,7 @@ class TestProfessionRetrieval:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_profession_data
 
-        result = get_profession_by_id(0, mock_current_user, mock_request)
+        result = get_profession_by_id(0, mock_request, mock_current_user)
 
         assert result["id"] == 0
         assert result["name"] == "Tramp"
@@ -188,7 +190,7 @@ class TestProfessionRetrieval:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_profession_with_requirements
 
-        result = get_profession_by_id(2, mock_current_user, mock_request)
+        result = get_profession_by_id(2, mock_request, mock_current_user)
 
         assert result["id"] == 2
         assert result["name"] == "Investigator"
@@ -202,7 +204,7 @@ class TestProfessionRetrieval:
         mock_persistence.get_profession_by_id.return_value = None
 
         with pytest.raises(HTTPException) as exc_info:
-            get_profession_by_id(999, mock_current_user, mock_request)
+            get_profession_by_id(999, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 404
         assert "Profession not found" in str(exc_info.value.detail)
@@ -215,7 +217,7 @@ class TestProfessionRetrieval:
         mock_persistence.get_profession_by_id.side_effect = Exception("Database connection failed")
 
         with pytest.raises(HTTPException) as exc_info:
-            get_profession_by_id(0, mock_current_user, mock_request)
+            get_profession_by_id(0, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -227,7 +229,7 @@ class TestProfessionRetrieval:
         mock_persistence.get_profession_by_id.return_value = None
 
         with pytest.raises(HTTPException) as exc_info:
-            get_profession_by_id("invalid", mock_current_user, mock_request)
+            get_profession_by_id("invalid", mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 404
         assert "Profession not found" in str(exc_info.value.detail)
@@ -244,7 +246,7 @@ class TestProfessionDataValidation:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_profession_data
 
-        result = get_profession_by_id(0, mock_current_user, mock_request)
+        result = get_profession_by_id(0, mock_request, mock_current_user)
 
         # Check required fields are present
         required_fields = [
@@ -276,7 +278,7 @@ class TestProfessionDataValidation:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_profession_with_requirements
 
-        result = get_profession_by_id(2, mock_current_user, mock_request)
+        result = get_profession_by_id(2, mock_request, mock_current_user)
 
         assert result["stat_requirements"] == {"strength": 12, "intelligence": 14}
         assert isinstance(result["stat_requirements"], dict)
@@ -289,7 +291,7 @@ class TestProfessionDataValidation:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_profession_data
 
-        result = get_profession_by_id(0, mock_current_user, mock_request)
+        result = get_profession_by_id(0, mock_request, mock_current_user)
 
         assert result["mechanical_effects"] == {}
         assert isinstance(result["mechanical_effects"], dict)
@@ -302,7 +304,7 @@ class TestProfessionDataValidation:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_all_professions.return_value = [sample_profession_data, sample_profession_data_2]
 
-        result = get_all_professions(mock_current_user, mock_request)
+        result = get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
         assert isinstance(result["professions"], list)
@@ -343,7 +345,7 @@ class TestProfessionErrorHandling:
         mock_request.app.state.persistence = None
 
         with pytest.raises(HTTPException) as exc_info:
-            get_profession_by_id(0, mock_current_user, mock_request)
+            get_profession_by_id(0, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -351,7 +353,7 @@ class TestProfessionErrorHandling:
     def test_get_all_professions_authentication_failure(self, mock_request):
         """Test get_all_professions with authentication failure."""
         with pytest.raises(HTTPException) as exc_info:
-            get_all_professions(None, mock_request)
+            get_all_professions(mock_request, None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -359,7 +361,7 @@ class TestProfessionErrorHandling:
     def test_get_profession_by_id_authentication_failure(self, mock_request):
         """Test get_profession_by_id with authentication failure."""
         with pytest.raises(HTTPException) as exc_info:
-            get_profession_by_id(0, None, mock_request)
+            get_profession_by_id(0, mock_request, None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -376,7 +378,7 @@ class TestStrongmanProfession:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_strongman_profession
 
-        result = get_profession_by_id(2, mock_current_user, mock_request)
+        result = get_profession_by_id(2, mock_request, mock_current_user)
 
         assert result["id"] == 2
         assert result["name"] == "Strongman"
@@ -398,7 +400,7 @@ class TestStrongmanProfession:
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_profession_by_id.return_value = sample_strongman_profession
 
-        result = get_profession_by_id(2, mock_current_user, mock_request)
+        result = get_profession_by_id(2, mock_request, mock_current_user)
 
         # Verify stat requirements are correctly parsed and formatted
         assert result["stat_requirements"] == {"strength": 10}
@@ -424,7 +426,7 @@ class TestStrongmanProfession:
             sample_strongman_profession,
         ]
 
-        result = get_all_professions(mock_current_user, mock_request)
+        result = get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
         assert len(result["professions"]) == 3

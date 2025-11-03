@@ -54,7 +54,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         logger.info("User has registered", username=user.username)
 
         # Auto-verify bogus emails for privacy protection
-        if is_bogus_email(user.email):
+        if user.email and is_bogus_email(user.email):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
