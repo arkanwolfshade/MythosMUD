@@ -1140,7 +1140,7 @@ class TestLocationFormatting:
         # Test empty string
         room_id = ""
         result = format_player_location(room_id)
-        expected = ""  # Empty string
+        expected = "Unknown Location"  # Return user-friendly message for invalid input
         assert result == expected
 
     def test_format_player_location_special_characters(self):

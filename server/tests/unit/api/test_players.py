@@ -149,11 +149,11 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         result = await create_player(
-            "TestPlayer",
-            "earth_arkhamcity_northside_intersection_derby_high",
-            mock_current_user,
-            mock_request,
-            mock_service,
+            name="TestPlayer",
+            request=mock_request,
+            starting_room_id="earth_arkhamcity_northside_intersection_derby_high",
+            current_user=mock_current_user,
+            player_service=mock_service,
         )
 
         assert result == sample_player_data
@@ -172,11 +172,11 @@ class TestPlayerCRUD:
 
         with pytest.raises(HTTPException) as exc_info:
             await create_player(
-                "InvalidName",
-                "earth_arkhamcity_northside_intersection_derby_high",
-                mock_current_user,
-                mock_request,
-                mock_service,
+                name="InvalidName",
+                request=mock_request,
+                starting_room_id="earth_arkhamcity_northside_intersection_derby_high",
+                current_user=mock_current_user,
+                player_service=mock_service,
             )
 
         assert exc_info.value.status_code == 400
