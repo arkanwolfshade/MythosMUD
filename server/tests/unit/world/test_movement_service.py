@@ -201,6 +201,8 @@ class TestMovementService:
         combat must not escape through dimensional gateways until the conflict
         is resolved.
         """
+        from uuid import uuid4
+
         # Create mock persistence layer
         mock_persistence = Mock()
 
@@ -208,10 +210,9 @@ class TestMovementService:
         mock_player_combat_service = Mock()
         mock_player_combat_service.is_player_in_combat_sync = Mock(return_value=True)
 
-        # Create test player with UUID
-        player = Player(
-            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
-        )
+        # Create test player with valid UUID
+        test_player_uuid = str(uuid4())
+        player = Player(player_id=test_player_uuid, user_id="test-user-123", name="TestPlayer", current_room_id="room1")
 
         # Create test rooms
         mock_from_room = Mock()
@@ -230,7 +231,7 @@ class TestMovementService:
             movement_service = MovementService(player_combat_service=mock_player_combat_service)
 
             # Attempt to move player - should be blocked
-            success = movement_service.move_player("test-player-123", "room1", "room2")
+            success = movement_service.move_player(test_player_uuid, "room1", "room2")
 
             # Verify movement was blocked
             assert success is False
@@ -245,6 +246,8 @@ class TestMovementService:
 
     def test_move_player_allowed_when_not_in_combat(self):
         """Test that player can move when not in combat."""
+        from uuid import uuid4
+
         # Create mock persistence layer
         mock_persistence = Mock()
 
@@ -252,10 +255,9 @@ class TestMovementService:
         mock_player_combat_service = Mock()
         mock_player_combat_service.is_player_in_combat_sync = Mock(return_value=False)
 
-        # Create test player
-        player = Player(
-            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
-        )
+        # Create test player with valid UUID
+        test_player_uuid = str(uuid4())
+        player = Player(player_id=test_player_uuid, user_id="test-user-123", name="TestPlayer", current_room_id="room1")
 
         # Create test rooms
         mock_from_room = Mock()
@@ -274,14 +276,14 @@ class TestMovementService:
             movement_service = MovementService(player_combat_service=mock_player_combat_service)
 
             # Move player - should succeed
-            success = movement_service.move_player("test-player-123", "room1", "room2")
+            success = movement_service.move_player(test_player_uuid, "room1", "room2")
 
             # Verify movement was successful
             assert success is True
 
             # Verify player was moved
-            mock_from_room.player_left.assert_called_once_with("test-player-123")
-            mock_to_room.player_entered.assert_called_once_with("test-player-123")
+            mock_from_room.player_left.assert_called_once_with(test_player_uuid)
+            mock_to_room.player_entered.assert_called_once_with(test_player_uuid)
             mock_persistence.save_player.assert_called_once_with(player)
             assert player.current_room_id == "room2"
 
