@@ -121,6 +121,8 @@ class ConnectionManager:
         self._event_bus: Any = None
         # FastAPI app reference (set during app startup)
         self.app: Any = None
+        # Player combat service reference (set during app startup)
+        self._player_combat_service: Any = None
 
         # Player presence tracking
         # player_id -> player_info

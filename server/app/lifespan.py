@@ -184,7 +184,9 @@ async def lifespan(app: FastAPI):
     from ..services.player_combat_service import PlayerCombatService
 
     app.state.player_combat_service = PlayerCombatService(app.state.persistence, app.state.event_bus)
-    logger.info("Player combat service initialized and added to app.state")
+    # Make player combat service available to connection manager for movement validation
+    connection_manager._player_combat_service = app.state.player_combat_service
+    logger.info("Player combat service initialized and added to app.state and connection_manager")
 
     # Initialize player death service for death/respawn mechanics
     from ..services.player_death_service import PlayerDeathService

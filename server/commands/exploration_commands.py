@@ -188,8 +188,12 @@ async def handle_go_command(
     from ..game.movement_service import MovementService
 
     try:
+        # Get player combat service from app state
+        player_combat_service = getattr(app.state, "player_combat_service", None) if app else None
+
         # Pass the same event bus that persistence uses to ensure events are published correctly
-        movement_service = MovementService(persistence._event_bus)
+        # Also pass player_combat_service to enforce combat state validation
+        movement_service = MovementService(persistence._event_bus, player_combat_service=player_combat_service)
         success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
 
         if success:

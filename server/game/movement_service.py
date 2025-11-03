@@ -35,20 +35,22 @@ class MovementService:
     architecture.
     """
 
-    def __init__(self, event_bus: EventBus | None = None):
+    def __init__(self, event_bus: EventBus | None = None, player_combat_service=None):
         """
         Initialize the movement service.
 
         Args:
             event_bus: Optional EventBus instance for movement events
+            player_combat_service: Optional PlayerCombatService for combat state checking
         """
         self._event_bus = event_bus
         # Use the existing persistence instance if available, otherwise get a new one
         self._persistence = get_persistence(event_bus)
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
+        self._player_combat_service = player_combat_service
 
-        self._logger.info("MovementService initialized")
+        self._logger.info("MovementService initialized", has_combat_service=bool(player_combat_service))
 
     def move_player(self, player_id: str, from_room_id: str, to_room_id: str) -> bool:
         """
@@ -271,6 +273,67 @@ class MovementService:
         Returns:
             True if the movement is valid, False otherwise
         """
+        # Check if player is in combat - players cannot move during combat
+        # As noted in the Pnakotic Manuscripts, entities engaged in mortal combat
+        # must not escape through dimensional gateways until the conflict is resolved
+        if self._player_combat_service:
+            try:
+                import asyncio
+                from uuid import UUID
+
+                # Convert player_id string to UUID if needed
+                try:
+                    player_uuid = UUID(player_id)
+                except (ValueError, AttributeError):
+                    # If player_id is not a valid UUID, it might be a name
+                    # Get the player to retrieve their UUID
+                    player = self._persistence.get_player(player_id)
+                    if player and hasattr(player, "player_id"):
+                        # Convert player_id to UUID (handle Column[str] from SQLAlchemy)
+                        try:
+                            player_uuid = UUID(str(player.player_id))
+                        except (ValueError, AttributeError, TypeError):
+                            player_uuid = None
+                    else:
+                        self._logger.warning(
+                            "Unable to convert player_id to UUID for combat check", player_id=player_id
+                        )
+                        # Allow movement if we can't determine player UUID
+                        player_uuid = None
+
+                if player_uuid:
+                    # Run the async is_player_in_combat method
+                    try:
+                        # Try to get the current event loop
+                        loop = asyncio.get_event_loop()
+                        if loop.is_running():
+                            # We're already in an event loop, create a task
+                            # For synchronous context within async, we need a different approach
+                            # Since we can't await here, we'll use run_until_complete in a new loop
+                            is_in_combat = asyncio.run(self._player_combat_service.is_player_in_combat(player_uuid))
+                        else:
+                            is_in_combat = loop.run_until_complete(
+                                self._player_combat_service.is_player_in_combat(player_uuid)
+                            )
+                    except RuntimeError:
+                        # No event loop, create one
+                        is_in_combat = asyncio.run(self._player_combat_service.is_player_in_combat(player_uuid))
+
+                    if is_in_combat:
+                        self._logger.warning(
+                            "Movement blocked: player is in combat",
+                            player_id=player_id,
+                            from_room=from_room_id,
+                            to_room=to_room_id,
+                        )
+                        return False
+
+            except Exception as e:
+                self._logger.error(
+                    "Error checking combat state, allowing movement", player_id=player_id, error=str(e), exc_info=True
+                )
+                # On error, allow movement to prevent blocking players
+
         # Check if rooms exist
         from_room = self._persistence.get_room(from_room_id)
         to_room = self._persistence.get_room(to_room_id)

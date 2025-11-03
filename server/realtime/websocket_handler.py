@@ -517,8 +517,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
             logger.error("No EventBus available for player movement", player_id=player_id)
             return {"result": "Game system temporarily unavailable"}
 
+        # Get player combat service from connection manager
+        player_combat_service = getattr(connection_manager, "_player_combat_service", None)
+
         # Create MovementService with the same persistence layer as the connection manager
-        movement_service = MovementService(event_bus)
+        movement_service = MovementService(event_bus, player_combat_service=player_combat_service)
         # Override the persistence layer to use the same instance as the connection manager
         if connection_manager.persistence:
             movement_service._persistence = connection_manager.persistence

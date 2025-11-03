@@ -194,6 +194,141 @@ class TestMovementService:
 
             assert result is False
 
+    def test_move_player_blocked_during_combat(self):
+        """Test that player cannot move while in combat.
+
+        As documented in the Pnakotic Manuscripts, players engaged in mortal
+        combat must not escape through dimensional gateways until the conflict
+        is resolved.
+        """
+        from unittest.mock import AsyncMock
+
+        # Create mock persistence layer
+        mock_persistence = Mock()
+
+        # Create mock player combat service with AsyncMock
+        mock_player_combat_service = Mock()
+        mock_player_combat_service.is_player_in_combat = AsyncMock(return_value=True)
+
+        # Create test player with UUID
+        player = Player(
+            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
+        )
+
+        # Create test rooms
+        mock_from_room = Mock()
+        mock_to_room = Mock()
+
+        # Configure mocks - player is in combat
+        mock_persistence.get_player.return_value = player
+        mock_persistence.get_room.side_effect = lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        mock_from_room.has_player.return_value = True
+        mock_to_room.has_player.return_value = False
+        mock_from_room.exits = {"north": "room2"}
+        mock_from_room.id = "room1"
+
+        # Create movement service with player combat service
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            movement_service = MovementService(player_combat_service=mock_player_combat_service)
+
+            # Attempt to move player - should be blocked
+            success = movement_service.move_player("test-player-123", "room1", "room2")
+
+            # Verify movement was blocked
+            assert success is False
+
+            # Verify combat state was checked
+            mock_player_combat_service.is_player_in_combat.assert_called_once()
+
+            # Verify player was NOT moved
+            mock_from_room.player_left.assert_not_called()
+            mock_to_room.player_entered.assert_not_called()
+            mock_persistence.save_player.assert_not_called()
+
+    def test_move_player_allowed_when_not_in_combat(self):
+        """Test that player can move when not in combat."""
+        from unittest.mock import AsyncMock
+
+        # Create mock persistence layer
+        mock_persistence = Mock()
+
+        # Create mock player combat service with AsyncMock
+        mock_player_combat_service = Mock()
+        mock_player_combat_service.is_player_in_combat = AsyncMock(return_value=False)
+
+        # Create test player
+        player = Player(
+            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
+        )
+
+        # Create test rooms
+        mock_from_room = Mock()
+        mock_to_room = Mock()
+
+        # Configure mocks - player is NOT in combat
+        mock_persistence.get_player.return_value = player
+        mock_persistence.get_room.side_effect = lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        mock_from_room.has_player.return_value = True
+        mock_to_room.has_player.return_value = False
+        mock_from_room.exits = {"north": "room2"}
+        mock_from_room.id = "room1"
+
+        # Create movement service with player combat service
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            movement_service = MovementService(player_combat_service=mock_player_combat_service)
+
+            # Move player - should succeed
+            success = movement_service.move_player("test-player-123", "room1", "room2")
+
+            # Verify movement was successful
+            assert success is True
+
+            # Verify player was moved
+            mock_from_room.player_left.assert_called_once_with("test-player-123")
+            mock_to_room.player_entered.assert_called_once_with("test-player-123")
+            mock_persistence.save_player.assert_called_once_with(player)
+            assert player.current_room_id == "room2"
+
+    def test_move_player_allowed_when_no_combat_service(self):
+        """Test that player can move when player_combat_service is not provided.
+
+        This ensures backward compatibility when the service is not available.
+        """
+        # Create mock persistence layer
+        mock_persistence = Mock()
+
+        # Create test player
+        player = Player(
+            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room1"
+        )
+
+        # Create test rooms
+        mock_from_room = Mock()
+        mock_to_room = Mock()
+
+        # Configure mocks
+        mock_persistence.get_player.return_value = player
+        mock_persistence.get_room.side_effect = lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        mock_from_room.has_player.return_value = True
+        mock_to_room.has_player.return_value = False
+        mock_from_room.exits = {"north": "room2"}
+        mock_from_room.id = "room1"
+
+        # Create movement service WITHOUT player combat service
+        with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
+            movement_service = MovementService()
+
+            # Move player - should succeed (backward compatibility)
+            success = movement_service.move_player("test-player-123", "room1", "room2")
+
+            # Verify movement was successful
+            assert success is True
+
+            # Verify player was moved
+            mock_from_room.player_left.assert_called_once_with("test-player-123")
+            mock_to_room.player_entered.assert_called_once_with("test-player-123")
+            mock_persistence.save_player.assert_called_once_with(player)
+
     def test_add_player_to_room_success(self):
         """Test successful addition of player to room."""
         mock_persistence = Mock()
