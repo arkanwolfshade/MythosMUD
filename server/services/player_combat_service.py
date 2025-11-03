@@ -141,7 +141,15 @@ class PlayerCombatService:
         Returns:
             True if player is in combat, False otherwise
         """
-        return player_id in self._player_combat_states
+        result = player_id in self._player_combat_states
+        logger.critical(
+            "COMBAT SERVICE: Sync combat check",
+            player_id=str(player_id),
+            is_in_combat=result,
+            total_players_in_combat=len(self._player_combat_states),
+            combat_states=str(list(self._player_combat_states.keys())),
+        )
+        return result
 
     async def is_player_in_combat(self, player_id: UUID) -> bool:
         """
