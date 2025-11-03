@@ -47,7 +47,6 @@ def get_game_status(request: Request) -> dict[str, Any]:
 @game_router.post("/broadcast")
 def broadcast_message(
     message: str,
-    request: Request | None = None,
     current_user: dict = Depends(get_current_user),
 ) -> dict[str, str]:
     """Broadcast a message to all connected players (admin only)."""
