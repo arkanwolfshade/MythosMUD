@@ -6,6 +6,7 @@ turn order calculation, and combat resolution.
 """
 
 from datetime import UTC, datetime, timedelta
+from typing import Any
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
@@ -41,7 +42,11 @@ class CombatService:
     """
 
     def __init__(
-        self, player_combat_service: PlayerCombatService = None, nats_service=None, npc_combat_integration_service=None
+        self,
+        player_combat_service: PlayerCombatService | None = None,
+        nats_service=None,
+        npc_combat_integration_service=None,
+        subject_manager=None,
     ):
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -51,11 +56,17 @@ class CombatService:
         self._player_combat_service = player_combat_service
         self._nats_service = nats_service
         self._npc_combat_integration_service = npc_combat_integration_service
-        # Create combat event publisher with proper NATS service
+        # Create combat event publisher with proper NATS service and subject_manager
         logger.debug("Creating CombatEventPublisher with NATS service", nats_service_available=bool(nats_service))
         try:
             logger.debug("Creating CombatEventPublisher")
-            self._combat_event_publisher = CombatEventPublisher(nats_service)
+            # If no subject_manager provided, create one with default settings
+            if subject_manager is None and nats_service is not None:
+                from .nats_subject_manager import NATSSubjectManager
+
+                subject_manager = NATSSubjectManager()
+                logger.debug("Created NATSSubjectManager with default settings")
+            self._combat_event_publisher = CombatEventPublisher(nats_service, subject_manager)
             logger.debug("CombatEventPublisher created successfully")
         except Exception as e:
             logger.error(
@@ -191,8 +202,6 @@ class CombatService:
         try:
             logger.debug("Creating CombatStartedEvent", combat_id=combat.combat_id)
             started_event = CombatStartedEvent(
-                event_type="combat_started",
-                timestamp=datetime.now(),
                 combat_id=combat.combat_id,
                 room_id=room_id,
                 participants={
@@ -310,11 +319,11 @@ class CombatService:
                 return
 
         # Debug logging to understand participant type
-        participant_id = getattr(current_participant, "participant_id", "NO_PARTICIPANT_ID")
+        debug_participant_id: Any = getattr(current_participant, "participant_id", None)
         logger.debug(
             "Current participant type",
             participant_type=type(current_participant).__name__,
-            participant_id=participant_id,
+            participant_id=str(debug_participant_id) if debug_participant_id else "NO_PARTICIPANT_ID",
         )
 
         # Additional debugging for the combat state
@@ -343,14 +352,6 @@ class CombatService:
             await self._process_npc_turn(combat, current_participant, current_tick)
         else:
             # Player's turn - perform automatic basic attack
-            # Validate that current_participant is a CombatParticipant
-            if not isinstance(current_participant, CombatParticipant):
-                logger.error(
-                    "Expected CombatParticipant",
-                    got_type=type(current_participant).__name__,
-                    participant=current_participant,
-                )
-                return
             await self._process_player_turn(combat, current_participant, current_tick)
 
     async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
@@ -363,11 +364,6 @@ class CombatService:
             current_tick: Current game tick
         """
         try:
-            # Validate that we received a proper CombatParticipant object
-            if not isinstance(npc, CombatParticipant):
-                logger.error("Expected CombatParticipant", got_type=type(npc).__name__, npc=npc)
-                return
-
             # Debug logging to understand what we're receiving
             logger.debug("_process_npc_turn called", npc_type=type(npc).__name__, npc=npc)
             if hasattr(npc, "participant_id"):
@@ -422,11 +418,6 @@ class CombatService:
             current_tick: Current game tick
         """
         try:
-            # Validate that we received a proper CombatParticipant object
-            if not isinstance(player, CombatParticipant):
-                logger.error("Expected CombatParticipant", got_type=type(player), player=player)
-                return
-
             # Debug logging to understand what we're receiving
             logger.debug("_process_player_turn called", player_type=type(player), player=player)
             if hasattr(player, "participant_id"):
@@ -621,11 +612,10 @@ class CombatService:
             )
             logger.info("About to publish combat events", attacker_type=current_participant.participant_type)
             # Publish attack event based on attacker type
+            attack_event: PlayerAttackedEvent | NPCAttackedEvent
             if current_participant.participant_type == CombatParticipantType.PLAYER:
                 logger.info("Creating PlayerAttackedEvent")
                 attack_event = PlayerAttackedEvent(
-                    event_type="player_attacked",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     attacker_id=current_participant.participant_id,
@@ -642,9 +632,7 @@ class CombatService:
                 logger.info("publish_player_attacked completed")
             else:
                 logger.info("Creating NPCAttackedEvent")
-                attack_event = NPCAttackedEvent(
-                    event_type="npc_attacked",
-                    timestamp=datetime.now(),
+                npc_attack_event = NPCAttackedEvent(
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     attacker_id=current_participant.participant_id,
@@ -656,15 +644,13 @@ class CombatService:
                     target_current_hp=target.current_hp,
                     target_max_hp=target.max_hp,
                 )
-                logger.info("Calling publish_npc_attacked", attack_event=attack_event)
-                await self._combat_event_publisher.publish_npc_attacked(attack_event)
+                logger.info("Calling publish_npc_attacked", attack_event=npc_attack_event)
+                await self._combat_event_publisher.publish_npc_attacked(npc_attack_event)
                 logger.info("publish_npc_attacked completed")
 
             # Publish damage event if target is NPC
             if target.participant_type == CombatParticipantType.NPC:
                 damage_event = NPCTookDamageEvent(
-                    event_type="npc_took_damage",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     npc_id=target.participant_id,
@@ -683,8 +669,6 @@ class CombatService:
             if target_died and target.participant_type == CombatParticipantType.NPC:
                 logger.info("Creating NPCDiedEvent", target_name=target.name)
                 death_event = NPCDiedEvent(
-                    event_type="npc_died",
-                    timestamp=datetime.now(),
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
                     npc_id=target.participant_id,
@@ -752,8 +736,6 @@ class CombatService:
         # Publish combat ended event
         try:
             ended_event = CombatEndedEvent(
-                event_type="combat_ended",
-                timestamp=datetime.now(),
                 combat_id=combat_id,
                 room_id=combat.room_id,
                 reason=reason,
@@ -877,7 +859,7 @@ class CombatService:
                 return
 
             # Get player from database
-            player = persistence.get_player(str(player_id))
+            player = await persistence.async_get_player(str(player_id))
             if not player:
                 logger.warning("Player not found for HP persistence", player_id=player_id)
                 return
@@ -889,7 +871,7 @@ class CombatService:
             player.set_stats(stats)
 
             # Save player to database
-            persistence.save_player(player)
+            await persistence.async_save_player(player)
 
             logger.info(
                 "Player HP persisted to database",
@@ -956,8 +938,6 @@ class CombatService:
 
             # Create and publish the event
             hp_update_event = PlayerHPUpdated(
-                timestamp=None,  # Will be set by BaseEvent.__post_init__
-                event_type="PlayerHPUpdated",  # Will be set by BaseEvent.__post_init__
                 player_id=str(player_id),
                 old_hp=old_hp,
                 new_hp=new_hp,
@@ -970,7 +950,36 @@ class CombatService:
 
             # Use the NATS service directly to publish the event
             if self._nats_service:
-                await self._nats_service.publish_event(hp_update_event)
+                # Convert event to NATS message format
+                # Build subject using combat event publisher's subject manager
+                if (
+                    hasattr(self._combat_event_publisher, "subject_manager")
+                    and self._combat_event_publisher.subject_manager
+                ):
+                    subject = self._combat_event_publisher.subject_manager.build_subject(
+                        "combat_hp_update", player_id=str(hp_update_event.player_id)
+                    )
+                else:
+                    # Legacy fallback
+                    subject = f"combat.hp_update.{hp_update_event.player_id}"
+                    logger.warning(
+                        "Using legacy subject construction - subject_manager not available",
+                        event_type="combat_hp_update",
+                        player_id=str(hp_update_event.player_id),
+                    )
+
+                message_data = {
+                    "event_type": "player_hp_updated",
+                    "data": {
+                        "player_id": hp_update_event.player_id,
+                        "old_hp": hp_update_event.old_hp,
+                        "new_hp": hp_update_event.new_hp,
+                        "max_hp": hp_update_event.max_hp,
+                        "damage_taken": hp_update_event.damage_taken,
+                        "timestamp": hp_update_event.timestamp.isoformat(),
+                    },
+                }
+                await self._nats_service.publish(subject, message_data)
             else:
                 logger.warning("No NATS service available for HP update event", player_id=player_id)
 

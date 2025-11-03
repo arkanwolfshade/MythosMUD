@@ -66,7 +66,7 @@ class AdminAction(str, Enum):
 class AdminSession:
     """Represents an admin session."""
 
-    def __init__(self, user_id: str, username: str, role: AdminRole, ip_address: str):
+    def __init__(self, user_id: str, username: str, role: AdminRole, ip_address: str) -> None:
         self.user_id = user_id
         self.username = username
         self.role = role
@@ -80,7 +80,7 @@ class AdminSession:
 class AdminAuthService:
     """Service for admin authentication and authorization."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the admin auth service."""
         self.active_sessions: dict[str, AdminSession] = {}
         self.audit_log: list[dict[str, Any]] = []
@@ -95,7 +95,7 @@ class AdminAuthService:
 
         logger.info("Admin authentication service initialized")
 
-    def get_user_role(self, current_user) -> AdminRole:
+    def get_user_role(self, current_user: Any) -> AdminRole:
         """
         Determine the admin role for a user.
 
@@ -123,22 +123,26 @@ class AdminAuthService:
         # Default to viewer role for authenticated users
         return AdminRole.VIEWER
 
-    def get_username(self, current_user) -> str:
+    def get_username(self, current_user: Any) -> str:
         """Safely get username from current user object."""
         if not current_user:
             return "unknown"
 
         # Try to get username from User object
         if hasattr(current_user, "username"):
-            return current_user.username
+            result = current_user.username
+            assert isinstance(result, str)
+            return result
 
         # Try to get username from dictionary
         if hasattr(current_user, "get"):
-            return current_user.get("username", "unknown")
+            result = current_user.get("username", "unknown")
+            assert isinstance(result, str)
+            return result
 
         return "unknown"
 
-    def get_user_id(self, current_user) -> str:
+    def get_user_id(self, current_user: Any) -> str:
         """Safely get user ID from current user object."""
         if not current_user:
             return "unknown"
@@ -153,7 +157,7 @@ class AdminAuthService:
 
         return "unknown"
 
-    def validate_permission(self, current_user, action: AdminAction, request: Request = None) -> None:
+    def validate_permission(self, current_user: Any, action: AdminAction, request: Request | None = None) -> None:
         """
         Validate that the current user has permission to perform the action.
 
@@ -246,7 +250,7 @@ class AdminAuthService:
 
         return action in permissions.get(role, [])
 
-    def _check_rate_limit(self, user_id: str, request: Request = None) -> None:
+    def _check_rate_limit(self, user_id: str, request: Request | None = None) -> None:
         """
         Check if user has exceeded rate limits.
 
@@ -276,7 +280,7 @@ class AdminAuthService:
         # Add current request
         self.rate_limits[user_id].append(now)
 
-    def _update_session(self, user_id: str, username: str, role: AdminRole, request: Request = None) -> None:
+    def _update_session(self, user_id: str, username: str, role: AdminRole, request: Request | None = None) -> None:
         """
         Update or create admin session.
 
@@ -302,7 +306,7 @@ class AdminAuthService:
             )
 
     def _log_audit_event(
-        self, user_id: str, username: str, action: AdminAction, result: str, request: Request = None
+        self, user_id: str, username: str, action: AdminAction, result: str, request: Request | None = None
     ) -> None:
         """
         Log an audit event.

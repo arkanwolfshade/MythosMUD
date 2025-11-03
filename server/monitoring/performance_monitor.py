@@ -10,6 +10,7 @@ of our systems is essential for maintaining their stability and efficiency.
 
 import time
 from collections import defaultdict, deque
+from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any
@@ -64,12 +65,12 @@ class PerformanceMonitor:
         self.alert_threshold_ms = alert_threshold_ms
         self.metrics: deque = deque(maxlen=max_metrics)
         self.operation_stats: dict[str, list[PerformanceMetric]] = defaultdict(list)
-        self.alert_callbacks: list[callable] = []
+        self.alert_callbacks: list[Callable] = []
 
         logger.info("Performance monitor initialized", max_metrics=max_metrics, alert_threshold_ms=alert_threshold_ms)
 
     def record_metric(
-        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, Any] = None
+        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, Any] | None = None
     ) -> None:
         """
         Record a performance metric.
@@ -99,7 +100,7 @@ class PerformanceMonitor:
         log_with_context(
             logger,
             "info",
-            f"Performance metric recorded: {operation}",
+            "Performance metric recorded",
             operation=operation,
             duration_ms=duration_ms,
             success=success,
@@ -135,14 +136,14 @@ class PerformanceMonitor:
             error_rate=(len(successes) - sum(successes)) / len(successes) * 100,
         )
 
-    def get_all_stats(self) -> dict[str, PerformanceStats]:
+    def get_all_stats(self) -> dict[str, PerformanceStats | None]:
         """
         Get performance statistics for all operations.
 
         Returns:
-            Dictionary mapping operation names to their statistics
+            Dictionary mapping operation names to their statistics (None if no stats available)
         """
-        stats = {}
+        stats: dict[str, PerformanceStats | None] = {}
         for operation in self.operation_stats:
             stats[operation] = self.get_operation_stats(operation)
         return stats
@@ -159,7 +160,7 @@ class PerformanceMonitor:
         """
         return list(self.metrics)[-count:]
 
-    def get_slow_operations(self, threshold_ms: float = None) -> list[PerformanceMetric]:
+    def get_slow_operations(self, threshold_ms: float | None = None) -> list[PerformanceMetric]:
         """
         Get operations that exceeded the performance threshold.
 
@@ -183,7 +184,7 @@ class PerformanceMonitor:
         """
         return [m for m in self.metrics if not m.success]
 
-    def add_alert_callback(self, callback: callable) -> None:
+    def add_alert_callback(self, callback: Callable) -> None:
         """
         Add an alert callback function.
 
@@ -208,7 +209,12 @@ class PerformanceMonitor:
         }
 
         # Log the alert
-        log_with_context(logger, "warning", f"Performance alert: {metric.operation} exceeded threshold", **alert_data)
+        log_with_context(
+            logger,
+            "warning",
+            "Performance alert: operation exceeded threshold",
+            **alert_data,
+        )
 
         # Call alert callbacks
         for callback in self.alert_callbacks:
@@ -266,7 +272,9 @@ def get_performance_monitor() -> PerformanceMonitor:
 
 
 @contextmanager
-def measure_performance(operation: str, metadata: dict[str, Any] = None, monitor: PerformanceMonitor = None):
+def measure_performance(
+    operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None
+):
     """
     Context manager for measuring operation performance.
 
@@ -311,8 +319,8 @@ def record_performance_metric(
     operation: str,
     duration_ms: float,
     success: bool = True,
-    metadata: dict[str, Any] = None,
-    monitor: PerformanceMonitor = None,
+    metadata: dict[str, Any] | None = None,
+    monitor: PerformanceMonitor | None = None,
 ) -> None:
     """
     Record a performance metric.
@@ -330,7 +338,7 @@ def record_performance_metric(
     monitor.record_metric(operation, duration_ms, success, metadata)
 
 
-def get_performance_stats(operation: str = None, monitor: PerformanceMonitor = None) -> Any:
+def get_performance_stats(operation: str | None = None, monitor: PerformanceMonitor | None = None) -> Any:
     """
     Get performance statistics.
 
@@ -350,7 +358,7 @@ def get_performance_stats(operation: str = None, monitor: PerformanceMonitor = N
         return monitor.get_all_stats()
 
 
-def reset_performance_metrics(monitor: PerformanceMonitor = None) -> None:
+def reset_performance_metrics(monitor: PerformanceMonitor | None = None) -> None:
     """
     Reset performance metrics.
 

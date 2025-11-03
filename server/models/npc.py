@@ -8,7 +8,7 @@ and relationships that support the NPC subsystem.
 import json
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import (
     Boolean,
@@ -22,11 +22,13 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from ..npc_metadata import npc_metadata
 
-Base = declarative_base(metadata=npc_metadata)
+
+class Base(DeclarativeBase):
+    metadata = npc_metadata
 
 
 class NPCDefinitionType(str, Enum):
@@ -103,35 +105,35 @@ class NPCDefinition(Base):
     def get_base_stats(self) -> dict[str, Any]:
         """Get base stats as dictionary."""
         try:
-            return json.loads(self.base_stats)
+            return cast(dict[str, Any], json.loads(cast(str, self.base_stats)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_base_stats(self, stats: dict[str, Any]) -> None:
         """Set base stats from dictionary."""
-        self.base_stats = json.dumps(stats)
+        self.base_stats = json.dumps(stats)  # type: ignore[assignment]
 
     def get_behavior_config(self) -> dict[str, Any]:
         """Get behavior configuration as dictionary."""
         try:
-            return json.loads(self.behavior_config)
+            return cast(dict[str, Any], json.loads(cast(str, self.behavior_config)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_behavior_config(self, config: dict[str, Any]) -> None:
         """Set behavior configuration from dictionary."""
-        self.behavior_config = json.dumps(config)
+        self.behavior_config = json.dumps(config)  # type: ignore[assignment]
 
     def get_ai_integration_stub(self) -> dict[str, Any]:
         """Get AI integration stub configuration as dictionary."""
         try:
-            return json.loads(self.ai_integration_stub)
+            return cast(dict[str, Any], json.loads(cast(str, self.ai_integration_stub)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_ai_integration_stub(self, stub: dict[str, Any]) -> None:
         """Set AI integration stub configuration from dictionary."""
-        self.ai_integration_stub = json.dumps(stub)
+        self.ai_integration_stub = json.dumps(stub)  # type: ignore[assignment]
 
     def is_required(self) -> bool:
         """Check if this NPC is required to spawn."""
@@ -139,7 +141,7 @@ class NPCDefinition(Base):
 
     def can_spawn(self, current_population: int) -> bool:
         """Check if this NPC can spawn given current population."""
-        return current_population < self.max_population
+        return bool(current_population < self.max_population)
 
 
 class NPCSpawnRule(Base):
@@ -182,17 +184,17 @@ class NPCSpawnRule(Base):
     def get_spawn_conditions(self) -> dict[str, Any]:
         """Get spawn conditions as dictionary."""
         try:
-            return json.loads(self.spawn_conditions)
+            return cast(dict[str, Any], json.loads(cast(str, self.spawn_conditions)))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_spawn_conditions(self, conditions: dict[str, Any]) -> None:
         """Set spawn conditions from dictionary."""
-        self.spawn_conditions = json.dumps(conditions)
+        self.spawn_conditions = json.dumps(conditions)  # type: ignore[assignment]
 
     def can_spawn_with_population(self, current_population: int) -> bool:
         """Check if this rule allows spawning given current NPC population."""
-        return current_population < self.max_population
+        return bool(current_population < self.max_population)
 
     def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
         """Check if current game state meets spawn conditions."""

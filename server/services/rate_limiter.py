@@ -107,7 +107,7 @@ class RateLimiter:
         while window and current_time - window[0] > self.window_size:
             window.popleft()
 
-    def check_rate_limit(self, player_id: str, channel: str, player_name: str = None) -> bool:
+    def check_rate_limit(self, player_id: str, channel: str, player_name: str | None = None) -> bool:
         """
         Check if a player is within rate limits for a channel.
 
@@ -162,7 +162,7 @@ class RateLimiter:
             # On error, allow the message (fail open)
             return True
 
-    def record_message(self, player_id: str, channel: str, player_name: str = None):
+    def record_message(self, player_id: str, channel: str, player_name: str | None = None):
         """
         Record a message for rate limiting.
 
@@ -224,7 +224,7 @@ class RateLimiter:
 
         return stats
 
-    def reset_player_limits(self, player_id: str, channel: str = None):
+    def reset_player_limits(self, player_id: str, channel: str | None = None):
         """
         Reset rate limiting for a player.
 

@@ -57,9 +57,9 @@ class InviteManager:
         invites = result.scalars().all()
 
         logger.debug("Invites listed", count=len(invites))
-        return invites
+        return list(invites)
 
-    async def validate_invite(self, invite_code: str | None, request: Request = None) -> Invite:
+    async def validate_invite(self, invite_code: str | None, request: Request | None = None) -> Invite:
         """Validate an invite code."""
         if not invite_code:
             logger.warning("No invite code provided")
@@ -105,7 +105,7 @@ class InviteManager:
         logger.info("Using invite", invite_code=invite_code)
 
         invite = await self.validate_invite(invite_code)
-        invite.use_invite(user_id)
+        invite.use_invite(str(user_id))
 
         await self.session.commit()
         await self.session.refresh(invite)
@@ -121,7 +121,7 @@ class InviteManager:
         invites = result.scalars().all()
 
         logger.debug("User invites retrieved", count=len(invites))
-        return invites
+        return list(invites)
 
     async def get_unused_invites(self) -> list[Invite]:
         """Get all unused invites."""
@@ -131,7 +131,7 @@ class InviteManager:
         invites = result.scalars().all()
 
         logger.debug("Unused invites retrieved", count=len(invites))
-        return invites
+        return list(invites)
 
     async def cleanup_expired_invites(self) -> int:
         """Remove expired invites and return count of removed invites."""

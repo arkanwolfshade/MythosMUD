@@ -8,9 +8,13 @@ As noted in the Pnakotic Manuscripts, proper monitoring APIs
 are essential for maintaining oversight of our eldritch systems.
 """
 
+from __future__ import annotations
+
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ..exceptions import LoggedHTTPException
@@ -21,7 +25,7 @@ from ..realtime.connection_manager import connection_manager
 from ..services.health_service import get_health_service
 from ..utils.error_logging import create_context_from_request
 
-router = APIRouter(prefix="/monitoring", tags=["monitoring"])
+monitoring_router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 
 
 class MetricsResponse(BaseModel):
@@ -121,8 +125,8 @@ class ConnectionHealthStatsResponse(BaseModel):
     timestamp: float
 
 
-@router.get("/metrics", response_model=MetricsResponse)
-async def get_movement_metrics(request: Request):
+@monitoring_router.get("/metrics", response_model=MetricsResponse)
+async def get_movement_metrics(request: Request) -> MetricsResponse:
     """Get comprehensive movement system metrics."""
     try:
         monitor = get_movement_monitor()
@@ -142,8 +146,8 @@ async def get_movement_metrics(request: Request):
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}", context=context) from e
 
 
-@router.get("/integrity", response_model=IntegrityResponse)
-async def validate_room_integrity(request: Request):
+@monitoring_router.get("/integrity", response_model=IntegrityResponse)
+async def validate_room_integrity(request: Request) -> IntegrityResponse:
     """Validate room data integrity and return results."""
     try:
         monitor = get_movement_monitor()
@@ -167,8 +171,8 @@ async def validate_room_integrity(request: Request):
         ) from e
 
 
-@router.get("/alerts", response_model=AlertsResponse)
-async def get_system_alerts(request: Request):
+@monitoring_router.get("/alerts", response_model=AlertsResponse)
+async def get_system_alerts(request: Request) -> AlertsResponse:
     """Get current system alerts."""
     try:
         monitor = get_movement_monitor()
@@ -185,8 +189,8 @@ async def get_system_alerts(request: Request):
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}", context=context) from e
 
 
-@router.post("/reset")
-async def reset_metrics(request: Request):
+@monitoring_router.post("/reset")
+async def reset_metrics(request: Request) -> dict[str, str]:
     """Reset all movement metrics (admin only)."""
     try:
         from ..game.movement_monitor import reset_movement_monitor
@@ -199,8 +203,8 @@ async def reset_metrics(request: Request):
         raise LoggedHTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}", context=context) from e
 
 
-@router.get("/performance-summary")
-async def get_performance_summary(request: Request):
+@monitoring_router.get("/performance-summary")
+async def get_performance_summary(request: Request) -> dict[str, Any]:
     """Get a human-readable performance summary."""
     try:
         monitor = get_movement_monitor()
@@ -229,8 +233,8 @@ async def get_performance_summary(request: Request):
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}", context=context) from e
 
 
-@router.get("/memory", response_model=MemoryStatsResponse)
-async def get_memory_stats(request: Request):
+@monitoring_router.get("/memory", response_model=MemoryStatsResponse)
+async def get_memory_stats(request: Request) -> MemoryStatsResponse:
     """Get comprehensive memory and connection statistics."""
     try:
         import datetime
@@ -247,8 +251,8 @@ async def get_memory_stats(request: Request):
         ) from e
 
 
-@router.get("/memory-alerts", response_model=MemoryAlertsResponse)
-async def get_memory_alerts(request: Request):
+@monitoring_router.get("/memory-alerts", response_model=MemoryAlertsResponse)
+async def get_memory_alerts(request: Request) -> MemoryAlertsResponse:
     """Get memory-related alerts and warnings."""
     try:
         import datetime
@@ -266,8 +270,8 @@ async def get_memory_alerts(request: Request):
         ) from e
 
 
-@router.post("/memory/cleanup")
-async def force_memory_cleanup(request: Request):
+@monitoring_router.post("/memory/cleanup")
+async def force_memory_cleanup(request: Request) -> dict[str, str]:
     """Force immediate memory cleanup (admin only)."""
     try:
         await connection_manager.force_cleanup()
@@ -280,8 +284,8 @@ async def force_memory_cleanup(request: Request):
         ) from e
 
 
-@router.get("/dual-connections", response_model=DualConnectionStatsResponse)
-async def get_dual_connection_stats(request: Request):
+@monitoring_router.get("/dual-connections", response_model=DualConnectionStatsResponse)
+async def get_dual_connection_stats(request: Request) -> DualConnectionStatsResponse:
     """Get comprehensive dual connection statistics."""
     try:
         dual_connection_stats = connection_manager.get_dual_connection_stats()
@@ -294,8 +298,8 @@ async def get_dual_connection_stats(request: Request):
         ) from e
 
 
-@router.get("/performance", response_model=PerformanceStatsResponse)
-async def get_performance_stats(request: Request):
+@monitoring_router.get("/performance", response_model=PerformanceStatsResponse)
+async def get_performance_stats(request: Request) -> PerformanceStatsResponse:
     """Get connection performance statistics."""
     try:
         performance_stats = connection_manager.get_performance_stats()
@@ -308,8 +312,8 @@ async def get_performance_stats(request: Request):
         ) from e
 
 
-@router.get("/connection-health", response_model=ConnectionHealthStatsResponse)
-async def get_connection_health_stats(request: Request):
+@monitoring_router.get("/connection-health", response_model=ConnectionHealthStatsResponse)
+async def get_connection_health_stats(request: Request) -> ConnectionHealthStatsResponse:
     """Get connection health statistics."""
     try:
         health_stats = connection_manager.get_connection_health_stats()
@@ -322,8 +326,8 @@ async def get_connection_health_stats(request: Request):
         ) from e
 
 
-@router.get("/health", response_model=HealthResponse)
-async def get_health_status(request: Request):
+@monitoring_router.get("/health", response_model=HealthResponse)
+async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
     """Get comprehensive system health status."""
     try:
         health_service = get_health_service()
@@ -337,8 +341,6 @@ async def get_health_status(request: Request):
             return health_response
         else:  # UNHEALTHY
             # Return 503 Service Unavailable for unhealthy status
-            from fastapi.responses import JSONResponse
-
             return JSONResponse(status_code=503, content=health_response.model_dump())
     except Exception as e:
         # Return 500 Internal Server Error if health check itself fails
@@ -347,4 +349,4 @@ async def get_health_status(request: Request):
         )
         context = create_context_from_request(request)
         context.metadata["operation"] = "get_health_status"
-        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e
+        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e  # type: ignore[arg-type]

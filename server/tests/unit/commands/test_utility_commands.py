@@ -372,7 +372,7 @@ class TestQuitCommand:
         mock_persistence.get_player_by_name.return_value = mock_player
 
         result = await handle_quit_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -390,7 +390,7 @@ class TestQuitCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_quit_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -406,7 +406,7 @@ class TestQuitCommand:
         mock_persistence.get_player_by_name.return_value = None
 
         result = await handle_quit_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -424,7 +424,7 @@ class TestQuitCommand:
         mock_persistence.get_player_by_name.side_effect = Exception("Database error")
 
         result = await handle_quit_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -511,7 +511,7 @@ class TestStatusCommand:
         mock_persistence.get_room.return_value = mock_room
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -533,7 +533,7 @@ class TestStatusCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -549,7 +549,7 @@ class TestStatusCommand:
         mock_persistence.get_player_by_name.return_value = None
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -569,7 +569,7 @@ class TestStatusCommand:
         mock_persistence.get_room.return_value = None
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -589,7 +589,7 @@ class TestStatusCommand:
         mock_persistence.get_player_by_name.return_value = mock_player
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -636,7 +636,7 @@ class TestStatusCommand:
         mock_persistence.get_room.return_value = mock_room
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -660,7 +660,7 @@ class TestStatusCommand:
         mock_persistence.get_player_by_name.side_effect = Exception("Database error")
 
         result = await handle_status_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -716,7 +716,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.return_value = player
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -739,7 +739,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.return_value = player
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -754,7 +754,7 @@ class TestInventoryCommand:
         mock_request.app.state.persistence = None
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -770,7 +770,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.return_value = None
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -801,7 +801,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.return_value = player
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -819,7 +819,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.side_effect = Exception("Database error")
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -855,7 +855,7 @@ class TestInventoryCommand:
         mock_persistence.get_player_by_name.return_value = player
 
         result = await handle_inventory_command(
-            args=[],
+            command_data={"args": []},
             current_user={"username": "testuser"},
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -1140,7 +1140,7 @@ class TestLocationFormatting:
         # Test empty string
         room_id = ""
         result = format_player_location(room_id)
-        expected = ""  # Empty string
+        expected = "Unknown Location"  # Return user-friendly message for invalid input
         assert result == expected
 
     def test_format_player_location_special_characters(self):

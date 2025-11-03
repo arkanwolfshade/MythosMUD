@@ -5,13 +5,15 @@ This module handles all player-related API operations including
 creation, retrieval, listing, and deletion of player characters.
 """
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging.enhanced_logging_config import get_logger
@@ -48,11 +50,11 @@ player_router = APIRouter(prefix="/api/players", tags=["players"])
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
+    request: Request,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Create a new player character."""
     try:
         return await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
@@ -67,18 +69,20 @@ async def create_player(
 
 @player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> list[PlayerRead]:
     """Get a list of all players."""
-    return await player_service.list_players()
+    result = await player_service.list_players()
+    assert isinstance(result, list)
+    return result
 
 
 @player_router.get("/available-classes")
 async def get_available_classes(
     current_user: User = Depends(get_current_user),
-):
+) -> dict[str, Any]:
     """
     Get information about all available character classes and their prerequisites.
     """
@@ -97,10 +101,10 @@ async def get_available_classes(
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: str,
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Get a specific player by ID."""
     player = await player_service.get_player_by_id(player_id)
     if not player:
@@ -116,10 +120,10 @@ async def get_player(
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
 async def get_player_by_name(
     player_name: str,
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """Get a specific player by name."""
     player = await player_service.get_player_by_name(player_name)
     if not player:
@@ -135,10 +139,10 @@ async def get_player_by_name(
 @player_router.delete("/{player_id}")
 async def delete_player(
     player_id: str,
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Delete a player character."""
     try:
         success, message = await player_service.delete_player(player_id)
@@ -163,14 +167,16 @@ async def delete_player(
 async def apply_sanity_loss(
     player_id: str,
     amount: int,
+    request: Request,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply sanity loss to a player."""
     try:
-        return await player_service.apply_sanity_loss(player_id, amount, source)
+        result = await player_service.apply_sanity_loss(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -183,14 +189,16 @@ async def apply_sanity_loss(
 async def apply_fear(
     player_id: str,
     amount: int,
+    request: Request,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply fear to a player."""
     try:
-        return await player_service.apply_fear(player_id, amount, source)
+        result = await player_service.apply_fear(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -203,14 +211,16 @@ async def apply_fear(
 async def apply_corruption(
     player_id: str,
     amount: int,
+    request: Request,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Apply corruption to a player."""
     try:
-        return await player_service.apply_corruption(player_id, amount, source)
+        result = await player_service.apply_corruption(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -223,14 +233,16 @@ async def apply_corruption(
 async def gain_occult_knowledge(
     player_id: str,
     amount: int,
+    request: Request,
     source: str = "unknown",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Gain occult knowledge (with sanity loss)."""
     try:
-        return await player_service.gain_occult_knowledge(player_id, amount, source)
+        result = await player_service.gain_occult_knowledge(player_id, amount, source)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -243,13 +255,15 @@ async def gain_occult_knowledge(
 async def heal_player(
     player_id: str,
     amount: int,
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Heal a player's health."""
     try:
-        return await player_service.heal_player(player_id, amount)
+        result = await player_service.heal_player(player_id, amount)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -262,14 +276,16 @@ async def heal_player(
 async def damage_player(
     player_id: str,
     amount: int,
+    request: Request,
     damage_type: str = "physical",
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> dict[str, str]:
     """Damage a player's health."""
     try:
-        return await player_service.damage_player(player_id, amount, damage_type)
+        result = await player_service.damage_player(player_id, amount, damage_type)
+        assert isinstance(result, dict)
+        return result
     except ValidationError as e:
         context = create_context_from_request(request)
         if current_user:
@@ -282,7 +298,7 @@ async def damage_player(
 async def respawn_player(
     request: Request,
     current_user: User = Depends(get_current_active_user),
-):
+) -> dict[str, Any]:
     """
     Respawn a dead player at their respawn location with full HP.
 
@@ -334,7 +350,7 @@ async def respawn_player(
                 respawn_service = PlayerRespawnService(event_bus=request.app.state.event_bus)
 
                 # Respawn the player
-                success = await respawn_service.respawn_player(player.player_id, session)
+                success = await respawn_service.respawn_player(str(player.player_id), session)
 
                 if not success:
                     logger.error("Respawn failed", player_id=player.player_id)
@@ -345,7 +361,7 @@ async def respawn_player(
                 # Get respawn room data
                 persistence = get_persistence()
                 respawn_room_id = player.current_room_id  # Updated by respawn_player
-                room = persistence.get_room(respawn_room_id)
+                room = persistence.get_room(str(respawn_room_id))
 
                 if not room:
                     logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
@@ -381,8 +397,11 @@ async def respawn_player(
                 raise LoggedHTTPException(
                     status_code=500, detail="Failed to process respawn request", context=context
                 ) from e
-            # Only need one session iteration - break after first session
-            break
+
+        # This should never be reached, but mypy needs it
+        raise LoggedHTTPException(
+            status_code=500, detail="No database session available", context=create_context_from_request(request)
+        )
 
     except LoggedHTTPException:
         raise
@@ -397,14 +416,14 @@ async def respawn_player(
 # Character Creation and Stats Generation Endpoints
 @player_router.post("/roll-stats")
 async def roll_character_stats(
+    request: Request,
     method: str = "3d6",
     required_class: str | None = None,
     max_attempts: int = 10,
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
-    request: Request = None,
-):
+) -> dict[str, Any]:
     """
     Roll random stats for character creation.
 
@@ -415,7 +434,6 @@ async def roll_character_stats(
     """
     # Check if server is shutting down
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
-    from ..utils.error_logging import create_error_context
 
     if request and is_shutdown_pending(request.app):
         context = create_error_context(user_id=str(current_user.id) if current_user else None)
@@ -429,8 +447,6 @@ async def roll_character_stats(
     if not current_user:
         logger.warning("Authentication failed: No user returned from get_current_active_user")
         # Note: We don't have request context here, so we'll create a minimal context
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
@@ -440,25 +456,17 @@ async def roll_character_stats(
     try:
         stats_roll_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["rate_limit_type"] = "stats_roll"
         raise LoggedHTTPException(
             status_code=429,
-            detail={
-                "message": str(e),
-                "retry_after": e.retry_after,
-                "rate_limit_info": stats_roll_limiter.get_rate_limit_info(current_user.id),
-            },
+            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
             context=context,
         ) from e
 
     stats_generator = StatsGenerator()
-    from ..exceptions import create_error_context
-
     try:
         if profession_id is not None:
             # Use profession-based stat rolling
@@ -509,29 +517,13 @@ async def roll_character_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/roll-stats")
-def roll_character_stats_endpoint(
-    request_data: RollStatsRequest,
-    current_user: User = Depends(get_current_user),
-):
-    """Endpoint wrapper bridging tests' direct-call signature and HTTP schema."""
-    return roll_character_stats(
-        request_data.method,
-        request_data.required_class,
-        10,
-        profession_id=request_data.profession_id,
-        current_user=current_user,
-        timeout_seconds=request_data.timeout_seconds,
-    )
-
-
 @player_router.post("/create-character")
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
+    request: Request,
     current_user: User = Depends(get_current_user),
-    request: Request = None,
     player_service: PlayerService = PlayerServiceDep,
-):
+) -> PlayerRead:
     """
     Create a new character with specific stats.
 
@@ -568,11 +560,7 @@ async def create_character_with_stats(
         context.metadata["rate_limit_type"] = "character_creation"
         raise LoggedHTTPException(
             status_code=429,
-            detail={
-                "message": str(e),
-                "retry_after": e.retry_after,
-                "rate_limit_info": character_creation_limiter.get_rate_limit_info(current_user.id),
-            },
+            detail="Rate limit exceeded",
             context=context,
         ) from e
 
@@ -594,7 +582,8 @@ async def create_character_with_stats(
             from ..config import get_config
 
             default_start_room = get_config().game.default_player_room
-        except Exception:
+        except (ImportError, AttributeError, ValueError) as e:
+            logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
             default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
 
         starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
@@ -612,11 +601,8 @@ async def create_character_with_stats(
         # TODO: Implement a proper way to track and mark invites as used
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        return {
-            "message": f"Character {request_data.name} created successfully",
-            "player": player.model_dump(),
-            "stats": stats_obj.model_dump(),
-        }
+        # player is already a PlayerRead from the service layer
+        return player
     except HTTPException:
         # Re-raise HTTPExceptions without modification
         raise
@@ -639,7 +625,7 @@ async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
-):
+) -> dict[str, Any]:
     """
     Validate character stats against class prerequisites.
 
@@ -669,8 +655,6 @@ async def validate_character_stats(
 
             return {"available_classes": available_classes, "stat_summary": stat_summary}
     except Exception as e:
-        from ..exceptions import create_error_context
-
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)

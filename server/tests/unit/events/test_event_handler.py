@@ -26,7 +26,8 @@ class TestEventHandlerTimestamps:
         handler = RealTimeEventHandler()
 
         # Create event with a deterministic timestamp input; handler doesn't use it directly
-        event = PlayerEnteredRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
+        event = PlayerEnteredRoom(player_id="p1", room_id="r1")
+        event.timestamp = datetime.now(UTC)
 
         message = handler._create_player_entered_message(event, "Alice")
         assert isinstance(message["timestamp"], str)
@@ -35,7 +36,8 @@ class TestEventHandlerTimestamps:
     def test_player_left_message_timestamp(self):
         handler = RealTimeEventHandler()
 
-        event = PlayerLeftRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
+        event = PlayerLeftRoom(player_id="p1", room_id="r1")
+        event.timestamp = datetime.now(UTC)
 
         message = handler._create_player_left_message(event, "Alice")
         assert isinstance(message["timestamp"], str)
@@ -46,8 +48,10 @@ class TestEventHandlerTimestamps:
         handler = RealTimeEventHandler()
 
         # Test multiple events to ensure consistent formatting
-        event1 = PlayerEnteredRoom(timestamp=datetime.now(UTC), event_type="", player_id="p1", room_id="r1")
-        event2 = PlayerLeftRoom(timestamp=datetime.now(UTC), event_type="", player_id="p2", room_id="r1")
+        event1 = PlayerEnteredRoom(player_id="p1", room_id="r1")
+        event1.timestamp = datetime.now(UTC)
+        event2 = PlayerLeftRoom(player_id="p2", room_id="r1")
+        event2.timestamp = datetime.now(UTC)
 
         message1 = handler._create_player_entered_message(event1, "Alice")
         message2 = handler._create_player_left_message(event2, "Bob")
@@ -144,7 +148,7 @@ class TestEventHandlerBroadcasting:
         event_handler.chat_logger.log_player_joined_room = Mock()
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -198,7 +202,7 @@ class TestEventHandlerBroadcasting:
         event_handler.chat_logger.log_player_left_room = Mock()
 
         # Create and publish event
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -233,9 +237,7 @@ class TestEventHandlerBroadcasting:
         mock_connection_manager._get_player.return_value = None
 
         # Create and publish event
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="nonexistent_player", room_id="test_room_001"
-        )
+        event = PlayerEnteredRoom(player_id="nonexistent_player", room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -263,9 +265,7 @@ class TestEventHandlerBroadcasting:
         mock_connection_manager.persistence.get_room.return_value = None
 
         # Create and publish event
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="test_player_123", room_id="nonexistent_room"
-        )
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="nonexistent_room")
 
         # Publish the event
         event_bus.publish(event)
@@ -279,7 +279,7 @@ class TestEventHandlerBroadcasting:
     def test_message_creation_formats(self, event_handler):
         """Test that message creation methods return properly formatted messages."""
         # Test player entered message
-        entered_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
         entered_message = event_handler._create_player_entered_message(entered_event, "TestPlayer")
 
         assert entered_message["event_type"] == "player_entered"
@@ -290,7 +290,7 @@ class TestEventHandlerBroadcasting:
         assert "sequence_number" in entered_message
 
         # Test player left message
-        left_event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player", room_id="test_room")
+        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
         left_message = event_handler._create_player_left_message(left_event, "TestPlayer")
 
         assert left_message["event_type"] == "player_left"

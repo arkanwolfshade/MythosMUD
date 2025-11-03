@@ -134,8 +134,9 @@ class CircuitBreaker:
             self._on_success()
             return result
 
-        except Exception:
+        except Exception as e:
             self._on_failure()
+            logger.error("Circuit breaker caught exception", error=str(e), error_type=type(e).__name__)
             raise
 
     def _on_success(self) -> None:

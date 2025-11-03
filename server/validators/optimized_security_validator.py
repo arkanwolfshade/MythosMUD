@@ -55,13 +55,17 @@ DANGEROUS_CHARS = set("<>\"'&")
 @lru_cache(maxsize=1000)
 def _cached_ftfy_fix(text: str) -> str:
     """Cached version of ftfy.fix_text for repeated inputs."""
-    return ftfy.fix_text(text)
+    result = ftfy.fix_text(text)
+    assert isinstance(result, str)
+    return result
 
 
 @lru_cache(maxsize=1000)
 def _cached_strip_ansi(text: str) -> str:
     """Cached version of strip_ansi for repeated inputs."""
-    return strip_ansi.strip_ansi(text)
+    result = strip_ansi.strip_ansi(text)
+    assert isinstance(result, str)
+    return result
 
 
 def optimized_sanitize_unicode_input(text: str) -> str:
@@ -442,7 +446,7 @@ def optimized_validate_security_comprehensive(value: str) -> str:
 
 
 # Performance benchmarking functions
-def benchmark_validation_performance():
+def benchmark_validation_performance() -> float:
     """Benchmark the performance of optimized vs original validation functions."""
     import time
 

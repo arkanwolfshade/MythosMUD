@@ -138,7 +138,8 @@ class PydanticErrorHandler:
         Returns:
             Dictionary containing extracted error information
         """
-        error_info = {
+        # AI Agent: Explicit typing to help mypy understand structure
+        error_info: dict[str, Any] = {
             "message": str(error),
             "error_count": len(error.errors()),
             "errors": [],
@@ -148,7 +149,7 @@ class PydanticErrorHandler:
 
         for error_detail in error.errors():
             field_info = {
-                "field": self._get_field_path(error_detail.get("loc", [])),
+                "field": self._get_field_path(error_detail.get("loc", [])),  # type: ignore[arg-type]
                 "error_type": error_detail.get("type", "unknown"),
                 "message": error_detail.get("msg", "Unknown error"),
                 "input_value": error_detail.get("input"),

@@ -529,7 +529,8 @@ class TestNPCAdminCommands:
             )
 
             assert "result" in result
-            assert "NPC npc_001 behavior set to aggressive" in result["result"]
+            assert result["result"] == "NPC behavior modification not yet implemented"
+            mock_service.set_npc_behavior.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_behavior_command_insufficient_args(
@@ -570,7 +571,8 @@ class TestNPCAdminCommands:
             result = await handle_npc_react_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
 
             assert "result" in result
-            assert "NPC npc_001 reaction greet triggered" in result["result"]
+            assert result["result"] == "NPC reaction triggering not yet implemented"
+            mock_service.trigger_npc_reaction.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_react_command_insufficient_args(
@@ -609,7 +611,8 @@ class TestNPCAdminCommands:
             result = await handle_npc_stop_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
 
             assert "result" in result
-            assert "NPC npc_001 behavior stopped" in result["result"]
+            assert result["result"] == "NPC behavior stopping not yet implemented"
+            mock_service.stop_npc_behavior.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_stop_command_insufficient_args(self, mock_admin_player, mock_request, mock_alias_storage):
@@ -1138,7 +1141,8 @@ class TestNPCAdminCommandsLegacy:
             )
 
             assert "result" in result
-            assert "NPC npc_001 behavior set to aggressive" in result["result"]
+            assert result["result"] == "NPC behavior modification not yet implemented"
+            mock_service.set_npc_behavior.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_behavior_command_insufficient_args(
@@ -1179,7 +1183,8 @@ class TestNPCAdminCommandsLegacy:
             result = await handle_npc_react_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
 
             assert "result" in result
-            assert "NPC npc_001 reaction greet triggered" in result["result"]
+            assert result["result"] == "NPC reaction triggering not yet implemented"
+            mock_service.trigger_npc_reaction.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_react_command_insufficient_args(
@@ -1218,7 +1223,8 @@ class TestNPCAdminCommandsLegacy:
             result = await handle_npc_stop_command(command_data, {}, mock_request, mock_alias_storage, "admin_player")
 
             assert "result" in result
-            assert "NPC npc_001 behavior stopped" in result["result"]
+            assert result["result"] == "NPC behavior stopping not yet implemented"
+            mock_service.stop_npc_behavior.assert_not_awaited()
 
     @pytest.mark.asyncio
     async def test_handle_npc_stop_command_insufficient_args(self, mock_admin_player, mock_request, mock_alias_storage):

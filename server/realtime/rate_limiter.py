@@ -21,7 +21,7 @@ class RateLimiter:
     windows and thresholds for different types of operations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the rate limiter with default settings."""
         # Connection rate limiting
         self.connection_attempts: dict[str, list[float]] = {}
@@ -84,7 +84,7 @@ class RateLimiter:
             "reset_time": current_time + self.connection_window if recent_attempts else 0,
         }
 
-    def cleanup_old_attempts(self, max_age_seconds: int = 3600):
+    def cleanup_old_attempts(self, max_age_seconds: int = 3600) -> None:
         """
         Clean up old rate limit attempts to prevent memory bloat.
 
@@ -111,10 +111,15 @@ class RateLimiter:
             if orphaned_players:
                 logger.debug("Cleaned up rate limit data", player_count=len(orphaned_players))
 
-        except Exception as e:
-            logger.error("Error cleaning up rate limit attempts", error=str(e))
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error cleaning up rate limit attempts",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
-    def cleanup_large_structures(self, max_entries: int = 1000):
+    def cleanup_large_structures(self, max_entries: int = 1000) -> None:
         """
         Clean up large data structures to prevent memory bloat.
 
@@ -127,13 +132,20 @@ class RateLimiter:
                     # Keep only the most recent attempts
                     self.connection_attempts[player_id] = attempts[-max_entries:]
                     logger.debug(
-                        f"Cleaned up large rate limit structure for player {player_id}: kept {max_entries} entries"
+                        "Cleaned up large rate limit structure for player",
+                        player_id=player_id,
+                        kept_entries=max_entries,
                     )
 
-        except Exception as e:
-            logger.error("Error cleaning up large rate limit structures", error=str(e))
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error cleaning up large rate limit structures",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
-    def remove_player_data(self, player_id: str):
+    def remove_player_data(self, player_id: str) -> None:
         """
         Remove all rate limit data for a specific player.
 
@@ -144,8 +156,14 @@ class RateLimiter:
             if player_id in self.connection_attempts:
                 del self.connection_attempts[player_id]
                 logger.debug("Removed rate limit data", player_id=player_id)
-        except Exception as e:
-            logger.error("Error removing rate limit data", player_id=player_id, error=str(e))
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error removing rate limit data",
+                player_id=player_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
 
     def get_stats(self) -> dict[str, Any]:
         """
@@ -174,6 +192,11 @@ class RateLimiter:
                 "max_attempts_per_player": self.max_connection_attempts,
                 "window_seconds": self.connection_window,
             }
-        except Exception as e:
-            logger.error("Error getting rate limiter stats", error=str(e))
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error getting rate limiter stats",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
             return {}

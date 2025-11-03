@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 class CharacterCreationService:
     """Service class for character creation and stats generation business operations."""
 
-    def __init__(self, player_service):
+    def __init__(self, player_service: Any) -> None:
         """Initialize the character creation service with a player service."""
         self.player_service = player_service
         self.stats_generator = StatsGenerator()

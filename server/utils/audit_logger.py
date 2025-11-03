@@ -374,38 +374,41 @@ class AuditLogger:
         """
         entries = self.get_recent_entries(hours=hours)
 
-        stats = {
+        # AI Agent: Explicit type annotations help mypy understand nested dict structure
+        event_types: dict[str, int] = {}
+        security_events_by_severity: dict[str, int] = {}
+        top_players: dict[str, int] = {}
+
+        stats: dict[str, Any] = {
             "total_entries": len(entries),
             "time_window_hours": hours,
-            "event_types": {},
-            "security_events_by_severity": {},
-            "top_players": {},
+            "event_types": event_types,
+            "security_events_by_severity": security_events_by_severity,
+            "top_players": top_players,
             "failed_commands": 0,
         }
 
         for entry in entries:
             # Count event types
             event_type = entry.get("event_type", "unknown")
-            stats["event_types"][event_type] = stats["event_types"].get(event_type, 0) + 1
+            event_types[event_type] = event_types.get(event_type, 0) + 1
 
             # Count security events by severity
             if event_type == "security_event":
                 severity = entry.get("severity", "unknown")
-                stats["security_events_by_severity"][severity] = (
-                    stats["security_events_by_severity"].get(severity, 0) + 1
-                )
+                security_events_by_severity[severity] = security_events_by_severity.get(severity, 0) + 1
 
             # Count player activity
             player = entry.get("player")
             if player:
-                stats["top_players"][player] = stats["top_players"].get(player, 0) + 1
+                top_players[player] = top_players.get(player, 0) + 1
 
             # Count failures
             if not entry.get("success", True):
-                stats["failed_commands"] += 1
+                stats["failed_commands"] = stats["failed_commands"] + 1
 
         # Sort top players
-        stats["top_players"] = dict(sorted(stats["top_players"].items(), key=lambda x: x[1], reverse=True)[:10])
+        stats["top_players"] = dict(sorted(top_players.items(), key=lambda x: x[1], reverse=True)[:10])
 
         return stats
 

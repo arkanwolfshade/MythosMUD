@@ -11,7 +11,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from server.api.monitoring import router
+from server.api.monitoring import monitoring_router
 from server.app.factory import create_app
 from server.game.movement_monitor import reset_movement_monitor
 
@@ -23,7 +23,7 @@ class TestMonitoringAPIEndpoints:
     def app(self):
         """Create a FastAPI app with monitoring router."""
         app = FastAPI()
-        app.include_router(router)
+        app.include_router(monitoring_router)
         return app
 
     @pytest.fixture

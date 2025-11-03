@@ -8,6 +8,8 @@ module to improve coverage from 55% to 80%+.
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
+import pytest
+
 from server.events.event_types import NPCAttacked
 from server.npc.combat_integration import NPCCombatIntegration
 
@@ -190,7 +192,7 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics.damage_player.assert_not_called()
 
     def test_apply_combat_effects_exception_handling(self):
-        """Test applying combat effects handles exceptions gracefully."""
+        """Test applying combat effects re-raises exceptions (CRITICAL FIX)."""
         target_id = str(uuid4())
         damage = 10
         damage_type = "physical"
@@ -199,9 +201,10 @@ class TestNPCCombatIntegrationComprehensive:
         # Mock exception
         self.persistence.get_player.side_effect = Exception("Database error")
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
-
-        assert result is False
+        # CRITICAL FIX: Exceptions should be re-raised, not silently caught
+        # This ensures errors are visible in logs and monitoring
+        with pytest.raises(Exception, match="Database error"):
+            self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
     def test_handle_npc_attack_with_player_target(self):
         """Test handling NPC attack on player target."""

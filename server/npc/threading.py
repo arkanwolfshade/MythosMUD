@@ -272,10 +272,6 @@ class NPCThreadManager:
             logger.error("NPC thread manager is not running")
             return False
 
-        if npc_definition is None:
-            logger.error("NPC definition is required")
-            return False
-
         try:
             async with self._lock:
                 if npc_id in self.active_threads:
@@ -568,7 +564,7 @@ class NPCLifecycleManager:
                     return False
 
                 # Track the active NPC
-                self.active_npcs[npc_definition.id] = {
+                self.active_npcs[int(npc_definition.id)] = {
                     "npc_id": npc_id,
                     "definition": npc_definition,
                     "spawned_at": time.time(),

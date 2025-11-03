@@ -41,14 +41,12 @@ def format_player_location(room_id: str) -> str:
     Returns:
         str: Formatted location string
     """
-    try:
-        # Ensure room_id is a string
-        if not isinstance(room_id, str):
-            logger.warning(
-                "format_player_location received non-string room_id", room_id_type=type(room_id), room_id=room_id
-            )
-            return str(room_id)
+    # Defensive check: ensure room_id is a valid string
+    if not room_id or not isinstance(room_id, str):
+        logger.warning("Invalid room_id provided", room_id=room_id, room_id_type=type(room_id).__name__)
+        return "Unknown Location"
 
+    try:
         # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
         parts = room_id.split("_")
         if len(parts) >= 4:
@@ -66,9 +64,10 @@ def format_player_location(room_id: str) -> str:
         else:
             # Fallback for unexpected format
             return room_id.replace("_", " ").title()
-    except Exception:
-        # Fallback for any parsing errors
-        return room_id.replace("_", " ").title()
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error parsing room ID", room_id=room_id, error=str(e), error_type=type(e).__name__)
+        # Safe fallback that doesn't depend on room_id being a valid string
+        return "Unknown Location"
 
 
 def format_player_entry(player) -> str:
@@ -99,7 +98,7 @@ def format_player_entry(player) -> str:
 
 
 async def handle_who_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the who command for listing online players.
@@ -166,7 +165,7 @@ async def handle_who_command(
                     else:
                         last_active = player.last_active
                         # Ensure both datetimes are timezone-aware for comparison
-                        if last_active.tzinfo is None:
+                        if last_active and last_active.tzinfo is None:
                             # Make naive datetime timezone-aware
                             last_active = last_active.replace(tzinfo=UTC)
 
@@ -243,13 +242,13 @@ async def handle_who_command(
 
 
 async def handle_quit_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the quit command for disconnecting from the game.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -258,6 +257,9 @@ async def handle_quit_command(
     Returns:
         dict: Quit command result
     """
+    # Extract args from command_data (not used in this command)
+    _args: list = command_data.get("args", [])
+
     logger.debug("Processing quit command")
 
     # Update last active timestamp before quitting
@@ -273,16 +275,16 @@ async def handle_quit_command(
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active")
-        except Exception:
-            logger.error("Error updating last active on quit")
+        except (OSError, ValueError, TypeError, Exception) as e:
+            logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
 
     logger.info("Player quitting")
     return {"result": "Goodbye! You have been disconnected from the game."}
 
 
 async def handle_logout_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
-) -> dict[str, str]:
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, Any]:
     """
     Handle the logout command for cleanly disconnecting from the game.
 
@@ -293,7 +295,7 @@ async def handle_logout_command(
     - Returning success confirmation
 
     Args:
-        args: Command arguments (ignored)
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -302,6 +304,9 @@ async def handle_logout_command(
     Returns:
         dict: Logout command result with success status and metadata
     """
+    # Extract args from command_data (not used in this command)
+    _args: list = command_data.get("args", [])
+
     logger.debug("Processing logout command")
 
     try:
@@ -318,8 +323,8 @@ async def handle_logout_command(
                     player.last_active = datetime.now(UTC)
                     persistence.save_player(player)
                     logger.info("Player logout - updated last active")
-            except Exception:
-                logger.error("Error updating last active on logout")
+            except (OSError, ValueError, TypeError) as e:
+                logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
 
         # Disconnect player from all connections
         try:
@@ -331,8 +336,8 @@ async def handle_logout_command(
                 logger.info("Player disconnected from all connections")
             else:
                 logger.warning("Connection manager not available for logout")
-        except Exception:
-            logger.error("Error disconnecting player")
+        except (AttributeError, RuntimeError) as e:
+            logger.error("Error disconnecting player", error=str(e), error_type=type(e).__name__)
 
         logger.info("Player logged out successfully")
 
@@ -343,8 +348,8 @@ async def handle_logout_command(
             "message": "You have been logged out and disconnected from the game.",
         }
 
-    except Exception:
-        logger.error("Unexpected error during logout", exc_info=True)
+    except Exception as e:
+        logger.error("Unexpected error during logout", error=str(e), error_type=type(e).__name__, exc_info=True)
 
         # Even if there's an error, we should still indicate logout success
         # The client will handle the cleanup
@@ -357,13 +362,13 @@ async def handle_logout_command(
 
 
 async def handle_status_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the status command for showing player status.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -372,6 +377,9 @@ async def handle_status_command(
     Returns:
         dict: Status command result
     """
+    # Extract args from command_data (not used in this command)
+    _args: list = command_data.get("args", [])
+
     logger.debug("Processing status command")
 
     app = request.app if request else None
@@ -469,13 +477,13 @@ async def handle_status_command(
 
 
 async def handle_inventory_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the inventory command for showing player inventory.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -484,6 +492,9 @@ async def handle_inventory_command(
     Returns:
         dict: Inventory command result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing inventory command", player=player_name)
 
     app = request.app if request else None
@@ -529,7 +540,7 @@ async def handle_inventory_command(
 
 
 async def handle_emote_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the emote command for performing emotes.

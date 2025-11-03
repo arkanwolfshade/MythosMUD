@@ -8,12 +8,58 @@ As noted in the restricted archives: "Explicit configuration prevents
 the seepage of secrets into unintended dimensions."
 """
 
-from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings
+import json
+import os
+from typing import Any
+
+from pydantic import AliasChoices, Field, field_validator, model_validator
+from pydantic_settings import BaseSettings, SettingsError
 
 from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+def _safe_json_loads(value: Any) -> Any:
+    """Safely decode JSON for environment-sourced values."""
+
+    if value in (None, "", b""):
+        return ""
+
+    try:
+        return json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return value
+
+
+def _parse_env_list(candidate: Any) -> list[str]:
+    """Parse a string from the environment as JSON list or CSV."""
+    if candidate is None:
+        return []
+    s = str(candidate).strip()
+    if not s:
+        return []
+    try:
+        loaded = json.loads(s)
+        if isinstance(loaded, list):
+            return [str(item).strip() for item in loaded if str(item).strip()]
+    except json.JSONDecodeError:
+        pass
+    return [item.strip() for item in s.split(",") if item.strip()]
+
+
+def _default_cors_origins() -> list[str]:
+    """Derive default CORS origins with environment taking precedence."""
+    raw = (
+        os.getenv("CORS_ALLOW_ORIGINS")
+        or os.getenv("CORS_ORIGINS")
+        or os.getenv("CORS_ALLOWED_ORIGINS")
+        or os.getenv("ALLOWED_ORIGINS")
+    )
+    parsed = _parse_env_list(raw) if raw is not None else []
+    if parsed:
+        return parsed
+    return ["http://localhost:5173", "http://127.0.0.1:5173"]
 
 
 class ServerConfig(BaseSettings):
@@ -339,6 +385,261 @@ class ChatConfig(BaseSettings):
     model_config = {"env_prefix": "CHAT_", "case_sensitive": False, "extra": "ignore"}
 
 
+class CORSConfig(BaseSettings):
+    """Cross-origin resource sharing configuration."""
+
+    allow_origins: list[str] = Field(
+        default_factory=_default_cors_origins,
+        validation_alias=AliasChoices("allow_origins", "origins", "allowed_origins"),
+        description="Origins permitted to access the MythosMUD API",
+    )
+    allow_credentials: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("allow_credentials", "credentials"),
+        description="Whether credentialed requests are accepted",
+    )
+    allow_methods: list[str] = Field(
+        default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        validation_alias=AliasChoices("allow_methods", "methods"),
+        description="HTTP methods permitted by CORS responses",
+    )
+    allow_headers: list[str] = Field(
+        default_factory=lambda: [
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With",
+            "Accept",
+            "Accept-Language",
+        ],
+        validation_alias=AliasChoices("allow_headers", "headers"),
+        description="Request headers permitted by CORS responses",
+    )
+    expose_headers: list[str] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("expose_headers"),
+        description="Response headers exposed to browser clients",
+    )
+    max_age: int = Field(
+        default=600,
+        validation_alias=AliasChoices("max_age"),
+        description="Seconds browsers may cache CORS preflight responses",
+    )
+
+    model_config = {
+        "env_prefix": "CORS_",
+        "case_sensitive": False,
+        "extra": "ignore",
+        "json_loads": _safe_json_loads,  # type: ignore[typeddict-unknown-key]
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        # Initialize with standard sources
+        super().__init__(**kwargs)
+        # Post-init: ensure environment variables override defaults reliably
+        env_raw = (
+            os.getenv("CORS_ALLOW_ORIGINS")
+            or os.getenv("CORS_ORIGINS")
+            or os.getenv("CORS_ALLOWED_ORIGINS")
+            or os.getenv("ALLOWED_ORIGINS")
+        )
+        if env_raw is not None and str(env_raw).strip() != "":
+            # Override allow_origins with parsed environment value
+            parsed = self._parse_csv(env_raw, allow_empty=False)
+            try:
+                object.__setattr__(self, "allow_origins", parsed)
+            except Exception:
+                # Fallback assignment if model is mutable
+                self.allow_origins = parsed
+
+    @model_validator(mode="after")
+    def _apply_env_overrides(self) -> "CORSConfig":
+        """As a last step, ensure env-specified origins take precedence."""
+        env_raw = (
+            os.getenv("CORS_ALLOW_ORIGINS")
+            or os.getenv("CORS_ORIGINS")
+            or os.getenv("CORS_ALLOWED_ORIGINS")
+            or os.getenv("ALLOWED_ORIGINS")
+        )
+        if env_raw is not None and str(env_raw).strip() != "":
+            parsed = self._parse_csv(env_raw, allow_empty=False)
+            try:
+                object.__setattr__(self, "allow_origins", parsed)
+            except Exception:
+                self.allow_origins = parsed
+        return self
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+        **_kwargs,
+    ):
+        def legacy_cors_normalizer():
+            """Normalize legacy CORS origins from CSV to list before env parsing.
+
+            This ensures providers do not attempt JSON decoding on comma-separated strings.
+            """
+            raw_origins = (
+                os.getenv("CORS_ALLOW_ORIGINS")
+                or os.getenv("CORS_ORIGINS")
+                or os.getenv("CORS_ALLOWED_ORIGINS")
+                or os.getenv("ALLOWED_ORIGINS")
+            )
+
+            if not raw_origins:
+                return {}
+
+            candidate = raw_origins.strip()
+            if candidate.startswith("[") and candidate.endswith("]"):
+                # Already JSON-style; let normal env source handle it
+                return {}
+
+            items = [item.strip() for item in candidate.split(",") if item.strip()]
+            if not items:
+                return {}
+
+            return {"allow_origins": items}
+
+        def manual_env_source() -> dict[str, Any]:
+            """Manually parse environment for CORS fields to avoid JSON decoding issues."""
+            state: dict[str, Any] = {}
+
+            cors_env = os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS") or os.getenv("CORS_ALLOWED_ORIGINS")
+            if cors_env is not None:
+                state["allow_origins"] = cls._parse_csv(cors_env, allow_empty=False)
+            else:
+                legacy = os.getenv("ALLOWED_ORIGINS")
+                if legacy is not None:
+                    state["allow_origins"] = cls._parse_csv(legacy, allow_empty=False)
+
+            raw_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
+            if raw_methods is not None:
+                state["allow_methods"] = [m.upper() for m in cls._parse_csv(raw_methods, allow_empty=False)]
+
+            raw_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
+            if raw_headers is not None:
+                state["allow_headers"] = cls._parse_csv(raw_headers, allow_empty=False)
+
+            raw_max_age = os.getenv("CORS_MAX_AGE")
+            if raw_max_age is not None and raw_max_age.isdigit():
+                state["max_age"] = int(raw_max_age)
+
+            raw_creds = os.getenv("CORS_ALLOW_CREDENTIALS")
+            if raw_creds is not None:
+                state["allow_credentials"] = str(raw_creds).strip().lower() in {"1", "true", "yes", "on"}
+
+            return state
+
+        return init_settings, manual_env_source, dotenv_settings, file_secret_settings
+
+    @staticmethod
+    def _parse_csv(value: object, allow_empty: bool) -> list[str]:
+        """Parse comma separated strings or lists into a cleaned list of strings."""
+        if value is None:
+            if allow_empty:
+                return []
+            raise ValueError("At least one entry must be provided")
+
+        if isinstance(value, list):
+            cleaned = [str(item).strip() for item in value if str(item).strip()]
+            if not cleaned and not allow_empty:
+                raise ValueError("At least one entry must be provided")
+            return cleaned
+
+        if isinstance(value, str):
+            candidate = value.strip()
+            if candidate.startswith("[") and candidate.endswith("]"):
+                try:
+                    loaded = json.loads(candidate)
+                    if isinstance(loaded, list):
+                        cleaned = [str(item).strip() for item in loaded if str(item).strip()]
+                        if not cleaned and not allow_empty:
+                            raise ValueError("At least one entry must be provided")
+                        return cleaned
+                except json.JSONDecodeError:
+                    pass
+
+            items = [item.strip() for item in candidate.split(",") if item.strip()]
+            if not items and not allow_empty:
+                raise ValueError("At least one entry must be provided")
+            return items
+
+        raise ValueError("Value must be a list of strings or a comma-separated string")
+
+    @field_validator("allow_origins", mode="before")
+    @classmethod
+    def parse_allow_origins(cls, value: object) -> list[str]:
+        """Parse allowed origins with environment taking precedence over defaults."""
+        # Prefer environment variables first (CORS_* then ALLOWED_ORIGINS)
+        env_raw = (
+            os.getenv("CORS_ALLOW_ORIGINS")
+            or os.getenv("CORS_ORIGINS")
+            or os.getenv("CORS_ALLOWED_ORIGINS")
+            or os.getenv("ALLOWED_ORIGINS")
+        )
+        if env_raw is not None and str(env_raw).strip() != "":
+            return cls._parse_csv(env_raw, allow_empty=False)
+
+        # Fall back to provided value (from init or defaults)
+        if isinstance(value, list):
+            return cls._parse_csv(value, allow_empty=False)
+        if isinstance(value, str) and value.strip() != "":
+            return cls._parse_csv(value, allow_empty=False)
+
+        # Final fallback to the model default
+        default_factory = cls.model_fields["allow_origins"].default_factory
+        defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]
+        if not defaults:
+            raise ValueError("At least one CORS origin must be provided")
+        return defaults
+
+    @field_validator("allow_methods", mode="before")
+    @classmethod
+    def parse_allow_methods(cls, value: object) -> list[str]:
+        # Prefer explicit env overrides when present to ensure reliable behavior
+        env_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
+        if env_methods:
+            methods = cls._parse_csv(env_methods, allow_empty=False)
+        else:
+            methods = cls._parse_csv(value, allow_empty=False)
+        return [method.upper() for method in methods]
+
+    @field_validator("allow_headers", mode="before")
+    @classmethod
+    def parse_allow_headers(cls, value: object) -> list[str]:
+        env_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
+        if env_headers:
+            return cls._parse_csv(env_headers, allow_empty=False)
+        return cls._parse_csv(value, allow_empty=False)
+
+    @field_validator("max_age", mode="before")
+    @classmethod
+    def parse_max_age(cls, value: object) -> int:
+        env_max_age = os.getenv("CORS_MAX_AGE")
+        if env_max_age is not None and env_max_age != "":
+            try:
+                return int(env_max_age)
+            except ValueError:
+                pass
+        return int(value) if isinstance(value, (int, str)) and str(value).isdigit() else 600
+
+    @field_validator("expose_headers", mode="before")
+    @classmethod
+    def parse_expose_headers(cls, value: object) -> list[str]:
+        return cls._parse_csv(value, allow_empty=True)
+
+    @field_validator("max_age")
+    @classmethod
+    def validate_max_age(cls, value: int) -> int:
+        if value < 0:
+            raise ValueError("max_age must be non-negative")
+        return value
+
+
 class PlayerStatsConfig(BaseSettings):
     """Default player statistics configuration."""
 
@@ -402,20 +703,28 @@ class AppConfig(BaseSettings):
     """
 
     # Sub-configurations
-    server: ServerConfig = Field(default_factory=ServerConfig)
-    database: DatabaseConfig = Field(default_factory=DatabaseConfig)
+    server: ServerConfig = Field(default_factory=ServerConfig)  # type: ignore[arg-type]
+    database: DatabaseConfig = Field(default_factory=DatabaseConfig)  # type: ignore[arg-type]
     nats: NATSConfig = Field(default_factory=NATSConfig)
-    security: SecurityConfig = Field(default_factory=SecurityConfig)
-    logging: LoggingConfig = Field(default_factory=LoggingConfig)
-    game: GameConfig = Field(default_factory=GameConfig)
+    security: SecurityConfig = Field(default_factory=SecurityConfig)  # type: ignore[arg-type]
+    logging: LoggingConfig = Field(default_factory=LoggingConfig)  # type: ignore[arg-type]
+    game: GameConfig = Field(default_factory=GameConfig)  # type: ignore[arg-type]
     chat: ChatConfig = Field(default_factory=ChatConfig)
+    cors: CORSConfig = Field(default_factory=CORSConfig)
     default_player_stats: PlayerStatsConfig = Field(default_factory=PlayerStatsConfig)
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "case_sensitive": False, "extra": "ignore"}
 
     def __init__(self, **kwargs):
         """Initialize configuration and set environment variables for legacy compatibility."""
-        super().__init__(**kwargs)
+        try:
+            super().__init__(**kwargs)
+        except SettingsError as error:
+            if "allow_origins" in str(error):
+                self._sanitize_environment_for_nested_configs()
+                super().__init__(**kwargs)
+            else:
+                raise
 
         # Set DATABASE_URL environment variable for legacy code that reads it directly
         import os
@@ -428,6 +737,26 @@ class AppConfig(BaseSettings):
 
         if self.game.aliases_dir:
             os.environ["ALIASES_DIR"] = self.game.aliases_dir
+
+        # Avoid mutating environment for CORS values to prevent cross-test leakage
+
+    @staticmethod
+    def _sanitize_environment_for_nested_configs() -> None:
+        """Normalize environment variables so nested configs can parse them reliably."""
+
+        raw_origins = (
+            os.getenv("CORS_ALLOW_ORIGINS")
+            or os.getenv("CORS_ORIGINS")
+            or os.getenv("CORS_ALLOWED_ORIGINS")
+            or os.getenv("ALLOWED_ORIGINS")
+        )
+        if raw_origins and not raw_origins.strip().startswith("["):
+            parsed = [item.strip() for item in raw_origins.split(",") if item.strip()]
+            if parsed:
+                serialized = json.dumps(parsed)
+                os.environ["CORS_ALLOW_ORIGINS"] = serialized
+                os.environ["CORS_ORIGINS"] = serialized
+                os.environ["CORS_ALLOWED_ORIGINS"] = serialized
 
     def to_legacy_dict(self) -> dict:
         """
@@ -503,6 +832,15 @@ class AppConfig(BaseSettings):
                     "retention_days": self.chat.message_retention_days,
                     "max_messages_per_channel": self.chat.max_messages_per_channel,
                 },
+            },
+            # CORS configuration
+            "cors": {
+                "allow_origins": self.cors.allow_origins,
+                "allow_credentials": self.cors.allow_credentials,
+                "allow_methods": self.cors.allow_methods,
+                "allow_headers": self.cors.allow_headers,
+                "expose_headers": self.cors.expose_headers,
+                "max_age": self.cors.max_age,
             },
             # Default player stats
             "default_player_stats": self.default_player_stats.to_dict(),

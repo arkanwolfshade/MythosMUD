@@ -8,8 +8,10 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import threading
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
 
 from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
@@ -27,107 +29,252 @@ from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
-# LAZY INITIALIZATION: These are initialized on first use, not at import time
-_engine: AsyncEngine | None = None
-_async_session_maker: async_sessionmaker | None = None
+
+# Backward-compatibility override for tests expecting module-level URL
+# Tests may patch `server.database._database_url` to control path resolution.
 _database_url: str | None = None
 
 
-def _initialize_database() -> None:
+class DatabaseManager:
     """
-    Initialize database engine and session maker from configuration.
+    Thread-safe singleton for database management.
 
-    CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
-
-    Raises:
-        ValidationError: If configuration is missing or invalid
+    Manages database engine, session maker, and URL with proper
+    initialization and thread safety.
     """
-    global _engine, _async_session_maker, _database_url
 
-    # Avoid re-initialization
-    if _engine is not None:
-        return
+    _instance: "DatabaseManager | None" = None
+    _lock: threading.Lock = threading.Lock()
 
-    context = create_error_context()
-    context.metadata["operation"] = "database_initialization"
+    def __init__(self) -> None:
+        """Initialize the database manager."""
+        if DatabaseManager._instance is not None:
+            raise RuntimeError("Use DatabaseManager.get_instance()")
 
-    # Import config here to avoid circular imports
-    try:
-        from .config import get_config
-    except ImportError as e:
-        log_and_raise(
-            ValidationError,
-            "Failed to import config - configuration system unavailable",
-            context=context,
-            details={"import_error": str(e)},
-            user_friendly="Critical system error: configuration system not available",
+        self.engine: AsyncEngine | None = None
+        self.session_maker: async_sessionmaker | None = None
+        self.database_url: str | None = None
+        self._initialized: bool = False
+
+    @classmethod
+    def get_instance(cls) -> "DatabaseManager":
+        """Get the singleton instance."""
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
+        return cls._instance
+
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset singleton for testing."""
+        with cls._lock:
+            cls._instance = None
+
+    def _initialize_database(self) -> None:
+        """
+        Initialize database engine and session maker from configuration.
+
+        CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
+
+        Raises:
+            ValidationError: If configuration is missing or invalid
+        """
+        # Avoid re-initialization
+        if self._initialized:
+            return
+
+        context = create_error_context()
+        context.metadata["operation"] = "database_initialization"
+
+        # Import config here to avoid circular imports
+        try:
+            from .config import get_config
+        except ImportError as e:
+            log_and_raise(
+                ValidationError,
+                "Failed to import config - configuration system unavailable",
+                context=context,
+                details={"import_error": str(e)},
+                user_friendly="Critical system error: configuration system not available",
+            )
+
+        # Allow test override via module-level _database_url
+        global _database_url
+        if _database_url is not None:
+            database_url = _database_url
+        else:
+            # Load configuration - this will FAIL LOUDLY with ValidationError if required fields missing
+            try:
+                config = get_config()
+                database_url = config.database.url
+            except Exception as e:
+                log_and_raise(
+                    ValidationError,
+                    f"Failed to load configuration: {e}",
+                    context=context,
+                    details={"config_error": str(e)},
+                    user_friendly="Database cannot be initialized: configuration not loaded or invalid",
+                )
+
+        # Handle database_url - could be a path or a full SQLite URL
+        if database_url.startswith("sqlite"):
+            # Already a full SQLite URL (from environment variable)
+            self.database_url = database_url
+            logger.info("Using database URL from environment", database_url=self.database_url)
+        else:
+            # It's a path from YAML - convert to absolute path and construct SQLite URL
+            db_path_obj = Path(database_url).resolve()
+            self.database_url = f"sqlite+aiosqlite:///{db_path_obj}"
+            logger.info("Database URL configured from YAML", database_url=self.database_url, db_path=str(db_path_obj))
+
+        # Determine pool class based on database URL
+        # Use NullPool for tests to prevent SQLite file locking issues
+        pool_class = NullPool if "test" in self.database_url else StaticPool
+
+        # Create async engine
+        self.engine = create_async_engine(
+            self.database_url,
+            echo=False,
+            poolclass=pool_class,
+            pool_pre_ping=True,
+            connect_args={
+                "check_same_thread": False,
+                "timeout": 30,
+            },
         )
 
-    # Load configuration - this will FAIL LOUDLY with ValidationError if required fields missing
-    try:
-        config = get_config()
-        database_url = config.database.url
-    except Exception as e:
-        log_and_raise(
-            ValidationError,
-            f"Failed to load configuration: {e}",
-            context=context,
-            details={"config_error": str(e)},
-            user_friendly="Database cannot be initialized: configuration not loaded or invalid",
+        # Enable foreign key constraints for SQLite
+        @event.listens_for(self.engine.sync_engine, "connect")
+        def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
+            """Enable foreign key constraints for SQLite connections."""
+            conn_str = str(dbapi_connection)
+            conn_type = str(type(dbapi_connection))
+
+            # Check both the connection string and type for sqlite (case-insensitive)
+            if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
+                cursor = dbapi_connection.cursor()
+                cursor.execute("PRAGMA foreign_keys=ON")
+                cursor.close()
+
+        logger.info("Database engine created", pool_class=pool_class.__name__)
+
+        # Create async session maker
+        self.session_maker = async_sessionmaker(
+            self.engine,
+            class_=AsyncSession,
+            expire_on_commit=False,
+            autocommit=False,
+            autoflush=False,
         )
 
-    # Handle database_url - could be a path or a full SQLite URL
-    if database_url.startswith("sqlite"):
-        # Already a full SQLite URL (from environment variable)
-        _database_url = database_url
-        logger.info("Using database URL from environment", database_url=_database_url)
-    else:
-        # It's a path from YAML - convert to absolute path and construct SQLite URL
-        db_path_obj = Path(database_url).resolve()
-        _database_url = f"sqlite+aiosqlite:///{db_path_obj}"
-        logger.info("Database URL configured from YAML", database_url=_database_url, db_path=str(db_path_obj))
+        logger.info("Database session maker created")
+        self._initialized = True
 
-    # Determine pool class based on database URL
-    # Use NullPool for tests to prevent SQLite file locking issues
-    pool_class = NullPool if "test" in _database_url else StaticPool
+    def get_engine(self) -> AsyncEngine:
+        """
+        Get the database engine, initializing if necessary.
 
-    # Create async engine
-    _engine = create_async_engine(
-        _database_url,
-        echo=False,
-        poolclass=pool_class,
-        pool_pre_ping=True,
-        connect_args={
-            "check_same_thread": False,
-            "timeout": 30,
-        },
-    )
+        Returns:
+            AsyncEngine: The database engine (never None after initialization)
 
-    # Enable foreign key constraints for SQLite
-    @event.listens_for(_engine.sync_engine, "connect")
-    def set_sqlite_pragma(dbapi_connection, connection_record):
-        """Enable foreign key constraints for SQLite connections."""
-        conn_str = str(dbapi_connection)
-        conn_type = str(type(dbapi_connection))
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        assert self.engine is not None, "Database engine not initialized"
+        return self.engine
 
-        # Check both the connection string and type for sqlite (case-insensitive)
-        if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-            cursor = dbapi_connection.cursor()
-            cursor.execute("PRAGMA foreign_keys=ON")
-            cursor.close()
+    def get_session_maker(self) -> async_sessionmaker:
+        """
+        Get the async session maker, initializing if necessary.
 
-    logger.info("Database engine created", pool_class=pool_class.__name__)
+        Returns:
+            async_sessionmaker: The session maker (never None after initialization)
 
-    # Create async session maker
-    _async_session_maker = async_sessionmaker(
-        _engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-        autocommit=False,
-        autoflush=False,
-    )
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        assert self.session_maker is not None, "Session maker not initialized"
+        return self.session_maker
 
-    logger.info("Database session maker created")
+    def get_database_url(self) -> str | None:
+        """
+        Get the database URL, initializing if necessary.
+
+        Returns:
+            str: The database URL
+
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        return self.database_url
+
+    def get_database_path(self) -> Path:
+        """
+        Get the database file path.
+
+        Returns:
+            Path: Path to the database file
+        """
+        database_url = self.get_database_url()
+
+        if database_url is None:
+            context = create_error_context()
+            context.metadata["operation"] = "get_database_path"
+            log_and_raise(
+                ValidationError,
+                "Database URL is None",
+                context=context,
+                user_friendly="Database not initialized",
+            )
+            # This should never be reached due to log_and_raise above
+            raise RuntimeError("Unreachable code")
+
+        if database_url.startswith("sqlite+aiosqlite:///"):
+            db_path = database_url.replace("sqlite+aiosqlite:///", "")
+            return Path(db_path)
+        else:
+            context = create_error_context()
+            context.metadata["operation"] = "get_database_path"
+            context.metadata["database_url"] = database_url
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {database_url}",
+                context=context,
+                details={"database_url": database_url},
+                user_friendly="Unsupported database configuration",
+            )
+            # This should never be reached due to log_and_raise above
+            raise RuntimeError("Unreachable code")
+
+    async def close(self) -> None:
+        """Close database connections."""
+        if self.engine is not None:
+            await self.engine.dispose()
+            logger.info("Database connections closed")
+
+
+# Global database manager instance
+_db_manager: DatabaseManager | None = None
+
+
+def get_database_manager() -> DatabaseManager:
+    """
+    Get the database manager singleton.
+
+    Returns:
+        DatabaseManager: The database manager instance
+    """
+    global _db_manager
+    if _db_manager is None:
+        _db_manager = DatabaseManager.get_instance()
+    return _db_manager
 
 
 def get_engine() -> AsyncEngine:
@@ -135,14 +282,12 @@ def get_engine() -> AsyncEngine:
     Get the database engine, initializing if necessary.
 
     Returns:
-        AsyncEngine: The database engine
+        AsyncEngine: The database engine (never None)
 
     Raises:
         ValidationError: If database cannot be initialized
     """
-    if _engine is None:
-        _initialize_database()
-    return _engine
+    return get_database_manager().get_engine()
 
 
 def get_session_maker() -> async_sessionmaker:
@@ -150,14 +295,12 @@ def get_session_maker() -> async_sessionmaker:
     Get the async session maker, initializing if necessary.
 
     Returns:
-        async_sessionmaker: The session maker
+        async_sessionmaker: The session maker (never None)
 
     Raises:
         ValidationError: If database cannot be initialized
     """
-    if _async_session_maker is None:
-        _initialize_database()
-    return _async_session_maker
+    return get_database_manager().get_session_maker()
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -197,7 +340,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         # Session is automatically closed by the async context manager
 
 
-async def init_db():
+async def init_db() -> None:
     """
     Initialize database with all tables.
 
@@ -250,15 +393,17 @@ async def init_db():
         raise
 
 
-async def close_db():
+async def close_db() -> None:
     """Close database connections."""
     context = create_error_context()
     context.metadata["operation"] = "close_db"
 
     logger.info("Closing database connections")
     try:
-        engine = get_engine()  # Initialize if needed
-        await engine.dispose()
+        db_manager = get_database_manager()
+        # Ensure engine is initialized so dispose is meaningful
+        _ = db_manager.get_engine()
+        await db_manager.close()
         logger.info("Database connections closed")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
@@ -269,7 +414,8 @@ async def close_db():
             error=str(e),
             error_type=type(e).__name__,
         )
-        raise
+        # Tests expect a RuntimeError on failure here
+        raise RuntimeError("Failed to close database connections") from e
 
 
 def get_database_path() -> Path:
@@ -279,27 +425,20 @@ def get_database_path() -> Path:
     Returns:
         Path: Path to the database file
     """
-    # Initialize database if needed
-    if _database_url is None:
-        _initialize_database()
+    # Test override path handling without requiring initialization
+    if _database_url is not None:
+        url = _database_url
+        if not url:
+            raise ValidationError("Database URL is None")
+        if url.startswith("sqlite+aiosqlite:///"):
+            return Path(url.replace("sqlite+aiosqlite:///", ""))
+        # Unsupported URL schemes should raise
+        raise ValidationError(f"Unsupported database URL: {url}")
 
-    if _database_url.startswith("sqlite+aiosqlite:///"):
-        db_path = _database_url.replace("sqlite+aiosqlite:///", "")
-        return Path(db_path)
-    else:
-        context = create_error_context()
-        context.metadata["operation"] = "get_database_path"
-        context.metadata["database_url"] = _database_url
-        log_and_raise(
-            ValidationError,
-            f"Unsupported database URL: {_database_url}",
-            context=context,
-            details={"database_url": _database_url},
-            user_friendly="Unsupported database configuration",
-        )
+    return get_database_manager().get_database_path()
 
 
-def ensure_database_directory():
+def ensure_database_directory() -> None:
     """Ensure database directory exists."""
     db_path = get_database_path()
     db_path.parent.mkdir(parents=True, exist_ok=True)

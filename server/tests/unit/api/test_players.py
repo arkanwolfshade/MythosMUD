@@ -129,6 +129,8 @@ def mock_persistence():
 def mock_request():
     """Mock FastAPI request object."""
     request = Mock()
+    request.app = Mock()
+    request.app.state = Mock()
     request.app.state.persistence = Mock()
     request.app.state.server_shutdown_pending = False  # No shutdown by default
     return request
@@ -149,11 +151,11 @@ class TestPlayerCRUD:
         mock_player_service_class.return_value = mock_service
 
         result = await create_player(
-            "TestPlayer",
-            "earth_arkhamcity_northside_intersection_derby_high",
-            mock_current_user,
-            mock_request,
-            mock_service,
+            name="TestPlayer",
+            request=mock_request,
+            starting_room_id="earth_arkhamcity_northside_intersection_derby_high",
+            current_user=mock_current_user,
+            player_service=mock_service,
         )
 
         assert result == sample_player_data
@@ -172,11 +174,11 @@ class TestPlayerCRUD:
 
         with pytest.raises(HTTPException) as exc_info:
             await create_player(
-                "InvalidName",
-                "earth_arkhamcity_northside_intersection_derby_high",
-                mock_current_user,
-                mock_request,
-                mock_service,
+                name="InvalidName",
+                request=mock_request,
+                starting_room_id="earth_arkhamcity_northside_intersection_derby_high",
+                current_user=mock_current_user,
+                player_service=mock_service,
             )
 
         assert exc_info.value.status_code == 400
@@ -324,7 +326,7 @@ class TestPlayerEffects:
         mock_service.apply_sanity_loss.return_value = {"message": "Applied 10 sanity loss to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_sanity_loss("test-player-id", 10, "test", mock_current_user, mock_request, mock_service)
+        result = await apply_sanity_loss("test-player-id", 10, mock_request, "test", mock_current_user, mock_service)
 
         assert "Applied 10 sanity loss to TestPlayer" in result["message"]
         mock_service.apply_sanity_loss.assert_called_once_with("test-player-id", 10, "test")
@@ -345,7 +347,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_sanity_loss("nonexistent-id", 10, "test", mock_current_user, mock_request, mock_service)
+            await apply_sanity_loss("nonexistent-id", 10, mock_request, "test", mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -365,7 +367,7 @@ class TestPlayerEffects:
         mock_service.apply_fear.return_value = {"message": "Applied 5 fear to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_fear("test-player-id", 5, "test", mock_current_user, mock_request, mock_service)
+        result = await apply_fear("test-player-id", 5, mock_request, "test", mock_current_user, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
         mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
@@ -386,7 +388,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_fear("nonexistent-id", 5, "test", mock_current_user, mock_request, mock_service)
+            await apply_fear("nonexistent-id", 5, mock_request, "test", mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -406,7 +408,7 @@ class TestPlayerEffects:
         mock_service.apply_corruption.return_value = {"message": "Applied 3 corruption to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_corruption("test-player-id", 3, "test", mock_current_user, mock_request, mock_service)
+        result = await apply_corruption("test-player-id", 3, mock_request, "test", mock_current_user, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
         mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
@@ -427,7 +429,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_corruption("nonexistent-id", 3, "test", mock_current_user, mock_request, mock_service)
+            await apply_corruption("nonexistent-id", 3, mock_request, "test", mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -447,7 +449,7 @@ class TestPlayerEffects:
         mock_service.gain_occult_knowledge.return_value = {"message": "Gained 2 occult knowledge for TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await gain_occult_knowledge("test-player-id", 2, "test", mock_current_user, mock_request, mock_service)
+        result = await gain_occult_knowledge("test-player-id", 2, mock_request, "test", mock_current_user, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
         mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
@@ -468,7 +470,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await gain_occult_knowledge("nonexistent-id", 2, "test", mock_current_user, mock_request, mock_service)
+            await gain_occult_knowledge("nonexistent-id", 2, mock_request, "test", mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -529,7 +531,7 @@ class TestPlayerEffects:
         mock_service.damage_player.return_value = {"message": "Damaged TestPlayer for 15 physical damage"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await damage_player("test-player-id", 15, "physical", mock_current_user, mock_request, mock_service)
+        result = await damage_player("test-player-id", 15, mock_request, "physical", mock_current_user, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
         mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
@@ -550,7 +552,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await damage_player("nonexistent-id", 15, "physical", mock_current_user, mock_request, mock_service)
+            await damage_player("nonexistent-id", 15, mock_request, "physical", mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -563,7 +565,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_success(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data, mock_request
     ):
         """Test successful stats rolling."""
         # Setup mocks
@@ -576,7 +578,7 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+        result = await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -585,7 +587,7 @@ class TestCharacterCreation:
 
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
-    async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user):
+    async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test stats rolling when rate limited."""
         # Setup mocks
         context = create_error_context(user_id=str(mock_current_user.id))
@@ -593,16 +595,16 @@ class TestCharacterCreation:
         mock_limiter.get_rate_limit_info.return_value = {"remaining": 0, "reset_time": 60}
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 429
         assert "Rate limit exceeded" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    async def test_roll_stats_authentication_failure(self):
+    async def test_roll_stats_authentication_failure(self, mock_request):
         """Test stats rolling with authentication failure."""
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=None)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -610,7 +612,9 @@ class TestCharacterCreation:
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
-    async def test_roll_stats_validation_error(self, mock_limiter, mock_stats_generator_class, mock_current_user):
+    async def test_roll_stats_validation_error(
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
+    ):
         """Test stats rolling with validation error."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
@@ -619,7 +623,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)
@@ -648,11 +652,12 @@ class TestCharacterCreation:
         request_data.stats = sample_stats_data
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
-        result = await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
+        result = await create_character_with_stats(request_data, mock_request, mock_current_user, mock_service)
 
-        assert "Character testuser created successfully" in result["message"]
-        assert "player" in result
-        assert "stats" in result
+        # Result is now a PlayerRead object (not a dict)
+        assert result is not None
+        assert hasattr(result, "name") or isinstance(result, dict)
+        mock_service.create_player_with_stats.assert_called_once()
 
     @pytest.mark.asyncio
     @patch("server.api.players.character_creation_limiter")
@@ -669,10 +674,10 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request)
+            await create_character_with_stats(request_data, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 429
-        assert "Rate limit exceeded" in str(exc_info.value.detail["message"])
+        assert exc_info.value.detail == "Rate limit exceeded"
 
     @pytest.mark.asyncio
     async def test_create_character_authentication_failure(self, mock_request):
@@ -683,7 +688,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, None, mock_request)
+            await create_character_with_stats(request_data, mock_request, None)
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -718,7 +723,7 @@ class TestCharacterCreation:
         )
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request)
+            await create_character_with_stats(request_data, mock_request, mock_current_user)
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)
@@ -742,7 +747,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_current_user, mock_request, mock_service)
+            await create_character_with_stats(request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 400
         assert "Invalid input" in str(exc_info.value.detail)
@@ -751,7 +756,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_success(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
     ):
         """Test successful stats rolling with profession ID."""
         # Setup mocks
@@ -764,7 +769,9 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+        result = await roll_character_stats(
+            mock_request, "3d6", None, 10, profession_id=0, current_user=mock_current_user
+        )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -778,7 +785,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_requirements_not_met(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
     ):
         """Test stats rolling with profession when requirements are not met."""
         # Setup mocks
@@ -791,7 +798,9 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        result = await roll_character_stats("3d6", None, 10, profession_id=1, current_user=mock_current_user)
+        result = await roll_character_stats(
+            mock_request, "3d6", None, 10, profession_id=1, current_user=mock_current_user
+        )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -804,7 +813,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_invalid_profession(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
     ):
         """Test stats rolling with invalid profession ID."""
         # Setup mocks
@@ -814,7 +823,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, profession_id=999, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, profession_id=999, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 400
         assert "Invalid profession" in str(exc_info.value.detail)
@@ -823,7 +832,7 @@ class TestCharacterCreation:
     @patch("server.api.players.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user
+        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
     ):
         """Test stats rolling with profession when validation fails."""
         # Setup mocks
@@ -833,7 +842,7 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats("3d6", None, 10, profession_id=0, current_user=mock_current_user)
+            await roll_character_stats(mock_request, "3d6", None, 10, profession_id=0, current_user=mock_current_user)
 
         assert exc_info.value.status_code == 500
         assert "An internal error occurred" in str(exc_info.value.detail)

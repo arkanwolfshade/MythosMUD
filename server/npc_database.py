@@ -8,6 +8,7 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -63,18 +64,29 @@ def _initialize_npc_database() -> None:
             user_friendly="Critical system error: configuration system not available",
         )
 
-    # Load configuration - will FAIL LOUDLY with ValidationError if required fields missing
+    # Load configuration. If primary DB URL is missing in tests, optionally fall back to env-based NPC URL.
     try:
         config = get_config()
         npc_database_url = config.database.npc_url
     except Exception as e:
-        log_and_raise(
-            ValidationError,
-            f"Failed to load configuration: {e}",
-            context=context,
-            details={"config_error": str(e)},
-            user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
-        )
+        # Optional fallback for unit tests that provide only NPC DB URL
+        allow_env_fallback = os.getenv("NPC_DB_ENV_FALLBACK", "").lower() in {"1", "true", "yes"}
+        env_npc_url = os.getenv("DATABASE_NPC_URL") or os.getenv("NPC_DATABASE_URL") or os.getenv("DATABASE__NPC_URL")
+        if allow_env_fallback and env_npc_url:
+            npc_database_url = env_npc_url
+            logger.warning(
+                "Using NPC database URL from environment fallback",
+                error=str(e),
+                npc_database_url=npc_database_url,
+            )
+        else:
+            log_and_raise(
+                ValidationError,
+                f"Failed to load configuration: {e}",
+                context=context,
+                details={"config_error": str(e)},
+                user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
+            )
 
     # Use NPC database URL from configuration
     _npc_database_url = npc_database_url
@@ -127,12 +139,12 @@ def _initialize_npc_database() -> None:
     logger.info("NPC Database session maker created")
 
 
-def get_npc_engine() -> AsyncEngine:
+def get_npc_engine() -> AsyncEngine | None:
     """
     Get the NPC database engine, initializing if necessary.
 
     Returns:
-        AsyncEngine: The NPC database engine
+        AsyncEngine | None: The NPC database engine
 
     Raises:
         ValidationError: If NPC database cannot be initialized
@@ -147,13 +159,14 @@ def get_npc_session_maker() -> async_sessionmaker:
     Get the NPC async session maker, initializing if necessary.
 
     Returns:
-        async_sessionmaker: The NPC session maker
+        async_sessionmaker: The NPC session maker (never None)
 
     Raises:
         ValidationError: If NPC database cannot be initialized
     """
     if _npc_async_session_maker is None:
         _initialize_npc_database()
+    assert _npc_async_session_maker is not None, "NPC session maker not initialized"
     return _npc_async_session_maker
 
 
@@ -168,7 +181,17 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
     context.metadata["operation"] = "npc_database_session"
 
     logger.debug("Creating NPC database session")
-    session_maker = get_npc_session_maker()  # Initialize if needed
+    # Prefer existing session maker if already set (e.g., tests mocking it)
+    global _npc_async_session_maker
+    if _npc_async_session_maker is None:
+        # For unit tests, ensure a clean DB schema before providing a session
+        if _npc_database_url is None:
+            _initialize_npc_database()
+        if _npc_database_url and "unit_test" in _npc_database_url:
+            await init_npc_db()
+        session_maker = get_npc_session_maker()  # Initialize if needed
+    else:
+        session_maker = _npc_async_session_maker
     async with session_maker() as session:
         try:
             logger.debug("NPC database session created successfully")
@@ -215,6 +238,11 @@ async def init_npc_db():
 
         engine = get_npc_engine()  # Initialize if needed
         async with engine.begin() as conn:
+            # For unit tests, ensure a clean slate each run
+            if _npc_database_url and "unit_test" in _npc_database_url:
+                logger.info("Dropping NPC database tables for clean unit test state")
+                await conn.run_sync(npc_metadata.drop_all)
+
             logger.info("Creating NPC database tables")
             await conn.run_sync(npc_metadata.create_all)
             # Enable foreign key constraints for SQLite
@@ -265,6 +293,9 @@ def get_npc_database_path() -> Path:
     if _npc_database_url is None:
         _initialize_npc_database()
 
+    # After initialization, database URL should be set
+    assert _npc_database_url is not None, "NPC database URL should be initialized"
+
     if _npc_database_url.startswith("sqlite+aiosqlite:///"):
         db_path = _npc_database_url.replace("sqlite+aiosqlite:///", "")
         return Path(db_path)
@@ -279,6 +310,8 @@ def get_npc_database_path() -> Path:
             details={"database_url": _npc_database_url},
             user_friendly="Unsupported NPC database configuration",
         )
+        # Satisfy type checker: log_and_raise raises
+        raise AssertionError("unreachable")
 
 
 def ensure_npc_database_directory():

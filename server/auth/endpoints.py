@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
+from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
@@ -337,7 +338,7 @@ async def login_user(
         new_session_id = f"login_{uuid.uuid4().hex[:8]}"
 
         # Disconnect any existing connections for this player
-        session_results = await connection_manager.handle_new_game_session(player.player_id, new_session_id)
+        session_results = await connection_manager.handle_new_game_session(str(player.player_id), new_session_id)
 
         if session_results["success"]:
             logger.info(
@@ -354,7 +355,7 @@ async def login_user(
         access_token=access_token,
         user_id=str(user.id),
         has_character=has_character,
-        character_name=character_name,
+        character_name=character_name,  # type: ignore[arg-type]
     )
 
 
@@ -375,24 +376,35 @@ async def get_current_user_info(
     }
 
 
-@auth_router.get("/invites", response_model=list[InviteRead])
+@auth_router.get("/invites")
 async def list_invites(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[InviteRead]:
+) -> list[dict]:
     """
     List all invite codes.
 
     This endpoint returns all invite codes in the system.
     """
-    return await invite_manager.list_invites()
+    invites = await invite_manager.list_invites()
+    return [
+        {
+            "id": str(invite.id),
+            "invite_code": invite.invite_code,
+            "used": invite.used,
+            "used_by_user_id": str(invite.used_by_user_id) if invite.used_by_user_id else None,
+            "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
+            "created_at": invite.created_at.isoformat() if invite.created_at else None,
+        }
+        for invite in invites
+    ]
 
 
 @auth_router.post("/invites", response_model=InviteRead)
 async def create_invite(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> InviteRead:
+) -> Invite:  # FastAPI response_model handles conversion to InviteRead
     """
     Create a new invite code.
 

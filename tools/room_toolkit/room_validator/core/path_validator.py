@@ -189,3 +189,49 @@ class PathValidator:
                         continue
                     self_refs.append((room_id, direction))
         return self_refs
+
+    def generate_minimap_graph(self, room_database: dict[str, dict], max_depth: int = 3) -> dict:
+        """
+        Generate minimap graph data for visualization.
+
+        Args:
+            room_database: Dictionary mapping room IDs to room data
+            max_depth: Maximum depth to traverse from starting room
+
+        Returns:
+            Dictionary containing nodes, edges, and metadata for minimap rendering
+        """
+        # Build the connectivity graph
+        self.build_graph(room_database)
+
+        # Find a starting room (preferably an entry point)
+        starting_room = next(iter(room_database.keys())) if room_database else ""
+
+        # Generate nodes and edges for the minimap
+        nodes = []
+        edges = []
+        visited = set()
+
+        # BFS traversal to build minimap data
+        queue = [(starting_room, 0)]
+        visited.add(starting_room)
+
+        while queue:
+            room_id, depth = queue.pop(0)
+
+            if depth > max_depth:
+                continue
+
+            # Add node
+            room_data = room_database.get(room_id, {})
+            nodes.append({"id": room_id, "name": room_data.get("name", room_id), "depth": depth})
+
+            # Add edges
+            for direction, target in self.graph.get(room_id, {}).items():
+                edges.append({"source": room_id, "target": target, "direction": direction})
+
+                if target not in visited and depth < max_depth:
+                    visited.add(target)
+                    queue.append((target, depth + 1))
+
+        return {"starting_room": starting_room, "nodes": nodes, "edges": edges, "depth": max_depth}

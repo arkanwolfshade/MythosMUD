@@ -46,7 +46,7 @@ class TestSelfMessageBug:
         # Create event for Ithaqua entering a room
         player_id = "ithaqua_player_id"
         room_id = "test_room_001"
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
 
         # Handle the event
         await event_handler._handle_player_entered(event)
@@ -79,9 +79,8 @@ class TestSelfMessageBug:
         connection_manager.broadcast_to_room = AsyncMock()
 
         # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(
-            timestamp=None, event_type="player_left", player_id="test_player_123", room_id="test_room_456"
-        )
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_456")
+        event.timestamp = None
 
         # Mock the player lookup
         mock_player = Mock()

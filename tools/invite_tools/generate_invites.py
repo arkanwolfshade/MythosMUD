@@ -163,7 +163,7 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
         result = await session.execute(text("SELECT invite_code FROM invites"))
         existing_codes = {row[0] for row in result.fetchall()}
 
-        codes = set()
+        codes: set[str] = set()
         attempts = 0
         max_attempts = count * 10  # Prevent infinite loops
 

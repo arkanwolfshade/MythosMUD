@@ -153,11 +153,11 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Test multiple connection establishment
-            players = []
+            players: list[dict[str, Any]] = []
             for i in range(50):  # Create 50 players with dual connections
                 player_id = f"complexity_test_player_{i}"
                 try:
@@ -229,7 +229,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Set up test player with dual connections
@@ -313,7 +313,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Test connection limit enforcement
@@ -390,7 +390,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Baseline performance test
@@ -503,7 +503,7 @@ class RiskMitigationTester:
 
         start_time = time.time()
         error_count = 0
-        details = {}
+        details: dict[str, Any] = {}
 
         try:
             # Stress test with rapid connection/disconnection cycles
@@ -646,7 +646,8 @@ class RiskMitigationValidator:
 
     def validate_mitigation_results(self, results: list[MitigationResult]) -> dict[str, Any]:
         """Validate risk mitigation test results"""
-        validation_summary = {
+        # AI Agent: Explicit type annotation to help mypy understand dict structure
+        validation_summary: dict[str, Any] = {
             "total_tests": len(results),
             "passed_tests": 0,
             "failed_tests": 0,

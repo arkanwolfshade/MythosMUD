@@ -11,6 +11,7 @@ for maintaining control over the eldritch entities that inhabit our world.
 from typing import Any
 
 from server.events.event_bus import EventBus
+from server.models.npc import NPCDefinition
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
@@ -69,11 +70,16 @@ class NPCInstanceService:
         """
         try:
             # Get the NPC definition from database
+            definition: NPCDefinition | None = None
             async for session in get_npc_session():
                 definition = await npc_service.get_npc_definition(session, definition_id)
                 if not definition:
                     raise ValueError(f"NPC definition with ID {definition_id} not found")
                 break
+
+            # Ensure definition was retrieved
+            if not definition:
+                raise ValueError(f"Failed to retrieve NPC definition {definition_id}")
 
             # Spawn the NPC using the population controller to ensure proper population limits
             # The population controller will handle all spawning through the lifecycle manager
@@ -206,7 +212,9 @@ class NPCInstanceService:
                 npc_instance.move_to_room(new_room_id)
             else:
                 # Update the room ID directly if move_to_room method doesn't exist
-                npc_instance.current_room_id = new_room_id
+                from typing import Any, cast
+
+                cast(Any, npc_instance).current_room_id = new_room_id
 
             logger.info(
                 "Moved NPC instance",
@@ -259,11 +267,13 @@ class NPCInstanceService:
                 # Add lifecycle information if available
                 if npc_id in self.lifecycle_manager.lifecycle_records:
                     record = self.lifecycle_manager.lifecycle_records[npc_id]
+                    spawn_time = getattr(record, "spawn_time", getattr(record, "created_at", None))
+                    last_activity = getattr(record, "last_activity", getattr(record, "last_active_time", None))
                     instance_info.update(
                         {
                             "lifecycle_state": record.current_state.value,
-                            "spawn_time": record.spawn_time,
-                            "last_activity": record.last_activity,
+                            "spawn_time": spawn_time,
+                            "last_activity": last_activity,
                         }
                     )
 
@@ -312,8 +322,8 @@ class NPCInstanceService:
                 stats.update(
                     {
                         "lifecycle_state": record.current_state.value,
-                        "spawn_time": record.spawn_time,
-                        "last_activity": record.last_activity,
+                        "spawn_time": record.created_at,
+                        "last_activity": record.last_active_time,
                         "spawn_count": record.spawn_count,
                         "despawn_count": record.despawn_count,
                     }
@@ -338,8 +348,8 @@ class NPCInstanceService:
             active_instances = self.lifecycle_manager.active_npcs
 
             # Count by type
-            by_type = {}
-            by_zone = {}
+            by_type: dict[str, int] = {}
+            by_zone: dict[str, int] = {}
             total_npcs = len(active_instances)
 
             for _npc_id, npc_instance in active_instances.items():
@@ -385,7 +395,7 @@ class NPCInstanceService:
             active_instances = self.lifecycle_manager.active_npcs
 
             # Group by zone
-            zone_data = {}
+            zone_data: dict[str, dict[str, Any]] = {}
             total_npcs = 0
 
             for npc_id, npc_instance in active_instances.items():
@@ -484,7 +494,8 @@ class NPCInstanceService:
             else:
                 return "unknown/unknown"
 
-        except Exception:
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Error getting NPC location", room_id=room_id, error=str(e), error_type=type(e).__name__)
             return "unknown/unknown"
 
 

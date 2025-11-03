@@ -152,3 +152,39 @@ class GameMechanicsService:
         self.persistence.damage_player(player, amount, damage_type)
         logger.info("Player damaged", player_id=player_id, amount=amount, damage_type=damage_type)
         return True, f"Damaged {player.name} for {amount} {damage_type} damage"
+
+    def gain_experience(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
+        """
+        Award experience points to a player.
+
+        CRITICAL FIX: This method prevents XP awards from overwriting combat damage.
+        Previously, XP was awarded by loading player, updating XP, and saving entire player,
+        which overwrote any in-flight health changes from combat.
+
+        Args:
+            player_id: ID of the player gaining XP
+            amount: Amount of XP to award
+            source: Source of the XP (e.g., "killed_nightgaunt")
+
+        Returns:
+            tuple: (success: bool, message: str)
+        """
+        player = self.persistence.get_player(player_id)
+        if not player:
+            logger.warning("XP gain failed - player not found", player_id=player_id)
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["amount"] = amount
+            context.metadata["source"] = source
+            context.metadata["operation"] = "gain_experience"
+            log_and_raise(
+                ValidationError,
+                "Player not found for XP gain",
+                context=context,
+                details={"player_id": player_id, "amount": amount, "source": source},
+                user_friendly="Player not found",
+            )
+
+        self.persistence.gain_experience(player, amount, source)
+        logger.info("XP awarded", player_id=player_id, amount=amount, source=source)
+        return True, f"Awarded {amount} XP to {player.name}"

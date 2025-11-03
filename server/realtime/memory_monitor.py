@@ -24,7 +24,7 @@ class MemoryMonitor:
     memory-related statistics for the connection management system.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the memory monitor with default settings."""
         self.last_cleanup_time = time.time()
         self.cleanup_interval = 300  # 5 minutes
@@ -64,9 +64,10 @@ class MemoryMonitor:
         try:
             process = psutil.Process()
             memory_percent = process.memory_percent()
-            return memory_percent / 100.0
-        except Exception as e:
-            logger.error("Error getting memory usage", error=str(e))
+            assert isinstance(memory_percent, (int, float))
+            return float(memory_percent) / 100.0
+        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
+            logger.error("Error getting memory usage", error=str(e), error_type=type(e).__name__, exc_info=True)
             return 0.0
 
     def get_memory_stats(self) -> dict[str, Any]:
@@ -86,8 +87,8 @@ class MemoryMonitor:
                 "available_mb": psutil.virtual_memory().available / 1024 / 1024,
                 "total_mb": psutil.virtual_memory().total / 1024 / 1024,
             }
-        except Exception as e:
-            logger.error("Error getting memory stats", error=str(e))
+        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
+            logger.error("Error getting memory stats", error=str(e), error_type=type(e).__name__, exc_info=True)
             return {}
 
     def get_memory_alerts(self, connection_stats: dict[str, Any]) -> list[str]:
@@ -134,14 +135,16 @@ class MemoryMonitor:
 
         return alerts
 
-    def update_cleanup_time(self):
+    def update_cleanup_time(self) -> None:
         """Update the last cleanup time to the current time."""
         self.last_cleanup_time = time.time()
 
-    def force_garbage_collection(self):
+    def force_garbage_collection(self) -> None:
         """Force garbage collection to free memory."""
         try:
             gc.collect()
             logger.debug("Forced garbage collection completed")
-        except Exception as e:
-            logger.error("Error during forced garbage collection", error=str(e))
+        except (RuntimeError, Exception) as e:
+            logger.error(
+                "Error during forced garbage collection", error=str(e), error_type=type(e).__name__, exc_info=True
+            )

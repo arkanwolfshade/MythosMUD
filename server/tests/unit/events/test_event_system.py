@@ -50,7 +50,7 @@ class TestWorkingEventSystem:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish event
         event_bus.publish(event)
@@ -108,7 +108,7 @@ class TestWorkingEventSystem:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish event
         event_bus.publish(event)

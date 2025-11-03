@@ -37,9 +37,9 @@ class SchemaValidator:
         """
         if schema_path is None:
             # Use the default unified schema from the schemas directory
-            schema_path = Path(__file__).parent / "unified_room_schema.json"
-
-        self.schema_path = Path(schema_path)
+            self.schema_path = Path(__file__).parent / "unified_room_schema.json"
+        else:
+            self.schema_path = Path(schema_path)
         self.schema = None
         self._load_schema()
 

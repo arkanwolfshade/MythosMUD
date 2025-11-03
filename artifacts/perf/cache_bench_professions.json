@@ -1,0 +1,6 @@
+{
+  "suite": "cache_bench_professions",
+  "miss_ms": 6.49,
+  "hit_ms": 0.079,
+  "speedup": 82.152
+}

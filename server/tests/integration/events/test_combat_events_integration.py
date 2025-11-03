@@ -48,8 +48,6 @@ class TestCombatEventPublisher:
         """Test successful combat started event publishing."""
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={"player1": {"id": str(self.test_player_id), "name": "TestPlayer"}},
@@ -82,8 +80,6 @@ class TestCombatEventPublisher:
         """Test successful combat ended event publishing."""
         # Create combat ended event
         event = CombatEndedEvent(
-            event_type="combat_ended",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             reason="npc_died",
@@ -115,8 +111,6 @@ class TestCombatEventPublisher:
         """Test successful player attacked event publishing."""
         # Create player attacked event
         event = PlayerAttackedEvent(
-            event_type="player_attacked",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             attacker_id=self.test_player_id,
@@ -156,8 +150,6 @@ class TestCombatEventPublisher:
         """Test successful NPC attacked event publishing."""
         # Create NPC attacked event
         event = NPCAttackedEvent(
-            event_type="npc_attacked",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             attacker_id=self.test_player_id,
@@ -197,8 +189,6 @@ class TestCombatEventPublisher:
         """Test successful NPC took damage event publishing."""
         # Create NPC took damage event
         event = NPCTookDamageEvent(
-            event_type="npc_took_damage",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             npc_id=self.test_npc_id,
@@ -234,8 +224,6 @@ class TestCombatEventPublisher:
         """Test successful NPC died event publishing."""
         # Create NPC died event
         event = NPCDiedEvent(
-            event_type="npc_died",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             npc_id=self.test_npc_id,
@@ -267,8 +255,6 @@ class TestCombatEventPublisher:
         """Test successful combat turn advanced event publishing."""
         # Create combat turn advanced event
         event = CombatTurnAdvancedEvent(
-            event_type="combat_turn_advanced",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             current_turn=2,
@@ -301,8 +287,6 @@ class TestCombatEventPublisher:
         """Test successful combat timeout event publishing."""
         # Create combat timeout event
         event = CombatTimeoutEvent(
-            event_type="combat_timeout",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             timeout_minutes=5,
@@ -335,8 +319,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -358,8 +340,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -380,8 +360,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -403,8 +381,6 @@ class TestCombatEventPublisher:
 
         # Create combat started event
         event = CombatStartedEvent(
-            event_type="combat_started",
-            timestamp=None,
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             participants={},
@@ -425,8 +401,6 @@ class TestExtendedEventTypes:
     def test_npc_attacked_event_with_combat_data(self):
         """Test NPCAttacked event with combat data."""
         event = NPCAttacked(
-            timestamp=None,
-            event_type="NPCAttacked",
             npc_id="npc_001",
             target_id="player_001",
             room_id="room_001",
@@ -449,8 +423,6 @@ class TestExtendedEventTypes:
     def test_npc_took_damage_event_with_combat_data(self):
         """Test NPCTookDamage event with combat data."""
         event = NPCTookDamage(
-            timestamp=None,
-            event_type="NPCTookDamage",
             npc_id="npc_001",
             room_id="room_001",
             damage=5,
@@ -475,8 +447,6 @@ class TestExtendedEventTypes:
     def test_npc_died_event_with_combat_data(self):
         """Test NPCDied event with combat data."""
         event = NPCDied(
-            timestamp=None,
-            event_type="NPCDied",
             npc_id="npc_001",
             room_id="room_001",
             cause="combat",

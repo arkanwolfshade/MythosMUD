@@ -11,9 +11,10 @@ import time
 import uuid
 from dataclasses import dataclass
 from datetime import UTC
-from typing import Any
+from typing import Any, TypedDict
 
 from fastapi import WebSocket
+from starlette.websockets import WebSocketState
 
 from ..logging.enhanced_logging_config import get_logger
 from ..models import Player
@@ -56,6 +57,21 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         return None
 
 
+class PerformanceStats(TypedDict):
+    """Type definition for performance statistics tracking."""
+
+    connection_establishment_times: list[tuple[str, float]]
+    message_delivery_times: list[tuple[str, float]]
+    disconnection_times: list[tuple[str, float]]
+    session_switch_times: list[float]
+    health_check_times: list[float]
+    total_connections_established: int
+    total_messages_delivered: int
+    total_disconnections: int
+    total_session_switches: int
+    total_health_checks: int
+
+
 @dataclass
 class ConnectionMetadata:
     """
@@ -85,7 +101,7 @@ class ConnectionManager:
     - RoomSubscriptionManager: Room subscriptions and occupant tracking
     """
 
-    def __init__(self, event_publisher=None):
+    def __init__(self, event_publisher: Any = None) -> None:
         """Initialize the connection manager with modular components."""
         # Active WebSocket connections
         self.active_websockets: dict[str, WebSocket] = {}
@@ -98,9 +114,13 @@ class ConnectionManager:
         # Global event sequence counter
         self.sequence_counter = 0
         # Reference to persistence layer (set during app startup)
-        self.persistence = None
+        self.persistence: Any | None = None
         # EventPublisher for NATS integration
         self.event_publisher = event_publisher
+        # Event bus reference (set during app startup)
+        self._event_bus: Any = None
+        # FastAPI app reference (set during app startup)
+        self.app: Any = None
 
         # Player presence tracking
         # player_id -> player_info
@@ -126,7 +146,7 @@ class ConnectionManager:
         }
 
         # Performance monitoring
-        self.performance_stats = {
+        self.performance_stats: PerformanceStats = {
             "connection_establishment_times": [],  # List of (connection_type, duration_ms)
             "message_delivery_times": [],  # List of (message_type, duration_ms)
             "disconnection_times": [],  # List of (connection_type, duration_ms)
@@ -149,42 +169,72 @@ class ConnectionManager:
         self.player_sessions: dict[str, str] = {}  # player_id -> current_session_id
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
 
+        # Track safely closed websocket objects to avoid duplicate closes
+        self._closed_websockets: set[int] = set()
+
+    def _is_websocket_open(self, websocket: WebSocket) -> bool:
+        try:
+            state = getattr(websocket, "application_state", None)
+            # WebSocketState only has: CONNECTED, CONNECTING, DISCONNECTED, RESPONSE
+            # AI Agent: Fixed mypy error - CLOSING and CLOSED don't exist in Starlette's WebSocketState
+            return state != WebSocketState.DISCONNECTED
+        except Exception:
+            # If we cannot determine, assume open and let close handle exceptions
+            return True
+
+    async def _safe_close_websocket(
+        self, websocket: WebSocket, code: int = 1000, reason: str = "Connection closed"
+    ) -> None:
+        ws_id = id(websocket)
+        if ws_id in self._closed_websockets:
+            return
+        if not self._is_websocket_open(websocket):
+            self._closed_websockets.add(ws_id)
+            return
+        try:
+            await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
+        except Exception:
+            # Ignore close errors; treat as closed
+            pass
+        finally:
+            self._closed_websockets.add(ws_id)
+
     # Compatibility properties for existing tests and code
     # These provide access to the internal data structures for backward compatibility
     @property
-    def room_subscriptions(self):
+    def room_subscriptions(self) -> Any:
         return self.room_manager.room_subscriptions
 
     @room_subscriptions.setter
-    def room_subscriptions(self, value):
+    def room_subscriptions(self, value: Any) -> None:
         self.room_manager.room_subscriptions = value
 
     @room_subscriptions.deleter
-    def room_subscriptions(self):
+    def room_subscriptions(self) -> None:
         self.room_manager.room_subscriptions.clear()
 
     @property
-    def room_occupants(self):
+    def room_occupants(self) -> Any:
         return self.room_manager.room_occupants
 
     @room_occupants.setter
-    def room_occupants(self, value):
+    def room_occupants(self, value: Any) -> None:
         self.room_manager.room_occupants = value
 
     @room_occupants.deleter
-    def room_occupants(self):
+    def room_occupants(self) -> None:
         self.room_manager.room_occupants.clear()
 
     @property
-    def connection_attempts(self):
+    def connection_attempts(self) -> Any:
         return self.rate_limiter.connection_attempts
 
     @connection_attempts.setter
-    def connection_attempts(self, value):
+    def connection_attempts(self, value: Any) -> None:
         self.rate_limiter.connection_attempts = value
 
     @connection_attempts.deleter
-    def connection_attempts(self):
+    def connection_attempts(self) -> None:
         self.rate_limiter.connection_attempts.clear()
 
     @property
@@ -375,8 +425,10 @@ class ConnectionManager:
                         # No active connections, remove the player entry
                         del self.player_websockets[player_id]
 
-            # Accept the WebSocket connection
-            await websocket.accept()
+            # Accept the WebSocket connection with subprotocol negotiation
+            # CRITICAL FIX: Client sends ['bearer', <token>] as subprotocols
+            # Server must select 'bearer' to complete the handshake
+            await websocket.accept(subprotocol="bearer")
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 
@@ -473,13 +525,18 @@ class ConnectionManager:
         """
         try:
             logger.info(
-                f"🔍 DEBUG: Starting WebSocket disconnect for player {player_id}, force_disconnect={is_force_disconnect}"
+                "Starting WebSocket disconnect",
+                player_id=player_id,
+                force_disconnect=bool(is_force_disconnect),
             )
 
             if player_id in self.player_websockets:
                 connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
                 logger.info(
-                    f"🔍 DEBUG: Found {len(connection_ids)} WebSocket connections for player {player_id}: {connection_ids}"
+                    "Found WebSocket connections",
+                    player_id=player_id,
+                    connection_count=len(connection_ids),
+                    connection_ids=connection_ids,
                 )
 
                 # Disconnect all WebSocket connections for this player
@@ -488,18 +545,12 @@ class ConnectionManager:
                         websocket = self.active_websockets[connection_id]
                         logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
                         # Properly close the WebSocket connection
-                        try:
-                            await asyncio.wait_for(websocket.close(code=1000, reason="Connection closed"), timeout=2.0)
-                            logger.info(
-                                f"🔍 DEBUG: Successfully closed WebSocket {connection_id} for player {player_id}"
-                            )
-                        except (TimeoutError, Exception) as e:
-                            logger.warning(
-                                "Error closing WebSocket",
-                                connection_id=connection_id,
-                                player_id=player_id,
-                                error=str(e),
-                            )
+                        await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
+                        logger.info(
+                            "Successfully closed WebSocket",
+                            connection_id=connection_id,
+                            player_id=player_id,
+                        )
                         del self.active_websockets[connection_id]
 
                     # Clean up connection metadata
@@ -530,7 +581,8 @@ class ConnectionManager:
                     self.room_manager.remove_player_from_all_rooms(player_id)
                 else:
                     logger.debug(
-                        f"🔍 DEBUG: Preserving room membership for player {player_id} during force disconnect (reconnection)"
+                        "Preserving room membership during force disconnect (reconnection)",
+                        player_id=player_id,
                     )
 
                 # Clean up rate limiting data only if no other connections
@@ -600,13 +652,8 @@ class ConnectionManager:
                 if connection_id in self.active_websockets:
                     websocket = self.active_websockets[connection_id]
                     logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
-                    try:
-                        await websocket.close(code=1000, reason="Connection closed")
-                        logger.info(
-                            "DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id
-                        )
-                    except Exception as e:
-                        logger.warning("Error closing WebSocket", connection_id=connection_id, error=str(e))
+                    await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
+                    logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)
                     del self.active_websockets[connection_id]
 
                 # Remove from player's connection list
@@ -810,7 +857,7 @@ class ConnectionManager:
                     room = self.persistence.get_room(player.current_room_id)
                     if room:
                         canonical_room_id = getattr(room, "id", None) or player.current_room_id
-                await self.subscribe_to_room(player_id, canonical_room_id or player.current_room_id)
+                await self.subscribe_to_room(player_id, str(canonical_room_id or player.current_room_id))
 
                 # Track player presence - only call _track_player_connected if this is the first connection
                 if player_id not in self.online_players:
@@ -852,7 +899,7 @@ class ConnectionManager:
         Returns:
             dict: Session handling results with detailed information
         """
-        session_results = {
+        session_results: dict[str, Any] = {
             "player_id": player_id,
             "new_session_id": new_session_id,
             "previous_session_id": None,
@@ -903,16 +950,20 @@ class ConnectionManager:
                                 # If we can't check state, assume it's not connected
                                 is_connected = False
                                 logger.debug(
-                                    f"Could not check state for WebSocket {connection_id}, assuming disconnected"
+                                    "Could not check WebSocket state, assuming disconnected",
+                                    connection_id=connection_id,
                                 )
 
                             if is_connected:
                                 logger.info(
-                                    f"🔍 DEBUG: Closing WebSocket {connection_id} due to new game session for player {player_id}"
+                                    "Closing WebSocket due to new game session",
+                                    connection_id=connection_id,
+                                    player_id=player_id,
                                 )
                                 await websocket.close(code=1000, reason="New game session established")
                                 logger.info(
-                                    f"🔍 DEBUG: Successfully closed WebSocket {connection_id} due to new game session"
+                                    "Successfully closed WebSocket due to new game session",
+                                    connection_id=connection_id,
                                 )
                                 session_results["connections_disconnected"] += 1
                             else:
@@ -1123,9 +1174,11 @@ class ConnectionManager:
                     del self.online_players[pid]
                 if pid in self.player_websockets:
                     # forget websocket mapping; socket likely already dead
-                    conn_id = self.player_websockets.pop(pid, None)
-                    if conn_id and conn_id in self.active_websockets:
-                        del self.active_websockets[conn_id]
+                    conn_ids = self.player_websockets.pop(pid, None)
+                    if conn_ids:
+                        for conn_id in conn_ids:
+                            if conn_id in self.active_websockets:
+                                del self.active_websockets[conn_id]
                 # remove from rooms
                 self.room_manager.remove_player_from_all_rooms(pid)
                 # forget last_seen entry
@@ -1334,7 +1387,7 @@ class ConnectionManager:
         Returns:
             dict: Message delivery statistics
         """
-        stats = {
+        stats: dict[str, Any] = {
             "player_id": player_id,
             "websocket_connections": len(self.player_websockets.get(player_id, [])),
             "sse_connections": len(self.active_sse_connections.get(player_id, [])),
@@ -1358,7 +1411,7 @@ class ConnectionManager:
         Returns:
             dict: Connection health information
         """
-        health_status = {
+        health_status: dict[str, Any] = {
             "player_id": player_id,
             "websocket_healthy": 0,
             "websocket_unhealthy": 0,
@@ -1379,7 +1432,14 @@ class ConnectionManager:
                                 health_status["websocket_healthy"] += 1
                             else:
                                 raise Exception("WebSocket not connected")
-                        except Exception:
+                        except (RuntimeError, ConnectionError, AttributeError) as e:
+                            logger.error(
+                                "WebSocket health check failed",
+                                player_id=player_id,
+                                connection_id=connection_id,
+                                error=str(e),
+                                error_type=type(e).__name__,
+                            )
                             health_status["websocket_unhealthy"] += 1
                             # Clean up unhealthy connection
                             await self._cleanup_dead_websocket(player_id, connection_id)
@@ -1417,7 +1477,7 @@ class ConnectionManager:
         Returns:
             dict: Cleanup results
         """
-        cleanup_results = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
+        cleanup_results: dict[str, Any] = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
 
         try:
             if player_id:
@@ -1443,7 +1503,14 @@ class ConnectionManager:
                                     # Check WebSocket health by checking its state
                                     if websocket.client_state.name != "CONNECTED":
                                         raise Exception("WebSocket not connected")
-                                except Exception:
+                                except (RuntimeError, ConnectionError, AttributeError) as e:
+                                    logger.debug(
+                                        "WebSocket cleanup check failed",
+                                        player_id=pid,
+                                        connection_id=connection_id,
+                                        error=str(e),
+                                        error_type=type(e).__name__,
+                                    )
                                     # Connection is dead, clean it up
                                     await self._cleanup_dead_websocket(pid, connection_id)
                                     cleanup_results["connections_cleaned"] += 1
@@ -1513,7 +1580,7 @@ class ConnectionManager:
         """
         targets = self.room_manager.get_room_subscribers(room_id)
 
-        broadcast_stats = {
+        broadcast_stats: dict[str, Any] = {
             "room_id": room_id,
             "total_targets": len(targets),
             "excluded_players": 0,
@@ -1558,7 +1625,7 @@ class ConnectionManager:
         # Get all players with any type of connection (WebSocket or SSE)
         all_players = set(list(self.player_websockets.keys()) + list(self.active_sse_connections.keys()))
 
-        global_stats = {
+        global_stats: dict[str, Any] = {
             "total_players": len(all_players),
             "excluded_players": 0,
             "successful_deliveries": 0,
@@ -1727,13 +1794,15 @@ class ConnectionManager:
             # Check if player is already tracked as online
             is_new_connection = player_id not in self.online_players
 
-            player_info = {
+            # Type annotation for player_info to help mypy
+            connection_types_set: set[str] = set()
+            player_info: dict[str, Any] = {
                 "player_id": player_id,
                 "player_name": getattr(player, "name", player_id),
                 "level": getattr(player, "level", 1),
                 "current_room_id": getattr(player, "current_room_id", None),
                 "connected_at": time.time(),
-                "connection_types": set(),
+                "connection_types": connection_types_set,
                 "total_connections": 0,
             }
 
@@ -1741,10 +1810,13 @@ class ConnectionManager:
             if not is_new_connection:
                 existing_info = self.online_players[player_id]
                 player_info["connected_at"] = existing_info.get("connected_at", time.time())
-                player_info["connection_types"] = existing_info.get("connection_types", set())
+                existing_types = existing_info.get("connection_types", set())
+                player_info["connection_types"] = existing_types if isinstance(existing_types, set) else set()
 
             # Add the new connection type
-            player_info["connection_types"].add(connection_type)
+            connection_types_for_player = player_info["connection_types"]
+            if isinstance(connection_types_for_player, set):
+                connection_types_for_player.add(connection_type)
             player_info["total_connections"] = len(self.player_websockets.get(player_id, [])) + len(
                 self.active_sse_connections.get(player_id, [])
             )
@@ -1759,7 +1831,7 @@ class ConnectionManager:
                     try:
                         from datetime import UTC, datetime
 
-                        player.last_active = datetime.now(UTC)
+                        player.last_active = datetime.now(UTC)  # type: ignore[assignment]
                         self.persistence.save_player(player)
                         logger.debug("Updated last_active for player on connection", player_id=player_id)
                     except Exception as e:
@@ -1815,7 +1887,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error tracking player connection", error=str(e), exc_info=True)
 
-    async def _broadcast_connection_message(self, player_id: str, player: Player):
+    async def _broadcast_connection_message(self, player_id: str, player: Player) -> None:
         """
         Broadcast a connection message for a player who is already tracked as online.
         This is used when a player connects via WebSocket but is already in the online_players list.
@@ -1844,7 +1916,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error broadcasting connection message", player_id=player_id, error=str(e), exc_info=True)
 
-    async def _track_player_disconnected(self, player_id: str, connection_type: str | None = None):
+    async def _track_player_disconnected(self, player_id: str, connection_type: str | None = None) -> None:
         """
         Track when a player disconnects.
 
@@ -1952,7 +2024,7 @@ class ConnectionManager:
             async with self.disconnect_lock:
                 self.disconnecting_players.discard(player_id)
 
-    def _cleanup_ghost_players(self):
+    def _cleanup_ghost_players(self) -> None:
         """
         Clean up ghost players from all rooms.
 
@@ -2003,7 +2075,7 @@ class ConnectionManager:
         Returns:
             dict: Error handling results with detailed information
         """
-        error_results = {
+        error_results: dict[str, Any] = {
             "player_id": player_id,
             "error_type": error_type,
             "error_details": error_details,
@@ -2247,7 +2319,7 @@ class ConnectionManager:
         Returns:
             dict: Recovery results
         """
-        recovery_results = {
+        recovery_results: dict[str, Any] = {
             "player_id": player_id,
             "recovery_type": recovery_type,
             "success": False,
@@ -2334,7 +2406,12 @@ class ConnectionManager:
         Returns:
             dict: Validation results
         """
-        validation_results = {"player_id": player_id, "is_consistent": True, "issues_found": [], "actions_taken": []}
+        validation_results: dict[str, Any] = {
+            "player_id": player_id,
+            "is_consistent": True,
+            "issues_found": [],
+            "actions_taken": [],
+        }
 
         try:
             # Check if player is in online_players but has no actual connections
@@ -2754,7 +2831,7 @@ class ConnectionManager:
                     unhealthy_connections += 1
 
             # Calculate session distribution
-            session_connection_counts = {}
+            session_connection_counts: dict[int, int] = {}
             for _session_id, conn_ids in self.session_connections.items():
                 count = len(conn_ids)
                 session_connection_counts[count] = session_connection_counts.get(count, 0) + 1

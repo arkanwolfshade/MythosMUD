@@ -534,8 +534,6 @@ class TestCombatEvents:
             room_id="test_room",
             participants={"player": "Player", "npc": "Rat"},
             turn_order=["player", "npc"],
-            event_type="combat_started",
-            timestamp=datetime.now(UTC),
         )
 
         assert event.room_id == "test_room"
@@ -550,8 +548,6 @@ class TestCombatEvents:
             reason="Target defeated",
             duration_seconds=30,
             participants={"player": "Player", "npc": "Rat"},
-            event_type="combat_ended",
-            timestamp=datetime.now(UTC),
         )
 
         assert event.room_id == "test_room"
@@ -571,8 +567,6 @@ class TestCombatEvents:
             action_type="punch",
             target_current_hp=45,
             target_max_hp=50,
-            event_type="player_attacked",
-            timestamp=datetime.now(UTC),
         )
 
         assert event.attacker_name == "Player"

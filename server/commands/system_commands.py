@@ -14,13 +14,13 @@ logger = get_logger(__name__)
 
 
 async def handle_help_command(
-    args: list, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the help command.
 
     Args:
-        args: Command arguments
+        command_data: Command data dictionary containing args and other info
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
@@ -29,6 +29,9 @@ async def handle_help_command(
     Returns:
         dict: Help content result
     """
+    # Extract args from command_data
+    args: list = command_data.get("args", [])
+
     logger.debug("Processing help command", player_name=player_name, args=args)
 
     if len(args) > 1:

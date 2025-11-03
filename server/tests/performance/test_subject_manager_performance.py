@@ -11,6 +11,7 @@ AI: Performance tests verify caching effectiveness and operation speeds.
 AI: Tests establish performance baselines for monitoring and optimization.
 """
 
+import sys
 import time
 
 import pytest
@@ -19,6 +20,19 @@ from server.logging.enhanced_logging_config import get_logger
 from server.services.nats_subject_manager import NATSSubjectManager
 
 logger = get_logger("tests.performance.subject_manager")
+
+
+def _platform_factor() -> float:
+    """Adjust performance thresholds for platform-specific variations."""
+
+    # AI Agent: Windows CI environments tend to run ~20% slower than Linux runners.
+    factor: float = 1.0
+    if sys.platform.startswith("win"):
+        factor = 1.2
+    return factor
+
+
+PLATFORM_PERFORMANCE_FACTOR = _platform_factor()
 
 
 class TestSubjectManagerPerformance:
@@ -39,7 +53,8 @@ class TestSubjectManagerPerformance:
         elapsed = time.perf_counter() - start_time
 
         # Performance target: < 100ms for 10,000 builds (< 0.01ms per operation)
-        assert elapsed < 0.1, f"Build performance degraded: {elapsed:.4f}s for {iterations} operations"
+        max_duration = 0.1 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, f"Build performance degraded: {elapsed:.4f}s for {iterations} operations"
 
         # Log performance metrics
         avg_time_ms = (elapsed / iterations) * 1000
@@ -70,7 +85,8 @@ class TestSubjectManagerPerformance:
         elapsed = time.perf_counter() - start_time
 
         # Performance target: < 50ms for 1,000 validations without cache
-        assert elapsed < 0.05, f"Validation performance degraded: {elapsed:.4f}s for {iterations} operations"
+        max_duration = 0.05 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, f"Validation performance degraded: {elapsed:.4f}s for {iterations} operations"
 
         avg_time_ms = (elapsed / iterations) * 1000
         ops_per_second = iterations / elapsed
@@ -103,7 +119,10 @@ class TestSubjectManagerPerformance:
         elapsed = time.perf_counter() - start_time
 
         # Performance target: < 100ms for 10,000 cached validations (< 0.01ms per operation)
-        assert elapsed < 0.1, f"Cached validation performance degraded: {elapsed:.4f}s for {iterations} operations"
+        max_duration = 0.1 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, (
+            f"Cached validation performance degraded: {elapsed:.4f}s for {iterations} operations"
+        )
 
         avg_time_ms = (elapsed / iterations) * 1000
         ops_per_second = iterations / elapsed
@@ -178,7 +197,10 @@ class TestSubjectManagerPerformance:
         total_operations = iterations * len(test_subjects)
 
         # Performance target: < 100ms for 9,000 pattern matches
-        assert elapsed < 0.1, f"Pattern matching performance degraded: {elapsed:.4f}s for {total_operations} operations"
+        max_duration = 0.1 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, (
+            f"Pattern matching performance degraded: {elapsed:.4f}s for {total_operations} operations"
+        )
 
         avg_time_ms = (elapsed / total_operations) * 1000
         ops_per_second = total_operations / elapsed
@@ -492,7 +514,8 @@ class TestMetricsPerformance:
         elapsed = time.perf_counter() - start_time
 
         # Performance target: < 50ms for 1,000 metric retrievals
-        assert elapsed < 0.05, f"Metrics retrieval too slow: {elapsed:.4f}s for {iterations} operations"
+        max_duration = 0.05 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, f"Metrics retrieval too slow: {elapsed:.4f}s for {iterations} operations"
 
         avg_time_ms = (elapsed / iterations) * 1000
         ops_per_second = iterations / elapsed
@@ -523,7 +546,8 @@ class TestMetricsPerformance:
         ops_per_second = iterations / elapsed
 
         # Performance target: Still < 100ms for 2,000 operations
-        assert elapsed < 0.1, f"Rolling window maintenance degraded performance: {elapsed:.4f}s"
+        max_duration = 0.1 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, f"Rolling window maintenance degraded performance: {elapsed:.4f}s"
 
         # Verify window size is maintained
         assert len(manager.metrics.build_times) == 1_000
@@ -554,8 +578,8 @@ class TestScalability:
                 description=f"Custom pattern {i}",
             )
 
-        # Total patterns: 23 (predefined) + 100 (custom) = 123
-        assert len(manager.patterns) == 123
+        # Total patterns: 24 (predefined) + 100 (custom) = 124
+        assert len(manager.patterns) == 124
 
         # Benchmark: Validate subjects with large pattern registry
         test_subject = "chat.say.room.test"
@@ -571,7 +595,10 @@ class TestScalability:
 
         # Performance should not degrade significantly with more patterns
         # Target: < 50ms for 1,000 validations
-        assert elapsed < 0.05, f"Large registry degraded performance: {elapsed:.4f}s for {iterations} operations"
+        max_duration = 0.05 * PLATFORM_PERFORMANCE_FACTOR
+        assert elapsed < max_duration, (
+            f"Large registry degraded performance: {elapsed:.4f}s for {iterations} operations"
+        )
 
         avg_time_ms = (elapsed / iterations) * 1000
         ops_per_second = iterations / elapsed

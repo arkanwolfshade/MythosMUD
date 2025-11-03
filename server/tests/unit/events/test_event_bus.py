@@ -37,7 +37,8 @@ class TestEventTypes:
 
     def test_base_event_creation(self):
         """Test that BaseEvent can be created with proper defaults."""
-        event = BaseEvent(timestamp=None, event_type="TestEvent")
+        event = BaseEvent()
+        event.event_type = "TestEvent"
 
         assert event.timestamp is not None
         assert isinstance(event.timestamp, datetime)
@@ -45,9 +46,7 @@ class TestEventTypes:
 
     def test_player_entered_room_event(self):
         """Test PlayerEnteredRoom event creation."""
-        event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="player123", room_id="room456", from_room_id="room789"
-        )
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456", from_room_id="room789")
 
         assert event.player_id == "player123"
         assert event.room_id == "room456"
@@ -56,9 +55,7 @@ class TestEventTypes:
 
     def test_player_left_room_event(self):
         """Test PlayerLeftRoom event creation."""
-        event = PlayerLeftRoom(
-            timestamp=None, event_type="", player_id="player123", room_id="room456", to_room_id="room789"
-        )
+        event = PlayerLeftRoom(player_id="player123", room_id="room456", to_room_id="room789")
 
         assert event.player_id == "player123"
         assert event.room_id == "room456"
@@ -67,9 +64,7 @@ class TestEventTypes:
 
     def test_object_added_to_room_event(self):
         """Test ObjectAddedToRoom event creation."""
-        event = ObjectAddedToRoom(
-            timestamp=None, event_type="", object_id="object123", room_id="room456", player_id="player789"
-        )
+        event = ObjectAddedToRoom(object_id="object123", room_id="room456", player_id="player789")
 
         assert event.object_id == "object123"
         assert event.room_id == "room456"
@@ -78,9 +73,7 @@ class TestEventTypes:
 
     def test_object_removed_from_room_event(self):
         """Test ObjectRemovedFromRoom event creation."""
-        event = ObjectRemovedFromRoom(
-            timestamp=None, event_type="", object_id="object123", room_id="room456", player_id="player789"
-        )
+        event = ObjectRemovedFromRoom(object_id="object123", room_id="room456", player_id="player789")
 
         assert event.object_id == "object123"
         assert event.room_id == "room456"
@@ -89,9 +82,7 @@ class TestEventTypes:
 
     def test_npc_entered_room_event(self):
         """Test NPCEnteredRoom event creation."""
-        event = NPCEnteredRoom(
-            timestamp=None, event_type="", npc_id="npc123", room_id="room456", from_room_id="room789"
-        )
+        event = NPCEnteredRoom(npc_id="npc123", room_id="room456", from_room_id="room789")
 
         assert event.npc_id == "npc123"
         assert event.room_id == "room456"
@@ -100,7 +91,7 @@ class TestEventTypes:
 
     def test_npc_left_room_event(self):
         """Test NPCLeftRoom event creation."""
-        event = NPCLeftRoom(timestamp=None, event_type="", npc_id="npc123", room_id="room456", to_room_id="room789")
+        event = NPCLeftRoom(npc_id="npc123", room_id="room456", to_room_id="room789")
 
         assert event.npc_id == "npc123"
         assert event.room_id == "room456"
@@ -184,7 +175,7 @@ class TestEventBus(TestingAsyncMixin):
         event_bus.subscribe(PlayerEnteredRoom, handler)
 
         # Create and publish an event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
         # Give the async processing time to process
@@ -214,7 +205,7 @@ class TestEventBus(TestingAsyncMixin):
         event_bus.subscribe(PlayerEnteredRoom, handler2)
 
         # Create and publish an event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
         # Give the async processing time to process
@@ -244,7 +235,7 @@ class TestEventBus(TestingAsyncMixin):
         assert success is True
 
         # Publish an event - should not be received
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
         # Give the async processing time to process
@@ -339,7 +330,7 @@ class TestEventBus(TestingAsyncMixin):
         event_bus.subscribe(PlayerEnteredRoom, good_handler)
 
         # Publish an event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
         # Give the async processing time to process
@@ -366,7 +357,7 @@ class TestEventBus(TestingAsyncMixin):
         # Create multiple async tasks that publish events
         async def publish_events():
             for i in range(10):
-                event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=f"player{i}", room_id=f"room{i}")
+                event = PlayerEnteredRoom(player_id=f"player{i}", room_id=f"room{i}")
                 event_bus.publish(event)
                 await asyncio.sleep(0.01)
 
@@ -394,7 +385,7 @@ class TestEventBus(TestingAsyncMixin):
         event_bus = EventBus()
 
         # Publish an event to start the processing
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player123", room_id="room456")
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
         # Give the async processing time to start

@@ -13,6 +13,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from ..events.event_bus import EventBus
+from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
@@ -55,6 +56,9 @@ class NPCCombatIntegrationService:
             persistence_type=type(self._persistence).__name__,
             persistence_is_none=self._persistence is None,
         )
+        # Initialize GameMechanicsService for proper XP awards and stat updates
+        self._game_mechanics = GameMechanicsService(self._persistence)
+
         # Pass self to PlayerCombatService for UUID mapping access
         self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
 
@@ -83,9 +87,6 @@ class NPCCombatIntegrationService:
 
         self._messaging_integration = CombatMessagingIntegration()
         self._event_publisher = CombatEventPublisher(event_bus)
-
-        # NPC combat memory - tracks last attacker for each NPC instance
-        self._npc_combat_memory: dict[str, str] = {}
 
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
 
@@ -274,7 +275,7 @@ class NPCCombatIntegrationService:
 
             if combat_result.success:
                 # Broadcast attack message with health info
-                self._messaging_integration.broadcast_combat_attack(
+                await self._messaging_integration.broadcast_combat_attack(
                     room_id=room_id,
                     attacker_name=self._get_player_name(player_id),
                     target_name=npc_instance.name,
@@ -294,9 +295,10 @@ class NPCCombatIntegrationService:
                     npc_id=npc_id,
                     damage=damage,
                     combat_ended=combat_result.combat_ended,
+                    message=combat_result.message,
                 )
 
-                return combat_result.message
+                return combat_result.success
             else:
                 logger.warning(
                     "Combat attack failed",
@@ -304,7 +306,7 @@ class NPCCombatIntegrationService:
                     npc_id=npc_id,
                     message=combat_result.message,
                 )
-                return combat_result.message
+                return combat_result.success
 
         except Exception as e:
             logger.error(
@@ -357,44 +359,31 @@ class NPCCombatIntegrationService:
 
             # Award XP to killer if it's a player
             if killer_id:
-                player = self._persistence.get_player(killer_id)
-                if player:
-                    # Award XP using game mechanics service
-                    try:
-                        # Try to get game mechanics service from persistence
-                        if hasattr(self._persistence, "get_game_mechanics_service"):
-                            game_mechanics = self._persistence.get_game_mechanics_service()
-                            if game_mechanics:
-                                success, _ = game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
-                                if success:
-                                    logger.info(
-                                        "Awarded XP to player",
-                                        player_id=killer_id,
-                                        xp_reward=xp_reward,
-                                        npc_id=npc_id,
-                                    )
-                                else:
-                                    logger.warning(
-                                        "Failed to award XP to player",
-                                        player_id=killer_id,
-                                        xp_reward=xp_reward,
-                                    )
-                        else:
-                            # Fallback: directly update player experience
-                            player.stats.experience_points += xp_reward
-                            self._persistence.save_player(player)
-                            logger.info(
-                                "Awarded XP to player (fallback)",
-                                player_id=killer_id,
-                                xp_reward=xp_reward,
-                                npc_id=npc_id,
-                            )
-                    except Exception as e:
-                        logger.error(
-                            "Error awarding XP to player",
+                # CRITICAL FIX: Use GameMechanicsService.gain_experience() to prevent
+                # XP awards from overwriting combat damage with stale health values
+                try:
+                    success, message = self._game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
+                    if success:
+                        logger.info(
+                            "Awarded XP to player",
                             player_id=killer_id,
-                            error=str(e),
+                            xp_reward=xp_reward,
+                            npc_id=npc_id,
                         )
+                    else:
+                        logger.warning(
+                            "Failed to award XP to player",
+                            player_id=killer_id,
+                            xp_reward=xp_reward,
+                            message=message,
+                        )
+                except Exception as e:
+                    logger.error(
+                        "Error awarding XP to player",
+                        player_id=killer_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
 
             # Note: NPCDiedEvent is now published by CombatService to avoid duplication
             # The CombatService handles the npc_died event publishing when combat ends
@@ -497,8 +486,9 @@ class NPCCombatIntegrationService:
         """Get player name for messaging."""
         try:
             player = self._persistence.get_player(player_id)
-            return player.name if player else "Unknown Player"
-        except Exception:
+            return str(player.name) if player else "Unknown Player"
+        except (OSError, ValueError, TypeError, Exception) as e:
+            logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
 
     def _despawn_npc(self, npc_id: str, _room_id: str) -> None:
@@ -535,7 +525,7 @@ class NPCCombatIntegrationService:
         try:
             player = self._persistence.get_player(player_id)
             if player:
-                return player.current_room_id
+                return str(player.current_room_id)
             return None
         except Exception as e:
             logger.error("Error getting player room ID", player_id=player_id, error=str(e))

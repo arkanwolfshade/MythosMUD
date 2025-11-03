@@ -5,6 +5,7 @@ This module provides the main command processing service that orchestrates
 command validation, routing, and execution.
 """
 
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -58,6 +59,9 @@ from .utility_commands import (
 
 logger = get_logger(__name__)
 
+# Type alias for command handler functions
+CommandHandler = Callable[[dict, dict, Any, AliasStorage | None, str], Awaitable[dict[str, str]]]
+
 
 class CommandService:
     """
@@ -67,9 +71,9 @@ class CommandService:
     with proper error handling and logging.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the command service."""
-        self.command_handlers = {
+        self.command_handlers: dict[str, CommandHandler] = {
             # System commands
             "help": handle_help_command,
             # Alias commands
@@ -123,7 +127,7 @@ class CommandService:
         command_data: dict,
         current_user: dict,
         request: Any,
-        alias_storage: AliasStorage,
+        alias_storage: AliasStorage | None,
         player_name: str,
     ) -> dict[str, str]:
         """
@@ -147,18 +151,22 @@ class CommandService:
             return {"result": "Invalid command format"}
 
         # Get the appropriate handler
-        handler = self.command_handlers.get(command_type)
+        handler: CommandHandler | None = self.command_handlers.get(command_type)
         if not handler:
             logger.error("No handler found for command type", player=player_name, command_type=command_type)
             return {"result": f"Unknown command: {command_type}"}
 
         try:
             # Call handler with command_data (standardized format)
+            # At this point handler is guaranteed to be CommandHandler (not None) due to check above
             logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
+            assert handler is not None  # Type narrowing for mypy
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
+            # Type assertion to help MyPy understand the return type
+            assert isinstance(result, dict)
             return result
         except Exception as e:
             logger.error(
@@ -178,7 +186,7 @@ class CommandService:
         command: str,
         current_user: dict,
         request: Any,
-        alias_storage: AliasStorage,
+        alias_storage: AliasStorage | None,
         player_name: str,
     ) -> dict[str, str]:
         """
@@ -200,7 +208,7 @@ class CommandService:
         try:
             parsed_command = parse_command(command)
             cmd = parsed_command.command_type.value
-            args = parsed_command.args
+            args = getattr(parsed_command, "args", [])
 
             logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
         except MythosValidationError as e:
@@ -212,7 +220,7 @@ class CommandService:
 
         # Step 4: Route to appropriate handler
         if cmd in self.command_handlers:
-            handler = self.command_handlers[cmd]
+            handler: CommandHandler = self.command_handlers[cmd]
             try:
                 # Create command_data dictionary for handler using parsed command data
                 command_data = {
@@ -230,8 +238,11 @@ class CommandService:
                 if hasattr(parsed_command, "target"):
                     command_data["target"] = parsed_command.target
 
+                assert handler is not None  # Type narrowing for mypy
                 result = await handler(command_data, current_user, request, alias_storage, player_name)
                 logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+                # Type assertion to help MyPy understand the return type
+                assert isinstance(result, dict)
                 return result
             except Exception as e:
                 logger.error(
@@ -254,7 +265,7 @@ class CommandService:
         """Get list of available commands."""
         return list(self.command_handlers.keys())
 
-    def register_command_handler(self, command: str, handler: callable) -> None:
+    def register_command_handler(self, command: str, handler: Callable[..., Awaitable[dict[str, str]]]) -> None:
         """
         Register a new command handler.
 

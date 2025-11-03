@@ -23,6 +23,7 @@ from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 
 from ..logging.enhanced_logging_config import get_logger
+from ..persistence import get_persistence
 
 logger = get_logger(__name__)
 
@@ -72,7 +73,7 @@ class NPCLifecycleRecord:
         self.total_active_time = 0.0
         self.last_active_time = 0.0
         self.error_count = 0
-        self.last_error = None
+        self.last_error: dict[str, Any] | None = None
 
     def add_event(self, event_type: NPCLifecycleEvent, details: dict[str, Any] | None = None) -> None:
         """
@@ -163,8 +164,9 @@ class NPCLifecycleManager:
     def __init__(
         self,
         event_bus: EventBus,
-        population_controller: NPCPopulationController,
+        population_controller: NPCPopulationController | None,
         spawning_service: NPCSpawningService,
+        persistence=None,
     ):
         """
         Initialize the NPC lifecycle manager.
@@ -173,10 +175,12 @@ class NPCLifecycleManager:
             event_bus: Event bus for publishing and subscribing to events
             population_controller: Population controller for managing NPC populations
             spawning_service: Spawning service for creating NPC instances
+            persistence: Persistence layer for room access (optional, for proper room state mutation)
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
         self.spawning_service = spawning_service
+        self.persistence = persistence
 
         # Lifecycle tracking
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
@@ -194,7 +198,7 @@ class NPCLifecycleManager:
         # Subscribe to relevant events
         self._subscribe_to_events()
 
-        logger.info("NPC Lifecycle Manager initialized")
+        logger.info("NPC Lifecycle Manager initialized", has_persistence=bool(persistence))
 
     def record_npc_death(self, npc_id: str) -> None:
         """
@@ -290,9 +294,15 @@ class NPCLifecycleManager:
             npc_instance.npc_id = npc_id
             npc_instance.spawned_at = time.time()
 
-            # Publish NPC entered room event
-            event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
-            self.event_bus.publish(event)
+            # Mutate room state via Room API (single source of truth) which will publish the event
+            persistence = get_persistence()
+            room = persistence.get_room(room_id)
+            if not room:
+                logger.warning("Room not found for NPC spawn", room_id=room_id, npc_id=npc_id)
+                return None
+
+            # Single source of truth: mutate via Room API; Room will publish the event
+            room.npc_entered(npc_id)
 
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
 
@@ -330,15 +340,30 @@ class NPCLifecycleManager:
             if npc_instance:
                 room_id = getattr(npc_instance, "room_id", "unknown")
 
-                # Publish NPC left room event
-                event = NPCLeftRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=room_id)
-                self.event_bus.publish(event)
+                # Remove NPC from room (which publishes NPCLeftRoom event)
+                # AI: Proper domain-driven design - mutate state via domain entity, not by publishing event directly
+                if self.persistence:
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        room.npc_left(npc_id)
+                        logger.debug("NPC removed from room during despawn", npc_id=npc_id, room_id=room_id)
+                    else:
+                        logger.warning("Room not found during NPC despawn", room_id=room_id, npc_id=npc_id)
+                        # If no room found, publish event directly as fallback
+                        event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
+                        self.event_bus.publish(event)
+                else:
+                    # No persistence available - publish event directly
+                    logger.debug("No persistence available for room mutation, publishing event directly")
+                    event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
+                    self.event_bus.publish(event)
 
                 # Remove from active NPCs
                 del self.active_npcs[npc_id]
 
             # Update population controller
-            self.population_controller.despawn_npc(npc_id)
+            if self.population_controller is not None:
+                self.population_controller.despawn_npc(npc_id)
 
             # Update lifecycle record
             record.change_state(NPCLifecycleState.DESPAWNED, reason)
@@ -499,12 +524,15 @@ class NPCLifecycleManager:
         Returns:
             True if NPC can be spawned
         """
+        if self.population_controller is None:
+            return True  # Allow spawn if no population controller
+
         # Check population limits
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
-            current_count = stats.npcs_by_definition.get(definition.id, 0)
+            current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             if not definition.can_spawn(current_count):
                 logger.debug(
                     "NPC spawn blocked by population limit",
@@ -560,16 +588,18 @@ class NPCLifecycleManager:
         respawn_queue_size = len(self.respawn_queue)
 
         # Count by state
-        state_counts = {}
+        state_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
             state = record.current_state
             state_counts[state] = state_counts.get(state, 0) + 1
 
         # Count by NPC type
-        type_counts = {}
+        # AI Agent note: Use npc_type.value to get string value from enum
+        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
+        type_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
-            npc_type = record.definition.npc_type
-            type_counts[npc_type] = type_counts.get(npc_type, 0) + 1
+            npc_type_str = str(record.definition.npc_type.value)
+            type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
 
         # Calculate average statistics
         total_spawns = sum(record.spawn_count for record in self.lifecycle_records.values())

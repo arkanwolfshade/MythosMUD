@@ -7,6 +7,7 @@ and integration with the existing player service for XP persistence.
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from typing import Any
 from uuid import UUID
 
 from server.events.event_types import BaseEvent
@@ -24,9 +25,9 @@ class PlayerCombatState:
     combat_id: UUID
     room_id: str
     is_in_combat: bool = True
-    last_activity: datetime = None
+    last_activity: datetime | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize last_activity if not provided."""
         if self.last_activity is None:
             self.last_activity = datetime.now(UTC)
@@ -35,8 +36,12 @@ class PlayerCombatState:
 class PlayerXPAwardEvent(BaseEvent):
     """Event published when a player receives XP."""
 
-    def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime = None):
-        super().__init__(event_type="player_xp_awarded", timestamp=timestamp or datetime.now(UTC))
+    def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime | None = None) -> None:
+        # AI Agent: BaseEvent fields have init=False, so we can't pass them to super().__init__()
+        # Instead, we set them directly after calling super().__init__() with no args
+        super().__init__()
+        object.__setattr__(self, "event_type", "player_xp_awarded")
+        object.__setattr__(self, "timestamp", timestamp or datetime.now(UTC))
         self.player_id = player_id
         self.xp_amount = xp_amount
         self.new_level = new_level
@@ -50,7 +55,7 @@ class PlayerCombatService:
     and integrates with the persistence layer for XP persistence.
     """
 
-    def __init__(self, persistence, event_bus, npc_combat_integration_service=None):
+    def __init__(self, persistence: Any, event_bus: Any, npc_combat_integration_service: Any = None) -> None:
         """
         Initialize the player combat service.
 
@@ -246,7 +251,10 @@ class PlayerCombatService:
                 xp_amount=xp_amount,
                 new_level=player.level,
             )
-            await self._event_bus.publish(event)
+            if self._event_bus:
+                self._event_bus.publish(event)  # EventBus.publish is sync, not async
+            else:
+                logger.warning("No event bus available for XP award event", player_id=player_id)
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
@@ -286,6 +294,7 @@ class PlayerCombatService:
                     npc_id=npc_id,
                     xp_amount=xp_reward,
                 )
+                assert isinstance(xp_reward, int)
                 return xp_reward
             else:
                 logger.debug("UUID not found in XP mapping", npc_id=npc_id)
@@ -329,6 +338,7 @@ class PlayerCombatService:
                                 original_id=original_string_id,
                                 xp_amount=xp_reward,
                             )
+                            assert isinstance(xp_reward, int)
                             return xp_reward
                         else:
                             logger.debug("No xp_value in base_stats", base_stats=base_stats)
@@ -372,7 +382,7 @@ class PlayerCombatService:
         stale_players = []
 
         for player_id, state in self._player_combat_states.items():
-            if state.last_activity < cutoff_time:
+            if state.last_activity is not None and state.last_activity < cutoff_time:
                 stale_players.append(player_id)
 
         for player_id in stale_players:

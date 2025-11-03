@@ -13,24 +13,25 @@ import tracemalloc
 from typing import Any
 
 import psutil
+from pydantic import BaseModel
 
 
 class MemoryProfiler:
     """Memory profiler for analyzing model memory usage."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the memory profiler."""
         self.process = psutil.Process()
-        self.baseline_memory = None
-        self.measurements = []
+        self.baseline_memory: int | None = None
+        self.measurements: list[dict[str, Any]] = []
 
-    def start_profiling(self):
+    def start_profiling(self) -> None:
         """Start memory profiling."""
         gc.collect()  # Clean up before measuring
         self.baseline_memory = self.process.memory_info().rss
         tracemalloc.start()
 
-    def stop_profiling(self):
+    def stop_profiling(self) -> None:
         """Stop memory profiling."""
         tracemalloc.stop()
 
@@ -134,7 +135,7 @@ class MemoryProfiler:
         }
 
     def measure_model_deserialization(
-        self, model_class: type, serialized_data: list[dict], iterations: int = 100
+        self, model_class: type[BaseModel], serialized_data: list[dict], iterations: int = 100
     ) -> dict[str, Any]:
         """
         Measure memory usage for model deserialization.
@@ -153,6 +154,7 @@ class MemoryProfiler:
         deserialized_instances = []
         for _ in range(iterations):
             for data in serialized_data:
+                # Cast is necessary because mypy doesn't recognize class methods on type[BaseModel]
                 instance = model_class.model_validate(data)
                 deserialized_instances.append(instance)
 
@@ -230,7 +232,7 @@ class MemoryProfiler:
             "total_mb": psutil.virtual_memory().total / (1024 * 1024),
         }
 
-    def print_memory_summary(self):
+    def print_memory_summary(self) -> None:
         """Print a formatted memory usage summary."""
         summary = self.get_memory_usage_summary()
         print("\n=== Memory Usage Summary ===")
@@ -240,7 +242,7 @@ class MemoryProfiler:
         print(f"Available Memory: {summary['available_mb']:.2f} MB")
         print(f"Total Memory: {summary['total_mb']:.2f} MB")
 
-    def print_model_memory_usage(self, result: dict[str, Any]):
+    def print_model_memory_usage(self, result: dict[str, Any]) -> None:
         """Print formatted model memory usage results."""
         if "error" in result:
             print(f"Error measuring {result.get('model_class', 'Unknown')}: {result['error']}")
@@ -254,7 +256,7 @@ class MemoryProfiler:
         )
         print(f"Peak Memory: {result['peak_memory_bytes']} bytes ({result['peak_memory_bytes'] / 1024:.2f} KB)")
 
-    def print_comparison_results(self, results: dict[str, Any]):
+    def print_comparison_results(self, results: dict[str, Any]) -> None:
         """Print formatted comparison results."""
         print("\n=== Model Memory Usage Comparison ===")
 
@@ -274,7 +276,7 @@ class MemoryProfiler:
             print(f"Average Memory per Instance: {stats['avg_memory_bytes']:.2f} bytes")
 
 
-def benchmark_model_memory_usage():
+def benchmark_model_memory_usage() -> dict[str, Any]:
     """Benchmark memory usage for all major models."""
     from server.models.alias import Alias
     from server.models.command import LookCommand, SayCommand
@@ -328,7 +330,7 @@ def benchmark_model_memory_usage():
 
     # Compare memory usage
     model_classes = [Alias, SayCommand, LookCommand, Stats, StatusEffect, HealthResponse]
-    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)
+    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)  # type: ignore[arg-type]
 
     profiler.print_comparison_results(results)
     profiler.print_memory_summary()

@@ -6,12 +6,26 @@ supporting partial name matching, disambiguation, and room-based filtering.
 """
 
 import re
-from typing import Any
+from typing import Any, Protocol
 
 from ..logging.enhanced_logging_config import get_logger
 from ..schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
 
 logger = get_logger(__name__)
+
+
+class PersistenceProtocol(Protocol):
+    """Protocol for persistence layer dependency injection."""
+
+    def get_player(self, player_id: str) -> Any: ...
+    def get_room(self, room_id: str) -> Any: ...
+    def get_players_in_room(self, room_id: str) -> list[Any]: ...
+
+
+class PlayerServiceProtocol(Protocol):
+    """Protocol for player service dependency injection."""
+
+    async def resolve_player_name(self, name: str) -> Any: ...
 
 
 class TargetResolutionService:
@@ -22,7 +36,7 @@ class TargetResolutionService:
     providing partial name matching, disambiguation, and room-based filtering.
     """
 
-    def __init__(self, persistence, player_service):
+    def __init__(self, persistence: PersistenceProtocol, player_service: PlayerServiceProtocol) -> None:
         """
         Initialize the target resolution service.
 
@@ -165,7 +179,7 @@ class TargetResolutionService:
 
             # Add disambiguation suffixes if multiple players have the same name
             if len(matches) > 1:
-                name_counts = {}
+                name_counts: dict[str, int] = {}
                 for match in matches:
                     name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
 
@@ -239,7 +253,7 @@ class TargetResolutionService:
 
             # Add disambiguation suffixes if multiple NPCs have the same name
             if len(matches) > 1:
-                name_counts = {}
+                name_counts: dict[str, int] = {}
                 for match in matches:
                     name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
 

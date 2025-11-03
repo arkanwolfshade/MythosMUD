@@ -40,6 +40,7 @@ import asyncio
 import os
 import sys
 from pathlib import Path
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -129,6 +130,9 @@ except (FileNotFoundError, ValueError) as e:
     )
     logger.critical("Additional setup steps: Verify file contains all required variables and run tests again")
     raise SystemExit(1) from e
+
+# Set MYTHOSMUD_ENV to enable test-specific config fallbacks
+os.environ["MYTHOSMUD_ENV"] = "test"
 
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
@@ -692,7 +696,8 @@ def mock_string():
     def _create_mock_string(value: str):
         """Create a mock that behaves like a string."""
         mock = MagicMock()
-        mock.__str__ = MagicMock(return_value=value)
+        # Configure __str__ using configure_mock to avoid method assignment
+        mock.configure_mock(**{"__str__.return_value": value})
         mock.__len__ = MagicMock(return_value=len(value))
         mock.strip = MagicMock(return_value=value.strip())
         mock.startswith = MagicMock(return_value=value.startswith)
@@ -712,7 +717,8 @@ def mock_command_string():
     def _create_mock_command_string(command: str):
         """Create a mock that behaves like a command string."""
         mock = MagicMock()
-        mock.__str__ = MagicMock(return_value=command)
+        # Configure __str__ using configure_mock to avoid method assignment
+        mock.configure_mock(**{"__str__.return_value": command})
         mock.__len__ = MagicMock(return_value=len(command))
         mock.strip = MagicMock(return_value=command.strip())
         mock.startswith = MagicMock(return_value=command.startswith)
@@ -829,8 +835,8 @@ class TestSessionBoundaryEnforcement:
     preventing event loop conflicts between test sessions.
     """
 
-    _active_loops = set()
-    _session_loop_registry = {}
+    _active_loops: set[Any] = set()
+    _session_loop_registry: dict[str, Any] = {}
 
     @classmethod
     def register_test_loop(cls, test_id: str, loop: asyncio.AbstractEventLoop):

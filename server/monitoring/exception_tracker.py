@@ -11,6 +11,7 @@ of anomalies is essential for maintaining the stability of our systems.
 import traceback
 import uuid
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
@@ -81,22 +82,22 @@ class ExceptionTracker:
         )
 
         # Exception handlers
-        self.exception_handlers: dict[type[Exception], list[callable]] = defaultdict(list)
-        self.global_handlers: list[callable] = []
+        self.exception_handlers: dict[type[Exception], list[Callable]] = defaultdict(list)
+        self.global_handlers: list[Callable] = []
 
         logger.info("Exception tracker initialized", max_records=max_records)
 
     def track_exception(
         self,
         exception: Exception,
-        context: dict[str, Any] = None,
-        user_id: str = None,
-        session_id: str = None,
-        correlation_id: str = None,
-        request_id: str = None,
+        context: dict[str, Any] | None = None,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        correlation_id: str | None = None,
+        request_id: str | None = None,
         severity: str = "error",
         handled: bool = False,
-        metadata: dict[str, Any] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """
         Track an exception with full context information.
@@ -263,7 +264,7 @@ class ExceptionTracker:
         """
         return self.exception_stats
 
-    def add_exception_handler(self, exception_type: type[Exception], handler: callable) -> None:
+    def add_exception_handler(self, exception_type: type[Exception], handler: Callable) -> None:
         """
         Add an exception handler for a specific exception type.
 
@@ -273,7 +274,7 @@ class ExceptionTracker:
         """
         self.exception_handlers[exception_type].append(handler)
 
-    def add_global_exception_handler(self, handler: callable) -> None:
+    def add_global_exception_handler(self, handler: Callable) -> None:
         """
         Add a global exception handler for all exceptions.
 
@@ -361,15 +362,15 @@ def get_exception_tracker() -> ExceptionTracker:
 
 def track_exception(
     exception: Exception,
-    context: dict[str, Any] = None,
-    user_id: str = None,
-    session_id: str = None,
-    correlation_id: str = None,
-    request_id: str = None,
+    context: dict[str, Any] | None = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
+    correlation_id: str | None = None,
+    request_id: str | None = None,
     severity: str = "error",
     handled: bool = False,
-    metadata: dict[str, Any] = None,
-    tracker: ExceptionTracker = None,
+    metadata: dict[str, Any] | None = None,
+    tracker: ExceptionTracker | None = None,
 ) -> str:
     """
     Track an exception with full context information.
@@ -409,12 +410,12 @@ def track_exception_with_context(
     exception: Exception,
     request=None,
     websocket=None,
-    user_id: str = None,
-    session_id: str = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
     severity: str = "error",
     handled: bool = False,
-    metadata: dict[str, Any] = None,
-    tracker: ExceptionTracker = None,
+    metadata: dict[str, Any] | None = None,
+    tracker: ExceptionTracker | None = None,
 ) -> str:
     """
     Track an exception with enhanced context from request/websocket.
@@ -442,8 +443,8 @@ def track_exception_with_context(
     )
 
     # Extract correlation and request IDs
-    correlation_id = getattr(context, "correlation_id", None)
-    request_id = getattr(context, "request_id", None)
+    correlation_id: str | None = getattr(context, "correlation_id", None)
+    request_id: str | None = getattr(context, "request_id", None)
 
     return tracker.track_exception(
         exception=exception,

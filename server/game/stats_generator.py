@@ -8,6 +8,7 @@ ranges while ensuring they meet class prerequisites.
 
 import random
 import time
+from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
@@ -51,7 +52,7 @@ class StatsGenerator:
         },
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the stats generator."""
         logger.info("StatsGenerator initialized")
 
@@ -370,7 +371,7 @@ class StatsGenerator:
         logger.debug("DEBUG: All requirements met")
         return True
 
-    def get_stat_summary(self, stats: Stats) -> dict[str, any]:
+    def get_stat_summary(self, stats: Stats) -> dict[str, Any]:
         """
         Get a summary of the character's stats including modifiers and totals.
 
@@ -400,10 +401,24 @@ class StatsGenerator:
                 "max_sanity": stats.max_sanity,
             },
             "total_points": sum(
-                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+                [
+                    stats.strength or 10,
+                    stats.dexterity or 10,
+                    stats.constitution or 10,
+                    stats.intelligence or 10,
+                    stats.wisdom or 10,
+                    stats.charisma or 10,
+                ]
             ),
             "average_stat": sum(
-                [stats.strength, stats.dexterity, stats.constitution, stats.intelligence, stats.wisdom, stats.charisma]
+                [
+                    stats.strength or 10,
+                    stats.dexterity or 10,
+                    stats.constitution or 10,
+                    stats.intelligence or 10,
+                    stats.wisdom or 10,
+                    stats.charisma or 10,
+                ]
             )
             / 6,
         }

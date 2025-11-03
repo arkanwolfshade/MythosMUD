@@ -54,7 +54,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         logger.info("User has registered", username=user.username)
 
         # Auto-verify bogus emails for privacy protection
-        if is_bogus_email(user.email):
+        if user.email and is_bogus_email(user.email):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
@@ -160,7 +160,7 @@ def get_current_user_with_logging():
     """Enhanced get_current_user with detailed logging."""
     logger = get_logger(__name__)
 
-    async def _get_current_user_with_logging(request: Request = None) -> dict | None:
+    async def _get_current_user_with_logging(request: Request | None = None) -> dict | None:
         try:
             # Log the request details
             auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"

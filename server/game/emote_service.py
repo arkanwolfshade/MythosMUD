@@ -43,15 +43,16 @@ class EmoteService:
                     environment = "e2e_test"
 
             # Try environment-specific path first, fallback to generic data/emotes.json
+            # AI Agent: Use Path directly to avoid type compatibility issues
             env_emote_path = project_root / "data" / environment / "emotes.json"
             generic_emote_path = project_root / "data" / "emotes.json"
 
             if env_emote_path.exists():
-                emote_file_path = env_emote_path
+                self.emote_file_path = env_emote_path
             else:
-                emote_file_path = generic_emote_path
-
-        self.emote_file_path = Path(emote_file_path)
+                self.emote_file_path = generic_emote_path
+        else:
+            self.emote_file_path = Path(emote_file_path)
         self.emotes: dict[str, dict] = {}
         self.alias_to_emote: dict[str, str] = {}
 

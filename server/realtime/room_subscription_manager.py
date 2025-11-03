@@ -20,7 +20,7 @@ class RoomSubscriptionManager:
     provides utilities for room-based operations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the room subscription manager."""
         # Room subscriptions (room_id -> set of player_ids)
         self.room_subscriptions: dict[str, set[str]] = {}
@@ -29,7 +29,7 @@ class RoomSubscriptionManager:
         # Reference to persistence layer (set during initialization)
         self.persistence = None
 
-    def set_persistence(self, persistence):
+    def set_persistence(self, persistence: Any) -> None:
         """Set the persistence layer reference."""
         self.persistence = persistence
 
@@ -249,13 +249,16 @@ class RoomSubscriptionManager:
         Returns:
             Optional[str]: The canonical room ID or the original ID if resolution fails
         """
-        try:
-            if not room_id:
-                return room_id
-            if self.persistence is not None:
-                room = self.persistence.get_room(room_id)
-                if room is not None and getattr(room, "id", None):
-                    return room.id
+        if room_id is None or room_id == "":
+            return room_id
+
+        if self.persistence is None:
+            return room_id
+
+        try:  # type: ignore[unreachable]
+            room = self.persistence.get_room(room_id)
+            if room is not None and getattr(room, "id", None):
+                return room.id
         except Exception as e:
             logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id

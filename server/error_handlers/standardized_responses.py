@@ -146,7 +146,8 @@ class StandardizedErrorResponse:
             return create_error_context()
 
         # Extract context information from request
-        context_data = {}
+        # AI Agent: Explicit typing to prevent mypy from inferring dict[str, str]
+        context_data: dict[str, Any] = {}
 
         # Extract user information if available
         if hasattr(request.state, "user") and request.state.user:
@@ -168,6 +169,7 @@ class StandardizedErrorResponse:
             context_data["session_id"] = request.state.session_id
 
         # Extract request information
+        # AI Agent: getattr returns Any, which is compatible with str | None in ErrorContext
         context_data["request_id"] = getattr(request.state, "request_id", None)
 
         # Extract additional metadata
@@ -272,7 +274,7 @@ class StandardizedErrorResponse:
         user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
         # Create error details
-        details = {"status_code": exc.status_code}
+        details: dict[str, Any] = {"status_code": exc.status_code}
         if include_details:
             details["original_detail"] = str(exc.detail)
 
@@ -303,7 +305,7 @@ class StandardizedErrorResponse:
         user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
         # Create error details
-        details = {"status_code": exc.status_code}
+        details: dict[str, Any] = {"status_code": exc.status_code}
         if include_details:
             details["original_detail"] = str(exc.detail)
 
@@ -440,7 +442,9 @@ class StandardizedErrorResponse:
 
 # Convenience functions for common use cases
 def create_standardized_error_response(
-    request: Request | None = None, include_details: bool = False, response_type: str = "http"
+    request: Request | None = None,
+    include_details: bool = False,
+    response_type: str = "http",
 ) -> StandardizedErrorResponse:
     """
     Create a standardized error response handler.
@@ -457,7 +461,10 @@ def create_standardized_error_response(
 
 
 def handle_api_error(
-    exc: Exception, request: Request | None = None, include_details: bool = False, response_type: str = "http"
+    exc: Exception,
+    request: Request | None = None,
+    include_details: bool = False,
+    response_type: str = "http",
 ) -> JSONResponse:
     """
     Convenience function to handle API errors with standardized responses.

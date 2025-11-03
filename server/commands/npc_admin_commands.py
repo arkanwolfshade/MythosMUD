@@ -10,6 +10,7 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
+import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -57,7 +58,7 @@ def validate_npc_admin_permission(player, player_name: str) -> bool:
 
 
 async def handle_npc_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the main NPC admin command with subcommand routing.
@@ -82,8 +83,9 @@ async def handle_npc_command(
         logger.warning("NPC command failed - no player service", player_name=player_name)
         return {"result": "NPC functionality is not available."}
 
-    # Get player object
-    player_obj = player_service.resolve_player_name(player_name)
+    # Get player object (supports sync or async implementations)
+    _maybe_coro = player_service.resolve_player_name(player_name)
+    player_obj = await _maybe_coro if inspect.isawaitable(_maybe_coro) else _maybe_coro
     if not player_obj:
         logger.warning("NPC command failed - player not found", player_name=player_name)
         return {"result": "Player not found."}
@@ -178,7 +180,7 @@ NPC Types: shopkeeper, passive_mob, aggressive_mob, quest_giver, merchant
 
 
 async def handle_npc_create_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC creation command."""
     logger.debug("Processing NPC create command", player_name=player_name)
@@ -210,6 +212,7 @@ async def handle_npc_create_command(
             definition = await npc_service.create_npc_definition(
                 session=session,
                 name=name,
+                description=None,  # Description can be set later via npc modify
                 npc_type=npc_type,
                 sub_zone_id=sub_zone_id,
                 room_id=room_id,
@@ -227,7 +230,7 @@ async def handle_npc_create_command(
 
 
 async def handle_npc_edit_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC editing command."""
     logger.debug("Processing NPC edit command", player_name=player_name)
@@ -281,7 +284,7 @@ async def handle_npc_edit_command(
 
 
 async def handle_npc_delete_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC deletion command."""
     logger.debug("Processing NPC delete command", player_name=player_name)
@@ -317,7 +320,7 @@ async def handle_npc_delete_command(
 
 
 async def handle_npc_list_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC listing command."""
     logger.debug("Processing NPC list command", player_name=player_name)
@@ -353,7 +356,7 @@ async def handle_npc_list_command(
 
 
 async def handle_npc_spawn_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC spawning command."""
     logger.debug("Processing NPC spawn command", player_name=player_name)
@@ -385,7 +388,7 @@ async def handle_npc_spawn_command(
 
 
 async def handle_npc_despawn_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC despawning command."""
     logger.debug("Processing NPC despawn command", player_name=player_name)
@@ -415,7 +418,7 @@ async def handle_npc_despawn_command(
 
 
 async def handle_npc_move_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC movement command."""
     logger.debug("Processing NPC move command", player_name=player_name)
@@ -446,7 +449,7 @@ async def handle_npc_move_command(
 
 
 async def handle_npc_stats_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC stats command."""
     logger.debug("Processing NPC stats command", player_name=player_name)
@@ -484,7 +487,7 @@ async def handle_npc_stats_command(
 
 
 async def handle_npc_population_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC population stats command."""
     logger.debug("Processing NPC population command", player_name=player_name)
@@ -519,7 +522,7 @@ async def handle_npc_population_command(
 
 
 async def handle_npc_zone_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC zone stats command."""
     logger.debug("Processing NPC zone command", player_name=player_name)
@@ -558,7 +561,7 @@ async def handle_npc_zone_command(
 
 
 async def handle_npc_status_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC system status command."""
     logger.debug("Processing NPC status command", player_name=player_name)
@@ -590,7 +593,7 @@ async def handle_npc_status_command(
 
 
 async def handle_npc_behavior_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC behavior control command."""
     logger.debug("Processing NPC behavior command", player_name=player_name)
@@ -609,16 +612,11 @@ async def handle_npc_behavior_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
-        # Set NPC behavior
-        result = await instance_service.set_npc_behavior(npc_id, behavior_type.lower())
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not set behavior"}
-
-        logger.info("NPC behavior set", npc_id=npc_id, behavior_type=behavior_type, admin_name=player_name)
-        return {"result": f"NPC {npc_id} behavior set to {behavior_type}"}
+        # TODO: Implement set_npc_behavior method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC behavior modification not yet implemented"}
 
     except Exception as e:
         logger.error("Error setting NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -626,7 +624,7 @@ async def handle_npc_behavior_command(
 
 
 async def handle_npc_react_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC reaction trigger command."""
     logger.debug("Processing NPC react command", player_name=player_name)
@@ -645,16 +643,11 @@ async def handle_npc_react_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
-        # Trigger NPC reaction
-        result = await instance_service.trigger_npc_reaction(npc_id, reaction_type.lower())
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not trigger reaction"}
-
-        logger.info("NPC reaction triggered", npc_id=npc_id, reaction_type=reaction_type, admin_name=player_name)
-        return {"result": f"NPC {npc_id} reaction {reaction_type} triggered"}
+        # TODO: Implement trigger_npc_reaction method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC reaction triggering not yet implemented"}
 
     except Exception as e:
         logger.error("Error triggering NPC reaction", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -662,7 +655,7 @@ async def handle_npc_react_command(
 
 
 async def handle_npc_stop_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC behavior stop command."""
     logger.debug("Processing NPC stop command", player_name=player_name)
@@ -675,16 +668,11 @@ async def handle_npc_stop_command(
 
     try:
         # Get NPC instance service
-        instance_service = get_npc_instance_service()
+        _instance_service = get_npc_instance_service()
 
-        # Stop NPC behavior
-        result = await instance_service.stop_npc_behavior(npc_id)
-
-        if not result:
-            return {"result": f"NPC {npc_id} not found or could not stop behavior"}
-
-        logger.info("NPC behavior stopped", npc_id=npc_id, admin_name=player_name)
-        return {"result": f"NPC {npc_id} behavior stopped"}
+        # TODO: Implement stop_npc_behavior method in NPCInstanceService
+        # For now, return not implemented message
+        return {"result": "NPC behavior stopping not yet implemented"}
 
     except Exception as e:
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))

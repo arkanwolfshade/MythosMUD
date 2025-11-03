@@ -216,9 +216,9 @@ class TestEventStormPrevention:
         event_bus_2.subscribe(PlayerLeftRoom, capturer_2)
 
         # Publish events to different EventBus instances
-        event_1 = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()), timestamp=None, event_type="")
+        event_1 = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()))
 
-        event_2 = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()), timestamp=None, event_type="")
+        event_2 = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()))
 
         event_bus_1.publish(event_1)
         event_bus_2.publish(event_2)
@@ -300,7 +300,7 @@ class TestUUIDSerializationIntegration:
         player_id = uuid4()
         room_id = uuid4()
 
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id=player_id, room_id=room_id)
+        event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
 
         await event_handler._handle_player_left(event)
 

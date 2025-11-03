@@ -234,7 +234,7 @@ class MonitoringDashboard:
                 alert_id=alert.alert_id,
                 alert_type=alert.alert_type,
                 severity=alert.severity,
-                message=alert.message,
+                alert_message=alert.message,
                 metadata=alert.metadata,
             )
 

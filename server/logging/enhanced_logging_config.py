@@ -12,7 +12,7 @@ import time
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import structlog
 from structlog.contextvars import (
@@ -21,6 +21,9 @@ from structlog.contextvars import (
     merge_contextvars,
 )
 from structlog.stdlib import BoundLogger, LoggerFactory
+
+# Module-level logger for internal use
+logger = structlog.get_logger(__name__)
 
 
 def _resolve_log_base(log_base: str) -> Path:
@@ -107,28 +110,19 @@ def _rotate_log_files(env_log_dir: Path) -> None:
 
             for attempt in range(max_retries):
                 try:
-                    # Check if the file is currently in use by attempting to open it exclusively
-                    # This helps detect file locking issues before attempting to rename
+                    # On Windows use copy-then-truncate to avoid rename-while-open issues
                     if sys.platform == "win32":
                         try:
-                            with open(log_file, "a", encoding="utf-8"):
-                                pass  # Just test if we can open the file
-                        except (PermissionError, OSError):
-                            if attempt < max_retries - 1:
-                                time.sleep(retry_delay)
-                                continue
-                            else:
-                                # Skip rotation for this file if it's locked
-                                logger = get_enhanced_logger("server.logging")
-                                logger.warning(
-                                    "Skipping rotation for locked log file",
-                                    name=log_file.name,
-                                    attempt=attempt + 1,
-                                )
-                                break
+                            # Local import to avoid circulars
+                            from server.logging.windows_safe_rotation import _copy_then_truncate
 
-                    # Attempt the rename operation
-                    log_file.rename(rotated_path)
+                            _copy_then_truncate(str(log_file), str(rotated_path))
+                        except Exception:
+                            # If helper not available, fall back to rename with retry
+                            log_file.rename(rotated_path)
+                    else:
+                        # Attempt the rename operation on non-Windows systems
+                        log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
                     logger = get_enhanced_logger("server.logging")
@@ -236,9 +230,9 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
         "authorization",
     ]
 
-    def sanitize_dict(d: dict) -> dict:
+    def sanitize_dict(d: dict[str, Any]) -> dict[str, Any]:
         """Recursively sanitize dictionary values."""
-        sanitized = {}
+        sanitized: dict[str, Any] = {}
         for key, value in d.items():
             if isinstance(value, dict):
                 sanitized[key] = sanitize_dict(value)
@@ -343,13 +337,25 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
             if key == "player_id" and isinstance(value, str):
                 # Check if this looks like a UUID
                 if len(value) == 36 and value.count("-") == 4:
+                    # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
+                    # Define a local exception type alias for optional dependency
+                    try:
+                        from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
+
+                        _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
+                    except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
+                        _DatabaseErrorType = Exception
+
                     try:
                         # Try to get the player name
                         player = _global_player_service.persistence.get_player(value)
                         if player and hasattr(player, "name"):
                             # Enhance the player_id field with the player name
                             event_dict[key] = f"<{player.name}>: {value}"
-                    except Exception:
+                    except (AttributeError, KeyError, TypeError, _DatabaseErrorType) as e:
+                        logger.error(
+                            "Error looking up player name", player_id=value, error=str(e), error_type=type(e).__name__
+                        )
                         # If lookup fails, leave the original value
                         pass
 
@@ -404,7 +410,7 @@ def configure_enhanced_structlog(
         _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
-    def strip_ansi_renderer(logger, name, event_dict):
+    def strip_ansi_renderer(logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
         import re
 
@@ -423,6 +429,19 @@ def configure_enhanced_structlog(
         cache_logger_on_first_use=False,
     )
 
+    # AI Agent: Now that structlog is configured, log the enhanced error handling setup
+    # This confirms that the global error handler is capturing all errors from all modules
+    if log_config and not log_config.get("disable_logging", False):
+        env_log_dir = _resolve_log_base(log_config.get("log_base", "logs")) / environment
+        errors_log_path = env_log_dir / "errors.log"
+        configured_logger = structlog.get_logger(__name__)
+        configured_logger.info(
+            "Enhanced error logging configured",
+            errors_log_path=str(errors_log_path),
+            captures_all_errors=True,
+            global_error_handler_enabled=True,
+        )
+
 
 def _setup_enhanced_file_logging(
     environment: str,
@@ -433,6 +452,15 @@ def _setup_enhanced_file_logging(
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
     from logging.handlers import RotatingFileHandler
+
+    # Use Windows-safe rotation handlers when available
+    _WinSafeHandler = RotatingFileHandler
+    try:
+        from server.logging.windows_safe_rotation import WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler
+
+        _WinSafeHandler = _ImportedWinSafeHandler
+    except Exception:  # noqa: BLE001 - optional enhancement
+        _WinSafeHandler = RotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
@@ -489,8 +517,16 @@ def _setup_enhanced_file_logging(
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create rotating file handler
-        handler = RotatingFileHandler(
+        # Create rotating file handler (Windows-safe on win32)
+        handler_class = RotatingFileHandler
+        try:
+            if sys.platform == "win32":
+                handler_class = _WinSafeHandler
+        except Exception:
+            # Fallback to standard handler on any detection error
+            handler_class = RotatingFileHandler
+
+        handler = handler_class(
             log_path,
             maxBytes=max_bytes,
             backupCount=backup_count,
@@ -499,6 +535,7 @@ def _setup_enhanced_file_logging(
         handler.setLevel(logging.DEBUG)
 
         # Create formatter - use PlayerGuidFormatter if player_service is available
+        formatter: logging.Formatter
         if player_service is not None:
             from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -527,7 +564,14 @@ def _setup_enhanced_file_logging(
 
     # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
-    console_handler = RotatingFileHandler(
+    handler_class = RotatingFileHandler
+    try:
+        if sys.platform == "win32":
+            handler_class = _WinSafeHandler
+    except Exception:
+        handler_class = RotatingFileHandler
+
+    console_handler = handler_class(
         console_log_path,
         maxBytes=max_bytes,
         backupCount=backup_count,
@@ -536,6 +580,7 @@ def _setup_enhanced_file_logging(
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Use enhanced formatter for console handler
+    console_formatter: logging.Formatter
     if player_service is not None:
         from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -554,7 +599,14 @@ def _setup_enhanced_file_logging(
 
     # Enhanced errors handler with security focus
     errors_log_path = env_log_dir / "errors.log"
-    errors_handler = RotatingFileHandler(
+    handler_class = RotatingFileHandler
+    try:
+        if sys.platform == "win32":
+            handler_class = _WinSafeHandler
+    except Exception:
+        handler_class = RotatingFileHandler
+
+    errors_handler = handler_class(
         errors_log_path,
         maxBytes=max_bytes,
         backupCount=backup_count,
@@ -563,6 +615,7 @@ def _setup_enhanced_file_logging(
     errors_handler.setLevel(logging.WARNING)
 
     # Use enhanced formatter for errors handler
+    errors_formatter: logging.Formatter
     if player_service is not None:
         from server.logging.player_guid_formatter import PlayerGuidFormatter
 
@@ -579,7 +632,27 @@ def _setup_enhanced_file_logging(
     errors_handler.setFormatter(errors_formatter)
     root_logger.addHandler(errors_handler)
 
+    # CRITICAL FIX: Route ALL ERROR and CRITICAL logs to errors.log
+    # The above handler only captures "errors.*" prefix modules
+    # This ensures ALL error-level logs from ANY module are captured
+    # AI Agent: This fixes the observability gap where critical errors in combat,
+    # persistence, and game mechanics were being silently suppressed
+    global_errors_handler = handler_class(
+        errors_log_path,  # Same file as errors_handler
+        maxBytes=max_bytes,
+        backupCount=backup_count,
+        encoding="utf-8",
+    )
+    global_errors_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
+    global_errors_handler.setFormatter(errors_formatter)
+
+    # Add to root logger to capture ALL errors from all modules
+    root_logger.addHandler(global_errors_handler)
+
     root_logger.setLevel(logging.DEBUG)
+
+    # AI Agent: Log after structlog is configured using structlog logger
+    # This will be called after configure_enhanced_structlog() completes
 
 
 def setup_enhanced_logging(config: dict[str, Any], player_service: Any = None) -> None:
@@ -719,7 +792,7 @@ def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) ->
     log_method(message, **log_data)
 
 
-def get_enhanced_logger(name: str) -> BoundLogger:
+def get_enhanced_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
     """
     Get an enhanced logger instance with structured logging capabilities.
 
@@ -739,7 +812,7 @@ def get_enhanced_logger(name: str) -> BoundLogger:
     return structlog.wrap_logger(base_logger)
 
 
-def get_logger(name: str) -> BoundLogger:
+def get_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
     """
     Get a Structlog logger with the specified name.
 
@@ -804,5 +877,5 @@ def update_logging_with_player_service(player_service: Any) -> None:
                 handler.setFormatter(enhanced_formatter)
 
     # Log that the enhancement has been applied
-    logger = get_logger("server.logging")
-    logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
+    structured_logger = cast(Any, get_logger("server.logging"))
+    structured_logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)

@@ -107,9 +107,9 @@ class TestAddMessage:
         """Test error handling when add_message encounters an exception."""
         queue = MessageQueue()
 
-        # Create a mock that raises an exception when accessed
+        # Create a mock that raises a specific exception when accessed
         with patch.object(queue, "pending_messages", new_callable=MagicMock) as mock_dict:
-            mock_dict.__contains__.side_effect = Exception("Simulated error")
+            mock_dict.__contains__.side_effect = ValueError("Simulated error")
 
             result = queue.add_message("player1", {"content": "Test"})
 
@@ -175,7 +175,7 @@ class TestGetMessages:
         original_pending = queue.pending_messages
         try:
             mock_dict = MagicMock()
-            mock_dict.get.side_effect = Exception("Simulated error")
+            mock_dict.get.side_effect = ValueError("Simulated error")
             mock_dict.__contains__ = lambda self, key: True
             queue.pending_messages = mock_dict
 
@@ -269,7 +269,7 @@ class TestRemovePlayerMessages:
         try:
             mock_dict = MagicMock()
             mock_dict.__contains__ = lambda self, key: True
-            mock_dict.__delitem__.side_effect = Exception("Simulated error")
+            mock_dict.__delitem__.side_effect = KeyError("Simulated error")
             queue.pending_messages = mock_dict
 
             # Should not raise exception
@@ -340,7 +340,7 @@ class TestCleanupOldMessages:
         original_pending = queue.pending_messages
         try:
             mock_dict = MagicMock()
-            mock_dict.items.side_effect = Exception("Simulated error")
+            mock_dict.items.side_effect = TypeError("Simulated error")
             queue.pending_messages = mock_dict
 
             # Should not raise exception
@@ -399,7 +399,7 @@ class TestCleanupLargeStructures:
         original_pending = queue.pending_messages
         try:
             mock_dict = MagicMock()
-            mock_dict.items.side_effect = Exception("Simulated error")
+            mock_dict.items.side_effect = TypeError("Simulated error")
             queue.pending_messages = mock_dict
 
             # Should not raise exception
@@ -584,7 +584,7 @@ class TestGetStats:
         original_pending = queue.pending_messages
         try:
             mock_dict = MagicMock()
-            mock_dict.values.side_effect = Exception("Simulated error")
+            mock_dict.values.side_effect = TypeError("Simulated error")
             queue.pending_messages = mock_dict
 
             stats = queue.get_stats()

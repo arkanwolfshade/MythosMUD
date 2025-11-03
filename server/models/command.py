@@ -109,8 +109,8 @@ class LookCommand(BaseCommand):
     """Command for looking around, in a specific direction, or at an NPC."""
 
     command_type: Literal[CommandType.LOOK] = CommandType.LOOK
-    direction: Direction | None = Field(None, description="Direction to look")
-    target: str | None = Field(None, description="Target to look at (NPC name or direction)")
+    direction: Direction | None = Field(default=None, description="Direction to look")
+    target: str | None = Field(default=None, description="Target to look at (NPC name or direction)")
 
     @field_validator("direction")
     @classmethod

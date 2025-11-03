@@ -106,7 +106,7 @@ class TestPlayerGuidFormatter:
         """Test player name lookup when exception occurs."""
         # Mock persistence layer
         mock_persistence = Mock()
-        mock_persistence.get_player.side_effect = Exception("Database error")
+        mock_persistence.get_player.side_effect = AttributeError("Database error")
         self.mock_player_service.persistence = mock_persistence
 
         guid = "123e4567-e89b-12d3-a456-426614174000"

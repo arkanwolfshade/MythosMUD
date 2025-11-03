@@ -10,8 +10,10 @@ from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import delete, func, select, update
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..exceptions import DatabaseError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 
@@ -53,8 +55,11 @@ class NPCService:
             logger.info("Retrieved NPC definitions")
             return list(definitions)
 
-        except Exception:
-            logger.error("Error retrieving NPC definitions")
+        except SQLAlchemyError as e:
+            logger.error("Database error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
+            raise DatabaseError(f"Failed to retrieve NPC definitions: {e}") from e
+        except Exception as e:
+            logger.error("Unexpected error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
             raise
 
     async def get_npc_definition(self, session: AsyncSession, definition_id: int) -> NPCDefinition | None:
@@ -230,7 +235,7 @@ class NPCService:
                 raise ValueError(f"Max population must be at least 1, got: {max_population}")
 
             # Update fields
-            update_data = {}
+            update_data: dict[str, Any] = {}
             if name is not None:
                 update_data["name"] = name
             if description is not None:
@@ -320,8 +325,11 @@ class NPCService:
             logger.info("Retrieved NPC spawn rules", count=len(rules))
             return list(rules)
 
-        except Exception:
-            logger.error("Error retrieving NPC spawn rules")
+        except SQLAlchemyError as e:
+            logger.error("Database error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
+            raise DatabaseError(f"Failed to retrieve NPC spawn rules: {e}") from e
+        except Exception as e:
+            logger.error("Unexpected error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
             raise
 
     async def get_spawn_rule(self, session: AsyncSession, rule_id: int) -> NPCSpawnRule | None:
@@ -513,7 +521,7 @@ class NPCService:
             definitions_result = await session.execute(
                 select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)
             )
-            definitions_by_type = dict(definitions_result.all())
+            definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]
 
             # Count total definitions
             total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))
@@ -533,8 +541,11 @@ class NPCService:
             logger.info("Generated NPC system statistics", **stats)
             return stats
 
-        except Exception:
-            logger.error("Error generating NPC system statistics")
+        except SQLAlchemyError as e:
+            logger.error("Database error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
+            raise DatabaseError(f"Failed to generate NPC system statistics: {e}") from e
+        except Exception as e:
+            logger.error("Unexpected error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
             raise
 
 

@@ -1,9 +1,33 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.14.2
+    rev: v0.14.3
     hooks:
       - id: ruff
         args: ["--line-length=120"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - types-python-dateutil
+          - types-bleach
+          - types-click
+          - pydantic-settings>=2.0.0
+          - httpx>=0.28.1
+          - pytest-asyncio>=1.2.0
+          - sqlalchemy[asyncio]>=2.0.0
+          - fastapi>=0.119.0
+          - starlette>=0.48.0
+          - fastapi-users>=14.0.0
+          - fastapi-users-db-sqlalchemy>=7.0.0
+          - uvicorn>=0.32.1
+          - nats-py>=2.9.0
+          - structlog>=25.1.0
+        args: [--config-file=pyproject.toml]
+        # Align exclude patterns with pyproject.toml
+        exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|server/alembic/|server/test_who_command_direct\.py)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

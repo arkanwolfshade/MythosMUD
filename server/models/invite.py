@@ -10,11 +10,13 @@ import uuid
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
 
-Base = declarative_base(metadata=metadata)
+
+class Base(DeclarativeBase):
+    metadata = metadata
 
 
 class Invite(Base):
@@ -42,7 +44,7 @@ class Invite(Base):
             if getattr(self.expires_at, "tzinfo", None) is not None
             else self.expires_at.replace(tzinfo=UTC)
         )
-        return now_utc > expires_at_utc
+        return bool(now_utc > expires_at_utc)
 
     def is_valid(self) -> bool:
         """Check if the invite is valid (not used and not expired)."""
@@ -50,8 +52,8 @@ class Invite(Base):
 
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
-        self.used = True
-        self.used_by_user_id = user_id
+        self.used = True  # type: ignore[assignment]
+        self.used_by_user_id = user_id  # type: ignore[assignment]
 
     @classmethod
     def create_invite(cls, created_by_user_id: str | None = None, expires_in_days: int = 30) -> "Invite":

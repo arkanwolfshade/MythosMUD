@@ -9,6 +9,7 @@ described in the Pnakotic Manuscripts.
 
 import sys
 from datetime import datetime
+from typing import Any
 
 import click
 from core.fixer import RoomFixer
@@ -90,7 +91,7 @@ def main(
 
         # Validation phase
         errors = []
-        warnings = []
+        warnings: list[dict[str, Any]] = []
 
         # Convert parsing errors to validation errors
         parsing_errors = room_loader.get_parsing_errors()
@@ -198,7 +199,9 @@ def main(
 
             # Fix bidirectional connections
             if missing_returns:
-                fixer.fix_bidirectional_connections(room_database, missing_returns, backup)
+                # Strip the is_zone_transition flag (5th element) as fixer only expects 4-element tuples
+                missing_returns_filtered = [(room_a, dir_a, room_b, dir_b) for room_a, dir_a, room_b, dir_b, _ in missing_returns]
+                fixer.fix_bidirectional_connections(room_database, missing_returns_filtered, backup)
 
             # Fix self-references
             if self_references:

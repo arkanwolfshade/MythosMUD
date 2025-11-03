@@ -6,6 +6,8 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
+from typing import Any
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerRespawnedEvent
@@ -32,7 +34,7 @@ class PlayerRespawnService:
     - Publishing respawn events for UI updates
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the player respawn service.
 
@@ -66,7 +68,7 @@ class PlayerRespawnService:
 
             # Move player to limbo room
             old_room = player.current_room_id
-            player.current_room_id = LIMBO_ROOM_ID
+            player.current_room_id = LIMBO_ROOM_ID  # type: ignore[assignment]
 
             # Commit changes using async API
             await session.commit()
@@ -111,7 +113,7 @@ class PlayerRespawnService:
             respawn_room = player.respawn_room_id
             if respawn_room:
                 logger.debug("Using custom respawn room", player_id=player_id, respawn_room=respawn_room)
-                return respawn_room
+                return str(respawn_room)
             else:
                 logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
                 return DEFAULT_RESPAWN_ROOM
@@ -154,7 +156,7 @@ class PlayerRespawnService:
             # Update player stats and location
             player.set_stats(stats)
             old_room = player.current_room_id
-            player.current_room_id = respawn_room
+            player.current_room_id = respawn_room  # type: ignore[assignment]
 
             # Commit changes using async API
             await session.commit()
@@ -171,17 +173,13 @@ class PlayerRespawnService:
 
             # Publish respawn event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerRespawnedEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerRespawnedEvent",
                     player_id=player_id,
-                    player_name=player.name,
+                    player_name=str(player.name),
                     respawn_room_id=respawn_room,
                     old_hp=old_hp,
                     new_hp=100,
-                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
+                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
                 )
                 self._event_bus.publish(event)
 

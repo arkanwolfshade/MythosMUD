@@ -75,7 +75,7 @@ class RateLimiter:
         ]
 
         # Calculate reset time (when the oldest request will expire)
-        reset_time = 0
+        reset_time: float = 0
         if recent_requests:
             oldest_request = min(recent_requests)
             reset_time = oldest_request + self.window_seconds

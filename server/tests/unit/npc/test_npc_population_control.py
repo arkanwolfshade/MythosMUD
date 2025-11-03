@@ -645,9 +645,7 @@ class TestNPCPopulationController:
         population_controller.load_spawn_rules([spawn_rule_shopkeeper])
 
         # Test player entering room (should trigger spawn check)
-        player_event = PlayerEnteredRoom(
-            timestamp=None, event_type="", player_id="test_player", room_id="earth_arkhamcity_downtown_001"
-        )
+        player_event = PlayerEnteredRoom(player_id="test_player", room_id="earth_arkhamcity_downtown_001")
 
         # This should trigger spawn checking
         with patch.object(population_controller, "_check_spawn_requirements_for_room") as mock_check:

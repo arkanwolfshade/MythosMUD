@@ -1,6 +1,7 @@
 # Testing Enhanced Logging Examples
 # This file demonstrates how to test logging behavior in unit tests and integration tests
 
+import asyncio
 from unittest.mock import patch
 
 import pytest
@@ -113,7 +114,7 @@ def test_api_request_logging():
 
 
 # ✅ CORRECT - Integration test for WebSocket logging
-def test_websocket_logging():
+async def test_websocket_logging():
     """Test WebSocket logging in integration tests."""
     with patch.object(structlog.get_logger(), "info") as mock_logger:
         # Simulate WebSocket connection
@@ -237,7 +238,7 @@ def test_fastapi_endpoint_logging():
 
 
 # ✅ CORRECT - Test for logging in middleware
-def test_middleware_logging():
+async def test_middleware_logging():
     """Test logging in middleware."""
     with patch.object(structlog.get_logger(), "info") as mock_logger:
         # Simulate middleware execution

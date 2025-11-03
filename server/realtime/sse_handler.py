@@ -110,10 +110,12 @@ async def game_event_stream(player_id: str, session_id: str | None = None) -> As
 
 def format_sse_event(event_type: str, data: dict) -> str:  # Backward compat shim
     """Deprecated: use sse_line(build_event(...))."""
-    return sse_line(build_event(event_type, data))
+    result = sse_line(build_event(event_type, data))
+    assert isinstance(result, str)
+    return result
 
 
-async def send_game_event(player_id: str, event_type: str, data: dict):
+async def send_game_event(player_id: str, event_type: str, data: dict) -> None:
     """
     Send a game event to a specific player via SSE.
 
@@ -133,7 +135,7 @@ async def send_game_event(player_id: str, event_type: str, data: dict):
         logger.error("Error sending game event", player_id=player_id, error=str(e))
 
 
-async def broadcast_game_event(event_type: str, data: dict, exclude_player: str = None):
+async def broadcast_game_event(event_type: str, data: dict, exclude_player: str | None = None) -> None:
     """
     Broadcast a game event to all connected players.
 
@@ -149,7 +151,7 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         logger.error("Error broadcasting game event", error=str(e))
 
 
-async def send_room_event(room_id: str, event_type: str, data: dict, exclude_player: str = None):
+async def send_room_event(room_id: str, event_type: str, data: dict, exclude_player: str | None = None) -> None:
     """
     Send a room event to all players in a specific room.
 
@@ -168,7 +170,7 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         logger.error("Error sending room event", room_id=room_id, error=str(e))
 
 
-async def send_system_notification(player_id: str, message: str, notification_type: str = "info"):
+async def send_system_notification(player_id: str, message: str, notification_type: str = "info") -> None:
     """
     Send a system notification to a player.
 
@@ -189,7 +191,7 @@ async def send_system_notification(player_id: str, message: str, notification_ty
         logger.error("Error sending system notification", player_id=player_id, error=str(e))
 
 
-async def send_player_status_update(player_id: str, status_data: dict):
+async def send_player_status_update(player_id: str, status_data: dict) -> None:
     """
     Send a player status update to a player.
 
@@ -204,7 +206,7 @@ async def send_player_status_update(player_id: str, status_data: dict):
         logger.error("Error sending status update", player_id=player_id, error=str(e))
 
 
-async def send_room_description(player_id: str, room_data: dict):
+async def send_room_description(player_id: str, room_data: dict) -> None:
     """
     Send room description to a player.
 

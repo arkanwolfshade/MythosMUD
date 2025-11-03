@@ -272,7 +272,7 @@ async def process_command_unified(
         audit_logger.log_security_event(
             event_type="command_injection_attempt",
             player_name=player_name,
-            description=validation_error,
+            description=validation_error or "Invalid command format",
             severity="high",
             metadata={"command_sample": command_line[:100]},
         )
@@ -296,8 +296,8 @@ async def process_command_unified(
             aliases_dir = config.game.aliases_dir
             alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
             logger.debug("AliasStorage initialized")
-        except Exception:
-            logger.error("Failed to initialize AliasStorage")
+        except (OSError, ValueError, TypeError) as e:
+            logger.error("Failed to initialize AliasStorage", error=str(e), error_type=type(e).__name__)
             alias_storage = None
 
     # Step 4: Parse command and arguments
@@ -316,6 +316,8 @@ async def process_command_unified(
     # Step 5: Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
+        if alias_storage is None:
+            return {"result": "Alias system not available"}
         return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
 
     # Step 6: Check for alias expansion with cycle detection (ENHANCED - CRITICAL-3)
@@ -527,7 +529,7 @@ async def handle_expanded_command(
     alias_storage: AliasStorage,
     player_name: str,
     depth: int = 0,
-    alias_chain: list[dict[str, Any]] = None,
+    alias_chain: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Handle command processing with alias expansion and loop detection."""
     logger.debug("Handling expanded command", player=player_name, command_line=command_line, depth=depth)
@@ -546,12 +548,12 @@ async def handle_expanded_command(
 
 
 # HTTP API endpoint
-@router.post("", status_code=status.HTTP_200_OK)
+@router.post("", status_code=status.HTTP_200_OK, response_model=None)
 async def handle_command(
     req: CommandRequest,
+    request: Request,
     current_user: dict = Depends(get_current_user),
-    request: Request = None,
-):
+) -> dict[str, Any]:
     """Handle incoming HTTP command requests."""
     command_line = req.command
 

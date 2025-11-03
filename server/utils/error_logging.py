@@ -8,7 +8,7 @@ understanding the deeper mysteries of our digital realm.
 """
 
 import traceback
-from typing import Any
+from typing import Any, NoReturn
 
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
@@ -24,6 +24,7 @@ from ..exceptions import (
     create_error_context,
 )
 from ..logging.enhanced_logging_config import get_logger
+from ..monitoring.exception_metrics import increment_exception
 
 logger = get_logger(__name__)
 
@@ -67,7 +68,7 @@ def log_and_raise(
     details: dict[str, Any] | None = None,
     user_friendly: str | None = None,
     logger_name: str | None = None,
-) -> None:
+) -> NoReturn:
     """
     Log an error and raise a MythosMUD exception.
 
@@ -99,6 +100,13 @@ def log_and_raise(
         details=details or {},
         user_friendly=user_friendly,
     )
+
+    # Increment exception counter for monitoring
+    try:
+        increment_exception(exception_class.__name__)
+    except Exception:
+        # Monitoring must never break error propagation
+        pass
 
     # Raise the exception
     raise exception_class(
@@ -349,6 +357,12 @@ def log_error_with_context(
     # Log at the specified level
     log_method = getattr(error_logger, level.lower(), error_logger.error)
     log_method("Error logged with context", **log_data)
+
+    # Increment exception counter for monitoring
+    try:
+        increment_exception(error.__class__.__name__)
+    except Exception:
+        pass
 
 
 def create_logged_http_exception(

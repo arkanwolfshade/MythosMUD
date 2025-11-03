@@ -7,6 +7,7 @@ character statistics and attribute types.
 
 from datetime import UTC, datetime
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
@@ -83,14 +84,14 @@ class Stats(BaseModel):
     )
 
     # Physical Attributes
-    strength: int = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
-    dexterity: int = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
-    constitution: int = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
+    strength: int | None = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
+    dexterity: int | None = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
+    constitution: int | None = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
 
     # Mental Attributes
-    intelligence: int = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
-    wisdom: int = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
-    charisma: int = Field(ge=1, le=20, default=None, description="Social skills and influence")
+    intelligence: int | None = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
+    wisdom: int | None = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
+    charisma: int | None = Field(ge=1, le=20, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
     sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
@@ -104,12 +105,14 @@ class Stats(BaseModel):
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
 
-    def __init__(self, **data):
+    def __init__(self, **data: Any) -> None:
         """Initialize Stats with proper random number generation."""
         # Use a local random generator to avoid affecting global state
         import random
 
-        local_rng = random.Random(42)  # Fixed seed for testing reproducibility
+        # Use system random for production, optional seed for testing
+        seed = data.pop("_test_seed", None)
+        local_rng = random.Random(seed) if seed is not None else random.Random()
 
         # Generate random values for any field that is None or not provided
         data.setdefault("strength", local_rng.randint(3, 18))
@@ -128,16 +131,14 @@ class Stats(BaseModel):
 
     # Derived stats - computed fields
     @computed_field
-    @property
     def max_health(self) -> int:
         """Calculate max health based on constitution."""
-        return self.constitution * 10
+        return (self.constitution or 10) * 10
 
     @computed_field
-    @property
     def max_sanity(self) -> int:
         """Calculate max sanity based on wisdom."""
-        return self.wisdom * 5
+        return (self.wisdom or 10) * 5
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
         """Get the modifier for a given attribute (standard D&D-style calculation)."""
@@ -303,5 +304,5 @@ class Player(BaseModel):
             bool: True if player can carry the weight
         """
         # Carrying capacity is based on strength (10 lbs per point)
-        max_capacity = self.stats.strength * 10
+        max_capacity = (self.stats.strength or 10) * 10
         return weight <= max_capacity

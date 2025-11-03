@@ -25,10 +25,11 @@ class Environment:
 
     def __init__(self, test_name: str = "default"):
         self.test_name = test_name
-        self.temp_dir = None
-        self.database_path = None
-        self.connection_manager = None
-        self.config = None
+        # AI Agent: Explicit type annotations for attributes initialized as None
+        self.temp_dir: str | None = None
+        self.database_path: str | None = None
+        self.connection_manager: ConnectionManager | None = None
+        self.config: dict[str, Any] | None = None
         self.logger = structlog.get_logger(f"test_env_{test_name}")
 
     async def setup(self, config_override: dict[str, Any] | None = None):
@@ -141,6 +142,10 @@ class Environment:
         config_obj = get_config()
         self.config = config_obj.to_legacy_dict()
 
+        # Type guards for mypy
+        assert self.temp_dir is not None, "temp_dir must be set before _setup_config"
+        assert self.config is not None, "config must be set after loading"
+
         # Override with test-specific settings
         if config_override:
             self._merge_config(self.config, config_override)
@@ -222,13 +227,14 @@ class Environment:
 
     def get_test_config(self) -> dict[str, Any]:
         """Get test configuration"""
+        assert self.config is not None, "config must be set up before calling get_test_config"
         return self.config.copy()
 
-    def get_database_path(self) -> str:
+    def get_database_path(self) -> str | None:
         """Get test database path"""
         return self.database_path
 
-    def get_temp_dir(self) -> str:
+    def get_temp_dir(self) -> str | None:
         """Get temporary directory path"""
         return self.temp_dir
 
@@ -376,6 +382,8 @@ class TestDataSetup:
     @staticmethod
     async def setup_dual_connection_scenario(env: Environment, player_id: str = "test_player"):
         """Set up dual connection scenario"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Create WebSocket connection
         ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id, "test_session")
 
@@ -404,6 +412,8 @@ class TestDataSetup:
     @staticmethod
     async def setup_session_switch_scenario(env: Environment, player_id: str = "session_test_player"):
         """Set up session switch scenario"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Create initial session with connections
         initial_scenario = await TestDataSetup.setup_dual_connection_scenario(env, player_id)
 
@@ -454,9 +464,11 @@ class TestMonitoringSetup:
     @staticmethod
     async def setup_monitoring_endpoints(env: Environment):
         """Set up monitoring endpoints for testing"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # This would typically set up Prometheus metrics, health checks, etc.
         # For now, we'll just ensure the connection manager has monitoring enabled
-        env.connection_manager.enable_monitoring = True
+        env.connection_manager.enable_monitoring = True  # type: ignore[attr-defined]
 
         return {
             "monitoring_enabled": True,
@@ -468,8 +480,10 @@ class TestMonitoringSetup:
     @staticmethod
     async def setup_performance_monitoring(env: Environment):
         """Set up performance monitoring for testing"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+
         # Enable performance tracking
-        env.connection_manager.performance_monitoring = True
+        env.connection_manager.performance_monitoring = True  # type: ignore[attr-defined]
 
         return {
             "performance_monitoring_enabled": True,
@@ -486,11 +500,13 @@ class TestCleanup:
     @staticmethod
     async def cleanup_all_connections(env: Environment):
         """Clean up all connections in test environment"""
-        await env.connection_manager.cleanup_all_connections()
+        assert env.connection_manager is not None, "connection_manager must be initialized"
+        await env.connection_manager.cleanup_all_connections()  # type: ignore[attr-defined]
 
     @staticmethod
     async def cleanup_player_data(env: Environment, player_id: str):
         """Clean up data for specific player"""
+        assert env.connection_manager is not None, "connection_manager must be initialized"
         await env.connection_manager.force_disconnect_player(player_id)
 
     @staticmethod

@@ -12,7 +12,7 @@ for preventing dimensional drift within our eldritch architecture.
 import asyncio
 import gc
 import weakref
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Coroutine
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -45,7 +45,12 @@ class TrackedTaskManager:
         self._logger.info("TrackedTaskManager initialized - TaskOrphanMonitor active")
 
     def create_tracked_task(
-        self, coro: Awaitable[Any], task_name: str, task_type: str = "tracked", *create_task_args, **create_task_kwargs
+        self,
+        coro: Coroutine[Any, Any, Any],
+        task_name: str,
+        task_type: str = "tracked",
+        *create_task_args,
+        **create_task_kwargs,
     ) -> asyncio.Task[Any]:
         """
         Create a managed asyncio.Task with mandatory lifecycle tracking.
@@ -62,7 +67,7 @@ class TrackedTaskManager:
         """
         try:
             # Create the actual task using asyncio.create_task with provided arguments
-            tracked_task = asyncio.create_task(coro, *create_task_args, **create_task_kwargs)
+            tracked_task: asyncio.Task[Any] = asyncio.create_task(coro, *create_task_args, **create_task_kwargs)
 
             # Register task with activity tracker
             if self._task_registry:
@@ -240,7 +245,7 @@ class TrackedTaskManager:
 
 
 # Global singleton tracker for comprehensive memory leak prevention
-instrument_global_tracked_manager: TrackedTaskManager | None = None
+_global_tracked_manager: TrackedTaskManager | None = None
 
 
 def get_global_tracked_manager() -> TrackedTaskManager:
@@ -250,17 +255,23 @@ def get_global_tracked_manager() -> TrackedTaskManager:
     Returns:
         Global TrackedTaskManager with universal oversight into task creation anti-patterns.
     """
-    global instrument_global_tracked_manager
-    if instrument_global_tracked_manager is None:
-        instrument_global_tracked_manager = TrackedTaskManager()
-    return instrument_global_tracked_manager
+    global _global_tracked_manager
+    if _global_tracked_manager is None:
+        _global_tracked_manager = TrackedTaskManager()
+    return _global_tracked_manager
+
+
+def reset_global_tracked_manager() -> None:
+    """Reset the global tracked manager for testing."""
+    global _global_tracked_manager
+    _global_tracked_manager = None
 
 
 def patch_asyncio_create_task_with_tracking():
     """Replace asyncio.create_task with a tracked alternative throughout the application."""
     original_create_task = asyncio.create_task
 
-    def trackable_create_task(coro: Awaitable[Any], *args, **kwargs) -> asyncio.Task[Any]:
+    def trackable_create_task(coro: Coroutine[Any, Any, Any], *args, **kwargs) -> asyncio.Task[Any]:
         tracked_manager = get_global_tracked_manager()
 
         # Track unnamed tasks by default with web-style naming

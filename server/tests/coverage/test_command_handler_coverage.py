@@ -374,14 +374,26 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.id = "testuser_id"
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
+        mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
         mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+
+        # Mock player_service with AsyncMock for resolve_player_name
+        mock_player_service = Mock()
+        mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_player, mock_target_player])
+        mock_request.app.state.player_service = mock_player_service
+
+        # Mock user_manager
+        mock_user_manager = Mock()
+        mock_user_manager.mute_player.return_value = True
+        mock_request.app.state.user_manager = mock_user_manager
 
         result = await process_command(
             "mute", ["targetuser", "30"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -401,14 +413,26 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.id = "testuser_id"
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
+        mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
         mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+
+        # Mock player_service with AsyncMock for resolve_player_name
+        mock_player_service = Mock()
+        mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_player, mock_target_player])
+        mock_request.app.state.player_service = mock_player_service
+
+        # Mock user_manager
+        mock_user_manager = Mock()
+        mock_user_manager.mute_player.return_value = True
+        mock_request.app.state.user_manager = mock_user_manager
 
         result = await process_command(
             "mute", ["targetuser", "60", "spam"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -428,6 +452,7 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.id = "testuser_id"
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
@@ -435,12 +460,22 @@ class TestUserManagementCommands:
         # Mock target player not found
         mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, None]
 
+        # Mock player_service with AsyncMock for resolve_player_name
+        mock_player_service = Mock()
+        mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_player, None])
+        mock_request.app.state.player_service = mock_player_service
+
+        # Mock user_manager
+        mock_user_manager = Mock()
+        mock_user_manager.mute_player.return_value = True
+        mock_request.app.state.user_manager = mock_user_manager
+
         result = await process_command(
             "mute", ["nonexistent", "30"], current_user, mock_request, mock_alias_storage, "testuser"
         )
 
         assert "result" in result
-        assert "muted nonexistent" in result["result"].lower()
+        assert "not found" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_mute_failure(self):
@@ -453,16 +488,32 @@ class TestUserManagementCommands:
 
         # Mock player data (not admin)
         mock_player = Mock()
+        mock_player.id = "testuser_id"
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = False
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+
+        # Mock target player
+        mock_target_player = Mock()
+        mock_target_player.id = "targetuser_id"
+        mock_target_player.username = "targetuser"
+
+        # Mock player_service with AsyncMock for resolve_player_name
+        mock_player_service = Mock()
+        mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_player, mock_target_player])
+        mock_request.app.state.player_service = mock_player_service
+
+        # Mock user_manager to return failure
+        mock_user_manager = Mock()
+        mock_user_manager.mute_player.return_value = False
+        mock_request.app.state.user_manager = mock_user_manager
 
         result = await process_command(
             "mute", ["targetuser", "30"], current_user, mock_request, mock_alias_storage, "testuser"
         )
 
         assert "result" in result
-        assert "muted" in result["result"].lower()
+        assert "failed" in result["result"].lower() or "error" in result["result"].lower()
 
     @pytest.mark.asyncio
     async def test_process_command_unmute_success(self):
@@ -475,15 +526,27 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.id = "testuser_id"
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
+        mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
         mock_target_player.is_muted = True
         mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+
+        # Mock player_service with AsyncMock for resolve_player_name
+        mock_player_service = Mock()
+        mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_player, mock_target_player])
+        mock_request.app.state.player_service = mock_player_service
+
+        # Mock user_manager
+        mock_user_manager = Mock()
+        mock_user_manager.unmute_player.return_value = True
+        mock_request.app.state.user_manager = mock_user_manager
 
         result = await process_command(
             "unmute", ["targetuser"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -573,7 +636,8 @@ class TestUserManagementCommands:
         )
 
         assert "result" in result
-        assert "Error processing CommandType.ADD_ADMIN command" in result["result"]
+        assert "targetuser has been granted administrator privileges." == result["result"]
+        mock_request.app.state.user_manager.add_admin.assert_called_once_with("targetuser", "testuser")
 
     @pytest.mark.asyncio
     async def test_process_command_mutes(self):

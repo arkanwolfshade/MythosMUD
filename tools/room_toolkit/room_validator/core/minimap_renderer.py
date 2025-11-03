@@ -322,8 +322,8 @@ class MinimapRenderer:
         Returns:
             Dictionary mapping room IDs to (x, y) coordinates
         """
-        coords = {}
-        visited = set()
+        coords: dict[str, tuple[int, int]] = {}
+        visited: set[str] = set()
 
         if not start_room or start_room not in [n["id"] for n in nodes]:
             # Use first room as starting point
@@ -337,7 +337,7 @@ class MinimapRenderer:
         visited.add(start_room)
 
         # Build adjacency list
-        adjacency = {}
+        adjacency: dict[str, list[tuple[str, str]]] = {}
         for edge in edges:
             if edge["from"] not in adjacency:
                 adjacency[edge["from"]] = []
@@ -517,10 +517,12 @@ class MinimapRenderer:
                     source_depth = node["depth"]
                     break
 
-            if source_depth not in summary["connections_by_depth"]:
-                summary["connections_by_depth"][source_depth] = []
+            # Convert depth to string for dict key
+            depth_key = str(source_depth)
+            if depth_key not in summary["connections_by_depth"]:
+                summary["connections_by_depth"][depth_key] = []
 
-            summary["connections_by_depth"][source_depth].append(
+            summary["connections_by_depth"][depth_key].append(
                 {"from": edge["from"], "to": edge["to"], "direction": edge["direction"]}
             )
 
@@ -543,9 +545,9 @@ class MinimapRenderer:
             return "No connectivity data available"
 
         # Calculate statistics
-        sub_zone_counts = {}
-        depth_counts = {}
-        connection_counts = {}
+        sub_zone_counts: dict[str, int] = {}
+        depth_counts: dict[int, int] = {}
+        connection_counts: dict[int, int] = {}
 
         for node in nodes:
             sub_zone = node["sub_zone"]

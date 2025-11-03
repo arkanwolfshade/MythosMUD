@@ -89,9 +89,7 @@ class NPCMovementIntegration:
                 to_room.npc_entered(npc_id)
                 logger.debug("Added NPC to destination room", npc_id=npc_id, to_room=to_room_id)
 
-            # Publish movement events
-            if self.event_bus:
-                self._publish_movement_events(npc_id, from_room_id, to_room_id)
+            # Event publication is handled by Room methods; avoid duplicate publishes
 
             logger.info("NPC moved successfully", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
             return True
@@ -110,16 +108,19 @@ class NPCMovementIntegration:
             to_room_id: Destination room ID
         """
         try:
+            # Only publish events if event bus is available
+            if not self.event_bus:
+                logger.debug("Event bus not available, skipping NPC movement events", npc_id=npc_id)
+                return
+
             # Publish NPC left room event
-            left_event = NPCLeftRoom(
-                timestamp=None, event_type="NPCLeftRoom", npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id
-            )
+            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
+            left_event = NPCLeftRoom(npc_id=npc_id, room_id=from_room_id, to_room_id=to_room_id)
             self.event_bus.publish(left_event)
 
             # Publish NPC entered room event
+            # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
             entered_event = NPCEnteredRoom(
-                timestamp=None,
-                event_type="NPCEnteredRoom",
                 npc_id=npc_id,
                 room_id=to_room_id,
                 from_room_id=from_room_id,

@@ -83,7 +83,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=self.id)
+            event = PlayerEnteredRoom(player_id=player_id, room_id=self.id)
             self._event_bus.publish(event)
 
     def player_left(self, player_id: str) -> None:
@@ -105,7 +105,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = PlayerLeftRoom(timestamp=None, event_type="", player_id=player_id, room_id=self.id)
+            event = PlayerLeftRoom(player_id=player_id, room_id=self.id)
             self._event_bus.publish(event)
 
     def object_added(self, object_id: str, player_id: str | None = None) -> None:
@@ -128,9 +128,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectAddedToRoom(
-                timestamp=None, event_type="", object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectAddedToRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
     def object_removed(self, object_id: str, player_id: str | None = None) -> None:
@@ -153,9 +151,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectRemovedFromRoom(
-                timestamp=None, event_type="", object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectRemovedFromRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
     def npc_entered(self, npc_id: str) -> None:
@@ -177,7 +173,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=self.id)
+            event = NPCEnteredRoom(npc_id=npc_id, room_id=self.id)
             self._event_bus.publish(event)
 
     def npc_left(self, npc_id: str) -> None:
@@ -199,7 +195,7 @@ class Room:
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCLeftRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=self.id)
+            event = NPCLeftRoom(npc_id=npc_id, room_id=self.id)
             self._event_bus.publish(event)
 
     def get_players(self) -> list[str]:

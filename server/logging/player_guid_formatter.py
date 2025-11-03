@@ -11,6 +11,10 @@ import logging
 import re
 from typing import Any
 
+from .enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 class PlayerGuidFormatter(logging.Formatter):
     """
@@ -61,7 +65,7 @@ class PlayerGuidFormatter(logging.Formatter):
 
         return enhanced_message
 
-    def _convert_player_guids(self, message: str) -> str:
+    def _convert_player_guids(self, message: Any) -> str:
         """
         Convert player GUIDs in message to enhanced format.
 
@@ -71,11 +75,10 @@ class PlayerGuidFormatter(logging.Formatter):
         Returns:
             Message with player GUIDs converted to "<name>: <GUID>" format
         """
-        # Handle None or non-string input gracefully
-        if message is None:
-            return ""
+
+        # Be robust to None or non-string inputs
         if not isinstance(message, str):
-            return str(message)
+            return ""
 
         def replace_guid(match: re.Match) -> str:
             """Replace a single GUID with enhanced format."""
@@ -197,7 +200,8 @@ class PlayerGuidFormatter(logging.Formatter):
             # This ensures we don't fall back to async methods that cause issues
             return None
 
-        except Exception:
+        except (AttributeError, KeyError, TypeError) as e:
+            logger.error("Error during player lookup", error=str(e), error_type=type(e).__name__)
             # If any exception occurs during lookup, return None
             # This ensures logging continues even if player lookup fails
             return None
@@ -222,7 +226,7 @@ class PlayerGuidFormatter(logging.Formatter):
             sys.stderr.write(error_message)
             sys.stderr.flush()
 
-        except Exception:
+        except (OSError, UnicodeEncodeError):
             # If error logging itself fails, silently continue
             # This prevents infinite loops or system crashes
             pass

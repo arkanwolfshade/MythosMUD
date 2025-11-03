@@ -612,7 +612,7 @@ class NATSService:
             # Continue with single connection if pool fails
             self._pool_initialized = False
 
-    async def _get_connection(self) -> nats.NATS:
+    async def _get_connection(self) -> nats.NATS | None:
         """Get connection from pool or fallback to single connection."""
         if self._pool_initialized and not self.available_connections.empty():
             return await self.available_connections.get()

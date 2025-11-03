@@ -25,7 +25,7 @@ class ChatLogger:
     and log shipping to external moderation systems.
     """
 
-    def __init__(self, log_dir: str = None):
+    def __init__(self, log_dir: str | None = None) -> None:
         """
         Initialize chat logger.
 
@@ -50,7 +50,7 @@ class ChatLogger:
         # with prefixed names to distinguish log types
 
         # Thread-safe logging queue and writer thread
-        self._log_queue = queue.Queue()
+        self._log_queue: queue.Queue[dict[str, Any]] = queue.Queue()
         self._writer_thread = None
         self._shutdown_event = threading.Event()
         self._start_writer_thread()
@@ -102,6 +102,11 @@ class ChatLogger:
             if not all([log_type, file_path, content]):
                 logger.error("Invalid log entry", log_entry=log_entry)
                 return
+
+            # Type narrowing for mypy
+            # AI Agent: After validation, we assert types for mypy type safety
+            assert isinstance(file_path, str), "file_path must be str after validation"
+            assert isinstance(content, str), "content must be str after validation"
 
             # Ensure directory exists
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
@@ -436,7 +441,7 @@ class ChatLogger:
         Returns:
             Dictionary with log file statistics
         """
-        stats = {}
+        stats: dict[str, dict[str, Any]] = {}
 
         for log_type in ["chat", "moderation", "system"]:
             log_file = self._get_current_log_file(log_type)
@@ -700,7 +705,7 @@ class ChatLogger:
         Returns:
             Dictionary with global channel log file statistics
         """
-        stats = {"global_channels": {}}
+        stats: dict[str, dict[str, Any]] = {"global_channels": {}}
         log_files = self.get_global_channel_log_files()
 
         for log_file_path in log_files:
@@ -773,7 +778,7 @@ class ChatLogger:
         Returns:
             Dictionary with local channel log file statistics
         """
-        stats = {"local_channels": {}}
+        stats: dict[str, dict[str, Any]] = {"local_channels": {}}
         log_files = self.get_local_channel_log_files()
 
         for log_file_path in log_files:

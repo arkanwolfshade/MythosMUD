@@ -8,7 +8,7 @@ including game operations, player management, monitoring, and admin functions.
 from .admin import npc_router as admin_npc_router
 from .base import api_router as base_router
 from .game import game_router
-from .monitoring import router as monitoring_router
+from .monitoring import monitoring_router
 from .players import player_router
 from .real_time import realtime_router
 from .rooms import room_router

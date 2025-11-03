@@ -55,6 +55,9 @@ dev = [
     "ruff>=0.14.1",
     "aiosqlite>=0.21.0",
     "pre-commit>=4.2.0",
+    "mypy>=1.13.0",  # Static type checking
+    "types-requests>=2.32.0",  # Type stubs for requests
+    "types-python-dateutil>=2.9.0",  # Type stubs for dateutil
     "semgrep>=1.139.0",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
 ]
@@ -86,6 +89,7 @@ ignore = [
 "__init__.py" = ["F401"]
 "tests/**/*" = ["B011"]
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
+"server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
 
 [tool.isort]
 profile = "black"
@@ -140,9 +144,130 @@ addopts = [
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
+[tool.mypy]
+python_version = "3.12"
+files = ["server"]
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+mypy_path = "server/stubs"
+
+# Gradual strictness: Enable checks incrementally for established codebase
+# NOTE: Full strict = true revealed 962 errors. Enabling selectively instead.
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+strict_optional = true
+no_implicit_optional = true  # This one we've already fixed
+warn_return_any = false  # Too many false positives in current codebase
+warn_unreachable = true  # Best practice: enable, use inline # type: ignore[unreachable] where needed
+check_untyped_defs = false  # Would require 300+ fixes
+disallow_untyped_defs = false  # Would require 200+ fixes
+disallow_incomplete_defs = false  # Gradually enable per-module
+no_implicit_reexport = false  # Low priority for now
+
+# Performance optimizations (best practices)
+cache_dir = ".mypy_cache"
+sqlite_cache = true
+namespace_packages = true
+explicit_package_bases = true
+
+# Discovery settings
+follow_imports = "normal"
+ignore_missing_imports = false
+
+# Display options
+show_error_codes = true
+show_column_numbers = true
+show_error_context = true
+pretty = true
+
+# Exclude patterns (directories that should never be type-checked)
+exclude = [
+    "^data/",
+    "^client/",
+    "^scripts/",
+    "^docs/",
+    "^tools/",
+    "^monitoring/",
+    "^server/alembic/",
+    "^server/test_who_command_direct.py$",
+]
+
+# Per-module options - Third-party libraries without stubs or with incomplete stubs
+[[tool.mypy.overrides]]
+module = [
+    "argon2.*",
+    "psutil.*",
+    "ftfy.*",
+    "strip_ansi.*",
+    "playwright.*",
+    "networkx.*",
+    "statemachine.*",
+    "passlib.*",
+    "jose.*",
+    "faker.*",
+    "dotenv.*",
+    "aiosqlite.*",
+    "jsonschema.*",
+    "pwdlib.*",
+    "alembic.*",
+    "flask.*",
+    "pytest.*",
+    "analyze_error_logs",
+    "error_monitoring",
+    "server.async_utils.tracked_task_manager",
+    "server.tests.windows_logging_fix",
+    "server.tests.windows_event_loop_fix",
+]
+ignore_missing_imports = true
+
+# Libraries with local stubs - use our enhanced type definitions
+[[tool.mypy.overrides]]
+module = ["nats.*", "structlog.*", "fastapi_users.*"]
+ignore_missing_imports = false  # Use our stubs!
+
+# Core libraries - use their official types
+[[tool.mypy.overrides]]
+module = ["fastapi.*", "pydantic.*", "uvicorn.*", "starlette.*"]
+ignore_missing_imports = false
+
+# SQLAlchemy - enable strict checking with plugin support
+[[tool.mypy.overrides]]
+module = ["sqlalchemy.*"]
+ignore_missing_imports = false
+warn_return_any = false
+
+# Logging module - use targeted error code disabling instead of blanket ignore_errors
+[[tool.mypy.overrides]]
+module = [
+    "server.logging.*",
+]
+# Disable specific error codes instead of ignore_errors = true
+disable_error_code = ["var-annotated", "no-untyped-def", "no-untyped-call"]
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+# Player GUID formatter relies on dynamic logging context; allow untyped for now
+[[tool.mypy.overrides]]
+module = [
+    "server.logging.player_guid_formatter",
+]
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+# Test files
+[[tool.mypy.overrides]]
+module = "server.tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+
 [dependency-groups]
 dev = [
     "ruff>=0.14.1",
+    "mypy>=1.13.0",  # Static type checking
+    "types-requests>=2.32.0",  # Type stubs for requests
+    "types-python-dateutil>=2.9.0",  # Type stubs for dateutil
     "semgrep>=1.139.0",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
 ]

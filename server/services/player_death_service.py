@@ -6,6 +6,8 @@ and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 """
 
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,7 +29,7 @@ class PlayerDeathService:
     - Publishing appropriate events for UI updates
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the player death service.
 
@@ -125,16 +127,12 @@ class PlayerDeathService:
 
             # Publish HP decay event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerHPDecayEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerHPDecayEvent",
                     player_id=player_id,
                     old_hp=old_hp,
                     new_hp=new_hp,
                     decay_amount=1,
-                    room_id=player.current_room_id,
+                    room_id=str(player.current_room_id),
                 )
                 self._event_bus.publish(event)
 
@@ -184,13 +182,9 @@ class PlayerDeathService:
 
             # Publish player died event if event bus is available
             if self._event_bus:
-                from datetime import UTC, datetime
-
                 event = PlayerDiedEvent(
-                    timestamp=datetime.now(UTC),
-                    event_type="PlayerDiedEvent",
                     player_id=player_id,
-                    player_name=player.name,
+                    player_name=str(player.name),
                     room_id=death_location,
                     killer_id=killer_info.get("killer_id") if killer_info else None,
                     killer_name=killer_info.get("killer_name") if killer_info else None,

@@ -226,3 +226,57 @@ class TestNPCStartupService:
             assert results["failed_spawns"] == 0
             assert len(results["errors"]) == 1
             assert "NPC instance service not initialized" in results["errors"][0]
+
+    @pytest.mark.asyncio
+    async def test_npc_spawn_locations_reference_existing_rooms(self):
+        """
+        Test that all NPC spawn locations in the database reference existing room files.
+
+        This test validates that:
+        1. All NPC definitions have valid room_id values
+        2. All referenced room IDs correspond to actual room files
+        3. No NPCs reference non-existent rooms
+
+        Bug context: Deep One Hybrid was attempting to spawn in
+        earth_innsmouth_waterfront_room_waterfront_001 which didn't exist.
+        """
+        from server.npc_database import get_npc_session
+        from server.services.npc_service import npc_service
+        from server.world_loader import load_hierarchical_world
+
+        # AI Agent: Load world data to get all existing rooms
+        world_data = load_hierarchical_world()
+        existing_rooms = set(world_data["rooms"].keys())
+
+        # AI Agent: Also check room_mappings for backward compatibility
+        existing_rooms.update(world_data["room_mappings"].keys())
+
+        # AI Agent: Get all NPC definitions from database
+        async for session in get_npc_session():
+            npc_definitions = await npc_service.get_npc_definitions(session)
+            break
+
+        # AI Agent: Validate all NPC spawn locations
+        invalid_npcs = []
+        for npc_def in npc_definitions:
+            if npc_def.room_id and npc_def.room_id not in existing_rooms:
+                invalid_npcs.append(
+                    {
+                        "npc_id": npc_def.id,
+                        "npc_name": npc_def.name,
+                        "room_id": npc_def.room_id,
+                        "sub_zone_id": npc_def.sub_zone_id,
+                    }
+                )
+
+        # AI Agent: Fail the test if any NPCs reference non-existent rooms
+        if invalid_npcs:
+            error_msg = "Found NPCs with invalid spawn locations:\n"
+            for npc in invalid_npcs:
+                error_msg += f"  - {npc['npc_name']} (ID: {npc['npc_id']}) "
+                error_msg += f"references non-existent room '{npc['room_id']}' "
+                error_msg += f"in sub-zone '{npc['sub_zone_id']}'\n"
+            pytest.fail(error_msg)
+
+        # AI Agent: Test passes if all NPCs reference valid rooms
+        assert len(invalid_npcs) == 0, "All NPC spawn locations should reference existing rooms"

@@ -1,0 +1,9 @@
+{
+  "suite": "cache_bench_npc",
+  "defs_miss_ms": 11.549,
+  "defs_hit_ms": 0.083,
+  "defs_speedup": 139.145,
+  "rules_miss_ms": 14.599,
+  "rules_hit_ms": 0.075,
+  "rules_speedup": 194.653
+}

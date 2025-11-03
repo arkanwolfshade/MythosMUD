@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from server.app.factory import create_app
+from server.config import reset_config
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -208,13 +209,32 @@ class TestCORSConfiguration:
 
     def test_cors_uses_environment_variables(self):
         """Test that CORS configuration uses environment variables."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": "http://localhost:3000,https://example.com"}):
-            # This test would verify that CORS origins come from environment
-            # For now, we'll test the current hardcoded behavior
+        with patch.dict(
+            os.environ,
+            {
+                "ALLOWED_ORIGINS": "http://localhost:3000,https://example.com",
+                "ALLOWED_METHODS": "GET,POST",
+                "ALLOWED_HEADERS": "Content-Type,Authorization",
+            },
+        ):
+            reset_config()
             app = create_app()
 
-            # Verify CORS middleware is present
-            assert any("CORSMiddleware" in str(middleware.cls) for middleware in app.user_middleware)
+            cors_middleware = None
+            for middleware in app.user_middleware:
+                if "CORSMiddleware" in str(middleware.cls):
+                    cors_middleware = middleware
+                    break
+
+            assert cors_middleware is not None, "CORS middleware should be present when configured"
+            assert cors_middleware.kwargs["allow_origins"] == [
+                "http://localhost:3000",
+                "https://example.com",
+            ]
+            assert cors_middleware.kwargs["allow_methods"] == ["GET", "POST"]
+            assert cors_middleware.kwargs["allow_headers"] == ["Content-Type", "Authorization"]
+
+        reset_config()
 
     def test_cors_restricts_methods_and_headers(self):
         """Test that CORS configuration restricts methods and headers."""

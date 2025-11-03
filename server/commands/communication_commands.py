@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 async def handle_say_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the say command for speaking to other players.
@@ -98,7 +98,7 @@ async def handle_say_command(
 
 
 async def handle_me_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the me command for performing actions/emotes.
@@ -130,7 +130,7 @@ async def handle_me_command(
 
 
 async def handle_pose_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the pose command for setting character description.
@@ -180,7 +180,7 @@ async def handle_pose_command(
 
 
 async def handle_local_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the local command for speaking in the local channel.
@@ -266,7 +266,7 @@ async def handle_local_command(
 
 
 async def handle_global_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the global command for speaking in the global channel.
@@ -344,7 +344,7 @@ async def handle_global_command(
 
 
 async def handle_system_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the system command for sending system messages (admin only).
@@ -425,7 +425,7 @@ async def handle_system_command(
 
 
 async def handle_whisper_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the whisper command for private messaging between players.
@@ -451,9 +451,6 @@ async def handle_whisper_command(
             f"Whisper command with missing target or message for {player_name}, command_data: {command_data}"
         )
         return {"result": "Say what? Usage: whisper <player> <message>"}
-
-        # message is already a complete string from the validation system
-        logger.debug("Player whispering", player_name=player_name, target=target, message=message)
 
     # Get app state services for broadcasting
     app = request.app if request else None
@@ -511,7 +508,7 @@ async def handle_whisper_command(
 
 
 async def handle_reply_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the reply command for responding to the last whisper received.
@@ -564,7 +561,7 @@ async def handle_reply_command(
             return {"result": "No one has whispered to you recently."}
 
         # Get target player object
-        target_obj = player_service.resolve_player_name(last_whisper_sender)
+        target_obj = await player_service.resolve_player_name(last_whisper_sender)
         if not target_obj:
             return {"result": "The player you're trying to reply to is no longer available."}
 

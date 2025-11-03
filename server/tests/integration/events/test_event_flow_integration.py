@@ -234,7 +234,7 @@ class TestCompleteEventFlowIntegration:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         event_bus.publish(event)
         await asyncio.sleep(0.3)
@@ -289,7 +289,7 @@ class TestCompleteEventFlowIntegration:
         mock_connection_manager._get_player.side_effect = Exception("Database error")
 
         # Create and publish event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # This should not crash the system
         event_bus.publish(event)
@@ -392,7 +392,7 @@ class TestRealEventFlow:
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
         # Create event
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Publish event
         event_bus.publish(event)

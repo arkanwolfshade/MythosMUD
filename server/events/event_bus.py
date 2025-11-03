@@ -19,9 +19,15 @@ occur throughout our eldritch architecture.
 import asyncio
 from collections import defaultdict
 from collections.abc import Callable
+from typing import Any, TypeVar
 
 from ..logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
+
+# Type variable for generic event handling
+T = TypeVar("T", bound=BaseEvent)
+
+logger = get_logger(__name__)
 
 
 class EventBus:
@@ -37,9 +43,9 @@ class EventBus:
     task lifecycle and graceful shutdown capabilities.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the pure async event bus."""
-        self._subscribers: dict[type[BaseEvent], list[Callable]] = defaultdict(list)
+        self._subscribers: dict[type[BaseEvent], list[Callable[[BaseEvent], Any]]] = defaultdict(list)
         # Pure asyncio.Queue replaces threading.Queue - Task 1.2: Replace queue
         self._event_queue: asyncio.Queue = asyncio.Queue()
         self._running: bool = False
@@ -51,7 +57,7 @@ class EventBus:
         # Fix: Initialize on-demand rather than during __init__
         self._processing_task: asyncio.Task | None = None
 
-    def _ensure_async_processing(self):
+    def _ensure_async_processing(self) -> None:
         """Ensure async processing is started only when needed and within an event loop."""
         if not self._running and self._processing_task is None:
             try:
@@ -67,16 +73,16 @@ class EventBus:
                 # No running loop available - processing will start when first event published
                 self._logger.debug("EventBus will start processing on first publish when event loop available")
 
-    def set_main_loop(self, loop: asyncio.AbstractEventLoop):
+    def set_main_loop(self, loop: asyncio.AbstractEventLoop) -> None:
         """Set the main event loop - now properly managed for async compatibility."""
         self._main_loop = loop
         self._logger.info("Main event loop set for EventBus")
 
-    def _ensure_processing_started(self):
+    def _ensure_processing_started(self) -> None:
         """Legacy wrapper for API compatibility during transition."""
         self._ensure_async_processing()
 
-    async def _stop_processing(self):
+    async def _stop_processing(self) -> None:
         """Stop pure async event processing gracefully."""
         if self._running:
             self._running = False
@@ -108,13 +114,14 @@ class EventBus:
                         except (TimeoutError, Exception):
                             pass  # Abandon remaining tasks
 
-                except Exception:
+                except (RuntimeError, asyncio.CancelledError) as e:
+                    logger.error("Error during event bus shutdown", error=str(e), error_type=type(e).__name__)
                     # Any error in shutdown - just clear the tasks
                     pass
 
             self._logger.info("EventBus pure async processing stopped")
 
-    async def _process_events_async(self):
+    async def _process_events_async(self) -> None:
         """Pure async event processing loop replacing the dangerous threading pattern."""
         self._logger.info("EventBus pure async processing started")
 
@@ -138,7 +145,10 @@ class EventBus:
                     # Use basic print to avoid Unicode encoding issues during cleanup
                     try:
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
-                    except Exception:
+                    except (UnicodeEncodeError, AttributeError) as e2:
+                        logger.error(
+                            "Error logging event processing error", error=str(e2), error_type=type(e2).__name__
+                        )
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
                     continue
 
@@ -150,12 +160,13 @@ class EventBus:
             # Use basic print to avoid Unicode encoding issues during cleanup
             try:
                 self._logger.error("Fatal error in async event processing", error=str(e), exc_info=True)
-            except Exception:
+            except (UnicodeEncodeError, AttributeError) as e2:
+                logger.error("Error logging fatal event processing error", error=str(e2), error_type=type(e2).__name__)
                 self._logger.critical("Fatal error in async event processing", error=str(e), exc_info=True)
         finally:
             self._logger.info("EventBus pure async processing stopped")
 
-    async def _handle_event_async(self, event: BaseEvent):
+    async def _handle_event_async(self, event: BaseEvent) -> None:
         """Handle a single event by calling all registered subscribers with pure async coordination."""
         event_type = type(event)
         subscribers = self._subscribers.get(event_type, [])
@@ -180,12 +191,18 @@ class EventBus:
                     self._active_tasks.add(task)
 
                     # Remove from active tasks when complete
-                    def remove_task(t):
+                    def remove_task(t: asyncio.Task) -> None:
                         self._active_tasks.discard(t)
 
                     task.add_done_callback(remove_task)
                     # Handle task completion with proper exception handling
-                    task.add_done_callback(lambda t, name=subscriber.__name__: self._handle_task_result_async(t, name))
+                    subscriber_name = subscriber.__name__
+
+                    # Create a typed callback to avoid lambda type inference issues
+                    def task_done_callback(t: asyncio.Task, sn: str = subscriber_name) -> None:
+                        self._handle_task_result_async(t, sn)
+
+                    task.add_done_callback(task_done_callback)
 
                     self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber.__name__)
                 else:
@@ -194,7 +211,7 @@ class EventBus:
             except Exception as e:
                 self._logger.error("Error in event subscriber", subscriber_name=subscriber.__name__, error=str(e))
 
-    def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str):
+    def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str) -> None:
         """Handle async task completion with proper exception extraction."""
         try:
             # Get the result to handle exceptions without threading/runtime scheduler crossing
@@ -227,7 +244,7 @@ class EventBus:
             self._logger.warning("Event queue at capacity - dropping event", event_type=type(event).__name__)
             raise RuntimeError("Event bus overloaded") from exc
 
-    def subscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> None:
+    def subscribe(self, event_type: type[T], handler: Callable[[T], Any]) -> None:
         """
         Subscribe to events of a specific type with pure async thread-safe patterns.
 
@@ -246,10 +263,10 @@ class EventBus:
 
         # Remove threading dependency - Python dict operations are atomic at GIL
         # level for simple operations like this, sufficient for single-threaded async
-        self._subscribers[event_type].append(handler)
+        self._subscribers[event_type].append(handler)  # type: ignore[arg-type]
         self._logger.debug("Added subscriber for event type", event_type=event_type.__name__)
 
-    def unsubscribe(self, event_type: type[BaseEvent], handler: Callable[[BaseEvent], None]) -> bool:
+    def unsubscribe(self, event_type: type[T], handler: Callable[[T], Any]) -> bool:
         """
         Unsubscribe from events of a specific type with pure async coordination.
 
@@ -266,7 +283,7 @@ class EventBus:
         # Remove threading dependency - GIL atomic operations suffice for read-only
         subscribers = self._subscribers.get(event_type, [])
         try:
-            subscribers.remove(handler)
+            subscribers.remove(handler)  # type: ignore[arg-type]
             self._logger.debug("Removed subscriber for event type", event_type=event_type.__name__)
             return True
         except ValueError:
@@ -296,25 +313,27 @@ class EventBus:
         # Remove threading dependency for this read-only operation
         return {event_type.__name__: len(subscribers) for event_type, subscribers in self._subscribers.items()}
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """Shutdown the pure asyncio event bus with proper grace s period coordination."""
         self._logger.info("Shutting down pure asyncio EventBus")
         await self._stop_processing()
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""
         if self._running:
             # Use basic print instead of logger to avoid encoding issues during cleanup
             try:
                 self._logger.warning("EventBus destroyed without graceful shutdown")
-            except Exception:
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Error during event bus destruction warning", error=str(e), error_type=type(e).__name__)
                 pass
 
             # Force immediate shutdown to prevent "no running event loop" errors
             self._running = False
             try:
                 self._shutdown_event.set()
-            except Exception:
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Error setting shutdown event", error=str(e), error_type=type(e).__name__)
                 pass
 
             # Cancel all active tasks immediately, but only if event loop is still running

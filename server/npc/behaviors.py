@@ -168,6 +168,9 @@ class BehaviorEngine:
                 # Treat as boolean variable
                 return bool(context.get(condition, False))
 
+            # Fallback for malformed conditions
+            return False
+
         except Exception as e:
             logger.error(
                 "Error evaluating condition", condition=condition, context_keys=list(context.keys()), error=str(e)
@@ -331,9 +334,9 @@ class NPCBase(ABC):
         self.event_reaction_system = event_reaction_system
 
         # Initialize integration systems (will be set by external systems)
-        self.movement_integration = None
-        self.combat_integration = None
-        self.communication_integration = None
+        self.movement_integration: Any | None = None
+        self.combat_integration: Any | None = None
+        self.communication_integration: Any | None = None
 
         # Avoid accessing definition.name in logger to prevent potential lazy loading issues
         # Temporarily disable logging to avoid potential recursion issues
@@ -455,12 +458,11 @@ class NPCBase(ABC):
             if self.event_bus:
                 from ..events.event_types import NPCTookDamage
 
+                # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
                 self.event_bus.publish(
                     NPCTookDamage(
-                        timestamp=time.time(),
-                        event_type="NPCTookDamage",
                         npc_id=self.npc_id,
-                        room_id=self.current_room,
+                        room_id=self.current_room or "unknown",
                         damage=damage,
                         damage_type=damage_type,
                         source_id=source_id,
@@ -479,12 +481,11 @@ class NPCBase(ABC):
                     if self.event_bus:
                         from ..events.event_types import NPCDied
 
+                        # AI Agent: timestamp and event_type are set automatically by BaseEvent (init=False)
                         self.event_bus.publish(
                             NPCDied(
-                                timestamp=time.time(),
-                                event_type="NPCDied",
                                 npc_id=self.npc_id,
-                                room_id=self.current_room,
+                                room_id=self.current_room or "unknown",
                                 cause="damage",
                                 killer_id=source_id,
                             )
@@ -539,11 +540,14 @@ class NPCBase(ABC):
 
                         persistence = get_persistence()
                         event_bus = getattr(persistence, "_event_bus", None)
-                    except Exception:
+                    except (ImportError, AttributeError, RuntimeError) as e:
+                        logger.error(
+                            "Error getting persistence or event bus", error=str(e), error_type=type(e).__name__
+                        )
                         pass
 
                 movement_integration = NPCMovementIntegration(event_bus)
-                success = movement_integration.move_npc_to_room(self.npc_id, self.current_room, room_id)
+                success = movement_integration.move_npc_to_room(self.npc_id, self.current_room or "unknown", room_id)
 
                 if success:
                     self.current_room = room_id
@@ -586,10 +590,8 @@ class NPCBase(ABC):
 
                     self.event_bus.publish(
                         NPCSpoke(
-                            timestamp=time.time(),
-                            event_type="NPCSpoke",
                             npc_id=self.npc_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             message=message,
                             channel=channel,
                             target_id=target_id,
@@ -618,10 +620,8 @@ class NPCBase(ABC):
 
                     self.event_bus.publish(
                         NPCListened(
-                            timestamp=time.time(),
-                            event_type="NPCListened",
                             npc_id=self.npc_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             message=message,
                             speaker_id=speaker_id,
                             channel=channel,
@@ -898,7 +898,7 @@ class ShopkeeperNPC(NPCBase):
             logger.error("Error selling to player", npc_id=self.npc_id, error=str(e))
             return False
 
-    def calculate_price(self, base_price: int, markup: float = None) -> int:
+    def calculate_price(self, base_price: int, markup: float | None = None) -> int:
         """Calculate final price with markup."""
         if markup is None:
             markup = self._behavior_config.get("markup", 1.0)
@@ -1082,11 +1082,9 @@ class AggressiveMobNPC(NPCBase):
 
                     self.event_bus.publish(
                         NPCAttacked(
-                            timestamp=time.time(),
-                            event_type="NPCAttacked",
                             npc_id=self.npc_id,
                             target_id=target_id,
-                            room_id=self.current_room,
+                            room_id=self.current_room or "unknown",
                             damage=attack_damage,
                             attack_type="physical",
                         )

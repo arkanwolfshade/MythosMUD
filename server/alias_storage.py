@@ -26,12 +26,15 @@ class AliasStorage:
     def __init__(self, storage_dir: str | None = None):
         if storage_dir:
             self.storage_dir = Path(storage_dir)
-        elif os.environ.get("ALIASES_DIR"):
-            self.storage_dir = Path(os.environ.get("ALIASES_DIR"))
         else:
-            raise ValueError(
-                "ALIASES_DIR environment variable must be set. See server/env.example for configuration template."
-            )
+            # AI Agent: Type narrowing - os.environ.get returns str | None
+            aliases_dir = os.environ.get("ALIASES_DIR")
+            if aliases_dir:
+                self.storage_dir = Path(aliases_dir)
+            else:
+                raise ValueError(
+                    "ALIASES_DIR environment variable must be set. See server/env.example for configuration template."
+                )
 
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
@@ -239,7 +242,7 @@ class AliasStorage:
 
         return True  # File doesn't exist, consider it "deleted"
 
-    def backup_aliases(self, player_name: str, backup_dir: str = None) -> bool:
+    def backup_aliases(self, player_name: str, backup_dir: str | None = None) -> bool:
         """Create a backup of a player's aliases."""
         if backup_dir is None:
             backup_dir = str(self.storage_dir / "backups")

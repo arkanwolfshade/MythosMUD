@@ -6,6 +6,7 @@ and real-time updates for the game.
 """
 
 import json
+from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
@@ -47,7 +48,7 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         return None
 
 
-async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None):
+async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None) -> None:
     """
     Handle a WebSocket connection for a player.
 
@@ -96,12 +97,14 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
         if player and hasattr(player, "current_room_id"):
             persistence = connection_manager.persistence
             if persistence:
-                room = persistence.get_room(player.current_room_id)
+                room = persistence.get_room(str(player.current_room_id))
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
                     logger.info("DEBUG: Room object ID before player_entered", room_id=id(room))
                     if not room.has_player(player_id_str):
-                        logger.info("Adding player to room", player_id=player_id_str, room_id=player.current_room_id)
+                        logger.info(
+                            "Adding player to room", player_id=player_id_str, room_id=str(player.current_room_id)
+                        )
                         room.player_entered(player_id_str)
                         logger.info(
                             f"DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
@@ -117,18 +120,15 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     canonical_room_id = getattr(room, "id", None) or player.current_room_id
 
                     # Get room occupants
-                    room_occupants = connection_manager.get_room_occupants(canonical_room_id)
+                    room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
 
                     # Transform to list of player names for client (UI expects string[])
                     occupant_names = []
                     try:
                         for occ in room_occupants or []:
-                            if isinstance(occ, dict):
-                                name = occ.get("player_name") or occ.get("name")
-                                if name:
-                                    occupant_names.append(name)
-                            elif isinstance(occ, str):
-                                occupant_names.append(occ)
+                            name = occ.get("player_name") or occ.get("name")
+                            if name:
+                                occupant_names.append(name)
                     except Exception as e:
                         logger.error(
                             "Error transforming game_state occupants", room_id=player.current_room_id, error=str(e)
@@ -138,7 +138,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
 
                     # Ensure all UUID objects are converted to strings for JSON serialization
-                    def convert_uuids_to_strings(obj):
+                    def convert_uuids_to_strings(obj: Any) -> Any:
                         if isinstance(obj, dict):
                             return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
                         elif isinstance(obj, list):
@@ -161,15 +161,16 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                                 stats_data = json.loads(raw_stats)
                             elif isinstance(raw_stats, dict):
                                 stats_data = raw_stats
-                    except Exception:
+                    except (ValueError, TypeError, json.JSONDecodeError) as e:
+                        logger.error("Error parsing stats data", error=str(e), error_type=type(e).__name__)
                         stats_data = {}
 
                     # Normalize health field for client (health expected by client)
                     if "health" not in stats_data and "current_health" in stats_data:
                         try:
                             stats_data["health"] = stats_data.get("current_health")
-                        except Exception:
-                            pass
+                        except (KeyError, TypeError) as e:
+                            logger.debug("Error normalizing health field", error=str(e), error_type=type(e).__name__)
 
                     # Get complete player data with profession information using PlayerService
                     # This ensures the Status panel displays profession info automatically
@@ -227,7 +228,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                             "occupant_count": len(occupant_names),
                         },
                         player_id=player_id_str,
-                        room_id=canonical_room_id,
+                        room_id=str(canonical_room_id),
                     )
                     await websocket.send_json(game_state_event)
 
@@ -250,7 +251,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
 
                     # Proactively broadcast a room update so existing occupants see the new player
                     try:
-                        await broadcast_room_update(player_id_str, canonical_room_id)
+                        await broadcast_room_update(player_id_str, str(canonical_room_id))
                     except Exception as e:
                         logger.error("Error broadcasting initial room update", player_id=player_id_str, error=str(e))
 
@@ -330,7 +331,7 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
             logger.error("Error cleaning up mute data", player_id=player_id_str, error=str(e))
 
 
-async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict):
+async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:
     """
     Handle a WebSocket message from a player.
 
@@ -356,7 +357,9 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await websocket.send_json(error_response)
 
 
-async def handle_game_command(websocket: WebSocket, player_id: str, command: str, args: list = None):
+async def handle_game_command(
+    websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None
+) -> None:
     """
     Handle a game command from a player.
 
@@ -406,7 +409,7 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
                 broadcast_event = build_event("command_response", {"result": result["broadcast"]}, player_id=player_id)
-                await connection_manager.broadcast_to_room(room_id, broadcast_event, exclude_player=player_id)
+                await connection_manager.broadcast_to_room(str(room_id), broadcast_event, exclude_player=player_id)
                 logger.debug(
                     "Broadcasted message to room", broadcast_type=result.get("broadcast_type"), room_id=room_id
                 )
@@ -416,15 +419,17 @@ async def handle_game_command(websocket: WebSocket, player_id: str, command: str
         # Broadcast room updates if the command affected the room
         logger.debug("Command result", result=result)
         if result.get("room_changed"):
-            logger.debug("Room changed detected, broadcasting update", room_id=result.get("room_id"))
-            await broadcast_room_update(player_id, result.get("room_id"))
+            changed_room_id: str = result.get("room_id")  # type: ignore[assignment]
+            if changed_room_id:
+                logger.debug("Room changed detected, broadcasting update", room_id=changed_room_id)
+                await broadcast_room_update(player_id, str(changed_room_id))
         elif cmd == "go" and result.get("result"):
             # Send room update after movement
             logger.debug("Go command detected, broadcasting update", player_id=player_id)
             player = connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
-                logger.debug("Broadcasting room update", room_id=player.current_room_id)
-                await broadcast_room_update(player_id, player.current_room_id)
+                logger.debug("Broadcasting room update", room_id=str(player.current_room_id))
+                await broadcast_room_update(player_id, str(player.current_room_id))
             else:
                 logger.warning("Player not found or missing current_room_id", player_id=player_id)
 
@@ -538,7 +543,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         logger.debug("Moving player", player_id=player_id, from_room_id=from_room_id, to_room_id=target_room_id)
 
         # Move the player using the movement service
-        success = movement_service.move_player(player_id, from_room_id, target_room_id)
+        success = movement_service.move_player(player_id, str(from_room_id), target_room_id)
 
         logger.debug("Movement result", success=success)
 
@@ -593,15 +598,18 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     logger.info("SERVER DEBUG: Reconstructed command_line", command_line=command_line, cmd=cmd, args=args)
     result = await process_command_unified(
         command_line=command_line,
-        current_user=player,
-        request=request_context,
+        current_user=player,  # type: ignore[arg-type]
+        # WebSocketRequestContext provides duck-typed Request interface but isn't a subclass
+        # This is intentional - WebSocket contexts need different lifecycle than HTTP Requests
+        request=request_context,  # type: ignore[arg-type]
         alias_storage=alias_storage,
         player_name=player_name,
     )
+    assert isinstance(result, dict)
     return result
 
 
-def get_help_content(command_name: str = None) -> str:
+def get_help_content(command_name: str | None = None) -> str:
     """Get help content for commands."""
     if command_name:
         # Return specific command help
@@ -619,7 +627,7 @@ Directions: north, south, east, west
 """
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, message: str):
+async def handle_chat_message(websocket: WebSocket, player_id: str, message: str) -> None:
     """
     Handle a chat message from a player.
 
@@ -639,7 +647,9 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         # Broadcast to room
         player = connection_manager._get_player(player_id)
         if player:
-            await connection_manager.broadcast_to_room(player.current_room_id, chat_event, exclude_player=player_id)
+            await connection_manager.broadcast_to_room(
+                str(player.current_room_id), chat_event, exclude_player=player_id
+            )
 
         # Send confirmation to sender
         chat_sent_event = build_event("chat_sent", {"message": "Message sent"}, player_id=player_id)
@@ -656,7 +666,7 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         await websocket.send_json(error_response)
 
 
-async def broadcast_room_update(player_id: str, room_id: str):
+async def broadcast_room_update(player_id: str, room_id: str) -> None:
     """
     Broadcast a room update to all players in the room.
 
@@ -687,12 +697,9 @@ async def broadcast_room_update(player_id: str, room_id: str):
         room_occupants = connection_manager.get_room_occupants(room_id)
         try:
             for occ in room_occupants or []:
-                if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("name")
-                    if name:
-                        occupant_names.append(name)
-                elif isinstance(occ, str):
-                    occupant_names.append(occ)
+                name = occ.get("player_name") or occ.get("name")
+                if name:
+                    occupant_names.append(name)
         except Exception as e:
             logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
 
@@ -722,7 +729,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.debug("  - Total occupant_count", count=room.get_occupant_count())
 
         # Ensure all UUID objects are converted to strings for JSON serialization
-        def convert_uuids_to_strings(obj):
+        def convert_uuids_to_strings(obj: Any) -> Any:
             if isinstance(obj, dict):
                 return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
             elif isinstance(obj, list):
@@ -753,7 +760,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         if player:
             # Unsubscribe from old room
             if hasattr(player, "current_room_id") and player.current_room_id and player.current_room_id != room_id:
-                await connection_manager.unsubscribe_from_room(player_id, player.current_room_id)
+                await connection_manager.unsubscribe_from_room(player_id, str(player.current_room_id))
                 logger.debug(
                     "Player unsubscribed from old room", player_id=player_id, old_room_id=player.current_room_id
                 )
@@ -763,7 +770,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
             logger.debug("Player subscribed to new room", player_id=player_id, new_room_id=room_id)
 
             # Update player's current room
-            player.current_room_id = room_id
+            player.current_room_id = room_id  # type: ignore[assignment]
 
         # Broadcast to room
         logger.debug("Broadcasting room update to room", room_id=room_id)
@@ -774,7 +781,7 @@ async def broadcast_room_update(player_id: str, room_id: str):
         logger.error("Error broadcasting room update for room", room_id=room_id, error=str(e))
 
 
-async def send_system_message(websocket: WebSocket, message: str, message_type: str = "info"):
+async def send_system_message(websocket: WebSocket, message: str, message_type: str = "info") -> None:
     """
     Send a system message to a player.
 

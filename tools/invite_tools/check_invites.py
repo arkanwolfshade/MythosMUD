@@ -16,12 +16,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
 
 from sqlalchemy import text
 
-from server.database import async_session_maker
+from server.database import get_session_maker
 
 
 async def list_all_invites():
     """List all invite codes in the database with their status."""
-    async with async_session_maker() as session:
+    async with get_session_maker()() as session:
         result = await session.execute(
             text("""
                 SELECT invite_code, used, expires_at, created_at
@@ -64,7 +64,7 @@ async def list_all_invites():
 
 async def check_invite_status(invite_code: str):
     """Check the status of a specific invite code."""
-    async with async_session_maker() as session:
+    async with get_session_maker()() as session:
         result = await session.execute(
             text("SELECT used, expires_at, created_at FROM invites WHERE invite_code = :code"), {"code": invite_code}
         )
@@ -109,7 +109,7 @@ async def check_invite_status(invite_code: str):
 
 async def count_invites():
     """Count invite codes by status."""
-    async with async_session_maker() as session:
+    async with get_session_maker()() as session:
         # Total count
         result = await session.execute(text("SELECT COUNT(*) FROM invites"))
         total = result.scalar()

@@ -43,7 +43,7 @@ class PlayerPreferencesService:
 
         logger.info("PlayerPreferencesService initialized", db_path=db_path)
 
-    def _init_database(self):
+    def _init_database(self) -> None:
         """Initialize the player_channel_preferences table."""
         try:
             with sqlite3.connect(self.db_path) as conn:

@@ -100,6 +100,9 @@ class CombatEventPublisher:
                 )
                 return False
 
+            # Ensure timestamp is set (should be guaranteed by BaseEvent.__post_init__)
+            assert event.timestamp is not None, "Event timestamp should be set by BaseEvent.__post_init__"
+
             # Create message data for NATS
             message_data = {
                 "event_type": "combat_started",
@@ -496,6 +499,7 @@ class CombatEventPublisher:
                 "event_type": "npc_took_damage",
                 "data": {
                     "combat_id": str(event.combat_id),
+                    "room_id": event.room_id,
                     "npc_id": str(event.npc_id),
                     "npc_name": event.npc_name,
                     "damage": event.damage,

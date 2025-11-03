@@ -10,7 +10,7 @@ essential for understanding the deeper mysteries of our digital realm.
 """
 
 import traceback
-from typing import Any
+from typing import Any, NoReturn
 
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
@@ -68,7 +68,7 @@ def log_and_raise_enhanced(
     user_friendly: str | None = None,
     logger_name: str | None = None,
     **kwargs,
-) -> None:
+) -> NoReturn:
     """
     Enhanced log and raise function with proper structured logging.
 

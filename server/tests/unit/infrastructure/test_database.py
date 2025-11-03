@@ -7,7 +7,7 @@ and initialization functionality in database.py.
 
 import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -268,18 +268,29 @@ class TestCloseDB:
         mock_engine = AsyncMock()
         mock_engine.dispose = AsyncMock()
 
-        with patch("server.database.get_engine", return_value=mock_engine):
+        with patch("server.database.get_database_manager") as mock_get_mgr:
+            mock_mgr = Mock()
+            mock_mgr.engine = mock_engine
+            mock_mgr.get_engine = Mock(return_value=mock_engine)
+            mock_mgr.close = AsyncMock()
+            mock_get_mgr.return_value = mock_mgr
+
             await close_db()
 
-            mock_engine.dispose.assert_called_once()
+            mock_mgr.close.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_close_db_engine_dispose_failure(self):
         """Test close_db when engine.dispose() fails."""
         mock_engine = AsyncMock()
-        mock_engine.dispose.side_effect = RuntimeError("Dispose error")
 
-        with patch("server.database.get_engine", return_value=mock_engine):
+        with patch("server.database.get_database_manager") as mock_get_mgr:
+            mock_mgr = Mock()
+            mock_mgr.engine = mock_engine
+            mock_mgr.get_engine = Mock(return_value=mock_engine)
+            mock_mgr.close = AsyncMock(side_effect=RuntimeError("Dispose error"))
+            mock_get_mgr.return_value = mock_mgr
+
             with pytest.raises(RuntimeError):
                 await close_db()
 
@@ -305,13 +316,20 @@ class TestDatabaseIntegration:
         mock_engine.begin = MagicMock(return_value=mock_context_manager)
         mock_engine.dispose = AsyncMock()
 
-        with patch("server.database.get_engine", return_value=mock_engine):
-            await init_db()
-            mock_conn.run_sync.assert_called_once()
+        with patch("server.database.get_database_manager") as mock_get_mgr:
+            mock_mgr = Mock()
+            mock_mgr.engine = mock_engine
+            mock_mgr.get_engine = Mock(return_value=mock_engine)
+            mock_mgr.close = AsyncMock()
+            mock_get_mgr.return_value = mock_mgr
 
-            # Test closing
-            await close_db()
-            mock_engine.dispose.assert_called_once()
+            with patch("server.database.get_engine", return_value=mock_engine):
+                await init_db()
+                mock_conn.run_sync.assert_called_once()
+
+                # Test closing
+                await close_db()
+                mock_mgr.close.assert_called_once()
 
     def test_database_path_integration(self):
         """Test database path integration with directory creation."""

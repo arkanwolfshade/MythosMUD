@@ -19,7 +19,7 @@ from .logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class ErrorContext:
     """
     Contextual information for error handling.
@@ -34,7 +34,7 @@ class ErrorContext:
     command: str | None = None
     session_id: str | None = None
     request_id: str | None = None
-    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+    timestamp: datetime = field(default_factory=lambda: datetime.utcnow().replace(tzinfo=UTC))
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -84,7 +84,7 @@ class MythosMUDError(Exception):
         # Log the error with context
         self._log_error()
 
-    def _log_error(self):
+    def _log_error(self) -> None:
         """Log the error with structured context."""
         logger.error(
             f"MythosMUD error occurred: {self.message}",
@@ -108,7 +108,9 @@ class MythosMUDError(Exception):
 class AuthenticationError(MythosMUDError):
     """Authentication and authorization errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, auth_type: str = "unknown", **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, auth_type: str = "unknown", **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.auth_type = auth_type
         self.details["auth_type"] = auth_type
@@ -123,8 +125,8 @@ class DatabaseError(MythosMUDError):
         context: ErrorContext | None = None,
         operation: str = "unknown",
         table: str | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.operation = operation
         self.table = table
@@ -142,8 +144,8 @@ class ValidationError(MythosMUDError):
         context: ErrorContext | None = None,
         field: str | None = None,
         value: Any | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.field = field
         self.value = value
@@ -156,7 +158,9 @@ class ValidationError(MythosMUDError):
 class GameLogicError(MythosMUDError):
     """Game mechanics and logic errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, game_action: str | None = None, **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, game_action: str | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.game_action = game_action
         if game_action:
@@ -166,7 +170,9 @@ class GameLogicError(MythosMUDError):
 class ConfigurationError(MythosMUDError):
     """Configuration and setup errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, config_key: str | None = None, **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, config_key: str | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.config_key = config_key
         if config_key:
@@ -176,7 +182,9 @@ class ConfigurationError(MythosMUDError):
 class NetworkError(MythosMUDError):
     """Network and communication errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, connection_type: str = "unknown", **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, connection_type: str = "unknown", **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.connection_type = connection_type
         self.details["connection_type"] = connection_type
@@ -191,8 +199,8 @@ class ResourceNotFoundError(MythosMUDError):
         context: ErrorContext | None = None,
         resource_type: str | None = None,
         resource_id: str | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.resource_type = resource_type
         self.resource_id = resource_id
@@ -211,8 +219,8 @@ class RateLimitError(MythosMUDError):
         context: ErrorContext | None = None,
         limit_type: str = "unknown",
         retry_after: int | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.limit_type = limit_type
         self.retry_after = retry_after
@@ -221,7 +229,7 @@ class RateLimitError(MythosMUDError):
             self.details["retry_after"] = retry_after
 
 
-def create_error_context(**kwargs) -> ErrorContext:
+def create_error_context(**kwargs: Any) -> ErrorContext:
     """
     Create an error context with the given parameters.
 
@@ -275,7 +283,11 @@ class LoggedHTTPException(HTTPException):
             "context": context.to_dict(),
         }
 
-        error_logger.warning("HTTP error logged and exception raised", **log_data)
+        try:
+            error_logger.warning("HTTP error logged and exception raised", **log_data)
+        except (OSError, PermissionError, RuntimeError) as log_err:
+            # Avoid test failures due to file handler rotation issues on Windows
+            logger.debug("Suppressed logging backend error during HTTP error logging", error=str(log_err))
 
 
 def handle_exception(exc: Exception, context: ErrorContext | None = None) -> MythosMUDError:

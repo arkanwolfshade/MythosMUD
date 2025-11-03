@@ -436,7 +436,7 @@ class TestNPCSpawningService:
         """Test handling NPC entered room events."""
         # Note: NPC instances are now managed by lifecycle manager
         # This test is no longer relevant for spawning service
-        event = NPCEnteredRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
+        event = NPCEnteredRoom(npc_id="npc_001", room_id="room_001")
 
         # Should not raise an exception
         event_bus.publish(event)
@@ -446,7 +446,7 @@ class TestNPCSpawningService:
         """Test handling NPC left room events."""
         # Note: NPC instances are now managed by lifecycle manager
         # This test is no longer relevant for spawning service
-        event = NPCLeftRoom(timestamp=None, event_type="", npc_id="npc_001", room_id="room_001")
+        event = NPCLeftRoom(npc_id="npc_001", room_id="room_001")
 
         # Should not raise an exception
         event_bus.publish(event)
@@ -465,7 +465,7 @@ class TestNPCSpawningService:
         )
 
         # Call the method directly
-        event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="player1", room_id="room_001")
+        event = PlayerEnteredRoom(player_id="player1", room_id="room_001")
         spawning_service._handle_player_entered_room(event)
 
         # No assertion needed, just ensuring no exception is raised
@@ -474,7 +474,7 @@ class TestNPCSpawningService:
         """Test _handle_player_left_room method directly."""
         from server.events.event_types import PlayerLeftRoom
 
-        event = PlayerLeftRoom(timestamp=None, event_type="", player_id="player1", room_id="room_001")
+        event = PlayerLeftRoom(player_id="player1", room_id="room_001")
         # This method does nothing but should not raise an exception
         spawning_service._handle_player_left_room(event)
 
@@ -594,7 +594,7 @@ class TestNPCSpawningService:
         definition = NPCDefinition(
             name="Test Unknown",
             description="Unknown NPC type",
-            npc_type="unknown_type",  # type: ignore
+            npc_type="unknown_type",
             sub_zone_id="downtown",
             required_npc=False,
             max_population=1,

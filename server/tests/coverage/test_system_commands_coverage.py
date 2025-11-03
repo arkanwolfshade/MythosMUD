@@ -32,7 +32,7 @@ class TestHelpCommand:
         with patch("server.commands.system_commands.get_help_content") as mock_help:
             mock_help.return_value = "General help content"
 
-            result = await handle_help_command([], current_user, request, alias_storage, player_name)
+            result = await handle_help_command({"args": []}, current_user, request, alias_storage, player_name)
 
             assert result["result"] == "General help content"
             mock_help.assert_called_once_with(None)
@@ -51,7 +51,7 @@ class TestHelpCommand:
         with patch("server.commands.system_commands.get_help_content") as mock_help:
             mock_help.return_value = "Help for 'say' command"
 
-            result = await handle_help_command(["say"], current_user, request, alias_storage, player_name)
+            result = await handle_help_command({"args": ["say"]}, current_user, request, alias_storage, player_name)
 
             assert result["result"] == "Help for 'say' command"
             mock_help.assert_called_once_with("say")
@@ -68,7 +68,9 @@ class TestHelpCommand:
         alias_storage = Mock()
         player_name = "testuser"
 
-        result = await handle_help_command(["say", "extra"], current_user, request, alias_storage, player_name)
+        result = await handle_help_command(
+            {"args": ["say", "extra"]}, current_user, request, alias_storage, player_name
+        )
 
         assert "Usage: help [command]" in result["result"]
 
@@ -89,7 +91,9 @@ class TestHelpCommand:
             with patch("server.commands.system_commands.get_help_content") as mock_help:
                 mock_help.return_value = f"Help for {command}"
 
-                result = await handle_help_command([command], current_user, request, alias_storage, player_name)
+                result = await handle_help_command(
+                    {"args": [command]}, current_user, request, alias_storage, player_name
+                )
 
                 assert result["result"] == f"Help for {command}"
                 mock_help.assert_called_once_with(command)

@@ -113,7 +113,7 @@ class NATSConnectionStateMachine(StateMachine):
             initial_state=self.current_state.id,
         )
 
-    def on_enter_state(self, state: State, event=None, **kwargs) -> None:
+    def on_enter_state(self, state: State, event: Any | None = None, **kwargs: Any) -> None:
         """
         Called whenever state machine enters a new state.
 

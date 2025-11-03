@@ -7,7 +7,7 @@ cleanup and shutdown coordination with timeout boundaries.
 """
 
 import asyncio
-from collections.abc import Awaitable
+from collections.abc import Coroutine
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -61,7 +61,7 @@ class TaskRegistry:
         logger.info("TaskRegistry initialized - it is watched by eyes of unmeaning")
 
     def register_task(
-        self, coro: Awaitable[Any], task_name: str, task_type: str = "unknown", *args
+        self, coro: Coroutine[Any, Any, Any], task_name: str, task_type: str = "unknown", *args
     ) -> asyncio.Task[Any]:
         """
         Register and create a tracked asyncio.Task.
@@ -85,7 +85,7 @@ class TaskRegistry:
 
         try:
             # Create the task with enhanced metadata
-            task = asyncio.create_task(coro, *args)
+            task: asyncio.Task[Any] = asyncio.create_task(coro, *args)
             metadata = TaskMetadata(task, task_name, task_type)
 
             self._active_tasks[task] = metadata
@@ -130,15 +130,17 @@ class TaskRegistry:
         """
         try:
             # Resolve task reference if name provided
-            target_task = task
+            target_task: asyncio.Task[Any]
             if isinstance(task, str):
                 if task not in self._task_names:
                     logger.warning("Task not found in registry", task=task)
                     return False
                 target_task = self._task_names[task]
-            elif task not in self._active_tasks:
-                logger.warning("Task object not found in registry")
-                return False
+            else:
+                target_task = task
+                if task not in self._active_tasks:
+                    logger.warning("Task object not found in registry")
+                    return False
 
             # Remove from tracking collections
             if target_task in self._active_tasks:
@@ -173,15 +175,16 @@ class TaskRegistry:
         """
         try:
             # Resolve task reference
-            target_task = task
             if isinstance(task, str):
                 if task not in self._task_names:
                     logger.debug("Cancellation target not found", task=task)
                     return False
-                target_task = self._task_names[task]
-            elif target_task not in self._active_tasks:
-                logger.debug("Cancellation task not found in active tasks")
-                return False
+                target_task: asyncio.Task[Any] = self._task_names[task]
+            else:
+                target_task = task
+                if target_task not in self._active_tasks:
+                    logger.debug("Cancellation task not found in active tasks")
+                    return False
 
             # Execute cancellation with wait_bound boundaries
             if not target_task.done():
@@ -321,7 +324,7 @@ class TaskRegistry:
 _global_registry = TaskRegistry()
 
 
-def register_task(coro: Awaitable[Any], name: str, task_type: str = "unknown") -> asyncio.Task[Any]:
+def register_task(coro: Coroutine[Any, Any, Any], name: str, task_type: str = "unknown") -> asyncio.Task[Any]:
     """Convenience function for registering tasks with global registry."""
     return _global_registry.register_task(coro, name, task_type)
 

@@ -22,7 +22,7 @@ class CombatValidator:
     the Cthulhu Mythos atmosphere through carefully crafted error messages.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the combat validator."""
         self.attack_aliases = {
             "attack",

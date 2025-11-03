@@ -47,7 +47,7 @@ class TestEventBusHybridThreadingElimination:
             await asyncio.sleep(0.05)
 
         event_bus_instance.subscribe(PlayerEnteredRoom, test_async_handler)
-        test_event = PlayerEnteredRoom(timestamp=None, event_type="", player_id="p123", room_id="r456")
+        test_event = PlayerEnteredRoom(player_id="p123", room_id="r456")
         event_bus_instance.publish(test_event)
 
         await asyncio.sleep(0.1)

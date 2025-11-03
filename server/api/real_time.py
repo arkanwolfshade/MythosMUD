@@ -6,8 +6,9 @@ for real-time game communication.
 """
 
 import time
+from typing import Any
 
-from fastapi import APIRouter, Request, WebSocket
+from fastapi import APIRouter, HTTPException, Request, WebSocket
 from fastapi.responses import StreamingResponse
 
 from ..auth_utils import decode_access_token
@@ -22,7 +23,7 @@ realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
 @realtime_router.get("/events/{player_id}")
-async def sse_events(player_id: str, request: Request):
+async def sse_events(player_id: str, request: Request) -> StreamingResponse:
     """
     Server-Sent Events stream for real-time game updates.
     Supports session tracking for dual connection management.
@@ -39,6 +40,16 @@ async def sse_events(player_id: str, request: Request):
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
+    # Readiness gate: require persistence to be initialized
+    try:
+        from ..realtime.connection_manager import connection_manager as _cm
+
+        if getattr(_cm, "persistence", None) is None:
+            raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    except Exception as e:
+        # If connection manager is unavailable, return 503
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from e
+
     return StreamingResponse(
         game_event_stream(player_id, session_id),
         media_type="text/event-stream",
@@ -47,7 +58,7 @@ async def sse_events(player_id: str, request: Request):
 
 
 @realtime_router.get("/events")
-async def sse_events_token(request: Request):
+async def sse_events_token(request: Request) -> StreamingResponse:
     """
     Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
     Supports session tracking for dual connection management.
@@ -69,7 +80,7 @@ async def sse_events_token(request: Request):
         context = create_context_from_request(request)
         context.user_id = user_id
         raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-    player_id = player.player_id
+    player_id = str(player.player_id)
     logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
 
     # Note: CORS is handled by global middleware; avoid environment-specific logic here
@@ -80,6 +91,12 @@ async def sse_events_token(request: Request):
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
+    # Readiness gate for token-authenticated SSE as well
+    from ..realtime.connection_manager import connection_manager as _cm
+
+    if getattr(_cm, "persistence", None) is None:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+
     return StreamingResponse(
         game_event_stream(player_id, session_id),
         media_type="text/event-stream",
@@ -88,7 +105,7 @@ async def sse_events_token(request: Request):
 
 
 @realtime_router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket) -> None:
     """
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
@@ -96,6 +113,19 @@ async def websocket_endpoint(websocket: WebSocket):
     from ..logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
+
+    # Readiness gate: if persistence not ready, close with 1013 (Try Again Later)
+    try:
+        from ..realtime.connection_manager import connection_manager as _cm
+
+        if getattr(_cm, "persistence", None) is None:
+            # CRITICAL FIX: Must accept WebSocket before closing or sending messages
+            await websocket.accept()
+            await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
+            await websocket.close(code=1013)
+            return
+    except Exception:
+        pass
 
     # Accept token via WebSocket subprotocol (preferred) or query token (fallback)
     token = websocket.query_params.get("token")
@@ -114,7 +144,8 @@ async def websocket_endpoint(websocket: WebSocket):
                         break
             elif parts:
                 token = parts[-1]
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error parsing Authorization header", error=str(e), error_type=type(e).__name__)
         # Non-fatal: fall back to query param token
         pass
     session_id = websocket.query_params.get("session_id")  # New session parameter
@@ -143,7 +174,7 @@ async def websocket_endpoint(websocket: WebSocket):
             context = create_context_from_websocket(websocket)
             context.user_id = user_id
             raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-        player_id = player.player_id
+        player_id = str(player.player_id)
 
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
@@ -155,7 +186,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 @realtime_router.get("/connections/{player_id}")
-async def get_player_connections(player_id: str, request: Request):
+async def get_player_connections(player_id: str, request: Request) -> dict[str, Any]:
     """
     Get connection information for a player.
     Returns detailed connection metadata including session information.
@@ -192,7 +223,7 @@ async def get_player_connections(player_id: str, request: Request):
 
 
 @realtime_router.post("/connections/{player_id}/session")
-async def handle_new_game_session(player_id: str, request: Request):
+async def handle_new_game_session(player_id: str, request: Request) -> dict[str, Any]:
     """
     Handle a new game session for a player.
     This will disconnect existing connections and establish a new session.
@@ -218,6 +249,7 @@ async def handle_new_game_session(player_id: str, request: Request):
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
 
         logger.info("New game session handled", player_id=player_id, session_results=session_results)
+        assert isinstance(session_results, dict)
         return session_results
 
     except json.JSONDecodeError as e:
@@ -234,7 +266,7 @@ async def handle_new_game_session(player_id: str, request: Request):
 
 
 @realtime_router.get("/connections/stats")
-async def get_connection_statistics(request: Request):
+async def get_connection_statistics(request: Request) -> dict[str, Any]:
     """
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
@@ -261,7 +293,7 @@ async def get_connection_statistics(request: Request):
 
 
 @realtime_router.websocket("/ws/{player_id}")
-async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
+async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:
     """
     Backward-compatible WebSocket endpoint that accepts a path player_id but
     prefers JWT token identity when provided.
@@ -281,6 +313,19 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
     )
 
     try:
+        # Readiness gate for compatibility route as well
+        try:
+            from ..realtime.connection_manager import connection_manager as _cm
+
+            if getattr(_cm, "persistence", None) is None:
+                # CRITICAL FIX: Must accept WebSocket before closing or sending messages
+                await websocket.accept()
+                await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
+                await websocket.close(code=1013)
+                return
+        except Exception:
+            pass
+
         token = websocket.query_params.get("token")
         resolved_player_id = player_id
         payload = decode_access_token(token)
@@ -289,7 +334,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
             persistence = get_persistence()
             player = persistence.get_player_by_user_id(user_id)
             if player:
-                resolved_player_id = player.player_id
+                resolved_player_id = str(player.player_id)
         await handle_websocket_connection(websocket, resolved_player_id, session_id)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)

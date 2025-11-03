@@ -102,7 +102,7 @@ class PopulationStats:
         self.optional_npcs = 0
         self.last_updated = time.time()
 
-    def add_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
+    def add_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int | None = None) -> None:
         """
         Add an NPC to the population statistics.
 
@@ -127,7 +127,7 @@ class PopulationStats:
 
         self.last_updated = time.time()
 
-    def remove_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int = None) -> None:
+    def remove_npc(self, npc_type: str, room_id: str, is_required: bool, npc_definition_id: int | None = None) -> None:
         """
         Remove an NPC from the population statistics.
 
@@ -354,7 +354,7 @@ class NPCPopulationController:
         """
         self.npc_definitions.clear()
         for definition in definitions:
-            self.npc_definitions[definition.id] = definition
+            self.npc_definitions[int(definition.id)] = definition
             logger.debug(
                 "Loaded NPC definition", npc_id=definition.id, npc_name=definition.name, npc_type=definition.npc_type
             )
@@ -368,9 +368,9 @@ class NPCPopulationController:
         """
         self.spawn_rules.clear()
         for rule in rules:
-            if rule.npc_definition_id not in self.spawn_rules:
-                self.spawn_rules[rule.npc_definition_id] = []
-            self.spawn_rules[rule.npc_definition_id].append(rule)
+            if int(rule.npc_definition_id) not in self.spawn_rules:
+                self.spawn_rules[int(rule.npc_definition_id)] = []
+            self.spawn_rules[int(rule.npc_definition_id)].append(rule)
             logger.debug(
                 "Loaded spawn rule",
                 rule_id=rule.id,
@@ -436,7 +436,7 @@ class NPCPopulationController:
             logger.info(
                 "Checking NPC", npc_id=definition.id, npc_name=definition.name, sub_zone_id=definition.sub_zone_id
             )
-            if definition.sub_zone_id not in zone_key:
+            if str(definition.sub_zone_id) not in zone_key:
                 logger.info(
                     f"NPC {definition.id} sub_zone '{definition.sub_zone_id}' not in zone_key '{zone_key}', skipping"
                 )
@@ -469,7 +469,7 @@ class NPCPopulationController:
         stats = self.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
-            current_count = stats.npcs_by_definition.get(definition.id, 0)
+            current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             logger.info(
                 "Current count for NPC in zone",
                 npc_id=definition.id,
@@ -485,14 +485,14 @@ class NPCPopulationController:
             logger.info("No population stats found for zone", zone_key=zone_key)
 
         # Check spawn rules
-        if definition.id in self.spawn_rules:
+        if int(definition.id) in self.spawn_rules:
             logger.info(
-                "Found spawn rules for NPC", rule_count=len(self.spawn_rules[definition.id]), npc_id=definition.id
+                "Found spawn rules for NPC", rule_count=len(self.spawn_rules[int(definition.id)]), npc_id=definition.id
             )
             # Get current NPC count for population checks
-            current_npc_count = stats.npcs_by_definition.get(definition.id, 0) if stats else 0
+            current_npc_count = stats.npcs_by_definition.get(int(definition.id), 0) if stats else 0
 
-            for i, rule in enumerate(self.spawn_rules[definition.id]):
+            for i, rule in enumerate(self.spawn_rules[int(definition.id)]):
                 logger.info("Checking spawn rule", rule_number=i + 1, npc_id=definition.id)
 
                 # Check if current NPC population is below the rule's max_population limit
@@ -509,7 +509,7 @@ class NPCPopulationController:
                     continue
 
                 # Check spawn probability with zone modifier
-                effective_probability = zone_config.get_effective_spawn_probability(definition.spawn_probability)
+                effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
                 random_roll = random.random()
                 logger.info(
                     f"Spawn rule {i + 1} probability check: roll={random_roll:.3f}, threshold={effective_probability:.3f}"
@@ -530,7 +530,7 @@ class NPCPopulationController:
         logger.info("NPC should not spawn", npc_id=definition.id)
         return False
 
-    def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str:
+    def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str | None:
         """
         Spawn an NPC instance using the lifecycle manager.
 
@@ -539,7 +539,7 @@ class NPCPopulationController:
             room_id: Room where to spawn the NPC
 
         Returns:
-            Generated NPC instance ID
+            Generated NPC instance ID, or None if spawn failed
         """
         if not self.lifecycle_manager:
             logger.error("No lifecycle manager available - cannot spawn NPC")
@@ -565,11 +565,11 @@ class NPCPopulationController:
                     npc_name=definition.name,
                     definition_id=definition.id,
                     zone_key=zone_key,
-                    current_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    current_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
                     max_population=definition.max_population,
                 )
 
-                stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
+                stats.add_npc(str(definition.npc_type), room_id, definition.is_required(), int(definition.id))
 
                 # Log population stats after adding NPC
                 logger.debug(
@@ -578,7 +578,7 @@ class NPCPopulationController:
                     npc_name=definition.name,
                     definition_id=definition.id,
                     zone_key=zone_key,
-                    new_count_by_definition=stats.npcs_by_definition.get(definition.id, 0),
+                    new_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
                     max_population=definition.max_population,
                 )
 
@@ -631,7 +631,8 @@ class NPCPopulationController:
         zone_key = self._get_zone_key_from_room_id(room_id)
         if zone_key in self.population_stats:
             stats = self.population_stats[zone_key]
-            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], npc_data.get("definition_id"))
+            definition_id: int | None = npc_data.get("definition_id")
+            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], definition_id)
 
         # Remove from active NPCs
         del self.active_npcs[npc_id]
@@ -646,7 +647,11 @@ class NPCPopulationController:
         Returns:
             Dictionary containing population summaries
         """
-        summary = {"total_zones": len(self.population_stats), "total_active_npcs": len(self.active_npcs), "zones": {}}
+        summary: dict[str, Any] = {
+            "total_zones": len(self.population_stats),
+            "total_active_npcs": len(self.active_npcs),
+            "zones": {},
+        }
 
         for zone_key, stats in self.population_stats.items():
             summary["zones"][zone_key] = stats.to_dict()

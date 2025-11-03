@@ -250,3 +250,4 @@ client/playwright/.cache/
 playwright-report/
 test-results/
 .cache/
+.playwright-mcp/

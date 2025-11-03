@@ -10,6 +10,7 @@ eldritch architecture.
 """
 
 from datetime import UTC, datetime
+from typing import Any, cast
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events import EventBus
@@ -31,7 +32,7 @@ class RealTimeEventHandler:
     layer.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, task_registry=None):
+    def __init__(self, event_bus: EventBus | None = None, task_registry: Any | None = None) -> None:
         """
         Initialize the real-time event handler.
 
@@ -59,7 +60,7 @@ class RealTimeEventHandler:
 
         self._logger.info("RealTimeEventHandler initialized with enhanced room synchronization")
 
-    def _subscribe_to_events(self):
+    def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
         self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered)
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
@@ -82,7 +83,7 @@ class RealTimeEventHandler:
         self._sequence_counter += 1
         return self._sequence_counter
 
-    async def _handle_player_entered(self, event: PlayerEnteredRoom):
+    async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
         """
         Handle player entering a room with enhanced synchronization.
 
@@ -135,17 +136,23 @@ class RealTimeEventHandler:
             )
 
             # Broadcast to room occupants (excluding the entering player)
-            await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+            if room_id_str is not None:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
             # Subscribe player to the room so they will receive subsequent broadcasts
-            await self.connection_manager.subscribe_to_room(exclude_player_id, room_id_str)
+            if exclude_player_id is not None and room_id_str is not None:
+                await self.connection_manager.subscribe_to_room(exclude_player_id, room_id_str)
 
             # Send room occupants update to the entering player as a personal message
             # so they immediately see who is present on joining
-            await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
+            if room_id_str is not None and exclude_player_id is not None:
+                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
             try:
                 # Also send a direct occupants snapshot to the entering player
-                occupants_info = self._get_room_occupants(room_id_str)
+                if room_id_str is None:
+                    occupants_info: list[dict[str, Any] | str] | None = []
+                else:
+                    occupants_info = self._get_room_occupants(room_id_str)
                 names: list[str] = []
                 for occ in occupants_info or []:
                     if isinstance(occ, dict):
@@ -164,7 +171,8 @@ class RealTimeEventHandler:
                     "room_id": room_id_str,
                     "data": {"occupants": names, "count": len(names)},
                 }
-                await self.connection_manager.send_personal_message(exclude_player_id, personal)
+                if exclude_player_id is not None:
+                    await self.connection_manager.send_personal_message(exclude_player_id, personal)
             except Exception as e:
                 self._logger.error("Error sending personal occupants update", error=str(e))
 
@@ -177,7 +185,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error handling player entered event", error=str(e), exc_info=True)
 
-    async def _handle_player_left(self, event: PlayerLeftRoom):
+    async def _handle_player_left(self, event: PlayerLeftRoom) -> None:
         """
         Handle player leaving a room with enhanced synchronization.
 
@@ -233,10 +241,12 @@ class RealTimeEventHandler:
             )
 
             # Broadcast to remaining room occupants (excluding the leaving player)
-            await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+            if room_id_str is not None:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
             # Send room occupants update to remaining players
-            await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
+            if room_id_str is not None and exclude_player_id is not None:
+                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
             self._logger.info(
                 "Player left room with enhanced synchronization",
@@ -301,7 +311,7 @@ class RealTimeEventHandler:
             },
         }
 
-    async def _send_room_occupants_update(self, room_id: str, exclude_player: str = None):
+    async def _send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
         """
         Send room occupants update to players in the room.
 
@@ -311,7 +321,7 @@ class RealTimeEventHandler:
         """
         try:
             # Get room occupants
-            occupants_info = self._get_room_occupants(room_id)
+            occupants_info: list[dict[str, Any] | str] = self._get_room_occupants(room_id)
 
             # Transform to list of names for client UI consistency
             occupant_names: list[str] = []
@@ -341,7 +351,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
-    def _get_room_occupants(self, room_id: str) -> list[dict]:
+    def _get_room_occupants(self, room_id: str) -> list[dict[str, Any] | str]:
         """
         Get the list of occupants in a room.
 
@@ -351,7 +361,7 @@ class RealTimeEventHandler:
         Returns:
             list[dict]: List of occupant information
         """
-        occupants = []
+        occupants: list[dict[str, Any] | str] = []
 
         try:
             # Get room from persistence
@@ -407,13 +417,12 @@ class RealTimeEventHandler:
 
         return occupants
 
-    def _handle_npc_entered(self, event: NPCEnteredRoom):
+    def _handle_npc_entered(self, event: NPCEnteredRoom) -> None:
         """
         Handle NPC entering a room.
 
-        This method updates the room state to include the NPC in the occupant list,
-        broadcasts a spawn message to the room (if configured), and broadcasts
-        the room update to all players in the room.
+        This method broadcasts NPC appearance and triggers occupant updates.
+        Room state (NPC presence) is mutated only by domain sources (e.g., Room.npc_entered).
 
         Args:
             event: NPCEnteredRoom event containing NPC and room information
@@ -431,9 +440,6 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
-
-            # Add NPC to room's occupant list
-            room.npc_entered(event.npc_id)
 
             # Get the NPC's spawn message from behavior_config (if available)
             spawn_message = self._get_npc_spawn_message(event.npc_id)
@@ -469,19 +475,16 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(
-                "NPC successfully added to room occupant list", npc_id=event.npc_id, room_id=event.room_id
-            )
+            self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
 
         except Exception as e:
             self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
 
-    def _handle_npc_left(self, event: NPCLeftRoom):
+    def _handle_npc_left(self, event: NPCLeftRoom) -> None:
         """
         Handle NPC leaving a room.
 
-        This method updates the room state to remove the NPC from the occupant list
-        and broadcasts the room update to all players in the room.
+        This method triggers occupant updates. Room state is mutated by domain sources only.
 
         Args:
             event: NPCLeftRoom event containing NPC and room information
@@ -499,9 +502,6 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
-
-            # Remove NPC from room's occupant list
-            room.npc_left(event.npc_id)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -531,19 +531,17 @@ class RealTimeEventHandler:
                 # No event loop available, just log that we can't broadcast
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
-            self._logger.debug(
-                "NPC successfully removed from room occupant list", npc_id=event.npc_id, room_id=event.room_id
-            )
+            self._logger.debug("Processed NPC left event", npc_id=event.npc_id, room_id=event.room_id)
 
         except Exception as e:
             self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         """Shutdown the event handler."""
         self._logger.info("Shutting down RealTimeEventHandler")
         # Note: EventBus will handle its own shutdown
 
-    async def _handle_player_xp_awarded(self, event: PlayerXPAwardEvent):
+    async def _handle_player_xp_awarded(self, event: PlayerXPAwardEvent) -> None:
         """
         Handle player XP award events by sending updates to the client.
 
@@ -638,7 +636,7 @@ class RealTimeEventHandler:
                 # Get the spawn_message from the behavior_config
                 spawn_message = behavior_config.get("spawn_message")
                 if spawn_message:
-                    return spawn_message
+                    return cast(str, spawn_message)
 
             # Return default message if no custom message is defined
             return f"{npc_name} appears."
@@ -647,7 +645,7 @@ class RealTimeEventHandler:
             self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
             return None
 
-    def _send_room_message(self, room_id: str, message: str):
+    def _send_room_message(self, room_id: str, message: str) -> None:
         """
         Send a message to all players in a room.
 
@@ -710,7 +708,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error sending room message", room_id=room_id, error=str(e), exc_info=True)
 
-    async def _handle_player_hp_updated(self, event: PlayerHPUpdated):
+    async def _handle_player_hp_updated(self, event: PlayerHPUpdated) -> None:
         """
         Handle player HP update events by sending updates to the client.
 
@@ -763,7 +761,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error handling player HP update event", error=str(e), exc_info=True)
 
-    async def _handle_player_died(self, event):
+    async def _handle_player_died(self, event: Any) -> None:
         """
         Handle player death events by sending death notification to the client.
 
@@ -796,7 +794,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error handling player died event", error=str(e), exc_info=True)
 
-    async def _handle_player_hp_decay(self, event):
+    async def _handle_player_hp_decay(self, event: Any) -> None:
         """
         Handle player HP decay events by sending decay notification to the client.
 
@@ -828,7 +826,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error handling player HP decay event", error=str(e), exc_info=True)
 
-    async def _handle_player_respawned(self, event):
+    async def _handle_player_respawned(self, event: Any) -> None:
         """
         Handle player respawn events by sending respawn notification to the client.
 
@@ -870,7 +868,9 @@ class RealTimeEventHandler:
 real_time_event_handler: RealTimeEventHandler | None = None
 
 
-def get_real_time_event_handler(event_bus=None, task_registry=None) -> RealTimeEventHandler:
+def get_real_time_event_handler(
+    event_bus: EventBus | None = None, task_registry: Any | None = None
+) -> RealTimeEventHandler:
     """
     Get the global RealTimeEventHandler instance.
 

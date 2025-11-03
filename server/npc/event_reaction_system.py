@@ -11,7 +11,7 @@ the delicate balance of our reality.
 
 import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any, TypeVar
 
 from ..events import EventBus
 from ..events.event_types import (
@@ -32,6 +32,9 @@ from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
+# Type variable for generic event types
+EventT = TypeVar("EventT", bound=BaseEvent)
+
 
 class NPCEventReaction:
     """
@@ -44,8 +47,8 @@ class NPCEventReaction:
     def __init__(
         self,
         event_type: type[BaseEvent],
-        condition: Callable[[BaseEvent, dict[str, Any]], bool] | None = None,
-        action: Callable[[BaseEvent, dict[str, Any]], bool] | None = None,
+        condition: Callable[[Any, dict[str, Any]], bool] | None = None,
+        action: Callable[[Any, dict[str, Any]], bool] | None = None,
         priority: int = 0,
     ):
         """

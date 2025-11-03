@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from server.config import AppConfig, get_config, reset_config
 from server.config.models import (
     ChatConfig,
+    CORSConfig,
     DatabaseConfig,
     GameConfig,
     LoggingConfig,
@@ -196,20 +197,20 @@ class TestGameConfig:
 
     def test_valid_game_config(self):
         """Test valid game configuration."""
-        config = GameConfig(aliases_dir="data/aliases")
+        config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"))
         assert config.default_player_room == "earth_arkhamcity_northside_intersection_derby_high"
         assert config.max_connections_per_player == 3
 
     def test_invalid_max_connections_too_low(self):
         """Test max connections validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
-            GameConfig(aliases_dir="data/aliases", max_connections_per_player=0)
+            GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=0)
         assert "Max connections per player must be between 1 and 10" in str(exc_info.value)
 
     def test_invalid_max_connections_too_high(self):
         """Test max connections validation rejects values above 10."""
         with pytest.raises(ValidationError) as exc_info:
-            GameConfig(aliases_dir="data/aliases", max_connections_per_player=20)
+            GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=20)
         assert "Max connections per player must be between 1 and 10" in str(exc_info.value)
 
     def test_aliases_dir_required(self, monkeypatch):
@@ -253,6 +254,48 @@ class TestChatConfig:
         with pytest.raises(ValidationError) as exc_info:
             ChatConfig(rate_limit_global=2000)
         assert "Rate limit must be between 1 and 1000" in str(exc_info.value)
+
+
+class TestCORSConfig:
+    """Test CORSConfig validation and parsing."""
+
+    def test_default_cors_config(self):
+        """Test default CORS configuration values."""
+        config = CORSConfig()
+
+        assert config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+        assert config.allow_credentials is True
+        assert all(method in config.allow_methods for method in ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+        assert "Content-Type" in config.allow_headers
+        assert config.max_age == 600
+
+    def test_cors_env_overrides(self, monkeypatch):
+        """Test that environment variables override defaults."""
+        monkeypatch.setenv("CORS_ORIGINS", "https://example.com, https://alt.example.com")
+        monkeypatch.setenv("CORS_ALLOW_METHODS", "GET,POST")
+        monkeypatch.setenv("CORS_ALLOW_HEADERS", "Content-Type,Authorization")
+        monkeypatch.setenv("CORS_MAX_AGE", "1200")
+
+        config = CORSConfig()
+
+        assert config.allow_origins == ["https://example.com", "https://alt.example.com"]
+        assert config.allow_methods == ["GET", "POST"]
+        assert config.allow_headers == ["Content-Type", "Authorization"]
+        assert config.max_age == 1200
+
+    def test_cors_backwards_compatible_aliases(self, monkeypatch):
+        """Test legacy environment variable aliases such as ALLOWED_ORIGINS."""
+        monkeypatch.delenv("CORS_ORIGINS", raising=False)
+        monkeypatch.setenv("ALLOWED_ORIGINS", "https://legacy.example.com")
+
+        config = CORSConfig()
+
+        assert config.allow_origins == ["https://legacy.example.com"]
+
+    def test_empty_origins_rejected(self):
+        """Test that empty origin lists are rejected for security."""
+        with pytest.raises(ValidationError):
+            CORSConfig(allow_origins=[])
 
 
 class TestPlayerStatsConfig:
@@ -303,7 +346,7 @@ class TestAppConfig:
         monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
-        monkeypatch.setenv("GAME_ALIASES_DIR", "data/test/aliases")
+        monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
         # Reset config cache before each test
         reset_config()
@@ -320,6 +363,8 @@ class TestAppConfig:
         assert config.database.url == "sqlite+aiosqlite:///test.db"
         assert config.security.admin_password == "test_admin_pass"
         assert config.logging.environment == "unit_test"
+        assert config.cors.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+        assert config.cors.allow_credentials is True
 
     def test_app_config_sets_environment_variables(self):
         """Test that AppConfig sets environment variables for legacy compatibility."""
@@ -328,7 +373,7 @@ class TestAppConfig:
         # Check that DATABASE_URL environment variable is set
         assert os.environ.get("DATABASE_URL") == "sqlite+aiosqlite:///test.db"
         assert os.environ.get("NPC_DATABASE_URL") == "sqlite+aiosqlite:///test_npcs.db"
-        assert os.environ.get("ALIASES_DIR") == "data/test/aliases"
+        assert os.environ.get("ALIASES_DIR") == os.environ.get("GAME_ALIASES_DIR")
 
     def test_to_legacy_dict_format(self, monkeypatch):
         """Test conversion to legacy dict format."""
@@ -351,6 +396,8 @@ class TestAppConfig:
         assert legacy["nats"]["enabled"] is True
         assert isinstance(legacy["chat"], dict)
         assert isinstance(legacy["default_player_stats"], dict)
+        assert "cors" in legacy
+        assert legacy["cors"]["allow_origins"] == ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     def test_get_config_singleton(self):
         """Test that get_config returns singleton instance."""
