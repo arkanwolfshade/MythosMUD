@@ -111,8 +111,9 @@ class TestGameApiBroadcast:
             assert response.status_code == 403
             data = response.json()
             # The error response might be in either format depending on error handling middleware
-            assert ("doesn't have enough privileges" in str(data.get("detail", "")) or
-                    "doesn't have enough privileges" in str(data.get("error", "")))
+            assert "doesn't have enough privileges" in str(
+                data.get("detail", "")
+            ) or "doesn't have enough privileges" in str(data.get("error", ""))
         finally:
             # Clean up dependency override
             app.dependency_overrides.clear()

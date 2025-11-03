@@ -39,6 +39,7 @@ class NPCCombatIntegrationService:
         self,
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
+        player_combat_service=None,
     ):
         """
         Initialize the NPC combat integration service.
@@ -48,6 +49,10 @@ class NPCCombatIntegrationService:
                 global instance.
             combat_service: Optional CombatService instance. If None, will
                 create a new one (for testing).
+            player_combat_service: Optional PlayerCombatService instance to use.
+                If None, will create a new one (for testing).
+                CRITICAL: Production code should ALWAYS pass the shared instance
+                from app.state to prevent instance mismatch bugs.
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
@@ -59,8 +64,18 @@ class NPCCombatIntegrationService:
         # Initialize GameMechanicsService for proper XP awards and stat updates
         self._game_mechanics = GameMechanicsService(self._persistence)
 
-        # Pass self to PlayerCombatService for UUID mapping access
-        self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
+        # Use shared PlayerCombatService instance if provided, otherwise create new one (for tests)
+        # CRITICAL: Production code must pass shared instance to prevent state desynchronization!
+        if player_combat_service is not None:
+            self._player_combat_service = player_combat_service
+            logger.info("Using shared PlayerCombatService instance", instance_id=id(player_combat_service))
+        else:
+            # Only create new instance for testing - pass self for UUID mapping access
+            self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
+            logger.warning(
+                "Created NEW PlayerCombatService instance - this should only happen in tests!",
+                instance_id=id(self._player_combat_service),
+            )
 
         # Combat memory - NPCs remember who attacked them
         self._npc_combat_memory: dict[str, str] = {}

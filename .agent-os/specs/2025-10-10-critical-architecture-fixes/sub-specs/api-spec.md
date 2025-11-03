@@ -172,7 +172,7 @@ curl -H "Authorization: Bearer <admin_token>" http://localhost:54731/api/metrics
 SERVER_PORT=54731  # Previously had default, now required
 
 # Database Configuration
-DATABASE_URL=sqlite:///data/local/players.db  # Previously could be undefined
+DATABASE_URL=sqlite:///data/local/local_players.db  # Previously could be undefined
 NPC_DATABASE_URL=sqlite:///data/local/npcs.db  # Previously could be undefined
 
 # Security Configuration

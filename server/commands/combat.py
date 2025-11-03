@@ -32,7 +32,7 @@ class CombatCommandHandler:
     command system and combat service.
     """
 
-    def __init__(self, combat_service: "CombatService | None" = None, event_bus=None):
+    def __init__(self, combat_service: "CombatService | None" = None, event_bus=None, player_combat_service=None):
         """
         Initialize the combat command handler.
 
@@ -40,6 +40,8 @@ class CombatCommandHandler:
             combat_service: Optional CombatService instance to use.
                 If None, NPCCombatIntegrationService will create its own.
             event_bus: Optional EventBus instance to use.
+                If None, NPCCombatIntegrationService will create its own.
+            player_combat_service: Optional PlayerCombatService instance to use.
                 If None, NPCCombatIntegrationService will create its own.
         """
         self.attack_aliases = {
@@ -51,7 +53,9 @@ class CombatCommandHandler:
             "smack",
             "thump",
         }
-        self.npc_combat_service = NPCCombatIntegrationService(combat_service=combat_service, event_bus=event_bus)
+        self.npc_combat_service = NPCCombatIntegrationService(
+            combat_service=combat_service, event_bus=event_bus, player_combat_service=player_combat_service
+        )
         self.persistence = get_persistence(event_bus)
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
@@ -304,7 +308,10 @@ def get_combat_command_handler() -> CombatCommandHandler:
 
         combat_service = getattr(app.state, "combat_service", None)
         event_bus = getattr(app.state, "event_bus", None)
-        _combat_command_handler = CombatCommandHandler(combat_service=combat_service, event_bus=event_bus)
+        player_combat_service = getattr(app.state, "player_combat_service", None)
+        _combat_command_handler = CombatCommandHandler(
+            combat_service=combat_service, event_bus=event_bus, player_combat_service=player_combat_service
+        )
     return _combat_command_handler
 
 

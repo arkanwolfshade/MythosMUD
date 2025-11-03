@@ -99,20 +99,23 @@ Unified database initialization script that creates a database with the current 
 Supports both production and test databases by taking a target database path as a parameter.
 
 **Usage:**
+
 ```bash
 python init_database.py <database_path>
 ```
 
 **Examples:**
+
 ```bash
 # Initialize production database
-python init_database.py data/local/players/players.db
+python init_database.py data/local/players/local_players.db
 
 # Initialize test database
 python init_database.py data/unit_test/players/unit_test_players.db
 ```
 
 **Features:**
+
 - Creates database with current schema from `server/sql/schema.sql`
 - Includes case-insensitive unique constraints on username and player name
 - Automatically backs up existing databases before initialization
@@ -124,6 +127,7 @@ python init_database.py data/unit_test/players/unit_test_players.db
 PowerShell wrapper to initialize the production database.
 
 **Usage:**
+
 ```powershell
 .\init_prod_db.ps1
 ```
@@ -133,6 +137,7 @@ PowerShell wrapper to initialize the production database.
 PowerShell wrapper to initialize the test database.
 
 **Usage:**
+
 ```powershell
 .\init_test_db.ps1
 ```
