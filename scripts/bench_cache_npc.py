@@ -10,6 +10,7 @@ import asyncio
 import json
 import os
 import time
+from types import SimpleNamespace
 from typing import Any
 
 
@@ -19,15 +20,15 @@ class _FakeNPCService:
 
     async def get_npc_definitions(self, session: Any) -> list[Any]:
         await asyncio.sleep(self._latency)
-        return [{"id": i, "name": f"NPC-{i}"} for i in range(50)]
+        return [SimpleNamespace(id=i, name=f"NPC-{i}") for i in range(50)]
 
-    async def get_npc_definition(self, session: Any, definition_id: int) -> dict[str, Any] | None:
+    async def get_npc_definition(self, session: Any, definition_id: int) -> Any:
         await asyncio.sleep(self._latency)
-        return {"id": definition_id, "name": f"NPC-{definition_id}"}
+        return SimpleNamespace(id=definition_id, name=f"NPC-{definition_id}")
 
     async def get_spawn_rules(self, session: Any) -> list[Any]:
         await asyncio.sleep(self._latency)
-        return [{"id": i, "rule": "any"} for i in range(25)]
+        return [SimpleNamespace(id=i, rule="any") for i in range(25)]
 
 
 async def bench_npc_cache() -> dict[str, Any]:

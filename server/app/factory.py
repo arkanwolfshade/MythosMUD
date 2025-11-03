@@ -126,7 +126,7 @@ def create_app() -> FastAPI:
         allow_methods=allowed_methods_list,
         allow_headers=allowed_headers_list,
         max_age=max_age_int,
-        expose_headers=expose_headers_list or None,
+        expose_headers=expose_headers_list if expose_headers_list else [],
     )
 
     app.add_middleware(

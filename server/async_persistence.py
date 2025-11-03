@@ -260,7 +260,7 @@ class AsyncPersistenceLayer:
                             "Error converting player data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=row.get("player_id"),
+                            row_id=dict(row).get("player_id"),
                         )
                         continue
 
@@ -299,7 +299,7 @@ class AsyncPersistenceLayer:
                             "Error converting player data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=row.get("player_id"),
+                            row_id=dict(row).get("player_id"),
                         )
                         continue
 
@@ -435,7 +435,7 @@ class AsyncPersistenceLayer:
                             "Error converting profession data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=row.get("id"),
+                            row_id=dict(row).get("id"),
                         )
                         continue
 

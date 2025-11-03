@@ -274,13 +274,36 @@ class NPCCacheService:
         """
         self.npc_service = npc_service
         self.cache_manager = get_cache_manager()
+
+        # Lazily initialize NPC definitions cache
         definitions_cache_opt = self.cache_manager.get_cache("npc_definitions")
+        if not definitions_cache_opt:
+            try:
+                definitions_cache_opt = self.cache_manager.create_cache(
+                    "npc_definitions", max_size=1000, ttl_seconds=None
+                )
+                logger.info("NPC definitions cache created lazily by NPCCacheService")
+            except ValueError:
+                # Cache was created concurrently; retrieve it now
+                definitions_cache_opt = self.cache_manager.get_cache("npc_definitions")
+                logger.debug("NPC definitions cache already existed; using existing instance")
+
+        # Lazily initialize NPC spawn rules cache
         spawn_rules_cache_opt = self.cache_manager.get_cache("npc_spawn_rules")
+        if not spawn_rules_cache_opt:
+            try:
+                spawn_rules_cache_opt = self.cache_manager.create_cache(
+                    "npc_spawn_rules", max_size=500, ttl_seconds=None
+                )
+                logger.info("NPC spawn rules cache created lazily by NPCCacheService")
+            except ValueError:
+                # Cache was created concurrently; retrieve it now
+                spawn_rules_cache_opt = self.cache_manager.get_cache("npc_spawn_rules")
+                logger.debug("NPC spawn rules cache already existed; using existing instance")
 
-        if not definitions_cache_opt or not spawn_rules_cache_opt:
-            raise RuntimeError("NPC caches not initialized")
-
-        # Assign with precise types
+        # Assign with precise types (assert non-None after creation/retrieval)
+        assert definitions_cache_opt is not None, "NPC definitions cache must exist after initialization"
+        assert spawn_rules_cache_opt is not None, "NPC spawn rules cache must exist after initialization"
         self.definitions_cache: LRUCache[Any, Any] = definitions_cache_opt
         self.spawn_rules_cache: LRUCache[Any, Any] = spawn_rules_cache_opt
 
