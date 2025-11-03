@@ -278,7 +278,6 @@ class MovementService:
         # must not escape through dimensional gateways until the conflict is resolved
         if self._player_combat_service:
             try:
-                import asyncio
                 from uuid import UUID
 
                 # Convert player_id string to UUID if needed
@@ -302,22 +301,14 @@ class MovementService:
                         player_uuid = None
 
                 if player_uuid:
-                    # Run the async is_player_in_combat method
-                    try:
-                        # Try to get the current event loop
-                        loop = asyncio.get_event_loop()
-                        if loop.is_running():
-                            # We're already in an event loop, create a task
-                            # For synchronous context within async, we need a different approach
-                            # Since we can't await here, we'll use run_until_complete in a new loop
-                            is_in_combat = asyncio.run(self._player_combat_service.is_player_in_combat(player_uuid))
-                        else:
-                            is_in_combat = loop.run_until_complete(
-                                self._player_combat_service.is_player_in_combat(player_uuid)
-                            )
-                    except RuntimeError:
-                        # No event loop, create one
-                        is_in_combat = asyncio.run(self._player_combat_service.is_player_in_combat(player_uuid))
+                    # Use synchronous combat check - no async complications
+                    is_in_combat = self._player_combat_service.is_player_in_combat_sync(player_uuid)
+                    self._logger.info(
+                        "Combat state checked",
+                        player_id=player_id,
+                        player_uuid=str(player_uuid),
+                        is_in_combat=is_in_combat,
+                    )
 
                     if is_in_combat:
                         self._logger.warning(

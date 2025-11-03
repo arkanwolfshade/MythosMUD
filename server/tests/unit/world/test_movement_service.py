@@ -201,14 +201,12 @@ class TestMovementService:
         combat must not escape through dimensional gateways until the conflict
         is resolved.
         """
-        from unittest.mock import AsyncMock
-
         # Create mock persistence layer
         mock_persistence = Mock()
 
-        # Create mock player combat service with AsyncMock
+        # Create mock player combat service with synchronous method
         mock_player_combat_service = Mock()
-        mock_player_combat_service.is_player_in_combat = AsyncMock(return_value=True)
+        mock_player_combat_service.is_player_in_combat_sync = Mock(return_value=True)
 
         # Create test player with UUID
         player = Player(
@@ -238,7 +236,7 @@ class TestMovementService:
             assert success is False
 
             # Verify combat state was checked
-            mock_player_combat_service.is_player_in_combat.assert_called_once()
+            mock_player_combat_service.is_player_in_combat_sync.assert_called_once()
 
             # Verify player was NOT moved
             mock_from_room.player_left.assert_not_called()
@@ -247,14 +245,12 @@ class TestMovementService:
 
     def test_move_player_allowed_when_not_in_combat(self):
         """Test that player can move when not in combat."""
-        from unittest.mock import AsyncMock
-
         # Create mock persistence layer
         mock_persistence = Mock()
 
-        # Create mock player combat service with AsyncMock
+        # Create mock player combat service with synchronous method
         mock_player_combat_service = Mock()
-        mock_player_combat_service.is_player_in_combat = AsyncMock(return_value=False)
+        mock_player_combat_service.is_player_in_combat_sync = Mock(return_value=False)
 
         # Create test player
         player = Player(

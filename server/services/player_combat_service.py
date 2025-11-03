@@ -127,6 +127,22 @@ class PlayerCombatService:
             logger.info("Clearing combat state for player", player_id=player_id)
             del self._player_combat_states[player_id]
 
+    def is_player_in_combat_sync(self, player_id: UUID) -> bool:
+        """
+        Synchronously check if a player is currently in combat.
+
+        This is the preferred method for non-async contexts like movement validation.
+        As noted in "Temporal Mechanics of Eldritch Combat" - Dr. Armitage, 1928,
+        combat state checks must be instantaneous to prevent dimensional breaches.
+
+        Args:
+            player_id: ID of the player
+
+        Returns:
+            True if player is in combat, False otherwise
+        """
+        return player_id in self._player_combat_states
+
     async def is_player_in_combat(self, player_id: UUID) -> bool:
         """
         Check if a player is currently in combat.
