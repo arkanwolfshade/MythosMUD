@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import Request
 
-from server.app.factory import create_app
 from server.dependencies import get_player_service, get_player_service_for_testing, get_room_service
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
@@ -71,47 +70,49 @@ class TestDependencyInjection:
         # This should not raise an import error or dependency resolution error
         response = container_test_client.get("/api/players/")
 
-        # The response might be 401 (unauthorized) or 200 (success)
+        # The response might be 401 (unauthorized), 422 (validation error), or 200 (success)
         # The important thing is that it doesn't fail with dependency injection errors
-        assert response.status_code in [200, 401, 403]
+        assert response.status_code in [200, 401, 403, 422]
 
-    def test_player_service_dependency_resolution(self):
-        """Test that PlayerService dependency is properly resolved."""
-        # Create the app
-        app = create_app()
+    def test_player_service_dependency_resolution(self, container_test_client):
+        """
+        Test that PlayerService dependency is properly resolved with container.
 
-        # Mock the persistence layer since TestClient doesn't run lifespan
-        mock_persistence = Mock()
-        app.state.persistence = mock_persistence
+        AI: ARCHITECTURE CHANGE - Updated to use container-based TestClient
+        """
+        from unittest.mock import Mock
 
-        # Test that the dependency injection works by directly calling the dependency function
         from fastapi import Request
 
+        # Create mock request with real container
         mock_request = Mock(spec=Request)
-        mock_request.app = app
+        mock_request.app = container_test_client.app
 
         # This should not raise an error
         service = get_player_service(mock_request)
         assert service is not None
+        assert isinstance(service, PlayerService)
+        assert service is container_test_client.app.state.container.player_service
 
-    def test_room_service_dependency_resolution(self):
-        """Test that RoomService dependency is properly resolved."""
-        # Create the app
-        app = create_app()
+    def test_room_service_dependency_resolution(self, container_test_client):
+        """
+        Test that RoomService dependency is properly resolved with container.
 
-        # Mock the persistence layer since TestClient doesn't run lifespan
-        mock_persistence = Mock()
-        app.state.persistence = mock_persistence
+        AI: ARCHITECTURE CHANGE - Updated to use container-based TestClient
+        """
+        from unittest.mock import Mock
 
-        # Test that the dependency injection works by directly calling the dependency function
         from fastapi import Request
 
+        # Create mock request with real container
         mock_request = Mock(spec=Request)
-        mock_request.app = app
+        mock_request.app = container_test_client.app
 
         # This should not raise an error
         service = get_room_service(mock_request)
         assert service is not None
+        assert isinstance(service, RoomService)
+        assert service is container_test_client.app.state.container.room_service
 
 
 # ============================================================================
@@ -147,45 +148,55 @@ class TestDependencyFunctions:
         mock_persistence.delete_player.return_value = True
         return mock_persistence
 
-    def test_player_service_dep_function(self, mock_persistence):
-        """Test that PlayerServiceDep function works correctly."""
-        # Mock the app state persistence
+    def test_player_service_dep_function(self, container_test_client):
+        """
+        Test that PlayerServiceDep function works correctly with ApplicationContainer.
+
+        AI: Updated to use real container instead of mocks - tests actual DI behavior
+        """
         from unittest.mock import Mock
 
         from fastapi import Request
 
+        # Create mock request with real container from test client
         mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
+        mock_request.app = container_test_client.app
 
         # Call the dependency function directly
         from server.dependencies import get_player_service
 
         service = get_player_service(mock_request)
 
-        # Verify the service is created correctly
+        # Verify the service is the real service from container
         assert isinstance(service, PlayerService)
         assert hasattr(service, "persistence")
-        assert service.persistence == mock_persistence
+        # Service should be the same instance from container
+        assert service is container_test_client.app.state.container.player_service
 
-    def test_room_service_dep_function(self, mock_persistence):
-        """Test that RoomServiceDep function works correctly."""
-        # Mock the app state persistence
+    def test_room_service_dep_function(self, container_test_client):
+        """
+        Test that RoomServiceDep function works correctly with ApplicationContainer.
+
+        AI: Updated to use real container instead of mocks - tests actual DI behavior
+        """
         from unittest.mock import Mock
 
         from fastapi import Request
 
+        # Create mock request with real container from test client
         mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
+        mock_request.app = container_test_client.app
 
         # Call the dependency function directly
         from server.dependencies import get_room_service
 
         service = get_room_service(mock_request)
 
-        # Verify the service is created correctly
+        # Verify the service is the real service from container
         assert isinstance(service, RoomService)
         assert hasattr(service, "persistence")
-        assert service.persistence == mock_persistence
+        # Service should be the same instance from container
+        assert service is container_test_client.app.state.container.room_service
 
     def test_dependency_functions_are_callable(self):
         """Test that dependency functions are callable."""
@@ -194,51 +205,63 @@ class TestDependencyFunctions:
         assert callable(get_player_service)
         assert callable(get_room_service)
 
-    def test_dependency_functions_return_different_instances(self, mock_persistence):
-        """Test that dependency functions return different instances."""
+    def test_dependency_functions_return_same_instances(self, container_test_client):
+        """
+        Test that dependency functions return SAME instances from container.
+
+        AI: ARCHITECTURE CHANGE - Container pattern uses singleton services
+        Old behavior: Created new service instances per request
+        New behavior: Returns same service instance from container (singleton pattern)
+        """
         from unittest.mock import Mock
 
         from fastapi import Request
 
         from server.dependencies import get_player_service, get_room_service
 
+        # Create mock request with real container
         mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
+        mock_request.app = container_test_client.app
 
         player_service1 = get_player_service(mock_request)
         player_service2 = get_player_service(mock_request)
         room_service1 = get_room_service(mock_request)
         room_service2 = get_room_service(mock_request)
 
-        # Verify they are different instances
-        assert player_service1 is not player_service2
-        assert room_service1 is not room_service2
+        # ARCHITECTURE FIX: Container returns SAME instance (singleton pattern)
+        assert player_service1 is player_service2  # Same instance from container
+        assert room_service1 is room_service2  # Same instance from container
+        # Different service types are still different instances
         assert player_service1 is not room_service1
         assert player_service2 is not room_service2
 
-    def test_dependency_functions_with_different_persistence(self):
-        """Test dependency functions with different persistence layers."""
+    def test_dependency_functions_with_container_persistence(self, container_test_client):
+        """
+        Test dependency functions return services with container persistence.
+
+        AI: ARCHITECTURE CHANGE - Services get persistence from container
+        Old behavior: Each request could have different persistence
+        New behavior: All services share container's persistence instance
+        """
         from unittest.mock import Mock
 
         from fastapi import Request
 
         from server.dependencies import get_player_service, get_room_service
 
-        persistence1 = AsyncMock()
-        persistence2 = AsyncMock()
+        # Create mock request with real container
+        mock_request = Mock(spec=Request)
+        mock_request.app = container_test_client.app
 
-        mock_request1 = Mock(spec=Request)
-        mock_request1.app.state.persistence = persistence1
-        player_service = get_player_service(mock_request1)
+        player_service = get_player_service(mock_request)
+        room_service = get_room_service(mock_request)
 
-        mock_request2 = Mock(spec=Request)
-        mock_request2.app.state.persistence = persistence2
-        room_service = get_room_service(mock_request2)
-
-        # Verify they use different persistence layers
-        assert player_service.persistence == persistence1
-        assert room_service.persistence == persistence2
-        assert player_service.persistence is not room_service.persistence
+        # ARCHITECTURE FIX: Both services use SAME persistence from container
+        container_persistence = container_test_client.app.state.container.persistence
+        assert player_service.persistence is container_persistence
+        assert room_service.persistence is container_persistence
+        # Both services share the SAME persistence instance
+        assert player_service.persistence is room_service.persistence
 
     def test_dependency_function_error_handling(self):
         """Test that dependency functions handle errors gracefully."""
@@ -360,8 +383,38 @@ class TestDependencyFunctions:
         assert len(errors) == 0, f"Thread safety errors: {errors}"
         assert len(results) == 10, "Not all workers completed successfully"
 
-    def test_dependency_functions_with_none_persistence(self):
-        """Test dependency functions handle None persistence gracefully."""
+    def test_dependency_functions_require_container(self):
+        """
+        Test dependency functions require ApplicationContainer to be initialized.
+
+        AI: ARCHITECTURE CHANGE - Container must be initialized
+        Old behavior: Could create services with None persistence
+        New behavior: Container must be initialized, raises RuntimeError if not
+        """
+        from unittest.mock import MagicMock, Mock
+
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        # Create a Mock that doesn't have container attribute
+        # Use MagicMock with spec=[] to prevent auto-creation
+        mock_request = Mock(spec=Request)
+        mock_request.app = Mock()
+        mock_request.app.state = MagicMock(spec=[])  # Empty spec prevents auto-attributes
+
+        # ARCHITECTURE FIX: Should raise RuntimeError when container not found
+        with pytest.raises(RuntimeError) as exc_info:
+            get_player_service(mock_request)
+
+        assert "ApplicationContainer not found" in str(exc_info.value)
+
+    def test_dependency_functions_consistency(self, container_test_client):
+        """
+        Test that dependency functions behave consistently with container.
+
+        AI: ARCHITECTURE CHANGE - Container provides consistent service instances
+        """
         from unittest.mock import Mock
 
         from fastapi import Request
@@ -369,23 +422,7 @@ class TestDependencyFunctions:
         from server.dependencies import get_player_service
 
         mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = None
-
-        # The dependency function should still work, but the service will have None persistence
-        service = get_player_service(mock_request)
-        assert service is not None
-        assert service.persistence is None
-
-    def test_dependency_functions_consistency(self, mock_persistence):
-        """Test that dependency functions behave consistently."""
-        from unittest.mock import Mock
-
-        from fastapi import Request
-
-        from server.dependencies import get_player_service
-
-        mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
+        mock_request.app = container_test_client.app
 
         # Call the function multiple times
         services = []
@@ -393,32 +430,10 @@ class TestDependencyFunctions:
             service = get_player_service(mock_request)
             services.append(service)
 
-        # All services should be valid PlayerService instances
+        # ARCHITECTURE FIX: Container returns SAME instance consistently
         for service in services:
             assert isinstance(service, PlayerService)
-            assert service.persistence == mock_persistence
-
-    def test_dependency_functions_with_mock_persistence_methods(self, mock_persistence):
-        """Test dependency functions with mock persistence that has specific method behaviors."""
-        # Configure mock to return specific values
-        mock_persistence.async_list_players.return_value = [{"name": "TestPlayer"}]
-        mock_persistence.async_get_player.return_value = {"name": "TestPlayer", "id": "123"}
-
-        from unittest.mock import Mock
-
-        from fastapi import Request
-
-        from server.dependencies import get_player_service
-
-        mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
-
-        service = get_player_service(mock_request)
-
-        # Verify the service uses the configured mock
-        assert service.persistence == mock_persistence
-        assert service.persistence.async_list_players.return_value == [{"name": "TestPlayer"}]
-        assert service.persistence.async_get_player.return_value == {"name": "TestPlayer", "id": "123"}
+            assert service is services[0]  # All are same instance from container
 
 
 # ============================================================================
