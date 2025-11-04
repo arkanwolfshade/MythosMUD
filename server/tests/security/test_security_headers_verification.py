@@ -192,7 +192,7 @@ class TestSecurityHeadersVerification:
     def test_security_headers_on_cors_preflight(self, container_test_client, mock_security_persistence):
         """Test that security headers are applied to CORS preflight requests."""
         response = container_test_client.options(
-            "/players/",
+            "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
                 "Access-Control-Request-Method": "POST",

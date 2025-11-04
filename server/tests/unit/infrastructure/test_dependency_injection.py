@@ -9,7 +9,6 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 from fastapi import Request
-from fastapi.testclient import TestClient
 
 from server.app.factory import create_app
 from server.dependencies import get_player_service, get_player_service_for_testing, get_room_service
@@ -20,61 +19,57 @@ from server.game.room_service import RoomService
 class TestDependencyInjection:
     """Test the dependency injection system."""
 
-    def test_get_player_service_creates_instance(self):
-        """Test that get_player_service creates a PlayerService instance."""
-        # Create a mock request with app state
-        mock_request = Mock()
-        mock_persistence = Mock()
-        mock_request.app.state.persistence = mock_persistence
+    def test_get_player_service_creates_instance(self, container_test_client):
+        """
+        Test that get_player_service returns PlayerService from container.
+
+        AI: ARCHITECTURE CHANGE - Updated to use container-based DI
+        """
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        # Create mock request with real container
+        mock_request = Mock(spec=Request)
+        mock_request.app = container_test_client.app
 
         # Get the service
         service = get_player_service(mock_request)
 
-        # Verify it's a PlayerService instance
-        from server.game.player_service import PlayerService
-
+        # Verify it's the real PlayerService from container
         assert isinstance(service, PlayerService)
-        assert service.persistence == mock_persistence
+        assert service is container_test_client.app.state.container.player_service
 
-    def test_get_room_service_creates_instance(self):
-        """Test that get_room_service creates a RoomService instance."""
-        # Create a mock request with app state
-        mock_request = Mock()
-        mock_persistence = Mock()
-        mock_request.app.state.persistence = mock_persistence
+    def test_get_room_service_creates_instance(self, container_test_client):
+        """
+        Test that get_room_service returns RoomService from container.
+
+        AI: ARCHITECTURE CHANGE - Updated to use container-based DI
+        """
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        # Create mock request with real container
+        mock_request = Mock(spec=Request)
+        mock_request.app = container_test_client.app
 
         # Get the service
         service = get_room_service(mock_request)
 
-        # Verify it's a RoomService instance
-        from server.game.room_service import RoomService
-
+        # Verify it's the real RoomService from container
         assert isinstance(service, RoomService)
-        assert service.persistence == mock_persistence
+        assert service is container_test_client.app.state.container.room_service
 
-    def test_dependency_injection_in_fastapi_app(self):
-        """Test that dependency injection works in the FastAPI application."""
-        # Create the app
-        app = create_app()
+    def test_dependency_injection_in_fastapi_app(self, container_test_client):
+        """
+        Test that dependency injection works in the FastAPI application with container.
 
-        # Mock the persistence layer since TestClient doesn't run lifespan
-        mock_persistence = Mock()
-        app.state.persistence = mock_persistence
-
-        client = TestClient(app)
-
-        # Mock the player service methods
-        mock_persistence.get_player.return_value = None
-        mock_persistence.list_players.return_value = []
-        # Mock async methods with AsyncMock
-        from unittest.mock import AsyncMock
-
-        mock_persistence.async_get_player = AsyncMock(return_value=None)
-        mock_persistence.async_list_players = AsyncMock(return_value=[])
-
+        AI: ARCHITECTURE CHANGE - Updated to use container-based TestClient
+        """
         # Test that the dependency injection works by making a request
         # This should not raise an import error or dependency resolution error
-        response = client.get("/api/players/")
+        response = container_test_client.get("/api/players/")
 
         # The response might be 401 (unauthorized) or 200 (success)
         # The important thing is that it doesn't fail with dependency injection errors

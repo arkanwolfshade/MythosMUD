@@ -375,6 +375,23 @@ async def init_db() -> None:
             await conn.run_sync(metadata.create_all)
             # Enable foreign key constraints for SQLite
             await conn.execute(text("PRAGMA foreign_keys = ON"))
+
+            # MIGRATION: Add respawn_room_id column if it doesn't exist
+            # This handles existing databases that were created before this column was added
+            try:
+                # Check if column exists by attempting to select it
+                result = await conn.execute(text("SELECT respawn_room_id FROM players LIMIT 1"))
+                result.fetchone()  # Consume result (already resolved, not awaitable)
+            except Exception:
+                # Column doesn't exist, add it
+                logger.info("Adding respawn_room_id column to players table (migration)")
+                await conn.execute(
+                    text(
+                        "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
+                    )
+                )
+                logger.info("Migration completed: respawn_room_id column added")
+
             logger.info("Database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
