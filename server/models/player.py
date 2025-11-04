@@ -10,17 +10,14 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship
 
-from ..metadata import metadata
+from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
-# Forward references for relationships (resolves circular imports)
+# Forward references for type checking (resolves circular imports)
+# Note: SQLAlchemy will resolve string references via shared registry at runtime
 if TYPE_CHECKING:
     from .user import User
-
-
-class Base(DeclarativeBase):
-    metadata = metadata
 
 
 class Player(Base):
@@ -64,7 +61,7 @@ class Player(Base):
     is_admin = Column(Integer(), default=0, nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
-    # Using string reference to avoid circular import
+    # Using simple string reference - SQLAlchemy resolves via registry after all models imported
     user: Mapped["User"] = relationship(
         "User", back_populates="player", overlaps="player"
     )  # SQLite doesn't have BOOLEAN, use INTEGER

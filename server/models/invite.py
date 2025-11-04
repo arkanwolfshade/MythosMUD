@@ -11,17 +11,14 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship
 
-from ..metadata import metadata
+from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
-# Forward references for relationships (resolves circular imports)
+# Forward references for type checking (resolves circular imports)
+# Note: SQLAlchemy will resolve string references via shared registry at runtime
 if TYPE_CHECKING:
     from .user import User
-
-
-class Base(DeclarativeBase):
-    metadata = metadata
 
 
 class Invite(Base):
@@ -39,7 +36,7 @@ class Invite(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
-    # Using string references to avoid circular imports
+    # Using simple string references - SQLAlchemy resolves via registry after all models imported
     created_by_user: Mapped["User | None"] = relationship(
         "User", foreign_keys=[created_by_user_id], back_populates="created_invites"
     )

@@ -213,6 +213,20 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 # Import test environment fixtures to make them available to all tests
 
+# ARCHITECTURE FIX: Import container-based fixtures for modern testing patterns
+from .fixtures.container_fixtures import (  # noqa: F401, E402
+    async_container_test_client,
+    container_test_client,
+    mock_container,
+    player_factory,
+    room_factory,
+    test_container,
+)
+
+# AI: Following pytest best practices by exposing fixtures in conftest.py
+# This makes them available to all tests without individual imports
+# E402 suppressed: pytest conftest requires environment setup before imports
+
 
 # Create synchronous wrapper fixtures for async fixtures
 @pytest.fixture

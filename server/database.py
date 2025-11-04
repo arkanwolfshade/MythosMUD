@@ -356,17 +356,17 @@ async def init_db() -> None:
         # Configure all mappers before setting up relationships
         from sqlalchemy.orm import configure_mappers
 
-        from server.models.invite import Invite  # noqa: F401
-
-        # CRITICAL: Do NOT import NPC models here - they use npc_metadata, not metadata
-        # NPC models belong to NPC database, not player database
+        # CRITICAL: Import ALL models that use metadata before configure_mappers()
+        # This allows SQLAlchemy to resolve string references in relationships
+        # Do NOT import NPC models here - they use npc_metadata, not metadata
         # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
+        from server.models.invite import Invite  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")
         # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
-        # No need for setup_relationships() workaround - circular imports resolved
+        # String references resolved via SQLAlchemy registry after all models imported
         configure_mappers()
 
         engine = get_engine()  # Initialize if needed

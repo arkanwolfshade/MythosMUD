@@ -14,20 +14,15 @@ from typing import TYPE_CHECKING
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import DateTime, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..metadata import metadata
+from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
-# Forward references for relationships (resolves circular imports)
+# Forward references for type checking (resolves circular imports)
+# Note: SQLAlchemy will resolve string references via registry at runtime
 if TYPE_CHECKING:
     from .invite import Invite
     from .player import Player
-
-
-class Base(DeclarativeBase):
-    """SQLAlchemy declarative base with enhanced type support."""
-
-    metadata = metadata
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
@@ -65,7 +60,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
-    # These relationships are declared with string references to avoid circular imports
+    # Using simple string references - SQLAlchemy resolves via registry after all models imported
     player: Mapped["Player"] = relationship("Player", uselist=False, back_populates="user", lazy="joined")
     created_invites: Mapped[list["Invite"]] = relationship(
         "Invite", foreign_keys="Invite.created_by_user_id", back_populates="created_by_user"

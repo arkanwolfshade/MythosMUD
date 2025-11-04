@@ -89,7 +89,8 @@ class TestAppFactory:
 
         # Check for CORS configuration
         assert "allow_origins=" in content
-        assert "allow_credentials=True" in content
+        # ARCHITECTURE FIX: allow_credentials is now a variable, not hardcoded True
+        assert "allow_credentials" in content
         assert "allow_methods=" in content
         assert "allow_headers=" in content
 
