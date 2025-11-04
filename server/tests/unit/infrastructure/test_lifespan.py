@@ -164,44 +164,47 @@ class TestLifespanStartup:
 
     @pytest.mark.asyncio
     async def test_lifespan_startup_basic(self):
-        """Test basic lifespan startup sequence.
+        """
+        Test basic lifespan startup sequence with ApplicationContainer.
 
-        AI: Tests that critical services are initialized during startup.
+        AI: ARCHITECTURE CHANGE - Tests that ApplicationContainer and critical services are initialized during startup.
+        The lifespan now uses ApplicationContainer instead of individual global functions.
         """
         app = FastAPI()
 
         with patch("server.app.lifespan.init_db", AsyncMock()):
             with patch("server.app.lifespan.init_npc_db", AsyncMock()):
-                with patch("server.app.lifespan.get_real_time_event_handler") as mock_event_handler:
-                    with patch("server.app.lifespan.get_persistence") as mock_persistence:
-                        with patch("server.app.lifespan.get_config") as mock_config:
-                            with patch("server.app.lifespan.TaskRegistry") as mock_registry:
-                                with patch("server.app.lifespan.connection_manager"):
-                                    # Setup mocks
-                                    mock_handler = Mock()
-                                    mock_handler.event_bus = Mock()
-                                    mock_handler.event_bus.set_main_loop = Mock()
-                                    mock_event_handler.return_value = mock_handler
+                with patch("server.app.lifespan.ApplicationContainer") as mock_container_class:
+                    # Setup mock container
+                    mock_container = AsyncMock()
+                    mock_container.initialize = AsyncMock()
+                    mock_container.shutdown = AsyncMock()
 
-                                    mock_persist = Mock()
-                                    mock_persistence.return_value = mock_persist
+                    # Mock container services
+                    mock_container.task_registry = Mock()
+                    mock_container.event_bus = Mock()
+                    mock_container.event_bus.set_main_loop = Mock()
+                    mock_container.real_time_event_handler = Mock()
+                    mock_container.real_time_event_handler.event_bus = mock_container.event_bus
+                    mock_container.persistence = Mock()
+                    mock_container.connection_manager = Mock()
+                    mock_container.player_service = Mock()
+                    mock_container.room_service = Mock()
+                    mock_container.user_manager = Mock()
+                    mock_container.room_cache_service = Mock()
+                    mock_container.profession_cache_service = Mock()
 
-                                    config = Mock()
-                                    config.logging.environment = "unit_test"
-                                    config.nats.enabled = False
-                                    mock_config.return_value = config
+                    mock_container_class.return_value = mock_container
 
-                                    task_reg = Mock()
-                                    task_reg.register_task = Mock(return_value=Mock())
-                                    mock_registry.return_value = task_reg
-
-                                    # Run lifespan
-                                    async with lifespan(app):
-                                        # Verify critical services are initialized
-                                        assert hasattr(app.state, "persistence")
-                                        assert hasattr(app.state, "event_handler")
-                                        assert hasattr(app.state, "event_bus")
-                                        assert hasattr(app.state, "task_registry")
+                    # Run lifespan
+                    async with lifespan(app):
+                        # ARCHITECTURE FIX: Verify container is initialized
+                        assert hasattr(app.state, "container")
+                        # Verify critical services are accessible via container
+                        assert hasattr(app.state, "persistence")
+                        assert hasattr(app.state, "event_handler")
+                        assert hasattr(app.state, "event_bus")
+                        assert hasattr(app.state, "task_registry")
 
     @pytest.mark.asyncio
     async def test_lifespan_nats_disabled_in_test(self):
