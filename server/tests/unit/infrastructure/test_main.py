@@ -59,21 +59,22 @@ class TestEndpoints:
             # Create a test client
             test_client = TestClient(app)
 
-            # Create mock services for the container
+            # Create real PlayerService with mocked persistence
+            # This allows tests to patch persistence methods and have those patches
+            # affect the service layer behavior
             from server.game.player_service import PlayerService
 
-            mock_player_service = AsyncMock(spec=PlayerService)
-            mock_player_service.list_players = AsyncMock(return_value=[])
+            player_service = PlayerService(mock_persistence)
 
             # Create a mock ApplicationContainer
             mock_container = Mock()
             mock_container.persistence = mock_persistence
-            mock_container.player_service = mock_player_service
+            mock_container.player_service = player_service
 
-            # Set both the container and the persistence in app state
+            # Set container and services in app state
             test_client.app.state.container = mock_container
             test_client.app.state.persistence = mock_persistence
-            test_client.app.state.player_service = mock_player_service
+            test_client.app.state.player_service = player_service
 
             return test_client
 
