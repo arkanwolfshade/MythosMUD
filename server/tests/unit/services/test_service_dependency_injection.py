@@ -53,6 +53,7 @@ class TestServiceDependencyInjection:
             # Manually set up app state since lifespan won't run in tests
             from server.game.chat_service import ChatService
             from server.game.player_service import PlayerService
+            from server.game.room_service import RoomService
             from server.realtime.connection_manager import connection_manager
             from server.realtime.event_handler import get_real_time_event_handler
             from server.services.user_manager import UserManager
@@ -60,6 +61,7 @@ class TestServiceDependencyInjection:
             # Set up app state manually
             app.state.persistence = mock_persistence
             app.state.player_service = PlayerService(mock_persistence)
+            app.state.room_service = RoomService(mock_persistence)
             from pathlib import Path
 
             # Use absolute path to prevent nested server/server/ directory creation
@@ -71,7 +73,7 @@ class TestServiceDependencyInjection:
             app.state.nats_service = mock_nats
             app.state.chat_service = ChatService(
                 persistence=mock_persistence,
-                room_service=mock_persistence,
+                room_service=app.state.room_service,
                 player_service=app.state.player_service,
                 nats_service=mock_nats,
             )
@@ -79,6 +81,7 @@ class TestServiceDependencyInjection:
             # Use the comprehensive mock container and update with real/mocked services
             mock_application_container.persistence = mock_persistence
             mock_application_container.player_service = app.state.player_service
+            mock_application_container.room_service = app.state.room_service
             mock_application_container.event_bus = app.state.event_bus
             mock_application_container.user_manager = app.state.user_manager
             mock_application_container.nats_service = mock_nats
