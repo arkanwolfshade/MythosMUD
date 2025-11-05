@@ -466,22 +466,3 @@ class TestAdminTeleportSecurity:
 
 class TestAdminTeleportSecurityIntegration:
     """Integration security tests for admin teleport system."""
-
-    @pytest.mark.asyncio
-    async def test_complete_security_workflow(self):
-        """Test complete security workflow with various attack vectors."""
-        # This test would simulate a complete attack scenario
-        # and verify that all security measures work together
-
-        # For now, just verify that the security tests run
-        assert True  # Placeholder for comprehensive security workflow test
-
-    @pytest.mark.asyncio
-    async def test_security_audit_logging(self):
-        """Test that security events are properly logged."""
-        # This test would verify that security-related events
-        # (failed permission checks, injection attempts, etc.)
-        # are properly logged for audit purposes
-
-        # For now, just verify that the test framework works
-        assert True  # Placeholder for security audit logging test

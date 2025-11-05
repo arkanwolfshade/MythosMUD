@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep mypy test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
+.PHONY: help clean lint format test coverage build install run semgrep semgrep-autofix mypy test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -33,6 +33,7 @@ help:
 	@echo "  build     - Build the client (Node)"
 	@echo "  install   - Install dependencies (worktree-aware)"
 	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
+	@echo "  semgrep-autofix - Run Semgrep with autofix to automatically resolve issues"
 	@echo "  setup-test-env - Setup test environment files (required before running tests)"
 	@echo ""
 	@echo "E2E Testing:"
@@ -125,6 +126,9 @@ install:
 semgrep:
 	cd $(PROJECT_ROOT) && python scripts/semgrep.py
 
+semgrep-autofix:
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/semgrep-autofix.ps1
+
 run:
 	cd $(PROJECT_ROOT) && python scripts/run.py
 
@@ -134,3 +138,4 @@ all:
 	cd $(PROJECT_ROOT) && make lint
 	cd $(PROJECT_ROOT) && make test-all
 	cd $(PROJECT_ROOT) && make build
+	cd $(PROJECT_ROOT) && make semgrep

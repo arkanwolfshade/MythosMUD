@@ -14,15 +14,16 @@ from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
 from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from .player import Player
-from .relationships import setup_relationships
 from .user import User
+
+# ARCHITECTURE FIX Phase 3.1: Removed setup_relationships import
+# Relationships now defined directly in model files using string references
 
 __all__ = [
     "User",
     "Player",
     "Invite",
     "Alias",
-    "setup_relationships",
     "Stats",
     "AttributeType",
     "StatusEffect",

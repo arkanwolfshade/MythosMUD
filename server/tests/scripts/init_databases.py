@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS players (
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
     current_room_id TEXT NOT NULL DEFAULT 'earth_arkhamcity_northside_intersection_derby_high',
+    respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001',
     experience_points INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL DEFAULT 1,
     is_admin INTEGER NOT NULL DEFAULT 0,

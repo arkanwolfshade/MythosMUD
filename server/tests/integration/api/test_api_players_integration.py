@@ -1,9 +1,14 @@
 """
 Integration tests for player API endpoints using FastAPI TestClient.
 
-This module tests the player-related API endpoints using FastAPI's TestClient
-to ensure proper functionality, error handling, and integration with the
-dependency injection system.
+This module tests the player-related API endpoints using ApplicationContainer
+for proper dependency injection and realistic integration testing.
+
+ARCHITECTURE FIX: Updated to use container_test_client fixture
+Following pytest best practices:
+- Fixture factories for test data
+- Proper dependency injection via container
+- Clean setup/teardown via fixtures
 """
 
 import uuid
@@ -11,55 +16,93 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from fastapi.testclient import TestClient
 
-from server.app.factory import create_app
+from server.logging.enhanced_logging_config import get_logger
 from server.models.player import Player
+
+logger = get_logger(__name__)
 
 
 class TestPlayerAPIIntegration:
-    """Test player API endpoints using FastAPI TestClient."""
+    """
+    Test player API endpoints using ApplicationContainer.
+
+    AI: Following pytest best practices:
+    - Tests are stateless and independent
+    - Uses shared fixtures from conftest.py (container_test_client)
+    - Mock only external dependencies not under test
+    - Clear AAA pattern in each test
+    """
 
     @pytest.fixture
-    def app(self):
-        """Create FastAPI app for testing."""
-        app = create_app()
+    def mock_persistence_for_api(self, container_test_client):
+        """
+        Mock persistence layer for API testing.
 
-        # Mock the persistence layer since TestClient doesn't run lifespan
+        This fixture configures the persistence layer in the container
+        to return predictable test data.
+
+        AI: Following pytest fixture best practices:
+        - Descriptive name indicating purpose
+        - Reuses container_test_client (no duplication)
+        - Scoped to function for test isolation
+        - Properly mocks BOTH sync and async methods
+        """
+        # Access app and container from test client
+        app = container_test_client.app
         mock_persistence = AsyncMock()
-        # Configure the mock to return empty lists for async methods
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.async_get_player.return_value = None
-        mock_persistence.async_get_player_by_name.return_value = None
-        mock_persistence.async_save_player.return_value = None
-        mock_persistence.async_delete_player.return_value = True
+
+        # Configure async mock behaviors (used by API endpoints)
+        mock_persistence.async_list_players = AsyncMock(return_value=[])
+        mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.async_get_player_by_name = AsyncMock(return_value=None)
+        mock_persistence.async_save_player = AsyncMock(return_value=None)
+        mock_persistence.async_delete_player = AsyncMock(return_value=True)
+        mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Mock profession data
         mock_profession = Mock()
         mock_profession.name = "Test Profession"
         mock_profession.description = "Test Description"
         mock_profession.flavor_text = "Test Flavor"
-        mock_persistence.async_get_profession_by_id.return_value = mock_profession
+        mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
 
-        # Also mock synchronous methods for backward compatibility
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.get_player.return_value = None
-        mock_persistence.get_player_by_name.return_value = None
-        mock_persistence.save_player.return_value = None
-        mock_persistence.delete_player.return_value = True
-        app.state.persistence = mock_persistence
+        # Configure sync mock behaviors (for backward compatibility)
+        mock_persistence.get_player = Mock(return_value=None)
+        mock_persistence.get_player_by_name = Mock(return_value=None)
+        mock_persistence.save_player = Mock(return_value=None)
+        mock_persistence.delete_player = Mock(return_value=True)
+        mock_persistence.get_room = Mock(return_value=None)
 
-        return app
+        # Mock player combat service methods (used by some endpoints)
+        mock_persistence.apply_sanity_loss = AsyncMock(return_value=None)
+        mock_persistence.apply_fear = AsyncMock(return_value=None)
+        mock_persistence.apply_corruption = AsyncMock(return_value=None)
+        mock_persistence.gain_occult_knowledge = AsyncMock(return_value=None)
+        mock_persistence.heal_player = AsyncMock(return_value=None)
+        mock_persistence.damage_player = AsyncMock(return_value=None)
 
-    @pytest.fixture
-    def client(self, app):
-        """Create TestClient for testing."""
-        return TestClient(app)
+        # Replace container's persistence with mock
+        app.state.container.persistence = mock_persistence
+        app.state.persistence = mock_persistence  # Backward compatibility
 
-    @pytest.fixture
-    def mock_persistence(self, app):
-        """Get the mocked persistence layer."""
-        return app.state.persistence
+        # Also replace the AsyncPersistence instance if it exists
+        if hasattr(app.state.container, "async_persistence"):
+            app.state.container.async_persistence = mock_persistence
+            app.state.async_persistence = mock_persistence
+
+        # CRITICAL: Also replace persistence reference in PlayerService
+        # PlayerService was initialized with real persistence, need to update it
+        if hasattr(app.state.container, "player_service") and app.state.container.player_service:
+            app.state.container.player_service.persistence = mock_persistence
+            logger.info("Replaced PlayerService persistence with mock")
+
+        # Also update RoomService if it exists
+        if hasattr(app.state.container, "room_service") and app.state.container.room_service:
+            app.state.container.room_service.persistence = mock_persistence
+            logger.info("Replaced RoomService persistence with mock")
+
+        return mock_persistence
 
     @pytest.fixture
     def sample_player_data(self):
@@ -82,204 +125,216 @@ class TestPlayerAPIIntegration:
             last_active=datetime.now(UTC).replace(tzinfo=None),
         )
 
-    def test_create_player_success(self, client, mock_persistence, sample_player_data):
-        """Test successful player creation."""
-        # Setup mocks
-        mock_persistence.async_get_player_by_name.return_value = None  # Player doesn't exist
+    def test_create_player_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """
+        Test successful player creation via API.
 
-        # Use the sample player data directly since it's now a Player object
+        AI: Following AAA pattern (Arrange-Act-Assert)
+        - Arrange: Mock configured via fixture
+        - Act: Make API request
+        - Assert: Verify response
+        """
+        # Arrange: Configure mock
+        mock_persistence_for_api.async_get_player_by_name.return_value = None  # Player doesn't exist
+        mock_persistence_for_api.async_save_player.return_value = sample_player_data
 
-        mock_persistence.async_save_player.return_value = sample_player_data
-
-        response = client.post(
+        # Act: Make API request
+        response = container_test_client.post(
             "/api/players/",
             params={"name": "TestPlayer", "starting_room_id": "earth_arkhamcity_northside_intersection_derby_high"},
         )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert: Verify response
+        assert response.status_code in [200, 401]  # 200=success, 401=auth required
+
+    def test_list_players_success(self, container_test_client, mock_persistence_for_api):
+        """Test successful player listing via API."""
+        # Arrange
+        mock_persistence_for_api.async_list_players.return_value = []
+
+        # Act
+        response = container_test_client.get("/api/players/")
+
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_list_players_success(self, client, mock_persistence, sample_player_data):
-        """Test successful player listing."""
-        # Setup mocks - return empty list to avoid iteration issues
-        mock_persistence.async_list_players.return_value = []
-
-        response = client.get("/api/players/")
-
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
-        assert response.status_code in [200, 401]
-
-    def test_get_player_success(self, client, mock_persistence, sample_player_data):
-        """Test successful player retrieval by ID."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-
+    def test_get_player_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Test successful player retrieval by ID via API."""
+        # Arrange
         player_id = str(uuid.uuid4())
-        response = client.get(f"/api/players/{player_id}")
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Act
+        response = container_test_client.get(f"/api/players/{player_id}")
+
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_get_player_by_name_success(self, client, mock_persistence, sample_player_data):
-        """Test successful player retrieval by name."""
-        # Setup mocks
-        mock_persistence.async_get_player_by_name.return_value = sample_player_data
+    def test_get_player_by_name_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Test successful player retrieval by name via API."""
+        # Arrange
+        mock_persistence_for_api.async_get_player_by_name.return_value = sample_player_data
 
-        response = client.get("/api/players/name/TestPlayer")
+        # Act
+        response = container_test_client.get("/api/players/name/TestPlayer")
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_delete_player_success(self, client, mock_persistence, sample_player_data):
-        """Test successful player deletion."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.async_delete_player.return_value = (True, "Player deleted successfully")
-
+    def test_delete_player_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Test successful player deletion via API."""
+        # Arrange
         player_id = str(uuid.uuid4())
-        response = client.delete(f"/api/players/{player_id}")
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.async_delete_player.return_value = (True, "Player deleted successfully")
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Act
+        response = container_test_client.delete(f"/api/players/{player_id}")
+
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_apply_sanity_loss_success(self, client, mock_persistence, sample_player_data):
-        """Test successful sanity loss application."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.apply_sanity_loss.return_value = None
+    def test_apply_sanity_loss_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Test successful sanity loss application via API."""
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.apply_sanity_loss.return_value = None
 
-        response = client.post("/api/players/test-player-id/sanity-loss", params={"amount": 10, "source": "test"})
+        # Act
+        response = container_test_client.post(
+            "/api/players/test-player-id/sanity-loss", params={"amount": 10, "source": "test"}
+        )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_apply_fear_success(self, client, mock_persistence, sample_player_data):
-        """Test successful fear application."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.apply_fear.return_value = None
+    def test_apply_fear_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Test successful fear application via API."""
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.apply_fear.return_value = None
 
-        response = client.post("/api/players/test-player-id/fear", params={"amount": 5, "source": "test"})
+        # Act
+        response = container_test_client.post(
+            "/api/players/test-player-id/fear", params={"amount": 5, "source": "test"}
+        )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_apply_corruption_success(self, client, mock_persistence, sample_player_data):
+    def test_apply_corruption_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful corruption application."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.apply_corruption.return_value = None
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.apply_corruption.return_value = None
 
-        response = client.post("/api/players/test-player-id/corruption", params={"amount": 3, "source": "test"})
+        # Act
+        response = container_test_client.post(
+            "/api/players/test-player-id/corruption", params={"amount": 3, "source": "test"}
+        )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_gain_occult_knowledge_success(self, client, mock_persistence, sample_player_data):
+    def test_gain_occult_knowledge_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful occult knowledge gain."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.gain_occult_knowledge.return_value = None
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.gain_occult_knowledge.return_value = None
 
-        response = client.post("/api/players/test-player-id/occult-knowledge", params={"amount": 2, "source": "test"})
+        # Act
+        response = container_test_client.post(
+            "/api/players/test-player-id/occult-knowledge", params={"amount": 2, "source": "test"}
+        )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_heal_player_success(self, client, mock_persistence, sample_player_data):
+    def test_heal_player_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful player healing."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.heal_player.return_value = None
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.heal_player.return_value = None
 
-        response = client.post("/api/players/test-player-id/heal", params={"amount": 20})
+        # Act
+        response = container_test_client.post("/api/players/test-player-id/heal", params={"amount": 20})
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_damage_player_success(self, client, mock_persistence, sample_player_data):
+    def test_damage_player_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful player damage."""
-        # Setup mocks
-        mock_persistence.async_get_player.return_value = sample_player_data
-        mock_persistence.damage_player.return_value = None
+        # Arrange
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.damage_player.return_value = None
 
-        response = client.post("/api/players/test-player-id/damage", params={"amount": 15, "damage_type": "physical"})
+        # Act
+        response = container_test_client.post(
+            "/api/players/test-player-id/damage", params={"amount": 15, "damage_type": "physical"}
+        )
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_roll_stats_success(self, client):
-        """Test successful stats rolling."""
-        response = client.post("/api/players/roll-stats")
+    def test_roll_stats_success(self, container_test_client):
+        """Test successful stats rolling via API."""
+        # Act
+        response = container_test_client.post("/api/players/roll-stats")
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_validate_stats_success(self, client):
-        """Test successful stats validation."""
-        response = client.post("/api/players/validate-stats")
+    def test_validate_stats_success(self, container_test_client):
+        """Test successful stats validation via API."""
+        # Act
+        response = container_test_client.post("/api/players/validate-stats")
 
-        # The endpoint should return 422 when no data is provided (validation error)
-        # or 401 if authentication is required
-        assert response.status_code in [422, 401]
+        # Assert
+        assert response.status_code in [422, 401]  # 422=validation error, 401=auth required
 
-    def test_get_available_classes_success(self, client):
-        """Test successful class listing."""
-        response = client.get("/api/players/available-classes")
+    def test_get_available_classes_success(self, container_test_client):
+        """Test successful class listing via API."""
+        # Act
+        response = container_test_client.get("/api/players/available-classes")
 
-        # The endpoint should work (200) or require authentication (401)
-        # Both are valid responses depending on the authentication setup
+        # Assert
         assert response.status_code in [200, 401]
 
-    def test_get_class_description_success(self, client):
-        """Test successful class description retrieval."""
-        response = client.get("/api/players/class-description/investigator")
+    def test_get_class_description_success(self, container_test_client):
+        """Test successful class description retrieval via API."""
+        # Act
+        response = container_test_client.get("/api/players/class-description/investigator")
 
-        # This endpoint doesn't exist, so we expect 404
-        assert response.status_code == 404
+        # Assert
+        assert response.status_code == 404  # Endpoint doesn't exist
 
-    def test_create_character_with_stats_success(self, client):
-        """Test successful character creation with stats."""
-        response = client.post("/api/players/create-character-with-stats")
+    def test_create_character_with_stats_success(self, container_test_client):
+        """Test successful character creation with stats via API."""
+        # Act
+        response = container_test_client.post("/api/players/create-character-with-stats")
 
-        # This endpoint doesn't exist, so we expect 405 (Method Not Allowed)
-        assert response.status_code == 405
+        # Assert
+        assert response.status_code == 405  # Endpoint doesn't exist
 
-    def test_dependency_injection_works(self, client, mock_persistence):
-        """Test that dependency injection is working properly."""
-        # This test verifies that the dependency injection system is working
-        # by ensuring that requests don't fail with dependency resolution errors
+    def test_dependency_injection_works(self, container_test_client, mock_persistence_for_api):
+        """Test that ApplicationContainer dependency injection works."""
+        # Arrange: Container already initialized via fixture
 
-        # Test a simple endpoint
-        response = client.get("/api/players/")
+        # Act: Make API request
+        response = container_test_client.get("/api/players/")
 
-        # Should not get a 500 error due to dependency injection issues
+        # Assert: Verify DI works (no 500 errors)
         assert response.status_code != 500
-
-        # The response should be 200 (success) or 401 (unauthorized)
         assert response.status_code in [200, 401]
 
-    def test_room_endpoint_dependency_injection(self, client, mock_persistence):
-        """Test that room endpoint dependency injection works."""
-        # Setup mocks
-        mock_persistence.async_get_room.return_value = None
+    def test_room_endpoint_dependency_injection(self, container_test_client, mock_persistence_for_api):
+        """Test that room endpoint dependency injection works via ApplicationContainer."""
+        # Arrange
+        mock_persistence_for_api.async_get_room.return_value = None
 
-        response = client.get("/rooms/test_room")
+        # Act
+        response = container_test_client.get("/rooms/test_room")
 
-        # Should not get a 500 error due to dependency injection issues
+        # Assert: Verify DI works (no 500 errors)
         assert response.status_code != 500
-
-        # Should get 404 (room not found) since we're using a mock
-        assert response.status_code == 404
+        assert response.status_code == 404  # Room not found (expected with mock)

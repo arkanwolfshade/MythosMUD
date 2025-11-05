@@ -239,7 +239,8 @@ class TestInitDB:
                         with patch("server.models.npc.NPCSpawnRule"):
                             with patch("server.models.player.Player"):
                                 with patch("server.models.user.User"):
-                                    with patch("server.models.relationships.setup_relationships"):
+                                    with patch("server.models.invite.Invite"):
+                                        # ARCHITECTURE FIX: setup_relationships deleted - relationships now in models
                                         # Mock the configure_mappers function
                                         with patch("sqlalchemy.orm.configure_mappers"):
                                             await init_db()

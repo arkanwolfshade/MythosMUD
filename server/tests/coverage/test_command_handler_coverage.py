@@ -933,12 +933,6 @@ class TestMovementAndExplorationCommands:
 class TestAliasManagementEdgeCases:
     """Test alias management edge cases through unified command handler."""
 
-    @pytest.mark.asyncio
-    async def test_alias_commands_through_unified_handler(self):
-        """Test alias commands through the unified command handler."""
-        # This test verifies that alias commands work through the unified interface
-        # The actual alias handling is now done by the command service
-        assert True  # Placeholder test - alias functionality is tested in command service tests
 
 
 class TestUtilityFunctions:

@@ -120,6 +120,17 @@ def init_test_database():
     with sqlite3.connect(TEST_DB_PATH) as conn:
         conn.execute("PRAGMA foreign_keys = ON")
         conn.executescript(load_schema())
+
+        # MIGRATION: Add respawn_room_id column if it doesn't exist (for existing databases)
+        try:
+            conn.execute("SELECT respawn_room_id FROM players LIMIT 1")
+        except sqlite3.OperationalError:
+            # Column doesn't exist, add it
+            print("[MIGRATION] Adding respawn_room_id column to players table")
+            conn.execute(
+                "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
+            )
+
         conn.commit()
 
     print("[OK] Database schema created")
@@ -150,8 +161,8 @@ def init_test_database():
                 """
                 INSERT OR REPLACE INTO players (
                     player_id, user_id, name, stats, inventory, status_effects,
-                    current_room_id, experience_points, level
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    current_room_id, respawn_room_id, experience_points, level
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     player_data["player_id"],
@@ -161,6 +172,7 @@ def init_test_database():
                     player_data["inventory"],
                     player_data["status_effects"],
                     player_data["current_room_id"],
+                    player_data.get("respawn_room_id", "earth_arkhamcity_sanitarium_room_foyer_001"),
                     player_data["experience_points"],
                     player_data["level"],
                 ),

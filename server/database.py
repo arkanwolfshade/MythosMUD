@@ -260,21 +260,20 @@ class DatabaseManager:
             logger.info("Database connections closed")
 
 
-# Global database manager instance
-_db_manager: DatabaseManager | None = None
-
-
+# DEPRECATED: Module-level global removed - use ApplicationContainer instead
+# For backward compatibility during migration, delegate to DatabaseManager.get_instance()
+# TODO: Remove this function once all code uses container
 def get_database_manager() -> DatabaseManager:
     """
     Get the database manager singleton.
 
+    DEPRECATED: Use ApplicationContainer.database_manager instead.
+    This function exists only for backward compatibility during migration.
+
     Returns:
         DatabaseManager: The database manager instance
     """
-    global _db_manager
-    if _db_manager is None:
-        _db_manager = DatabaseManager.get_instance()
-    return _db_manager
+    return DatabaseManager.get_instance()
 
 
 def get_engine() -> AsyncEngine:
@@ -357,22 +356,18 @@ async def init_db() -> None:
         # Configure all mappers before setting up relationships
         from sqlalchemy.orm import configure_mappers
 
-        from server.models.invite import Invite  # noqa: F401
-
-        # CRITICAL: Do NOT import NPC models here - they use npc_metadata, not metadata
-        # NPC models belong to NPC database, not player database
+        # CRITICAL: Import ALL models that use metadata before configure_mappers()
+        # This allows SQLAlchemy to resolve string references in relationships
+        # Do NOT import NPC models here - they use npc_metadata, not metadata
         # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
+        from server.models.invite import Invite  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")
+        # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
+        # String references resolved via SQLAlchemy registry after all models imported
         configure_mappers()
-
-        # Set up relationships after all models are imported and configured
-        from server.models.relationships import setup_relationships
-
-        logger.debug("Setting up model relationships")
-        setup_relationships()
 
         engine = get_engine()  # Initialize if needed
         async with engine.begin() as conn:
@@ -380,6 +375,23 @@ async def init_db() -> None:
             await conn.run_sync(metadata.create_all)
             # Enable foreign key constraints for SQLite
             await conn.execute(text("PRAGMA foreign_keys = ON"))
+
+            # MIGRATION: Add respawn_room_id column if it doesn't exist
+            # This handles existing databases that were created before this column was added
+            try:
+                # Check if column exists by attempting to select it
+                result = await conn.execute(text("SELECT respawn_room_id FROM players LIMIT 1"))
+                result.fetchone()  # Consume result (already resolved, not awaitable)
+            except Exception:
+                # Column doesn't exist, add it
+                logger.info("Adding respawn_room_id column to players table (migration)")
+                await conn.execute(
+                    text(
+                        "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
+                    )
+                )
+                logger.info("Migration completed: respawn_room_id column added")
+
             logger.info("Database tables created successfully")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__

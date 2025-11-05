@@ -7,16 +7,17 @@ for each user, including stats, inventory, and current location.
 
 import json
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped, relationship
 
-from ..metadata import metadata
+from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
-
-class Base(DeclarativeBase):
-    metadata = metadata
+# Forward references for type checking (resolves circular imports)
+# Note: SQLAlchemy will resolve string references via shared registry at runtime
+if TYPE_CHECKING:
+    from .user import User
 
 
 class Player(Base):
@@ -57,7 +58,13 @@ class Player(Base):
     level = Column(Integer(), default=1, nullable=False)
 
     # Admin status
-    is_admin = Column(Integer(), default=0, nullable=False)  # SQLite doesn't have BOOLEAN, use INTEGER
+    is_admin = Column(Integer(), default=0, nullable=False)
+
+    # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # Using simple string reference - SQLAlchemy resolves via registry after all models imported
+    user: Mapped["User"] = relationship(
+        "User", back_populates="player", overlaps="player"
+    )  # SQLite doesn't have BOOLEAN, use INTEGER
 
     # Profession
     profession_id = Column(Integer(), default=0, nullable=False)
