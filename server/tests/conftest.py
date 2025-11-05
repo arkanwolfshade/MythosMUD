@@ -469,6 +469,14 @@ def test_client():
     app.state.event_handler = get_real_time_event_handler()
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
 
+    # Create mock ApplicationContainer for dependency injection
+    from unittest.mock import Mock
+
+    mock_app_container = Mock()
+    mock_app_container.persistence = app.state.persistence
+    mock_app_container.event_bus = app.state.event_handler.event_bus
+    app.state.container = mock_app_container
+
     return TestClient(app)
 
 
