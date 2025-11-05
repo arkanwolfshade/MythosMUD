@@ -17,8 +17,13 @@ from fastapi.testclient import TestClient
 from server.app.factory import create_app
 
 
+@pytest.mark.slow
 class TestAsyncRouteHandlers:
-    """Test async route handler functionality and performance."""
+    """Test async route handler functionality and performance.
+
+    These tests require full FastAPI app initialization with dependency injection
+    container and make actual HTTP requests, making them integration-style tests.
+    """
 
     @pytest.fixture
     def app(self):

@@ -13,8 +13,13 @@ from fastapi.testclient import TestClient
 from server.app.factory import create_app
 
 
+@pytest.mark.slow
 class TestCORSConfigurationVerification:
-    """Test CORS configuration works with environment variables."""
+    """Test CORS configuration works with environment variables.
+
+    These tests require full FastAPI app initialization with dependency injection
+    container and make actual HTTP requests to verify CORS middleware behavior.
+    """
 
     @pytest.fixture
     def app(self):
