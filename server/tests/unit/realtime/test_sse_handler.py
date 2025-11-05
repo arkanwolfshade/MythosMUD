@@ -362,6 +362,7 @@ class TestSSEHandlerFunctions:
             mock_connection_manager.send_personal_message.assert_called_once()
 
 
+@pytest.mark.slow
 class TestGameEventStream:
     """Test cases for the main SSE event stream generator."""
 
