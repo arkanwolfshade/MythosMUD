@@ -68,14 +68,6 @@ format:
 # Daily Development Workflow
 # ----------------------------------------------------------------------------
 
-test-fast: setup-test-env
-	@echo "Running FAST unit tests with parallelization (~2-3 min)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/unit/ -m "not slow" -n auto -x --tb=short -q
-
-test-fast-serial: setup-test-env
-	@echo "Running FAST unit tests serially (for debugging)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/unit/ -m "not slow" -x --tb=short -q
-
 test: setup-test-env
 	@echo "Running default test suite (pre-commit validation, ~5-7 min target)..."
 	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" -n auto --maxfail=10 --tb=short
