@@ -59,13 +59,21 @@ class TestEndpoints:
             # Create a test client
             test_client = TestClient(app)
 
+            # Create mock services for the container
+            from server.game.player_service import PlayerService
+
+            mock_player_service = AsyncMock(spec=PlayerService)
+            mock_player_service.list_players = AsyncMock(return_value=[])
+
             # Create a mock ApplicationContainer
             mock_container = Mock()
             mock_container.persistence = mock_persistence
+            mock_container.player_service = mock_player_service
 
             # Set both the container and the persistence in app state
             test_client.app.state.container = mock_container
             test_client.app.state.persistence = mock_persistence
+            test_client.app.state.player_service = mock_player_service
 
             return test_client
 

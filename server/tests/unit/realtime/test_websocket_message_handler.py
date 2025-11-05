@@ -164,7 +164,7 @@ class TestWebSocketMessageHandler:
             # Verify command response was sent to player
             mock_websocket.send_json.assert_called_once()
             call_args = mock_websocket.send_json.call_args[0][0]
-            assert call_args["type"] == "command_response"
+            assert call_args["event_type"] == "command_response"
             assert "You move north." in str(call_args["data"])
 
     @pytest.mark.asyncio
@@ -187,5 +187,5 @@ class TestWebSocketMessageHandler:
             # Verify command response was sent to player
             mock_websocket.send_json.assert_called_once()
             call_args = mock_websocket.send_json.call_args[0][0]
-            assert call_args["type"] == "command_response"
+            assert call_args["event_type"] == "command_response"
             assert "You move north." in str(call_args["data"])
