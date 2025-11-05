@@ -576,6 +576,7 @@ class TestPerformanceCaching:
         assert "z" not in DANGEROUS_CHARS  # Fast set lookup
 
 
+@pytest.mark.slow
 class TestBenchmarkPerformance:
     """Test benchmark functionality."""
 
