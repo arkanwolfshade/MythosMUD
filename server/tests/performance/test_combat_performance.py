@@ -16,6 +16,9 @@ from server.commands.combat import CombatCommandHandler
 from server.services.combat_service import CombatService
 from server.services.player_combat_service import PlayerCombatService
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestCombatPerformance:
     """Performance tests for combat system."""

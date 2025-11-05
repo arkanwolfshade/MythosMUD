@@ -8,7 +8,12 @@ As noted in the restricted archives, all scholarly tools
 must be tested, even those rarely invoked.
 """
 
+import pytest
+
 from server.help.help_content import get_command_categories, get_commands_by_category, get_help_content
+
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
 
 
 class TestHelpContentUtilities:

@@ -8,6 +8,9 @@ import pytest
 
 from server.command_handler_unified import process_command_unified
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestLogoutIntegration:
     """Integration tests for logout command processing."""

@@ -14,6 +14,8 @@ between speed and accuracy in our digital realm.
 import time
 from typing import Any
 
+import pytest
+
 from server.models.alias import Alias
 from server.models.command import LookCommand, SayCommand
 from server.models.game import Stats, StatusEffect, StatusEffectType
@@ -26,6 +28,9 @@ from server.models.health import (
     HealthStatus,
     ServerComponent,
 )
+
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
 
 
 class ModelPerformanceBenchmarks:

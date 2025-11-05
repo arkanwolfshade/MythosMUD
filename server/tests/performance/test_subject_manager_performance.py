@@ -19,6 +19,9 @@ import pytest
 from server.logging.enhanced_logging_config import get_logger
 from server.services.nats_subject_manager import NATSSubjectManager
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 logger = get_logger("tests.performance.subject_manager")
 
 

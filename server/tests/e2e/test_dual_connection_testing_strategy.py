@@ -18,6 +18,9 @@ from fastapi import WebSocket
 
 from server.realtime.connection_manager import ConnectionManager
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestDualConnectionSystem:
     """Test the dual connection system functionality."""

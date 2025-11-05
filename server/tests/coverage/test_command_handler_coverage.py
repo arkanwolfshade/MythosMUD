@@ -25,6 +25,9 @@ from server.exceptions import ValidationError
 from server.middleware.command_rate_limiter import command_rate_limiter
 from server.models.room import Room
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestCommunicationCommands:
     """Test communication commands."""

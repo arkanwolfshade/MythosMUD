@@ -14,6 +14,9 @@ import pytest
 
 from server.realtime.connection_manager import ConnectionManager
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestDualConnectionPerformance:
     """Test dual connection system performance."""

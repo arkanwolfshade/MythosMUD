@@ -15,6 +15,9 @@ import pytest
 from server.game.chat_service import ChatService
 from server.game.player_service import PlayerService
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestMuteFilteringPerformance:
     """Performance tests for mute filtering system."""
